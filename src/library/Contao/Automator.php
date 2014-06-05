@@ -470,6 +470,72 @@ class Automator extends \System
 
 
 	/**
+	 * Generate the symlinks in the web/ folder
+	 */
+	public function generateSymlinks()
+	{
+		$this->import('Files');
+
+		// Remove the web/files directory
+		if (is_dir(TL_ROOT . '/web/files'))
+		{
+			$this->Files->rrdir('web/files');
+		}
+
+		$this->generateFilesSymlinks(\Config::get('uploadPath'));
+
+		// Remove the web/system/modules directory
+		if (is_dir(TL_ROOT . '/web/system/modules'))
+		{
+			$this->Files->rrdir('web/system/modules');
+		}
+
+		$arrPublic = glob(TL_ROOT . '/system/modules/*/{assets,themes}', GLOB_BRACE);
+
+		// Symlink the public extension subfolders
+		if (!empty($arrPublic))
+		{
+			$this->Files->mkdir('web/system/modules');
+
+			foreach ($arrPublic as $strFolder)
+			{
+				$strRelpath = str_replace(TL_ROOT . '/', '', $strFolder);
+				$this->Files->symlink('../../../../' . $strRelpath, 'web/' . $strRelpath);
+			}
+		}
+
+		// Symlink the assets and themes directory
+		$this->Files->symlink('../assets', 'web/assets');
+		$this->Files->symlink('../../system/themes', 'web/system/themes');
+	}
+
+
+	/**
+	 * Recursively create the files symlinks
+	 *
+	 * @param string $strPath The current path
+	 */
+	protected function generateFilesSymlinks($strPath)
+	{
+		if (file_exists(TL_ROOT . '/' . $strPath . '/.public'))
+		{
+			$strPrefix = str_repeat('../', substr_count($strPath, '/') + 1);
+			$this->Files->symlink($strPrefix . $strPath, 'web/' . $strPath);
+		}
+		else
+		{
+			foreach (scan(TL_ROOT . '/' . $strPath) as $res)
+			{
+				if (is_dir(TL_ROOT . '/' . $strPath . '/' . $res))
+				{
+					$this->generateFilesSymlinks($strPath . '/' . $res);
+				}
+			}
+		}
+	}
+
+
+	/**
 	 * Build the internal cache
 	 */
 	public function generateInternalCache()
