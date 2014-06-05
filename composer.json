@@ -1,0 +1,22 @@
+{
+	"name": "contao/module-core",
+	"type": "contao-module",
+	"description": "Contao 4 core module",
+	"license": "LGPL-3.0+",
+	"authors": [
+		{
+			"name": "Leo Feyer",
+			"homepage": "https://github.com/leofeyer"
+		}
+	],
+	"require": {
+		"contao-community-alliance/composer-plugin": "~2.0"
+	},
+	"extra": {
+		"contao": {
+			"sources": {
+				"src": "system/modules/core"
+			}
+		}
+	}
+}
