@@ -113,32 +113,29 @@ class FormTextField extends \Widget
 				break;
 
 			case 'type':
-				// Use the HTML5 types (see #4138) but not the date, time and datetime types (see #5918)
 				if ($this->hideInput)
 				{
 					return 'password';
 				}
 
-				if ($this->strFormat != 'xhtml')
+				// Use the HTML5 types (see #4138) but not the date, time and datetime types (see #5918)
+				switch ($this->rgxp)
 				{
-					switch ($this->rgxp)
-					{
-						case 'digit':
-							return 'number';
-							break;
+					case 'digit':
+						return 'number';
+						break;
 
-						case 'phone':
-							return 'tel';
-							break;
+					case 'phone':
+						return 'tel';
+						break;
 
-						case 'email':
-							return 'email';
-							break;
+					case 'email':
+						return 'email';
+						break;
 
-						case 'url':
-							return 'url';
-							break;
-					}
+					case 'url':
+						return 'url';
+						break;
 				}
 
 				return 'text';

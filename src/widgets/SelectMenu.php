@@ -118,7 +118,7 @@ class SelectMenu extends \Widget
 			$strClass = 'tl_mselect';
 		}
 
-		// Add an empty option (XHTML) if there are none
+		// Add an empty option if there are none
 		if (empty($this->arrOptions))
 		{
 			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));

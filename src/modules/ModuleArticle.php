@@ -95,14 +95,7 @@ class ModuleArticle extends \Module
 		$this->Template->date = \Date::parse($objPage->datimFormat, $this->tstamp);
 
 		// Clean the RTE output
-		if ($objPage->outputFormat == 'xhtml')
-		{
-			$this->teaser = \String::toXhtml($this->teaser);
-		}
-		else
-		{
-			$this->teaser = \String::toHtml5($this->teaser);
-		}
+		$this->teaser = \String::toHtml5($this->teaser);
 
 		// Show the teaser only
 		if ($this->multiMode && $this->showTeaser)

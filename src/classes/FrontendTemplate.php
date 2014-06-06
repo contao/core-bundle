@@ -40,7 +40,7 @@ class FrontendTemplate extends \Template
 		if ($objPage->outputFormat != '')
 		{
 			$this->strFormat = $objPage->outputFormat;
-			$this->strTagEnding = ($this->strFormat == 'xhtml') ? ' />' : '>';
+			$this->strTagEnding = '>';
 		}
 
 		$strBuffer = parent::parse();
@@ -166,7 +166,7 @@ class FrontendTemplate extends \Template
 		}
 
 		// Use the section tag in HTML5
-		$this->tag = ($key == 'main' && $this->strFormat != 'xhtml') ? 'section' : 'div';
+		$this->tag = ($key == 'main') ? 'section' : 'div';
 
 		if ($template === null)
 		{

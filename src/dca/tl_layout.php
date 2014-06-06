@@ -309,7 +309,7 @@ $GLOBALS['TL_DCA']['tl_layout'] = array
 			'sorting'                 => true,
 			'flag'                    => 11,
 			'inputType'               => 'select',
-			'options'                 => array('html5', 'xhtml_strict', 'xhtml_trans'),
+			'options'                 => array('html5'),
 			'reference'               => &$GLOBALS['TL_LANG']['tl_layout'],
 			'eval'                    => array('tl_class'=>'w50'),
 			'sql'                     => "varchar(32) NOT NULL default ''"

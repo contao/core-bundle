@@ -113,7 +113,7 @@ class TimePeriod extends \Widget
 	{
 		$arrUnits = array();
 
-		// Add an empty option (XHTML) if there are none (see #5067)
+		// Add an empty option if there are none (see #5067)
 		if (empty($this->arrUnits))
 		{
 			$this->arrUnits = array(array('value'=>'', 'label'=>'-'));

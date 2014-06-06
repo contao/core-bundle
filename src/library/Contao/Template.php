@@ -351,8 +351,7 @@ abstract class Template extends \BaseTemplate
 					. "window.addEvent('resize',function() {"
 						. "$$('#contao-debug>*').setStyle('width',window.getSize().x);"
 					. "});"
-				. "})(document.id);",
-				($this->strFormat == 'xhtml')
+				. "})(document.id);"
 			)
 			. "\n<!-- indexer::continue -->\n\n"
 		;
@@ -435,87 +434,68 @@ abstract class Template extends \BaseTemplate
 	/**
 	 * Generate the markup for a style sheet tag
 	 *
-	 * @param string  $href  The script path
-	 * @param string  $media The media type string
-	 * @param boolean $xhtml True if the output shall be XHTML compliant
+	 * @param string $href  The script path
+	 * @param string $media The media type string
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateStyleTag($href, $media, $xhtml=false)
+	public static function generateStyleTag($href, $media)
 	{
-		return '<link' . ($xhtml ? ' type="text/css"' : '') . ' rel="stylesheet" href="' . $href . '"' . (($media != '' && $media != 'all') ? ' media="' . $media . '"' : '') . ($xhtml ? ' />' : '>');
+		return '<link rel="stylesheet" href="' . $href . '"' . (($media != '' && $media != 'all') ? ' media="' . $media . '"' : '') . '>';
 	}
 
 
 	/**
 	 * Generate the markup for inline CSS code
 	 *
-	 * @param string  $script The CSS code
-	 * @param boolean $xhtml  True if the output shall be XHTML compliant
+	 * @param string $script The CSS code
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateInlineStyle($script, $xhtml=false)
+	public static function generateInlineStyle($script)
 	{
-		if ($xhtml)
-		{
-			return '<style type="text/css">' . "\n/* <![CDATA[ */\n" . $script . "\n/* ]]> */\n" . '</style>';
-		}
-		else
-		{
-			return '<style>' . $script . '</style>';
-		}
+		return '<style>' . $script . '</style>';
 	}
 
 
 	/**
 	 * Generate the markup for a JavaScript tag
 	 *
-	 * @param string  $src   The script path
-	 * @param boolean $xhtml True if the output shall be XHTML compliant
+	 * @param string $src The script path
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateScriptTag($src, $xhtml=false)
+	public static function generateScriptTag($src)
 	{
-		return '<script' . ($xhtml ? ' type="text/javascript"' : '') . ' src="' . $src . '"></script>';
+		return '<script src="' . $src . '"></script>';
 	}
 
 
 	/**
 	 * Generate the markup for an inline JavaScript
 	 *
-	 * @param string  $script The JavaScript code
-	 * @param boolean $xhtml  True if the output shall be XHTML compliant
+	 * @param string $script The JavaScript code
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateInlineScript($script, $xhtml=false)
+	public static function generateInlineScript($script)
 	{
-		if ($xhtml)
-		{
-			return '<script type="text/javascript">' . "\n/* <![CDATA[ */\n" . $script . "\n/* ]]> */\n" . '</script>';
-		}
-		else
-		{
-			return '<script>' . $script . '</script>';
-		}
+		return '<script>' . $script . '</script>';
 	}
 
 
 	/**
 	 * Generate the markup for an RSS feed tag
 	 *
-	 * @param string  $href   The script path
-	 * @param string  $format The feed format
-	 * @param string  $title  The feed title
-	 * @param boolean $xhtml  True if the output shall be XHTML compliant
+	 * @param string $href   The script path
+	 * @param string $format The feed format
+	 * @param string $title  The feed title
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateFeedTag($href, $format, $title, $xhtml=false)
+	public static function generateFeedTag($href, $format, $title)
 	{
-		return '<link type="application/' . $format . '+xml" rel="alternate" href="' . $href . '" title="' . specialchars($title) . '"' . ($xhtml ? ' />' : '>');
+		return '<link type="application/' . $format . '+xml" rel="alternate" href="' . $href . '" title="' . specialchars($title) . '">';
 	}
 
 

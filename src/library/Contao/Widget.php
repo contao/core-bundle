@@ -139,7 +139,7 @@ abstract class Widget extends \BaseTemplate
 			if ($objPage->outputFormat != '')
 			{
 				$this->strFormat = $objPage->outputFormat;
-				$this->strTagEnding = ($this->strFormat == 'xhtml') ? ' />' : '>';
+				$this->strTagEnding = '>';
 			}
 		}
 
@@ -620,23 +620,7 @@ abstract class Widget extends \BaseTemplate
 	 */
 	public function getAttributes($arrStrip=array())
 	{
-		$blnIsXhtml = false;
-
-		// Remove HTML5 attributes in XHTML code
-		if (TL_MODE == 'FE')
-		{
-			global $objPage;
-
-			if ($objPage->outputFormat == 'xhtml')
-			{
-				$blnIsXhtml = true;
-				unset($this->arrAttributes['autofocus']);
-				unset($this->arrAttributes['placeholder']);
-				unset($this->arrAttributes['required']);
-			}
-		}
-
-		// Optionally strip certain attributes
+		// Strip certain attributes
 		if (is_array($arrStrip))
 		{
 			foreach ($arrStrip as $strAttribute)
@@ -654,7 +638,7 @@ abstract class Widget extends \BaseTemplate
 			{
 				if (TL_MODE == 'FE') // see #3878
 				{
-					$strAttributes .= $blnIsXhtml ? ' ' . $k . '="' . $v . '"' : ' ' . $k;
+					$strAttributes .= ' ' . $k;
 				}
 				elseif ($k == 'disabled' || $k == 'readonly' || $k == 'multiple') // see #4131
 				{
@@ -1110,19 +1094,7 @@ abstract class Widget extends \BaseTemplate
 			return '';
 		}
 
-		$attribute = ' selected';
-
-		if (TL_MODE == 'FE')
-		{
-			global $objPage;
-
-			if ($objPage->outputFormat == 'xhtml')
-			{
-				$attribute = ' selected="selected"';
-			}
-		}
-
-		return (is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? $attribute : '';
+		return (is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? ' selected' : '';
 	}
 
 
@@ -1141,19 +1113,7 @@ abstract class Widget extends \BaseTemplate
 			return '';
 		}
 
-		$attribute = ' checked';
-
-		if (TL_MODE == 'FE')
-		{
-			global $objPage;
-
-			if ($objPage->outputFormat == 'xhtml')
-			{
-				$attribute = ' checked="checked"';
-			}
-		}
-
-		return (is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? $attribute : '';
+		return (is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? ' checked' : '';
 	}
 
 

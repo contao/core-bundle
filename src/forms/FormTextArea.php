@@ -148,28 +148,6 @@ class FormTextArea extends \Widget
 
 
 	/**
-	 * Return all attributes as string
-	 *
-	 * @param array $arrStrip An optional array with attributes to strip
-	 *
-	 * @return string The attributes string
-	 */
-	public function getAttributes($arrStrip=array())
-	{
-		global $objPage;
-		$arrStrip = array();
-
-		// XHTML does not support maxlength
-		if ($objPage->outputFormat == 'xhtml')
-		{
-			$arrStrip[] = 'maxlength';
-		}
-
-		return parent::getAttributes($arrStrip);
-	}
-
-
-	/**
 	 * Generate the widget and return it as string
 	 *
 	 * @return string The widget markup
