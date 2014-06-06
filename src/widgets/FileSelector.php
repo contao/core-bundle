@@ -187,7 +187,7 @@ class FileSelector extends \Widget
 	 * @param boolean
 	 * @return string
 	 */
-	protected function renderFiletree($path, $intMargin, $mount=false, $blnProtected=false)
+	protected function renderFiletree($path, $intMargin, $mount=false, $blnProtected=true)
 	{
 		// Invalid path
 		if (!is_dir($path))
@@ -285,7 +285,14 @@ class FileSelector extends \Widget
 				$return .= '<a href="'.$this->addToUrl($flag.'tg='.$tid).'" title="'.specialchars($alt).'" onclick="return AjaxRequest.toggleFiletree(this,\''.$xtnode.'_'.$tid.'\',\''.$currentFolder.'\',\''.$this->strField.'\',\''.$this->strName.'\','.$level.')">'.\Image::getHtml($img, '', 'style="margin-right:2px"').'</a>';
 			}
 
-			$protected = ($blnProtected === true || array_search('.htaccess', $content) !== false) ? true : false;
+			$protected = $blnProtected;
+
+			// Check whether the folder is public
+			if ($protected === true && array_search('.public', $content) !== false)
+			{
+				$protected = false;
+			}
+
 			$folderImg = ($blnIsOpen && $countFiles > 0) ? ($protected ? 'folderOP.gif' : 'folderO.gif') : ($protected ? 'folderCP.gif' : 'folderC.gif');
 			$folderLabel = ($this->files || $this->filesOnly) ? '<strong>'.specialchars(basename($currentFolder)).'</strong>' : specialchars(basename($currentFolder));
 
