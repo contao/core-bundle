@@ -60,13 +60,6 @@ class BackendInstall extends \Backend
 			$this->outputAndExit();
 		}
 
-		// Store the FTP login credentials
-		if (\Input::post('FORM_SUBMIT') == 'tl_ftp')
-		{
-			$this->storeFtpCredentials();
-		}
-
-		// Import the Files object AFTER storing the FTP settings
 		$this->import('Files');
 
 		// If the files are not writeable, the SMH is required
@@ -78,10 +71,7 @@ class BackendInstall extends \Backend
 		$this->Template->lcfWriteable = true;
 
 		// Create the local configuration files if not done yet
-		if (!\Config::get('useFTP'))
-		{
-			$this->createLocalConfigurationFiles();
-		}
+		$this->createLocalConfigurationFiles();
 
 		// Show the license text
 		if (!\Config::get('licenseAccepted'))
@@ -199,117 +189,6 @@ class BackendInstall extends \Backend
 		\Config::remove('cron_weekly');
 
 		$this->outputAndExit();
-	}
-
-
-	/**
-	 * Store the FTP login credentials
-	 */
-	protected function storeFtpCredentials()
-	{
-		if (\Config::get('installPassword') != '')
-		{
-			return;
-		}
-
-		\Config::set('useFTP', true);
-		\Config::set('ftpHost', \Input::post('host'));
-		\Config::set('ftpPath', \Input::post('path'));
-		\Config::set('ftpUser', \Input::post('username', true));
-
-		if (\Input::postRaw('password') != '*****')
-		{
-			\Config::set('ftpPass', \Input::postRaw('password'));
-		}
-
-		\Config::set('ftpSSL', \Input::post('ssl'));
-		\Config::set('ftpPort', (int) \Input::post('port'));
-
-		// Add a trailing slash
-		if (\Config::get('ftpPath') != '' && substr(\Config::get('ftpPath'), -1) != '/')
-		{
-			\Config::set('ftpPath', \Config::get('ftpPath') . '/');
-		}
-
-		// Re-insert the data into the form
-		$this->Template->ftpHost = \Config::get('ftpHost');
-		$this->Template->ftpPath = \Config::get('ftpPath');
-		$this->Template->ftpUser = \Config::get('ftpUser');
-		$this->Template->ftpPass = (\Config::get('ftpPass') != '') ? '*****' : '';
-		$this->Template->ftpSSL  = \Config::get('ftpSSL');
-		$this->Template->ftpPort = \Config::get('ftpPort');
-
-		$ftp_connect = (\Config::get('ftpSSL') && function_exists('ftp_ssl_connect')) ? 'ftp_ssl_connect' : 'ftp_connect';
-
-		// Try to connect and locate the Contao directory
-		if (($resFtp = $ftp_connect(\Config::get('ftpHost'), \Config::get('ftpPort'), 5)) == false)
-		{
-			$this->Template->ftpHostError = true;
-			$this->outputAndExit();
-		}
-		elseif (!ftp_login($resFtp, \Config::get('ftpUser'), \Config::get('ftpPass')))
-		{
-			$this->Template->ftpUserError = true;
-			$this->outputAndExit();
-		}
-		elseif (ftp_size($resFtp, \Config::get('ftpPath') . 'assets/contao/css/debug.css') == -1)
-		{
-			$this->Template->ftpPathError = true;
-			$this->outputAndExit();
-		}
-
-		// Update the local configuration file
-		else
-		{
-			$this->import('Files');
-
-			// The system/tmp folder must be writable for fopen()
-			if (!is_writable(TL_ROOT . '/system/tmp'))
-			{
-				$this->Files->chmod('system/tmp', 0777);
-			}
-
-			// The assets/images folder must be writable for image*()
-			if (!is_writable(TL_ROOT . '/assets/images'))
-			{
-				$this->Files->chmod('assets/images', 0777);
-			}
-
-			$folders = array('0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f');
-
-			foreach ($folders as $folder)
-			{
-				if (!is_writable(TL_ROOT . '/assets/images/' . $folder))
-				{
-					$this->Files->chmod('assets/images/' . $folder, 0777);
-				}
-			}
-
-			// The system/logs folder must be writable for error_log()
-			if (!is_writable(TL_ROOT . '/system/logs'))
-			{
-				$this->Files->chmod('system/logs', 0777);
-			}
-
-			// Create the local configuration files
-			$this->createLocalConfigurationFiles();
-
-			// Save the FTP credentials
-			\Config::persist('useFTP', true);
-			\Config::persist('ftpHost', \Config::get('ftpHost'));
-			\Config::persist('ftpPath', \Config::get('ftpPath'));
-			\Config::persist('ftpUser', \Config::get('ftpUser'));
-
-			if (\Input::postRaw('password') != '*****')
-			{
-				\Config::persist('ftpPass', \Config::get('ftpPass'));
-			}
-
-			\Config::persist('ftpSSL', \Config::get('ftpSSL'));
-			\Config::persist('ftpPort', \Config::get('ftpPort'));
-
-			$this->reload();
-		}
 	}
 
 

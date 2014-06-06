@@ -142,8 +142,6 @@ ClassLoader::addClasses(array
 	'Contao\Feed'                      => 'system/modules/core/library/Contao/Feed.php',
 	'Contao\FeedItem'                  => 'system/modules/core/library/Contao/FeedItem.php',
 	'Contao\File'                      => 'system/modules/core/library/Contao/File.php',
-	'Contao\Files\Ftp'                 => 'system/modules/core/library/Contao/Files/Ftp.php',
-	'Contao\Files\Php'                 => 'system/modules/core/library/Contao/Files/Php.php',
 	'Contao\Files'                     => 'system/modules/core/library/Contao/Files.php',
 	'Contao\Folder'                    => 'system/modules/core/library/Contao/Folder.php',
 	'Contao\Idna'                      => 'system/modules/core/library/Contao/Idna.php',

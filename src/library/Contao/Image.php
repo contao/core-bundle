@@ -427,12 +427,6 @@ class Image
 			return \System::urlEncode($target);
 		}
 
-		// Set the file permissions when the Safe Mode Hack is used
-		if (\Config::get('useFTP'))
-		{
-			\Files::getInstance()->chmod($strCacheName, \Config::get('defaultFileChmod'));
-		}
-
 		// Return the path to new image
 		return \System::urlEncode($strCacheName);
 	}

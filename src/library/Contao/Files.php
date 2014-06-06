@@ -14,12 +14,9 @@ namespace Contao;
 
 
 /**
- * A wrapper class for accessing the file system
+ * A class to access the file system
  *
- * The class handles file operations, either directly via the PHP functions or
- * through an FTP connection. The latter is a workaround for insufficient file
- * permissions when the PHP process runs under a different user than the file
- * owner (referred to as "Safe Mode Hack").
+ * The class handles file operations via the PHP functions.
  *
  * Usage:
  *
@@ -37,7 +34,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-abstract class Files
+class Files
 {
 
 	/**
@@ -68,23 +65,7 @@ abstract class Files
 	{
 		if (self::$objInstance === null)
 		{
-			// Use FTP to modify files
-			if (\Config::get('useFTP'))
-			{
-				self::$objInstance = new \Files\Ftp();
-			}
-
-			// HOOK: use the smhextended module
-			elseif (\Config::get('useSmhExtended') && in_array('smhextended', \ModuleLoader::getActive()))
-			{
-				self::$objInstance = new \SMHExtended();
-			}
-
-			// Use PHP to modify files
-			else
-			{
-				self::$objInstance = new \Files\Php();
-			}
+			self::$objInstance = new static();
 		}
 
 		return self::$objInstance;
@@ -98,7 +79,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function mkdir($strDirectory);
+	public function mkdir($strDirectory)
+	{
+		$this->validate($strDirectory);
+		return @mkdir(TL_ROOT . '/' . $strDirectory);
+	}
 
 
 	/**
@@ -108,7 +93,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function rmdir($strDirectory);
+	public function rmdir($strDirectory)
+	{
+		$this->validate($strDirectory);
+		return @rmdir(TL_ROOT. '/' . $strDirectory);
+	}
 
 
 	/**
@@ -153,7 +142,11 @@ abstract class Files
 	 *
 	 * @return resource The file handle
 	 */
-	abstract public function fopen($strFile, $strMode);
+	public function fopen($strFile, $strMode)
+	{
+		$this->validate($strFile);
+		return @fopen(TL_ROOT . '/' . $strFile, $strMode);
+	}
 
 
 	/**
@@ -162,7 +155,10 @@ abstract class Files
 	 * @param resource $resFile    The file handle
 	 * @param string   $strContent The content to store in the file
 	 */
-	abstract public function fputs($resFile, $strContent);
+	public function fputs($resFile, $strContent)
+	{
+		@fputs($resFile, $strContent);
+	}
 
 
 	/**
@@ -172,7 +168,10 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function fclose($resFile);
+	public function fclose($resFile)
+	{
+		return @fclose($resFile);
+	}
 
 
 	/**
@@ -183,7 +182,31 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function rename($strOldName, $strNewName);
+	public function rename($strOldName, $strNewName)
+	{
+		// Source file == target file
+		if ($strOldName == $strNewName)
+		{
+			return true;
+		}
+
+		$this->validate($strOldName, $strNewName);
+
+		// Windows fix: delete the target file
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && file_exists(TL_ROOT . '/' . $strNewName))
+		{
+			$this->delete($strNewName);
+		}
+
+		// Unix fix: rename case sensitively
+		if (strcasecmp($strOldName, $strNewName) === 0 && strcmp($strOldName, $strNewName) !== 0)
+		{
+			@rename(TL_ROOT . '/' . $strOldName, TL_ROOT . '/' . $strOldName . '__');
+			$strOldName .= '__';
+		}
+
+		return @rename(TL_ROOT . '/' . $strOldName, TL_ROOT . '/' . $strNewName);
+	}
 
 
 	/**
@@ -194,7 +217,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function copy($strSource, $strDestination);
+	public function copy($strSource, $strDestination)
+	{
+		$this->validate($strSource, $strDestination);
+		return @copy(TL_ROOT . '/' . $strSource, TL_ROOT . '/' . $strDestination);
+	}
 
 
 	/**
@@ -302,7 +329,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function delete($strFile);
+	public function delete($strFile)
+	{
+		$this->validate($strFile);
+		return @unlink(TL_ROOT . '/' . $strFile);
+	}
 
 
 	/**
@@ -313,7 +344,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function chmod($strFile, $varMode);
+	public function chmod($strFile, $varMode)
+	{
+		$this->validate($strFile);
+		return @chmod(TL_ROOT . '/' . $strFile, $varMode);
+	}
 
 
 	/**
@@ -323,7 +358,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the file is writeable
 	 */
-	abstract public function is_writeable($strFile);
+	public function is_writeable($strFile)
+	{
+		$this->validate($strFile);
+		return @is_writeable(TL_ROOT . '/' . $strFile);
+	}
 
 
 	/**
@@ -334,7 +373,11 @@ abstract class Files
 	 *
 	 * @return boolean True if the operation was successful
 	 */
-	abstract public function move_uploaded_file($strSource, $strDestination);
+	public function move_uploaded_file($strSource, $strDestination)
+	{
+		$this->validate($strSource, $strDestination);
+		return @move_uploaded_file($strSource, TL_ROOT . '/' . $strDestination);
+	}
 
 
 	/**

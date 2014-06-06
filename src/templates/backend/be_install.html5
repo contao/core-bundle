@@ -48,47 +48,7 @@
         </fieldset>
 
       <?php elseif (!$this->lcfWriteable): ?>
-        <fieldset class="tl_tbox nolegend">
-          <h3><?= $GLOBALS['TL_LANG']['tl_install']['ftp'][0] ?></h3>
-          <?php if ($this->ftpHostError): ?>
-            <p class="tl_error"><?php printf($GLOBALS['TL_LANG']['tl_install']['ftpHostError'], Config::get('ftpHost')); ?></p>
-          <?php elseif ($this->ftpUserError): ?>
-            <p class="tl_error"><?php printf($GLOBALS['TL_LANG']['tl_install']['ftpUserError'], Config::get('ftpUser')); ?></p>
-          <?php elseif ($this->ftpPathError): ?>
-            <p class="tl_error"><?php printf($GLOBALS['TL_LANG']['tl_install']['ftpPathError'], Config::get('ftpPath')); ?></p>
-          <?php endif; ?>
-          <p><?= $GLOBALS['TL_LANG']['tl_install']['ftp'][1] ?></p>
-          <form action="<?= $this->action ?>" class="tl_install_form" method="post">
-            <div class="tl_formbody">
-              <input type="hidden" name="FORM_SUBMIT" value="tl_ftp">
-              <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpHost'] ?></h4>
-              <input type="text" name="host" id="host" class="tl_text" value="<?= $this->ftpHost ?>">
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpPath'] ?></h4>
-              <input type="text" name="path" id="path" class="tl_text" value="<?= $this->ftpPath ?>">
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpUser'] ?></h4>
-              <input type="text" name="username" id="username" class="tl_text" value="<?= $this->ftpUser ?>">
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpPass'] ?></h4>
-              <input type="password" name="password" id="password" autocomplete="off" class="tl_text" value="<?= $this->ftpPass ?>">
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpSSLh4'] ?></h4>
-              <div class="tl_checkbox_container" style="margin-top:3px">
-                <input type="checkbox" name="ssl" id="ctrl_ssl" class="tl_checkbox" value="1"<?= $this->ftpSSL ? ' checked="checked"' : '' ?>> <label for="ctrl_ssl"><?= $GLOBALS['TL_LANG']['tl_install']['ftpSSL'] ?></label>
-              </div>
-              <h4><?= $GLOBALS['TL_LANG']['tl_install']['ftpPort'] ?></h4>
-              <input type="text" name="port" id="port" class="tl_text" value="<?= $this->ftpPort ?>">
-            </div>
-            <div class="tl_formbody_submit">
-              <div class="tl_submit_container">
-                <input type="submit" class="tl_submit" value="<?= $GLOBALS['TL_LANG']['tl_install']['ftpSave'] ?>">
-              </div>
-            </div>
-          </form>
-        </fieldset>
-        <script>
-          window.addEvent('domready', function() {
-            $('host').focus();
-          });
-        </script>
+        <!-- FIXME: Hinweis -->
 
       <?php elseif ($this->license): ?>
         <fieldset class="tl_tbox nolegend">
