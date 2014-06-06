@@ -2,137 +2,137 @@
 host = https://www.transifex.com
 type = XLIFF
 
-[contao.v3_3-core-countries]
+[contao.v4_0-core-countries]
 source_file = src/languages/en/countries.xlf
 source_lang = en
 file_filter = src/languages/<lang>/countries.xlf
 
-[contao.v3_3-core-default]
+[contao.v4_0-core-default]
 source_file = src/languages/en/default.xlf
 source_lang = en
 file_filter = src/languages/<lang>/default.xlf
 
-[contao.v3_3-core-exception]
+[contao.v4_0-core-exception]
 source_file = src/languages/en/exception.xlf
 source_lang = en
 file_filter = src/languages/<lang>/exception.xlf
 
-[contao.v3_3-core-explain]
+[contao.v4_0-core-explain]
 source_file = src/languages/en/explain.xlf
 source_lang = en
 file_filter = src/languages/<lang>/explain.xlf
 
-[contao.v3_3-core-languages]
+[contao.v4_0-core-languages]
 source_file = src/languages/en/languages.xlf
 source_lang = en
 file_filter = src/languages/<lang>/languages.xlf
 
-[contao.v3_3-core-modules]
+[contao.v4_0-core-modules]
 source_file = src/languages/en/modules.xlf
 source_lang = en
 file_filter = src/languages/<lang>/modules.xlf
 
-[contao.v3_3-core-tl_article]
+[contao.v4_0-core-tl_article]
 source_file = src/languages/en/tl_article.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_article.xlf
 
-[contao.v3_3-core-tl_content]
+[contao.v4_0-core-tl_content]
 source_file = src/languages/en/tl_content.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_content.xlf
 
-[contao.v3_3-core-tl_files]
+[contao.v4_0-core-tl_files]
 source_file = src/languages/en/tl_files.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_files.xlf
 
-[contao.v3_3-core-tl_form]
+[contao.v4_0-core-tl_form]
 source_file = src/languages/en/tl_form.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_form.xlf
 
-[contao.v3_3-core-tl_form_field]
+[contao.v4_0-core-tl_form_field]
 source_file = src/languages/en/tl_form_field.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_form_field.xlf
 
-[contao.v3_3-core-tl_install]
+[contao.v4_0-core-tl_install]
 source_file = src/languages/en/tl_install.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_install.xlf
 
-[contao.v3_3-core-tl_layout]
+[contao.v4_0-core-tl_layout]
 source_file = src/languages/en/tl_layout.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_layout.xlf
 
-[contao.v3_3-core-tl_log]
+[contao.v4_0-core-tl_log]
 source_file = src/languages/en/tl_log.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_log.xlf
 
-[contao.v3_3-core-tl_maintenance]
+[contao.v4_0-core-tl_maintenance]
 source_file = src/languages/en/tl_maintenance.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_maintenance.xlf
 
-[contao.v3_3-core-tl_member]
+[contao.v4_0-core-tl_member]
 source_file = src/languages/en/tl_member.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_member.xlf
 
-[contao.v3_3-core-tl_member_group]
+[contao.v4_0-core-tl_member_group]
 source_file = src/languages/en/tl_member_group.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_member_group.xlf
 
-[contao.v3_3-core-tl_module]
+[contao.v4_0-core-tl_module]
 source_file = src/languages/en/tl_module.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_module.xlf
 
-[contao.v3_3-core-tl_page]
+[contao.v4_0-core-tl_page]
 source_file = src/languages/en/tl_page.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_page.xlf
 
-[contao.v3_3-core-tl_settings]
+[contao.v4_0-core-tl_settings]
 source_file = src/languages/en/tl_settings.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_settings.xlf
 
-[contao.v3_3-core-tl_style]
+[contao.v4_0-core-tl_style]
 source_file = src/languages/en/tl_style.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_style.xlf
 
-[contao.v3_3-core-tl_style_sheet]
+[contao.v4_0-core-tl_style_sheet]
 source_file = src/languages/en/tl_style_sheet.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_style_sheet.xlf
 
-[contao.v3_3-core-tl_templates]
+[contao.v4_0-core-tl_templates]
 source_file = src/languages/en/tl_templates.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_templates.xlf
 
-[contao.v3_3-core-tl_theme]
+[contao.v4_0-core-tl_theme]
 source_file = src/languages/en/tl_theme.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_theme.xlf
 
-[contao.v3_3-core-tl_undo]
+[contao.v4_0-core-tl_undo]
 source_file = src/languages/en/tl_undo.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_undo.xlf
 
-[contao.v3_3-core-tl_user]
+[contao.v4_0-core-tl_user]
 source_file = src/languages/en/tl_user.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_user.xlf
 
-[contao.v3_3-core-tl_user_group]
+[contao.v4_0-core-tl_user_group]
 source_file = src/languages/en/tl_user_group.xlf
 source_lang = en
 file_filter = src/languages/<lang>/tl_user_group.xlf
