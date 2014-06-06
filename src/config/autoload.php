@@ -114,7 +114,6 @@ ClassLoader::addClasses(array
 
 	// Library
 	'Contao\Automator'                 => 'system/modules/core/library/Contao/Automator.php',
-	'Contao\BaseTemplate'              => 'system/modules/core/library/Contao/BaseTemplate.php',
 	'Contao\Cache'                     => 'system/modules/core/library/Contao/Cache.php',
 	'Contao\ClassLoader'               => 'system/modules/core/library/Contao/ClassLoader.php',
 	'Contao\Combiner'                  => 'system/modules/core/library/Contao/Combiner.php',
@@ -165,6 +164,7 @@ ClassLoader::addClasses(array
 	'Contao\TemplateLoader'            => 'system/modules/core/library/Contao/TemplateLoader.php',
 	'Contao\User'                      => 'system/modules/core/library/Contao/User.php',
 	'Contao\Validator'                 => 'system/modules/core/library/Contao/Validator.php',
+	'Contao\View'                      => 'system/modules/core/library/Contao/View.php',
 	'Contao\Widget'                    => 'system/modules/core/library/Contao/Widget.php',
 	'Contao\ZipReader'                 => 'system/modules/core/library/Contao/ZipReader.php',
 	'Contao\ZipWriter'                 => 'system/modules/core/library/Contao/ZipWriter.php',
