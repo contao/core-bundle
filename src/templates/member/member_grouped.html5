@@ -1,23 +1,23 @@
 
 <!-- indexer::stop -->
-<div class="<?php echo $this->class; ?><?php if (!$this->tableless): ?> tableform<?php endif; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<div class="<?= $this->class ?><?php if (!$this->tableless): ?> tableform<?php endif; ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
 
   <?php if ($this->headline): ?>
-    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
   <?php endif; ?>
 
-  <form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?> id="<?php echo $this->formId; ?>" method="post" enctype="<?php echo $this->enctype; ?>">
+  <form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>">
     <div class="formbody">
-      <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
+      <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
       <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 
       <?php if ($this->personal): ?>
         <fieldset>
-          <legend><?php echo $this->personalData; ?></legend>
+          <legend><?= $this->personalData ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->personal); ?>
+          <?= implode('', $this->personal) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -26,11 +26,11 @@
 
       <?php if ($this->address): ?>
         <fieldset>
-          <legend><?php echo $this->addressDetails; ?></legend>
+          <legend><?= $this->addressDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->address); ?>
+          <?= implode('', $this->address) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -39,11 +39,11 @@
 
       <?php if ($this->contact): ?>
         <fieldset>
-          <legend><?php echo $this->contactDetails; ?></legend>
+          <legend><?= $this->contactDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->contact); ?>
+          <?= implode('', $this->contact) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -52,11 +52,11 @@
 
       <?php if ($this->login): ?>
         <fieldset>
-          <legend><?php echo $this->loginDetails; ?></legend>
+          <legend><?= $this->loginDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->login); ?>
+          <?= implode('', $this->login) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -65,11 +65,11 @@
 
       <?php if ($this->profile): ?>
         <fieldset>
-          <legend><?php echo $this->profileDetails; ?></legend>
+          <legend><?= $this->profileDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->profile); ?>
+          <?= implode('', $this->profile) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -78,11 +78,11 @@
 
       <?php if ($this->newsletter): ?>
         <fieldset>
-          <legend><?php echo $this->newsletterDetails; ?></legend>
+          <legend><?= $this->newsletterDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->newsletter); ?>
+          <?= implode('', $this->newsletter) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -91,11 +91,11 @@
 
       <?php if ($this->helpdesk): ?>
         <fieldset>
-          <legend><?php echo $this->helpdeskDetails; ?></legend>
+          <legend><?= $this->helpdeskDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo implode('', $this->helpdesk); ?>
+          <?= implode('', $this->helpdesk) ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -104,11 +104,11 @@
 
       <?php if ($this->captcha): ?>
         <fieldset>
-          <legend><?php echo $this->captchaDetails; ?></legend>
+          <legend><?= $this->captchaDetails ?></legend>
           <?php if (!$this->tableless): ?>
             <table>
           <?php endif; ?>
-          <?php echo $this->captcha; ?>
+          <?= $this->captcha ?>
           <?php if (!$this->tableless): ?>
             </table>
           <?php endif; ?>
@@ -116,7 +116,7 @@
       <?php endif; ?>
 
       <div class="submit_container">
-        <input type="submit" class="submit" value="<?php echo $this->slabel; ?>">
+        <input type="submit" class="submit" value="<?= $this->slabel ?>">
       </div>
     </div>
   </form>
