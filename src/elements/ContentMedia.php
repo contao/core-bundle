@@ -73,7 +73,7 @@ class ContentMedia extends \ContentElement
 
 			while ($objFiles->next())
 			{
-				$objFile = new \File($objFiles->path, true);
+				$objFile = new \File($objFiles->path);
 				$return .= '<li><img src="' . TL_ASSETS_URL . 'assets/contao/images/' . $objFile->icon . '" width="18" height="18" alt="" class="mime_icon"> <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
 			}
 
@@ -146,7 +146,7 @@ class ContentMedia extends \ContentElement
 				$strTitle = $this->objFiles->name;
 			}
 
-			$objFile = new \File($this->objFiles->path, true);
+			$objFile = new \File($this->objFiles->path);
 			$objFile->title = specialchars($strTitle);
 
 			$arrFiles[$objFile->extension] = $objFile;

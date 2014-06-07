@@ -75,7 +75,7 @@ class ContentHyperlink extends \ContentElement
 				$this->Template = new \FrontendTemplate('ce_hyperlink_image');
 				$this->Template->setData($this->arrData);
 
-				$objFile = new \File($objModel->path, true);
+				$objFile = new \File($objModel->path);
 
 				if ($objFile->isGdImage)
 				{

@@ -85,7 +85,7 @@ class ContentDownload extends \ContentElement
 	 */
 	protected function compile()
 	{
-		$objFile = new \File($this->singleSRC, true);
+		$objFile = new \File($this->singleSRC);
 
 		if ($this->linkTitle == '')
 		{

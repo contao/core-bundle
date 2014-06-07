@@ -151,7 +151,7 @@ class ModuleSearch extends \Module
 			// Load the cached result
 			if (file_exists(TL_ROOT . '/' . $strCacheFile))
 			{
-				$objFile = new \File($strCacheFile, true);
+				$objFile = new \File($strCacheFile);
 
 				if ($objFile->mtime > time() - 1800)
 				{

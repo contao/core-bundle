@@ -648,7 +648,7 @@ class Updater extends \Controller
 				}
 			}
 
-			$objFile = new \File($strFile, true);
+			$objFile = new \File($strFile);
 			$strUuid = $this->Database->getUuid();
 
 			$this->Database->prepare("INSERT INTO tl_files (pid, tstamp, uuid, name, type, path, extension, hash) VALUES (?, ?, ?, ?, 'file', ?, ?, ?)")

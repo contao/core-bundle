@@ -199,7 +199,7 @@ class Versions extends \Backend
 				// Restore the content
 				if ($this->strPath !== null)
 				{
-					$objFile = new \File($this->strPath, true);
+					$objFile = new \File($this->strPath);
 					$objFile->write($data['content']);
 					$objFile->close();
 				}

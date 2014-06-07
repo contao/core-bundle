@@ -2235,7 +2235,7 @@ abstract class Controller extends \System
 			die('File not found');
 		}
 
-		$objFile = new \File($strFile, true);
+		$objFile = new \File($strFile);
 		$arrAllowedTypes = trimsplit(',', strtolower(\Config::get('allowedDownload')));
 
 		// Check whether the file type is allowed to be downloaded
@@ -2597,7 +2597,7 @@ abstract class Controller extends \System
 					continue;
 				}
 
-				$objFile = new \File($objFiles->path, true);
+				$objFile = new \File($objFiles->path);
 				$strHref = \Environment::get('request');
 
 				// Remove an existing file parameter (see #5683)

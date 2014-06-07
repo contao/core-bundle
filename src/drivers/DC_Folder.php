@@ -1681,7 +1681,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$this->redirect('contao/main.php?act=error');
 		}
 
-		$objFile = new \File($this->intId, true);
+		$objFile = new \File($this->intId);
 
 		// Check whether file type is editable
 		if (!in_array($objFile->extension, trimsplit(',', \Config::get('editableFiles'))))
@@ -2378,7 +2378,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$popupHeight = 216;
 			$currentFile = str_replace(TL_ROOT.'/', '', $files[$h]);
 
-			$objFile = new \File($currentFile, true);
+			$objFile = new \File($currentFile);
 
 			if (!empty($this->arrValidFileTypes) && !in_array($objFile->extension, $this->arrValidFileTypes))
 			{

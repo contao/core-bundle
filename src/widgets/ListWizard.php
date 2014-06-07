@@ -205,7 +205,7 @@ class ListWizard extends \Widget
 
 			foreach ($arrUploaded as $strCsvFile)
 			{
-				$objFile = new \File($strCsvFile, true);
+				$objFile = new \File($strCsvFile);
 
 				if ($objFile->extension != 'csv')
 				{

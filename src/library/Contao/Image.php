@@ -95,7 +95,7 @@ class Image
 			return null;
 		}
 
-		$objFile = new \File($image, true);
+		$objFile = new \File($image);
 		$arrAllowedTypes = trimsplit(',', strtolower(\Config::get('validImageTypes')));
 
 		// Check the file type

@@ -221,7 +221,7 @@ class Combiner extends \System
 				{
 					$strPath = 'assets/' . $strTarget . '/' . str_replace('/', '_', $arrFile['name']) . $this->strMode;
 
-					$objFile = new \File($strPath, true);
+					$objFile = new \File($strPath);
 					$objFile->write($this->handleScssLess($content, $arrFile));
 					$objFile->close();
 
@@ -258,7 +258,7 @@ class Combiner extends \System
 		}
 
 		// Create the file
-		$objFile = new \File('assets/' . $strTarget . '/' . $strKey . $this->strMode, true);
+		$objFile = new \File('assets/' . $strTarget . '/' . $strKey . $this->strMode);
 		$objFile->truncate();
 
 		foreach ($this->arrFiles as $arrFile)

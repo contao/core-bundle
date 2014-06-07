@@ -726,7 +726,7 @@ abstract class System
 	 */
 	public static function enableModule($strName)
 	{
-		$objFile = new \File('system/modules/' . $strName . '/.skip', true);
+		$objFile = new \File('system/modules/' . $strName . '/.skip');
 
 		if (!$objFile->exists())
 		{
@@ -747,7 +747,7 @@ abstract class System
 	 */
 	public static function disableModule($strName)
 	{
-		$objFile = new \File('system/modules/' . $strName . '/.skip', true);
+		$objFile = new \File('system/modules/' . $strName . '/.skip');
 
 		if ($objFile->exists())
 		{

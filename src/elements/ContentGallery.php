@@ -108,7 +108,7 @@ class ContentGallery extends \ContentElement
 			// Single files
 			if ($objFiles->type == 'file')
 			{
-				$objFile = new \File($objFiles->path, true);
+				$objFile = new \File($objFiles->path);
 
 				if (!$objFile->isGdImage)
 				{
@@ -156,7 +156,7 @@ class ContentGallery extends \ContentElement
 						continue;
 					}
 
-					$objFile = new \File($objSubfiles->path, true);
+					$objFile = new \File($objSubfiles->path);
 
 					if (!$objFile->isGdImage)
 					{

@@ -97,7 +97,7 @@ class BackendPopup extends \Backend
 		// Open the download dialogue
 		if (\Input::get('download'))
 		{
-			$objFile = new \File($this->strFile, true);
+			$objFile = new \File($this->strFile);
 			$objFile->sendToBrowser();
 		}
 
@@ -113,11 +113,11 @@ class BackendPopup extends \Backend
 		// Add the file info
 		if (is_dir(TL_ROOT . '/' . $this->strFile))
 		{
-			$objFile = new \Folder($this->strFile, true);
+			$objFile = new \Folder($this->strFile);
 		}
 		else
 		{
-			$objFile = new \File($this->strFile, true);
+			$objFile = new \File($this->strFile);
 
 			// Image
 			if ($objFile->isGdImage)

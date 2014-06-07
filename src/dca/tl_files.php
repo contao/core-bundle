@@ -526,7 +526,7 @@ class tl_files extends Backend
 			return '';
 		}
 
-		$objFile = new File($strDecoded, true);
+		$objFile = new File($strDecoded);
 
 		if (!in_array($objFile->extension, trimsplit(',', Config::get('editableFiles'))))
 		{

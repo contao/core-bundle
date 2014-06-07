@@ -305,7 +305,7 @@ class Folder extends \System
 	{
 		if (file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
 		{
-			$objFile = new \File($this->strFolder . '/.public', true);
+			$objFile = new \File($this->strFolder . '/.public');
 			$objFile->delete();
 		}
 	}
@@ -387,7 +387,7 @@ class Folder extends \System
 			}
 			else
 			{
-				$objFile = new \File($this->strFolder . '/' . $strFile, true);
+				$objFile = new \File($this->strFolder . '/' . $strFile);
 				$intSize += $objFile->size;
 			}
 		}

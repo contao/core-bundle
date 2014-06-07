@@ -154,7 +154,7 @@ class Dbafs
 			// Create the file or folder
 			if (is_file(TL_ROOT . '/' . $strPath))
 			{
-				$objFile = new \File($strPath, true);
+				$objFile = new \File($strPath);
 
 				$objModel = new \FilesModel();
 				$objModel->pid       = $strPid;
@@ -475,7 +475,7 @@ class Dbafs
 		$strLog = 'system/tmp/' . md5(uniqid(mt_rand(), true));
 
 		// Open the log file
-		$objLog = new \File($strLog, true);
+		$objLog = new \File($strLog);
 		$objLog->truncate();
 
 		$arrModels = array();
@@ -537,7 +537,7 @@ class Dbafs
 				// Create the file or folder
 				if (is_file(TL_ROOT . '/' . $strRelpath))
 				{
-					$objFile = new \File($strRelpath, true);
+					$objFile = new \File($strRelpath);
 
 					$objModel = new \FilesModel();
 					$objModel->pid       = $strPid;

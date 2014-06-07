@@ -160,7 +160,7 @@ class FileTree extends \Widget
 						}
 						else
 						{
-							$objFile = new \File($objFiles->path, true);
+							$objFile = new \File($objFiles->path);
 							$strInfo = $objFiles->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 							if ($objFile->isGdImage)
@@ -201,7 +201,7 @@ class FileTree extends \Widget
 									continue;
 								}
 
-								$objFile = new \File($objSubfiles->path, true);
+								$objFile = new \File($objSubfiles->path);
 								$strInfo = '<span class="dirname">' . dirname($objSubfiles->path) . '/</span>' . $objFile->basename . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 								if ($this->isGallery)
@@ -231,7 +231,7 @@ class FileTree extends \Widget
 						}
 						else
 						{
-							$objFile = new \File($objFiles->path, true);
+							$objFile = new \File($objFiles->path);
 							$strInfo = '<span class="dirname">' . dirname($objFiles->path) . '/</span>' . $objFile->basename . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 							if ($this->isGallery)
