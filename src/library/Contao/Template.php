@@ -523,17 +523,4 @@ abstract class Template extends \View
 			flush();
 		}
 	}
-
-
-	/**
-	 * Print the IE6 warning
-	 *
-	 * @return string The warning message
-	 *
-	 * @deprecated The IE6 warning is now in the templates (e.g. be_install)
-	 */
-	public function showIE6warning()
-	{
-		return ''; // Backwards compatibility
-	}
 }

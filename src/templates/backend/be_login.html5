@@ -34,10 +34,6 @@
 </head>
 <body class="<?= $this->ua ?>">
 
-  <!--[if lte IE 6]>
-    <div id="ie6warning"><?= $this->ie6warning ?></div>
-  <![endif]-->
-
   <div id="header">
     <h1>Contao Open Source CMS <?= VERSION ?></h1>
   </div>
