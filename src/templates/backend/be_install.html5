@@ -44,7 +44,11 @@
         </fieldset>
 
       <?php elseif (!$this->lcfWriteable): ?>
-        <!-- FIXME: Hinweis -->
+        <fieldset class="tl_tbox nolegend">
+          <h3><?= $GLOBALS['TL_LANG']['tl_install']['filePermissions'][0] ?></h3>
+          <p class="tl_error"><?= $GLOBALS['TL_LANG']['tl_install']['lcfNotWritable'] ?></p>
+          <p><?= $GLOBALS['TL_LANG']['tl_install']['filePermissions'][1] ?></p>
+        </fieldset>
 
       <?php elseif ($this->license): ?>
         <fieldset class="tl_tbox nolegend">

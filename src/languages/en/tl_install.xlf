@@ -74,6 +74,15 @@
       <trans-unit id="tl_install.completed.1">
         <source>Now please log into the &lt;a href="contao/"&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
       </trans-unit>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
+      </trans-unit>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
+      </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
       </trans-unit>
