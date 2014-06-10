@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Ungültiges Weiterleitungsziel (Zirkelbezug)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Achtung!&lt;/strong&gt; Sie verwenden einen %sveralteten Browser%s und &lt;strong&gt;können nicht alle Funktionen dieser Webseite nutzen&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Bei keinem der aktiven Website-Startpunkte ohne explizite DNS-Angabe wurde die Option &quot;Sprachen-Fallback&quot; ausgewählt, d.h. diese Webseiten sind nur in der einen Sprache verfügbar, die in den Seiteneinstellungen definiert wurde! Besucher und Suchmaschinen, die diese Sprache nicht sprechen, können die Webseite nicht aufrufen.</target>

@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Destinaziun da renviar nunvalida (renviar en cirquit)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Attenziun!&lt;/strong&gt; Tes navigatur è %santiquà%s e &lt;strong&gt;ti na pos betg utilisar tut las funcziuns da questa pagina d'internet&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Nagina da las ragischs da pagina activas senza indicaziuns explicitas da DNS è definida sco lingua da standard. Quai munta che questas paginas èn be accessiblas en la lingua che ti has definì en las preferenzas da la pagina! Visitaders e maschinas da tschertgar che na discurran betg questa lingua na vegnan betg ad esser abel da navigar en tia pagina.</target>

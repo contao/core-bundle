@@ -97,13 +97,14 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>De installatie is succesvol afgesloten. Log in het &lt;a href=&quot;contao/index.php&quot;&gt;Contao backend&lt;/a&gt; in en controleer de systeeminstellingen. Bezoek hierna uw website en controleer of Contao correct werkt.</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>Wijzig bestanden via FTP</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>Uw server ondersteunt geen datatoegang via PHP; waarschijnlijk draait PHP als Apache module onder een andere gebruiker. Geef daarom uw FTP login gegevens op, zodat Contao bestanden kan wijzigen via FTP (Safe Mode Hack).</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -288,50 +289,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>Contao is met succes geïnstalleerd.</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>FTP hostnaam</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Relatief pad naar Contao directory (b.v. &lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>FTP gebruikersnaam</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>FTP wachtwoord</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>Beveiligde verbinding</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>Verbinding via FTP-SSL</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>FTP poort</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>Bewaar FTP gegevens</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>Kan geen verbinding maken met FTP server %s</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>Kon niet inloggen als &quot;%s&quot;</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>Geen Contao map %s gevonden </target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

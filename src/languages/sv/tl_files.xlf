@@ -10,12 +10,10 @@
         <target>Contao lägger automatiskt till filändelsen.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Skyddad</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Förhindra åtkomst till mappen via HTTP. Filerna kan fortfarande göras tillgängliga via t.ex. nedladdningselement.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Här kan du ange filens meta-information.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Skydd av mappen erhålls genom att lägga till en .htaccess-fil som nekar åtkomst till mappen. Det verkar som att du inte använder en Apache-server vilket kan medföra att detta skydd inte alls fungerar eller kräver ändringar i serverkonfigurationen. Vänligen dubbelkontrollera innan känsliga resurser laddas upp!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

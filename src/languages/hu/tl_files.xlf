@@ -10,12 +10,10 @@
         <target>A Contao automatikusan hozzáfűzi a fájl kiterjesztést.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Védett</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>A mappa HTTP-n keresztüli hozzáférhetőségének megakadályozása. A fájlokat a továbbiakban elérhetővé kell tenni, pl. letölthető elemként.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Megadhatóak a fájl meta információi.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Könyvtár védelmének megvalósítása .htaccess fájl hozzáadásával, amely megtagadja a hozzáférést a mappához. Amennyiben nem Apache szervert használ, előfordulhat, hogy ez a módszer esetleg nem működik, vagy a szerver beállításainak módosítása szükséges. Kérjük duplán ellenőrizze, mielőtt feltölti a nem publikus anyagait!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

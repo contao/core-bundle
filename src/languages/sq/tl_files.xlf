@@ -10,12 +10,10 @@
         <target>Epeni emrin e dosjes apo të skedarit (pa prapashtesë).</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Mbrojtur</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Parandalo qasjen në dosje nëpërmjet HTTP-së.  Skedarët mund të vihen në dispozicion p.sh. me elementin downloads.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Këtu mund të epeni meta informacionet e skedarit.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Mbrojtja dosjes vihet duke shtuar një skedar. htaccess e cila mohon qasje në dosje. Duket se ju nuk jeni duke përdorur një server Apache, prandaj ky funksion nuk mund të punoj ose kërkohen konfigurime shtesë të serverit tuaj. Ju lutemi bëni kontroll të dyfishtë para se të ngarkoni ndonjë gjësend jo-publik!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

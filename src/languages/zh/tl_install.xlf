@@ -96,13 +96,14 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>请登录&lt;a href=&quot;contao/&quot;&gt;Contao后台&lt;/a&gt;并检查系统设置。然后访问您的网站以确保Contao正常运行。</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>通过FTP修改文件</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>您的服务器不支持PHP的文件直接存取；最有可能的情况是PHP以不同用户身份作为Apache模块的方式在运行。所以请输入您的FTP登录详情，以便Contao能通过FTP进行文件修改(安全模式)。</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -287,50 +288,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>Contao安装成功。</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>FTP主机名</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Contao目录相对路径(如：&lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>FTP用户名</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>FTP密码</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>安全连接</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>通过FTP-SSL连接</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>FTP端口</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>保存FTP设置</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>不能连接FTP服务器%s</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>无法以&quot;%s&quot;登录</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>无法找到Contao目录%s</target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

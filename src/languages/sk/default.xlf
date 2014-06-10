@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Neplatný cieľ presmerovania (cyklický odkaz)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Upozornenie!&lt;/strong&gt; Nemáte najaktuálnejšiu verziu Vašeho webového prehliadača %s %s&lt;strong&gt;, a preto nebudete môcť využiť všetky funkcie použité na týchto webových stránkach&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>U žiadnej z aktívnych stránok typu »Koreň nového webu« bez zadania DNS nebola zvolená možnosť »Presmerovanie na jazykovú verziu«. To znamená, že sú dané stránky k dispozícií len v jednom jazyku, ktorý ste zadali v nastavení systému! Návštevníci a vyhľadávače, ktorí nehovoria týmto jazykom si nebudú môcť webové stránky zobraziť.</target>

@@ -165,6 +165,23 @@
         <source>The website is currently down for maintenance. Please come back later.</source>
         <target>Il sito web attualmente non è disponibile per manutenzione. Si prega di riprovare tra qualche minuto.</target>
       </trans-unit>
+      <trans-unit id="XPT.insecureRoot">
+        <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+        <target>Questa installazione non è sicura, perché le risorse che dovrebbero essere non pubbliche, sono in realtà accessibili via HTTP.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureFix">
+        <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+        <target>Si prega di impostare la document root a &lt;code&gt;web/&lt;/code&gt;.
+Questo è solitamente è posibile impostarlo dal pannello di controllo del web server o configurando opportunamente il file vhosts del server web.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainOne">
+        <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+        <target>Contao 4 utilizza più il file &lt;code&gt;. htaccess &lt;/ code&gt;, ma sfrutta una sottocartella pubblica come cartella principale. Se non è possibile impostare la cartella principale, è possibile ignorare questo controllo aggiungendo la seguente riga al file della configurazione locale:</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainTwo">
+        <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+        <target>Tuttavia, si ricorda che è opportuno &lt;strong&gt; prendere misure aggiuntive &lt;/ strong&gt; per garantire l'installazione. Se non lo si fa, qualsiasi tipo di file, tra cui i file utente e i file di configurazione, saranno accessibili!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

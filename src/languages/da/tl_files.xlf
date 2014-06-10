@@ -10,12 +10,10 @@
         <target>Angiv mappens eller filens navn (uden filendelse).</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Beskyttet</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Forhindre adgang til mappen via HTTP. Filerne kan stadig gøres tilgængelige f.eks. via download elementer.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Har kan du indtaste filens meta information.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Beskyttelse af mapper opnåes ved at tilføje en .htaccess fil der nægter adgang til mappen. Det ser ud til at du ikke benytter Apache server, derfor vil funktionen sikkert slet ikke fungere uden at du tilpasser din server konfiguration. Venligst dobbelt-tjek inden du uploader ikke-offentligt tilgængelige resourcer!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

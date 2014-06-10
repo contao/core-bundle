@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Destinazione non valida</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Attenzione!&lt;/strong&gt; Il tuo browser è %stroppo vecchio%s e &lt;strong&gt;non sarà possibile sfruttare tutte le funzionalità di questo sito&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Nessuna delle pagine definite come root di un nuovo sito senza un esplicito DNS, hanno l'opzione lingua predefinita impostata, questo significa che il tuo sito web è consultabile solo nella lingua che è stata indicata! Visitatori e motori di ricerca con impostazioni di lingua diversa non saranno in grado di navigare il tuo sito Web.</target>

@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Përcjellja e synuar është e pavlefshme (referencë rrethore)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Kujdes!&lt;/strong&gt; Ueb shfletuesi juaj është %sout of date%s dhe &lt;strong&gt;nuk mund të përdorni të gjitha funksionet e kësaj ueb faqe&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Asnjë nga faqet aktive rrënjësore pa një konfigurim të qartë të DNS-së nuk kanë vendosur opsionin të gjuhës fallback, që do të thotë se këto faqet janë në dispozicion vetëm në një gjuhë që ju keni përcaktuar në parametrat e faqes! Vizitorët dhe motorët e kërkimit që nuk flasin këtë gjuhë nuk do të jetë në gjendje të shfletojnë faqen tuaj.</target>

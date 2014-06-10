@@ -192,10 +192,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Невірна сторінка переадресації (циклічна переадресація)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Увага!&lt;/strong&gt; Ваш браузер %sзастарів%s. &lt;strong&gt;Ви не зможете використовувати всі функції цього веб-сайту&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>У жодному з наявних активних коренів сайту не включена в настройках опція DNS &quot;Мова зворотнього зв'язку&quot;. Це означає, що ці сайти доступні тільки на одній мові, зазначеному в настройках сторінки! Відвідувачі та пошукові системи, які &quot;не говорять&quot; на цій мові не зможуть переглядати цей сайт.</target>

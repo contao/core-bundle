@@ -97,13 +97,14 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>Maintenant, veuillez vous connecter au &lt;a href=&quot;contao/&quot;&gt;back office de Contao&lt;/a&gt; et vérifiez tous les paramètres système. Puis, visitez votre site internet pour s'assurer que Contao fonctionne correctement.</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>Modifier les fichiers par FTP</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>Votre serveur ne supporte pas l'accès aux fichiers via PHP. PHP fonctionne probablement avec le module Apache sous un utilisateur différent. Donc, veuillez saisir vos informations de connexion FTP de sorte que Contao puisse modifier des fichiers via FTP (Safe Mode Hack).</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -288,50 +289,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>Vous avez réussi à installer Contao.</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>Serveur FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Chemin d'accès relatif au répertoire Contao (ex. &lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>Identifiant FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>Mot de passe FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>Connexion sécurisée</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>Connexion via FTP-SSL</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>Port FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>Enregistrer les paramètres FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>Impossible de se connecter au serveur FTP %s</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>Impossible de se connecter en tant que &quot;%s&quot;</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>Impossible de localiser le répertoire de Contao %s</target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

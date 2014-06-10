@@ -191,10 +191,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Napačen preusmeritveni cilj (krožni sklic)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Pozor!&lt;/strong&gt; Vaš brskalnik je %szastarel%s.&lt;strong&gt;Žal ne boste mogli uporabljati vseh funkcij, ki vam jih ponuja ta stran&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Nobena od aktivnih spletnih izvornih strani brez izrecnih DNS nastavitev nima nastavljenega pomožnega jezika, kar pomeni, da bodo te spletne strani na voljo samo v jeziku, ki ste ga določili na posameznih straneh! Obiskovalci in iskalniki, ki ne govorijo tega jezika, ne bodo zmogli brskati po vaši spletni strani.</target>

@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Nieprawidłowy cel odwołania (odwołania cyklicznego)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Uwaga!&lt;/strong&gt; Twoja przeglądarka jest %sprzestarzała%s i &lt;strong&gt;nie możesz wykorzystywać wszystkich możliwości strony&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Żaden z aktywnych punktów startowych bez sprecyzowanych ustawień DNS nie ma ustawionego awaryjnego języka, co znaczy, że te serwisy są dostępne tylko w jednym języku, który określiłeś w ustawieniach strony! Odwiedzający i wyszukiwarki, które nie znają tego języka, nie będą w stanie przeglądać twojego serwisu!</target>

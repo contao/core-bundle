@@ -10,12 +10,12 @@
         <target>Contao fügt die Dateiendung bei Dateien automatisch ein.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Geschützt</target>
+        <source>Public</source>
+        <target>Öffentlich</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Verhindert den Zugriff via HTTP. Die Dateien sind weiterhin z.B. über das Downloads-Element verfügbar.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
+        <target>Macht den Ordner inklusive aller Unterordner über HTTP erreichbar.</target>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +24,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Hier können Sie die Meta-Informationen der Datei eingeben.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Verzeichnisse werden mittels einer .htaccess-Datei geschützt, die den Zugriff auf den Ordner unterbindet. Sie benutzen offenbar keinen Apache-Server, daher steht die Funktion unter Umständen gar nicht zur Verfügung oder erfordert die Anpassung der Serverkonfiguration. Prüfen Sie dies unbedingt, bevor Sie nicht-öffentliche Ressourcen hochladen!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

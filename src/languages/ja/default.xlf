@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>リダイレクト先が誤って(循環参照して)います。</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;ご注意ください&lt;/strong&gt;: ご使用しているウェブブラウザーは%sサポートの期限を過ぎたバージョン%sです。&lt;strong&gt;このウェブサイトのすべての機能を利用できないかもしれません&lt;/strong&gt;。</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>明示的にDNSの設定をしていない、有効なウェブサイトのルートのページのどれにも言語の代替の選択を設定がありません。結果として、これらのウェブサイトはページの設定で指定した、1つの言語だけで利用可能なことを意味します! その言語を提示してこないサイトの利用者と検索エンジンはサイトを閲覧できません。</target>
@@ -1219,7 +1215,7 @@
       </trans-unit>
       <trans-unit id="MSC.shortcuts.1">
         <source>Learn more about speeding up your workflow by using &lt;a href=&quot;https://contao.org/manual/administration-area.html#keyboard-shortcuts&quot; title=&quot;Keyboard shortcuts overview on contao.org&quot; target=&quot;_blank&quot;&gt;keyboard shortcuts&lt;/a&gt;.</source>
-        <target>&lt;a href=&quot;https://contao.org/manual/administration-area.html#keyboard-shortcuts&quot; title=&quot;contao.orgのキーモードのショートカットの概要&quot; target=&quot;_blank&quot;&gt;キーボードのショートカット&lt;/a&gt;を使って、作業の流れを速くする方法を学びましょう</target>
+        <target>&lt;a href=&quot;https://contao.org/manual/administration-area.html#keyboard-shortcuts&quot; title=&quot;contao.orgのキーモードのショートカットの概要&quot; target=&quot;_blank&quot;&gt;キーボードのショートカット&lt;/a&gt;を使って、作業の流れを速くする方法を学びましょう。</target>
       </trans-unit>
       <trans-unit id="MSC.toggleAll.0">
         <source>Toggle all</source>

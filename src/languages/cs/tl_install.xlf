@@ -96,13 +96,14 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>Nyní se prosím přihlašte do Contao a nastavte celý systém. Pak navštivte Vaší stránky, abyste se ujistili, že Contao funguje správným způsobem.</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>Zpracovat data přes FTP</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>Zadejte prosím přístupové údaje k FTP, aby mohl systém Contao zpracovávat soubory přes FTP (Safe Mode Hack).</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -284,50 +285,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>Úspěšně jste nainstalovali Contao.</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>Hostitel (FTP)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Relativní cesta ke složce Contao (např. &lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>uživatelské jméno (FTP)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>heslo (FTP)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>Zabezpečené spojení</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>Spojení přes FTP-SSL</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>FTP port</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>Uložit spojení k FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>Nelze se připojit k FTP serveru %s</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>Přihlášení jako &quot;%s&quot; se nezdařilo.</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>Nelze najít složku Contao %s</target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

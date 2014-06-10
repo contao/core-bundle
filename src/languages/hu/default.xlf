@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Érvénytelen átirányítási cél (körkörös hivatkozás)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Figyelem!&lt;/strong&gt; A böngészöje %selavult%s és &lt;strong&gt;nem tudja a weboldal minden funkcióját használni&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Semelyik határozott DNS beállítások nélküli aktív weboldal gyökér oldalon sincs a tartalék nyelv opció bekapcsolva, ez azt jelenti, hogy ez a weboldal csak azon az egy nyelven lesz elérhető amit az oldalbeállításoknál megadott! A látogatók és keresőmotorok, akik nem beszélik ezt a nyelvet nem tudják böngészni a weboldalát.</target>

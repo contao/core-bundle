@@ -10,12 +10,12 @@
         <target>Contao voegt automatisch de bestand extensie toe.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Beschermd</target>
+        <source>Public</source>
+        <target>Publiek</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Voorkom verkrijgen van toegang tot de map via HTTP. De bestanden kunnen nog steeds beschikbaar worden gesteld door het downloads-element.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
+        <target>Maak de map en sub-mappen toegankelijk via HTTP.</target>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +24,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Hier kunt u meta-informatie van het bestand opgeven.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Bescherming van mappen wordt tot stand gebracht door toevoegen van een .htaccess bestand welke de toegang tot de map ontzegt. Het lijkt erop dat u geen gebruik maakt van een Apache server, om deze reden zou deze functie mogelijk niet kunnen werken of vereist een andere server configuratie. Gelieve nogmaals te controleren voor het uploaden van alle niet-publieke bronnen!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

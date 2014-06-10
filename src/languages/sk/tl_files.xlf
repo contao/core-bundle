@@ -10,12 +10,10 @@
         <target>Vložte, prosím, názov súboru, alebo priečinku (bez prípony)</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Chránené</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Obmedzený prístup k adresáru cez HTTP. Súbory môžu byť dostupné ako napr. objekty na stiahnutie.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Tu môžte vložiť súbor s Meta informáciami.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Ochrana adresáru sa nastaví ak upravíte súbor .htaccess, v ktorom zablokujete prístup k danému adresáru. Vyzerá to tak, že nepoužívate webový server Apache, preto táto funkcia nemusí fungovať správne alebo vyžaduje úpravu nastavení webového serveru. Prosím overte to predtým ako nahráte akékoľvek súbory neverejného charakteru.</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

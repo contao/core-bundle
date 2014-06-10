@@ -10,12 +10,10 @@
         <target>کانتائو پسوند پرونده را به صورت خودکار اضافه می‌کند.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>حفاظت شده</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>از دسترسی به پوشه از طریق اچ‌تی‌تی‌پی جلوگیری شد. ولی پرونده‌ها مثلا از طریق المان بارگیری در دسترس خواهند بود.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>می‌توانید اطلاعات متا پرونده را وارد نمایید.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>حفاظت پوشه با اضافه کردن پرونده .htaccess که جلوی دسترسی به پوشه را می‌گیرد، انجام شد. ولی به نظر می‌رسد که شما از سرور آپاچی استفاده نمی‌کنید، بنابراین این ویژگی ممکن است همیشه کار نکند یا نیاز به تنظیمات سرور داشته باشد. لطفا قبل از بارگذاری هر منبع غیرعمومی دوباره بررسی نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

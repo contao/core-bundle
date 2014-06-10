@@ -10,12 +10,10 @@
         <target>Wprowadź nazwę katalogu lub pliku (bez rozszerzenia).</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Chroniony</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Zablokuj dostęp do folderu przez HTTP. Pliki nadal mogą być dostępne np. poprzez element treści &quot;download&quot;.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Tutaj możesz wprowadzić informację meta pliku.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>Zabezpieczenie folderu polega na dodaniu pliku .htaccess, który blokuje dostęp. Wygląda na to, że nie używasz serwera Apache, więc ta funkcja może nie działać bądź wymagać odpowiedniej konfiguracji serwera. Sprawdź to dwukrotnie, zanim wgrasz prywatne pliki!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

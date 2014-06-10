@@ -10,12 +10,10 @@
         <target>Contao ajoute automatiquement l'extension de fichier.</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Protégé</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Empêcher l'accès au dossier via le protocole HTTP. Les fichiers peuvent toujours être disponibles avec par exemple l'élément de téléchargements.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Saisir les méta-informations du fichier.</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>La protection des dossiers est effectuée en ajoutant un fichier .htaccess qui interdit l'accès au dossier. Il semble que vous n'utilisez pas de serveur Apache, la fonction peut ne pas fonctionner, ou requiert d'adapter la configuration de votre serveur. Veuillez vérifier avant de télécharger des ressources non publiques !</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

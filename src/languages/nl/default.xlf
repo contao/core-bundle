@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Ongeldige omleiding (kringverwijzing)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Let op!&lt;/strong&gt; Uw webbrowser is %sverouderd%s en &lt;strong&gt;u kunt geen gebruik maken van alle functies van deze website&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Geen van de actieve website root pagina's zonder een expliciete DNS-instelling hebben de taal reserveoptie ingesteld, dit betekent dat deze websites enkel beschikbaar zijn in een taal die u heeft gedefinieerd in de pagina-instellingen! Bezoekers en zoekmachines die deze taal niet hebben ingesteld, kunnen uw website niet gebruiken.</target>

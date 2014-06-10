@@ -165,6 +165,22 @@
         <source>The website is currently down for maintenance. Please come back later.</source>
         <target>De website is momenteel niet beschikbaar vanwege onderhoud. Kom later nog een keer terug.</target>
       </trans-unit>
+      <trans-unit id="XPT.insecureRoot">
+        <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+        <target>Uw installatie is onveilig, omdat niet-openbare bronnen publiekelijk beschikbaar zijn via HTTP.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureFix">
+        <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+        <target>Stel document root van &lt;code&gt;web/&lt;/code&gt; submap in. Dit dient te gebeuren in het domein routing gedeelte van het serverbeheer paneel of in het vhosts bestand van uw webserver.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainOne">
+        <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+        <target>Contao 4 is niet meer afhankelijk van &lt;code&gt;.htaccess&lt;/ code&gt; bestanden en maakt in plaats hiervan gebruik van een openbare submap als document root. Als u de document root voor deze submap niet kunt instellen, dan kunt u deze controle omzeilen door de volgende regel toe te voegen aan het lokale configuratiebestand:</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainTwo">
+        <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+        <target>Houd er rekening mee dat u in dit geval &lt;strong&gt;aanvullende maatregelen dient te nemen&lt;/strong&gt; om uw installatie te beveiligen. Als u dit verzuimt zal elk bestand inclusief de gebruiker en configuratie bestanden openbaar toegankelijk zijn.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

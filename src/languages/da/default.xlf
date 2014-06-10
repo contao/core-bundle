@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>Ugyldigt mål for omdirigering (vil skabe et endeløst loop).</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;Bemærk&lt;/strong&gt; Din browser er %sforældet%s og &lt;strong&gt;du kan derfor ikke benytte alle funktioner på dette website&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>Ingen af de aktive website rod-sider uden en udtrykkelig DNS indstilling har sprogsuppleant slået til, hvilket betyder at disse websites KUN er tilgængelige i det ene sprog du har angivet i side-indstillingerne! Besøgende og søgemaskiner der ikke taler dette sprog, vil ikke kunne se dit website.</target>

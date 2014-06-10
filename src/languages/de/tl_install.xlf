@@ -97,13 +97,17 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>Melden Sie sich nun im &lt;a href=&quot;contao/&quot;&gt;Contao-Backend&lt;/a&gt; an und prüfen Sie die Systemeinstellungen. Rufen Sie danach Ihre Webseite auf, um sicher zu gehen, dass Contao korrekt funktioniert.</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>Dateien via FTP bearbeiten</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
+        <target>Dateirechte-Fehler</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>Ihr Server unterstützt den Dateizugriff per PHP nicht; vermutlich läuft PHP als Apache-Modul unter einem anderen Benutzer. Bitte geben Sie daher Ihre FTP-Zugangsdaten ein, damit Contao Dateien via FTP bearbeiten kann (Safe Mode Hack).</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+        <target>Ihr Server unterstützt den Dateizugriff per PHP nicht; vermutlich läuft PHP als Apache-Modul unter einem anderen Benutzer. Bitte wenden Sie sich an Ihren Server-Administrator, damit dieser das Problem behebt. &lt;strong&gt;Versuchen Sie keinesfalls, das Problem selbst zu beheben&lt;/strong&gt;, indem Sie die Dateien und Ordner für jedermann beschreibbar machen!</target>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
+        <target>Die lokale Konfigurationsdatei konnte nicht geschrieben werden!</target>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -288,50 +292,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>Sie haben Contao erfolgreich installiert.</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>FTP-Hostname</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Relativer Pfad zum Contao-Verzeichnis (z.B. &lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>FTP-Benutzername</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>FTP-Passwort</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>Sichere Verbindung</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>Über FTP-SSL verbinden</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>FTP-Port</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>FTP-Einstellungen speichern</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>Keine Verbindung zum FTP-Server %s möglich</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>Anmeldung als &quot;%s&quot; fehlgeschlagen</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>Das Contao-Verzeichnis %s wurde nicht gefunden</target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

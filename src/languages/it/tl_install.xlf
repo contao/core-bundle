@@ -97,13 +97,17 @@
         <source>Now please log into the &lt;a href=&quot;contao/&quot;&gt;Contao back end&lt;/a&gt; and check the system settings. Then visit your website to make sure that Contao is working correctly.</source>
         <target>Accedi al &lt;a href=&quot;contao/index.php&quot;&gt;pannello di controllo di Contao &lt;/a&gt; e verifica tutte le impostazioni del sistema. Successivamente accedi al sito web per assicurarti che tutto funzioni correttamente.</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.0">
-        <source>Modify files via FTP</source>
-        <target>Modifica file in modalità FTP</target>
+      <trans-unit id="tl_install.filePermissions.0">
+        <source>File permission error</source>
+        <target>Errore nei permessi del file</target>
       </trans-unit>
-      <trans-unit id="tl_install.ftp.1">
-        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Therefore please enter your FTP login details, so Contao can modify files via FTP (Safe Mode Hack).</source>
-        <target>Il server non supporta l'accesso ai file tramite PHP; Molto probabilmente PHP è eseguito come modulo di Apache con un utente differente. Si prega di inserire i dati di login FTP, in modo che Contao possa modificare i file via FTP (Safe Mode Hack).</target>
+      <trans-unit id="tl_install.filePermissions.1">
+        <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+        <target>Il server non supporta l'accesso ai file tramite PHP; molto probabilmente PHP viene eseguito come modulo Apache con un utente diverso. Si prega di contattare l'amministratore del server e chiedergli di risolvere il problema. &lt;strong&gt; Suggeriamo di non tentare in modo autonomo&lt;/ strong&gt;, dando i privilegi di lettura e scrittura a tutti!</target>
+      </trans-unit>
+      <trans-unit id="tl_install.lcfNotWritable">
+        <source>The local configuration file could not be written!</source>
+        <target>Il file locale di configurazione non può essere scritto!</target>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -288,50 +292,6 @@
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>
         <target>L'installazione di Contao è avvenuta con successo</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHost">
-        <source>FTP hostname</source>
-        <target>FTP hostname</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPath">
-        <source>Relative path to Contao directory (e.g. &lt;em&gt;httpdocs/&lt;/em&gt;)</source>
-        <target>Path relativo della cartella di Contao (es. &lt;em&gt;httpdocs/&lt;/em&gt;)</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUser">
-        <source>FTP username</source>
-        <target>Utente FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPass">
-        <source>FTP password</source>
-        <target>Password FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSLh4">
-        <source>Secure connection</source>
-        <target>Connessione sicura</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSSL">
-        <source>Connect via FTP-SSL</source>
-        <target>Connessione tramite FTP-SSL</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPort">
-        <source>FTP port</source>
-        <target>Porta FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpSave">
-        <source>Save FTP settings</source>
-        <target>Impostazioni FTP</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpHostError">
-        <source>Could not connect to FTP server %s</source>
-        <target>Impossibile connettersi al server FTP %s</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpUserError">
-        <source>Could not login as &quot;%s&quot;</source>
-        <target>Impossibile effettuare il login come &quot;%s&quot;</target>
-      </trans-unit>
-      <trans-unit id="tl_install.ftpPathError">
-        <source>Could not locate Contao directory %s</source>
-        <target>Impossibile trovare la cartella %s di Contao</target>
       </trans-unit>
       <trans-unit id="tl_install.filesRenamed">
         <source>The configured files directory does not exist!</source>

@@ -10,12 +10,10 @@
         <target>请输入文件或目录名(不包括扩展名)。</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>被保护的</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>防止通过HTTP来访问该文件夹。该文件依然能变得可用，例如，以可下载元素方式。</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>您可以在这里输入文件meta信息。</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>文件夹保护可通过增加一个 .htaccess 文件来拒绝对文件夹的访问。看起来您不是在使用Apache服务器，因此该特性也有可能无法工作或者需要调整您的服务器设置。请在上传一个非公共资源前再三检查确认。</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

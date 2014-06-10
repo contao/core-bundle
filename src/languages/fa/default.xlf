@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>صفحه بازگردانی غیرمعتبر (مرجع دایره‌ای)!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>%s&lt;strong&gt;توجه!&lt;/strong&gt; مرورگر شما %sقدیمی%s است و &lt;strong&gt;شما نمی‌توانید از همه ویژگی‌های این وب‌سایت استفاده نمایید &lt;/strong&gt;.%s</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>در هیچ کدام از صفحه‌های ریشه وب‌سایت فعال بدون DNS مشخص گزینه زبان جایگزین تنظیم نشده است، که این به معنای این است که این وب‌سایت‌ها فقط برای یک زبان که در تنظیمات صفحه تعریف شده در دسترس خواهند بود! بازدیدکنندگان و موتورهای جستجو که به این زبان صحبت نمی‌کنند قادر به مرور وب‌سایت شما نخواهند بود.</target>

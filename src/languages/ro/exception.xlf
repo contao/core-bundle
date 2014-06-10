@@ -165,6 +165,18 @@
         <source>The website is currently down for maintenance. Please come back later.</source>
         <target>Website-ul este închis pentru mentenanţă. Vă rugăm să reveniţi mai târziu.</target>
       </trans-unit>
+      <trans-unit id="XPT.insecureRoot">
+        <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+      </trans-unit>
+      <trans-unit id="XPT.insecureFix">
+        <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainOne">
+        <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainTwo">
+        <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

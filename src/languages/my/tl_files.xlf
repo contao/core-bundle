@@ -10,12 +10,10 @@
         <target>ဖိုင်နောက်ဆက်တွဲကိုကွန်တောင်မှလိုလျောက်ထည့်။</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>ကာကွယ်ပြီး</target>
+        <source>Public</source>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>ဟိပ်စ်တီတီပီမှဖို်င်တွဲဝင်ကြည့်ခြင်းကာကွယ်။ယခုဖိုင်များကိုလုပ်ရယူနိုင်ပြီး(ဥပမာဆွဲယူပြီးပစ္စည်းဖြင့်)။</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +22,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>ရှေ့ဆက်အချက်အလက်ထည့်သွင်းနိုင်။</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>ဖိုင်တွဲကိုဝင်ကြည့်ရန်တားမြစ်သော .htaccess ဖိုင်ကိုထည့်ခြင်းဖြင့်ဖိုင်တွဲကာကွယ်ခြင်းကိုလုပ်ဆောင်နိုင်။ အပါချီဆာဗာကိုမစတင်ပါကအင်္ဂါရပ်အလုပ်မလုပ်နိုင်(သို့)ဆာဗာပံုစံပြင်ထိန်းညှိရန်လိုအပ်။ အများသံုးမဟုတ်ရင်းမြစ်များမကူးတင်ခင်သေချာစစ်ဆေးပါ!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

@@ -193,10 +193,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>非法的重定向目标（循环引用）！</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;注意!&lt;/strong&gt; 您的浏览器 %sout of date%s  &lt;strong&gt;您无法使用本网站所有特性&lt;/strong&gt;.</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>不具备显式域名的活动网站的首页没有语言后备选项设置，这意味着这些网站仅可使用您在页面设置中定义的那一种语言！使用其他语种的访问者和搜索引擎将无法浏览您的网站。</target>

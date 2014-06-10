@@ -10,12 +10,12 @@
         <target>Inserisci il nome della cartella o del file senza estensione</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>Protetto</target>
+        <source>Public</source>
+        <target>Pubblico</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>Impedisce l'accesso alla cartella tramite HTTP. I file possono essere ancora disponibili ad esempio con l'elemento downloads.</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
+        <target>Rendi la cartella e le sottocartelle accessibili tramite HTTP.</target>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +24,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>Qui è possibile inserire le meta informazioni del file</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>La protezione della cartella si ottiene con l'aggiunta di un file .htaccess che nega l'accesso alla cartella. Sembra che non si stia utilizzando un server Apache, quindi la funzione potrebbe non funzionare del tutto o richiedere una configurazione specifica del server. Ti preghiamo di verificare prima di caricare risorse che non si vuole rendere pubbliche!</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

@@ -10,12 +10,12 @@
         <target>Contaoは自動的にファイルの拡張子を追加します。</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
-        <source>Protected</source>
-        <target>保護</target>
+        <source>Public</source>
+        <target>公開</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
-        <source>Prevent accessing the folder via HTTP. The files can still be made available e.g. with the downloads element.</source>
-        <target>HTTP経由のフォルダーのアクセスを防止します。引き続き、例えば複数ダウンロードコンテンツ要素等でファイルを利用できます、</target>
+        <source>Make the folder and its sub-folders accessible via HTTP.</source>
+        <target>フォルダーとその下位のフォルダーをHTTPでアクセスできるようにします。</target>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>
@@ -24,10 +24,6 @@
       <trans-unit id="tl_files.meta.1">
         <source>Here you can enter the file meta information.</source>
         <target>ファイルのメタ情報を入力できます。</target>
-      </trans-unit>
-      <trans-unit id="tl_files.htaccessInfo">
-        <source>Folder protection is accomplished by adding a .htaccess file which denies access to the folder. It seems that you are not using an Apache server, therefore the feature might not work at all or require to adjust your server configuration. Please double-check before uploading any non-public resources!</source>
-        <target>フォルダーの保護はフォルダーのアクセスを拒否する.htaccessファイルを追加することで行っています。Apacheをサーバーに使用していないようですので、この機能はまったく動作しないか、サーバーの構成の調整が必要です。公開を制限するリソースをアップロードする前に、二重にチェックしてください。</target>
       </trans-unit>
       <trans-unit id="tl_files.fileupload.0">
         <source>File upload</source>

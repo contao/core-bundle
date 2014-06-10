@@ -191,10 +191,6 @@
         <source>Invalid redirect target (circular reference)!</source>
         <target>ဦးတည်ရာပြောင်းရည်မှန်းချက်မမှန်!</target>
       </trans-unit>
-      <trans-unit id="ERR.ie6warning">
-        <source>&lt;strong&gt;Attention!&lt;/strong&gt; Your web browser is %sout of date%s and &lt;strong&gt;you cannot use all features of this website&lt;/strong&gt;.</source>
-        <target>&lt;strong&gt;သတိ!&lt;/strong&gt; သင့်ဝဘ်ဘရောက်ဇာသည် %sခေတ်နောက်ကျနေပြီး%s &lt;strong&gt;ဝဘ်ဆိုက်အင်္ဂါရပ်များအားလံုးအသံုးမပြုနိုင်&lt;/strong&gt;။</target>
-      </trans-unit>
       <trans-unit id="ERR.noFallbackEmpty">
         <source>None of the active website root pages without an explicit DNS setting has the language fallback option set, which means that these websites are only available in the one language you have defined in the page settings! Visitors and search engines who do not speak this language will not be able to browse your website.</source>
         <target>သက်ဝင်ဝဘ်ဆိုက်အခြေစာမျက်နှာများတွင်ရှင်းလင်းဖော်ပြဒီအန်အက်စ်ချိန်ညှိချက်မရှိဘဲတစ်ခုမျှဘာသာစကားအရန်ရွေးပိုင်ခွင့်မရှိ။ စာမျက်နှာချိန်ညှိချက်ရှိဘာသာစကားတစ်ခုတည်းကိုသာယခုဝဘ်ဆိုက်များလုပ်ဆောင်နိုင်! လည်ပတ်သူများနှင့်ရှာဖွေအင်ဂျင်များယခုဘာသာစကားကိုမသံုးပါကသင့်ဝဘ်ဆိုက်ကိုမရှာဖွေနိုင်။</target>

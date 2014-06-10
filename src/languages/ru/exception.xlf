@@ -165,6 +165,22 @@
         <source>The website is currently down for maintenance. Please come back later.</source>
         <target>Сейчас веб-сайт закрыт на техническое обслуживание. Пожалуйста, зайдите позже.</target>
       </trans-unit>
+      <trans-unit id="XPT.insecureRoot">
+        <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+        <target>Ваша установка не безопасна, потому, что закрытые ресурсы доступны, так как опубликованы через HTTP.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureFix">
+        <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+        <target>Установите корень документа в подкаталог &lt;code&gt;web/&lt;/code&gt;. Обычно это делается в разделе маршрутизации домена панели администрирования сервера или в vhosts-файле веб-сервера.</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainOne">
+        <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+        <target>Contao 4 больше не зависит от &lt;code&gt;.htaccess&lt;/code&gt; файлов и использует публичные подкаталоги в качестве корня документа. Если вы не можете установить корневой документ в этот подкаталог, вы можете обойти эту проверку, добавив следующую строку в локальный файл конфигурации:</target>
+      </trans-unit>
+      <trans-unit id="XPT.insecureExplainTwo">
+        <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+        <target>Однако, обратите внимание, что вы &lt;strong&gt;должны принять дополнительные меры защиты&lt;/strong&gt; вашей установки. Иначе, любой файл, включая файлы пользователей и файлы конфигурации, будут публично доступны!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
