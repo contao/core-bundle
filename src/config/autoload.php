@@ -18,18 +18,9 @@ ClassLoader::addClasses(array
 (
 	// Classes
 	'Contao\Ajax'                  => 'system/modules/core/classes/Ajax.php',
-	'Contao\Backend'               => 'system/modules/core/classes/Backend.php',
 	'Contao\BackendModule'         => 'system/modules/core/classes/BackendModule.php',
-	'Contao\BackendTemplate'       => 'system/modules/core/classes/BackendTemplate.php',
-	'Contao\BackendUser'           => 'system/modules/core/classes/BackendUser.php',
 	'Contao\DataContainer'         => 'system/modules/core/classes/DataContainer.php',
-	'Contao\Frontend'              => 'system/modules/core/classes/Frontend.php',
-	'Contao\FrontendTemplate'      => 'system/modules/core/classes/FrontendTemplate.php',
-	'Contao\FrontendUser'          => 'system/modules/core/classes/FrontendUser.php',
 	'Contao\Messages'              => 'system/modules/core/classes/Messages.php',
-	'Contao\StyleSheets'           => 'system/modules/core/classes/StyleSheets.php',
-	'Contao\Theme'                 => 'system/modules/core/classes/Theme.php',
-	'Contao\Versions'              => 'system/modules/core/classes/Versions.php',
 
 	// Controllers
 	'Contao\BackendChangelog'      => 'system/modules/core/controllers/BackendChangelog.php',
