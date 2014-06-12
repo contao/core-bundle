@@ -315,18 +315,6 @@ class Updater extends Controller
 			$this->createContentElement($objEvents, 'tl_calendar_events', 'details');
 		}
 
-		// Add an .htaccess file to the modules' html folders so they can be accessed via HTTP
-		foreach (scan(TL_ROOT . '/system/modules') as $strFolder)
-		{
-			if (is_dir(TL_ROOT . '/system/modules/' . $strFolder) && is_dir(TL_ROOT . '/system/modules/' . $strFolder . '/html'))
-			{
-				if (!file_exists(TL_ROOT . '/system/modules/' . $strFolder . '/html/.htaccess'))
-				{
-					\File::putContent('system/modules/' . $strFolder . '/html/.htaccess', "<IfModule !mod_authz_core.c>\n  Order allow,deny\n  Allow from all\n</IfModule>\n<IfModule mod_authz_core.c>\n  Require all granted\n</IfModule>");
-				}
-			}
-		}
-
 		// Convert the gradient angle syntax (see #4569)
 		if ($this->Database->fieldExists('gradientAngle', 'tl_style'))
 		{
