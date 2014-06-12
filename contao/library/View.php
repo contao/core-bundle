@@ -19,7 +19,7 @@ use Exception;
 
 
 /**
- * Provides shared logic for template classes
+ * Provides shared logic for views
  *
  * @package   Library
  * @author    Leo Feyer <https://github.com/leofeyer>

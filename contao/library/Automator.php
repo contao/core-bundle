@@ -25,9 +25,13 @@ use Contao\System;
 
 
 /**
- * Class Automator
+ * Provides methods to run automated jobs
  *
- * Provide methods to run automated jobs.
+ * Usage:
+ *
+ *     $automator = new Automator();
+ *     $automator->generateXmlFiles();
+ *
  * @copyright  Leo Feyer 2005-2014
  * @author     Leo Feyer <https://contao.org>
  * @package    Library

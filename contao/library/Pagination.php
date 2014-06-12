@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 use Contao\Input;
@@ -23,9 +19,13 @@ use Contao\Template;
 
 
 /**
- * Class Pagination
+ * Renders a pagination menu
  *
- * Provide methodes to render a pagination menu.
+ * Usage:
+ *
+ *     $pagination = new Pagination($total, 30, 7);
+ *     echo $pagination->generate();
+ *
  * @copyright  Leo Feyer 2005-2014
  * @author     Leo Feyer <https://contao.org>
  * @package    Library
