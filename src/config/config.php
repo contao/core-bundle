@@ -341,6 +341,10 @@ $GLOBALS['TL_PURGE'] = array
 		'xml' => array
 		(
 			'callback' => array('Automator', 'generateXmlFiles')
+		),
+		'symlinks' => array
+		(
+			'callback' => array('Automator', 'generateSymlinks')
 		)
 	)
 );
