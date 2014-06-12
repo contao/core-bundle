@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -147,7 +145,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Throw a 404 error if the page could not be found or the result is still ambiguous
-		if ($objPage === null || ($objPage instanceof \Model\Collection && $objPage->count() != 1))
+		if ($objPage === null || ($objPage instanceof Collection && $objPage->count() != 1))
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
@@ -155,7 +153,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Make sure $objPage is a Model
-		if ($objPage instanceof \Model\Collection)
+		if ($objPage instanceof Collection)
 		{
 			$objPage = $objPage->current();
 		}
