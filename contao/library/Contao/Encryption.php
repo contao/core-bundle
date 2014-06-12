@@ -12,6 +12,9 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Exception;
+
 
 /**
  * Encrypts and decrypts data
@@ -33,7 +36,7 @@ class Encryption
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Encryption
+	 * @var Encryption
 	 */
 	protected static $objInstance;
 
@@ -77,7 +80,7 @@ class Encryption
 
 		if (!$strKey)
 		{
-			$strKey = \Config::get('encryptionKey');
+			$strKey = Config::get('encryptionKey');
 		}
 
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size(static::$resTd), MCRYPT_RAND);
@@ -133,7 +136,7 @@ class Encryption
 
 		if (!$strKey)
 		{
-			$strKey = \Config::get('encryptionKey');
+			$strKey = Config::get('encryptionKey');
 		}
 
 		mcrypt_generic_init(static::$resTd, md5($strKey), $iv);
@@ -147,23 +150,23 @@ class Encryption
 	/**
 	 * Initialize the encryption module
 	 *
-	 * @throws \Exception If the encryption module cannot be initialized
+	 * @throws Exception If the encryption module cannot be initialized
 	 */
 	protected static function initialize()
 	{
 		if (!in_array('mcrypt', get_loaded_extensions()))
 		{
-			throw new \Exception('The PHP mcrypt extension is not installed');
+			throw new Exception('The PHP mcrypt extension is not installed');
 		}
 
-		if ((self::$resTd = mcrypt_module_open(\Config::get('encryptionCipher'), '', \Config::get('encryptionMode'), '')) == false)
+		if ((self::$resTd = mcrypt_module_open(Config::get('encryptionCipher'), '', Config::get('encryptionMode'), '')) == false)
 		{
-			throw new \Exception('Error initializing encryption module');
+			throw new Exception('Error initializing encryption module');
 		}
 
-		if (\Config::get('encryptionKey') == '')
+		if (Config::get('encryptionKey') == '')
 		{
-			throw new \Exception('Encryption key not set');
+			throw new Exception('Encryption key not set');
 		}
 	}
 
@@ -175,7 +178,7 @@ class Encryption
 	 *
 	 * @return string The encrypted password
 	 *
-	 * @throws \Exception If none of the algorithms is available
+	 * @throws Exception If none of the algorithms is available
 	 */
 	public static function hash($strPassword)
 	{
@@ -193,7 +196,7 @@ class Encryption
 		}
 		else
 		{
-			throw new \Exception('None of the required crypt() algorithms is available');
+			throw new Exception('None of the required crypt() algorithms is available');
 		}
 	}
 
@@ -248,7 +251,7 @@ class Encryption
 	/**
 	 * Return the object instance (Singleton)
 	 *
-	 * @return \Encryption
+	 * @return Encryption
 	 *
 	 * @deprecated Encryption is now a static class
 	 */

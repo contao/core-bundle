@@ -12,6 +12,8 @@
 
 namespace Contao\Model;
 
+use Contao\DcaExtractor;
+
 
 /**
  * Turn relations into query string
@@ -35,7 +37,7 @@ class QueryBuilder
 	 */
 	public static function find(array $arrOptions)
 	{
-		$objBase = new \DcaExtractor($arrOptions['table']);
+		$objBase = new DcaExtractor($arrOptions['table']);
 
 		if (!$objBase->hasRelations())
 		{
@@ -55,7 +57,7 @@ class QueryBuilder
 					if ($arrConfig['type'] == 'hasOne' || $arrConfig['type'] == 'belongsTo')
 					{
 						++$intCount;
-						$objRelated = new \DcaExtractor($arrConfig['table']);
+						$objRelated = new DcaExtractor($arrConfig['table']);
 
 						foreach (array_keys($objRelated->getFields()) as $strField)
 						{

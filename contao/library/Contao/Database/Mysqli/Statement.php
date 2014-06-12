@@ -12,6 +12,9 @@
 
 namespace Contao\Database\Mysqli;
 
+use Contao\Database\Mysqli\Result;
+use Contao\Database\Statement as AbstractStatement;
+
 
 /**
  * MySQLi-specific database statement class
@@ -20,7 +23,7 @@ namespace Contao\Database\Mysqli;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Statement extends \Database\Statement
+class Statement extends AbstractStatement
 {
 
 	/**
@@ -124,18 +127,15 @@ class Statement extends \Database\Statement
 
 
 	/**
-	 * Create a Database\Result object
+	 * Create a Result object
 	 *
 	 * @param resource $resResult The database result
 	 * @param string   $strQuery  The query string
 	 *
-	 * @return \Database\Mysqli\Result The result object
+	 * @return Result The result object
 	 */
 	protected function createResult($resResult, $strQuery)
 	{
-		return new \Database\Mysqli\Result($resResult, $strQuery);
+		return new Result($resResult, $strQuery);
 	}
 }
-
-// Backwards compatibility
-class_alias('Contao\\Database\\Mysqli\\Statement', 'Database_Statement');

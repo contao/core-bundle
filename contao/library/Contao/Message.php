@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Exception;
+
 
 /**
  * Stores and outputs messages
@@ -94,7 +96,7 @@ class Message
 	 * @param string $strMessage The message text
 	 * @param string $strType    The message type
 	 *
-	 * @throws \Exception If $strType is not a valid message type
+	 * @throws Exception If $strType is not a valid message type
 	 */
 	public static function add($strMessage, $strType)
 	{
@@ -105,7 +107,7 @@ class Message
 
 		if (!in_array($strType, static::getTypes()))
 		{
-			throw new \Exception("Invalid message type $strType");
+			throw new Exception("Invalid message type $strType");
 		}
 
 		if (!is_array($_SESSION[$strType]))

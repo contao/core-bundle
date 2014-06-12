@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Contao\Config;
+
 
 /**
  * Safely read the user input
@@ -37,7 +39,7 @@ class Input
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Input
+	 * @var Input
 	 */
 	protected static $objInstance;
 
@@ -181,7 +183,7 @@ class Input
 			$varValue = static::stripSlashes($varValue);
 			$varValue = static::decodeEntities($varValue);
 			$varValue = static::xssClean($varValue);
-			$varValue = static::stripTags($varValue, \Config::get('allowedTags'));
+			$varValue = static::stripTags($varValue, Config::get('allowedTags'));
 
 			if (!$blnDecodeEntities)
 			{
@@ -648,7 +650,7 @@ class Input
 
 		// Preserve basic entities
 		$varValue = static::preserveBasicEntities($varValue);
-		$varValue = html_entity_decode($varValue, ENT_QUOTES, \Config::get('characterSet'));
+		$varValue = html_entity_decode($varValue, ENT_QUOTES, Config::get('characterSet'));
 
 		return $varValue;
 	}
@@ -767,7 +769,7 @@ class Input
 	/**
 	 * Return the object instance (Singleton)
 	 *
-	 * @return \Input The object instance
+	 * @return Input The object instance
 	 *
 	 * @deprecated Input is now a static class
 	 */

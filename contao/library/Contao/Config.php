@@ -12,6 +12,10 @@
 
 namespace Contao;
 
+use Contao\Files;
+use Contao\ModuleLoader;
+use Contao\System;
+
 
 /**
  * Loads and writes the local configuration file
@@ -28,13 +32,13 @@ class Config
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Config
+	 * @var Config
 	 */
 	protected static $objInstance;
 
 	/**
 	 * Files object
-	 * @var \Files
+	 * @var Files
 	 */
 	protected $Files;
 
@@ -102,7 +106,7 @@ class Config
 	/**
 	 * Return the current object instance (Singleton)
 	 *
-	 * @return \Config The object instance
+	 * @return Config The object instance
 	 */
 	public static function getInstance()
 	{
@@ -136,7 +140,7 @@ class Config
 		else
 		{
 			// Get the module configuration files
-			foreach (\ModuleLoader::getActive() as $strModule)
+			foreach (ModuleLoader::getActive() as $strModule)
 			{
 				$strFile = TL_ROOT . '/system/modules/' . $strModule . '/config/config.php';
 
@@ -169,7 +173,7 @@ class Config
 		$this->blnIsModified = true;
 
 		// Import the Files object (required in the destructor)
-		$this->Files = \Files::getInstance();
+		$this->Files = Files::getInstance();
 
 		// Parse the local configuration file
 		if (static::$blnHasLcf)
@@ -255,7 +259,7 @@ class Config
 		// Make sure the file has been written (see #4483)
 		if (!filesize(TL_ROOT . '/system/tmp/' . $strTemp))
 		{
-			\System::log('The local configuration file could not be written. Have your reached your quota limit?', __METHOD__, TL_ERROR);
+			System::log('The local configuration file could not be written. Have your reached your quota limit?', __METHOD__, TL_ERROR);
 			return;
 		}
 
@@ -318,7 +322,7 @@ class Config
 	 */
 	public function getActiveModules()
 	{
-		return \ModuleLoader::getActive();
+		return ModuleLoader::getActive();
 	}
 
 

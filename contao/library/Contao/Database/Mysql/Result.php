@@ -12,6 +12,9 @@
 
 namespace Contao\Database\Mysql;
 
+use Contao\Database\Result as AbstractResult;
+use OutOfBoundsException;
+
 
 /**
  * MySQL-specific database result class
@@ -20,7 +23,7 @@ namespace Contao\Database\Mysql;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Result extends \Database\Result
+class Result extends AbstractResult
 {
 
 	/**
@@ -85,13 +88,13 @@ class Result extends \Database\Result
 	 *
 	 * @param integer $intIndex The row index
 	 *
-	 * @throws \OutOfBoundsException If $intIndex is out of bounds
+	 * @throws OutOfBoundsException If $intIndex is out of bounds
 	 */
 	protected function data_seek($intIndex)
 	{
 		if ($intIndex < 0)
 		{
-			throw new \OutOfBoundsException("Invalid index $intIndex (must be >= 0)");
+			throw new OutOfBoundsException("Invalid index $intIndex (must be >= 0)");
 		}
 
 		$intTotal = $this->num_rows();
@@ -103,7 +106,7 @@ class Result extends \Database\Result
 
 		if ($intIndex >= $intTotal)
 		{
-			throw new \OutOfBoundsException("Invalid index $intIndex (only $intTotal rows in the result set)");
+			throw new OutOfBoundsException("Invalid index $intIndex (only $intTotal rows in the result set)");
 		}
 
 		mysql_data_seek($this->resResult, $intIndex);
@@ -121,6 +124,3 @@ class Result extends \Database\Result
 		}
 	}
 }
-
-// Backwards compatibility
-class_alias('Contao\\Database\\Mysql\\Result', 'Database_Result');

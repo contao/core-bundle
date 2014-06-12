@@ -10,11 +10,18 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Backend;
+use Contao\Config;
+use Contao\Database;
+use Contao\DcaExtractor;
+use Contao\Environment;
+use Contao\File;
+use Contao\Folder;
+use Contao\ModuleLoader;
+use Contao\Request;
+use Contao\System;
 
 
 /**
@@ -25,7 +32,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Library
  */
-class Automator extends \System
+class Automator extends System
 {
 
 	/**
@@ -38,7 +45,7 @@ class Automator extends \System
 
 
 	/**
-	 * Check for new \Contao versions
+	 * Check for new Contao versions
 	 */
 	public function checkForUpdates()
 	{
@@ -47,13 +54,13 @@ class Automator extends \System
 			return;
 		}
 
-		$objRequest = new \Request();
-		$objRequest->send(\Config::get('liveUpdateBase') . (LONG_TERM_SUPPORT ? 'lts-version.txt' : 'version.txt'));
+		$objRequest = new Request();
+		$objRequest->send(Config::get('liveUpdateBase') . (LONG_TERM_SUPPORT ? 'lts-version.txt' : 'version.txt'));
 
 		if (!$objRequest->hasError())
 		{
-			\Config::set('latestVersion', $objRequest->response);
-			\Config::persist('latestVersion', $objRequest->response);
+			Config::set('latestVersion', $objRequest->response);
+			Config::persist('latestVersion', $objRequest->response);
 		}
 
 		// Add a log entry
@@ -66,14 +73,14 @@ class Automator extends \System
 	 */
 	public function purgeSearchTables()
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		// Truncate the tables
 		$objDatabase->execute("TRUNCATE TABLE tl_search");
 		$objDatabase->execute("TRUNCATE TABLE tl_search_index");
 
 		// Purge the cache folder
-		$objFolder = new \Folder('system/cache/search');
+		$objFolder = new Folder('system/cache/search');
 		$objFolder->purge();
 
 		// Add a log entry
@@ -86,7 +93,7 @@ class Automator extends \System
 	 */
 	public function purgeUndoTable()
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		// Truncate the table
 		$objDatabase->execute("TRUNCATE TABLE tl_undo");
@@ -101,7 +108,7 @@ class Automator extends \System
 	 */
 	public function purgeVersionTable()
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		// Truncate the table
 		$objDatabase->execute("TRUNCATE TABLE tl_version");
@@ -116,7 +123,7 @@ class Automator extends \System
 	 */
 	public function purgeSystemLog()
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		// Truncate the table
 		$objDatabase->execute("TRUNCATE TABLE tl_log");
@@ -137,11 +144,11 @@ class Automator extends \System
 			if ($dir != 'index.html' && strncmp($dir, '.', 1) !== 0)
 			{
 				// Purge the folder
-				$objFolder = new \Folder('assets/images/' . $dir);
+				$objFolder = new Folder('assets/images/' . $dir);
 				$objFolder->purge();
 
 				// Restore the index.html file
-				$objFile = new \File('templates/index.html');
+				$objFile = new File('templates/index.html');
 				$objFile->copyTo('assets/images/' . $dir . '/index.html');
 			}
 		}
@@ -163,11 +170,11 @@ class Automator extends \System
 		foreach (array('assets/js', 'assets/css') as $dir)
 		{
 			// Purge the folder
-			$objFolder = new \Folder($dir);
+			$objFolder = new Folder($dir);
 			$objFolder->purge();
 
 			// Restore the index.html file
-			$objFile = new \File('templates/index.html');
+			$objFile = new File('templates/index.html');
 			$objFile->copyTo($dir . '/index.html');
 		}
 
@@ -189,7 +196,7 @@ class Automator extends \System
 	public function purgePageCache()
 	{
 		// Purge the folder
-		$objFolder = new \Folder('system/cache/html');
+		$objFolder = new Folder('system/cache/html');
 		$objFolder->purge();
 
 		// Add a log entry
@@ -203,7 +210,7 @@ class Automator extends \System
 	public function purgeSearchCache()
 	{
 		// Purge the folder
-		$objFolder = new \Folder('system/cache/search');
+		$objFolder = new Folder('system/cache/search');
 		$objFolder->purge();
 
 		// Add a log entry
@@ -222,7 +229,7 @@ class Automator extends \System
 			foreach (array('config', 'dca', 'language', 'sql') as $dir)
 			{
 				// Purge the folder
-				$objFolder = new \Folder('system/cache/' . $dir);
+				$objFolder = new Folder('system/cache/' . $dir);
 				$objFolder->delete();
 			}
 		}
@@ -238,11 +245,11 @@ class Automator extends \System
 	public function purgeTempFolder()
 	{
 		// Purge the folder
-		$objFolder = new \Folder('system/tmp');
+		$objFolder = new Folder('system/tmp');
 		$objFolder->purge();
 
 		// Restore the .gitignore file
-		$objFile = new \File('system/logs/.gitignore');
+		$objFile = new File('system/logs/.gitignore');
 		$objFile->copyTo('system/tmp/.gitignore');
 
 		// Add a log entry
@@ -286,7 +293,7 @@ class Automator extends \System
 	public function purgeXmlFiles($blnReturn=false)
 	{
 		$arrFeeds = array();
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		// XML sitemaps
 		$objFeeds = $objDatabase->execute("SELECT sitemapName FROM tl_page WHERE type='root' AND createSitemap=1 AND sitemapName!=''");
@@ -316,7 +323,7 @@ class Automator extends \System
 					continue; // see #6652
 				}
 
-				$objFile = new \File('share/' . $file);
+				$objFile = new File('share/' . $file);
 
 				if ($objFile->extension == 'xml' && !in_array($objFile->filename, $arrFeeds))
 				{
@@ -337,7 +344,7 @@ class Automator extends \System
 	public function generateSitemap($intId=0)
 	{
 		$time = time();
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		$this->purgeXmlFiles();
 
@@ -392,17 +399,17 @@ class Automator extends \System
 		// Create the XML file
 		while ($objRoot->next())
 		{
-			$objFile = new \File('share/' . $objRoot->sitemapName . '.xml');
+			$objFile = new File('share/' . $objRoot->sitemapName . '.xml');
 
 			$objFile->truncate();
 			$objFile->append('<?xml version="1.0" encoding="UTF-8"?>');
 			$objFile->append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">');
 
 			// Set the domain (see #6421)
-			$strDomain = ($objRoot->useSSL ? 'https://' : 'http://') . ($objRoot->dns ?: \Environment::get('host')) . TL_PATH . '/';
+			$strDomain = ($objRoot->useSSL ? 'https://' : 'http://') . ($objRoot->dns ?: Environment::get('host')) . TL_PATH . '/';
 
 			// Find the searchable pages
-			$arrPages = \Backend::findSearchablePages($objRoot->id, $strDomain, true, $objRoot->language);
+			$arrPages = Backend::findSearchablePages($objRoot->id, $strDomain, true, $objRoot->language);
 
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
@@ -442,7 +449,7 @@ class Automator extends \System
 
 		foreach ($arrFiles as $strFile)
 		{
-			$objFile = new \File('system/logs/' . $strFile . '.9');
+			$objFile = new File('system/logs/' . $strFile . '.9');
 
 			// Delete the oldest file
 			if ($objFile->exists())
@@ -457,13 +464,13 @@ class Automator extends \System
 
 				if (file_exists(TL_ROOT . '/' . $strGzName))
 				{
-					$objFile = new \File($strGzName);
+					$objFile = new File($strGzName);
 					$objFile->renameTo('system/logs/' . $strFile . '.' . ($i+1));
 				}
 			}
 
 			// Add .1 to the latest file
-			$objFile = new \File('system/logs/' . $strFile);
+			$objFile = new File('system/logs/' . $strFile);
 			$objFile->renameTo('system/logs/' . $strFile . '.1');
 		}
 	}
@@ -482,7 +489,7 @@ class Automator extends \System
 			$this->Files->rrdir('web/files');
 		}
 
-		$this->generateFilesSymlinks(\Config::get('uploadPath'));
+		$this->generateFilesSymlinks(Config::get('uploadPath'));
 
 		// Remove the web/system/modules directory
 		if (is_dir(TL_ROOT . '/web/system/modules'))
@@ -557,10 +564,10 @@ class Automator extends \System
 	public function generateConfigCache()
 	{
 		// Generate the class/template laoder cache file
-		$objCacheFile = new \File('system/cache/config/autoload.php');
+		$objCacheFile = new File('system/cache/config/autoload.php');
 		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strFile = 'system/modules/' . $strModule . '/config/autoload.php';
 
@@ -574,7 +581,7 @@ class Automator extends \System
 		$objCacheFile->close();
 
 		// Generate the module loader cache file
-		$objCacheFile = new \File('system/cache/config/modules.php');
+		$objCacheFile = new File('system/cache/config/modules.php');
 		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
 		$strContent = "\n\n";
@@ -582,7 +589,7 @@ class Automator extends \System
 		$strContent .= "static::\$active = array\n";
 		$strContent .= "(\n";
 
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strContent .= "\t'$strModule',\n";
 		}
@@ -592,7 +599,7 @@ class Automator extends \System
 		$strContent .= "static::\$disabled = array\n";
 		$strContent .= "(\n";
 
-		foreach (\ModuleLoader::getDisabled() as $strModule)
+		foreach (ModuleLoader::getDisabled() as $strModule)
 		{
 			$strContent .= "\t'$strModule',\n";
 		}
@@ -604,10 +611,10 @@ class Automator extends \System
 		$objCacheFile->close();
 
 		// Generate the config cache file
-		$objCacheFile = new \File('system/cache/config/config.php');
+		$objCacheFile = new File('system/cache/config/config.php');
 		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strFile = 'system/modules/' . $strModule . '/config/config.php';
 
@@ -633,7 +640,7 @@ class Automator extends \System
 		$arrFiles = array();
 
 		// Parse all active modules
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strDir = 'system/modules/' . $strModule . '/dca';
 
@@ -658,11 +665,11 @@ class Automator extends \System
 		foreach ($arrFiles as $strName)
 		{
 			// Generate the cache file
-			$objCacheFile = new \File('system/cache/dca/' . $strName . '.php');
+			$objCacheFile = new File('system/cache/dca/' . $strName . '.php');
 			$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
 			// Parse all active modules
-			foreach (\ModuleLoader::getActive() as $strModule)
+			foreach (ModuleLoader::getActive() as $strModule)
 			{
 				$strFile = 'system/modules/' . $strModule . '/dca/' . $strName . '.php';
 
@@ -687,7 +694,7 @@ class Automator extends \System
 	public function generateLanguageCache()
 	{
 		$arrLanguages = array();
-		$objLanguages = \Database::getInstance()->query("SELECT language FROM tl_member UNION SELECT language FROM tl_user UNION SELECT REPLACE(language, '-', '_') FROM tl_page WHERE type='root'");
+		$objLanguages = Database::getInstance()->query("SELECT language FROM tl_member UNION SELECT language FROM tl_user UNION SELECT REPLACE(language, '-', '_') FROM tl_page WHERE type='root'");
 
 		// Only cache the languages which are in use (see #6013)
 		while ($objLanguages->next())
@@ -713,7 +720,7 @@ class Automator extends \System
 			$arrFiles = array();
 
 			// Parse all active modules
-			foreach (\ModuleLoader::getActive() as $strModule)
+			foreach (ModuleLoader::getActive() as $strModule)
 			{
 				$strDir = 'system/modules/' . $strModule . '/languages/' . $strLanguage;
 
@@ -755,11 +762,11 @@ class Automator extends \System
 						   . " */\n";
 
 				// Generate the cache file
-				$objCacheFile = new \File($strCacheFile);
+				$objCacheFile = new File($strCacheFile);
 				$objCacheFile->write(sprintf($strHeader, $strLanguage));
 
 				// Parse all active modules and append to the cache file
-				foreach (\ModuleLoader::getActive() as $strModule)
+				foreach (ModuleLoader::getActive() as $strModule)
 				{
 					$strFile = 'system/modules/' . $strModule . '/languages/' . $strLanguage . '/' . $strName;
 
@@ -792,7 +799,7 @@ class Automator extends \System
 		$arrExtracts = array();
 
 		// Only check the active modules (see #4541)
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strDir = 'system/modules/' . $strModule . '/dca';
 
@@ -810,7 +817,7 @@ class Automator extends \System
 				}
 
 				$strTable = substr($strFile, 0, -4);
-				$objExtract = new \DcaExtractor($strTable);
+				$objExtract = new DcaExtractor($strTable);
 
 				if ($objExtract->isDbTable())
 				{
@@ -825,7 +832,7 @@ class Automator extends \System
 		foreach ($arrExtracts as $strTable=>$objExtract)
 		{
 			// Create the file
-			$objFile = new \File('system/cache/sql/' . $strTable . '.php');
+			$objFile = new File('system/cache/sql/' . $strTable . '.php');
 			$objFile->write("<?php\n\n");
 
 			// Meta

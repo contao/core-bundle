@@ -12,6 +12,11 @@
 
 namespace Contao\Database;
 
+use Contao\Config;
+use Contao\Controller;
+use Contao\DcaExtractor;
+use Contao\ModuleLoader;
+
 
 /**
  * Handles database updates
@@ -23,7 +28,7 @@ namespace Contao\Database;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Installer extends \Controller
+class Installer extends Controller
 {
 
 	/**
@@ -269,11 +274,11 @@ class Installer extends \Controller
 		$included = array();
 
 		// Ignore the internal cache
-		$blnBypassCache = \Config::get('bypassCache');
-		\Config::set('bypassCache', true);
+		$blnBypassCache = Config::get('bypassCache');
+		Config::set('bypassCache', true);
 
 		// Only check the active modules (see #4541)
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strDir = 'system/modules/' . $strModule . '/dca';
 
@@ -291,7 +296,7 @@ class Installer extends \Controller
 				}
 
 				$strTable = substr($strFile, 0, -4);
-				$objExtract = new \DcaExtractor($strTable);
+				$objExtract = new DcaExtractor($strTable);
 
 				if ($objExtract->isDbTable())
 				{
@@ -303,7 +308,7 @@ class Installer extends \Controller
 		}
 
 		// Restore the cache settings
-		\Config::set('bypassCache', $blnBypassCache);
+		Config::set('bypassCache', $blnBypassCache);
 
 		// HOOK: allow third-party developers to modify the array (see #6425)
 		if (isset($GLOBALS['TL_HOOKS']['sqlGetFromDca']) && is_array($GLOBALS['TL_HOOKS']['sqlGetFromDca']))
@@ -330,7 +335,7 @@ class Installer extends \Controller
 		$return = array();
 
 		// Only check the active modules (see #4541)
-		foreach (\ModuleLoader::getActive() as $strModule)
+		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			if (strncmp($strModule, '.', 1) === 0 || strncmp($strModule, '__', 2) === 0)
 			{
@@ -454,7 +459,7 @@ class Installer extends \Controller
 					}
 
 					// Variant collation
-					if ($field['collation'] != '' && $field['collation'] != \Config::get('dbCollation'))
+					if ($field['collation'] != '' && $field['collation'] != Config::get('dbCollation'))
 					{
 						$field['collation'] = 'COLLATE ' . $field['collation'];
 					}

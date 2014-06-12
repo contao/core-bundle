@@ -12,6 +12,10 @@
 
 namespace Contao\Model;
 
+use Contao\Model;
+use Countable;
+use RuntimeException;
+
 
 /**
  * Handle a set of models
@@ -23,12 +27,12 @@ namespace Contao\Model;
  * @author    Tristan Lins <tristan.lins@bit3.de>
  * @copyright Leo Feyer 2005-2014
  */
-class Registry implements \Countable
+class Registry implements Countable
 {
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Registry
+	 * @var Registry
 	 */
 	protected static $objInstance;
 
@@ -60,7 +64,7 @@ class Registry implements \Countable
 	/**
 	 * Return the current object instance (Singleton)
 	 *
-	 * @return \Registry The object instance
+	 * @return Registry The object instance
 	 */
 	public static function getInstance()
 	{
@@ -90,7 +94,7 @@ class Registry implements \Countable
 	 * @param string  $strTable The table name
 	 * @param integer $intPk    The primary key
 	 *
-	 * @return \Model|null The model or null
+	 * @return Model|null The model or null
 	 */
 	public function fetch($strTable, $intPk)
 	{
@@ -106,11 +110,11 @@ class Registry implements \Countable
 	/**
 	 * Register a model in the registry
 	 *
-	 * @param \Model $objModel The model object
+	 * @param Model $objModel The model object
 	 *
-	 * @throws \RuntimeException If the instance exists already
+	 * @throws RuntimeException If the instance exists already
 	 */
-	public function register(\Model $objModel)
+	public function register(Model $objModel)
 	{
 		$intObjectId = spl_object_hash($objModel);
 
@@ -133,7 +137,7 @@ class Registry implements \Countable
 		// Another model object is pointing to the DB record already
 		if (isset($this->arrRegistry[$strTable][$intPk]))
 		{
-			throw new \RuntimeException("The registry already contains an instance for $strTable::$strPk($intPk)");
+			throw new RuntimeException("The registry already contains an instance for $strTable::$strPk($intPk)");
 		}
 
 		$this->arrIdentities[$intObjectId] = $objModel;
@@ -144,9 +148,9 @@ class Registry implements \Countable
 	/**
 	 * Unregister a model from the registry
 	 *
-	 * @param \Model $objModel The model object
+	 * @param Model $objModel The model object
 	 */
-	public function unregister(\Model $objModel)
+	public function unregister(Model $objModel)
 	{
 		$intObjectId = spl_object_hash($objModel);
 
@@ -168,11 +172,11 @@ class Registry implements \Countable
 	/**
 	 * Check if a model is registered
 	 *
-	 * @param \Model $objModel The model object
+	 * @param Model $objModel The model object
 	 *
 	 * @return boolean True if the model is registered
 	 */
-	public function isRegistered(\Model $objModel)
+	public function isRegistered(Model $objModel)
 	{
 		$intObjectId = spl_object_hash($objModel);
 		return isset($this->arrIdentities[$intObjectId]);

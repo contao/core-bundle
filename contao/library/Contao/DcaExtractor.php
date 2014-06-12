@@ -12,6 +12,11 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Controller;
+use Contao\Database\Installer;
+use Exception;
+
 
 /**
  * Extracts DCA information and cache it
@@ -33,7 +38,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class DcaExtractor extends \Controller
+class DcaExtractor extends Controller
 {
 
 	/**
@@ -90,13 +95,13 @@ class DcaExtractor extends \Controller
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @throws \Exception If $strTable is empty
+	 * @throws Exception If $strTable is empty
 	 */
 	public function __construct($strTable)
 	{
 		if ($strTable == '')
 		{
-			throw new \Exception('The table name must not be empty');
+			throw new Exception('The table name must not be empty');
 		}
 
 		parent::__construct();
@@ -105,7 +110,7 @@ class DcaExtractor extends \Controller
 		$this->strFile = 'system/cache/sql/' . $strTable . '.php';
 
 		// Try to load from cache
-		if (!\Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $this->strFile))
+		if (!Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $this->strFile))
 		{
 			include TL_ROOT . '/' . $this->strFile;
 		}
@@ -320,7 +325,7 @@ class DcaExtractor extends \Controller
 					// Table name and field name are mandatory
 					if (empty($arrRelations[$field]['table']) || empty($arrRelations[$field]['field']))
 					{
-						throw new \Exception('Incomplete relation defined for ' . $this->strTable . '.' . $field);
+						throw new Exception('Incomplete relation defined for ' . $this->strTable . '.' . $field);
 					}
 				}
 			}
@@ -334,7 +339,7 @@ class DcaExtractor extends \Controller
 		{
 			if (!isset(static::$arrSql[$this->strTable]))
 			{
-				$objInstaller = new \Database\Installer();
+				$objInstaller = new Installer();
 				static::$arrSql = $objInstaller->getFromFile();
 			}
 

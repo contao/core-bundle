@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Exception;
+
 
 /**
  * Reads .zip files and unpacks their content
@@ -92,7 +94,7 @@ class ZipReader
 	 *
 	 * @param string $strFile The file path
 	 *
-	 * @throws \Exception If $strFile does not exist or cannot be opened
+	 * @throws Exception If $strFile does not exist or cannot be opened
 	 */
 	public function __construct($strFile)
 	{
@@ -107,7 +109,7 @@ class ZipReader
 		// Check if file exists
 		if (!file_exists(TL_ROOT . '/' . $strFile))
 		{
-			throw new \Exception("Could not find file $strFile");
+			throw new Exception("Could not find file $strFile");
 		}
 
 		$this->resFile = @fopen(TL_ROOT . '/' . $strFile, 'rb');
@@ -115,7 +117,7 @@ class ZipReader
 		// Could not open file
 		if (!is_resource($this->resFile))
 		{
-			throw new \Exception("Could not open file $strFile");
+			throw new Exception("Could not open file $strFile");
 		}
 
 		$this->readCentralDirectory();
@@ -250,7 +252,7 @@ class ZipReader
 	/**
 	 * Go to the first file of the archive
 	 *
-	 * @return \ZipReader The object instance
+	 * @return ZipReader The object instance
 	 */
 	public function first()
 	{
@@ -262,7 +264,7 @@ class ZipReader
 	/**
 	 * Go to the next file of the archive
 	 *
-	 * @return \ZipReader|boolean The object instance or false if there is no next file
+	 * @return ZipReader|boolean The object instance or false if there is no next file
 	 */
 	public function next()
 	{
@@ -279,7 +281,7 @@ class ZipReader
 	/**
 	 * Go to the previous file of the archive
 	 *
-	 * @return \ZipReader|boolean The object instance or false if there is no previous file
+	 * @return ZipReader|boolean The object instance or false if there is no previous file
 	 */
 	public function prev()
 	{
@@ -296,7 +298,7 @@ class ZipReader
 	/**
 	 * Go to the last file of the archive
 	 *
-	 * @return \ZipReader The object instance
+	 * @return ZipReader The object instance
 	 */
 	public function last()
 	{
@@ -324,7 +326,7 @@ class ZipReader
 	/**
 	 * Reset the archive
 	 *
-	 * @return \ZipReader The object instance
+	 * @return ZipReader The object instance
 	 */
 	public function reset()
 	{
@@ -338,7 +340,7 @@ class ZipReader
 	 *
 	 * @return string The file content
 	 *
-	 * @throws \Exception If the current file is encrypted or not a compressed file
+	 * @throws Exception If the current file is encrypted or not a compressed file
 	 */
 	public function unzip()
 	{
@@ -352,13 +354,13 @@ class ZipReader
 		// Encrypted files are not supported
 		if ($this->arrFiles[$this->intIndex]['general_purpose_bit_flag'] & 0x0001)
 		{
-			throw new \Exception("File $strName is encrypted");
+			throw new Exception("File $strName is encrypted");
 		}
 
 		// Reposition pointer
 		if (@fseek($this->resFile, $this->arrFiles[$this->intIndex]['offset_of_local_header']) !== 0)
 		{
-			throw new \Exception("Cannot reposition pointer");
+			throw new Exception("Cannot reposition pointer");
 		}
 
 		$strSignature = @fread($this->resFile, 4);
@@ -366,7 +368,7 @@ class ZipReader
 		// Not a file
 		if ($strSignature != self::FILE_SIGNATURE)
 		{
-			throw new \Exception("$strName is not a compressed file");
+			throw new Exception("$strName is not a compressed file");
 		}
 
 		// Get extra field length
@@ -401,27 +403,27 @@ class ZipReader
 			case 12:
 				if (!extension_loaded('bz2'))
 				{
-					throw new \Exception('PHP extension "bz2" required to decompress BZIP2 files');
+					throw new Exception('PHP extension "bz2" required to decompress BZIP2 files');
 				}
 				$strBuffer = bzdecompress($strBuffer);
 				break;
 
 			// Unknown
 			default:
-				throw new \Exception('Unknown compression method');
+				throw new Exception('Unknown compression method');
 				break;
 		}
 
 		// Check uncompressed data
 		if ($strBuffer === false)
 		{
-			throw new \Exception('Could not decompress data');
+			throw new Exception('Could not decompress data');
 		}
 
 		// Check uncompressed size
 		if (strlen($strBuffer) != $this->arrFiles[$this->intIndex]['uncompressed_size'])
 		{
-			throw new \Exception('Size of the uncompressed file does not match header value');
+			throw new Exception('Size of the uncompressed file does not match header value');
 		}
 
 		return $strBuffer;
@@ -433,7 +435,7 @@ class ZipReader
 	 *
 	 * @return array The files array
 	 *
-	 * @throws \Exception If the central directory cannot be found
+	 * @throws Exception If the central directory cannot be found
 	 */
 	protected function readCentralDirectory()
 	{
@@ -471,7 +473,7 @@ class ZipReader
 		// Read archive header
 		if ($strSignature != self::CENTRAL_DIR_END)
 		{
-			throw new \Exception('Error reading central directory');
+			throw new Exception('Error reading central directory');
 		}
 
 		$arrHeader = array();

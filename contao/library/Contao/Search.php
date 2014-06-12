@@ -12,6 +12,11 @@
 
 namespace Contao;
 
+use Contao\Database;
+use Contao\String;
+use Contao\System;
+use Exception;
+
 
 /**
  * Creates and queries the search index
@@ -39,7 +44,7 @@ class Search
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Search
+	 * @var Search
 	 */
 	protected static $objInstance;
 
@@ -53,7 +58,7 @@ class Search
 	 */
 	public static function indexPage($arrData)
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		$arrSet['url'] = $arrData['url'];
 		$arrSet['title'] = $arrData['title'];
@@ -132,7 +137,7 @@ class Search
 		{
 			foreach ($GLOBALS['TL_HOOKS']['indexPage'] as $callback)
 			{
-				\System::importStatic($callback[0])->$callback[1]($strContent, $arrData, $arrSet);
+				System::importStatic($callback[0])->$callback[1]($strContent, $arrData, $arrSet);
 			}
 		}
 
@@ -166,13 +171,13 @@ class Search
 		// Get description
 		if (preg_match('/<meta[^>]+name="description"[^>]+content="([^"]*)"[^>]*>/i', $strHead, $tags))
 		{
-			$arrData['description'] = trim(preg_replace('/ +/', ' ', \String::decodeEntities($tags[1])));
+			$arrData['description'] = trim(preg_replace('/ +/', ' ', String::decodeEntities($tags[1])));
 		}
 
 		// Get keywords
 		if (preg_match('/<meta[^>]+name="keywords"[^>]+content="([^"]*)"[^>]*>/i', $strHead, $tags))
 		{
-			$arrData['keywords'] = trim(preg_replace('/ +/', ' ', \String::decodeEntities($tags[1])));
+			$arrData['keywords'] = trim(preg_replace('/ +/', ' ', String::decodeEntities($tags[1])));
 		}
 
 		// Read title and alt attributes
@@ -187,7 +192,7 @@ class Search
 
 		// Put everything together
 		$arrSet['text'] = $arrData['title'] . ' ' . $arrData['description'] . ' ' . $strBody . ' ' . $arrData['keywords'];
-		$arrSet['text'] = trim(preg_replace('/ +/', ' ', \String::decodeEntities($arrSet['text'])));
+		$arrSet['text'] = trim(preg_replace('/ +/', ' ', String::decodeEntities($arrSet['text'])));
 
 		$arrSet['tstamp'] = time();
 
@@ -311,15 +316,15 @@ class Search
 	 * @param integer $intOffset   An optional result offset
 	 * @param boolean $blnFuzzy    If true, the search will be fuzzy
 	 *
-	 * @return \Database\Result The database result object
+	 * @return Database\Result The database result object
 	 *
-	 * @throws \Exception If the cleaned keyword string is empty
+	 * @throws Exception If the cleaned keyword string is empty
 	 */
 	public static function searchFor($strKeywords, $blnOrSearch=false, $arrPid=array(), $intRows=0, $intOffset=0, $blnFuzzy=false)
 	{
 		// Clean the keywords
 		$strKeywords = utf8_strtolower($strKeywords);
-		$strKeywords = \String::decodeEntities($strKeywords);
+		$strKeywords = String::decodeEntities($strKeywords);
 
 		if (function_exists('mb_eregi_replace'))
 		{
@@ -333,7 +338,7 @@ class Search
 		// Check keyword string
 		if (!strlen($strKeywords))
 		{
-			throw new \Exception('Empty keyword string');
+			throw new Exception('Empty keyword string');
 		}
 
 		// Split keywords
@@ -520,7 +525,7 @@ class Search
 		$strQuery .= " ORDER BY relevance DESC";
 
 		// Return result
-		$objResultStmt = \Database::getInstance()->prepare($strQuery);
+		$objResultStmt = Database::getInstance()->prepare($strQuery);
 
 		if ($intRows > 0)
 		{
@@ -538,7 +543,7 @@ class Search
 	 */
 	public static function removeEntry($strUrl)
 	{
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		$objResult = $objDatabase->prepare("SELECT id FROM tl_search WHERE url=?")
 								 ->execute($strUrl);
@@ -565,7 +570,7 @@ class Search
 	/**
 	 * Return the object instance (Singleton)
 	 *
-	 * @return \Search The object instance
+	 * @return Search The object instance
 	 *
 	 * @deprecated Search is now a static class
 	 */

@@ -12,6 +12,12 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Input;
+use Contao\Model\Registry;
+use Contao\View;
+use InvalidArgumentException;
+
 
 /**
  * Parses and outputs template files
@@ -30,7 +36,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-abstract class Template extends \View
+abstract class Template extends View
 {
 
 	/**
@@ -105,13 +111,13 @@ abstract class Template extends \View
 	 *
 	 * @return mixed The callable return value
 	 *
-	 * @throws \InvalidArgumentException If the callable does not exist
+	 * @throws InvalidArgumentException If the callable does not exist
 	 */
 	public function __call($strKey, $arrParams)
 	{
 		if (!isset($this->arrData[$strKey]) || !is_callable($this->arrData[$strKey]))
 		{
-			throw new \InvalidArgumentException("$strKey is not set or not a callable");
+			throw new InvalidArgumentException("$strKey is not set or not a callable");
 		}
 
 		return call_user_func_array($this->arrData[$strKey], $arrParams);
@@ -259,10 +265,10 @@ abstract class Template extends \View
 		$this->strBuffer = $this->minifyHtml($this->strBuffer);
 
 		header('Vary: User-Agent', false);
-		header('Content-Type: ' . $this->strContentType . '; charset=' . \Config::get('characterSet'));
+		header('Content-Type: ' . $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		// Add the debug bar
-		if (\Config::get('debugMode') && !isset($_GET['popup']))
+		if (Config::get('debugMode') && !isset($_GET['popup']))
 		{
 			$this->strBuffer = str_replace('</body>', $this->getDebugBar() . '</body>', $this->strBuffer);
 		}
@@ -320,13 +326,13 @@ abstract class Template extends \View
 				. '<span id="debug-tog">&nbsp;</span>'
 			. '</p>'
 			. '<div><pre>',
-			\Input::cookie('CONTAO_CONSOLE'),
+			Input::cookie('CONTAO_CONSOLE'),
 			$this->getFormattedNumber(($intElapsed * 1000), 0),
 			$this->getReadableSize(memory_get_peak_usage()),
 			count($GLOBALS['TL_DEBUG']['database_queries']),
 			$intReturned,
 			$intAffected,
-			\Model\Registry::getInstance()->count()
+			Registry::getInstance()->count()
 		);
 
 		ksort($GLOBALS['TL_DEBUG']);
@@ -370,7 +376,7 @@ abstract class Template extends \View
 	public function minifyHtml($strHtml)
 	{
 		// The feature has been disabled
-		if (!\Config::get('minifyMarkup') || \Config::get('debugMode'))
+		if (!Config::get('minifyMarkup') || Config::get('debugMode'))
 		{
 			return $strHtml;
 		}

@@ -12,6 +12,9 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\ModuleLoader;
+
 
 /**
  * Automatically loads class files based on a mapper array
@@ -45,64 +48,7 @@ class ClassLoader
 	 * Known classes
 	 * @var array
 	 */
-	protected static $classes = array
-	(
-		'Contao\Automator'                 => 'vendor/contao/contao-library/src/Contao/Automator.php',
-		'Contao\Cache'                     => 'vendor/contao/contao-library/src/Contao/Cache.php',
-		'Contao\ClassLoader'               => 'vendor/contao/contao-library/src/Contao/ClassLoader.php',
-		'Contao\Combiner'                  => 'vendor/contao/contao-library/src/Contao/Combiner.php',
-		'Contao\Config'                    => 'vendor/contao/contao-library/src/Contao/Config.php',
-		'Contao\Controller'                => 'vendor/contao/contao-library/src/Contao/Controller.php',
-		'Contao\Database\Installer'        => 'vendor/contao/contao-library/src/Contao/Database/Installer.php',
-		'Contao\Database\Mysql\Result'     => 'vendor/contao/contao-library/src/Contao/Database/Mysql/Result.php',
-		'Contao\Database\Mysql\Statement'  => 'vendor/contao/contao-library/src/Contao/Database/Mysql/Statement.php',
-		'Contao\Database\Mysql'            => 'vendor/contao/contao-library/src/Contao/Database/Mysql.php',
-		'Contao\Database\Mysqli\Result'    => 'vendor/contao/contao-library/src/Contao/Database/Mysqli/Result.php',
-		'Contao\Database\Mysqli\Statement' => 'vendor/contao/contao-library/src/Contao/Database/Mysqli/Statement.php',
-		'Contao\Database\Mysqli'           => 'vendor/contao/contao-library/src/Contao/Database/Mysqli.php',
-		'Contao\Database\Result'           => 'vendor/contao/contao-library/src/Contao/Database/Result.php',
-		'Contao\Database\Statement'        => 'vendor/contao/contao-library/src/Contao/Database/Statement.php',
-		'Contao\Database\Updater'          => 'vendor/contao/contao-library/src/Contao/Database/Updater.php',
-		'Contao\Database'                  => 'vendor/contao/contao-library/src/Contao/Database.php',
-		'Contao\Date'                      => 'vendor/contao/contao-library/src/Contao/Date.php',
-		'Contao\Dbafs\Filter'              => 'vendor/contao/contao-library/src/Contao/Dbafs/Filter.php',
-		'Contao\Dbafs'                     => 'vendor/contao/contao-library/src/Contao/Dbafs.php',
-		'Contao\DcaExtractor'              => 'vendor/contao/contao-library/src/Contao/DcaExtractor.php',
-		'Contao\DcaLoader'                 => 'vendor/contao/contao-library/src/Contao/DcaLoader.php',
-		'Contao\Email'                     => 'vendor/contao/contao-library/src/Contao/Email.php',
-		'Contao\Encryption'                => 'vendor/contao/contao-library/src/Contao/Encryption.php',
-		'Contao\Environment'               => 'vendor/contao/contao-library/src/Contao/Environment.php',
-		'Contao\Feed'                      => 'vendor/contao/contao-library/src/Contao/Feed.php',
-		'Contao\FeedItem'                  => 'vendor/contao/contao-library/src/Contao/FeedItem.php',
-		'Contao\File'                      => 'vendor/contao/contao-library/src/Contao/File.php',
-		'Contao\Files'                     => 'vendor/contao/contao-library/src/Contao/Files.php',
-		'Contao\Folder'                    => 'vendor/contao/contao-library/src/Contao/Folder.php',
-		'Contao\Idna'                      => 'vendor/contao/contao-library/src/Contao/Idna.php',
-		'Contao\Image'                     => 'vendor/contao/contao-library/src/Contao/Image.php',
-		'Contao\Input'                     => 'vendor/contao/contao-library/src/Contao/Input.php',
-		'Contao\Message'                   => 'vendor/contao/contao-library/src/Contao/Message.php',
-		'Contao\Model\Collection'          => 'vendor/contao/contao-library/src/Contao/Model/Collection.php',
-		'Contao\Model\QueryBuilder'        => 'vendor/contao/contao-library/src/Contao/Model/QueryBuilder.php',
-		'Contao\Model\Registry'            => 'vendor/contao/contao-library/src/Contao/Model/Registry.php',
-		'Contao\Model'                     => 'vendor/contao/contao-library/src/Contao/Model.php',
-		'Contao\ModuleLoader'              => 'vendor/contao/contao-library/src/Contao/ModuleLoader.php',
-		'Contao\Pagination'                => 'vendor/contao/contao-library/src/Contao/Pagination.php',
-		'Contao\Request'                   => 'vendor/contao/contao-library/src/Contao/Request.php',
-		'Contao\RequestToken'              => 'vendor/contao/contao-library/src/Contao/RequestToken.php',
-		'Contao\Search'                    => 'vendor/contao/contao-library/src/Contao/Search.php',
-		'Contao\Session'                   => 'vendor/contao/contao-library/src/Contao/Session.php',
-		'Contao\SortedIterator'            => 'vendor/contao/contao-library/src/Contao/SortedIterator.php',
-		'Contao\String'                    => 'vendor/contao/contao-library/src/Contao/String.php',
-		'Contao\System'                    => 'vendor/contao/contao-library/src/Contao/System.php',
-		'Contao\Template'                  => 'vendor/contao/contao-library/src/Contao/Template.php',
-		'Contao\TemplateLoader'            => 'vendor/contao/contao-library/src/Contao/TemplateLoader.php',
-		'Contao\User'                      => 'vendor/contao/contao-library/src/Contao/User.php',
-		'Contao\Validator'                 => 'vendor/contao/contao-library/src/Contao/Validator.php',
-		'Contao\View'                      => 'vendor/contao/contao-library/src/Contao/View.php',
-		'Contao\Widget'                    => 'vendor/contao/contao-library/src/Contao/Widget.php',
-		'Contao\ZipReader'                 => 'vendor/contao/contao-library/src/Contao/ZipReader.php',
-		'Contao\ZipWriter'                 => 'vendor/contao/contao-library/src/Contao/ZipWriter.php'
-	);
+	protected static $classes = array();
 
 
 	/**
@@ -201,7 +147,7 @@ class ClassLoader
 		// The class file is set in the mapper
 		if (isset(self::$classes[$class]))
 		{
-			if (\Config::get('debugMode'))
+			if (Config::get('debugMode'))
 			{
 				$GLOBALS['TL_DEBUG']['classes_set'][] = $class;
 			}
@@ -214,7 +160,7 @@ class ClassLoader
 		{
 			if (!class_exists($namespaced, false))
 			{
-				if (\Config::get('debugMode'))
+				if (Config::get('debugMode'))
 				{
 					$GLOBALS['TL_DEBUG']['classes_aliased'][] = $class . ' <span style="color:#999">(' . $namespaced . ')</span>';
 				}
@@ -223,6 +169,22 @@ class ClassLoader
 			}
 
 			class_alias($namespaced, $class);
+		}
+
+		// Try the Contao namespace (backwards compatibility)
+		elseif (strncmp($class, 'Contao\\', 7) !== 0)
+		{
+			$namespaced = 'Contao\\' . $class;
+
+			if (class_exists($namespaced))
+			{
+				if (Config::get('debugMode'))
+				{
+					$GLOBALS['TL_DEBUG']['classes_psr'][] = $class . ' <span style="color:#999">(' . $namespaced . ')</span>';
+				}
+
+				class_alias($namespaced, $class);
+			}
 		}
 
 		// Pass the request to other autoloaders (e.g. Swift)
@@ -268,13 +230,13 @@ class ClassLoader
 		$strCacheFile = 'system/cache/config/autoload.php';
 
 		// Try to load from cache
-		if (!\Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
+		if (!Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
 		{
 			include TL_ROOT . '/' . $strCacheFile;
 		}
 		else
 		{
-			foreach (\ModuleLoader::getActive() as $module)
+			foreach (ModuleLoader::getActive() as $module)
 			{
 				$file = 'system/modules/' . $module . '/config/autoload.php';
 

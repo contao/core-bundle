@@ -12,6 +12,14 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\File;
+use Contao\System;
+use Exception;
+use lessc;
+use scssc;
+use scss_compass;
+
 
 /**
  * Combines .css or .js files into one single file
@@ -30,7 +38,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Combiner extends \System
+class Combiner extends System
 {
 
 	/**
@@ -92,7 +100,7 @@ class Combiner extends \System
 	 * @param string $strVersion An optional version number
 	 * @param string $strMedia   The media type of the file (.css only)
 	 *
-	 * @throws \Exception If $strFile is invalid
+	 * @throws Exception If $strFile is invalid
 	 */
 	public function add($strFile, $strVersion=null, $strMedia='all')
 	{
@@ -101,7 +109,7 @@ class Combiner extends \System
 		// Check the file type
 		if ($strType != self::CSS && $strType != self::JS && $strType != self::SCSS && $strType != self::LESS)
 		{
-			throw new \Exception("Invalid file $strFile");
+			throw new Exception("Invalid file $strFile");
 		}
 
 		$strMode = ($strType == self::JS) ? self::JS : self::CSS;
@@ -113,7 +121,7 @@ class Combiner extends \System
 		}
 		elseif ($this->strMode != $strMode)
 		{
-			throw new \Exception('You cannot mix different file types. Create another Combiner object instead.');
+			throw new Exception('You cannot mix different file types. Create another Combiner object instead.');
 		}
 
 		// Prevent duplicates
@@ -133,12 +141,12 @@ class Combiner extends \System
 
 				if (!file_exists(TL_ROOT . '/' . $strFile))
 				{
-					throw new \Exception("File $strFile does not exist");
+					throw new Exception("File $strFile does not exist");
 				}
 			}
 			else
 			{
-				throw new \Exception("File $strFile does not exist");
+				throw new Exception("File $strFile does not exist");
 			}
 
 		}
@@ -208,7 +216,7 @@ class Combiner extends \System
 		$strKey = substr(md5($this->strKey), 0, 12);
 
 		// Do not combine the files in debug mode (see #6450)
-		if (\Config::get('debugMode'))
+		if (Config::get('debugMode'))
 		{
 			$return = array();
 
@@ -221,7 +229,7 @@ class Combiner extends \System
 				{
 					$strPath = 'assets/' . $strTarget . '/' . str_replace('/', '_', $arrFile['name']) . $this->strMode;
 
-					$objFile = new \File($strPath);
+					$objFile = new File($strPath);
 					$objFile->write($this->handleScssLess($content, $arrFile));
 					$objFile->close();
 
@@ -258,7 +266,7 @@ class Combiner extends \System
 		}
 
 		// Create the file
-		$objFile = new \File('assets/' . $strTarget . '/' . $strKey . $this->strMode);
+		$objFile = new File('assets/' . $strTarget . '/' . $strKey . $this->strMode);
 		$objFile->truncate();
 
 		foreach ($this->arrFiles as $arrFile)
@@ -291,9 +299,9 @@ class Combiner extends \System
 		$objFile->close();
 
 		// Create a gzipped version
-		if (\Config::get('gzipScripts') && function_exists('gzencode'))
+		if (Config::get('gzipScripts') && function_exists('gzencode'))
 		{
-			\File::putContent('assets/' . $strTarget . '/' . $strKey . $this->strMode . '.gz', gzencode(file_get_contents(TL_ROOT . '/assets/' . $strTarget . '/' . $strKey . $this->strMode), 9));
+			File::putContent('assets/' . $strTarget . '/' . $strKey . $this->strMode . '.gz', gzencode(file_get_contents(TL_ROOT . '/assets/' . $strTarget . '/' . $strKey . $this->strMode), 9));
 		}
 
 		return $strUrl . 'assets/' . $strTarget . '/' . $strKey . $this->strMode;
@@ -334,8 +342,8 @@ class Combiner extends \System
 	{
 		if ($arrFile['extension'] == self::SCSS)
 		{
-			$objCompiler = new \scssc();
-			new \scss_compass($objCompiler);
+			$objCompiler = new scssc();
+			new scss_compass($objCompiler);
 
 			$objCompiler->setImportPaths(array
 			(
@@ -343,18 +351,18 @@ class Combiner extends \System
 				TL_ROOT . '/vendor/leafo/scssphp-compass/stylesheets'
 			));
 
-			$objCompiler->setFormatter((\Config::get('debugMode') ? 'scss_formatter' : 'scss_formatter_compressed'));
+			$objCompiler->setFormatter((Config::get('debugMode') ? 'scss_formatter' : 'scss_formatter_compressed'));
 		}
 		else
 		{
-			$objCompiler = new \lessc();
+			$objCompiler = new lessc();
 
 			$objCompiler->setImportDir(array
 			(
 				TL_ROOT . '/' . dirname($arrFile['name'])
 			));
 
-			$objCompiler->setFormatter((\Config::get('debugMode') ? 'lessjs' : 'compressed'));
+			$objCompiler->setFormatter((Config::get('debugMode') ? 'lessjs' : 'compressed'));
 		}
 
 		return $this->fixPaths($objCompiler->compile($content), $arrFile);

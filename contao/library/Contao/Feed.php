@@ -12,6 +12,10 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Environment;
+use Contao\FeedItem;
+
 
 /**
  * Creates RSS or Atom feeds
@@ -114,9 +118,9 @@ class Feed
 	/**
 	 * Add an item
 	 *
-	 * @param \FeedItem $objItem The feed item object
+	 * @param FeedItem $objItem The feed item object
 	 */
-	public function addItem(\FeedItem $objItem)
+	public function addItem(FeedItem $objItem)
 	{
 		$this->arrItems[] = $objItem;
 	}
@@ -131,7 +135,7 @@ class Feed
 	{
 		$this->adjustPublicationDate();
 
-		$xml  = '<?xml version="1.0" encoding="' . \Config::get('characterSet') . '"?>';
+		$xml  = '<?xml version="1.0" encoding="' . Config::get('characterSet') . '"?>';
 		$xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">';
 		$xml .= '<channel>';
 		$xml .= '<title>' . specialchars($this->title) . '</title>';
@@ -140,7 +144,7 @@ class Feed
 		$xml .= '<language>' . $this->language . '</language>';
 		$xml .= '<pubDate>' . date('r', $this->published) . '</pubDate>';
 		$xml .= '<generator>Contao Open Source CMS</generator>';
-		$xml .= '<atom:link href="' . specialchars(\Environment::get('base') . 'share/' . $this->strName) . '.xml" rel="self" type="application/rss+xml" />';
+		$xml .= '<atom:link href="' . specialchars(Environment::get('base') . 'share/' . $this->strName) . '.xml" rel="self" type="application/rss+xml" />';
 
 		foreach ($this->arrItems as $objItem)
 		{
@@ -196,7 +200,7 @@ class Feed
 	{
 		$this->adjustPublicationDate();
 
-		$xml  = '<?xml version="1.0" encoding="' . \Config::get('characterSet') . '"?>';
+		$xml  = '<?xml version="1.0" encoding="' . Config::get('characterSet') . '"?>';
 		$xml .= '<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="' . $this->language . '">';
 		$xml .= '<title>' . specialchars($this->title) . '</title>';
 		$xml .= '<subtitle>' . specialchars($this->description) . '</subtitle>';
@@ -204,7 +208,7 @@ class Feed
 		$xml .= '<id>' . specialchars($this->link) . '</id>';
 		$xml .= '<updated>' . preg_replace('/00$/', ':00', date('Y-m-d\TH:i:sO', $this->published)) . '</updated>';
 		$xml .= '<generator>Contao Open Source CMS</generator>';
-		$xml .= '<link href="' . specialchars(\Environment::get('base') . 'share/' . $this->strName) . '.xml" rel="self" />';
+		$xml .= '<link href="' . specialchars(Environment::get('base') . 'share/' . $this->strName) . '.xml" rel="self" />';
 
 		foreach ($this->arrItems as $objItem)
 		{

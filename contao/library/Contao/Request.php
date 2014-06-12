@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Exception;
+
 
 /**
  * Sends HTTP requests and reads the response
@@ -143,7 +145,7 @@ class Request
 	 * @param string $strKey   The property name
 	 * @param mixed  $varValue The property value
 	 *
-	 * @throws \Exception If $strKey is unknown
+	 * @throws Exception If $strKey is unknown
 	 */
 	public function __set($strKey, $varValue)
 	{
@@ -174,7 +176,7 @@ class Request
 				break;
 
 			default:
-				throw new \Exception(sprintf('Invalid argument "%s"', $strKey));
+				throw new Exception(sprintf('Invalid argument "%s"', $strKey));
 				break;
 		}
 	}

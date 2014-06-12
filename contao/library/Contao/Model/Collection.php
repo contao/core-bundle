@@ -12,6 +12,16 @@
 
 namespace Contao\Model;
 
+use Contao\Database\Result;
+use Contao\Model;
+use Contao\Model\Registry;
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use RuntimeException;
+
 
 /**
  * Handles a set models
@@ -23,7 +33,7 @@ namespace Contao\Model;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
+class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
 
 	/**
@@ -51,7 +61,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 * @param array  $arrModels An array of models
 	 * @param string $strTable  The table name
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function __construct(array $arrModels, $strTable)
 	{
@@ -59,9 +69,9 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 
 		foreach ($arrModels as $objModel)
 		{
-			if (!$objModel instanceof \Model)
+			if (!$objModel instanceof Model)
 			{
-				throw new \InvalidArgumentException('Invalid type: ' . gettype($objModel));
+				throw new InvalidArgumentException('Invalid type: ' . gettype($objModel));
 			}
 		}
 
@@ -131,19 +141,19 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Create a new collection from a database result
 	 *
-	 * @param \Database\Result $objResult The database result object
-	 * @param string           $strTable  The table name
+	 * @param Result $objResult The database result object
+	 * @param string $strTable  The table name
 	 *
-	 * @return \Model\Collection The model collection
+	 * @return Collection The model collection
 	 */
-	public static function createFromDbResult(\Database\Result $objResult, $strTable)
+	public static function createFromDbResult(Result $objResult, $strTable)
 	{
 		$arrModels = array();
-		$strClass = \Model::getClassFromTable($strTable);
+		$strClass = Model::getClassFromTable($strTable);
 
 		while ($objResult->next())
 		{
-			$objModel = \Model\Registry::getInstance()->fetch($strTable, $objResult->{$strClass::getPk()});
+			$objModel = Registry::getInstance()->fetch($strTable, $objResult->{$strClass::getPk()});
 
 			if ($objModel !== null)
 			{
@@ -181,7 +191,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *
 	 * @param array $arrData The row data as array
 	 *
-	 * @return \Model\Collection The model collection object
+	 * @return Collection The model collection object
 	 */
 	public function setRow(array $arrData)
 	{
@@ -198,7 +208,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Save the current model
 	 *
-	 * @return \Model\Collection The model collection object
+	 * @return Collection The model collection object
 	 */
 	public function save()
 	{
@@ -244,7 +254,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *
 	 * @param string $strKey The property name
 	 *
-	 * @return \Model|\Model\Collection The model or a model collection if there are multiple rows
+	 * @return Model|Collection The model or a model collection if there are multiple rows
 	 */
 	public function getRelated($strKey)
 	{
@@ -271,7 +281,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Go to the first row
 	 *
-	 * @return \Model\Collection The model collection object
+	 * @return Collection The model collection object
 	 */
 	public function first()
 	{
@@ -283,7 +293,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Go to the previous row
 	 *
-	 * @return \Model\Collection|false The model collection object or false if there is no previous row
+	 * @return Collection|false The model collection object or false if there is no previous row
 	 */
 	public function prev()
 	{
@@ -300,7 +310,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Return the current model
 	 *
-	 * @return \Model The model object
+	 * @return Model The model object
 	 */
 	public function current()
 	{
@@ -316,7 +326,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Go to the next row
 	 *
-	 * @return \Model\Collection|boolean The model collection object or false if there is no next row
+	 * @return Collection|boolean The model collection object or false if there is no next row
 	 */
 	public function next()
 	{
@@ -333,7 +343,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Go to the last row
 	 *
-	 * @return \Model\Collection The model collection object
+	 * @return Collection The model collection object
 	 */
 	public function last()
 	{
@@ -345,7 +355,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Reset the model
 	 *
-	 * @return \Model\Collection The model collection object
+	 * @return Collection The model collection object
 	 */
 	public function reset()
 	{
@@ -421,7 +431,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *
 	 * @param integer $offset The offset
 	 *
-	 * @return \Model|null The model or null
+	 * @return Model|null The model or null
 	 */
 	public function offsetGet($offset)
 	{
@@ -435,11 +445,11 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 * @param integer $offset The offset
 	 * @param mixed   $value  The value to set
 	 *
-	 * @throws \RuntimeException The collection is immutable
+	 * @throws RuntimeException The collection is immutable
 	 */
 	public function offsetSet($offset, $value)
 	{
-		throw new \RuntimeException('This collection is immutable');
+		throw new RuntimeException('This collection is immutable');
 	}
 
 
@@ -448,21 +458,21 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *
 	 * @param integer $offset The offset
 	 *
-	 * @throws \RuntimeException The collection is immutable
+	 * @throws RuntimeException The collection is immutable
 	 */
 	public function offsetUnset($offset)
 	{
-		throw new \RuntimeException('This collection is immutable');
+		throw new RuntimeException('This collection is immutable');
 	}
 
 
 	/**
 	 * Retrieve the iterator object
 	 *
-	 * @return \ArrayIterator The iterator object
+	 * @return ArrayIterator The iterator object
 	 */
 	public function getIterator()
 	{
-		return new \ArrayIterator($this->arrModels);
+		return new ArrayIterator($this->arrModels);
 	}
 }

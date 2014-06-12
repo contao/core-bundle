@@ -12,6 +12,9 @@
 
 namespace Contao;
 
+use Contao\Config;
+use UnresolvableDependenciesException;
+
 
 /**
  * Loads modules based on their autoload.ini configuration
@@ -79,14 +82,14 @@ class ModuleLoader
 	/**
 	 * Scan the modules and resolve their dependencies
 	 *
-	 * @throws \UnresolvableDependenciesException If the dependencies cannot be resolved
+	 * @throws UnresolvableDependenciesException If the dependencies cannot be resolved
 	 */
 	protected static function scanAndResolve()
 	{
 		$strCacheFile = 'system/cache/config/modules.php';
 
 		// Try to load from cache
-		if (!\Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
+		if (!Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
 		{
 			include TL_ROOT . '/' . $strCacheFile;
 		}
@@ -98,7 +101,7 @@ class ModuleLoader
 			static::$disabled = array();
 
 			// Ignore non-core modules if the system runs in safe mode
-			if (\Config::get('coreOnlyMode'))
+			if (Config::get('coreOnlyMode'))
 			{
 				$modules = array('core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository');
 			}
@@ -203,7 +206,7 @@ class ModuleLoader
 					$buffer = ob_get_contents();
 					ob_end_clean();
 
-					throw new \UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
+					throw new UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
 				}
 			}
 		}

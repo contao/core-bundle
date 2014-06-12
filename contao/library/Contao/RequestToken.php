@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Contao\Config;
+
 
 /**
  * Generates and validates request tokens
@@ -37,7 +39,7 @@ class RequestToken
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \RequestToken
+	 * @var RequestToken
 	 */
 	protected static $objInstance;
 
@@ -98,7 +100,7 @@ class RequestToken
 	public static function validate($strToken)
 	{
 		// The feature has been disabled
-		if (\Config::get('disableRefererCheck') || defined('BYPASS_TOKEN_CHECK'))
+		if (Config::get('disableRefererCheck') || defined('BYPASS_TOKEN_CHECK'))
 		{
 			return true;
 		}
@@ -110,11 +112,11 @@ class RequestToken
 		}
 
 		// Check against the whitelist (thanks to Tristan Lins) (see #3164)
-		if (\Config::get('requestTokenWhitelist'))
+		if (Config::get('requestTokenWhitelist'))
 		{
 			$strHostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-			foreach (\Config::get('requestTokenWhitelist') as $strDomain)
+			foreach (Config::get('requestTokenWhitelist') as $strDomain)
 			{
 				if ($strDomain == $strHostname || preg_match('/\.' . preg_quote($strDomain, '/') . '$/', $strHostname))
 				{
@@ -149,7 +151,7 @@ class RequestToken
 	/**
 	 * Return the object instance (Singleton)
 	 *
-	 * @return \RequestToken The object instance
+	 * @return RequestToken The object instance
 	 *
 	 * @deprecated RequestToken is now a static class
 	 */

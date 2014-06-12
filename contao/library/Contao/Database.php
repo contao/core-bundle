@@ -12,6 +12,11 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Database\Result;
+use Contao\Database\Statement;
+use Exception;
+
 
 /**
  * Abstract parent class to handle database communication
@@ -69,7 +74,7 @@ abstract class Database
 	 *
 	 * @param array $arrConfig A configuration array
 	 *
-	 * @throws \Exception If a connection cannot be established
+	 * @throws Exception If a connection cannot be established
 	 */
 	protected function __construct(array $arrConfig)
 	{
@@ -78,7 +83,7 @@ abstract class Database
 
 		if (!is_resource($this->resConnection) && !is_object($this->resConnection))
 		{
-			throw new \Exception(sprintf('Could not connect to database (%s)', $this->error));
+			throw new Exception(sprintf('Could not connect to database (%s)', $this->error));
 		}
 	}
 
@@ -128,22 +133,22 @@ abstract class Database
 	 *
 	 * @param array $arrCustom A configuration array
 	 *
-	 * @return \Database The Database object
+	 * @return Database The Database object
 	 */
 	public static function getInstance(array $arrCustom=null)
 	{
 		$arrConfig = array
 		(
-			'dbDriver'   => \Config::get('dbDriver'),
-			'dbHost'     => \Config::get('dbHost'),
-			'dbUser'     => \Config::get('dbUser'),
-			'dbPass'     => \Config::get('dbPass'),
-			'dbDatabase' => \Config::get('dbDatabase'),
-			'dbPconnect' => \Config::get('dbPconnect'),
-			'dbCharset'  => \Config::get('dbCharset'),
-			'dbPort'     => \Config::get('dbPort'),
-			'dbSocket'   => \Config::get('dbSocket'),
-			'dbSqlMode'  => \Config::get('dbSqlMode')
+			'dbDriver'   => Config::get('dbDriver'),
+			'dbHost'     => Config::get('dbHost'),
+			'dbUser'     => Config::get('dbUser'),
+			'dbPass'     => Config::get('dbPass'),
+			'dbDatabase' => Config::get('dbDatabase'),
+			'dbPconnect' => Config::get('dbPconnect'),
+			'dbCharset'  => Config::get('dbCharset'),
+			'dbPort'     => Config::get('dbPort'),
+			'dbSocket'   => Config::get('dbSocket'),
+			'dbSqlMode'  => Config::get('dbSqlMode')
 		);
 
 		if (is_array($arrCustom))
@@ -157,7 +162,7 @@ abstract class Database
 
 		if (!isset(static::$arrInstances[$strKey]))
 		{
-			$strClass = 'Database\\' . str_replace(' ', '_', ucwords(str_replace('_', ' ', strtolower($arrConfig['dbDriver']))));
+			$strClass = 'Contao\\Database\\' . str_replace(' ', '_', ucwords(str_replace('_', ' ', strtolower($arrConfig['dbDriver']))));
 			static::$arrInstances[$strKey] = new $strClass($arrConfig);
 		}
 
@@ -166,11 +171,11 @@ abstract class Database
 
 
 	/**
-	 * Prepare a query and return a Database\Statement object
+	 * Prepare a query and return a Statement object
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Statement The Database\Statement object
+	 * @return Statement The Statement object
 	 */
 	public function prepare($strQuery)
 	{
@@ -179,11 +184,11 @@ abstract class Database
 
 
 	/**
-	 * Execute a query and return a Database\Result object
+	 * Execute a query and return a Result object
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Result The Database\Result object
+	 * @return Result The Result object
 	 */
 	public function execute($strQuery)
 	{
@@ -192,11 +197,11 @@ abstract class Database
 
 
 	/**
-	 * Execute a raw query and return a Database\Result object
+	 * Execute a raw query and return a Result object
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Result The Database\Result object
+	 * @return Result The Result object
 	 */
 	public function query($strQuery)
 	{
@@ -709,12 +714,12 @@ abstract class Database
 
 
 	/**
-	 * Create a Database\Statement object
+	 * Create a Statement object
 	 *
 	 * @param resource $resConnection        The connection ID
 	 * @param boolean  $blnDisableAutocommit If true, autocommitting will be disabled
 	 *
-	 * @return \Database\Statement The Database\Statement object
+	 * @return Statement The Statement object
 	 */
 	abstract protected function createStatement($resConnection, $blnDisableAutocommit);
 
@@ -724,9 +729,9 @@ abstract class Database
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Result The Database\Result object
+	 * @return Result The Result object
 	 *
-	 * @deprecated Use \Database::execute() instead
+	 * @deprecated Use Database::execute() instead
 	 */
 	public function executeUncached($strQuery)
 	{
@@ -739,9 +744,9 @@ abstract class Database
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Result The Database\Result object
+	 * @return Result The Result object
 	 *
-	 * @deprecated Use \Database::execute() instead
+	 * @deprecated Use Database::execute() instead
 	 */
 	public function executeCached($strQuery)
 	{

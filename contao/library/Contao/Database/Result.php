@@ -12,6 +12,9 @@
 
 namespace Contao\Database;
 
+use Exception;
+use OutOfBoundsException;
+
 
 /**
  * Lazy load the result set rows
@@ -77,13 +80,13 @@ abstract class Result
 	 * @param resource $resResult The database result
 	 * @param string   $strQuery  The query string
 	 *
-	 * @throws \Exception If $resResult is not a valid resource
+	 * @throws Exception If $resResult is not a valid resource
 	 */
 	public function __construct($resResult, $strQuery)
 	{
 		if (!is_resource($resResult) && !is_object($resResult))
 		{
-			throw new \Exception('Invalid result resource');
+			throw new Exception('Invalid result resource');
 		}
 
 		$this->resResult = $resResult;
@@ -294,7 +297,7 @@ abstract class Result
 	/**
 	 * Go to the first row of the current result
 	 *
-	 * @return \Database\Result|boolean The result object or false if there is no first row
+	 * @return Result|boolean The result object or false if there is no first row
 	 */
 	public function first()
 	{
@@ -316,7 +319,7 @@ abstract class Result
 	/**
 	 * Go to the previous row of the current result
 	 *
-	 * @return \Database\Result|boolean The result object or false if there is no previous row
+	 * @return Result|boolean The result object or false if there is no previous row
 	 */
 	public function prev()
 	{
@@ -343,7 +346,7 @@ abstract class Result
 	/**
 	 * Go to the next row of the current result
 	 *
-	 * @return \Database\Result|boolean The result object or false if there is no next row
+	 * @return Result|boolean The result object or false if there is no next row
 	 */
 	public function next()
 	{
@@ -368,7 +371,7 @@ abstract class Result
 	/**
 	 * Go to the last row of the current result
 	 *
-	 * @return \Database\Result|boolean The result object or false if there is no last row
+	 * @return Result|boolean The result object or false if there is no last row
 	 */
 	public function last()
 	{
@@ -419,7 +422,7 @@ abstract class Result
 	/**
 	 * Reset the current result
 	 *
-	 * @return \Database\Result The result object
+	 * @return Result The result object
 	 */
 	public function reset()
 	{
@@ -479,7 +482,7 @@ abstract class Result
 	 *
 	 * @param integer $intIndex The row index
 	 *
-	 * @throws \OutOfBoundsException If $intIndex is out of bounds
+	 * @throws OutOfBoundsException If $intIndex is out of bounds
 	 */
 	abstract protected function data_seek($intIndex);
 

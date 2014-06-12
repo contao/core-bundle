@@ -12,6 +12,13 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Dbafs;
+use Contao\Folder;
+use Contao\Image;
+use Contao\System;
+use Exception;
+
 
 /**
  * Creates, reads, writes and deletes files
@@ -30,7 +37,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class File extends \System
+class File extends System
 {
 
 	/**
@@ -53,7 +60,7 @@ class File extends \System
 
 	/**
 	 * Files model
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objModel;
 
@@ -75,7 +82,7 @@ class File extends \System
 	 *
 	 * @param string $strFile The file path
 	 *
-	 * @throws \Exception If $strFile is a directory
+	 * @throws Exception If $strFile is a directory
 	 */
 	public function __construct($strFile)
 	{
@@ -88,7 +95,7 @@ class File extends \System
 		// Make sure we are not pointing to a directory
 		if (is_dir(TL_ROOT . '/' . $strFile))
 		{
-			throw new \Exception(sprintf('Directory "%s" is not a file', $strFile));
+			throw new Exception(sprintf('Directory "%s" is not a file', $strFile));
 		}
 
 		$this->import('Files');
@@ -97,14 +104,14 @@ class File extends \System
 		$strFolder = dirname($strFile);
 
 		// Check whether we need to sync the database
-		$this->blnSyncDb = (\Config::get('uploadPath') != 'templates' && strncmp($strFolder . '/', \Config::get('uploadPath') . '/', strlen(\Config::get('uploadPath')) + 1) === 0);
+		$this->blnSyncDb = (Config::get('uploadPath') != 'templates' && strncmp($strFolder . '/', Config::get('uploadPath') . '/', strlen(Config::get('uploadPath')) + 1) === 0);
 
 		// Check the excluded folders
-		if ($this->blnSyncDb && \Config::get('fileSyncExclude') != '')
+		if ($this->blnSyncDb && Config::get('fileSyncExclude') != '')
 		{
 			$arrExempt = array_map(function($e) {
-				return \Config::get('uploadPath') . '/' . $e;
-			}, trimsplit(',', \Config::get('fileSyncExclude')));
+				return Config::get('uploadPath') . '/' . $e;
+			}, trimsplit(',', Config::get('fileSyncExclude')));
 
 			foreach ($arrExempt as $strExempt)
 			{
@@ -297,7 +304,7 @@ class File extends \System
 	/**
 	 * Create the file if it does not yet exist
 	 *
-	 * @throws \Exception If the file cannot be written
+	 * @throws Exception If the file cannot be written
 	 */
 	protected function createIfNotExists()
 	{
@@ -316,13 +323,13 @@ class File extends \System
 		// Create the folder
 		if (!is_dir(TL_ROOT . '/' . $strFolder))
 		{
-			new \Folder($strFolder);
+			new Folder($strFolder);
 		}
 
 		// Open the file
 		if (($this->resFile = $this->Files->fopen($this->strFile, 'wb')) == false)
 		{
-			throw new \Exception(sprintf('Cannot create file "%s"', $this->strFile));
+			throw new Exception(sprintf('Cannot create file "%s"', $this->strFile));
 		}
 	}
 
@@ -407,7 +414,7 @@ class File extends \System
 		// Update the database
 		if ($this->blnSyncDb)
 		{
-			\Dbafs::deleteResource($this->strFile);
+			Dbafs::deleteResource($this->strFile);
 		}
 
 		return $return;
@@ -448,7 +455,7 @@ class File extends \System
 			// Create the parent folder
 			if (!is_dir(TL_ROOT . '/' . $strFolder))
 			{
-				new \Folder($strFolder);
+				new Folder($strFolder);
 			}
 		}
 
@@ -458,7 +465,7 @@ class File extends \System
 		// Update the database
 		if ($this->blnSyncDb)
 		{
-			$this->objModel = \Dbafs::addResource($this->strFile);
+			$this->objModel = Dbafs::addResource($this->strFile);
 		}
 
 		return $return;
@@ -468,7 +475,7 @@ class File extends \System
 	/**
 	 * Return the files model
 	 *
-	 * @return \FilesModel The files model
+	 * @return FilesModel The files model
 	 */
 	public function getModel()
 	{
@@ -542,7 +549,7 @@ class File extends \System
 		// Create the parent folder if it does not exist
 		if (!is_dir(TL_ROOT . '/' . $strParent))
 		{
-			new \Folder($strParent);
+			new Folder($strParent);
 		}
 
 		$return = $this->Files->rename($this->strFile, $strNewName);
@@ -550,7 +557,7 @@ class File extends \System
 		// Update the database AFTER the file has been renamed
 		if ($this->blnSyncDb)
 		{
-			$this->objModel = \Dbafs::moveResource($this->strFile, $strNewName);
+			$this->objModel = Dbafs::moveResource($this->strFile, $strNewName);
 		}
 
 		// Reset the object AFTER the database has been updated
@@ -579,7 +586,7 @@ class File extends \System
 		// Create the parent folder if it does not exist
 		if (!is_dir(TL_ROOT . '/' . $strParent))
 		{
-			new \Folder($strParent);
+			new Folder($strParent);
 		}
 
 		$return = $this->Files->copy($this->strFile, $strNewName);
@@ -587,7 +594,7 @@ class File extends \System
 		// Update the database AFTER the file has been renamed
 		if ($this->blnSyncDb)
 		{
-			$this->objModel = \Dbafs::copyResource($this->strFile, $strNewName);
+			$this->objModel = Dbafs::copyResource($this->strFile, $strNewName);
 		}
 
 		return $return;
@@ -610,7 +617,7 @@ class File extends \System
 			return false;
 		}
 
-		$return = \Image::resize($this->strFile, $width, $height, $mode);
+		$return = Image::resize($this->strFile, $width, $height, $mode);
 
 		if ($return)
 		{

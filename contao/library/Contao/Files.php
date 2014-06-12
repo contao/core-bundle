@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Exception;
+
 
 /**
  * A class to access the file system
@@ -39,7 +41,7 @@ class Files
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Files
+	 * @var Files
 	 */
 	protected static $objInstance;
 
@@ -59,7 +61,7 @@ class Files
 	/**
 	 * Instantiate the object (Factory)
 	 *
-	 * @return \Files The files object
+	 * @return Files The files object
 	 */
 	public static function getInstance()
 	{
@@ -257,24 +259,24 @@ class Files
 	 * @param string $strSource The symlink name
 	 * @param string $strTarget The symlink target
 	 *
-	 * @throws \Exception If the symlink cannot be created
+	 * @throws Exception If the symlink cannot be created
 	 */
 	public function symlink($strSource, $strTarget)
 	{
 		// Check the source
 		if ($strSource == '')
 		{
-			throw new \Exception("No symlink name provided");
+			throw new Exception("No symlink name provided");
 		}
 
 		// Check the target
 		if ($strTarget == '')
 		{
-			throw new \Exception("No symlink target provided");
+			throw new Exception("No symlink target provided");
 		}
 		elseif (strpos($strTarget, '../') !== false)
 		{
-			throw new \Exception("The symlink target must not be relative");
+			throw new Exception("The symlink target must not be relative");
 		}
 
 		// Remove an existing symlink
@@ -282,7 +284,7 @@ class Files
 		{
 			if (!is_link(TL_ROOT . '/' . $strTarget))
 			{
-				throw new \Exception("The target $strTarget exists and is not a symlink");
+				throw new Exception("The target $strTarget exists and is not a symlink");
 			}
 
 			unlink(TL_ROOT . '/' . $strTarget);
@@ -383,7 +385,7 @@ class Files
 	/**
 	 * Validate a path (must not contain ../ fragments)
 	 *
-	 * @throws \Exception If the given paths are not valid
+	 * @throws Exception If the given paths are not valid
 	 */
 	protected function validate()
 	{
@@ -391,11 +393,11 @@ class Files
 		{
 			if ($strPath == '') // see #5795
 			{
-				throw new \Exception('No file or folder name given');
+				throw new Exception('No file or folder name given');
 			}
 			elseif (strpos($strPath, '../') !== false)
 			{
-				throw new \Exception('Invalid file or folder name ' . $strPath);
+				throw new Exception('Invalid file or folder name ' . $strPath);
 			}
 		}
 	}

@@ -12,6 +12,11 @@
 
 namespace Contao;
 
+use Contao\Backend;
+use Contao\Config;
+use Contao\File;
+use Contao\System;
+
 
 /**
  * Resizes images
@@ -91,17 +96,17 @@ class Image
 		// Check whether the file exists
 		if (!is_file(TL_ROOT . '/' . $image))
 		{
-			\System::log('Image "' . $image . '" could not be found', __METHOD__, TL_ERROR);
+			System::log('Image "' . $image . '" could not be found', __METHOD__, TL_ERROR);
 			return null;
 		}
 
-		$objFile = new \File($image);
-		$arrAllowedTypes = trimsplit(',', strtolower(\Config::get('validImageTypes')));
+		$objFile = new File($image);
+		$arrAllowedTypes = trimsplit(',', strtolower(Config::get('validImageTypes')));
 
 		// Check the file type
 		if (!in_array($objFile->extension, $arrAllowedTypes))
 		{
-			\System::log('Image type "' . $objFile->extension . '" was not allowed to be processed', __METHOD__, TL_ERROR);
+			System::log('Image type "' . $objFile->extension . '" was not allowed to be processed', __METHOD__, TL_ERROR);
 			return null;
 		}
 
@@ -114,13 +119,13 @@ class Image
 				// Copy the source image if the target image does not exist or is older than the source image
 				if (!file_exists(TL_ROOT . '/' . $target) || $objFile->mtime > filemtime(TL_ROOT . '/' . $target))
 				{
-					\Files::getInstance()->copy($image, $target);
+					Files::getInstance()->copy($image, $target);
 				}
 
-				return \System::urlEncode($target);
+				return System::urlEncode($target);
 			}
 
-			return \System::urlEncode($image);
+			return System::urlEncode($image);
 		}
 
 		// No mode given
@@ -147,14 +152,14 @@ class Image
 		$strCacheName = 'assets/images/' . substr($strCacheKey, -1) . '/' . $objFile->filename . '-' . $strCacheKey . '.' . $objFile->extension;
 
 		// Check whether the image exists already
-		if (!\Config::get('debugMode'))
+		if (!Config::get('debugMode'))
 		{
 			// Custom target (thanks to Tristan Lins) (see #4166)
 			if ($target && !$force)
 			{
 				if (file_exists(TL_ROOT . '/' . $target) && $objFile->mtime <= filemtime(TL_ROOT . '/' . $target))
 				{
-					return \System::urlEncode($target);
+					return System::urlEncode($target);
 				}
 			}
 
@@ -164,11 +169,11 @@ class Image
 				// Copy the cached file if it exists
 				if ($target)
 				{
-					\Files::getInstance()->copy($strCacheName, $target);
-					return \System::urlEncode($target);
+					Files::getInstance()->copy($strCacheName, $target);
+					return System::urlEncode($target);
 				}
 
-				return \System::urlEncode($strCacheName);
+				return System::urlEncode($strCacheName);
 			}
 		}
 
@@ -177,19 +182,19 @@ class Image
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getImage'] as $callback)
 			{
-				$return = \System::importStatic($callback[0])->$callback[1]($image, $width, $height, $mode, $strCacheName, $objFile, $target);
+				$return = System::importStatic($callback[0])->$callback[1]($image, $width, $height, $mode, $strCacheName, $objFile, $target);
 
 				if (is_string($return))
 				{
-					return \System::urlEncode($return);
+					return System::urlEncode($return);
 				}
 			}
 		}
 
 		// Return the path to the original image if the GDlib cannot handle it
-		if (!extension_loaded('gd') || !$objFile->isGdImage || $objFile->width > \Config::get('gdMaxImgWidth') || $objFile->height > \Config::get('gdMaxImgHeight') || (!$width && !$height) || $width > \Config::get('gdMaxImgWidth') || $height > \Config::get('gdMaxImgHeight'))
+		if (!extension_loaded('gd') || !$objFile->isGdImage || $objFile->width > Config::get('gdMaxImgWidth') || $objFile->height > Config::get('gdMaxImgHeight') || (!$width && !$height) || $width > Config::get('gdMaxImgWidth') || $height > Config::get('gdMaxImgHeight'))
 		{
-			return \System::urlEncode($image);
+			return System::urlEncode($image);
 		}
 
 		$intPositionX = 0;
@@ -363,7 +368,7 @@ class Image
 		if (!$strSourceImage)
 		{
 			imagedestroy($strNewImage);
-			\System::log('Image "' . $image . '" could not be processed', __METHOD__, TL_ERROR);
+			System::log('Image "' . $image . '" could not be processed', __METHOD__, TL_ERROR);
 			return null;
 		}
 
@@ -385,7 +390,7 @@ class Image
 
 			case 'jpg':
 			case 'jpeg':
-				imagejpeg($strNewImage, TL_ROOT . '/' . $strCacheName, (\Config::get('jpgQuality') ?: 80));
+				imagejpeg($strNewImage, TL_ROOT . '/' . $strCacheName, (Config::get('jpgQuality') ?: 80));
 				break;
 
 			case 'png':
@@ -423,12 +428,12 @@ class Image
 		// Resize the original image
 		if ($target)
 		{
-			\Files::getInstance()->copy($strCacheName, $target);
-			return \System::urlEncode($target);
+			Files::getInstance()->copy($strCacheName, $target);
+			return System::urlEncode($target);
 		}
 
 		// Return the path to new image
-		return \System::urlEncode($strCacheName);
+		return System::urlEncode($strCacheName);
 	}
 
 
@@ -455,7 +460,7 @@ class Image
 			}
 			else
 			{
-				$src = 'system/themes/' . \Backend::getTheme() . '/images/' . $src;
+				$src = 'system/themes/' . Backend::getTheme() . '/images/' . $src;
 			}
 		}
 
@@ -465,6 +470,6 @@ class Image
 		}
 
 		$size = getimagesize(TL_ROOT .'/'. $src);
-		return '<img src="' . $static . \System::urlEncode($src) . '" ' . $size[3] . ' alt="' . specialchars($alt) . '"' . (($attributes != '') ? ' ' . $attributes : '') . '>';
+		return '<img src="' . $static . System::urlEncode($src) . '" ' . $size[3] . ' alt="' . specialchars($alt) . '"' . (($attributes != '') ? ' ' . $attributes : '') . '>';
 	}
 }

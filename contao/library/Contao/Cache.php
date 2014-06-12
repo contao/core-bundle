@@ -40,7 +40,7 @@ class Cache
 
 	/**
 	 * Object instance (Singleton)
-	 * @var \Cache
+	 * @var Cache
 	 */
 	protected static $objInstance;
 
@@ -181,7 +181,7 @@ class Cache
 	/**
 	 * Instantiate the cache object (Factory)
 	 *
-	 * @return \Cache The object instance
+	 * @return Cache The object instance
 	 *
 	 * @deprecated Cache is now a static class
 	 */

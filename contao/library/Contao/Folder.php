@@ -12,6 +12,16 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Dbafs;
+use Contao\File;
+use Contao\FilesModel;
+use Contao\System;
+use Exception;
+use RecursiveDirectoryIterator;
+use FilesystemIterator;
+use RecursiveIteratorIterator;
+
 
 /**
  * Creates, reads, writes and deletes folders
@@ -29,7 +39,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Folder extends \System
+class Folder extends System
 {
 
 	/**
@@ -40,7 +50,7 @@ class Folder extends \System
 
 	/**
 	 * Files model
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objModel;
 
@@ -56,7 +66,7 @@ class Folder extends \System
 	 *
 	 * @param string $strFolder The folder path
 	 *
-	 * @throws \Exception If $strFolder is not a folder
+	 * @throws Exception If $strFolder is not a folder
 	 */
 	public function __construct($strFolder)
 	{
@@ -69,21 +79,21 @@ class Folder extends \System
 		// Check whether it is a directory
 		if (is_file(TL_ROOT . '/' . $strFolder))
 		{
-			throw new \Exception(sprintf('File "%s" is not a directory', $strFolder));
+			throw new Exception(sprintf('File "%s" is not a directory', $strFolder));
 		}
 
 		$this->import('Files');
 		$this->strFolder = $strFolder;
 
 		// Check whether we need to sync the database
-		$this->blnSyncDb = (\Config::get('uploadPath') != 'templates' && strncmp($strFolder . '/', \Config::get('uploadPath') . '/', strlen(\Config::get('uploadPath')) + 1) === 0);
+		$this->blnSyncDb = (Config::get('uploadPath') != 'templates' && strncmp($strFolder . '/', Config::get('uploadPath') . '/', strlen(Config::get('uploadPath')) + 1) === 0);
 
 		// Check the excluded folders
-		if ($this->blnSyncDb && \Config::get('fileSyncExclude') != '')
+		if ($this->blnSyncDb && Config::get('fileSyncExclude') != '')
 		{
 			$arrExempt = array_map(function($e) {
-				return \Config::get('uploadPath') . '/' . $e;
-			}, trimsplit(',', \Config::get('fileSyncExclude')));
+				return Config::get('uploadPath') . '/' . $e;
+			}, trimsplit(',', Config::get('fileSyncExclude')));
 
 			foreach ($arrExempt as $strExempt)
 			{
@@ -111,7 +121,7 @@ class Folder extends \System
 			// Update the database
 			if ($this->blnSyncDb)
 			{
-				$this->objModel = \Dbafs::addResource($this->strFolder);
+				$this->objModel = Dbafs::addResource($this->strFolder);
 			}
 		}
 	}
@@ -180,7 +190,7 @@ class Folder extends \System
 		// Update the database
 		if ($this->blnSyncDb)
 		{
-			$objFiles = \FilesModel::findMultipleByBasepath($this->strFolder . '/');
+			$objFiles = FilesModel::findMultipleByBasepath($this->strFolder . '/');
 
 			if ($objFiles !== null)
 			{
@@ -190,7 +200,7 @@ class Folder extends \System
 				}
 			}
 
-			\Dbafs::updateFolderHashes($this->strFolder);
+			Dbafs::updateFolderHashes($this->strFolder);
 		}
 	}
 
@@ -216,7 +226,7 @@ class Folder extends \System
 		// Update the database
 		if ($this->blnSyncDb)
 		{
-			\Dbafs::deleteResource($this->strFolder);
+			Dbafs::deleteResource($this->strFolder);
 		}
 	}
 
@@ -248,7 +258,7 @@ class Folder extends \System
 		// Create the parent folder if it does not exist
 		if (!is_dir(TL_ROOT . '/' . $strParent))
 		{
-			new \Folder($strParent);
+			new self($strParent);
 		}
 
 		$return = $this->Files->rename($this->strFolder, $strNewName);
@@ -256,7 +266,7 @@ class Folder extends \System
 		// Update the database AFTER the folder has been renamed
 		if ($this->blnSyncDb)
 		{
-			$this->objModel = \Dbafs::moveResource($this->strFolder, $strNewName);
+			$this->objModel = Dbafs::moveResource($this->strFolder, $strNewName);
 		}
 
 		// Reset the object AFTER the database has been updated
@@ -283,7 +293,7 @@ class Folder extends \System
 		// Create the parent folder if it does not exist
 		if (!is_dir(TL_ROOT . '/' . $strParent))
 		{
-			new \Folder($strParent);
+			new self($strParent);
 		}
 
 		$return = $this->Files->rcopy($this->strFolder, $strNewName);
@@ -291,7 +301,7 @@ class Folder extends \System
 		// Update the database AFTER the folder has been renamed
 		if ($this->blnSyncDb)
 		{
-			$this->objModel = \Dbafs::copyResource($this->strFolder, $strNewName);
+			$this->objModel = Dbafs::copyResource($this->strFolder, $strNewName);
 		}
 
 		return $return;
@@ -305,7 +315,7 @@ class Folder extends \System
 	{
 		if (file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
 		{
-			$objFile = new \File($this->strFolder . '/.public');
+			$objFile = new File($this->strFolder . '/.public');
 			$objFile->delete();
 		}
 	}
@@ -318,7 +328,7 @@ class Folder extends \System
 	{
 		if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
 		{
-			\File::putContent($this->strFolder . '/.public', "");
+			File::putContent($this->strFolder . '/.public', "");
 		}
 	}
 
@@ -326,7 +336,7 @@ class Folder extends \System
 	/**
 	 * Return the files model
 	 *
-	 * @return \FilesModel The files model
+	 * @return FilesModel The files model
 	 */
 	public function getModel()
 	{
@@ -343,11 +353,11 @@ class Folder extends \System
 	{
 		$arrFiles = array();
 
-		$it = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator(
+		$it = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator(
 				TL_ROOT . '/' . $this->strFolder,
-				\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
-			), \RecursiveIteratorIterator::SELF_FIRST
+				FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
+			), RecursiveIteratorIterator::SELF_FIRST
 		);
 
 		while ($it->valid())
@@ -382,12 +392,12 @@ class Folder extends \System
 
 			if (is_dir(TL_ROOT . '/' . $this->strFolder . '/' . $strFile))
 			{
-				$objFolder = new \Folder($this->strFolder . '/' . $strFile);
+				$objFolder = new self($this->strFolder . '/' . $strFile);
 				$intSize += $objFolder->size;
 			}
 			else
 			{
-				$objFile = new \File($this->strFolder . '/' . $strFile);
+				$objFile = new File($this->strFolder . '/' . $strFile);
 				$intSize += $objFile->size;
 			}
 		}

@@ -12,6 +12,48 @@
 
 namespace Contao;
 
+use Contao\ArticleModel;
+use Contao\Backend;
+use Contao\Cache;
+use Contao\CalendarEventsModel;
+use Contao\CalendarFeedModel;
+use Contao\Combiner;
+use Contao\Config;
+use Contao\ContentElement;
+use Contao\ContentModel;
+use Contao\Database;
+use Contao\Date;
+use Contao\DcaLoader;
+use Contao\Environment;
+use Contao\FaqModel;
+use Contao\File;
+use Contao\FilesModel;
+use Contao\Form;
+use Contao\FormModel;
+use Contao\Frontend;
+use Contao\FrontendUser;
+use Contao\Idna;
+use Contao\Image;
+use Contao\Input;
+use Contao\Model;
+use Contao\Model\Collection;
+use Contao\Module;
+use Contao\ModuleArticle;
+use Contao\ModuleLoader;
+use Contao\ModuleModel;
+use Contao\NewsFeedModel;
+use Contao\NewsModel;
+use Contao\PageModel;
+use Contao\String;
+use Contao\System;
+use Contao\Template;
+use Contao\TemplateLoader;
+use Contao\ThemeModel;
+use Contao\Validator;
+use Contao\Versions;
+use Contao\Widget;
+use Exception;
+
 
 /**
  * Abstract parent class for Controllers
@@ -34,7 +76,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-abstract class Controller extends \System
+abstract class Controller extends System
 {
 
 	/**
@@ -45,16 +87,16 @@ abstract class Controller extends \System
 	 *
 	 * @return string The path to the template file
 	 *
-	 * @throws \Exception If $strFormat is unknown
+	 * @throws Exception If $strFormat is unknown
 	 */
 	public static function getTemplate($strTemplate, $strFormat='html5')
 	{
-		$arrAllowed = trimsplit(',', \Config::get('templateFiles'));
+		$arrAllowed = trimsplit(',', Config::get('templateFiles'));
 		array_push($arrAllowed, 'html5'); // see #3398
 
 		if (!in_array($strFormat, $arrAllowed))
 		{
-			throw new \Exception("Invalid output format $strFormat");
+			throw new Exception("Invalid output format $strFormat");
 		}
 
 		$strTemplate = basename($strTemplate);
@@ -67,11 +109,11 @@ abstract class Controller extends \System
 
 			if ($strCustom != '')
 			{
-				return \TemplateLoader::getPath($strTemplate, $strFormat, $strCustom);
+				return TemplateLoader::getPath($strTemplate, $strFormat, $strCustom);
 			}
 		}
 
-		return \TemplateLoader::getPath($strTemplate, $strFormat);
+		return TemplateLoader::getPath($strTemplate, $strFormat);
 	}
 
 
@@ -87,7 +129,7 @@ abstract class Controller extends \System
 		$arrTemplates = array();
 
 		// Get the default templates
-		foreach (\TemplateLoader::getPrefixedFiles($strPrefix) as $strTemplate)
+		foreach (TemplateLoader::getPrefixedFiles($strPrefix) as $strTemplate)
 		{
 			$arrTemplates[$strTemplate][] = 'root';
 		}
@@ -110,9 +152,9 @@ abstract class Controller extends \System
 			// Try to select the themes (see #5210)
 			try
 			{
-				$objTheme = \ThemeModel::findAll(array('order'=>'name'));
+				$objTheme = ThemeModel::findAll(array('order'=>'name'));
 			}
-			catch (\Exception $e)
+			catch (Exception $e)
 			{
 				$objTheme = null;
 			}
@@ -192,9 +234,9 @@ abstract class Controller extends \System
 		if ($intId == 0)
 		{
 			// Show a particular article only
-			if ($objPage->type == 'regular' && \Input::get('articles'))
+			if ($objPage->type == 'regular' && Input::get('articles'))
 			{
-				list($strSection, $strArticle) = explode(':', \Input::get('articles'));
+				list($strSection, $strArticle) = explode(':', Input::get('articles'));
 
 				if ($strArticle === null)
 				{
@@ -204,7 +246,7 @@ abstract class Controller extends \System
 
 				if ($strSection == $strColumn)
 				{
-					$objArticle = \ArticleModel::findByIdOrAliasAndPid($strArticle, $objPage->id);
+					$objArticle = ArticleModel::findByIdOrAliasAndPid($strArticle, $objPage->id);
 
 					// Send a 404 header if the article does not exist
 					if ($objArticle === null)
@@ -225,13 +267,13 @@ abstract class Controller extends \System
 			}
 
 			// HOOK: trigger the article_raster_designer extension
-			if (in_array('article_raster_designer', \ModuleLoader::getActive()))
+			if (in_array('article_raster_designer', ModuleLoader::getActive()))
 			{
 				return \RasterDesigner::load($objPage->id, $strColumn);
 			}
 
 			// Show all articles (no else block here, see #4740)
-			$objArticles = \ArticleModel::findPublishedByPidAndColumn($objPage->id, $strColumn);
+			$objArticles = ArticleModel::findPublishedByPidAndColumn($objPage->id, $strColumn);
 
 			if ($objArticles === null)
 			{
@@ -281,7 +323,7 @@ abstract class Controller extends \System
 			}
 			else
 			{
-				$objRow = \ModuleModel::findByPk($intId);
+				$objRow = ModuleModel::findByPk($intId);
 
 				if ($objRow === null)
 				{
@@ -295,7 +337,7 @@ abstract class Controller extends \System
 				return '';
 			}
 
-			$strClass = \Module::findClass($objRow->type);
+			$strClass = Module::findClass($objRow->type);
 
 			// Return if the class does not exist
 			if (!class_exists($strClass))
@@ -353,7 +395,7 @@ abstract class Controller extends \System
 				return '';
 			}
 
-			$objRow = \ArticleModel::findByIdOrAliasAndPid($varId, (!$blnIsInsertTag ? $objPage->id : null));
+			$objRow = ArticleModel::findByIdOrAliasAndPid($varId, (!$blnIsInsertTag ? $objPage->id : null));
 
 			if ($objRow === null)
 			{
@@ -368,12 +410,12 @@ abstract class Controller extends \System
 		}
 
 		// Print the article as PDF
-		if (isset($_GET['pdf']) && \Input::get('pdf') == $objRow->id)
+		if (isset($_GET['pdf']) && Input::get('pdf') == $objRow->id)
 		{
 			// Backwards compatibility
 			if ($objRow->printable == 1)
 			{
-				$objArticle = new \ModuleArticle($objRow);
+				$objArticle = new ModuleArticle($objRow);
 				$objArticle->generatePdf();
 			}
 			elseif ($objRow->printable != '')
@@ -382,7 +424,7 @@ abstract class Controller extends \System
 
 				if (is_array($options) && in_array('pdf', $options))
 				{
-					$objArticle = new \ModuleArticle($objRow);
+					$objArticle = new ModuleArticle($objRow);
 					$objArticle->generatePdf();
 				}
 			}
@@ -400,7 +442,7 @@ abstract class Controller extends \System
 			}
 		}
 
-		$objArticle = new \ModuleArticle($objRow, $strColumn);
+		$objArticle = new ModuleArticle($objRow, $strColumn);
 		$strBuffer = $objArticle->generate($blnIsInsertTag);
 
 		// Disable indexing if protected
@@ -434,7 +476,7 @@ abstract class Controller extends \System
 				return '';
 			}
 
-			$objRow = \ContentModel::findByPk($intId);
+			$objRow = ContentModel::findByPk($intId);
 
 			if ($objRow === null)
 			{
@@ -454,7 +496,7 @@ abstract class Controller extends \System
 			$objRow->space = null;
 		}
 
-		$strClass = \ContentElement::findClass($objRow->type);
+		$strClass = ContentElement::findClass($objRow->type);
 
 		// Return if the class does not exist
 		if (!class_exists($strClass))
@@ -507,7 +549,7 @@ abstract class Controller extends \System
 				return '';
 			}
 
-			$objRow = \FormModel::findByIdOrAlias($varId);
+			$objRow = FormModel::findByIdOrAlias($varId);
 
 			if ($objRow === null)
 			{
@@ -517,7 +559,7 @@ abstract class Controller extends \System
 
 		$objRow->typePrefix = 'ce_';
 		$objRow->form = $objRow->id;
-		$objElement = new \Form($objRow, $strColumn);
+		$objElement = new Form($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
 		// HOOK: add custom logic
@@ -540,7 +582,7 @@ abstract class Controller extends \System
 	 */
 	protected function getSpellcheckerString()
 	{
-		\System::loadLanguageFile('languages');
+		System::loadLanguageFile('languages');
 
 		$return = array();
 		$langs = scan(TL_ROOT . '/system/modules/core/languages');
@@ -603,11 +645,11 @@ abstract class Controller extends \System
 	/**
 	 * Check whether an element is visible in the front end
 	 *
-	 * @param \Model $objElement The element model
+	 * @param Model $objElement The element model
 	 *
 	 * @return boolean True if the element is visible
 	 */
-	public static function isVisibleElement(\Model $objElement)
+	public static function isVisibleElement(Model $objElement)
 	{
 		// Only apply the restrictions in the front end
 		if (TL_MODE != 'FE' || BE_USER_LOGGED_IN)
@@ -628,7 +670,7 @@ abstract class Controller extends \System
 			{
 				$groups = deserialize($objElement->groups);
 
-				if (empty($groups) || !is_array($groups) || !count(array_intersect($groups, \FrontendUser::getInstance()->groups)))
+				if (empty($groups) || !is_array($groups) || !count(array_intersect($groups, FrontendUser::getInstance()->groups)))
 				{
 					$blnReturn = false;
 				}
@@ -667,9 +709,9 @@ abstract class Controller extends \System
 		global $objPage;
 
 		// Preserve insert tags
-		if (\Config::get('disableInsertTags'))
+		if (Config::get('disableInsertTags'))
 		{
-			return \String::restoreBasicEntities($strBuffer);
+			return String::restoreBasicEntities($strBuffer);
 		}
 
 		$tags = preg_split('/\{\{(([^\{\}]*|(?R))*)\}\}/', $strBuffer, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -722,7 +764,7 @@ abstract class Controller extends \System
 			{
 				// Date
 				case 'date':
-					$arrCache[$strTag] = \Date::parse($elements[1] ?: \Config::get('dateFormat'));
+					$arrCache[$strTag] = Date::parse($elements[1] ?: Config::get('dateFormat'));
 					break;
 
 				// Accessibility tags
@@ -752,7 +794,7 @@ abstract class Controller extends \System
 						break;
 					}
 
-					$strEmail = \String::encodeEmail($elements[1]);
+					$strEmail = String::encodeEmail($elements[1]);
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -781,7 +823,7 @@ abstract class Controller extends \System
 						break;
 					}
 
-					\System::loadLanguageFile($keys[0]);
+					System::loadLanguageFile($keys[0]);
 
 					if (count($keys) == 2)
 					{
@@ -821,15 +863,15 @@ abstract class Controller extends \System
 
 						if ($rgxp == 'date')
 						{
-							$arrCache[$strTag] = \Date::parse(\Config::get('dateFormat'), $value);
+							$arrCache[$strTag] = Date::parse(Config::get('dateFormat'), $value);
 						}
 						elseif ($rgxp == 'time')
 						{
-							$arrCache[$strTag] = \Date::parse(\Config::get('timeFormat'), $value);
+							$arrCache[$strTag] = Date::parse(Config::get('timeFormat'), $value);
 						}
 						elseif ($rgxp == 'datim')
 						{
-							$arrCache[$strTag] = \Date::parse(\Config::get('datimFormat'), $value);
+							$arrCache[$strTag] = Date::parse(Config::get('datimFormat'), $value);
 						}
 						elseif (is_array($value))
 						{
@@ -898,7 +940,7 @@ abstract class Controller extends \System
 							$elements[1] = $this->User->loginPage;
 						}
 
-						$objNextPage = \PageModel::findByIdOrAlias($elements[1]);
+						$objNextPage = PageModel::findByIdOrAlias($elements[1]);
 
 						if ($objNextPage === null)
 						{
@@ -913,7 +955,7 @@ abstract class Controller extends \System
 
 								if (strncasecmp($strUrl, 'mailto:', 7) === 0)
 								{
-									$strUrl = \String::encodeEmail($strUrl);
+									$strUrl = String::encodeEmail($strUrl);
 								}
 								break;
 
@@ -924,7 +966,7 @@ abstract class Controller extends \System
 								}
 								else
 								{
-									$objNext = \PageModel::findFirstPublishedRegularByPid($objNextPage->id);
+									$objNext = PageModel::findFirstPublishedRegularByPid($objNextPage->id);
 								}
 
 								if ($objNext !== null)
@@ -933,7 +975,7 @@ abstract class Controller extends \System
 									$objNext->loadDetails();
 
 									// Check the target page language (see #4706)
-									if (\Config::get('addLanguageToUrl'))
+									if (Config::get('addLanguageToUrl'))
 									{
 										$strForceLang = $objNext->language;
 									}
@@ -948,7 +990,7 @@ abstract class Controller extends \System
 								$objNextPage->loadDetails();
 
 								// Check the target page language (see #4706, #5465)
-								if (\Config::get('addLanguageToUrl'))
+								if (Config::get('addLanguageToUrl'))
 								{
 									$strForceLang = $objNextPage->language;
 								}
@@ -1024,12 +1066,12 @@ abstract class Controller extends \System
 				case 'article_open':
 				case 'article_url':
 				case 'article_title':
-					if (($objArticle = \ArticleModel::findByIdOrAlias($elements[1])) === null || ($objPid = $objArticle->getRelated('pid')) === null)
+					if (($objArticle = ArticleModel::findByIdOrAlias($elements[1])) === null || ($objPid = $objArticle->getRelated('pid')) === null)
 					{
 						break;
 					}
 
-					$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && strlen($objArticle->alias)) ? $objArticle->alias : $objArticle->id));
+					$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!Config::get('disableAlias') && strlen($objArticle->alias)) ? $objArticle->alias : $objArticle->id));
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -1058,12 +1100,12 @@ abstract class Controller extends \System
 				case 'faq_open':
 				case 'faq_url':
 				case 'faq_title':
-					if (($objFaq = \FaqModel::findByIdOrAlias($elements[1])) === null || ($objPid = $objFaq->getRelated('pid')) === null || ($objJumpTo = $objPid->getRelated('jumpTo')) === null)
+					if (($objFaq = FaqModel::findByIdOrAlias($elements[1])) === null || ($objPid = $objFaq->getRelated('pid')) === null || ($objJumpTo = $objPid->getRelated('jumpTo')) === null)
 					{
 						break;
 					}
 
-					$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objFaq->alias != '') ? $objFaq->alias : $objFaq->id));
+					$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((Config::get('useAutoItem') && !Config::get('disableAlias')) ?  '/' : '/items/') . ((!Config::get('disableAlias') && $objFaq->alias != '') ? $objFaq->alias : $objFaq->id));
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -1092,7 +1134,7 @@ abstract class Controller extends \System
 				case 'news_open':
 				case 'news_url':
 				case 'news_title':
-					if (($objNews = \NewsModel::findByIdOrAlias($elements[1])) === null)
+					if (($objNews = NewsModel::findByIdOrAlias($elements[1])) === null)
 					{
 						break;
 					}
@@ -1112,16 +1154,16 @@ abstract class Controller extends \System
 					}
 					elseif ($objNews->source == 'article')
 					{
-						if (($objArticle = \ArticleModel::findByPk($objNews->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+						if (($objArticle = ArticleModel::findByPk($objNews->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
+							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
 						}
 					}
 					else
 					{
 						if (($objArchive = $objNews->getRelated('pid')) !== null && ($objJumpTo = $objArchive->getRelated('jumpTo')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id));
+							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((Config::get('useAutoItem') && !Config::get('disableAlias')) ?  '/' : '/items/') . ((!Config::get('disableAlias') && $objNews->alias != '') ? $objNews->alias : $objNews->id));
 						}
 					}
 
@@ -1152,7 +1194,7 @@ abstract class Controller extends \System
 				case 'event_open':
 				case 'event_url':
 				case 'event_title':
-					if (($objEvent = \CalendarEventsModel::findByIdOrAlias($elements[1])) === null)
+					if (($objEvent = CalendarEventsModel::findByIdOrAlias($elements[1])) === null)
 					{
 						break;
 					}
@@ -1172,16 +1214,16 @@ abstract class Controller extends \System
 					}
 					elseif ($objEvent->source == 'article')
 					{
-						if (($objArticle = \ArticleModel::findByPk($objEvent->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+						if (($objArticle = ArticleModel::findByPk($objEvent->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
+							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
 						}
 					}
 					else
 					{
 						if (($objCalendar = $objEvent->getRelated('pid')) !== null && ($objJumpTo = $objCalendar->getRelated('jumpTo')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/events/') . ((!\Config::get('disableAlias') && $objEvent->alias != '') ? $objEvent->alias : $objEvent->id));
+							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ((Config::get('useAutoItem') && !Config::get('disableAlias')) ?  '/' : '/events/') . ((!Config::get('disableAlias') && $objEvent->alias != '') ? $objEvent->alias : $objEvent->id));
 						}
 					}
 
@@ -1209,37 +1251,37 @@ abstract class Controller extends \System
 
 				// Article teaser
 				case 'article_teaser':
-					$objTeaser = \ArticleModel::findByIdOrAlias($elements[1]);
+					$objTeaser = ArticleModel::findByIdOrAlias($elements[1]);
 
 					if ($objTeaser !== null)
 					{
-						$arrCache[$strTag] = \String::toHtml5($this->replaceInsertTags($objTeaser->teaser), $blnCache);
+						$arrCache[$strTag] = String::toHtml5($this->replaceInsertTags($objTeaser->teaser), $blnCache);
 					}
 					break;
 
 				// News teaser
 				case 'news_teaser':
-					$objTeaser = \NewsModel::findByIdOrAlias($elements[1]);
+					$objTeaser = NewsModel::findByIdOrAlias($elements[1]);
 
 					if ($objTeaser !== null)
 					{
-						$arrCache[$strTag] = \String::toHtml5($objTeaser->teaser);
+						$arrCache[$strTag] = String::toHtml5($objTeaser->teaser);
 					}
 					break;
 
 				// Event teaser
 				case 'event_teaser':
-					$objTeaser = \CalendarEventsModel::findByIdOrAlias($elements[1]);
+					$objTeaser = CalendarEventsModel::findByIdOrAlias($elements[1]);
 
 					if ($objTeaser !== null)
 					{
-						$arrCache[$strTag] = \String::toHtml5($objTeaser->teaser);
+						$arrCache[$strTag] = String::toHtml5($objTeaser->teaser);
 					}
 					break;
 
 				// News feed URL
 				case 'news_feed':
-					$objFeed = \NewsFeedModel::findByPk($elements[1]);
+					$objFeed = NewsFeedModel::findByPk($elements[1]);
 
 					if ($objFeed !== null)
 					{
@@ -1249,7 +1291,7 @@ abstract class Controller extends \System
 
 				// Calendar feed URL
 				case 'calendar_feed':
-					$objFeed = \CalendarFeedModel::findByPk($elements[1]);
+					$objFeed = CalendarFeedModel::findByPk($elements[1]);
 
 					if ($objFeed !== null)
 					{
@@ -1261,22 +1303,22 @@ abstract class Controller extends \System
 				case 'last_update':
 					$strQuery = "SELECT MAX(tstamp) AS tc";
 
-					if (in_array('news', \ModuleLoader::getActive()))
+					if (in_array('news', ModuleLoader::getActive()))
 					{
 						$strQuery .= ", (SELECT MAX(tstamp) FROM tl_news) AS tn";
 					}
 
-					if (in_array('calendar', \ModuleLoader::getActive()))
+					if (in_array('calendar', ModuleLoader::getActive()))
 					{
 						$strQuery .= ", (SELECT MAX(tstamp) FROM tl_calendar_events) AS te";
 					}
 
 					$strQuery .= " FROM tl_content";
-					$objUpdate = \Database::getInstance()->query($strQuery);
+					$objUpdate = Database::getInstance()->query($strQuery);
 
 					if ($objUpdate->numRows)
 					{
-						$arrCache[$strTag] = \Date::parse($elements[1] ?: \Config::get('datimFormat'), max($objUpdate->tc, $objUpdate->tn, $objUpdate->te));
+						$arrCache[$strTag] = Date::parse($elements[1] ?: Config::get('datimFormat'), max($objUpdate->tc, $objUpdate->tn, $objUpdate->te));
 					}
 					break;
 
@@ -1292,15 +1334,15 @@ abstract class Controller extends \System
 
 				// POST data
 				case 'post':
-					$arrCache[$strTag] = \Input::post($elements[1]);
+					$arrCache[$strTag] = Input::post($elements[1]);
 					break;
 
 				// Mobile/desktop toggle (see #6469)
 				case 'toggle_view':
-					$strUrl = ampersand(\Environment::get('request'));
+					$strUrl = ampersand(Environment::get('request'));
 					$strGlue = (strpos($strUrl, '?') === false) ? '?' : '&amp;';
 
-					if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
+					if (Input::cookie('TL_VIEW') == 'mobile' || (Environment::get('agent')->mobile && Input::cookie('TL_VIEW') != 'desktop'))
 					{
 						$arrCache[$strTag] = '<a href="' . $strUrl . $strGlue . 'toggle_view=desktop" class="toggle_desktop" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['toggleDesktop'][1]) . '">' . $GLOBALS['TL_LANG']['MSC']['toggleDesktop'][0] . '</a>';
 					}
@@ -1350,27 +1392,27 @@ abstract class Controller extends \System
 					switch ($elements[1])
 					{
 						case 'host':
-							$arrCache[$strTag] = \Idna::decode(\Environment::get('host'));
+							$arrCache[$strTag] = Idna::decode(Environment::get('host'));
 							break;
 
 						case 'http_host':
-							$arrCache[$strTag] = \Idna::decode(\Environment::get('httpHost'));
+							$arrCache[$strTag] = Idna::decode(Environment::get('httpHost'));
 							break;
 
 						case 'url':
-							$arrCache[$strTag] = \Idna::decode(\Environment::get('url'));
+							$arrCache[$strTag] = Idna::decode(Environment::get('url'));
 							break;
 
 						case 'path':
-							$arrCache[$strTag] = \Idna::decode(\Environment::get('base'));
+							$arrCache[$strTag] = Idna::decode(Environment::get('base'));
 							break;
 
 						case 'request':
-							$arrCache[$strTag] = \Environment::get('indexFreeRequest');
+							$arrCache[$strTag] = Environment::get('indexFreeRequest');
 							break;
 
 						case 'ip':
-							$arrCache[$strTag] = \Environment::get('ip');
+							$arrCache[$strTag] = Environment::get('ip');
 							break;
 
 						case 'referer':
@@ -1410,7 +1452,7 @@ abstract class Controller extends \System
 
 				// User agent
 				case 'ua':
-					$ua = \Environment::get('agent');
+					$ua = Environment::get('agent');
 
 					if ($elements[1] != '')
 					{
@@ -1449,7 +1491,7 @@ abstract class Controller extends \System
 					if (strpos($elements[1], '?') !== false)
 					{
 						$arrChunks = explode('?', urldecode($elements[1]), 2);
-						$strSource = \String::decodeEntities($arrChunks[1]);
+						$strSource = String::decodeEntities($arrChunks[1]);
 						$strSource = str_replace('[&]', '&', $strSource);
 						$arrParams = explode('&', $strSource);
 
@@ -1488,10 +1530,10 @@ abstract class Controller extends \System
 						$strFile = $arrChunks[0];
 					}
 
-					if (\Validator::isUuid($strFile))
+					if (Validator::isUuid($strFile))
 					{
 						// Handle UUIDs
-						$objFile = \FilesModel::findByUuid($strFile);
+						$objFile = FilesModel::findByUuid($strFile);
 
 						if ($objFile === null)
 						{
@@ -1504,7 +1546,7 @@ abstract class Controller extends \System
 					elseif (is_numeric($strFile))
 					{
 						// Handle numeric IDs (see #4805)
-						$objFile = \FilesModel::findByPk($strFile);
+						$objFile = FilesModel::findByPk($strFile);
 
 						if ($objFile === null)
 						{
@@ -1521,16 +1563,16 @@ abstract class Controller extends \System
 					}
 
 					// Check the maximum image width
-					if (\Config::get('maxImageWidth') > 0 && $width > \Config::get('maxImageWidth'))
+					if (Config::get('maxImageWidth') > 0 && $width > Config::get('maxImageWidth'))
 					{
-						$width = \Config::get('maxImageWidth');
+						$width = Config::get('maxImageWidth');
 						$height = null;
 					}
 
 					// Generate the thumbnail image
 					try
 					{
-						$src = \Image::get($strFile, $width, $height, $mode);
+						$src = Image::get($strFile, $width, $height, $mode);
 						$dimensions = '';
 
 						// Add the image dimensions
@@ -1558,7 +1600,7 @@ abstract class Controller extends \System
 							$arrCache[$strTag] = '<img src="' . TL_FILES_URL . $src . '" ' . $dimensions . ' alt="' . $alt . '"' . (($class != '') ? ' class="' . $class . '"' : '') . '>';
 						}
 					}
-					catch (\Exception $e)
+					catch (Exception $e)
 					{
 						$arrCache[$strTag] = '';
 					}
@@ -1566,9 +1608,9 @@ abstract class Controller extends \System
 
 				// Files (UUID or template path)
 				case 'file':
-					if (\Validator::isUuid($elements[1]))
+					if (Validator::isUuid($elements[1]))
 					{
-						$objFile = \FilesModel::findByUuid($elements[1]);
+						$objFile = FilesModel::findByUuid($elements[1]);
 
 						if ($objFile !== null)
 						{
@@ -1578,14 +1620,14 @@ abstract class Controller extends \System
 					}
 
 					$arrGet = $_GET;
-					\Input::resetCache();
+					Input::resetCache();
 					$strFile = $elements[1];
 
 					// Take arguments and add them to the $_GET array
 					if (strpos($elements[1], '?') !== false)
 					{
 						$arrChunks = explode('?', urldecode($elements[1]));
-						$strSource = \String::decodeEntities($arrChunks[1]);
+						$strSource = String::decodeEntities($arrChunks[1]);
 						$strSource = str_replace('[&]', '&', $strSource);
 						$arrParams = explode('&', $strSource);
 
@@ -1611,7 +1653,7 @@ abstract class Controller extends \System
 					}
 
 					$_GET = $arrGet;
-					\Input::resetCache();
+					Input::resetCache();
 					break;
 
 				// HOOK: pass unknown tags to callback functions
@@ -1631,7 +1673,7 @@ abstract class Controller extends \System
 							}
 						}
 					}
-					if (\Config::get('debugMode'))
+					if (Config::get('debugMode'))
 					{
 						$GLOBALS['TL_DEBUG']['unknown_insert_tags'][] = $strTag;
 					}
@@ -1673,19 +1715,19 @@ abstract class Controller extends \System
 
 						case 'encodeEmail':
 						case 'decodeEntities':
-							$arrCache[$strTag] = \String::$flag($arrCache[$strTag]);
+							$arrCache[$strTag] = String::$flag($arrCache[$strTag]);
 							break;
 
 						case 'number_format':
-							$arrCache[$strTag] = \System::getFormattedNumber($arrCache[$strTag], 0);
+							$arrCache[$strTag] = System::getFormattedNumber($arrCache[$strTag], 0);
 							break;
 
 						case 'currency_format':
-							$arrCache[$strTag] = \System::getFormattedNumber($arrCache[$strTag], 2);
+							$arrCache[$strTag] = System::getFormattedNumber($arrCache[$strTag], 2);
 							break;
 
 						case 'readable_size':
-							$arrCache[$strTag] = \System::getReadableSize($arrCache[$strTag]);
+							$arrCache[$strTag] = System::getReadableSize($arrCache[$strTag]);
 							break;
 
 						// HOOK: pass unknown flags to callback functions
@@ -1705,7 +1747,7 @@ abstract class Controller extends \System
 									}
 								}
 							}
-							if (\Config::get('debugMode'))
+							if (Config::get('debugMode'))
 							{
 								$GLOBALS['TL_DEBUG']['unknown_insert_tag_flags'][] = $flag;
 							}
@@ -1717,7 +1759,7 @@ abstract class Controller extends \System
 			$strBuffer .= $arrCache[$strTag];
 		}
 
-		return \String::restoreBasicEntities($strBuffer);
+		return String::restoreBasicEntities($strBuffer);
 	}
 
 
@@ -1780,27 +1822,27 @@ abstract class Controller extends \System
 		// Add the syntax highlighter scripts
 		if (!empty($GLOBALS['TL_HIGHLIGHTER']) && is_array($GLOBALS['TL_HIGHLIGHTER']))
 		{
-			$objCombiner = new \Combiner();
+			$objCombiner = new Combiner();
 
 			foreach (array_unique($GLOBALS['TL_HIGHLIGHTER']) as $script)
 			{
 				$objCombiner->add($script);
 			}
 
-			$strScripts .= "\n" . \Template::generateScriptTag($objCombiner->getCombinedFile());
-			$strScripts .= "\n" . \Template::generateInlineScript('SyntaxHighlighter.defaults.toolbar=false;SyntaxHighlighter.all()') . "\n";
+			$strScripts .= "\n" . Template::generateScriptTag($objCombiner->getCombinedFile());
+			$strScripts .= "\n" . Template::generateInlineScript('SyntaxHighlighter.defaults.toolbar=false;SyntaxHighlighter.all()') . "\n";
 		}
 
 		// Command scheduler
-		if (!\Config::get('disableCron'))
+		if (!Config::get('disableCron'))
 		{
-			$strScripts .= "\n" . \Template::generateInlineScript('setTimeout(function(){var e=function(e,t){try{var n=new XMLHttpRequest}catch(r){return}n.open("GET",e,!0),n.onreadystatechange=function(){this.readyState==4&&this.status==200&&typeof t=="function"&&t(this.responseText)},n.send()},t="system/cron/cron.";e(t+"txt",function(n){parseInt(n||0)<Math.round(+(new Date)/1e3)-' . \Frontend::getCronTimeout() . '&&e(t+"php")})},5e3);') . "\n";
+			$strScripts .= "\n" . Template::generateInlineScript('setTimeout(function(){var e=function(e,t){try{var n=new XMLHttpRequest}catch(r){return}n.open("GET",e,!0),n.onreadystatechange=function(){this.readyState==4&&this.status==200&&typeof t=="function"&&t(this.responseText)},n.send()},t="system/cron/cron.";e(t+"txt",function(n){parseInt(n||0)<Math.round(+(new Date)/1e3)-' . Frontend::getCronTimeout() . '&&e(t+"php")})},5e3);') . "\n";
 		}
 
 		$arrReplace['[[TL_BODY]]'] = $strScripts;
 		$strScripts = '';
 
-		$objCombiner = new \Combiner();
+		$objCombiner = new Combiner();
 
 		// Add the CSS framework style sheets
 		if (!empty($GLOBALS['TL_FRAMEWORK_CSS']) && is_array($GLOBALS['TL_FRAMEWORK_CSS']))
@@ -1824,7 +1866,7 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
+					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
 				}
 			}
 		}
@@ -1847,7 +1889,7 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
+					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
 				}
 			}
 		}
@@ -1855,7 +1897,7 @@ abstract class Controller extends \System
 		// Create the aggregated style sheet
 		if ($objCombiner->hasEntries())
 		{
-			$strScripts .= \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . "\n";
+			$strScripts .= Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . "\n";
 		}
 
 		$arrReplace['[[TL_CSS]]'] = $strScripts;
@@ -1864,7 +1906,7 @@ abstract class Controller extends \System
 		// Add the internal scripts
 		if (!empty($GLOBALS['TL_JAVASCRIPT']) && is_array($GLOBALS['TL_JAVASCRIPT']))
 		{
-			$objCombiner = new \Combiner();
+			$objCombiner = new Combiner();
 
 			foreach (array_unique($GLOBALS['TL_JAVASCRIPT']) as $javascript)
 			{
@@ -1876,14 +1918,14 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateScriptTag(static::addStaticUrlTo($javascript)) . "\n";
+					$strScripts .= Template::generateScriptTag(static::addStaticUrlTo($javascript)) . "\n";
 				}
 			}
 
 			// Create the aggregated script and add it before the non-static scripts (see #4890)
 			if ($objCombiner->hasEntries())
 			{
-				$strScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . "\n" . $strScripts;
+				$strScripts = Template::generateScriptTag($objCombiner->getCombinedFile()) . "\n" . $strScripts;
 			}
 		}
 
@@ -1976,7 +2018,7 @@ abstract class Controller extends \System
 			$strRequest .= '&amp;ref=' . TL_REFERER_ID;
 		}
 
-		$queries = preg_split('/&(amp;)?/i', \Environment::get('queryString'));
+		$queries = preg_split('/&(amp;)?/i', Environment::get('queryString'));
 
 		// Overwrite existing parameters
 		foreach ($queries as $k=>$v)
@@ -2010,10 +2052,10 @@ abstract class Controller extends \System
 			exit;
 		}
 
-		$strLocation = \Environment::get('uri');
+		$strLocation = Environment::get('uri');
 
 		// Ajax request
-		if (\Environment::get('isAjaxRequest'))
+		if (Environment::get('isAjaxRequest'))
 		{
 			header('HTTP/1.1 204 No Content');
 			header('X-Ajax-Location: ' . $strLocation);
@@ -2046,11 +2088,11 @@ abstract class Controller extends \System
 		// Make the location an absolute URL
 		if (!preg_match('@^https?://@i', $strLocation))
 		{
-			$strLocation = \Environment::get('base') . $strLocation;
+			$strLocation = Environment::get('base') . $strLocation;
 		}
 
 		// Ajax request
-		if (\Environment::get('isAjaxRequest'))
+		if (Environment::get('isAjaxRequest'))
 		{
 			header('HTTP/1.1 204 No Content');
 			header('X-Ajax-Location: ' . $strLocation);
@@ -2096,11 +2138,11 @@ abstract class Controller extends \System
 	 */
 	public static function generateFrontendUrl(array $arrRow, $strParams=null, $strForceLang=null, $blnFixDomain=false)
 	{
-		if (!\Config::get('disableAlias'))
+		if (!Config::get('disableAlias'))
 		{
 			$strLanguage = '';
 
-			if (\Config::get('addLanguageToUrl'))
+			if (Config::get('addLanguageToUrl'))
 			{
 				if ($strForceLang != '')
 				{
@@ -2120,11 +2162,11 @@ abstract class Controller extends \System
 			// Correctly handle the "index" alias (see #3961)
 			if ($arrRow['alias'] == 'index' && $strParams == '')
 			{
-				$strUrl = (\Config::get('rewriteURL') ? '' : 'index.php/') . $strLanguage;
+				$strUrl = (Config::get('rewriteURL') ? '' : 'index.php/') . $strLanguage;
 			}
 			else
 			{
-				$strUrl = (\Config::get('rewriteURL') ? '' : 'index.php/') . $strLanguage . ($arrRow['alias'] ?: $arrRow['id']) . $strParams . \Config::get('urlSuffix');
+				$strUrl = (Config::get('rewriteURL') ? '' : 'index.php/') . $strLanguage . ($arrRow['alias'] ?: $arrRow['id']) . $strParams . Config::get('urlSuffix');
 			}
 		}
 		else
@@ -2145,9 +2187,9 @@ abstract class Controller extends \System
 		}
 
 		// Add the domain if it differs from the current one (see #3765 and #6927)
-		if ($blnFixDomain && $arrRow['domain'] != '' && $arrRow['domain'] != \Environment::get('host'))
+		if ($blnFixDomain && $arrRow['domain'] != '' && $arrRow['domain'] != Environment::get('host'))
 		{
-			$strUrl = (\Environment::get('ssl') ? 'https://' : 'http://') . $arrRow['domain'] . TL_PATH . '/' . $strUrl;
+			$strUrl = (Environment::get('ssl') ? 'https://' : 'http://') . $arrRow['domain'] . TL_PATH . '/' . $strUrl;
 		}
 
 		// HOOK: add custom logic
@@ -2176,7 +2218,7 @@ abstract class Controller extends \System
 	{
 		if ($strBase == '')
 		{
-			$strBase = \Environment::get('base');
+			$strBase = Environment::get('base');
 		}
 
 		$search = $blnHrefOnly ? 'href' : 'href|src';
@@ -2222,7 +2264,7 @@ abstract class Controller extends \System
 		}
 
 		// Limit downloads to the files directory
-		if (!preg_match('@^' . preg_quote(\Config::get('uploadPath'), '@') . '@i', $strFile))
+		if (!preg_match('@^' . preg_quote(Config::get('uploadPath'), '@') . '@i', $strFile))
 		{
 			header('HTTP/1.1 404 Not Found');
 			die('Invalid path');
@@ -2235,8 +2277,8 @@ abstract class Controller extends \System
 			die('File not found');
 		}
 
-		$objFile = new \File($strFile);
-		$arrAllowedTypes = trimsplit(',', strtolower(\Config::get('allowedDownload')));
+		$objFile = new File($strFile);
+		$arrAllowedTypes = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 		// Check whether the file type is allowed to be downloaded
 		if (!in_array($objFile->extension, $arrAllowedTypes))
@@ -2267,7 +2309,7 @@ abstract class Controller extends \System
 	 */
 	public static function loadDataContainer($strTable, $blnNoCache=false)
 	{
-		$loader = new \DcaLoader($strTable);
+		$loader = new DcaLoader($strTable);
 		$loader->load($blnNoCache);
 	}
 
@@ -2288,7 +2330,7 @@ abstract class Controller extends \System
 			return '';
 		}
 
-		$objPage = \PageModel::findWithDetails($intPage);
+		$objPage = PageModel::findWithDetails($intPage);
 
 		if ($varArticle !== null)
 		{
@@ -2300,7 +2342,7 @@ abstract class Controller extends \System
 		// Make sure the URL is absolute (see #4332)
 		if (strncmp($strUrl, 'http://', 7) !== 0 && strncmp($strUrl, 'https://', 8) !== 0)
 		{
-			$strUrl = \Environment::get('base') . $strUrl;
+			$strUrl = Environment::get('base') . $strUrl;
 		}
 
 		if (!$blnReturn)
@@ -2435,7 +2477,7 @@ abstract class Controller extends \System
 
 		if ($intMaxWidth === null)
 		{
-			$intMaxWidth = (TL_MODE == 'BE') ? 320 : \Config::get('maxImageWidth');
+			$intMaxWidth = (TL_MODE == 'BE') ? 320 : Config::get('maxImageWidth');
 		}
 
 		// Provide an ID for single lightbox images in HTML5 (see #3742)
@@ -2469,7 +2511,7 @@ abstract class Controller extends \System
 			}
 		}
 
-		$src = \Image::get($arrItem['singleSRC'], $size[0], $size[1], $size[2]);
+		$src = Image::get($arrItem['singleSRC'], $size[0], $size[1], $size[2]);
 
 		// Image dimensions
 		if (($imgSize = @getimagesize(TL_ROOT .'/'. rawurldecode($src))) !== false)
@@ -2501,7 +2543,7 @@ abstract class Controller extends \System
 					// Do not add the TL_FILES_URL to external URLs (see #4923)
 					if (strncmp($arrItem['imageUrl'], 'http://', 7) !== 0 && strncmp($arrItem['imageUrl'], 'https://', 8) !== 0)
 					{
-						$objTemplate->$strHrefKey = TL_FILES_URL . \System::urlEncode($arrItem['imageUrl']);
+						$objTemplate->$strHrefKey = TL_FILES_URL . System::urlEncode($arrItem['imageUrl']);
 					}
 
 					$objTemplate->attributes = ' data-lightbox="' . substr($strLightboxId, 9, -1) . '"';
@@ -2516,7 +2558,7 @@ abstract class Controller extends \System
 		// Fullsize view
 		elseif ($arrItem['fullsize'] && TL_MODE == 'FE')
 		{
-			$objTemplate->$strHrefKey = TL_FILES_URL . \System::urlEncode($arrItem['singleSRC']);
+			$objTemplate->$strHrefKey = TL_FILES_URL . System::urlEncode($arrItem['singleSRC']);
 			$objTemplate->attributes = ' data-lightbox="' . substr($strLightboxId, 9, -1) . '"';
 		}
 
@@ -2550,11 +2592,11 @@ abstract class Controller extends \System
 			return;
 		}
 
-		$objFiles = \FilesModel::findMultipleByUuids($arrEnclosures);
+		$objFiles = FilesModel::findMultipleByUuids($arrEnclosures);
 
 		if ($objFiles === null)
 		{
-			if (!\Validator::isUuid($arrEnclosures[0]))
+			if (!Validator::isUuid($arrEnclosures[0]))
 			{
 				foreach (array('details', 'answer', 'text') as $key)
 				{
@@ -2568,7 +2610,7 @@ abstract class Controller extends \System
 			return;
 		}
 
-		$file = \Input::get('file', true);
+		$file = Input::get('file', true);
 
 		// Send the file to the browser and do not send a 404 header (see #5178)
 		if ($file != '')
@@ -2585,7 +2627,7 @@ abstract class Controller extends \System
 		}
 
 		$arrEnclosures = array();
-		$allowedDownload = trimsplit(',', strtolower(\Config::get('allowedDownload')));
+		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 		// Add download links
 		while ($objFiles->next())
@@ -2597,8 +2639,8 @@ abstract class Controller extends \System
 					continue;
 				}
 
-				$objFile = new \File($objFiles->path);
-				$strHref = \Environment::get('request');
+				$objFile = new File($objFiles->path);
+				$strHref = Environment::get('request');
 
 				// Remove an existing file parameter (see #5683)
 				if (preg_match('/(&(amp;)?|\?)file=/', $strHref))
@@ -2606,7 +2648,7 @@ abstract class Controller extends \System
 					$strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
 				}
 
-				$strHref .= ((\Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFiles->path);
+				$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFiles->path);
 
 				$arrEnclosures[] = array
 				(
@@ -2651,15 +2693,15 @@ abstract class Controller extends \System
 
 		foreach ($arrConstants as $strKey=>$strConstant)
 		{
-			$url = ($objPage !== null) ? $objPage->$strKey : \Config::get($strKey);
+			$url = ($objPage !== null) ? $objPage->$strKey : Config::get($strKey);
 
-			if ($url == '' || \Config::get('debugMode'))
+			if ($url == '' || Config::get('debugMode'))
 			{
 				define($strConstant, '');
 			}
 			else
 			{
-				if (\Environment::get('ssl'))
+				if (Environment::get('ssl'))
 				{
 					$url = str_replace('http://', 'https://', $url);
 				}
@@ -2708,7 +2750,7 @@ abstract class Controller extends \System
 	 */
 	public static function getTheme()
 	{
-		return \Backend::getTheme();
+		return Backend::getTheme();
 	}
 
 
@@ -2721,7 +2763,7 @@ abstract class Controller extends \System
 	 */
 	public static function getBackendThemes()
 	{
-		return \Backend::getThemes();
+		return Backend::getThemes();
 	}
 
 
@@ -2730,17 +2772,17 @@ abstract class Controller extends \System
 	 *
 	 * @param mixed $intId A page ID or a Model object
 	 *
-	 * @return \Model|null The page model or null
+	 * @return Model|null The page model or null
 	 *
 	 * @deprecated Use PageModel::findWithDetails() or PageModel->loadDetails() instead
 	 */
 	public static function getPageDetails($intId)
 	{
-		if ($intId instanceof \Model)
+		if ($intId instanceof Model)
 		{
 			return $intId->loadDetails();
 		}
-		elseif ($intId instanceof \Model\Collection)
+		elseif ($intId instanceof Collection)
 		{
 			return $intId->current()->loadDetails();
 		}
@@ -2749,17 +2791,17 @@ abstract class Controller extends \System
 			$strKey = __METHOD__ . '-' . $intId->id;
 
 			// Try to load from cache
-			if (\Cache::has($strKey))
+			if (Cache::has($strKey))
 			{
-				return \Cache::get($strKey);
+				return Cache::get($strKey);
 			}
 
 			// Create a model from the database result
-			$objPage = new \PageModel();
+			$objPage = new PageModel();
 			$objPage->setRow($intId->row());
 			$objPage->loadDetails();
 
-			\Cache::set($strKey, $objPage);
+			Cache::set($strKey, $objPage);
 			return $objPage;
 		}
 		else
@@ -2773,14 +2815,14 @@ abstract class Controller extends \System
 			$strKey = __METHOD__ . '-' . $intId;
 
 			// Try to load from cache
-			if (\Cache::has($strKey))
+			if (Cache::has($strKey))
 			{
-				return \Cache::get($strKey);
+				return Cache::get($strKey);
 			}
 
-			$objPage = \PageModel::findWithDetails($intId);
+			$objPage = PageModel::findWithDetails($intId);
 
-			\Cache::set($strKey, $objPage);
+			Cache::set($strKey, $objPage);
 			return $objPage;
 		}
 	}
@@ -2828,7 +2870,7 @@ abstract class Controller extends \System
 	 */
 	public static function restoreBasicEntities($strBuffer)
 	{
-		return \String::restoreBasicEntities($strBuffer);
+		return String::restoreBasicEntities($strBuffer);
 	}
 
 
@@ -2846,7 +2888,7 @@ abstract class Controller extends \System
 	 */
 	protected function resizeImage($image, $width, $height, $mode='')
 	{
-		return \Image::resize($image, $width, $height, $mode);
+		return Image::resize($image, $width, $height, $mode);
 	}
 
 
@@ -2866,7 +2908,7 @@ abstract class Controller extends \System
 	 */
 	protected function getImage($image, $width, $height, $mode='', $target=null, $force=false)
 	{
-		return \Image::get($image, $width, $height, $mode, $target, $force);
+		return Image::get($image, $width, $height, $mode, $target, $force);
 	}
 
 
@@ -2883,7 +2925,7 @@ abstract class Controller extends \System
 	 */
 	public static function generateImage($src, $alt='', $attributes='')
 	{
-		return \Image::getHtml($src, $alt, $attributes);
+		return Image::getHtml($src, $alt, $attributes);
 	}
 
 
@@ -2925,7 +2967,7 @@ abstract class Controller extends \System
 	 */
 	protected function parseSimpleTokens($strBuffer, $arrData)
 	{
-		return \String::parseSimpleTokens($strBuffer, $arrData);
+		return String::parseSimpleTokens($strBuffer, $arrData);
 	}
 
 
@@ -2944,7 +2986,7 @@ abstract class Controller extends \System
 	 */
 	protected function prepareForWidget($arrData, $strName, $varValue=null, $strField='', $strTable='')
 	{
-		return \Widget::getAttributesFromDca($arrData, $strName, $varValue, $strField, $strTable);
+		return Widget::getAttributesFromDca($arrData, $strName, $varValue, $strField, $strTable);
 	}
 
 
@@ -2994,7 +3036,7 @@ abstract class Controller extends \System
 	 */
 	protected function printArticleAsPdf($objArticle)
 	{
-		$objArticle = new \ModuleArticle($objArticle);
+		$objArticle = new ModuleArticle($objArticle);
 		$objArticle->generatePdf();
 	}
 
@@ -3024,7 +3066,7 @@ abstract class Controller extends \System
 	 */
 	public static function optionSelected($strOption, $varValues)
 	{
-		return \Widget::optionSelected($strOption, $varValues);
+		return Widget::optionSelected($strOption, $varValues);
 	}
 
 
@@ -3040,7 +3082,7 @@ abstract class Controller extends \System
 	 */
 	public static function optionChecked($strOption, $varValues)
 	{
-		return \Widget::optionChecked($strOption, $varValues);
+		return Widget::optionChecked($strOption, $varValues);
 	}
 
 
@@ -3055,7 +3097,7 @@ abstract class Controller extends \System
 	 */
 	public static function findContentElement($strName)
 	{
-		return \ContentElement::findClass($strName);
+		return ContentElement::findClass($strName);
 	}
 
 
@@ -3070,7 +3112,7 @@ abstract class Controller extends \System
 	 */
 	public static function findFrontendModule($strName)
 	{
-		return \Module::findClass($strName);
+		return Module::findClass($strName);
 	}
 
 
@@ -3084,7 +3126,7 @@ abstract class Controller extends \System
 	 */
 	protected function createInitialVersion($strTable, $intId)
 	{
-		$objVersions = new \Versions($strTable, $intId);
+		$objVersions = new Versions($strTable, $intId);
 		$objVersions->initialize();
 	}
 
@@ -3099,7 +3141,7 @@ abstract class Controller extends \System
 	 */
 	protected function createNewVersion($strTable, $intId)
 	{
-		$objVersions = new \Versions($strTable, $intId);
+		$objVersions = new Versions($strTable, $intId);
 		$objVersions->create();
 	}
 }

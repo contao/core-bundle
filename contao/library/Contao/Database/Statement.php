@@ -12,6 +12,10 @@
 
 namespace Contao\Database;
 
+use Contao\Config;
+use Contao\Database\Result;
+use Exception;
+
 
 /**
  * Create and execute queries
@@ -70,13 +74,13 @@ abstract class Statement
 	 * @param resource $resConnection        The connection resource
 	 * @param boolean  $blnDisableAutocommit Optionally disable autocommitting
 	 *
-	 * @throws \Exception If $resConnection is not a valid resource
+	 * @throws Exception If $resConnection is not a valid resource
 	 */
 	public function __construct($resConnection, $blnDisableAutocommit=false)
 	{
 		if (!is_resource($resConnection) && !is_object($resConnection))
 		{
-			throw new \Exception('Invalid connection resource');
+			throw new Exception('Invalid connection resource');
 		}
 
 		$this->resConnection = $resConnection;
@@ -128,15 +132,15 @@ abstract class Statement
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Statement The statement object
+	 * @return Statement The statement object
 	 *
-	 * @throws \Exception If $strQuery is empty
+	 * @throws Exception If $strQuery is empty
 	 */
 	public function prepare($strQuery)
 	{
 		if ($strQuery == '')
 		{
-			throw new \Exception('Empty query string');
+			throw new Exception('Empty query string');
 		}
 
 		$this->resResult = null;
@@ -179,7 +183,7 @@ abstract class Statement
 	 *
 	 * @param array $arrParams The associative array
 	 *
-	 * @return \Database\Statement The statement object
+	 * @return Statement The statement object
 	 */
 	public function set($arrParams)
 	{
@@ -217,7 +221,7 @@ abstract class Statement
 	 * @param integer $intRows   The maximum number of rows
 	 * @param integer $intOffset The number of rows to skip
 	 *
-	 * @return \Database\Statement The statement object
+	 * @return Statement The statement object
 	 */
 	public function limit($intRows, $intOffset=0)
 	{
@@ -239,7 +243,7 @@ abstract class Statement
 	/**
 	 * Execute the query and return the result object
 	 *
-	 * @return \Database\Result The result object
+	 * @return Result The result object
 	 */
 	public function execute()
 	{
@@ -260,9 +264,9 @@ abstract class Statement
 	 *
 	 * @param string $strQuery The query string
 	 *
-	 * @return \Database\Result|\Database\Statement The result object or the statement object if there is no result set
+	 * @return Result|Statement The result object or the statement object if there is no result set
 	 *
-	 * @throws \Exception If the query cannot be executed
+	 * @throws Exception If the query cannot be executed
 	 */
 	public function query($strQuery='')
 	{
@@ -274,13 +278,13 @@ abstract class Statement
 		// Make sure there is a query string
 		if ($this->strQuery == '')
 		{
-			throw new \Exception('Empty query string');
+			throw new Exception('Empty query string');
 		}
 
 		// Execute the query
 		if (($this->resResult = $this->execute_query()) == false)
 		{
-			throw new \Exception(sprintf('Query error: %s (%s)', $this->error, $this->strQuery));
+			throw new Exception(sprintf('Query error: %s (%s)', $this->error, $this->strQuery));
 		}
 
 		// No result set available
@@ -303,7 +307,7 @@ abstract class Statement
 	 *
 	 * @param array $arrValues The values array
 	 *
-	 * @throws \Exception If $arrValues has too few values to replace the wildcards in the query string
+	 * @throws Exception If $arrValues has too few values to replace the wildcards in the query string
 	 */
 	protected function replaceWildcards($arrValues)
 	{
@@ -313,7 +317,7 @@ abstract class Statement
 		// Replace wildcards
 		if (($this->strQuery = @vsprintf($this->strQuery, $arrValues)) == false)
 		{
-			throw new \Exception('Too few arguments to build the query string');
+			throw new Exception('Too few arguments to build the query string');
 		}
 	}
 
@@ -360,11 +364,11 @@ abstract class Statement
 	/**
 	 * Debug a query
 	 *
-	 * @param \Database\Result $objResult An optional result object
+	 * @param Result $objResult An optional result object
 	 */
 	protected function debugQuery($objResult=null)
 	{
-		if (!\Config::get('debugMode'))
+		if (!Config::get('debugMode'))
 		{
 			return;
 		}
@@ -480,12 +484,12 @@ abstract class Statement
 
 
 	/**
-	 * Create a Database\Result object
+	 * Create a Result object
 	 *
 	 * @param resource $resResult The database result
 	 * @param string   $strQuery  The query string
 	 *
-	 * @return \Database\Result The result object
+	 * @return Result The result object
 	 */
 	abstract protected function createResult($resResult, $strQuery);
 
@@ -493,9 +497,9 @@ abstract class Statement
 	/**
 	 * Bypass the cache and always execute the query
 	 *
-	 * @return \Database\Result The result object
+	 * @return Result The result object
 	 *
-	 * @deprecated Use Database\Statement::execute() instead
+	 * @deprecated Use Statement::execute() instead
 	 */
 	public function executeUncached()
 	{
@@ -506,9 +510,9 @@ abstract class Statement
 	/**
 	 * Always execute the query and add or replace an existing cache entry
 	 *
-	 * @return \Database\Result The result object
+	 * @return Result The result object
 	 *
-	 * @deprecated Use Database\Statement::execute() instead
+	 * @deprecated Use Statement::execute() instead
 	 */
 	public function executeCached()
 	{

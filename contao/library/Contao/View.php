@@ -12,6 +12,11 @@
 
 namespace Contao;
 
+use Contao\Config;
+use Contao\Controller;
+use Contao\TemplateLoader;
+use Exception;
+
 
 /**
  * Provides shared logic for template classes
@@ -20,7 +25,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-abstract class View extends \Controller
+abstract class View extends Controller
 {
 
 	/**
@@ -98,7 +103,7 @@ abstract class View extends \Controller
 			}
 			elseif ($this->strParent == $strCurrent)
 			{
-				$this->strDefault = \TemplateLoader::getDefaultPath($this->strParent, $this->strFormat);
+				$this->strDefault = TemplateLoader::getDefaultPath($this->strParent, $this->strFormat);
 			}
 
 			ob_end_clean();
@@ -108,7 +113,7 @@ abstract class View extends \Controller
 		$this->arrBlocks = array();
 
 		// Add start and end markers in debug mode
-		if (\Config::get('debugMode'))
+		if (Config::get('debugMode'))
 		{
 			$strRelPath = str_replace(TL_ROOT . '/', '', $this->getTemplate($this->strTemplate, $this->strFormat));
 			$strBuffer = "\n<!-- TEMPLATE START: $strRelPath -->\n$strBuffer\n<!-- TEMPLATE END: $strRelPath -->\n";
@@ -143,7 +148,7 @@ abstract class View extends \Controller
 	 *
 	 * @param string $name The block name
 	 *
-	 * @throws \Exception If a child templates contains nested blocks
+	 * @throws Exception If a child templates contains nested blocks
 	 */
 	public function block($name)
 	{
@@ -196,7 +201,7 @@ abstract class View extends \Controller
 			// Check for nested blocks
 			if (count($this->arrBlockNames) > 1)
 			{
-				throw new \Exception('Nested blocks are not allowed in child templates');
+				throw new Exception('Nested blocks are not allowed in child templates');
 			}
 
 			// Start a new output buffer
@@ -208,14 +213,14 @@ abstract class View extends \Controller
 	/**
 	 * End a block
 	 *
-	 * @throws \Exception If there is no open block
+	 * @throws Exception If there is no open block
 	 */
 	public function endblock()
 	{
 		// Check for open blocks
 		if (empty($this->arrBlockNames))
 		{
-			throw new \Exception('You must start a block before you can end it');
+			throw new Exception('You must start a block before you can end it');
 		}
 
 		// Get the block name
