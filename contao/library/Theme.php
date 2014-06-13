@@ -17,6 +17,7 @@ use Contao\Backend;
 use Contao\Database\Result;
 use Contao\DataContainer;
 use Contao\Dbafs;
+use Contao\DcaExtractor;
 use Contao\Environment;
 use Contao\File;
 use Contao\FilesModel;
@@ -443,17 +444,9 @@ class Theme extends Backend
 				// Load the DCA
 				$this->loadDataContainer($table);
 
-				$arrOrder = array();
-				$arrFields = $GLOBALS['TL_DCA'][$table]['fields'];
-
 				// Get the order fields
-				foreach ($arrFields as $arrField)
-				{
-					if (isset($arrField['eval']['orderField']))
-					{
-						$arrOrder[] = $arrField['eval']['orderField'];
-					}
-				}
+				$objDcaExtractor = new DcaExtractor($table);
+				$arrOrder = $objDcaExtractor->getOrderFields();
 
 				// Loop through the rows
 				for ($j=0; $j<$rows->length; $j++)
@@ -747,8 +740,15 @@ class Theme extends Backend
 		$table->setAttribute('name', 'tl_theme');
 		$table = $tables->appendChild($table);
 
+		// Load the DCA
+		$this->loadDataContainer('tl_theme');
+
+		// Get the order fields
+		$objDcaExtractor = new DcaExtractor('tl_theme');
+		$arrOrder = $objDcaExtractor->getOrderFields();
+
 		// Add the row
-		$this->addDataRow($xml, $table, $objTheme);
+		$this->addDataRow($xml, $table, $objTheme, $arrOrder);
 	}
 
 
@@ -766,6 +766,13 @@ class Theme extends Backend
 		$table->setAttribute('name', 'tl_style_sheet');
 		$table = $tables->appendChild($table);
 
+		// Load the DCA
+		$this->loadDataContainer('tl_style_sheet');
+
+		// Get the order fields
+		$objDcaExtractor = new DcaExtractor('tl_style_sheet');
+		$arrOrder = $objDcaExtractor->getOrderFields();
+
 		// Get all style sheets
 		$objStyleSheet = $this->Database->prepare("SELECT * FROM tl_style_sheet WHERE pid=? ORDER BY name")
 										->execute($objTheme->id);
@@ -773,7 +780,7 @@ class Theme extends Backend
 		// Add the rows
 		while ($objStyleSheet->next())
 		{
-			$this->addDataRow($xml, $table, $objStyleSheet);
+			$this->addDataRow($xml, $table, $objStyleSheet, $arrOrder);
 		}
 
 		$objStyleSheet->reset();
@@ -782,6 +789,13 @@ class Theme extends Backend
 		$table = $xml->createElement('table');
 		$table->setAttribute('name', 'tl_style');
 		$table = $tables->appendChild($table);
+
+		// Load the DCA
+		$this->loadDataContainer('tl_style');
+
+		// Get the order fields
+		$objDcaExtractor = new DcaExtractor('tl_style');
+		$arrOrder = $objDcaExtractor->getOrderFields();
 
 		// Add the child rows
 		while ($objStyleSheet->next())
@@ -793,7 +807,7 @@ class Theme extends Backend
 			// Add the rows
 			while ($objStyle->next())
 			{
-				$this->addDataRow($xml, $table, $objStyle);
+				$this->addDataRow($xml, $table, $objStyle, $arrOrder);
 			}
 		}
 	}
@@ -813,6 +827,13 @@ class Theme extends Backend
 		$table->setAttribute('name', 'tl_module');
 		$table = $tables->appendChild($table);
 
+		// Load the DCA
+		$this->loadDataContainer('tl_module');
+
+		// Get the order fields
+		$objDcaExtractor = new DcaExtractor('tl_module');
+		$arrOrder = $objDcaExtractor->getOrderFields();
+
 		// Get all modules
 		$objModule = $this->Database->prepare("SELECT * FROM tl_module WHERE pid=? ORDER BY name")
 									->execute($objTheme->id);
@@ -820,7 +841,7 @@ class Theme extends Backend
 		// Add the rows
 		while ($objModule->next())
 		{
-			$this->addDataRow($xml, $table, $objModule);
+			$this->addDataRow($xml, $table, $objModule, $arrOrder);
 		}
 	}
 
@@ -839,6 +860,13 @@ class Theme extends Backend
 		$table->setAttribute('name', 'tl_layout');
 		$table = $tables->appendChild($table);
 
+		// Load the DCA
+		$this->loadDataContainer('tl_layout');
+
+		// Get the order fields
+		$objDcaExtractor = new DcaExtractor('tl_layout');
+		$arrOrder = $objDcaExtractor->getOrderFields();
+
 		// Get all layouts
 		$objLayout = $this->Database->prepare("SELECT * FROM tl_layout WHERE pid=? ORDER BY name")
 									->execute($objTheme->id);
@@ -846,7 +874,7 @@ class Theme extends Backend
 		// Add the rows
 		while ($objLayout->next())
 		{
-			$this->addDataRow($xml, $table, $objLayout);
+			$this->addDataRow($xml, $table, $objLayout, $arrOrder);
 		}
 	}
 
@@ -854,11 +882,12 @@ class Theme extends Backend
 	/**
 	 * Add a data row to the XML document
 	 *
-	 * @param DOMDocument $xml     The XML document
-	 * @param DOMElement  $table   The table node
-	 * @param Result      $objData The database result object
+	 * @param DOMDocument $xml      The XML document
+	 * @param DOMElement  $table    The table node
+	 * @param Result      $objData  The database result object
+	 * @param array       $arrOrder An array of order fields
 	 */
-	protected function addDataRow(DOMDocument $xml, DOMElement $table, Result $objData)
+	protected function addDataRow(DOMDocument $xml, DOMElement $table, Result $objData, array $arrOrder=array())
 	{
 		$t = $table->getAttribute('name');
 
@@ -877,7 +906,7 @@ class Theme extends Backend
 			}
 
 			// Replace the IDs of singleSRC fields with their path (see #4952)
-			elseif (($t == 'tl_theme' && $k == 'screenshot') || ($t == 'tl_module' && $k == 'singleSRC') || ($t == 'tl_module' && $k == 'reg_homeDir'))
+			elseif ($GLOBALS['TL_DCA'][$t]['fields'][$k]['inputType'] == 'fileTree' && !$GLOBALS['TL_DCA'][$t]['fields'][$k]['eval']['multiple'])
 			{
 				$objFile = FilesModel::findByUuid($v);
 
@@ -893,10 +922,14 @@ class Theme extends Backend
 						$v = $objFile->path;
 					}
 				}
+				else
+				{
+					$v = 'NULL';
+				}
 			}
 
 			// Replace the IDs of multiSRC fields with their paths (see #4952)
-			elseif (($t == 'tl_theme' && $k == 'folders') || ($t == 'tl_module' && $k == 'multiSRC') || ($t == 'tl_module' && $k == 'orderSRC') || ($t == 'tl_layout' && $k == 'external') || ($t == 'tl_layout' && $k == 'orderExt'))
+			elseif ($GLOBALS['TL_DCA'][$t]['fields'][$k]['inputType'] == 'fileTree' || in_array($k, $arrOrder))
 			{
 				$arrFiles = deserialize($v);
 
@@ -922,6 +955,10 @@ class Theme extends Backend
 						{
 							$v = serialize($objFiles->fetchEach('path'));
 						}
+					}
+					else
+					{
+						$v = 'NULL';
 					}
 				}
 			}
