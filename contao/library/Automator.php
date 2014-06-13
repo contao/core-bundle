@@ -152,8 +152,9 @@ class Automator extends System
 				$objFolder->purge();
 
 				// Restore the index.html file
-				$objFile = new File('templates/index.html');
-				$objFile->copyTo('assets/images/' . $dir . '/index.html');
+				$objFile = new File('assets/images/' . $dir . '/index.html');
+				$objFile->write("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Blank page</title>\n</head>\n<body>\n</body>\n</html>");
+				$objFile->close();
 			}
 		}
 
@@ -178,8 +179,9 @@ class Automator extends System
 			$objFolder->purge();
 
 			// Restore the index.html file
-			$objFile = new File('templates/index.html');
-			$objFile->copyTo($dir . '/index.html');
+			$objFile = new File($dir . '/index.html');
+			$objFile->write("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Blank page</title>\n</head>\n<body>\n</body>\n</html>");
+			$objFile->close();
 		}
 
 		// Recreate the internal style sheets
