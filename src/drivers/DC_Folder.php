@@ -2206,10 +2206,12 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$arrClipboard = $arrClipboard[$this->strTable];
 		}
 
+		$blnProtected = !file_exists(TL_ROOT . '/' . $strFolder . '/.public');
+
 		$this->import('Files');
 		$this->import('BackendUser', 'User');
 
-		return $this->generateTree(TL_ROOT.'/'.$strFolder, ($level * 20), false, true, ($blnClipboard ? $arrClipboard : false));
+		return $this->generateTree(TL_ROOT.'/'.$strFolder, ($level * 20), false, $blnProtected, ($blnClipboard ? $arrClipboard : false));
 	}
 
 
