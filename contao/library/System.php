@@ -650,7 +650,7 @@ abstract class System
 	 *
 	 * @return string The PHP code
 	 */
-	protected static function convertXlfToPhp($strName, $strLanguage)
+	public static function convertXlfToPhp($strName, $strLanguage)
 	{
 		// Read the .xlf file
 		$xml = new DOMDocument();
