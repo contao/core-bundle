@@ -180,7 +180,7 @@ class ClassLoader
 			{
 				if (Config::get('debugMode'))
 				{
-					$GLOBALS['TL_DEBUG']['classes_psr4'][] = $class . ' <span style="color:#999">(' . $namespaced . ')</span>';
+					$GLOBALS['TL_DEBUG']['classes_composerized'][] = $class . ' <span style="color:#999">(' . $namespaced . ')</span>';
 				}
 
 				class_alias($namespaced, $class);
