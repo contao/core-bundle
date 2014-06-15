@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Contao\Files;
-use Contao\ModuleLoader;
-use Contao\System;
-
 
 /**
  * Loads and writes the local configuration file

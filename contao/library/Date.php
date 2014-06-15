@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\System;
 use Exception;
 use OutOfBoundsException;
 

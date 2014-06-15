@@ -12,22 +12,6 @@
 
 namespace Contao;
 
-use Contao\Backend;
-use Contao\BackendTemplate;
-use Contao\BackendUser;
-use Contao\Config;
-use Contao\Database;
-use Contao\Date;
-use Contao\DcaExtractor;
-use Contao\Environment;
-use Contao\File;
-use Contao\FilesModel;
-use Contao\Image;
-use Contao\Input;
-use Contao\Pagination;
-use Contao\String;
-use Contao\System;
-use Contao\Validator;
 use Diff;
 use Diff_Renderer_Html_Contao;
 use Exception;

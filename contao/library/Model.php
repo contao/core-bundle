@@ -12,10 +12,8 @@
 
 namespace Contao;
 
-use Contao\Database;
 use Contao\Database\Result;
 use Contao\Database\Statement;
-use Contao\DcaExtractor;
 use Contao\Model\Collection;
 use Contao\Model\QueryBuilder;
 use Contao\Model\Registry;

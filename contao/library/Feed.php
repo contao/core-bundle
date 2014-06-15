@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Environment;
-use Contao\FeedItem;
-
 
 /**
  * Creates RSS or Atom feeds

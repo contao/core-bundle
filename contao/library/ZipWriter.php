@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Files;
-use Contao\Folder;
 use Exception;
 
 

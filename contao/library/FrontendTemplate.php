@@ -12,13 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Environment;
-use Contao\File;
-use Contao\Frontend;
-use Contao\Input;
-use Contao\Search;
-use Contao\Template;
 use UnusedArgumentsException;
 
 

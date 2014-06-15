@@ -12,46 +12,7 @@
 
 namespace Contao;
 
-use Contao\ArticleModel;
-use Contao\Backend;
-use Contao\Cache;
-use Contao\CalendarEventsModel;
-use Contao\CalendarFeedModel;
-use Contao\Combiner;
-use Contao\Config;
-use Contao\ContentElement;
-use Contao\ContentModel;
-use Contao\Database;
-use Contao\Date;
-use Contao\DcaLoader;
-use Contao\Environment;
-use Contao\FaqModel;
-use Contao\File;
-use Contao\FilesModel;
-use Contao\Form;
-use Contao\FormModel;
-use Contao\Frontend;
-use Contao\FrontendUser;
-use Contao\Idna;
-use Contao\Image;
-use Contao\Input;
-use Contao\Model;
 use Contao\Model\Collection;
-use Contao\Module;
-use Contao\ModuleArticle;
-use Contao\ModuleLoader;
-use Contao\ModuleModel;
-use Contao\NewsFeedModel;
-use Contao\NewsModel;
-use Contao\PageModel;
-use Contao\String;
-use Contao\System;
-use Contao\Template;
-use Contao\TemplateLoader;
-use Contao\ThemeModel;
-use Contao\Validator;
-use Contao\Versions;
-use Contao\Widget;
 use Exception;
 
 

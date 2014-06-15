@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-
 
 /**
  * Safely read the user input

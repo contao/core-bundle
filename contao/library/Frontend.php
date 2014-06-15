@@ -12,15 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
-use Contao\Environment;
-use Contao\Input;
-use Contao\PageModel;
-use Contao\SessionModel;
-use Contao\String;
-use Contao\System;
-
 
 /**
  * Provides miscellaneous methods for front end controllers

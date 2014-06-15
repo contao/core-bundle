@@ -12,10 +12,7 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Input;
 use Contao\Model\Registry;
-use Contao\View;
 use InvalidArgumentException;
 
 

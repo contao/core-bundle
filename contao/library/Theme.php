@@ -12,21 +12,7 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Backend;
 use Contao\Database\Result;
-use Contao\DataContainer;
-use Contao\Dbafs;
-use Contao\DcaExtractor;
-use Contao\Environment;
-use Contao\File;
-use Contao\FilesModel;
-use Contao\Folder;
-use Contao\Input;
-use Contao\Message;
-use Contao\System;
-use Contao\ZipReader;
-use Contao\ZipWriter;
 use DOMDocument;
 use DOMElement;
 use Exception;

@@ -12,20 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
-use Contao\Database;
-use Contao\Date;
-use Contao\Environment;
-use Contao\File;
-use Contao\Idna;
-use Contao\Input;
-use Contao\Message;
-use Contao\Model;
-use Contao\ModuleLoader;
-use Contao\Session;
-use Contao\String;
-use Contao\Validator;
 use DOMDocument;
 use stdClass;
 

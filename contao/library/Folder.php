@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Dbafs;
-use Contao\File;
-use Contao\FilesModel;
-use Contao\System;
 use Exception;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;

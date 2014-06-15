@@ -13,7 +13,6 @@
 namespace Contao\Database;
 
 use Contao\Config;
-use Contao\Database\Result;
 use Exception;
 
 

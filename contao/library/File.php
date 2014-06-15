@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Dbafs;
-use Contao\Folder;
-use Contao\Image;
-use Contao\System;
 use Exception;
 
 

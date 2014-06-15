@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\File;
-use Contao\System;
 use Exception;
 use lessc;
 use scssc;

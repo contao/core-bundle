@@ -12,12 +12,6 @@
 
 namespace Contao;
 
-use Contao\Backend;
-use Contao\Config;
-use Contao\Environment;
-use Contao\Template;
-use Exception;
-
 
 /**
  * Parses and outputs back end template files

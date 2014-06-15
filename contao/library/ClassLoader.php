@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\ModuleLoader;
-
 
 /**
  * Automatically loads class files based on a mapper array

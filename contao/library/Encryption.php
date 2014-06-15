@@ -12,7 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
 use Exception;
 
 

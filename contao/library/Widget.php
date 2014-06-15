@@ -12,14 +12,6 @@
 
 namespace Contao;
 
-use Contao\Database;
-use Contao\Date;
-use Contao\Encryption;
-use Contao\Idna;
-use Contao\Input;
-use Contao\String;
-use Contao\Validator;
-use Contao\View;
 use OutOfBoundsException;
 
 

@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
 use Contao\Database\Installer;
 use Exception;
 

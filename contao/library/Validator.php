@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Contao\Date;
-use Contao\Idna;
-
 
 /**
  * Validates arbitrary data

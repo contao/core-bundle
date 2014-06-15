@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\FilesModel;
 use Exception;
 
 

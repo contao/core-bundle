@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-
 
 /**
  * Generates and validates request tokens

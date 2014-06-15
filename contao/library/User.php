@@ -12,17 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Date;
-use Contao\Email;
-use Contao\Encryption;
-use Contao\Environment;
-use Contao\FrontendUser;
-use Contao\Idna;
-use Contao\Input;
-use Contao\Message;
-use Contao\System;
-
 
 /**
  * Authenticates and initializes user objects

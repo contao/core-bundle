@@ -14,7 +14,6 @@ namespace Contao\Model;
 
 use Contao\Database\Result;
 use Contao\Model;
-use Contao\Model\Registry;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;

@@ -12,14 +12,6 @@
 
 namespace Contao;
 
-use Contao\Backend;
-use Contao\Config;
-use Contao\Environment;
-use Contao\File;
-use Contao\Input;
-use Contao\Message;
-use Contao\String;
-use Contao\System;
 use Exception;
 
 

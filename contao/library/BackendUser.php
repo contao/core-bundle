@@ -12,14 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
-use Contao\Environment;
-use Contao\FilesModel;
-use Contao\Input;
-use Contao\ModuleLoader;
-use Contao\User;
-
 
 /**
  * Provides methods to manage front end users

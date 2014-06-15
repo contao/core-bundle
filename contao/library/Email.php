@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Environment;
-use Contao\Idna;
-use Contao\String;
 use Exception;
 use Swift_Attachment;
 use Swift_EmbeddedFile;

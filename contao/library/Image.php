@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Contao\Backend;
-use Contao\Config;
-use Contao\File;
-use Contao\System;
-
 
 /**
  * Resizes images

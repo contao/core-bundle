@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Contao\Database;
-use Contao\String;
-use Contao\System;
 use Exception;
 
 

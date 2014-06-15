@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Contao\Input;
-use Contao\Environment;
-use Contao\FrontendTemplate;
-use Contao\Template;
-
 
 /**
  * Renders a pagination menu

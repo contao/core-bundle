@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
-use Contao\ModuleLoader;
 use Exception;
 
 

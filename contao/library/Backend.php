@@ -12,17 +12,6 @@
 
 namespace Contao;
 
-use Contao\BackendUser;
-use Contao\Config;
-use Contao\Controller;
-use Contao\Database;
-use Contao\Environment;
-use Contao\Image;
-use Contao\Input;
-use Contao\ModuleLoader;
-use Contao\PageModel;
-use Contao\Session;
-use Contao\System;
 use Exception;
 use editable;
 use listable;

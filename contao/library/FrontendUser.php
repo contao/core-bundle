@@ -12,13 +12,6 @@
 
 namespace Contao;
 
-use Contao\Config;
-use Contao\Controller;
-use Contao\Environment;
-use Contao\Input;
-use Contao\MemberGroupModel;
-use Contao\User;
-
 
 /**
  * Provides methods to manage front end users

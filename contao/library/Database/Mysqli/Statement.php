@@ -12,7 +12,6 @@
 
 namespace Contao\Database\Mysqli;
 
-use Contao\Database\Mysqli\Result;
 use Contao\Database\Statement as AbstractStatement;
 
 

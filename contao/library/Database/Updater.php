@@ -15,7 +15,6 @@ namespace Contao\Database;
 use Contao\Config;
 use Contao\Controller;
 use Contao\Database;
-use Contao\Database\Result;
 use Contao\File;
 use Contao\Folder;
 use Exception;
