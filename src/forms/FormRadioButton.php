@@ -125,19 +125,19 @@ class FormRadioButton extends Widget
 	 */
 	protected function getOptions()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 
 		foreach ($this->arrOptions as $i=>$arrOption)
 		{
-			$arrOptions[] = array
-			(
+			$arrOptions[] =
+			[
 				'name'       => $this->strName,
 				'id'         => $this->strId . '_' . $i,
 				'value'      => $arrOption['value'],
 				'checked'    => $this->isChecked($arrOption),
 				'attributes' => $this->getAttributes(),
 				'label'      => $arrOption['label']
-			);
+			];
 		}
 
 		return $arrOptions;

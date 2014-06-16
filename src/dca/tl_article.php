@@ -20,333 +20,333 @@ $this->loadDataContainer('tl_page');
 /**
  * Table tl_article
  */
-$GLOBALS['TL_DCA']['tl_article'] = array
-(
+$GLOBALS['TL_DCA']['tl_article'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_page',
-		'ctable'                      => array('tl_content'),
+		'ctable'                      => ['tl_content'],
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
-		'onload_callback' => array
-		(
-			array('tl_article', 'checkPermission'),
-			array('tl_page', 'addBreadcrumb')
-		),
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'onload_callback' =>
+		[
+			['tl_article', 'checkPermission'],
+			['tl_page', 'addBreadcrumb']
+		],
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'alias' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 6,
-			'fields'                  => array('published DESC', 'title', 'author'),
-			'paste_button_callback'   => array('tl_article', 'pasteArticle'),
+			'fields'                  => ['published DESC', 'title', 'author'],
+			'paste_button_callback'   => ['tl_article', 'pasteArticle'],
 			'panelLayout'             => 'search'
-		),
-		'label' => array
-		(
-			'fields'                  => array('title', 'inColumn'),
+		],
+		'label' =>
+		[
+			'fields'                  => ['title', 'inColumn'],
 			'format'                  => '%s <span style="color:#b3b3b3;padding-left:3px">[%s]</span>',
-			'label_callback'          => array('tl_article', 'addIcon')
-		),
-		'global_operations' => array
-		(
-			'toggleNodes' => array
-			(
+			'label_callback'          => ['tl_article', 'addIcon']
+		],
+		'global_operations' =>
+		[
+			'toggleNodes' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['toggleAll'],
 				'href'                => '&amp;ptg=all',
 				'class'               => 'header_toggle'
-			),
-			'all' => array
-			(
+			],
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['edit'],
 				'href'                => 'table=tl_content',
 				'icon'                => 'edit.gif',
-				'button_callback'     => array('tl_article', 'editArticle')
-			),
-			'editheader' => array
-			(
+				'button_callback'     => ['tl_article', 'editArticle']
+			],
+			'editheader' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['editheader'],
 				'href'                => 'act=edit',
 				'icon'                => 'header.gif',
-				'button_callback'     => array('tl_article', 'editHeader')
-			),
-			'copy' => array
-			(
+				'button_callback'     => ['tl_article', 'editHeader']
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_article', 'copyArticle')
-			),
-			'cut' => array
-			(
+				'button_callback'     => ['tl_article', 'copyArticle']
+			],
+			'cut' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_article', 'cutArticle')
-			),
-			'delete' => array
-			(
+				'button_callback'     => ['tl_article', 'cutArticle']
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_article', 'deleteArticle')
-			),
-			'toggle' => array
-			(
+				'button_callback'     => ['tl_article', 'deleteArticle']
+			],
+			'toggle' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['toggle'],
 				'icon'                => 'visible.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_article', 'toggleIcon')
-			),
-			'show' => array
-			(
+				'button_callback'     => ['tl_article', 'toggleIcon']
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_article']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Select
-	'select' => array
-	(
-		'buttons_callback' => array
-		(
-			array('tl_article', 'addAliasButton')
-		)
-	),
+	'select' =>
+	[
+		'buttons_callback' =>
+		[
+			['tl_article', 'addAliasButton']
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
-		'__selector__'                => array('protected'),
+	'palettes' =>
+	[
+		'__selector__'                => ['protected'],
 		'default'                     => '{title_legend},title,alias,author;{layout_legend},inColumn,keywords;{teaser_legend:hide},teaserCssID,showTeaser,teaser;{syndication_legend},printable;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{publish_legend},published,start,stop'
-	),
+	],
 
 	// Subpalettes
-	'subpalettes' => array
-	(
+	'subpalettes' =>
+	[
 		'protected'                   => 'groups'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
-			'label'                   => array('ID'),
+	'fields' =>
+	[
+		'id' =>
+		[
+			'label'                   => ['ID'],
 			'search'                  => true,
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'foreignKey'              => 'tl_page.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
-		),
-		'sorting' => array
-		(
+			'relation'                => ['type'=>'belongsTo', 'load'=>'lazy']
+		],
+		'sorting' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'title' => array
-		(
+		],
+		'title' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['title'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
-			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255),
+			'eval'                    => ['mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'alias' => array
-		(
+		],
+		'alias' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['alias'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
-			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_article', 'generateAlias')
-			),
+			'eval'                    => ['rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_article', 'generateAlias']
+			],
 			'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 
-		),
-		'author' => array
-		(
+		],
+		'author' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['author'],
 			'default'                 => BackendUser::getInstance()->id,
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'foreignKey'              => 'tl_user.name',
-			'eval'                    => array('doNotCopy'=>true, 'mandatory'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['doNotCopy'=>true, 'mandatory'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
-		),
-		'inColumn' => array
-		(
+			'relation'                => ['type'=>'hasOne', 'load'=>'eager']
+		],
+		'inColumn' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['inColumn'],
 			'exclude'                 => true,
 			'default'                 => 'main',
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_article', 'getActiveLayoutSections'),
+			'options_callback'        => ['tl_article', 'getActiveLayoutSections'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_article'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'keywords' => array
-		(
+		],
+		'keywords' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['keywords'],
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
-			'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true),
+			'eval'                    => ['style'=>'height:60px', 'decodeEntities'=>true],
 			'sql'                     => "text NULL"
-		),
-		'showTeaser' => array
-		(
+		],
+		'showTeaser' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['showTeaser'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'teaserCssID' => array
-		(
+		],
+		'teaserCssID' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['teaserCssID'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'teaser' => array
-		(
+		],
+		'teaser' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['teaser'],
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
-			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
+			'eval'                    => ['rte'=>'tinyMCE', 'tl_class'=>'clr'],
 			'sql'                     => "text NULL"
-		),
-		'printable' => array
-		(
+		],
+		'printable' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['printable'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options'                 => array('print', 'pdf', 'facebook', 'twitter', 'gplus'),
-			'eval'                    => array('multiple'=>true),
+			'options'                 => ['print', 'pdf', 'facebook', 'twitter', 'gplus'],
+			'eval'                    => ['multiple'=>true],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_article'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'customTpl' => array
-		(
+		],
+		'customTpl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['customTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_article', 'getArticleTemplates'),
-			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
+			'options_callback'        => ['tl_article', 'getArticleTemplates'],
+			'eval'                    => ['includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'protected' => array
-		(
+		],
+		'protected' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['protected'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'groups' => array
-		(
+		],
+		'groups' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['groups'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'foreignKey'              => 'tl_member_group.name',
-			'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+			'eval'                    => ['mandatory'=>true, 'multiple'=>true],
 			'sql'                     => "blob NULL",
-			'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
-		),
-		'guests' => array
-		(
+			'relation'                => ['type'=>'hasMany', 'load'=>'lazy']
+		],
+		'guests' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['guests'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'cssID' => array
-		(
+		],
+		'cssID' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['cssID'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'space' => array
-		(
+		],
+		'space' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['space'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'published' => array
-		(
+		],
+		'published' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['published'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('doNotCopy'=>true),
+			'eval'                    => ['doNotCopy'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'start' => array
-		(
+		],
+		'start' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['start'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		),
-		'stop' => array
-		(
+		],
+		'stop' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['stop'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -392,8 +392,8 @@ class tl_article extends Backend
 		// Set allowed page IDs (edit multiple)
 		if (is_array($session['CURRENT']['IDS']))
 		{
-			$edit_all = array();
-			$delete_all = array();
+			$edit_all = [];
+			$delete_all = [];
 
 			foreach ($session['CURRENT']['IDS'] as $id)
 			{
@@ -425,7 +425,7 @@ class tl_article extends Backend
 		// Set allowed clipboard IDs
 		if (isset($session['CLIPBOARD']['tl_article']) && is_array($session['CLIPBOARD']['tl_article']['id']))
 		{
-			$clipboard = array();
+			$clipboard = [];
 
 			foreach ($session['CLIPBOARD']['tl_article']['id'] as $id)
 			{
@@ -461,7 +461,7 @@ class tl_article extends Backend
 									  ->limit(1)
 									  ->execute(Input::get('id'));
 
-			$ids = $objPage->numRows ? array($objPage->pid) : array();
+			$ids = $objPage->numRows ? [$objPage->pid] : [];
 
 			// Set permission
 			switch (Input::get('act'))
@@ -519,7 +519,7 @@ class tl_article extends Backend
 			// Check user permissions
 			if (Input::get('act') != 'show')
 			{
-				$pagemounts = array();
+				$pagemounts = [];
 
 				// Get all allowed pages for the current user
 				foreach ($this->User->pagemounts as $root)
@@ -598,7 +598,7 @@ class tl_article extends Backend
 		}
 
 		// Add a prefix to reserved names (see #6066)
-		if (in_array($varValue, array('top', 'wrapper', 'header', 'container', 'main', 'left', 'right', 'footer')))
+		if (in_array($varValue, ['top', 'wrapper', 'header', 'container', 'main', 'left', 'right', 'footer']))
 		{
 			$varValue = 'article-' . $varValue;
 		}
@@ -631,11 +631,11 @@ class tl_article extends Backend
 		// Show only active sections
 		if ($dc->activeRecord->pid)
 		{
-			$arrSections = array();
+			$arrSections = [];
 			$objPage = PageModel::findWithDetails($dc->activeRecord->pid);
 
 			// Get the layout sections
-			foreach (array('layout', 'mobileLayout') as $key)
+			foreach (['layout', 'mobileLayout'] as $key)
 			{
 				if (!$objPage->$key)
 				{
@@ -670,7 +670,7 @@ class tl_article extends Backend
 		// Show all sections (e.g. "override all" mode)
 		else
 		{
-			$arrSections = array('header', 'left', 'right', 'main', 'footer');
+			$arrSections = ['header', 'left', 'right', 'main', 'footer'];
 			$objLayout = $this->Database->query("SELECT sections FROM tl_layout WHERE sections!=''");
 
 			while ($objLayout->next())

@@ -14,183 +14,183 @@
 /**
  * File management
  */
-$GLOBALS['TL_DCA']['tl_files'] = array
-(
+$GLOBALS['TL_DCA']['tl_files'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Folder',
 		'enableVersioning'            => true,
 		'databaseAssisted'            => true,
-		'onload_callback' => array
-		(
-			array('tl_files', 'checkPermission'),
-			array('tl_files', 'addBreadcrumb'),
-		),
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'onload_callback' =>
+		[
+			['tl_files', 'checkPermission'],
+			['tl_files', 'addBreadcrumb'],
+		],
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'uuid' => 'unique',
 				'extension' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'global_operations' => array
-		(
-			'sync' => array
-			(
+	'list' =>
+	[
+		'global_operations' =>
+		[
+			'sync' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['sync'],
 				'href'                => 'act=sync',
 				'class'               => 'header_sync',
-				'button_callback'     => array('tl_files', 'syncFiles')
-			),
-			'toggleNodes' => array
-			(
+				'button_callback'     => ['tl_files', 'syncFiles']
+			],
+			'toggleNodes' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['toggleAll'],
 				'href'                => 'tg=all',
 				'class'               => 'header_toggle'
-			),
-			'all' => array
-			(
+			],
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif',
-				'button_callback'     => array('tl_files', 'editFile')
-			),
-			'copy' => array
-			(
+				'button_callback'     => ['tl_files', 'editFile']
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_files', 'copyFile')
-			),
-			'cut' => array
-			(
+				'button_callback'     => ['tl_files', 'copyFile']
+			],
+			'cut' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_files', 'cutFile')
-			),
-			'delete' => array
-			(
+				'button_callback'     => ['tl_files', 'cutFile']
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_files', 'deleteFile')
-			),
-			'show' => array
-			(
+				'button_callback'     => ['tl_files', 'deleteFile']
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif',
-				'button_callback'     => array('tl_files', 'showFile')
-			),
-			'source' => array
-			(
+				'button_callback'     => ['tl_files', 'showFile']
+			],
+			'source' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['source'],
 				'href'                => 'act=source',
 				'icon'                => 'editor.gif',
-				'button_callback'     => array('tl_files', 'editSource')
-			)
-		)
-	),
+				'button_callback'     => ['tl_files', 'editSource']
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
+	'palettes' =>
+	[
 		'default'                     => 'name,protected;meta'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "binary(16) NULL"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'uuid' => array
-		(
+		],
+		'uuid' =>
+		[
 			'sql'                     => "binary(16) NULL"
-		),
-		'type' => array
-		(
+		],
+		'type' =>
+		[
 			'sql'                     => "varchar(16) NOT NULL default ''"
-		),
-		'path' => array
-		(
+		],
+		'path' =>
+		[
 			'sql'                     => "varchar(1022) NOT NULL default ''"
-		),
-		'extension' => array
-		(
+		],
+		'extension' =>
+		[
 			'sql'                     => "varchar(16) NOT NULL default ''"
-		),
-		'hash' => array
-		(
+		],
+		'hash' =>
+		[
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'found' => array
-		(
+		],
+		'found' =>
+		[
 			'sql'                     => "char(1) NOT NULL default '1'"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['name'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
-			'wizard' => array
-			(
-				array('tl_files', 'addFileLocation')
-			),
-			'save_callback' => array
-			(
-				array('tl_files', 'checkFilename')
-			),
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'],
+			'wizard' =>
+			[
+				['tl_files', 'addFileLocation']
+			],
+			'save_callback' =>
+			[
+				['tl_files', 'checkFilename']
+			],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'protected' => array
-		(
+		],
+		'protected' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['protected'],
-			'input_field_callback'    => array('tl_files', 'protectFolder'),
-			'eval'                    => array('tl_class'=>'w50 m12')
-		),
-		'meta' => array
-		(
+			'input_field_callback'    => ['tl_files', 'protectFolder'],
+			'eval'                    => ['tl_class'=>'w50 m12']
+		],
+		'meta' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['meta'],
 			'inputType'               => 'metaWizard',
-			'eval'                    => array('allowHtml'=>true, 'metaFields'=>array('title', 'link', 'caption')),
+			'eval'                    => ['allowHtml'=>true, 'metaFields'=>['title', 'link', 'caption']],
 			'sql'                     => "blob NULL"
-		)
-	)
-);
+		]
+	]
+];
 
 
 
@@ -228,7 +228,7 @@ class tl_files extends Backend
 		// Permissions
 		if (!is_array($this->User->fop))
 		{
-			$this->User->fop = array();
+			$this->User->fop = [];
 		}
 
 		$f1 = $this->User->hasAccess('f1', 'fop');
@@ -264,14 +264,14 @@ class tl_files extends Backend
 		{
 			if (Input::get('act') == 'editAll' && !$f2)
 			{
-				$session['CURRENT']['IDS'] = array();
+				$session['CURRENT']['IDS'] = [];
 			}
 
 			// Check delete permissions
 			else
 			{
-				$folders = array();
-				$delete_all = array();
+				$folders = [];
+				$delete_all = [];
 
 				foreach ($session['CURRENT']['IDS'] as $id)
 				{
@@ -300,7 +300,7 @@ class tl_files extends Backend
 		// Set allowed clipboard IDs
 		if (isset($session['CLIPBOARD']['tl_files']) && !$f2)
 		{
-			$session['CLIPBOARD']['tl_files'] = array();
+			$session['CLIPBOARD']['tl_files'] = [];
 		}
 
 		// Overwrite session

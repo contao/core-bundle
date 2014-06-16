@@ -44,25 +44,25 @@ class DC_Folder extends DataContainer implements listable, editable
 	 * Current filemounts
 	 * @var array
 	 */
-	protected $arrFilemounts = array();
+	protected $arrFilemounts = [];
 
 	/**
 	 * Valid file types
 	 * @var array
 	 */
-	protected $arrValidFileTypes = array();
+	protected $arrValidFileTypes = [];
 
 	/**
 	 * Messages
 	 * @var array
 	 */
-	protected $arrMessages = array();
+	protected $arrMessages = [];
 
 	/**
 	 * Counts
 	 * @var array
 	 */
-	protected $arrCounts = array();
+	protected $arrCounts = [];
 
 	/**
 	 * True if a new version has to be created
@@ -100,7 +100,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		// Clear the clipboard
 		if (isset($_GET['clipboard']))
 		{
-			$this->Session->set('CLIPBOARD', array());
+			$this->Session->set('CLIPBOARD', []);
 			$this->redirect($this->getReferer());
 		}
 
@@ -147,11 +147,11 @@ class DC_Folder extends DataContainer implements listable, editable
 			{
 				$arrClipboard = $this->Session->get('CLIPBOARD');
 
-				$arrClipboard[$strTable] = array
-				(
+				$arrClipboard[$strTable] =
+				[
 					'id' => $ids,
 					'mode' => (isset($_POST['cut']) ? 'cutAll' : 'copyAll')
-				);
+				];
 
 				$this->Session->set('CLIPBOARD', $arrClipboard);
 				$this->redirect($this->getReferer());
@@ -260,12 +260,12 @@ class DC_Folder extends DataContainer implements listable, editable
 
 			$arrClipboard = $this->Session->get('CLIPBOARD');
 
-			$arrClipboard[$this->strTable] = array
-			(
+			$arrClipboard[$this->strTable] =
+			[
 				'id' => $this->urlEncode($this->intId),
 				'childs' => Input::get('childs'),
 				'mode' => Input::get('mode')
-			);
+			];
 
 			$this->Session->set('CLIPBOARD', $arrClipboard);
 		}
@@ -283,7 +283,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			// Collapse tree
 			else
 			{
-				$session['filetree'] = array();
+				$session['filetree'] = [];
 			}
 
 			$this->Session->setData($session);
@@ -370,7 +370,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		if (Input::get('act') == 'select')
 		{
 			// Submit buttons
-			$arrButtons = array();
+			$arrButtons = [];
 
 			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notDeletable'])
 			{
@@ -458,7 +458,7 @@ class DC_Folder extends DataContainer implements listable, editable
 
 		// Empty clipboard
 		$arrClipboard = $this->Session->get('CLIPBOARD');
-		$arrClipboard[$this->strTable] = array();
+		$arrClipboard[$this->strTable] = [];
 		$this->Session->set('CLIPBOARD', $arrClipboard);
 
 		$this->Files->mkdir($strFolder . '/__new__');
@@ -509,7 +509,7 @@ class DC_Folder extends DataContainer implements listable, editable
 
 		// Empty clipboard
 		$arrClipboard = $this->Session->get('CLIPBOARD');
-		$arrClipboard[$this->strTable] = array();
+		$arrClipboard[$this->strTable] = [];
 		$this->Session->set('CLIPBOARD', $arrClipboard);
 
 		$this->import('Files');
@@ -642,7 +642,7 @@ class DC_Folder extends DataContainer implements listable, editable
 
 		// Empty clipboard
 		$arrClipboard = $this->Session->get('CLIPBOARD');
-		$arrClipboard[$this->strTable] = array();
+		$arrClipboard[$this->strTable] = [];
 		$this->Session->set('CLIPBOARD', $arrClipboard);
 
 		$this->import('Files');
@@ -880,7 +880,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		if (!$blnIsAjax)
 		{
 			$arrClipboard = $this->Session->get('CLIPBOARD');
-			$arrClipboard[$this->strTable] = array();
+			$arrClipboard[$this->strTable] = [];
 			$this->Session->set('CLIPBOARD', $arrClipboard);
 		}
 
@@ -973,7 +973,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		}
 
 		// Submit buttons
-		$arrButtons = array();
+		$arrButtons = [];
 		$arrButtons['upload'] = '<input type="submit" name="upload" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG'][$this->strTable]['upload']).'">';
 		$arrButtons['uploadNback'] = '<input type="submit" name="uploadNback" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG'][$this->strTable]['uploadNback']).'">';
 
@@ -1196,7 +1196,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		}
 
 		// Submit buttons
-		$arrButtons = array();
+		$arrButtons = [];
 		$arrButtons['save'] = '<input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['save']).'">';
 		$arrButtons['saveNclose'] = '<input type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['saveNclose']).'">';
 
@@ -1396,7 +1396,7 @@ class DC_Folder extends DataContainer implements listable, editable
 <div class="'.$class.'">';
 
 				$class = 'tl_box';
-				$formFields = array();
+				$formFields = [];
 
 				foreach ($this->strPalette as $v)
 				{
@@ -1516,7 +1516,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			}
 
 			// Submit buttons
-			$arrButtons = array();
+			$arrButtons = [];
 			$arrButtons['save'] = '<input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['save']).'">';
 			$arrButtons['saveNclose'] = '<input type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['saveNclose']).'">';
 
@@ -1595,7 +1595,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		else
 		{
 			$options = '';
-			$fields = array();
+			$fields = [];
 
 			// Add fields of the current table
 			$fields = array_merge($fields, array_keys($GLOBALS['TL_DCA'][$this->strTable]['fields']));
@@ -1790,7 +1790,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		}
 
 		// Submit buttons
-		$arrButtons = array();
+		$arrButtons = [];
 		$arrButtons['save'] = '<input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['save']).'">';
 		$arrButtons['saveNclose'] = '<input type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['saveNclose']).'">';
 
@@ -1973,7 +1973,7 @@ class DC_Folder extends DataContainer implements listable, editable
 		elseif ($this->blnIsDbAssisted && $this->objActiveRecord !== null)
 		{
 			// Convert date formats into timestamps
-			if ($varValue != '' && in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
+			if ($varValue != '' && in_array($arrData['eval']['rgxp'], ['date', 'time', 'datim']))
 			{
 				$objDate = new Date($varValue, Config::get($arrData['eval']['rgxp'] . 'Format'));
 				$varValue = $objDate->tstamp;
@@ -2096,8 +2096,8 @@ class DC_Folder extends DataContainer implements listable, editable
 		$strLog = Dbafs::syncFiles();
 
 		// Show the results
-		$arrMessages = array();
-		$arrCounts   = array('Added'=>0, 'Changed'=>0, 'Unchanged'=>0, 'Moved'=>0, 'Deleted'=>0);
+		$arrMessages = [];
+		$arrCounts   = ['Added'=>0, 'Changed'=>0, 'Unchanged'=>0, 'Moved'=>0, 'Deleted'=>0];
 
 		// Read the log file
 		$fh = fopen(TL_ROOT . '/' . $strLog, 'rb');
@@ -2238,15 +2238,15 @@ class DC_Folder extends DataContainer implements listable, editable
 		}
 
 		$return = '';
-		$files = array();
-		$folders = array();
+		$files = [];
+		$folders = [];
 		$intSpacing = 20;
 		$level = ($intMargin / $intSpacing + 1);
 
 		// Mount folder
 		if ($mount)
 		{
-			$folders = array($path);
+			$folders = [$path];
 		}
 
 		// Scan directory and sort the result
@@ -2351,7 +2351,7 @@ class DC_Folder extends DataContainer implements listable, editable
 				// Do not display buttons for mounted folders
 				if ($this->User->isAdmin || !in_array($currentFolder, $this->User->filemounts))
 				{
-					$return .= (Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'popupWidth'=>600, 'popupHeight'=>178, 'fileNameEncoded'=>$strFolderNameEncoded), $this->strTable);
+					$return .= (Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(['id'=>$currentEncoded, 'popupWidth'=>600, 'popupHeight'=>178, 'fileNameEncoded'=>$strFolderNameEncoded], $this->strTable);
 				}
 
 				// Upload button
@@ -2429,7 +2429,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			}
 			else
 			{
-				$_buttons = (Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'popupWidth'=>$popupWidth, 'popupHeight'=>$popupHeight, 'fileNameEncoded'=>$strFileNameEncoded), $this->strTable);
+				$_buttons = (Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(['id'=>$currentEncoded, 'popupWidth'=>$popupWidth, 'popupHeight'=>$popupHeight, 'fileNameEncoded'=>$strFileNameEncoded], $this->strTable);
 			}
 
 			$return .= $_buttons . '</div><div style="clear:both"></div></li>';
@@ -2542,7 +2542,7 @@ class DC_Folder extends DataContainer implements listable, editable
 	 */
 	protected function getMD5Folders($strPath)
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		foreach (scan(TL_ROOT . '/' . $strPath) as $strFile)
 		{

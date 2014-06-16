@@ -113,8 +113,8 @@ class ModuleQuicknav extends Module
 	{
 		global $objPage;
 
-		$groups = array();
-		$arrPages = array();
+		$groups = [];
+		$arrPages = [];
 
 		// Get all groups of the current front end user
 		if (FE_USER_LOGGED_IN)
@@ -128,7 +128,7 @@ class ModuleQuicknav extends Module
 
 		if ($objSubpages === null)
 		{
-			return array();
+			return [];
 		}
 
 		++$level;
@@ -153,13 +153,13 @@ class ModuleQuicknav extends Module
 				{
 					$href = $this->generateFrontendUrl($objSubpages->row(), null, $language, true);
 
-					$arrPages[] = array
-					(
+					$arrPages[] =
+					[
 						'level' => ($level - 2),
 						'title' => specialchars(strip_insert_tags($objSubpages->pageTitle ?: $objSubpages->title)),
 						'href' => $href,
 						'link' => strip_insert_tags($objSubpages->title)
-					);
+					];
 
 					// Subpages
 					if (!$this->showLevel || $this->showLevel >= $level || (!$this->hardLimit && ($objPage->id == $objSubpages->id || in_array($objPage->id, $this->Database->getChildRecords($objSubpages->id, 'tl_page')))))

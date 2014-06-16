@@ -36,17 +36,17 @@ class ContentList extends ContentElement
 	 */
 	protected function compile()
 	{
-		$arrItems = array();
+		$arrItems = [];
 		$items = deserialize($this->listitems);
 		$limit = count($items) - 1;
 
 		for ($i=0, $c=count($items); $i<$c; $i++)
 		{
-			$arrItems[] = array
-			(
+			$arrItems[] =
+			[
 				'class' => (($i == 0) ? 'first' : (($i == $limit) ? 'last' : '')),
 				'content' => $items[$i]
-			);
+			];
 		}
 
 		$this->Template->items = $arrItems;

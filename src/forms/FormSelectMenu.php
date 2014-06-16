@@ -211,13 +211,13 @@ class FormSelectMenu extends Widget
 	 */
 	protected function getOptions()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 		$blnHasGroups = false;
 
 		// Add empty option if there are none
 		if (empty($this->arrOptions))
 		{
-			$this->arrOptions = array(array('value' => '', 'label' => '-'));
+			$this->arrOptions = [['value' => '', 'label' => '-']];
 		}
 
 		// Generate options
@@ -227,38 +227,38 @@ class FormSelectMenu extends Widget
 			{
 				if ($blnHasGroups)
 				{
-					$arrOptions[] = array
-					(
+					$arrOptions[] =
+					[
 						'type' => 'group_end'
-					);
+					];
 				}
 
-				$arrOptions[] = array
-				(
+				$arrOptions[] =
+				[
 					'type'  => 'group_start',
 					'label' => specialchars($arrOption['label'])
-				);
+				];
 
 				$blnHasGroups = true;
 			}
 			else
 			{
-				$arrOptions[] = array
-				(
+				$arrOptions[] =
+				[
 					'type'     => 'option',
 					'value'    => $arrOption['value'],
 					'selected' => $this->isSelected($arrOption),
 					'label'    => $arrOption['label'],
-				);
+				];
 			}
 		}
 
 		if ($blnHasGroups)
 		{
-			$arrOptions[] = array
-			(
+			$arrOptions[] =
+			[
 				'type' => 'group_end'
-			);
+			];
 		}
 
 		return $arrOptions;
@@ -289,7 +289,7 @@ class FormSelectMenu extends Widget
 		// Add empty option if there are none
 		if (empty($this->arrOptions))
 		{
-			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
+			$this->arrOptions = [['value'=>'', 'label'=>'-']];
 		}
 
 		foreach ($this->arrOptions as $arrOption)

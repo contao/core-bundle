@@ -63,7 +63,7 @@ class BackendConfirm extends Backend
 		$url = preg_replace('/(\?|&)rt=[^&]*/', '', $this->Session->get('INVALID_TOKEN_URL'));
 		$this->Template->href = ampersand($url . ((strpos($url, '?') !== false) ? '&rt=' : '?rt=') . REQUEST_TOKEN);
 
-		$vars = array();
+		$vars = [];
 		list(, $request) = explode('?', $url, 2);
 
 		// Extract the arguments
@@ -73,7 +73,7 @@ class BackendConfirm extends Backend
 			$vars[$key] = $value;
 		}
 
-		$arrInfo = array();
+		$arrInfo = [];
 
 		// Provide more information about the link (see #4007)
 		foreach ($vars as $k=>$v)

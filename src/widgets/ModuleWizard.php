@@ -45,7 +45,7 @@ class ModuleWizard extends Widget
 	{
 		$this->import('Database');
 
-		$arrButtons = array('edit', 'copy', 'delete', 'enable', 'drag', 'up', 'down');
+		$arrButtons = ['edit', 'copy', 'delete', 'enable', 'drag', 'up', 'down'];
 		$strCommand = 'cmd_' . $this->strField;
 
 		// Change the order
@@ -76,7 +76,7 @@ class ModuleWizard extends Widget
 									 ->execute($this->currentRecord);
 
 		// Add the articles module
-		$modules[] = array('id'=>0, 'name'=>$GLOBALS['TL_LANG']['MOD']['article'][0], 'type'=>'article');
+		$modules[] = ['id'=>0, 'name'=>$GLOBALS['TL_LANG']['MOD']['article'][0], 'type'=>'article'];
 
 		if ($objModules->numRows)
 		{
@@ -97,7 +97,7 @@ class ModuleWizard extends Widget
 								 ->execute($this->currentRecord);
 
 		// Show all columns and filter in PageRegular (see #3273)
-		$cols = array('header', 'left', 'right', 'main', 'footer');
+		$cols = ['header', 'left', 'right', 'main', 'footer'];
 		$arrSections = trimsplit(',', $objRow->sections);
 
 		// Add custom page sections
@@ -115,16 +115,16 @@ class ModuleWizard extends Widget
 		// Make sure there is at least an empty array
 		if (!is_array($this->varValue) || !$this->varValue[0])
 		{
-			$this->varValue = array('');
+			$this->varValue = [''];
 		}
 		else
 		{
-			$arrCols = array();
+			$arrCols = [];
 
 			// Initialize the sorting order
 			foreach ($cols as $col)
 			{
-				$arrCols[$col] = array();
+				$arrCols[$col] = [];
 			}
 
 			foreach ($this->varValue as $v)
@@ -132,7 +132,7 @@ class ModuleWizard extends Widget
 				$arrCols[$v['col']][] = $v;
 			}
 
-			$this->varValue = array();
+			$this->varValue = [];
 
 			foreach ($arrCols as $arrCol)
 			{

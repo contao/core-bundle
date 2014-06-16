@@ -48,18 +48,18 @@ class FrontendCron extends Frontend
 			return;
 		}
 
-		$arrLock = array();
-		$arrIntervals = array('monthly', 'weekly', 'daily', 'hourly', 'minutely');
+		$arrLock = [];
+		$arrIntervals = ['monthly', 'weekly', 'daily', 'hourly', 'minutely'];
 
 		// Store the current timestamps
-		$arrCurrent = array
-		(
+		$arrCurrent =
+		[
 			'monthly'  => date('Ym'),
 			'weekly'   => date('YW'),
 			'daily'    => date('Ymd'),
 			'hourly'   => date('YmdH'),
 			'minutely' => date('YmdHi')
-		);
+		];
 
 		// Get the timestamps from tl_cron
 		$objLock = $this->Database->query("SELECT * FROM tl_cron WHERE name !='lastrun'");
@@ -126,7 +126,7 @@ class FrontendCron extends Frontend
 		$time = strtotime(date('Y-m-d H:i'));
 
 		// Lock the table
-		$this->Database->lockTables(array('tl_cron'=>'WRITE'));
+		$this->Database->lockTables(['tl_cron'=>'WRITE']);
 
 		// Get the last execution date
 		$objCron = $this->Database->prepare("SELECT * FROM tl_cron WHERE name='lastrun'")

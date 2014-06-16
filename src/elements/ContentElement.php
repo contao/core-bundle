@@ -48,19 +48,19 @@ abstract class ContentElement extends Frontend
 	 * Current record
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Processed folders
 	 * @var array
 	 */
-	protected $arrProcessed = array();
+	protected $arrProcessed = [];
 
 	/**
 	 * Style array
 	 * @var array
 	 */
-	protected $arrStyle = array();
+	protected $arrStyle = [];
 
 
 	/**

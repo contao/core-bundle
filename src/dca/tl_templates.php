@@ -30,102 +30,102 @@ if (Input::get('do') == 'tpl_editor')
 /**
  * Template editor
  */
-$GLOBALS['TL_DCA']['tl_templates'] = array
-(
+$GLOBALS['TL_DCA']['tl_templates'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Folder',
 		'validFileTypes'              => Config::get('templateFiles'),
 		'closed'                      => true,
-		'onload_callback' => array
-		(
-			array('tl_templates', 'addBreadcrumb'),
-		)
-	),
+		'onload_callback' =>
+		[
+			['tl_templates', 'addBreadcrumb'],
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'global_operations' => array
-		(
-			'new_tpl' => array
-			(
+	'list' =>
+	[
+		'global_operations' =>
+		[
+			'new_tpl' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_templates']['new_tpl'],
 				'href'                => 'key=new_tpl',
 				'class'               => 'header_new'
-			),
-			'toggleNodes' => array
-			(
+			],
+			'toggleNodes' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['toggleAll'],
 				'href'                => 'tg=all',
 				'class'               => 'header_toggle'
-			),
-			'all' => array
-			(
+			],
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
-			),
-			'copy' => array
-			(
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'cut' => array
-			(
+			],
+			'cut' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'delete' => array
-			(
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-			),
-			'source' => array
-			(
+			],
+			'source' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['source'],
 				'href'                => 'act=source',
 				'icon'                => 'editor.gif',
-				'button_callback'     => array('tl_templates', 'editSource')
-			)
-		)
-	),
+				'button_callback'     => ['tl_templates', 'editSource']
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
+	'palettes' =>
+	[
 		'default'                     => 'name'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'name' => array
-		(
+	'fields' =>
+	[
+		'name' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['name'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>32, 'spaceToUnderscore'=>true)
-		)
-	)
-);
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>32, 'spaceToUnderscore'=>true]
+		]
+	]
+];
 
 
 /**
@@ -167,7 +167,7 @@ class tl_templates extends Backend
 
 		$strPath = 'templates';
 		$arrNodes = explode('/', preg_replace('/^templates\//', '', $strNode));
-		$arrLinks = array();
+		$arrLinks = [];
 
 		// Add root link
 		$arrLinks[] = '<img src="' . TL_FILES_URL . 'system/themes/' . Backend::getTheme() . '/images/filemounts.gif" width="18" height="18" alt=""> <a href="' . $this->addToUrl('node=') . '" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']).'">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
@@ -189,7 +189,7 @@ class tl_templates extends Backend
 		}
 
 		// Limit tree
-		$GLOBALS['TL_DCA']['tl_templates']['list']['sorting']['root'] = array($strNode);
+		$GLOBALS['TL_DCA']['tl_templates']['list']['sorting']['root'] = [$strNode];
 
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_templates']['list']['sorting']['breadcrumb'] .= '
@@ -245,7 +245,7 @@ class tl_templates extends Backend
 			}
 		}
 
-		$arrAllTemplates = array();
+		$arrAllTemplates = [];
 		$arrAllowed = trimsplit(',', Config::get('templateFiles'));
 
 		// Get all templates

@@ -82,7 +82,7 @@ class ModuleQuicklink extends Module
 			return;
 		}
 
-		$arrPages = array();
+		$arrPages = [];
 
 		// Sort the array keys according to the given order
 		if ($this->orderPages != '')
@@ -101,7 +101,7 @@ class ModuleQuicklink extends Module
 			$arrPages[$objPages->id] = $objPages->current()->loadDetails()->row(); // see #3765
 		}
 
-		$items = array();
+		$items = [];
 
 		foreach ($arrPages as $arrPage)
 		{
@@ -137,12 +137,12 @@ class ModuleQuicklink extends Module
 					break;
 			}
 
-			$items[] = array
-			(
+			$items[] =
+			[
 				'href' => $href,
 				'title' => specialchars($arrPage['pageTitle'] ?: $arrPage['title']),
 				'link' => $arrPage['title']
-			);
+			];
 		}
 
 		$this->Template->items = $items;

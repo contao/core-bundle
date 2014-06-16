@@ -14,272 +14,272 @@
 /**
  * Table tl_form
  */
-$GLOBALS['TL_DCA']['tl_form'] = array
-(
+$GLOBALS['TL_DCA']['tl_form'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
-		'ctable'                      => array('tl_form_field'),
-		'onload_callback' => array
-		(
-			array('tl_form', 'checkPermission')
-		),
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'ctable'                      => ['tl_form_field'],
+		'onload_callback' =>
+		[
+			['tl_form', 'checkPermission']
+		],
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'alias' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 1,
-			'fields'                  => array('title'),
+			'fields'                  => ['title'],
 			'flag'                    => 1,
 			'panelLayout'             => 'filter;search,limit',
-		),
-		'label' => array
-		(
-			'fields'                  => array('title', 'formID'),
+		],
+		'label' =>
+		[
+			'fields'                  => ['title', 'formID'],
 			'format'                  => '%s <span style="color:#b3b3b3;padding-left:3px">[%s]</span>'
-		),
-		'global_operations' => array
-		(
-			'all' => array
-			(
+		],
+		'global_operations' =>
+		[
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_form']['edit'],
 				'href'                => 'table=tl_form_field',
 				'icon'                => 'edit.gif'
-			),
-			'editheader' => array
-			(
+			],
+			'editheader' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_form']['editheader'],
 				'href'                => 'act=edit',
 				'icon'                => 'header.gif',
-				'button_callback'     => array('tl_form', 'editHeader')
-			),
-			'copy' => array
-			(
+				'button_callback'     => ['tl_form', 'editHeader']
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_form']['copy'],
 				'href'                => 'act=copy',
 				'icon'                => 'copy.gif',
-				'button_callback'     => array('tl_form', 'copyForm')
-			),
-			'delete' => array
-			(
+				'button_callback'     => ['tl_form', 'copyForm']
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_form']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_form', 'deleteForm')
-			),
-			'show' => array
-			(
+				'button_callback'     => ['tl_form', 'deleteForm']
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_form']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
-		'__selector__'                => array('sendViaEmail', 'storeValues'),
+	'palettes' =>
+	[
+		'__selector__'                => ['sendViaEmail', 'storeValues'],
 		'default'                     => '{title_legend},title,alias,jumpTo;{config_legend},tableless,allowTags;{email_legend},sendViaEmail;{store_legend:hide},storeValues;{expert_legend:hide},method,novalidate,attributes,formID'
-	),
+	],
 
 	// Subpalettes
-	'subpalettes' => array
-	(
+	'subpalettes' =>
+	[
 		'sendViaEmail'                => 'recipient,subject,format,skipEmpty',
 		'storeValues'                 => 'targetTable'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'title' => array
-		(
+		],
+		'title' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['title'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'alias' => array
-		(
+		],
+		'alias' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['alias'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_form', 'generateAlias')
-			),
+			'eval'                    => ['rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_form', 'generateAlias']
+			],
 			'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
-		),
-		'jumpTo' => array
-		(
+		],
+		'jumpTo' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['jumpTo'],
 			'exclude'                 => true,
 			'inputType'               => 'pageTree',
 			'foreignKey'              => 'tl_page.title',
-			'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'clr'),
+			'eval'                    => ['fieldType'=>'radio', 'tl_class'=>'clr'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
-		),
-		'sendViaEmail' => array
-		(
+			'relation'                => ['type'=>'hasOne', 'load'=>'eager']
+		],
+		'sendViaEmail' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['sendViaEmail'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'recipient' => array
-		(
+		],
+		'recipient' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['recipient'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>1022, 'rgxp'=>'emails', 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>1022, 'rgxp'=>'emails', 'tl_class'=>'w50'],
 			'sql'                     => "varchar(1022) NOT NULL default ''"
-		),
-		'subject' => array
-		(
+		],
+		'subject' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['subject'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'format' => array
-		(
+		],
+		'format' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['format'],
 			'default'                 => 'raw',
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array('raw', 'xml', 'csv', 'email'),
+			'options'                 => ['raw', 'xml', 'csv', 'email'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_form'],
-			'eval'                    => array('helpwizard'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['helpwizard'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(12) NOT NULL default ''"
-		),
-		'skipEmpty' => array
-		(
+		],
+		'skipEmpty' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['skipEmtpy'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'storeValues' => array
-		(
+		],
+		'storeValues' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['storeValues'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'targetTable' => array
-		(
+		],
+		'targetTable' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['targetTable'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_form', 'getAllTables'),
-			'eval'                    => array('chosen'=>true),
+			'options_callback'        => ['tl_form', 'getAllTables'],
+			'eval'                    => ['chosen'=>true],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'method' => array
-		(
+		],
+		'method' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['method'],
 			'default'                 => 'POST',
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
-			'options'                 => array('POST', 'GET'),
-			'eval'                    => array('tl_class'=>'w50'),
+			'options'                 => ['POST', 'GET'],
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "varchar(12) NOT NULL default ''"
-		),
-		'novalidate' => array
-		(
+		],
+		'novalidate' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['novalidate'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'attributes' => array
-		(
+		],
+		'attributes' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['attributes'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'formID' => array
-		(
+		],
+		'formID' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['formID'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('nospace'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
+			'eval'                    => ['nospace'=>true, 'maxlength'=>64, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'tableless' => array
-		(
+		],
+		'tableless' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['tableless'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'allowTags' => array
-		(
+		],
+		'allowTags' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_form']['allowTags'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -316,7 +316,7 @@ class tl_form extends Backend
 		// Set root IDs
 		if (!is_array($this->User->forms) || empty($this->User->forms))
 		{
-			$root = array(0);
+			$root = [0];
 		}
 		else
 		{
@@ -408,7 +408,7 @@ class tl_form extends Backend
 				$session = $this->Session->getData();
 				if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'formp'))
 				{
-					$session['CURRENT']['IDS'] = array();
+					$session['CURRENT']['IDS'] = [];
 				}
 				else
 				{

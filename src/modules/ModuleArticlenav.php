@@ -87,7 +87,7 @@ class ModuleArticlenav extends Module
 	protected function compile()
 	{
 		$intActive = null;
-		$articles = array();
+		$articles = [];
 		$intCount = 1;
 
 		while ($this->objArticles->next())
@@ -97,13 +97,13 @@ class ModuleArticlenav extends Module
 			// Active article
 			if (Input::get('articles') == $strAlias)
 			{
-				$articles[] = array
-				(
+				$articles[] =
+				[
 					'isActive' => true,
 					'href' => $this->addToUrl('articles=' . $strAlias),
 					'title' => specialchars($this->objArticles->title, true),
 					'link' => $intCount
-				);
+				];
 
 				$intActive = ($intCount - 1);
 			}
@@ -111,13 +111,13 @@ class ModuleArticlenav extends Module
 			// Inactive article
 			else
 			{
-				$articles[] = array
-				(
+				$articles[] =
+				[
 					'isActive' => false,
 					'href' => $this->addToUrl('articles=' . $strAlias),
 					'title' => specialchars($this->objArticles->title, true),
 					'link' => $intCount
-				);
+				];
 			}
 
 			++$intCount;
@@ -129,12 +129,12 @@ class ModuleArticlenav extends Module
 		// Link to first element
 		if ($intActive > 1)
 		{
-			$this->Template->first = array
-			(
+			$this->Template->first =
+			[
 				'href' => $articles[0]['href'],
 				'title' => $articles[0]['title'],
 				'link' => $GLOBALS['TL_LANG']['MSC']['first']
-			);
+			];
 		}
 
 		$key = $intActive - 1;
@@ -142,12 +142,12 @@ class ModuleArticlenav extends Module
 		// Link to previous element
 		if ($intCount > 1 && $key >= 0)
 		{
-			$this->Template->previous = array
-			(
+			$this->Template->previous =
+			[
 				'href' => $articles[$key]['href'],
 				'title' => $articles[$key]['title'],
 				'link' => $GLOBALS['TL_LANG']['MSC']['previous']
-			);
+			];
 		}
 
 		$key = $intActive + 1;
@@ -155,12 +155,12 @@ class ModuleArticlenav extends Module
 		// Link to next element
 		if ($intCount > 1 && $key < $total)
 		{
-			$this->Template->next = array
-			(
+			$this->Template->next =
+			[
 				'href' => $articles[$key]['href'],
 				'title' => $articles[$key]['title'],
 				'link' => $GLOBALS['TL_LANG']['MSC']['next']
-			);
+			];
 		}
 
 		$key = $total - 1;
@@ -168,12 +168,12 @@ class ModuleArticlenav extends Module
 		// Link to last element
 		if ($intCount > 1 && $intActive < ($key - 1))
 		{
-			$this->Template->last = array
-			(
+			$this->Template->last =
+			[
 				'href' => $articles[$key]['href'],
 				'title' => $articles[$key]['title'],
 				'link' => $GLOBALS['TL_LANG']['MSC']['last']
-			);
+			];
 		}
 	}
 }

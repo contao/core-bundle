@@ -40,7 +40,7 @@ abstract class BackendModule extends Backend
 	 * Current record
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 
 	/**

@@ -14,70 +14,70 @@
 /**
  * Table tl_search
  */
-$GLOBALS['TL_DCA']['tl_search'] = array
-(
+$GLOBALS['TL_DCA']['tl_search'] =
+[
 
 	// Config
-	'config' => array
-	(
-		'sql' => array
-		(
-			'keys' => array
-			(
+	'config' =>
+	[
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'url' => 'index',
 				'text' => 'fulltext'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'title' => array
-		(
+		],
+		'title' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'url' => array
-		(
+		],
+		'url' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'text' => array
-		(
+		],
+		'text' =>
+		[
 			'sql'                     => "mediumtext NULL"
-		),
-		'filesize' => array
-		(
+		],
+		'filesize' =>
+		[
 			'sql'                     => "double unsigned NOT NULL default '0'"
-		),
-		'checksum' => array
-		(
+		],
+		'checksum' =>
+		[
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'protected' => array
-		(
+		],
+		'protected' =>
+		[
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'groups' => array
-		(
+		],
+		'groups' =>
+		[
 			'sql'                     => "blob NULL"
-		),
-		'language' => array
-		(
+		],
+		'language' =>
+		[
 			'sql'                     => "varchar(5) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];

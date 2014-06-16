@@ -40,7 +40,7 @@ class TrblField extends Widget
 	 * Units
 	 * @var array
 	 */
-	protected $arrUnits = array();
+	protected $arrUnits = [];
 
 
 	/**
@@ -95,7 +95,7 @@ class TrblField extends Widget
 	 */
 	public function generate()
 	{
-		$arrUnits = array();
+		$arrUnits = [];
 
 		foreach ($this->arrUnits as $arrUnit)
 		{
@@ -105,12 +105,12 @@ class TrblField extends Widget
 								   $arrUnit['label']);
 		}
 
-		$arrFields = array();
-		$arrKeys = array('top', 'right', 'bottom', 'left');
+		$arrFields = [];
+		$arrKeys = ['top', 'right', 'bottom', 'left'];
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array();
+			$this->varValue = [];
 		}
 
 		foreach ($arrKeys as $strKey)

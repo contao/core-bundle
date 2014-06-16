@@ -112,7 +112,7 @@ class KeyValueWizard extends Widget
 	 */
 	public function generate()
 	{
-		$arrButtons = array('copy', 'drag', 'up', 'down', 'delete');
+		$arrButtons = ['copy', 'drag', 'up', 'down', 'delete'];
 		$strCommand = 'cmd_' . $this->strField;
 
 		// Change the order
@@ -123,7 +123,7 @@ class KeyValueWizard extends Widget
 			switch (Input::get($strCommand))
 			{
 				case 'copy':
-					array_insert($this->varValue, Input::get('cid'), array($this->varValue[Input::get('cid')]));
+					array_insert($this->varValue, Input::get('cid'), [$this->varValue[Input::get('cid')]]);
 					break;
 
 				case 'up':
@@ -148,7 +148,7 @@ class KeyValueWizard extends Widget
 		// Make sure there is at least an empty array
 		if (!is_array($this->varValue) || !$this->varValue[0])
 		{
-			$this->varValue = array(array(''));
+			$this->varValue = [['']];
 		}
 
 		// Initialize the tab index

@@ -70,7 +70,7 @@ class PageTree extends Widget
 						   ->execute($this->activeRecord->id);
 
 			$tmp = deserialize($objRow->{$this->orderField});
-			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
+			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : [];
 		}
 	}
 
@@ -109,7 +109,7 @@ class PageTree extends Widget
 		}
 		elseif (strpos($varInput, ',') === false)
 		{
-			return $this->multiple ? array(intval($varInput)) : intval($varInput);
+			return $this->multiple ? [intval($varInput)] : intval($varInput);
 		}
 		else
 		{
@@ -125,8 +125,8 @@ class PageTree extends Widget
 	 */
 	public function generate()
 	{
-		$arrSet = array();
-		$arrValues = array();
+		$arrSet = [];
+		$arrValues = [];
 		$blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));
 
 		if (!empty($this->varValue)) // Can be an array
@@ -145,7 +145,7 @@ class PageTree extends Widget
 			// Apply a custom sort order
 			if ($blnHasOrder)
 			{
-				$arrNew = array();
+				$arrNew = [];
 
 				foreach ($this->{$this->orderField} as $i)
 				{

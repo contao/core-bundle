@@ -14,105 +14,105 @@
 /**
  * Table tl_undo
  */
-$GLOBALS['TL_DCA']['tl_undo'] = array
-(
+$GLOBALS['TL_DCA']['tl_undo'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'closed'                      => true,
 		'notEditable'                 => true,
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary'
-			)
-		),
-		'onload_callback' => array
-		(
-			array('tl_undo', 'checkPermission')
-		)
-	),
+			]
+		],
+		'onload_callback' =>
+		[
+			['tl_undo', 'checkPermission']
+		]
+	],
 
 	// List
-	'list'  => array
-	(
-		'sorting' => array
-		(
+	'list'  =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 2,
-			'fields'                  => array('tstamp DESC'),
+			'fields'                  => ['tstamp DESC'],
 			'panelLayout'             => 'sort,search,limit'
-		),
-		'label' => array
-		(
-			'fields'                  => array('tstamp', 'query'),
+		],
+		'label' =>
+		[
+			'fields'                  => ['tstamp', 'query'],
 			'format'                  => '<span style="color:#b3b3b3;padding-right:3px">[%s]</span>%s',
-			'label_callback'          => array('tl_undo', 'ellipsis')
-		),
-		'operations' => array
-		(
-			'undo' => array
-			(
+			'label_callback'          => ['tl_undo', 'ellipsis']
+		],
+		'operations' =>
+		[
+			'undo' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_undo']['undo'],
 				'href'                => '&amp;act=undo',
 				'icon'                => 'undo.gif'
-			),
-			'show' => array
-			(
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_undo']['show'],
 				'href'                => '&amp;act=show',
 				'icon'                => 'show.gif'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_undo']['pid'],
 			'sorting'                 => true,
 			'foreignKey'              => 'tl_user.name',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
-		),
-		'tstamp' => array
-		(
+			'relation'                => ['type'=>'belongsTo', 'load'=>'lazy']
+		],
+		'tstamp' =>
+		[
 			'sorting'                 => true,
 			'flag'                    => 6,
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'fromTable' => array
-		(
+		],
+		'fromTable' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_undo']['fromTable'],
 			'sorting'                 => true,
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'query' => array
-		(
+		],
+		'query' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_undo']['query'],
 			'sql'                     => "text NULL"
-		),
-		'affectedRows' => array
-		(
+		],
+		'affectedRows' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_undo']['affectedRows'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'data' => array
-		(
+		],
+		'data' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_undo']['data'],
 			'search'                  => true,
 			'sql'                     => "mediumblob NULL"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -151,7 +151,7 @@ class tl_undo extends Backend
 								   ->execute($this->User->id);
 
 		// Restrict the list
-		$GLOBALS['TL_DCA']['tl_undo']['list']['sorting']['root'] = $objSteps->numRows ? $objSteps->fetchEach('id') : array(0);
+		$GLOBALS['TL_DCA']['tl_undo']['list']['sorting']['root'] = $objSteps->numRows ? $objSteps->fetchEach('id') : [0];
 
 		// Redirect if there is an error
 		if (Input::get('act') && !in_array(Input::get('id'), $GLOBALS['TL_DCA']['tl_undo']['list']['sorting']['root']))

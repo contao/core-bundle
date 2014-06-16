@@ -68,7 +68,7 @@ class ModuleArticleList extends Module
 		}
 
 		$intCount = 0;
-		$articles = array();
+		$articles = [];
 		$id = $objPage->id;
 
 		$this->Template->request = Environment::get('request');
@@ -102,13 +102,13 @@ class ModuleArticleList extends Module
 			$cssID = deserialize($objArticles->cssID, true);
 			$alias = $objArticles->alias ?: $objArticles->title;
 
-			$articles[] = array
-			(
+			$articles[] =
+			[
 				'link' => $objArticles->title,
 				'title' => specialchars($objArticles->title),
 				'id' => $cssID[0] ?: standardize($alias),
 				'articleId' => $objArticles->id
-			);
+			];
 		}
 
 		$this->Template->articles = $articles;

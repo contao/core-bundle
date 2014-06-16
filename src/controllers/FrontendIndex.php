@@ -97,7 +97,7 @@ class FrontendIndex extends Frontend
 		if ($objPage !== null && $objPage->count() > 1)
 		{
 			$objNewPage = null;
-			$arrPages = array();
+			$arrPages = [];
 
 			// Order by domain and language
 			while ($objPage->next())
@@ -123,7 +123,7 @@ class FrontendIndex extends Frontend
 			}
 			else
 			{
-				$arrLangs = $arrPages['*'] ?: array(); // empty domain
+				$arrLangs = $arrPages['*'] ?: []; // empty domain
 			}
 
 			// Use the first result (see #4872)
@@ -384,7 +384,7 @@ class FrontendIndex extends Frontend
 		// Replace the insert tags and then re-replace the request_token
 		// tag in case a form element has been loaded via insert tag
 		$strBuffer = $this->replaceInsertTags($strBuffer, false);
-		$strBuffer = str_replace(array('{{request_token}}', '[{]', '[}]'), array(REQUEST_TOKEN, '{{', '}}'), $strBuffer);
+		$strBuffer = str_replace(['{{request_token}}', '[{]', '[}]'], [REQUEST_TOKEN, '{{', '}}'], $strBuffer);
 
 		// Content type
 		if (!$content)

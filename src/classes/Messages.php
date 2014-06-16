@@ -62,7 +62,7 @@ class Messages extends Backend
 	 */
 	public function languageFallback()
 	{
-		$arrRoots = array();
+		$arrRoots = [];
 		$time = time();
 		$objRoots = $this->Database->execute("SELECT fallback, dns FROM tl_page WHERE type='root' AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1 ORDER BY dns");
 
@@ -78,7 +78,7 @@ class Messages extends Backend
 			$arrRoots[$strDns] = $objRoots->fallback;
 		}
 
-		$arrReturn = array();
+		$arrReturn = [];
 
 		foreach ($arrRoots as $k=>$v)
 		{

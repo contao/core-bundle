@@ -82,7 +82,7 @@ class ListWizard extends Widget
 	 */
 	public function generate()
 	{
-		$arrButtons = array('copy', 'drag', 'up', 'down', 'delete');
+		$arrButtons = ['copy', 'drag', 'up', 'down', 'delete'];
 		$strCommand = 'cmd_' . $this->strField;
 
 		// Change the order
@@ -118,7 +118,7 @@ class ListWizard extends Widget
 		// Make sure there is at least an empty array
 		if (!is_array($this->varValue) || empty($this->varValue))
 		{
-			$this->varValue = array('');
+			$this->varValue = [''];
 		}
 
 		// Initialize the tab index
@@ -197,7 +197,7 @@ class ListWizard extends Widget
 			}
 
 			$this->import('Database');
-			$arrList = array();
+			$arrList = [];
 
 			foreach ($arrUploaded as $strCsvFile)
 			{

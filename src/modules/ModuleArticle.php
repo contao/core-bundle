@@ -73,7 +73,7 @@ class ModuleArticle extends Module
 
 		$alias = $this->alias ?: 'article';
 
-		if (in_array($alias, array('article', 'top', 'wrapper', 'header', 'container', 'left', 'main', 'right', 'footer')))
+		if (in_array($alias, ['article', 'top', 'wrapper', 'header', 'container', 'left', 'main', 'right', 'footer']))
 		{
 			$alias .= '-' . $this->id;
 		}
@@ -83,7 +83,7 @@ class ModuleArticle extends Module
 		// Generate the cssID if it is not set
 		if ($this->cssID[0] == '')
 		{
-			$this->cssID = array($alias, $this->cssID[1]);
+			$this->cssID = [$alias, $this->cssID[1]];
 		}
 
 		$this->Template->column = $this->inColumn;
@@ -101,7 +101,7 @@ class ModuleArticle extends Module
 			$this->Template = new FrontendTemplate('mod_article_teaser');
 			$this->Template->setData($this->arrData);
 
-			$this->cssID = array($alias, '');
+			$this->cssID = [$alias, ''];
 			$arrCss = deserialize($this->teaserCssID);
 
 			// Override the CSS ID and class
@@ -156,7 +156,7 @@ class ModuleArticle extends Module
 			$this->Template->back = specialchars($GLOBALS['TL_LANG']['MSC']['goBack']);
 		}
 
-		$arrElements = array();
+		$arrElements = [];
 		$objCte = ContentModel::findPublishedByPidAndTable($this->id, 'tl_article');
 
 		if ($objCte !== null)
@@ -166,7 +166,7 @@ class ModuleArticle extends Module
 
 			while ($objCte->next())
 			{
-				$arrCss = array();
+				$arrCss = [];
 				$objRow = $objCte->current();
 
 				// Add the "first" and "last" classes (see #2583)
@@ -253,11 +253,11 @@ class ModuleArticle extends Module
 		$strArticle = $this->convertRelativeUrls($strArticle, '', true);
 
 		// Remove form elements and JavaScript links
-		$arrSearch = array
-		(
+		$arrSearch =
+		[
 			'@<form.*</form>@Us',
 			'@<a [^>]*href="[^"]*javascript:[^>]+>.*</a>@Us'
-		);
+		];
 
 		$strArticle = preg_replace($arrSearch, '', $strArticle);
 
@@ -282,25 +282,25 @@ class ModuleArticle extends Module
 		}, $strArticle);
 
 		// Default PDF export using TCPDF
-		$arrSearch = array
-		(
+		$arrSearch =
+		[
 			'@<span style="text-decoration: ?underline;?">(.*)</span>@Us',
 			'@(<img[^>]+>)@',
 			'@(<div[^>]+block[^>]+>)@',
 			'@[\n\r\t]+@',
 			'@<br( /)?><div class="mod_article@',
 			'@href="([^"]+)(pdf=[0-9]*(&|&amp;)?)([^"]*)"@'
-		);
+		];
 
-		$arrReplace = array
-		(
+		$arrReplace =
+		[
 			'<u>$1</u>',
 			'<br>$1',
 			'<br>$1',
 			' ',
 			'<div class="mod_article',
 			'href="$1$4"'
-		);
+		];
 
 		$strArticle = preg_replace($arrSearch, $arrReplace, $strArticle);
 

@@ -14,203 +14,203 @@
 /**
  * Table tl_theme
  */
-$GLOBALS['TL_DCA']['tl_theme'] = array
-(
+$GLOBALS['TL_DCA']['tl_theme'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
-		'ctable'                      => array('tl_module', 'tl_style_sheet', 'tl_layout'),
+		'ctable'                      => ['tl_module', 'tl_style_sheet', 'tl_layout'],
 		'enableVersioning'            => true,
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary'
-			)
-		),
-		'onload_callback' => array
-		(
-			array('tl_theme', 'checkPermission'),
-			array('tl_theme', 'updateStyleSheet')
-		),
-		'oncopy_callback' => array
-		(
-			array('tl_theme', 'scheduleUpdate')
-		),
-		'onsubmit_callback' => array
-		(
-			array('tl_theme', 'scheduleUpdate')
-		)
-	),
+			]
+		],
+		'onload_callback' =>
+		[
+			['tl_theme', 'checkPermission'],
+			['tl_theme', 'updateStyleSheet']
+		],
+		'oncopy_callback' =>
+		[
+			['tl_theme', 'scheduleUpdate']
+		],
+		'onsubmit_callback' =>
+		[
+			['tl_theme', 'scheduleUpdate']
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 2,
-			'fields'                  => array('name'),
+			'fields'                  => ['name'],
 			'flag'                    => 1,
 			'panelLayout'             => 'sort,search,limit'
-		),
-		'label' => array
-		(
-			'fields'                  => array('name'),
+		],
+		'label' =>
+		[
+			'fields'                  => ['name'],
 			'format'                  => '%s',
-			'label_callback'          => array('tl_theme', 'addPreviewImage')
-		),
-		'global_operations' => array
-		(
-			'importTheme' => array
-			(
+			'label_callback'          => ['tl_theme', 'addPreviewImage']
+		],
+		'global_operations' =>
+		[
+			'importTheme' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['importTheme'],
 				'href'                => 'key=importTheme',
 				'class'               => 'header_theme_import',
-				'button_callback'     => array('tl_theme', 'importTheme')
-			),
-			'store' => array
-			(
+				'button_callback'     => ['tl_theme', 'importTheme']
+			],
+			'store' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['store'],
 				'href'                => 'key=themeStore',
 				'class'               => 'header_store',
-				'button_callback'     => array('tl_theme', 'themeStore')
-			),
-			'all' => array
-			(
+				'button_callback'     => ['tl_theme', 'themeStore']
+			],
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
-			),
-			'delete' => array
-			(
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-			),
-			'show' => array
-			(
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif',
 				'attributes'          => 'style="margin-right:3px"'
-			),
-			'css' => array
-			(
+			],
+			'css' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['css'],
 				'href'                => 'table=tl_style_sheet',
 				'icon'                => 'css.gif',
-				'button_callback'     => array('tl_theme', 'editCss')
-			),
-			'modules' => array
-			(
+				'button_callback'     => ['tl_theme', 'editCss']
+			],
+			'modules' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['modules'],
 				'href'                => 'table=tl_module',
 				'icon'                => 'modules.gif',
-				'button_callback'     => array('tl_theme', 'editModules')
-			),
-			'layout' => array
-			(
+				'button_callback'     => ['tl_theme', 'editModules']
+			],
+			'layout' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['layout'],
 				'href'                => 'table=tl_layout',
 				'icon'                => 'layout.gif',
-				'button_callback'     => array('tl_theme', 'editLayout')
-			),
-			'exportTheme' => array
-			(
+				'button_callback'     => ['tl_theme', 'editLayout']
+			],
+			'exportTheme' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['exportTheme'],
 				'href'                => 'key=exportTheme',
 				'icon'                => 'theme_export.gif',
-				'button_callback'     => array('tl_theme', 'exportTheme')
-			)
-		)
-	),
+				'button_callback'     => ['tl_theme', 'exportTheme']
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
+	'palettes' =>
+	[
 		'default'                     => '{title_legend},name,author;{config_legend},folders,screenshot,templates;{vars_legend},vars'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['name'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
 			'sorting'                 => true,
 			'flag'                    => 1,
 			'search'                  => true,
-			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'decodeEntities'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'unique'=>true, 'decodeEntities'=>true, 'maxlength'=>128, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(128) NOT NULL default ''"
-		),
-		'author' => array
-		(
+		],
+		'author' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['author'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
 			'sorting'                 => true,
 			'flag'                    => 11,
 			'search'                  => true,
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'maxlength'=>128, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(128) NOT NULL default ''"
-		),
-		'folders' => array
-		(
+		],
+		'folders' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['folders'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox'),
+			'eval'                    => ['multiple'=>true, 'fieldType'=>'checkbox'],
 			'sql'                     => "blob NULL"
-		),
-		'screenshot' => array
-		(
+		],
+		'screenshot' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['screenshot'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('filesOnly'=>true, 'extensions'=>Config::get('validImageTypes'), 'fieldType'=>'radio'),
+			'eval'                    => ['filesOnly'=>true, 'extensions'=>Config::get('validImageTypes'), 'fieldType'=>'radio'],
 			'sql'                     => "binary(16) NULL"
-		),
-		'templates' => array
-		(
+		],
+		'templates' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['templates'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_theme', 'getTemplateFolders'),
-			'eval'                    => array('includeBlankOption'=>true),
+			'options_callback'        => ['tl_theme', 'getTemplateFolders'],
+			'eval'                    => ['includeBlankOption'=>true],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'vars' => array
-		(
+		],
+		'vars' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['vars'],
 			'inputType'               => 'keyValueWizard',
 			'exclude'                 => true,
 			'sql'                     => "text NULL"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -333,7 +333,7 @@ class tl_theme extends Backend
 	 */
 	protected function doGetTemplateFolders($path, $level=0)
 	{
-		$return = array();
+		$return = [];
 
 		foreach (scan(TL_ROOT . '/' . $path) as $file)
 		{

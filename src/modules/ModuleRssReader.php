@@ -145,7 +145,7 @@ class ModuleRssReader extends Module
 
 				// Send a 404 header
 				header('HTTP/1.1 404 Not Found');
-				$this->Template->items = array();
+				$this->Template->items = [];
 				return;
 			}
 
@@ -157,21 +157,21 @@ class ModuleRssReader extends Module
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
-		$items = array();
+		$items = [];
 		$last = min($limit, count($arrItems)) - 1;
 
 		for ($i=$offset, $c=count($arrItems); $i<$limit && $i<$c; $i++)
 		{
-			$items[$i] = array
-			(
+			$items[$i] =
+			[
 				'link' => $arrItems[$i]->get_link(),
 				'title' => $arrItems[$i]->get_title(),
 				'permalink' => $arrItems[$i]->get_permalink(),
-				'description' => str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $arrItems[$i]->get_description()),
+				'description' => str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $arrItems[$i]->get_description()),
 				'class' => (($i == 0) ? ' first' : '') . (($i == $last) ? ' last' : '') . ((($i % 2) == 0) ? ' even' : ' odd'),
 				'pubdate' => Date::parse($objPage->datimFormat, $arrItems[$i]->get_date('U')),
 				'category' => $arrItems[$i]->get_category(0)
-			);
+			];
 
 			// Add author
 			if (($objAuthor = $arrItems[$i]->get_author(0)) != false)

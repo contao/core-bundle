@@ -40,10 +40,10 @@ class FormFieldModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no form fields
 	 */
-	public static function findPublishedByPid($intPid, array $arrOptions=array())
+	public static function findPublishedByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=?");
+		$arrColumns = ["$t.pid=?"];
 
 		if (!BE_USER_LOGGED_IN)
 		{

@@ -14,69 +14,69 @@
 /**
  * Table tl_version
  */
-$GLOBALS['TL_DCA']['tl_version'] = array
-(
+$GLOBALS['TL_DCA']['tl_version'] =
+[
 
 	// Config
-	'config' => array
-	(
-		'sql' => array
-		(
-			'keys' => array
-			(
+	'config' =>
+	[
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'fromTable' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'version' => array
-		(
+		],
+		'version' =>
+		[
 			'sql'                     => "smallint(5) unsigned NOT NULL default '1'"
-		),
-		'fromTable' => array
-		(
+		],
+		'fromTable' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'userid' => array
-		(
+		],
+		'userid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'username' => array
-		(
+		],
+		'username' =>
+		[
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'description' => array
-		(
+		],
+		'description' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'editUrl' => array
-		(
+		],
+		'editUrl' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'active' => array
-		(
+		],
+		'active' =>
+		[
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'data' => array
-		(
+		],
+		'data' =>
+		[
 			'sql'                     => "mediumblob NULL"
-		)
-	)
-);
+		]
+	]
+];

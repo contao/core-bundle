@@ -150,7 +150,7 @@ class BackendMain extends Backend
 		// HOOK: add custom messages
 		if (isset($GLOBALS['TL_HOOKS']['getSystemMessages']) && is_array($GLOBALS['TL_HOOKS']['getSystemMessages']))
 		{
-			$arrMessages = array();
+			$arrMessages = [];
 
 			foreach ($GLOBALS['TL_HOOKS']['getSystemMessages'] as $callback)
 			{

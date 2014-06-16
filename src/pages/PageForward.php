@@ -59,7 +59,7 @@ class PageForward extends Frontend
 
 		$strGet = '';
 		$strQuery = Environment::get('queryString');
-		$arrQuery = array();
+		$arrQuery = [];
 
 		// Extract the query string keys (see #5867)
 		if ($strQuery != '')

@@ -63,8 +63,8 @@ class ContentCode extends ContentElement
 		// Syntax highlighter
 		if ($this->highlight)
 		{
-			$arrMapper = array
-			(
+			$arrMapper =
+			[
 				'ApacheConf' => 'shBrushApacheConf',
 				'AS3'        => 'shBrushAS3',
 				'Bash'       => 'shBrushBash',
@@ -89,7 +89,7 @@ class ContentCode extends ContentElement
 				'VB'         => 'shBrushVb',
 				'XHTML'      => 'shBrushXml',
 				'XML'        => 'shBrushXml'
-			);
+			];
 
 			$this->Template->shClass = 'brush: ' . strtolower($this->highlight);
 

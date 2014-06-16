@@ -160,10 +160,10 @@ class TextField extends Widget
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 
-		$arrFields = array();
+		$arrFields = [];
 
 		for ($i=0; $i<$this->size; $i++)
 		{

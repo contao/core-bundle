@@ -66,13 +66,13 @@ abstract class Hybrid extends Frontend
 	 * Current record
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Style array
 	 * @var array
 	 */
-	protected $arrStyle = array();
+	protected $arrStyle = [];
 
 
 	/**

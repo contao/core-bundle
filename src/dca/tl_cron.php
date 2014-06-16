@@ -14,36 +14,36 @@
 /**
  * Table tl_cron
  */
-$GLOBALS['TL_DCA']['tl_cron'] = array
-(
+$GLOBALS['TL_DCA']['tl_cron'] =
+[
 
 	// Config
-	'config' => array
-	(
-		'sql' => array
-		(
-			'keys' => array
-			(
+	'config' =>
+	[
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'name' => 'unique'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'sql'                     => "varchar(32) NULL"
-		),
-		'value' => array
-		(
+		],
+		'value' =>
+		[
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];

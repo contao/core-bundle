@@ -14,203 +14,203 @@
 /**
  * Table tl_style_sheet
  */
-$GLOBALS['TL_DCA']['tl_style_sheet'] = array
-(
+$GLOBALS['TL_DCA']['tl_style_sheet'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_theme',
-		'ctable'                      => array('tl_style'),
+		'ctable'                      => ['tl_style'],
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
-		'onload_callback' => array
-		(
-			array('tl_style_sheet', 'checkPermission'),
-			array('tl_style_sheet', 'updateStyleSheet')
-		),
-		'oncopy_callback' => array
-		(
-			array('tl_style_sheet', 'scheduleUpdate')
-		),
-		'onsubmit_callback' => array
-		(
-			array('tl_style_sheet', 'scheduleUpdate')
-		),
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'onload_callback' =>
+		[
+			['tl_style_sheet', 'checkPermission'],
+			['tl_style_sheet', 'updateStyleSheet']
+		],
+		'oncopy_callback' =>
+		[
+			['tl_style_sheet', 'scheduleUpdate']
+		],
+		'onsubmit_callback' =>
+		[
+			['tl_style_sheet', 'scheduleUpdate']
+		],
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'name' => 'unique'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 4,
-			'fields'                  => array('name'),
+			'fields'                  => ['name'],
 			'panelLayout'             => 'filter;search,limit',
-			'headerFields'            => array('name', 'author', 'tstamp'),
-			'child_record_callback'   => array('tl_style_sheet', 'listStyleSheet'),
+			'headerFields'            => ['name', 'author', 'tstamp'],
+			'child_record_callback'   => ['tl_style_sheet', 'listStyleSheet'],
 			'child_record_class'      => 'no_padding'
-		),
-		'global_operations' => array
-		(
-			'import' => array
-			(
+		],
+		'global_operations' =>
+		[
+			'import' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['import'],
 				'href'                => 'key=import',
 				'class'               => 'header_css_import',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'all' => array
-			(
+			],
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['edit'],
 				'href'                => 'table=tl_style',
 				'icon'                => 'edit.gif'
-			),
-			'editheader' => array
-			(
+			],
+			'editheader' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['editheader'],
 				'href'                => 'table=tl_style_sheet&amp;act=edit',
 				'icon'                => 'header.gif',
-				'button_callback'     => array('tl_style_sheet', 'editHeader')
-			),
-			'copy' => array
-			(
+				'button_callback'     => ['tl_style_sheet', 'editHeader']
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif'
-			),
-			'cut' => array
-			(
+			],
+			'cut' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'delete' => array
-			(
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-			),
-			'show' => array
-			(
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
+	'palettes' =>
+	[
 		'default'                     => '{title_legend},name;{media_legend},media,mediaQuery;{vars_legend},vars;{expert_legend:hide},disablePie,embedImages,cc'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'foreignKey'              => 'tl_theme.name',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
-		),
-		'tstamp' => array
-		(
+			'relation'                => ['type'=>'belongsTo', 'load'=>'lazy']
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['name'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
 			'search'                  => true,
 			'flag'                    => 1,
-			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'rgxp'=>'alnum', 'maxlength'=>64, 'spaceToUnderscore'=>true),
+			'eval'                    => ['mandatory'=>true, 'unique'=>true, 'rgxp'=>'alnum', 'maxlength'=>64, 'spaceToUnderscore'=>true],
 			'sql'                     => "varchar(64) NULL"
-		),
-		'disablePie' => array
-		(
+		],
+		'disablePie' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['disablePie'],
 			'inputType'               => 'checkbox',
 			'exclude'                 => true,
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'embedImages' => array
-		(
+		],
+		'embedImages' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['embedImages'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
-			'eval'                    => array('rgxp'=>'digit', 'tl_class'=>'w50'),
+			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'cc' => array
-		(
+		],
+		'cc' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['cc'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
 			'search'                  => true,
-			'eval'                    => array('decodeEntities'=>true, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_style_sheet', 'sanitizeCc')
-			),
+			'eval'                    => ['decodeEntities'=>true, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_style_sheet', 'sanitizeCc']
+			],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'media' => array
-		(
+		],
+		'media' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['media'],
-			'default'                 => array('all'),
+			'default'                 => ['all'],
 			'inputType'               => 'checkbox',
 			'exclude'                 => true,
 			'filter'                  => true,
-			'options'                 => array('all', 'aural', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'tty', 'tv'),
-			'eval'                    => array('multiple'=>true, 'mandatory'=>true, 'tl_class'=>'clr'),
+			'options'                 => ['all', 'aural', 'braille', 'embossed', 'handheld', 'print', 'projection', 'screen', 'tty', 'tv'],
+			'eval'                    => ['multiple'=>true, 'mandatory'=>true, 'tl_class'=>'clr'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'mediaQuery' => array
-		(
+		],
+		'mediaQuery' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['mediaQuery'],
 			'inputType'               => 'textarea',
 			'exclude'                 => true,
 			'search'                  => true,
-			'eval'                    => array('decodeEntities'=>true, 'style'=>'height:60px'),
+			'eval'                    => ['decodeEntities'=>true, 'style'=>'height:60px'],
 			'sql'                     => "text NULL"
-		),
-		'vars' => array
-		(
+		],
+		'vars' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['vars'],
 			'inputType'               => 'keyValueWizard',
 			'exclude'                 => true,
 			'sql'                     => "text NULL"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -342,7 +342,7 @@ class tl_style_sheet extends Backend
 	{
 		if ($varValue != '')
 		{
-			$varValue = str_replace(array('<!--[', ']>'), '', $varValue);
+			$varValue = str_replace(['<!--[', ']>'], '', $varValue);
 		}
 
 		return $varValue;

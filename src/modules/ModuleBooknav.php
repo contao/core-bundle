@@ -28,7 +28,7 @@ class ModuleBooknav extends Module
 	 * Pages array
 	 * @var array
 	 */
-	protected $arrPages = array();
+	protected $arrPages = [];
 
 	/**
 	 * Template
@@ -78,7 +78,7 @@ class ModuleBooknav extends Module
 			return;
 		}
 
-		$groups = array();
+		$groups = [];
 
 		// Get all groups of the current front end user
 		if (FE_USER_LOGGED_IN)

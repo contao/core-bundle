@@ -172,7 +172,7 @@ class ModuleSearch extends Module
 				catch (Exception $e)
 				{
 					$this->log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
-					$arrResult = array();
+					$arrResult = [];
 				}
 
 				File::putContent($strCacheFile, json_encode($arrResult));
@@ -265,13 +265,13 @@ class ModuleSearch extends Module
 				$objTemplate->filesize = $arrResult[$i]['filesize'];
 				$objTemplate->matches = $arrResult[$i]['matches'];
 
-				$arrContext = array();
+				$arrContext = [];
 				$arrMatches = trimsplit(',', $arrResult[$i]['matches']);
 
 				// Get the context
 				foreach ($arrMatches as $strWord)
 				{
-					$arrChunks = array();
+					$arrChunks = [];
 					preg_match_all('/(^|\b.{0,'.$this->contextLength.'}\PL)' . str_replace('+', '\\+', $strWord) . '(\PL.{0,'.$this->contextLength.'}\b|$)/ui', $arrResult[$i]['text'], $arrChunks);
 
 					foreach ($arrChunks[0] as $strContext)
@@ -292,7 +292,7 @@ class ModuleSearch extends Module
 				$this->Template->results .= $objTemplate->parse();
 			}
 
-			$this->Template->header = vsprintf($GLOBALS['TL_LANG']['MSC']['sResults'], array($from, $to, $count, $strKeywords));
+			$this->Template->header = vsprintf($GLOBALS['TL_LANG']['MSC']['sResults'], [$from, $to, $count, $strKeywords]);
 			$this->Template->duration = substr($query_endtime-$query_starttime, 0, 6) . ' ' . $GLOBALS['TL_LANG']['MSC']['seconds'];
 		}
 	}

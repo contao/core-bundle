@@ -106,7 +106,7 @@ class ModulePersonalData extends Module
 		$this->Template->fields = '';
 		$this->Template->tableless = $this->tableless;
 
-		$arrFields = array();
+		$arrFields = [];
 		$doNotSubmit = false;
 		$hasUpload = false;
 		$row = 0;

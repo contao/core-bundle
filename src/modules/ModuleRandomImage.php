@@ -73,7 +73,7 @@ class ModuleRandomImage extends Module
 	{
 		global $objPage;
 
-		$images = array();
+		$images = [];
 		$objFiles = $this->objFiles;
 
 		// Get all images
@@ -104,15 +104,15 @@ class ModuleRandomImage extends Module
 				}
 
 				// Add the image
-				$images[$objFiles->path] = array
-				(
+				$images[$objFiles->path] =
+				[
 					'id'        => $objFiles->id,
 					'name'      => $objFile->basename,
 					'singleSRC' => $objFiles->path,
 					'alt'       => $arrMeta['title'],
 					'imageUrl'  => $arrMeta['link'],
 					'caption'   => $arrMeta['caption']
-				);
+				];
 			}
 
 			// Folders
@@ -149,15 +149,15 @@ class ModuleRandomImage extends Module
 					}
 
 					// Add the image
-					$images[$objSubfiles->path] = array
-					(
+					$images[$objSubfiles->path] =
+					[
 						'id'        => $objSubfiles->id,
 						'name'      => $objFile->basename,
 						'singleSRC' => $objSubfiles->path,
 						'alt'       => $arrMeta['title'],
 						'imageUrl'  => $arrMeta['link'],
 						'caption'   => $arrMeta['caption']
-					);
+					];
 				}
 			}
 		}

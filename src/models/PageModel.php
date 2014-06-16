@@ -46,10 +46,10 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no published page
 	 */
-	public static function findPublishedById($intId, array $arrOptions=array())
+	public static function findPublishedById($intId, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.id=?");
+		$arrColumns = ["$t.id=?"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -70,14 +70,14 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no matching root page
 	 */
-	public static function findFirstPublishedRootByHostAndLanguage($strHost, $varLanguage, array $arrOptions=array())
+	public static function findFirstPublishedRootByHostAndLanguage($strHost, $varLanguage, array $arrOptions=[])
 	{
 		$t = static::$strTable;
 		$objDatabase = Database::getInstance();
 
 		if (is_array($varLanguage))
 		{
-			$arrColumns = array("$t.type='root' AND ($t.dns=? OR $t.dns='')");
+			$arrColumns = ["$t.type='root' AND ($t.dns=? OR $t.dns='')"];
 
 			if (!empty($varLanguage))
 			{
@@ -103,8 +103,8 @@ class PageModel extends Model
 		}
 		else
 		{
-			$arrColumns = array("$t.type='root' AND ($t.dns=? OR $t.dns='') AND ($t.language=? OR $t.fallback=1)");
-			$arrValues = array($strHost, $varLanguage);
+			$arrColumns = ["$t.type='root' AND ($t.dns=? OR $t.dns='') AND ($t.language=? OR $t.fallback=1)"];
+			$arrValues = [$strHost, $varLanguage];
 
 			if (!isset($arrOptions['order']))
 			{
@@ -130,10 +130,10 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no published page
 	 */
-	public static function findFirstPublishedByPid($intPid, array $arrOptions=array())
+	public static function findFirstPublishedByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
+		$arrColumns = ["$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -158,10 +158,10 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no published regular page
 	 */
-	public static function findFirstPublishedRegularByPid($intPid, array $arrOptions=array())
+	public static function findFirstPublishedRegularByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.type='regular'");
+		$arrColumns = ["$t.pid=? AND $t.type='regular'"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -186,10 +186,10 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no 403 page
 	 */
-	public static function find403ByPid($intPid, array $arrOptions=array())
+	public static function find403ByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.type='error_403'");
+		$arrColumns = ["$t.pid=? AND $t.type='error_403'"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -214,10 +214,10 @@ class PageModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no 404 page
 	 */
-	public static function find404ByPid($intPid, array $arrOptions=array())
+	public static function find404ByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.type='error_404'");
+		$arrColumns = ["$t.pid=? AND $t.type='error_404'"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -242,7 +242,7 @@ class PageModel extends Model
 	 *
 	 * @return Collection|null A collection of Models or null if there is no matching pages
 	 */
-	public static function findByAliases($arrAliases, array $arrOptions=array())
+	public static function findByAliases($arrAliases, array $arrOptions=[])
 	{
 		if (!is_array($arrAliases) || empty($arrAliases))
 		{
@@ -261,7 +261,7 @@ class PageModel extends Model
 		}
 
 		$t = static::$strTable;
-		$arrColumns = array("$t.alias IN('" . implode("','", array_filter($arrAliases)) . "')");
+		$arrColumns = ["$t.alias IN('" . implode("','", array_filter($arrAliases)) . "')"];
 
 		// Check the publication status (see #4652)
 		if (!BE_USER_LOGGED_IN)
@@ -287,11 +287,11 @@ class PageModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
-	public static function findPublishedByIdOrAlias($varId, array $arrOptions=array())
+	public static function findPublishedByIdOrAlias($varId, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("($t.id=? OR $t.alias=?)");
-		$arrValues = array((is_numeric($varId) ? $varId : 0), $varId);
+		$arrColumns = ["($t.id=? OR $t.alias=?)"];
+		$arrValues = [(is_numeric($varId) ? $varId : 0), $varId];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -336,7 +336,7 @@ class PageModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
-	public static function findPublishedRegularWithoutGuestsByIds($arrIds, array $arrOptions=array())
+	public static function findPublishedRegularWithoutGuestsByIds($arrIds, array $arrOptions=[])
 	{
 		if (!is_array($arrIds) || empty($arrIds))
 		{
@@ -344,7 +344,7 @@ class PageModel extends Model
 		}
 
 		$t = static::$strTable;
-		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ") AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
+		$arrColumns = ["$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ") AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'"];
 
 		if (FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN)
 		{
@@ -374,10 +374,10 @@ class PageModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
-	public static function findPublishedRegularWithoutGuestsByPid($intPid, array $arrOptions=array())
+	public static function findPublishedRegularWithoutGuestsByPid($intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
+		$arrColumns = ["$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'"];
 
 		if (FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN)
 		{
@@ -408,7 +408,7 @@ class PageModel extends Model
 	 */
 	public static function findParentsById($intId)
 	{
-		$arrModels = array();
+		$arrModels = [];
 
 		while ($intId > 0 && ($objPage = static::findByPk($intId)) !== null)
 		{
@@ -474,7 +474,7 @@ class PageModel extends Model
 		$palias = '';
 		$pname = '';
 		$ptitle = '';
-		$trail = array($this->id, $pid);
+		$trail = [$this->id, $pid];
 
 		// Inherit the settings
 		if ($this->type == 'root')

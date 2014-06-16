@@ -76,7 +76,7 @@ class Form extends Hybrid
 	{
 		$hasUpload = false;
 		$doNotSubmit = false;
-		$arrSubmitted = array();
+		$arrSubmitted = [];
 
 		$this->loadDataContainer('tl_form_field');
 		$formId = ($this->formID != '') ? 'auto_'.$this->formID : 'auto_form_'.$this->id;
@@ -88,10 +88,10 @@ class Form extends Hybrid
 		$this->Template->method = ($this->method == 'GET') ? 'get' : 'post';
 
 		$this->initializeSession($formId);
-		$arrLabels = array();
+		$arrLabels = [];
 
 		// Get all form fields
-		$arrFields = array();
+		$arrFields = [];
 		$objFields = FormFieldModel::findPublishedByPid($this->id);
 
 		if ($objFields !== null)
@@ -235,7 +235,7 @@ class Form extends Hybrid
 			global $objPage;
 			$title = $objPage->pageTitle ?: $objPage->title;
 			$objPage->pageTitle = $GLOBALS['TL_LANG']['ERR']['form'] . ' - ' . $title;
-			$_SESSION['FILES'] = array(); // see #3007
+			$_SESSION['FILES'] = []; // see #3007
 		}
 
 		$strAttributes = '';
@@ -284,9 +284,9 @@ class Form extends Hybrid
 		// Send form data via e-mail
 		if ($this->sendViaEmail)
 		{
-			$keys = array();
-			$values = array();
-			$fields = array();
+			$keys = [];
+			$values = [];
+			$fields = [];
 			$message = '';
 
 			foreach ($arrSubmitted as $k=>$v)
@@ -310,11 +310,11 @@ class Form extends Hybrid
 				// Prepare XML file
 				if ($this->format == 'xml')
 				{
-					$fields[] = array
-					(
+					$fields[] =
+					[
 						'name' => $k,
-						'values' => (is_array($v) ? $v : array($v))
-					);
+						'values' => (is_array($v) ? $v : [$v])
+					];
 				}
 
 				// Prepare CSV file
@@ -330,7 +330,7 @@ class Form extends Hybrid
 			// Format recipients
 			foreach ($recipients as $k=>$v)
 			{
-				$recipients[$k] = str_replace(array('[', ']', '"'), array('<', '>', ''), $v);
+				$recipients[$k] = str_replace(['[', ']', '"'], ['<', '>', ''], $v);
 			}
 
 			$email = new Email();
@@ -425,7 +425,7 @@ class Form extends Hybrid
 		// Store the values in the database
 		if ($this->storeValues && $this->targetTable != '')
 		{
-			$arrSet = array();
+			$arrSet = [];
 
 			// Add the timestamp
 			if ($this->Database->fieldExists('tstamp', $this->targetTable))
@@ -495,7 +495,7 @@ class Form extends Hybrid
 			}
 		}
 
-		$_SESSION['FILES'] = array(); // DO NOT CHANGE
+		$_SESSION['FILES'] = []; // DO NOT CHANGE
 
 		// Add a log entry
 		if (FE_USER_LOGGED_IN)
@@ -539,8 +539,8 @@ class Form extends Hybrid
 			return;
 		}
 
-		$arrMessageBox = array('TL_ERROR', 'TL_CONFIRM', 'TL_INFO');
-		$_SESSION['FORM_DATA'] = is_array($_SESSION['FORM_DATA']) ? $_SESSION['FORM_DATA'] : array();
+		$arrMessageBox = ['TL_ERROR', 'TL_CONFIRM', 'TL_INFO'];
+		$_SESSION['FORM_DATA'] = is_array($_SESSION['FORM_DATA']) ? $_SESSION['FORM_DATA'] : [];
 
 		foreach ($arrMessageBox as $tl)
 		{
@@ -559,7 +559,7 @@ class Form extends Hybrid
 					$this->Template->fields .= $objTemplate->parse() . "\n";
 				}
 
-				$_SESSION[$formId][$tl] = array();
+				$_SESSION[$formId][$tl] = [];
 			}
 		}
 	}

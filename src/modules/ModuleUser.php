@@ -42,11 +42,11 @@ class ModuleUser extends BackendModule
 		$GLOBALS['TL_DCA'][$this->table]['config']['closed'] = true;
 		$GLOBALS['TL_DCA'][$this->table]['config']['enableVersioning'] = false;
 
-		$GLOBALS['TL_DCA'][$this->table]['palettes'] = array
-		(
+		$GLOBALS['TL_DCA'][$this->table]['palettes'] =
+		[
 			'__selector__' => $GLOBALS['TL_DCA'][$this->table]['palettes']['__selector__'],
 			'default' => $GLOBALS['TL_DCA'][$this->table]['palettes']['login']
-		);
+		];
 
 		$arrFields = trimsplit('[,;]', $GLOBALS['TL_DCA'][$this->table]['palettes']['default']);
 

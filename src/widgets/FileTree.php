@@ -70,7 +70,7 @@ class FileTree extends Widget
 									 ->execute($this->activeRecord->id);
 
 			$tmp = deserialize($objRow->{$this->orderField});
-			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
+			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : [];
 		}
 	}
 
@@ -110,7 +110,7 @@ class FileTree extends Widget
 		elseif (strpos($varInput, ',') === false)
 		{
 			$varInput = String::uuidToBin($varInput);
-			return $this->multiple ? array($varInput) : $varInput;
+			return $this->multiple ? [$varInput] : $varInput;
 		}
 		else
 		{
@@ -126,8 +126,8 @@ class FileTree extends Widget
 	 */
 	public function generate()
 	{
-		$arrSet = array();
-		$arrValues = array();
+		$arrSet = [];
+		$arrValues = [];
 		$blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));
 
 		if (!empty($this->varValue)) // Can be an array
@@ -261,7 +261,7 @@ class FileTree extends Widget
 			// Apply a custom sort order
 			if ($blnHasOrder)
 			{
-				$arrNew = array();
+				$arrNew = [];
 
 				foreach ($this->{$this->orderField} as $i)
 				{

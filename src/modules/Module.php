@@ -48,13 +48,13 @@ abstract class Module extends Frontend
 	 * Current record
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Style array
 	 * @var array
 	 */
-	protected $arrStyle = array();
+	protected $arrStyle = [];
 
 
 	/**
@@ -210,8 +210,8 @@ abstract class Module extends Frontend
 			return '';
 		}
 
-		$items = array();
-		$groups = array();
+		$items = [];
+		$groups = [];
 
 		// Get all groups of the current front end user
 		if (FE_USER_LOGGED_IN)
@@ -344,7 +344,7 @@ abstract class Module extends Frontend
 				$row['href'] = $href;
 				$row['nofollow'] = (strncmp($objSubpages->robots, 'noindex', 7) === 0);
 				$row['target'] = '';
-				$row['description'] = str_replace(array("\n", "\r"), array(' ' , ''), $objSubpages->description);
+				$row['description'] = str_replace(["\n", "\r"], [' ' , ''], $objSubpages->description);
 
 				// Override the link target
 				if ($objSubpages->type == 'redirect' && $objSubpages->target)

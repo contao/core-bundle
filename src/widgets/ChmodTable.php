@@ -43,7 +43,7 @@ class ChmodTable extends Widget
 	 */
 	public function generate()
 	{
-		$arrObjects = array('u'=>'cuser', 'g'=>'cgroup', 'w'=>'cworld');
+		$arrObjects = ['u'=>'cuser', 'g'=>'cgroup', 'w'=>'cworld'];
 
 		$return = '  <table id="ctrl_defaultChmod" class="tl_chmod">
     <tr>

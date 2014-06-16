@@ -54,7 +54,7 @@ class MetaWizard extends Widget
 			{
 				if ($v != '')
 				{
-					$varInput[$v] = array('title'=>'', 'link'=>'', 'caption'=>'');
+					$varInput[$v] = ['title'=>'', 'link'=>'', 'caption'=>''];
 				}
 
 				unset($varInput[$k]);
@@ -75,13 +75,13 @@ class MetaWizard extends Widget
 		if (!is_array($this->varValue) || empty($this->varValue))
 		{
 			$this->import('BackendUser', 'User');
-			$this->varValue = array($this->User->language=>array()); // see #4188
+			$this->varValue = [$this->User->language=>[]]; // see #4188
 		}
 
 		$count = 0;
 		$languages = $this->getLanguages();
 		$return = '';
-		$taken = array();
+		$taken = [];
 
 		// Add the existing entries
 		if (!empty($this->varValue))
@@ -113,7 +113,7 @@ class MetaWizard extends Widget
   </ul>';
 		}
 
-		$options = array('<option value="">-</option>');
+		$options = ['<option value="">-</option>'];
 
 		// Add the remaining languages
 		foreach ($languages as $k=>$v)

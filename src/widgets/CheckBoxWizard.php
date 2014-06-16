@@ -80,12 +80,12 @@ class CheckBoxWizard extends Widget
 	 */
 	public function generate()
 	{
-		$arrButtons = array('up', 'down');
+		$arrButtons = ['up', 'down'];
 		$strCommand = 'cmd_' . $this->strField;
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 
 		// Change the order
@@ -113,7 +113,7 @@ class CheckBoxWizard extends Widget
 		// Sort options
 		if ($this->varValue)
 		{
-			$arrOptions = array();
+			$arrOptions = [];
 			$arrTemp = $this->arrOptions;
 
 			// Move selected and sorted options to the top
@@ -131,7 +131,7 @@ class CheckBoxWizard extends Widget
 		}
 
 		$blnCheckAll = true;
-		$arrOptions = array();
+		$arrOptions = [];
 
 		// Generate options and add buttons
 		foreach ($this->arrOptions as $i=>$arrOption)

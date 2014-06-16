@@ -52,7 +52,7 @@ class ContentGallery extends ContentElement
 
 			if ($this->User->assignDir && $this->User->homeDir)
 			{
-				$this->multiSRC = array($this->User->homeDir);
+				$this->multiSRC = [$this->User->homeDir];
 			}
 		}
 		else
@@ -90,8 +90,8 @@ class ContentGallery extends ContentElement
 	{
 		global $objPage;
 
-		$images = array();
-		$auxDate = array();
+		$images = [];
+		$auxDate = [];
 		$objFiles = $this->objFiles;
 
 		// Get all images
@@ -122,8 +122,8 @@ class ContentGallery extends ContentElement
 				}
 
 				// Add the image
-				$images[$objFiles->path] = array
-				(
+				$images[$objFiles->path] =
+				[
 					'id'        => $objFiles->id,
 					'uuid'      => $objFiles->uuid,
 					'name'      => $objFile->basename,
@@ -131,7 +131,7 @@ class ContentGallery extends ContentElement
 					'alt'       => $arrMeta['title'],
 					'imageUrl'  => $arrMeta['link'],
 					'caption'   => $arrMeta['caption']
-				);
+				];
 
 				$auxDate[] = $objFile->mtime;
 			}
@@ -170,8 +170,8 @@ class ContentGallery extends ContentElement
 					}
 
 					// Add the image
-					$images[$objSubfiles->path] = array
-					(
+					$images[$objSubfiles->path] =
+					[
 						'id'        => $objSubfiles->id,
 						'uuid'      => $objSubfiles->uuid,
 						'name'      => $objFile->basename,
@@ -179,7 +179,7 @@ class ContentGallery extends ContentElement
 						'alt'       => $arrMeta['title'],
 						'imageUrl'  => $arrMeta['link'],
 						'caption'   => $arrMeta['caption']
-					);
+					];
 
 					$auxDate[] = $objFile->mtime;
 				}
@@ -288,7 +288,7 @@ class ContentGallery extends ContentElement
 		$colwidth = floor(100/$this->perRow);
 		$intMaxWidth = (TL_MODE == 'BE') ? floor((640 / $this->perRow)) : floor((Config::get('maxImageWidth') / $this->perRow));
 		$strLightboxId = 'lightbox[lb' . $this->id . ']';
-		$body = array();
+		$body = [];
 
 		// Rows
 		for ($i=$offset; $i<$limit; $i=($i+$this->perRow))

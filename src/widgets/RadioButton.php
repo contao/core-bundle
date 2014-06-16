@@ -91,7 +91,7 @@ class RadioButton extends Widget
 	 */
 	public function generate()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 
 		foreach ($this->arrOptions as $i=>$arrOption)
 		{

@@ -70,8 +70,8 @@ class ModuleCustomnav extends Module
 	{
 		global $objPage;
 
-		$items = array();
-		$groups = array();
+		$items = [];
+		$groups = [];
 
 		// Get all groups of the current front end user
 		if (FE_USER_LOGGED_IN)
@@ -89,7 +89,7 @@ class ModuleCustomnav extends Module
 			return;
 		}
 
-		$arrPages = array();
+		$arrPages = [];
 
 		// Sort the array keys according to the given order
 		if ($this->orderPages != '')
@@ -176,7 +176,7 @@ class ModuleCustomnav extends Module
 					$row['href'] = $href;
 					$row['nofollow'] = (strncmp($arrPage['robots'], 'noindex', 7) === 0);
 					$row['target'] = '';
-					$row['description'] = str_replace(array("\n", "\r"), array(' ' , ''), $arrPage['description']);
+					$row['description'] = str_replace(["\n", "\r"], [' ' , ''], $arrPage['description']);
 
 					// Override the link target
 					if ($arrPage['type'] == 'redirect' && $arrPage['target'])
@@ -201,7 +201,7 @@ class ModuleCustomnav extends Module
 					$row['href'] = $href;
 					$row['nofollow'] = (strncmp($arrPage['robots'], 'noindex', 7) === 0);
 					$row['target'] = '';
-					$row['description'] = str_replace(array("\n", "\r"), array(' ' , ''), $arrPage['description']);
+					$row['description'] = str_replace(["\n", "\r"], [' ' , ''], $arrPage['description']);
 
 					// Override the link target
 					if ($arrPage['type'] == 'redirect' && $arrPage['target'])

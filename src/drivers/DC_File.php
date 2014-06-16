@@ -121,7 +121,7 @@ class DC_File extends DataContainer implements editable
 		// Build an array from boxes and rows
 		$this->strPalette = $this->getPalette();
 		$boxes = trimsplit(';', $this->strPalette);
-		$legends = array();
+		$legends = [];
 
 		if (!empty($boxes))
 		{
@@ -276,7 +276,7 @@ class DC_File extends DataContainer implements editable
 		}
 
 		// Submit buttons
-		$arrButtons = array();
+		$arrButtons = [];
 		$arrButtons['save'] = '<input type="submit" name="save" id="save" class="tl_submit" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['save']).'">';
 		$arrButtons['saveNclose'] = '<input type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c" value="'.specialchars($GLOBALS['TL_LANG']['MSC']['saveNclose']).'">';
 
@@ -417,7 +417,7 @@ class DC_File extends DataContainer implements editable
 			}
 
 			// Convert date formats into timestamps
-			if (in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
+			if (in_array($arrData['eval']['rgxp'], ['date', 'time', 'datim']))
 			{
 				$objDate = new Date($varValue, Config::get($arrData['eval']['rgxp'] . 'Format'));
 				$varValue = $objDate->tstamp;
@@ -508,8 +508,8 @@ class DC_File extends DataContainer implements editable
 		// Check whether there are selector fields
 		if (!empty($GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']))
 		{
-			$sValues = array();
-			$subpalettes = array();
+			$sValues = [];
+			$subpalettes = [];
 
 			foreach ($GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__'] as $name)
 			{
@@ -555,7 +555,7 @@ class DC_File extends DataContainer implements editable
 			// Build possible palette names from the selector values
 			if (!count($sValues))
 			{
-				$names = array('default');
+				$names = ['default'];
 			}
 			elseif (count($sValues) > 1)
 			{
@@ -563,7 +563,7 @@ class DC_File extends DataContainer implements editable
 			}
 			else
 			{
-				$names = array($sValues[0]);
+				$names = [$sValues[0]];
 			}
 
 			// Get an existing palette

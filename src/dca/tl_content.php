@@ -14,102 +14,102 @@
 /**
  * Table tl_content
  */
-$GLOBALS['TL_DCA']['tl_content'] = array
-(
+$GLOBALS['TL_DCA']['tl_content'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
 		'ptable'                      => '',
 		'dynamicPtable'               => true,
-		'onload_callback'             => array
-		(
-			array('tl_content', 'showJsLibraryHint')
-		),
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'onload_callback'             =>
+		[
+			['tl_content', 'showJsLibraryHint']
+		],
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'ptable' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 4,
-			'fields'                  => array('sorting'),
+			'fields'                  => ['sorting'],
 			'panelLayout'             => 'filter;search,limit',
-			'headerFields'            => array('title', 'headline', 'author', 'inColumn', 'tstamp', 'showTeaser', 'published', 'start', 'stop'),
-			'child_record_callback'   => array('tl_content', 'addCteType')
-		),
-		'global_operations' => array
-		(
-			'all' => array
-			(
+			'headerFields'            => ['title', 'headline', 'author', 'inColumn', 'tstamp', 'showTeaser', 'published', 'start', 'stop'],
+			'child_record_callback'   => ['tl_content', 'addCteType']
+		],
+		'global_operations' =>
+		[
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
-			),
-			'copy' => array
-			(
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'cut' => array
-			(
+			],
+			'cut' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'delete' => array
-			(
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_content', 'deleteElement')
-			),
-			'toggle' => array
-			(
+				'button_callback'     => ['tl_content', 'deleteElement']
+			],
+			'toggle' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['toggle'],
 				'icon'                => 'visible.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_content', 'toggleIcon')
-			),
-			'show' => array
-			(
+				'button_callback'     => ['tl_content', 'toggleIcon']
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
-			)
-		),
-	),
+			]
+		],
+	],
 
 	// Palettes
-	'palettes' => array
-	(
-		'__selector__'                => array('type', 'addImage', 'sortable', 'useImage', 'protected'),
+	'palettes' =>
+	[
+		'__selector__'                => ['type', 'addImage', 'sortable', 'useImage', 'protected'],
 		'default'                     => '{type_legend},type',
 		'headline'                    => '{type_legend},type,headline;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop',
 		'text'                        => '{type_legend},type,headline;{text_legend},text;{image_legend},addImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop',
@@ -136,682 +136,682 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		'teaser'                      => '{type_legend},type;{include_legend},article;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop',
 		'form'                        => '{type_legend},type,headline;{include_legend},form;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop',
 		'module'                      => '{type_legend},type;{include_legend},module;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop'
-	),
+	],
 
 	// Subpalettes
-	'subpalettes' => array
-	(
+	'subpalettes' =>
+	[
 		'addImage'                    => 'singleSRC,alt,title,size,imagemargin,imageUrl,fullsize,caption,floating',
 		'sortable'                    => 'sortIndex,sortOrder',
 		'useImage'                    => 'singleSRC,alt,title,size,caption',
 		'protected'                   => 'groups'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'ptable' => array
-		(
+		],
+		'ptable' =>
+		[
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'sorting' => array
-		(
+		],
+		'sorting' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'type' => array
-		(
+		],
+		'type' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['type'],
 			'default'                 => 'text',
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getContentElements'),
+			'options_callback'        => ['tl_content', 'getContentElements'],
 			'reference'               => &$GLOBALS['TL_LANG']['CTE'],
-			'eval'                    => array('helpwizard'=>true, 'chosen'=>true, 'submitOnChange'=>true),
+			'eval'                    => ['helpwizard'=>true, 'chosen'=>true, 'submitOnChange'=>true],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'headline' => array
-		(
+		],
+		'headline' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['headline'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'inputUnit',
-			'options'                 => array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'),
-			'eval'                    => array('maxlength'=>200),
+			'options'                 => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+			'eval'                    => ['maxlength'=>200],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'text' => array
-		(
+		],
+		'text' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['text'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
-			'eval'                    => array('mandatory'=>true, 'rte'=>'tinyMCE', 'helpwizard'=>true),
+			'eval'                    => ['mandatory'=>true, 'rte'=>'tinyMCE', 'helpwizard'=>true],
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
-		),
-		'addImage' => array
-		(
+		],
+		'addImage' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['addImage'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'singleSRC' => array
-		(
+		],
+		'singleSRC' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'mandatory'=>true, 'tl_class'=>'clr'),
+			'eval'                    => ['filesOnly'=>true, 'fieldType'=>'radio', 'mandatory'=>true, 'tl_class'=>'clr'],
 			'sql'                     => "binary(16) NULL",
-			'save_callback' => array
-			(
-				array('tl_content', 'storeFileMetaInformation')
-			)
-		),
-		'alt' => array
-		(
+			'save_callback' =>
+			[
+				['tl_content', 'storeFileMetaInformation']
+			]
+		],
+		'alt' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['alt'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'title' => array
-		(
+		],
+		'title' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['title'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'size' => array
-		(
+		],
+		'size' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['size'],
 			'exclude'                 => true,
 			'inputType'               => 'imageSize',
 			'options'                 => $GLOBALS['TL_CROP'],
 			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'eval'                    => array('rgxp'=>'digit', 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['rgxp'=>'digit', 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'imagemargin' => array
-		(
+		],
+		'imagemargin' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
 			'exclude'                 => true,
 			'inputType'               => 'trbl',
-			'options'                 => array('px', '%', 'em', 'rem', 'ex', 'pt', 'pc', 'in', 'cm', 'mm'),
-			'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+			'options'                 => ['px', '%', 'em', 'rem', 'ex', 'pt', 'pc', 'in', 'cm', 'mm'],
+			'eval'                    => ['includeBlankOption'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(128) NOT NULL default ''"
-		),
-		'imageUrl' => array
-		(
+		],
+		'imageUrl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50 wizard'),
-			'wizard' => array
-			(
-				array('tl_content', 'pagePicker')
-			),
+			'eval'                    => ['rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50 wizard'],
+			'wizard' =>
+			[
+				['tl_content', 'pagePicker']
+			],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'fullsize' => array
-		(
+		],
+		'fullsize' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'caption' => array
-		(
+		],
+		'caption' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['caption'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'allowHtml'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'allowHtml'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'floating' => array
-		(
+		],
+		'floating' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['floating'],
 			'default'                 => 'above',
 			'exclude'                 => true,
 			'inputType'               => 'radioTable',
-			'options'                 => array('above', 'left', 'right', 'below'),
-			'eval'                    => array('cols'=>4, 'tl_class'=>'w50'),
+			'options'                 => ['above', 'left', 'right', 'below'],
+			'eval'                    => ['cols'=>4, 'tl_class'=>'w50'],
 			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'html' => array
-		(
+		],
+		'html' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['html'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
-			'eval'                    => array('mandatory'=>true, 'allowHtml'=>true, 'class'=>'monospace', 'rte'=>'ace|html', 'helpwizard'=>true),
+			'eval'                    => ['mandatory'=>true, 'allowHtml'=>true, 'class'=>'monospace', 'rte'=>'ace|html', 'helpwizard'=>true],
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
-		),
-		'listtype' => array
-		(
+		],
+		'listtype' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['listtype'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array('ordered', 'unordered'),
+			'options'                 => ['ordered', 'unordered'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'listitems' => array
-		(
+		],
+		'listitems' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['listitems'],
 			'exclude'                 => true,
 			'inputType'               => 'listWizard',
-			'eval'                    => array('allowHtml'=>true),
-			'xlabel' => array
-			(
-				array('tl_content', 'listImportWizard')
-			),
+			'eval'                    => ['allowHtml'=>true],
+			'xlabel' =>
+			[
+				['tl_content', 'listImportWizard']
+			],
 			'sql'                     => "blob NULL"
-		),
-		'tableitems' => array
-		(
+		],
+		'tableitems' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['tableitems'],
 			'exclude'                 => true,
 			'inputType'               => 'tableWizard',
-			'eval'                    => array('allowHtml'=>true, 'doNotSaveEmpty'=>true, 'style'=>'width:142px;height:66px'),
-			'xlabel' => array
-			(
-				array('tl_content', 'tableImportWizard')
-			),
+			'eval'                    => ['allowHtml'=>true, 'doNotSaveEmpty'=>true, 'style'=>'width:142px;height:66px'],
+			'xlabel' =>
+			[
+				['tl_content', 'tableImportWizard']
+			],
 			'sql'                     => "mediumblob NULL"
-		),
-		'summary' => array
-		(
+		],
+		'summary' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['summary'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'thead' => array
-		(
+		],
+		'thead' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['thead'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'tfoot' => array
-		(
+		],
+		'tfoot' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['tfoot'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'tleft' => array
-		(
+		],
+		'tleft' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['tleft'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'sortable' => array
-		(
+		],
+		'sortable' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sortable'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'sortIndex' => array
-		(
+		],
+		'sortIndex' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sortIndex'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'digit', 'tl_class'=>'w50'),
+			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'sortOrder' => array
-		(
+		],
+		'sortOrder' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sortOrder'],
 			'default'                 => 'ascending',
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array('ascending', 'descending'),
+			'options'                 => ['ascending', 'descending'],
 			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'mooHeadline' => array
-		(
+		],
+		'mooHeadline' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['mooHeadline'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'allowHtml'=>true),
+			'eval'                    => ['maxlength'=>255, 'allowHtml'=>true],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'mooStyle' => array
-		(
+		],
+		'mooStyle' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['mooStyle'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'mooClasses' => array
-		(
+		],
+		'mooClasses' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['mooClasses'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'rgxp'=>'alnum', 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'alnum', 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'highlight' => array
-		(
+		],
+		'highlight' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['highlight'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array('ApacheConf', 'AS3', 'Bash', 'C', 'CSharp', 'CSS', 'Delphi', 'Diff', 'Groovy', 'HTML', 'Java', 'JavaFx', 'JavaScript', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'SQL', 'Text', 'VB', 'XHTML', 'XML'),
-			'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+			'options'                 => ['ApacheConf', 'AS3', 'Bash', 'C', 'CSharp', 'CSS', 'Delphi', 'Diff', 'Groovy', 'HTML', 'Java', 'JavaFx', 'JavaScript', 'Perl', 'PHP', 'PowerShell', 'Python', 'Ruby', 'Scala', 'SQL', 'Text', 'VB', 'XHTML', 'XML'],
+			'eval'                    => ['includeBlankOption'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'shClass' => array
-		(
+		],
+		'shClass' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['shClass'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50', 'helpwizard'=>true),
+			'eval'                    => ['tl_class'=>'w50', 'helpwizard'=>true],
 			'explanation'             => 'highlighter',
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'code' => array
-		(
+		],
+		'code' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['code'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
-			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'decodeEntities'=>true, 'class'=>'monospace', 'rte'=>'ace', 'helpwizard'=>true, 'tl_class'=>'clr'),
+			'eval'                    => ['mandatory'=>true, 'preserveTags'=>true, 'decodeEntities'=>true, 'class'=>'monospace', 'rte'=>'ace', 'helpwizard'=>true, 'tl_class'=>'clr'],
 			'explanation'             => 'insertTags',
-			'load_callback' => array
-			(
-				array('tl_content', 'setRteSyntax')
-			),
+			'load_callback' =>
+			[
+				['tl_content', 'setRteSyntax']
+			],
 			'sql'                     => "text NULL"
-		),
-		'url' => array
-		(
+		],
+		'url' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['MSC']['url'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'fieldType'=>'radio', 'tl_class'=>'w50 wizard'),
-			'wizard' => array
-			(
-				array('tl_content', 'pagePicker')
-			),
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'fieldType'=>'radio', 'tl_class'=>'w50 wizard'],
+			'wizard' =>
+			[
+				['tl_content', 'pagePicker']
+			],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'target' => array
-		(
+		],
+		'target' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['MSC']['target'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'titleText' => array
-		(
+		],
+		'titleText' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['titleText'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'linkTitle' => array
-		(
+		],
+		'linkTitle' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['linkTitle'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'embed' => array
-		(
+		],
+		'embed' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['embed'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>255, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'rel' => array
-		(
+		],
+		'rel' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['rel'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>64, 'tl_class'=>'w50'),
+			'eval'                    => ['maxlength'=>64, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'useImage' => array
-		(
+		],
+		'useImage' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['useImage'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'multiSRC' => array
-		(
+		],
+		'multiSRC' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['multiSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'orderField'=>'orderSRC', 'files'=>true, 'mandatory'=>true),
+			'eval'                    => ['multiple'=>true, 'fieldType'=>'checkbox', 'orderField'=>'orderSRC', 'files'=>true, 'mandatory'=>true],
 			'sql'                     => "blob NULL",
-			'load_callback' => array
-			(
-				array('tl_content', 'setFileTreeFlags')
-			)
-		),
-		'orderSRC' => array
-		(
+			'load_callback' =>
+			[
+				['tl_content', 'setFileTreeFlags']
+			]
+		],
+		'orderSRC' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['orderSRC'],
 			'sql'                     => "blob NULL"
-		),
-		'useHomeDir' => array
-		(
+		],
+		'useHomeDir' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['useHomeDir'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'perRow' => array
-		(
+		],
+		'perRow' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['perRow'],
 			'default'                 => 4,
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
-			'eval'                    => array('tl_class'=>'w50'),
+			'options'                 => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'perPage' => array
-		(
+		],
+		'perPage' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['perPage'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'digit', 'tl_class'=>'w50'),
+			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'numberOfItems' => array
-		(
+		],
+		'numberOfItems' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['numberOfItems'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'digit', 'tl_class'=>'w50'),
+			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'sortBy' => array
-		(
+		],
+		'sortBy' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sortBy'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options'                 => array('custom', 'name_asc', 'name_desc', 'date_asc', 'date_desc', 'random'),
+			'options'                 => ['custom', 'name_asc', 'name_desc', 'date_asc', 'date_desc', 'random'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'galleryTpl' => array
-		(
+		],
+		'galleryTpl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['galleryTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getGalleryTemplates'),
-			'eval'                    => array('tl_class'=>'w50'),
+			'options_callback'        => ['tl_content', 'getGalleryTemplates'],
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'customTpl' => array
-		(
+		],
+		'customTpl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['customTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getElementTemplates'),
-			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
+			'options_callback'        => ['tl_content', 'getElementTemplates'],
+			'eval'                    => ['includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'playerSRC' => array
-		(
+		],
+		'playerSRC' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'files'=>true, 'mandatory'=>true),
+			'eval'                    => ['multiple'=>true, 'fieldType'=>'checkbox', 'files'=>true, 'mandatory'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'youtube' => array
-		(
+		],
+		'youtube' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['youtube'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'mandatory'=>true),
+			'eval'                    => ['rgxp'=>'url', 'mandatory'=>true],
 			'sql'                     => "varchar(16) NOT NULL default ''"
-		),
-		'posterSRC' => array
-		(
+		],
+		'posterSRC' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['posterSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio'),
+			'eval'                    => ['filesOnly'=>true, 'fieldType'=>'radio'],
 			'sql'                     => "binary(16) NULL"
-		),
-		'playerSize' => array
-		(
+		],
+		'playerSize' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerSize'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'autoplay' => array
-		(
+		],
+		'autoplay' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['autoplay'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'sliderDelay' => array
-		(
+		],
+		'sliderDelay' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sliderDelay'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'sliderSpeed' => array
-		(
+		],
+		'sliderSpeed' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sliderSpeed'],
 			'default'                 => 300,
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '300'"
-		),
-		'sliderStartSlide' => array
-		(
+		],
+		'sliderStartSlide' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sliderStartSlide'],
 			'default'                 => 0,
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'sliderContinuous' => array
-		(
+		],
+		'sliderContinuous' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sliderContinuous'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
+			'eval'                    => ['tl_class'=>'w50 m12'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'cteAlias' => array
-		(
+		],
+		'cteAlias' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['cteAlias'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getAlias'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
-			'wizard' => array
-			(
-				array('tl_content', 'editAlias')
-			),
+			'options_callback'        => ['tl_content', 'getAlias'],
+			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true],
+			'wizard' =>
+			[
+				['tl_content', 'editAlias']
+			],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'articleAlias' => array
-		(
+		],
+		'articleAlias' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['articleAlias'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getArticleAlias'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
-			'wizard' => array
-			(
-				array('tl_content', 'editArticleAlias')
-			),
+			'options_callback'        => ['tl_content', 'getArticleAlias'],
+			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true],
+			'wizard' =>
+			[
+				['tl_content', 'editArticleAlias']
+			],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'article' => array
-		(
+		],
+		'article' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['article'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getArticles'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
-			'wizard' => array
-			(
-				array('tl_content', 'editArticle')
-			),
+			'options_callback'        => ['tl_content', 'getArticles'],
+			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true],
+			'wizard' =>
+			[
+				['tl_content', 'editArticle']
+			],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'form' => array
-		(
+		],
+		'form' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['form'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getForms'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
-			'wizard' => array
-			(
-				array('tl_content', 'editForm')
-			),
+			'options_callback'        => ['tl_content', 'getForms'],
+			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true],
+			'wizard' =>
+			[
+				['tl_content', 'editForm']
+			],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'module' => array
-		(
+		],
+		'module' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['module'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getModules'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
-			'wizard' => array
-			(
-				array('tl_content', 'editModule')
-			),
+			'options_callback'        => ['tl_content', 'getModules'],
+			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true],
+			'wizard' =>
+			[
+				['tl_content', 'editModule']
+			],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'protected' => array
-		(
+		],
+		'protected' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['protected'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => ['submitOnChange'=>true],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'groups' => array
-		(
+		],
+		'groups' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['groups'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'foreignKey'              => 'tl_member_group.name',
-			'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+			'eval'                    => ['mandatory'=>true, 'multiple'=>true],
 			'sql'                     => "blob NULL",
-			'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
-		),
-		'guests' => array
-		(
+			'relation'                => ['type'=>'hasMany', 'load'=>'lazy']
+		],
+		'guests' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['guests'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => ['tl_class'=>'w50'],
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'cssID' => array
-		(
+		],
+		'cssID' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['cssID'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'space' => array
-		(
+		],
+		'space' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['space'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'invisible' => array
-		(
+		],
+		'invisible' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['invisible'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'start' => array
-		(
+		],
+		'start' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['start'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		),
-		'stop' => array
-		(
+		],
+		'stop' =>
+		[
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['stop'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -820,7 +820,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 if (Input::get('do') == 'article' || Input::get('do') == 'page')
 {
 	$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_article';
-	$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = array('tl_content', 'checkPermission');
+	$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = ['tl_content', 'checkPermission'];
 }
 
 
@@ -867,7 +867,7 @@ class tl_content extends Backend
 		}
 
 		// Get the pagemounts
-		$pagemounts = array();
+		$pagemounts = [];
 
 		foreach ($this->User->pagemounts as $root)
 		{
@@ -986,7 +986,7 @@ class tl_content extends Backend
 	 */
 	public function getContentElements()
 	{
-		$groups = array();
+		$groups = [];
 
 		foreach ($GLOBALS['TL_CTE'] as $k=>$v)
 		{
@@ -1175,8 +1175,8 @@ class tl_content extends Backend
 	 */
 	public function getArticleAlias(Contao\DataContainer $dc)
 	{
-		$arrPids = array();
-		$arrAlias = array();
+		$arrPids = [];
+		$arrAlias = [];
 
 		if (!$this->User->isAdmin)
 		{
@@ -1232,8 +1232,8 @@ class tl_content extends Backend
 	 */
 	public function getAlias()
 	{
-		$arrPids = array();
-		$arrAlias = array();
+		$arrPids = [];
+		$arrAlias = [];
 
 		if (!$this->User->isAdmin)
 		{
@@ -1309,10 +1309,10 @@ class tl_content extends Backend
 	{
 		if (!$this->User->isAdmin && !is_array($this->User->forms))
 		{
-			return array();
+			return [];
 		}
 
-		$arrForms = array();
+		$arrForms = [];
 		$objForms = $this->Database->execute("SELECT id, title FROM tl_form ORDER BY title");
 
 		while ($objForms->next())
@@ -1344,7 +1344,7 @@ class tl_content extends Backend
 	 */
 	public function getModules()
 	{
-		$arrModules = array();
+		$arrModules = [];
 		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id ORDER BY t.name, m.name");
 
 		while ($objModules->next())
@@ -1394,9 +1394,9 @@ class tl_content extends Backend
 	 */
 	public function getArticles(Contao\DataContainer $dc)
 	{
-		$arrPids = array();
-		$arrArticle = array();
-		$arrRoot = array();
+		$arrPids = [];
+		$arrArticle = [];
+		$arrRoot = [];
 		$intPid = $dc->activeRecord->pid;
 
 		if (Input::get('act') == 'overrideAll')
@@ -1543,7 +1543,7 @@ class tl_content extends Backend
 	 */
 	public function pagePicker(Contao\DataContainer $dc)
 	{
-		return ' <a href="contao/page.php?do=' . Input::get('do') . '&amp;table=' . $dc->table . '&amp;field=' . $dc->field . '&amp;value=' . str_replace(array('{{link_url::', '}}'), '', $dc->value) . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['page'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top;cursor:pointer"') . '</a>';
+		return ' <a href="contao/page.php?do=' . Input::get('do') . '&amp;table=' . $dc->table . '&amp;field=' . $dc->field . '&amp;value=' . str_replace(['{{link_url::', '}}'], '', $dc->value) . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['page'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top;cursor:pointer"') . '</a>';
 	}
 
 

@@ -63,8 +63,8 @@ class ModuleBreadcrumb extends Module
 
 		$type = null;
 		$pageId = $objPage->id;
-		$pages = array($objPage->row());
-		$items = array();
+		$pages = [$objPage->row()];
+		$items = [];
 
 		// Get all pages up to the root page
 		$objPages = PageModel::findParentsById($objPage->pid);
@@ -84,8 +84,8 @@ class ModuleBreadcrumb extends Module
 		{
 			$objFirstPage = PageModel::findFirstPublishedByPid($objPages->id);
 
-			$items[] = array
-			(
+			$items[] =
+			[
 				'isRoot'   => true,
 				'isActive' => false,
 				'href'     => (($objFirstPage !== null) ? $this->generateFrontendUrl($objFirstPage->row()) : Environment::get('base')),
@@ -93,7 +93,7 @@ class ModuleBreadcrumb extends Module
 				'link'     => $objPages->title,
 				'data'     => $objFirstPage->row(),
 				'class'    => ''
-			);
+			];
 
 			array_pop($pages);
 		}
@@ -133,8 +133,8 @@ class ModuleBreadcrumb extends Module
 					break;
 			}
 
-			$items[] = array
-			(
+			$items[] =
+			[
 				'isRoot'   => false,
 				'isActive' => false,
 				'href'     => $href,
@@ -142,14 +142,14 @@ class ModuleBreadcrumb extends Module
 				'link'     => $pages[$i]['title'],
 				'data'     => $pages[$i],
 				'class'    => ''
-			);
+			];
 		}
 
 		// Active article
 		if (isset($_GET['articles']))
 		{
-			$items[] = array
-			(
+			$items[] =
+			[
 				'isRoot'   => false,
 				'isActive' => false,
 				'href'     => $this->generateFrontendUrl($pages[0]),
@@ -157,7 +157,7 @@ class ModuleBreadcrumb extends Module
 				'link'     => $pages[0]['title'],
 				'data'     => $pages[0],
 				'class'    => ''
-			);
+			];
 
 			list($strSection, $strArticle) = explode(':', Input::get('articles'));
 
@@ -176,8 +176,8 @@ class ModuleBreadcrumb extends Module
 
 			if ($objArticle !== null)
 			{
-				$items[] = array
-				(
+				$items[] =
+				[
 					'isRoot'   => false,
 					'isActive' => true,
 					'href'     => $this->generateFrontendUrl($pages[0], '/articles/' . $strAlias),
@@ -185,15 +185,15 @@ class ModuleBreadcrumb extends Module
 					'link'     => $objArticle->title,
 					'data'     => $objArticle->row(),
 					'class'    => ''
-				);
+				];
 			}
 		}
 
 		// Active page
 		else
 		{
-			$items[] = array
-			(
+			$items[] =
+			[
 				'isRoot'   => false,
 				'isActive' => true,
 				'href'     => $this->generateFrontendUrl($pages[0]),
@@ -201,7 +201,7 @@ class ModuleBreadcrumb extends Module
 				'link'     => $pages[0]['title'],
 				'data'     => $pages[0],
 				'class'    => ''
-			);
+			];
 		}
 
 		// Mark the first element (see #4833)

@@ -79,8 +79,8 @@ class TableWizard extends Widget
 	 */
 	public function generate()
 	{
-		$arrColButtons = array('ccopy', 'cmovel', 'cmover', 'cdelete');
-		$arrRowButtons = array('rcopy', 'rdrag', 'rup', 'rdown', 'rdelete');
+		$arrColButtons = ['ccopy', 'cmovel', 'cmover', 'cdelete'];
+		$arrRowButtons = ['rcopy', 'rdrag', 'rup', 'rdown', 'rdelete'];
 
 		$strCommand = 'cmd_' . $this->strField;
 
@@ -145,7 +145,7 @@ class TableWizard extends Widget
 		// Make sure there is at least an empty array
 		if (!is_array($this->varValue) || empty($this->varValue))
 		{
-			$this->varValue = array(array(''));
+			$this->varValue = [['']];
 		}
 
 		// Initialize the tab index
@@ -266,7 +266,7 @@ class TableWizard extends Widget
 			}
 
 			$this->import('Database');
-			$arrTable = array();
+			$arrTable = [];
 
 			foreach ($arrUploaded as $strCsvFile)
 			{

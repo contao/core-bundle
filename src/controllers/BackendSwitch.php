@@ -164,7 +164,7 @@ class BackendSwitch extends Backend
 		}
 
 		$time = time();
-		$arrUsers = array();
+		$arrUsers = [];
 
 		// Get the active front end users
 		$objUsers = $this->Database->prepare("SELECT username FROM tl_member WHERE username LIKE ? AND login=1 AND disable!=1 AND (start='' OR start<$time) AND (stop='' OR stop>$time) ORDER BY username")

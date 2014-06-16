@@ -40,7 +40,7 @@ class TimePeriod extends Widget
 	 * Units
 	 * @var array
 	 */
-	protected $arrUnits = array();
+	protected $arrUnits = [];
 
 
 	/**
@@ -107,12 +107,12 @@ class TimePeriod extends Widget
 	 */
 	public function generate()
 	{
-		$arrUnits = array();
+		$arrUnits = [];
 
 		// Add an empty option if there are none (see #5067)
 		if (empty($this->arrUnits))
 		{
-			$this->arrUnits = array(array('value'=>'', 'label'=>'-'));
+			$this->arrUnits = [['value'=>'', 'label'=>'-']];
 		}
 
 		foreach ($this->arrUnits as $arrUnit)
@@ -125,7 +125,7 @@ class TimePeriod extends Widget
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array('value'=>$this->varValue);
+			$this->varValue = ['value'=>$this->varValue];
 		}
 
 		return sprintf('<input type="text" name="%s[value]" id="ctrl_%s" class="tl_text_interval%s" value="%s"%s onfocus="Backend.getScrollOffset()"> <select name="%s[unit]" class="tl_select_interval" onfocus="Backend.getScrollOffset()">%s</select>%s',

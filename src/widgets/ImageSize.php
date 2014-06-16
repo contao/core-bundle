@@ -87,7 +87,7 @@ class ImageSize extends Widget
 	{
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 
 		// Backwards compatibility (see #3911)
@@ -96,7 +96,7 @@ class ImageSize extends Widget
 			$this->varValue[2] = 'center_center';
 		}
 
-		$arrFields = array();
+		$arrFields = [];
 
 		for ($i=0; $i<2; $i++)
 		{
@@ -108,7 +108,7 @@ class ImageSize extends Widget
 									$this->getAttributes());
 		}
 
-		$arrOptions = array();
+		$arrOptions = [];
 
 		foreach ($this->arrOptions as $strKey=>$arrOption)
 		{
@@ -121,7 +121,7 @@ class ImageSize extends Widget
 			}
 			else
 			{
-				$arrOptgroups = array();
+				$arrOptgroups = [];
 
 				foreach ($arrOption as $arrOptgroup)
 				{

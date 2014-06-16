@@ -43,7 +43,7 @@ class FilesModel extends Model
 	 *
 	 * @return Model|null A model or null if there is no file
 	 */
-	public static function findByPk($varValue, array $arrOptions=array())
+	public static function findByPk($varValue, array $arrOptions=[])
 	{
 		if (static::$strPk == 'id')
 		{
@@ -62,7 +62,7 @@ class FilesModel extends Model
 	 *
 	 * @return Model|null A model or null if there is no file
 	 */
-	public static function findById($intId, array $arrOptions=array())
+	public static function findById($intId, array $arrOptions=[])
 	{
 		if (Validator::isUuid($intId))
 		{
@@ -81,7 +81,7 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no files
 	 */
-	public static function findMultipleByIds($arrIds, array $arrOptions=array())
+	public static function findMultipleByIds($arrIds, array $arrOptions=[])
 	{
 		if (!is_array($arrIds) || empty($arrIds))
 		{
@@ -105,7 +105,7 @@ class FilesModel extends Model
 	 *
 	 * @return Model|null A model or null if there is no file
 	 */
-	public static function findByUuid($strUuid, array $arrOptions=array())
+	public static function findByUuid($strUuid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
 
@@ -115,7 +115,7 @@ class FilesModel extends Model
 			$strUuid = String::uuidToBin($strUuid);
 		}
 
-		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);
+		return static::findOneBy(["$t.uuid=UNHEX(?)"], bin2hex($strUuid), $arrOptions);
 	}
 
 
@@ -127,7 +127,7 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no files
 	 */
-	public static function findMultipleByUuids($arrUuids, array $arrOptions=array())
+	public static function findMultipleByUuids($arrUuids, array $arrOptions=[])
 	{
 		if (!is_array($arrUuids) || empty($arrUuids))
 		{
@@ -152,7 +152,7 @@ class FilesModel extends Model
 			$arrOptions['order'] = "$t.uuid!=" . implode(", $t.uuid!=", $arrUuids);
 		}
 
-		return static::findBy(array("$t.uuid IN(" . implode(",", $arrUuids) . ")"), null, $arrOptions);
+		return static::findBy(["$t.uuid IN(" . implode(",", $arrUuids) . ")"], null, $arrOptions);
 	}
 
 
@@ -164,7 +164,7 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no files
 	 */
-	public static function findMultipleByPaths($arrPaths, array $arrOptions=array())
+	public static function findMultipleByPaths($arrPaths, array $arrOptions=[])
 	{
 		if (!is_array($arrPaths) || empty($arrPaths))
 		{
@@ -178,7 +178,7 @@ class FilesModel extends Model
 			$arrOptions['order'] = Database::getInstance()->findInSet("$t.path", $arrPaths);
 		}
 
-		return static::findBy(array("$t.path IN(" . implode(',', array_fill(0, count($arrPaths), '?')) . ")"), $arrPaths, $arrOptions);
+		return static::findBy(["$t.path IN(" . implode(',', array_fill(0, count($arrPaths), '?')) . ")"], $arrPaths, $arrOptions);
 	}
 
 
@@ -190,10 +190,10 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no matching files
 	 */
-	public static function findMultipleByBasepath($strPath, array $arrOptions=array())
+	public static function findMultipleByBasepath($strPath, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		return static::findBy(array("$t.path LIKE ?"), $strPath . '%', $arrOptions);
+		return static::findBy(["$t.path LIKE ?"], $strPath . '%', $arrOptions);
 	}
 
 
@@ -206,7 +206,7 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null of there are no matching files
 	 */
-	public static function findMultipleByUuidsAndExtensions($arrUuids, $arrExtensions, array $arrOptions=array())
+	public static function findMultipleByUuidsAndExtensions($arrUuids, $arrExtensions, array $arrOptions=[])
 	{
 		if (!is_array($arrUuids) || empty($arrUuids) || !is_array($arrExtensions) || empty($arrExtensions))
 		{
@@ -239,7 +239,7 @@ class FilesModel extends Model
 			$arrOptions['order'] = "$t.uuid!=" . implode(", $t.uuid!=", $arrUuids);
 		}
 
-		return static::findBy(array("$t.uuid IN(" . implode(",", $arrUuids) . ") AND $t.extension IN('" . implode("','", $arrExtensions) . "')"), null, $arrOptions);
+		return static::findBy(["$t.uuid IN(" . implode(",", $arrUuids) . ") AND $t.extension IN('" . implode("','", $arrExtensions) . "')"], null, $arrOptions);
 	}
 
 
@@ -251,12 +251,12 @@ class FilesModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no matching files
 	 */
-	public static function findMultipleFilesByFolder($strPath, array $arrOptions=array())
+	public static function findMultipleFilesByFolder($strPath, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$strPath = str_replace(array('%', '_'), array('\\%', '\\_'), $strPath);
+		$strPath = str_replace(['%', '_'], ['\\%', '\\_'], $strPath);
 
-		return static::findBy(array("$t.type='file' AND $t.path LIKE ? AND $t.path NOT LIKE ?"), array($strPath.'/%', $strPath.'/%/%'), $arrOptions);
+		return static::findBy(["$t.type='file' AND $t.path LIKE ? AND $t.path NOT LIKE ?"], [$strPath.'/%', $strPath.'/%/%'], $arrOptions);
 	}
 
 

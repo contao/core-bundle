@@ -41,18 +41,18 @@ class ContentModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no content elements
 	 */
-	public static function findPublishedByPidAndTable($intPid, $strParentTable, array $arrOptions=array())
+	public static function findPublishedByPidAndTable($intPid, $strParentTable, array $arrOptions=[])
 	{
 		$t = static::$strTable;
 
 		// Also handle empty ptable fields (backwards compatibility)
 		if ($strParentTable == 'tl_article')
 		{
-			$arrColumns = array("$t.pid=? AND ($t.ptable=? OR $t.ptable='')");
+			$arrColumns = ["$t.pid=? AND ($t.ptable=? OR $t.ptable='')"];
 		}
 		else
 		{
-			$arrColumns = array("$t.pid=? AND $t.ptable=?");
+			$arrColumns = ["$t.pid=? AND $t.ptable=?"];
 		}
 
 		if (!BE_USER_LOGGED_IN)
@@ -66,6 +66,6 @@ class ContentModel extends Model
 			$arrOptions['order'] = "$t.sorting";
 		}
 
-		return static::findBy($arrColumns, array($intPid, $strParentTable), $arrOptions);
+		return static::findBy($arrColumns, [$intPid, $strParentTable], $arrOptions);
 	}
 }

@@ -40,7 +40,7 @@ class InputUnit extends Widget
 	 * Units
 	 * @var array
 	 */
-	protected $arrUnits = array();
+	protected $arrUnits = [];
 
 
 	/**
@@ -111,7 +111,7 @@ class InputUnit extends Widget
 	 */
 	public function generate()
 	{
-		$arrUnits = array();
+		$arrUnits = [];
 
 		foreach ($this->arrUnits as $arrUnit)
 		{
@@ -123,7 +123,7 @@ class InputUnit extends Widget
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array('value'=>$this->varValue);
+			$this->varValue = ['value'=>$this->varValue];
 		}
 
 		return sprintf('<input type="text" name="%s[value]" id="ctrl_%s" class="tl_text_unit%s" value="%s"%s onfocus="Backend.getScrollOffset()"> <select name="%s[unit]" class="tl_select_unit" onfocus="Backend.getScrollOffset()">%s</select>%s',

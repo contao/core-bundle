@@ -14,57 +14,57 @@
 /**
  * Table tl_session
  */
-$GLOBALS['TL_DCA']['tl_session'] = array
-(
+$GLOBALS['TL_DCA']['tl_session'] =
+[
 
 	// Config
-	'config' => array
-	(
-		'sql' => array
-		(
-			'keys' => array
-			(
+	'config' =>
+	[
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'hash' => 'unique'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'sessionID' => array
-		(
+		],
+		'sessionID' =>
+		[
 			'sql'                     => "varchar(128) NOT NULL default ''"
-		),
-		'hash' => array
-		(
+		],
+		'hash' =>
+		[
 			'sql'                     => "varchar(40) NULL"
-		),
-		'ip' => array
-		(
+		],
+		'ip' =>
+		[
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'su' => array
-		(
+		],
+		'su' =>
+		[
 			'sql'                     => "char(1) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];

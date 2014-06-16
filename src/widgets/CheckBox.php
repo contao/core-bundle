@@ -79,11 +79,11 @@ class CheckBox extends Widget
 	 */
 	public function generate()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 
 		if (!$this->multiple && count($this->arrOptions) > 1)
 		{
-			$this->arrOptions = array($this->arrOptions[0]);
+			$this->arrOptions = [$this->arrOptions[0]];
 		}
 
 		// The "required" attribute only makes sense for single checkboxes

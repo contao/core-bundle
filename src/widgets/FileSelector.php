@@ -34,7 +34,7 @@ class FileSelector extends Widget
 	 * Path nodes
 	 * @var array
 	 */
-	protected $arrNodes = array();
+	protected $arrNodes = [];
 
 	/**
 	 * Template
@@ -194,7 +194,7 @@ class FileSelector extends Widget
 		// Make sure that $this->varValue is an array (see #3369)
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 
 		static $session;
@@ -214,14 +214,14 @@ class FileSelector extends Widget
 
 		$return = '';
 		$intSpacing = 20;
-		$files = array();
-		$folders = array();
+		$files = [];
+		$folders = [];
 		$level = ($intMargin / $intSpacing + 1);
 
 		// Mount folder
 		if ($mount)
 		{
-			$folders = array($path);
+			$folders = [$path];
 		}
 
 		// Scan directory and sort the result
@@ -394,11 +394,11 @@ class FileSelector extends Widget
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 		elseif (empty($this->varValue[0]))
 		{
-			$this->varValue = array();
+			$this->varValue = [];
 		}
 
 		$objFiles = FilesModel::findMultipleByUuids($this->varValue);

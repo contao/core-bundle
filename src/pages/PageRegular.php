@@ -67,11 +67,11 @@ class PageRegular extends Frontend
 		$this->createTemplate($objPage, $objLayout);
 
 		// Initialize modules and sections
-		$arrCustomSections = array();
-		$arrSections = array('header', 'left', 'right', 'main', 'footer');
+		$arrCustomSections = [];
+		$arrSections = ['header', 'left', 'right', 'main', 'footer'];
 		$arrModules = deserialize($objLayout->modules);
 
-		$arrModuleIds = array();
+		$arrModuleIds = [];
 
 		// Filter the disabled modules
 		foreach ($arrModules as $module)
@@ -87,7 +87,7 @@ class PageRegular extends Frontend
 
 		if ($objModules !== null || $arrModules[0]['mod'] == 0) // see #4137
 		{
-			$arrMapper = array();
+			$arrMapper = [];
 
 			// Create a mapper array in case a module is included more than once (see #4849)
 			if ($objModules !== null)
@@ -173,7 +173,7 @@ class PageRegular extends Frontend
 
 		// Assign the title and description
 		$this->Template->title = $this->replaceInsertTags($objLayout->titleTag); // see #7097
-		$this->Template->description = str_replace(array("\n", "\r", '"'), array(' ' , '', ''), $objPage->description);
+		$this->Template->description = str_replace(["\n", "\r", '"'], [' ' , '', ''], $objPage->description);
 
 		// Body onload and body classes
 		$this->Template->onload = trim($objLayout->onload);
@@ -272,7 +272,7 @@ class PageRegular extends Frontend
 
 				if (isset($arrSize['value']) && $arrSize['value'] != '' && $arrSize['value'] >= 0)
 				{
-					$arrMargin = array('left'=>'0 auto 0 0', 'center'=>'0 auto', 'right'=>'0 0 0 auto');
+					$arrMargin = ['left'=>'0 auto 0 0', 'center'=>'0 auto', 'right'=>'0 0 0 auto'];
 					$strFramework .= sprintf('#wrapper{width:%s;margin:%s}', $arrSize['value'] . $arrSize['unit'], $arrMargin[$objLayout->align]);
 				}
 			}
@@ -350,12 +350,12 @@ class PageRegular extends Frontend
 		if (isset($GLOBALS['TL_JAVASCRIPT']) && is_array($GLOBALS['TL_JAVASCRIPT']))
 		{
 			$arrAppendJs = $GLOBALS['TL_JAVASCRIPT'];
-			$GLOBALS['TL_JAVASCRIPT'] = array();
+			$GLOBALS['TL_JAVASCRIPT'] = [];
 		}
 		else
 		{
-			$arrAppendJs = array();
-			$GLOBALS['TL_JAVASCRIPT'] = array();
+			$arrAppendJs = [];
+			$GLOBALS['TL_JAVASCRIPT'] = [];
 		}
 
 		// jQuery scripts
@@ -419,7 +419,7 @@ class PageRegular extends Frontend
 		$this->Template->footer = '';
 
 		// Initialize the custom layout sections
-		$this->Template->sections = array();
+		$this->Template->sections = [];
 		$this->Template->sPosition = $objLayout->sPosition;
 
 		// Default settings

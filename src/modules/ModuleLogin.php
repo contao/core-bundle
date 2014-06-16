@@ -188,7 +188,7 @@ class ModuleLogin extends Module
 		{
 			$blnHasError = true;
 			$_SESSION['LOGIN_ERROR'] = $_SESSION['TL_ERROR'][0];
-			$_SESSION['TL_ERROR'] = array();
+			$_SESSION['TL_ERROR'] = [];
 		}
 
 		if (isset($_SESSION['LOGIN_ERROR']))

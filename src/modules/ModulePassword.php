@@ -88,13 +88,13 @@ class ModulePassword extends Module
 		// Captcha widget
 		if (!$this->disableCaptcha)
 		{
-			$arrFields['captcha'] = array
-			(
+			$arrFields['captcha'] =
+			[
 				'name' => 'lost_password',
 				'label' => $GLOBALS['TL_LANG']['MSC']['securityQuestion'],
 				'inputType' => 'captcha',
-				'eval' => array('mandatory'=>true)
-			);
+				'eval' => ['mandatory'=>true]
+			];
 		}
 
 		$row = 0;
@@ -267,7 +267,7 @@ class ModulePassword extends Module
 	 */
 	protected function sendPasswordLink($objMember)
 	{
-		$arrChunks = array();
+		$arrChunks = [];
 		$confirmationId = md5(uniqid(mt_rand(), true));
 
 		// Store the confirmation ID

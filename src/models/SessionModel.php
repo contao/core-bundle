@@ -39,9 +39,9 @@ class SessionModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no session
 	 */
-	public static function findByHashAndName($strHash, $strName, array $arrOptions=array())
+	public static function findByHashAndName($strHash, $strName, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		return static::findOneBy(array("$t.hash=?", "$t.name=?"), array($strHash, $strName), $arrOptions);
+		return static::findOneBy(["$t.hash=?", "$t.name=?"], [$strHash, $strName], $arrOptions);
 	}
 }

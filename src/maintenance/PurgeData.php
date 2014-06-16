@@ -45,7 +45,7 @@ class PurgeData extends Backend implements executable
 	 */
 	public function run()
 	{
-		$arrJobs = array();
+		$arrJobs = [];
 		$objTemplate = new BackendTemplate('be_purge_data');
 		$objTemplate->isActive = $this->isActive();
 
@@ -64,7 +64,7 @@ class PurgeData extends Backend implements executable
 				$objTemplate->message .= sprintf('<p class="tl_error">%s</p>' . "\n", $message);
 			}
 
-			$_SESSION['TL_ERROR'] = array();
+			$_SESSION['TL_ERROR'] = [];
 		}
 
 		// Run the jobs
@@ -92,14 +92,14 @@ class PurgeData extends Backend implements executable
 		// Tables
 		foreach ($GLOBALS['TL_PURGE']['tables'] as $key=>$config)
 		{
-			$arrJobs[$key] = array
-			(
+			$arrJobs[$key] =
+			[
 				'id' => 'purge_' . $key,
 				'title' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][0],
 				'description' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][1],
 				'group' => 'tables',
 				'affected' => ''
-			);
+			];
 
 			// Get the current table size
 			foreach ($config['affected'] as $table)
@@ -112,14 +112,14 @@ class PurgeData extends Backend implements executable
 		// Folders
 		foreach ($GLOBALS['TL_PURGE']['folders'] as $key=>$config)
 		{
-			$arrJobs[$key] = array
-			(
+			$arrJobs[$key] =
+			[
 				'id' => 'purge_' . $key,
 				'title' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][0],
 				'description' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][1],
 				'group' => 'folders',
 				'affected' => ''
-			);
+			];
 
 			// Get the current folder size
 			foreach ($config['affected'] as $folder)
@@ -154,13 +154,13 @@ class PurgeData extends Backend implements executable
 		// Custom
 		foreach ($GLOBALS['TL_PURGE']['custom'] as $key=>$job)
 		{
-			$arrJobs[$key] = array
-			(
+			$arrJobs[$key] =
+			[
 				'id' => 'purge_' . $key,
 				'title' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][0],
 				'description' => $GLOBALS['TL_LANG']['tl_maintenance_jobs'][$key][1],
 				'group' => 'custom'
-			);
+			];
 		}
 
 		$objTemplate->jobs = $arrJobs;

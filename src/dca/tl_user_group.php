@@ -20,224 +20,224 @@ System::loadLanguageFile('tl_user');
 /**
  * Table tl_user_group
  */
-$GLOBALS['TL_DCA']['tl_user_group'] = array
-(
+$GLOBALS['TL_DCA']['tl_user_group'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
-		'sql' => array
-		(
-			'keys' => array
-			(
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// List
-	'list' => array
-	(
-		'sorting' => array
-		(
+	'list' =>
+	[
+		'sorting' =>
+		[
 			'mode'                    => 1,
-			'fields'                  => array('name'),
+			'fields'                  => ['name'],
 			'flag'                    => 1,
 			'panelLayout'             => 'filter,search,limit',
-		),
-		'label' => array
-		(
-			'fields'                  => array('name'),
+		],
+		'label' =>
+		[
+			'fields'                  => ['name'],
 			'format'                  => '%s',
-			'label_callback'          => array('tl_user_group', 'addIcon')
-		),
-		'global_operations' => array
-		(
-			'all' => array
-			(
+			'label_callback'          => ['tl_user_group', 'addIcon']
+		],
+		'global_operations' =>
+		[
+			'all' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
 				'href'                => 'act=select',
 				'class'               => 'header_edit_all',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' => array
-		(
-			'edit' => array
-			(
+			]
+		],
+		'operations' =>
+		[
+			'edit' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_user_group']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
-			),
-			'copy' => array
-			(
+			],
+			'copy' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_user_group']['copy'],
 				'href'                => 'act=copy',
 				'icon'                => 'copy.gif'
-			),
-			'delete' => array
-			(
+			],
+			'delete' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_user_group']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-			),
-			'toggle' => array
-			(
+			],
+			'toggle' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_user_group']['toggle'],
 				'icon'                => 'visible.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_user_group', 'toggleIcon')
-			),
-			'show' => array
-			(
+				'button_callback'     => ['tl_user_group', 'toggleIcon']
+			],
+			'show' =>
+			[
 				'label'               => &$GLOBALS['TL_LANG']['tl_user_group']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Palettes
-	'palettes' => array
-	(
+	'palettes' =>
+	[
 		'default'                     => '{title_legend},name;{modules_legend},modules,themes;{pagemounts_legend},pagemounts,alpty;{filemounts_legend},filemounts,fop;{forms_legend},forms,formp;{alexf_legend:hide},alexf;{account_legend},disable,start,stop',
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'tstamp' => array
-		(
+		],
+		'tstamp' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'name' => array
-		(
+		],
+		'name' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['name'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'maxlength'=>255),
+			'eval'                    => ['mandatory'=>true, 'unique'=>true, 'maxlength'=>255],
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'modules' => array
-		(
+		],
+		'modules' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['modules'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options_callback'        => array('tl_user_group', 'getModules'),
+			'options_callback'        => ['tl_user_group', 'getModules'],
 			'reference'               => &$GLOBALS['TL_LANG']['MOD'],
-			'eval'                    => array('multiple'=>true, 'helpwizard'=>true),
+			'eval'                    => ['multiple'=>true, 'helpwizard'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'themes' => array
-		(
+		],
+		'themes' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['themes'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options'                 => array('css', 'modules', 'layout', 'theme_import', 'theme_export'),
+			'options'                 => ['css', 'modules', 'layout', 'theme_import', 'theme_export'],
 			'reference'               => &$GLOBALS['TL_LANG']['MOD'],
-			'eval'                    => array('multiple'=>true),
+			'eval'                    => ['multiple'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'pagemounts' => array
-		(
+		],
+		'pagemounts' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['pagemounts'],
 			'exclude'                 => true,
 			'inputType'               => 'pageTree',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox'),
+			'eval'                    => ['multiple'=>true, 'fieldType'=>'checkbox'],
 			'sql'                     => "blob NULL"
-		),
-		'alpty' => array
-		(
+		],
+		'alpty' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['alpty'],
-			'default'                 => array('regular', 'redirect', 'forward'),
+			'default'                 => ['regular', 'redirect', 'forward'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'options'                 => array_keys($GLOBALS['TL_PTY']),
 			'reference'               => &$GLOBALS['TL_LANG']['PTY'],
-			'eval'                    => array('multiple'=>true, 'helpwizard'=>true),
+			'eval'                    => ['multiple'=>true, 'helpwizard'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'filemounts' => array
-		(
+		],
+		'filemounts' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['filemounts'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox'),
+			'eval'                    => ['multiple'=>true, 'fieldType'=>'checkbox'],
 			'sql'                     => "blob NULL"
-		),
-		'fop' => array
-		(
+		],
+		'fop' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['FOP']['fop'],
 			'exclude'                 => true,
-			'default'                 => array('f1', 'f2', 'f3'),
+			'default'                 => ['f1', 'f2', 'f3'],
 			'inputType'               => 'checkbox',
-			'options'                 => array('f1', 'f2', 'f3', 'f4', 'f5', 'f6'),
+			'options'                 => ['f1', 'f2', 'f3', 'f4', 'f5', 'f6'],
 			'reference'               => &$GLOBALS['TL_LANG']['FOP'],
-			'eval'                    => array('multiple'=>true),
+			'eval'                    => ['multiple'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'forms' => array
-		(
+		],
+		'forms' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['forms'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'foreignKey'              => 'tl_form.title',
-			'eval'                    => array('multiple'=>true),
+			'eval'                    => ['multiple'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'formp' => array
-		(
+		],
+		'formp' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['formp'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options'                 => array('create', 'delete'),
+			'options'                 => ['create', 'delete'],
 			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'eval'                    => array('multiple'=>true),
+			'eval'                    => ['multiple'=>true],
 			'sql'                     => "blob NULL"
-		),
-		'alexf' => array
-		(
+		],
+		'alexf' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['alexf'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options_callback'        => array('tl_user_group', 'getExcludedFields'),
-			'eval'                    => array('multiple'=>true, 'size'=>36),
+			'options_callback'        => ['tl_user_group', 'getExcludedFields'],
+			'eval'                    => ['multiple'=>true, 'size'=>36],
 			'sql'                     => "blob NULL"
-		),
-		'disable' => array
-		(
+		],
+		'disable' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['disable'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'start' => array
-		(
+		],
+		'start' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['start'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		),
-		'stop' => array
-		(
+		],
+		'stop' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user_group']['stop'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -285,7 +285,7 @@ class tl_user_group extends Backend
 	 */
 	public function getModules()
 	{
-		$arrModules = array();
+		$arrModules = [];
 
 		foreach ($GLOBALS['BE_MOD'] as $k=>$v)
 		{
@@ -306,7 +306,7 @@ class tl_user_group extends Backend
 	 */
 	public function getExcludedFields()
 	{
-		$included = array();
+		$included = [];
 
 		foreach (ModuleLoader::getActive() as $strModule)
 		{
@@ -333,7 +333,7 @@ class tl_user_group extends Backend
 			}
 		}
 
-		$arrReturn = array();
+		$arrReturn = [];
 
 		// Get all excluded fields
 		foreach ($GLOBALS['TL_DCA'] as $k=>$v)

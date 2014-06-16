@@ -150,7 +150,7 @@ class FormCheckBox extends Widget
 	 *
 	 * @return string The attributes string
 	 */
-	public function getAttributes($arrStrip=array())
+	public function getAttributes($arrStrip=[])
 	{
 		// The "required" attribute only makes sense for single checkboxes
 		if (count($this->arrOptions) == 1 && $this->mandatory)
@@ -169,19 +169,19 @@ class FormCheckBox extends Widget
 	 */
 	protected function getOptions()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 
 		foreach ($this->arrOptions as $i=>$arrOption)
 		{
-			$arrOptions[] = array
-			(
+			$arrOptions[] =
+			[
 				'name'       => $this->strName . ((count($this->arrOptions) > 1) ? '[]' : ''),
 				'id'         => $this->strId . '_' . $i,
 				'value'      => $arrOption['value'],
 				'checked'    => $this->isChecked($arrOption),
 				'attributes' => $this->getAttributes(),
 				'label'      => $arrOption['label']
-			);
+			];
 		}
 
 		return $arrOptions;

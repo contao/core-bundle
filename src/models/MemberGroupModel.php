@@ -40,10 +40,10 @@ class MemberGroupModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no member group
 	 */
-	public static function findPublishedById($intId, array $arrOptions=array())
+	public static function findPublishedById($intId, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.id=?");
+		$arrColumns = ["$t.id=?"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -93,11 +93,11 @@ class MemberGroupModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no member groups
 	 */
-	public static function findAllActive(array $arrOptions=array())
+	public static function findAllActive(array $arrOptions=[])
 	{
 		$time = time();
 		$t = static::$strTable;
 
-		return static::findBy(array("$t.disable='' AND ($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time)"), null, $arrOptions);
+		return static::findBy(["$t.disable='' AND ($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time)"], null, $arrOptions);
 	}
 }

@@ -257,8 +257,8 @@ class FormFileUpload extends Widget implements uploadable
 					Dbafs::updateFolderHashes($strUploadFolder);
 
 					// Add the session entry (see #6986)
-					$_SESSION['FILES'][$this->strName] = array
-					(
+					$_SESSION['FILES'][$this->strName] =
+					[
 						'name'     => $file['name'],
 						'type'     => $file['type'],
 						'tmp_name' => TL_ROOT . '/' . $strFile,
@@ -266,7 +266,7 @@ class FormFileUpload extends Widget implements uploadable
 						'size'     => $file['size'],
 						'uploaded' => true,
 						'uuid'     => String::binToUuid($objFile->uuid)
-					);
+					];
 
 					// Add a log entry
 					$this->log('File "'.$file['name'].'" has been moved to "'.$strUploadFolder.'"', __METHOD__, TL_FILES);

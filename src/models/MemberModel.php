@@ -39,18 +39,18 @@ class MemberModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no member
 	 */
-	public static function findActiveByEmailAndUsername($strEmail, $strUsername=null, array $arrOptions=array())
+	public static function findActiveByEmailAndUsername($strEmail, $strUsername=null, array $arrOptions=[])
 	{
 		$time = time();
 		$t = static::$strTable;
 
-		$arrColumns = array("$t.email=? AND $t.login=1 AND ($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.disable=''");
+		$arrColumns = ["$t.email=? AND $t.login=1 AND ($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.disable=''"];
 
 		if ($strUsername !== null)
 		{
 			$arrColumns[] = "$t.username=?";
 		}
 
-		return static::findOneBy($arrColumns, array($strEmail, $strUsername), $arrOptions);
+		return static::findOneBy($arrColumns, [$strEmail, $strUsername], $arrOptions);
 	}
 }

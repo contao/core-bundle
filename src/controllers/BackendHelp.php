@@ -57,7 +57,7 @@ class BackendHelp extends Backend
 		$this->loadDataContainer($table);
 
 		$this->Template = new BackendTemplate('be_help');
-		$this->Template->rows = array();
+		$this->Template->rows = [];
 		$this->Template->explanation = '';
 
 		$arrData = $GLOBALS['TL_DCA'][$table]['fields'][$field];
@@ -65,11 +65,11 @@ class BackendHelp extends Backend
 		// Back end modules
 		if ($table == 'tl_user_group' && $field == 'modules')
 		{
-			$rows = array();
+			$rows = [];
 
 			foreach (array_keys($GLOBALS['BE_MOD']) as $group)
 			{
-				$rows[] = array('headspan', $arrData['reference'][$group]);
+				$rows[] = ['headspan', $arrData['reference'][$group]];
 
 				foreach ($GLOBALS['BE_MOD'][$group] as $module=>$class)
 				{
@@ -83,11 +83,11 @@ class BackendHelp extends Backend
 		// Front end modules
 		elseif ($table == 'tl_module' && $field == 'type')
 		{
-			$rows = array();
+			$rows = [];
 
 			foreach (array_keys($GLOBALS['FE_MOD']) as $group)
 			{
-				$rows[] = array('headspan', $arrData['reference'][$group]);
+				$rows[] = ['headspan', $arrData['reference'][$group]];
 
 				foreach ($GLOBALS['FE_MOD'][$group] as $module=>$class)
 				{
@@ -101,11 +101,11 @@ class BackendHelp extends Backend
 		// Content elements
 		elseif ($table == 'tl_content' && $field == 'type')
 		{
-			$rows = array();
+			$rows = [];
 
 			foreach (array_keys($GLOBALS['TL_CTE']) as $group)
 			{
-				$rows[] = array('headspan', $arrData['reference'][$group]);
+				$rows[] = ['headspan', $arrData['reference'][$group]];
 
 				foreach ($GLOBALS['TL_CTE'][$group] as $element=>$class)
 				{
@@ -119,14 +119,14 @@ class BackendHelp extends Backend
 		// Add the reference
 		elseif (!empty($arrData['reference']))
 		{
-			$rows = array();
+			$rows = [];
 			$options = is_array($arrData['options']) ? $arrData['options'] : array_keys($arrData['reference']);
 
 			foreach ($options as $key=>$option)
 			{
 				if (is_array($option))
 				{
-					$rows[] = array('headspan', $arrData['reference'][$key]);
+					$rows[] = ['headspan', $arrData['reference'][$key]];
 
 					foreach ($option as $opt)
 					{
@@ -137,7 +137,7 @@ class BackendHelp extends Backend
 				{
 					if (!is_array($arrData['reference'][$option]))
 					{
-						$rows[] = array('headspan', $arrData['reference'][$option]);
+						$rows[] = ['headspan', $arrData['reference'][$option]];
 					}
 					else
 					{

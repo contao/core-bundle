@@ -116,15 +116,15 @@ class ModuleRegistration extends Module
 		// Captcha
 		if (!$this->disableCaptcha)
 		{
-			$arrCaptcha = array
-			(
+			$arrCaptcha =
+			[
 				'id' => 'registration',
 				'label' => $GLOBALS['TL_LANG']['MSC']['securityQuestion'],
 				'type' => 'captcha',
 				'mandatory' => true,
 				'required' => true,
 				'tableless' => $this->tableless
-			);
+			];
 
 			$strClass = $GLOBALS['TL_FFL']['captcha'];
 
@@ -147,8 +147,8 @@ class ModuleRegistration extends Module
 			}
 		}
 
-		$arrUser = array();
-		$arrFields = array();
+		$arrUser = [];
+		$arrFields = [];
 		$hasUpload = false;
 		$i = 0;
 
@@ -357,7 +357,7 @@ class ModuleRegistration extends Module
 		// Send activation e-mail
 		if ($this->reg_activate)
 		{
-			$arrChunks = array();
+			$arrChunks = [];
 
 			$strConfirmation = $this->reg_text;
 			preg_match_all('/##[^#]+##/', $strConfirmation, $arrChunks);
@@ -389,11 +389,11 @@ class ModuleRegistration extends Module
 						{
 							if ($arrData['newsletter'] != '')
 							{
-								$arrData['newsletter'] = array($arrData['newsletter']);
+								$arrData['newsletter'] = [$arrData['newsletter']];
 							}
 							else
 							{
-								$arrData['newsletter'] = array();
+								$arrData['newsletter'] = [];
 							}
 						}
 
@@ -431,7 +431,7 @@ class ModuleRegistration extends Module
 		// Make sure newsletter is an array
 		if (isset($arrData['newsletter']) && !is_array($arrData['newsletter']))
 		{
-			$arrData['newsletter'] = array($arrData['newsletter']);
+			$arrData['newsletter'] = [$arrData['newsletter']];
 		}
 
 		// Create the user

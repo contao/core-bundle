@@ -14,8 +14,8 @@
 /**
  * Register the templates
  */
-TemplateLoader::addFiles(array
-(
+TemplateLoader::addFiles(
+[
 	'analytics_google'    => 'system/modules/core/templates/analytics',
 	'analytics_piwik'     => 'system/modules/core/templates/analytics',
 	'be_changelog'        => 'system/modules/core/templates/backend',
@@ -142,4 +142,4 @@ TemplateLoader::addFiles(array
 	'rss_default'         => 'system/modules/core/templates/rss',
 	'rss_items_only'      => 'system/modules/core/templates/rss',
 	'search_default'      => 'system/modules/core/templates/search',
-));
+]);

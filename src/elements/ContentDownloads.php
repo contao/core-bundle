@@ -50,7 +50,7 @@ class ContentDownloads extends ContentElement
 
 			if ($this->User->assignDir && $this->User->homeDir)
 			{
-				$this->multiSRC = array($this->User->homeDir);
+				$this->multiSRC = [$this->User->homeDir];
 			}
 		}
 		else
@@ -104,8 +104,8 @@ class ContentDownloads extends ContentElement
 	{
 		global $objPage;
 
-		$files = array();
-		$auxDate = array();
+		$files = [];
+		$auxDate = [];
 
 		$objFiles = $this->objFiles;
 		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
@@ -148,8 +148,8 @@ class ContentDownloads extends ContentElement
 				$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFiles->path);
 
 				// Add the image
-				$files[$objFiles->path] = array
-				(
+				$files[$objFiles->path] =
+				[
 					'id'        => $objFiles->id,
 					'uuid'      => $objFiles->uuid,
 					'name'      => $objFile->basename,
@@ -163,7 +163,7 @@ class ContentDownloads extends ContentElement
 					'meta'      => $arrMeta,
 					'extension' => $objFile->extension,
 					'path'      => $objFile->dirname
-				);
+				];
 
 				$auxDate[] = $objFile->mtime;
 			}
@@ -212,8 +212,8 @@ class ContentDownloads extends ContentElement
 					$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objSubfiles->path);
 
 					// Add the image
-					$files[$objSubfiles->path] = array
-					(
+					$files[$objSubfiles->path] =
+					[
 						'id'        => $objSubfiles->id,
 						'uuid'      => $objSubfiles->uuid,
 						'name'      => $objFile->basename,
@@ -227,7 +227,7 @@ class ContentDownloads extends ContentElement
 						'meta'      => $arrMeta,
 						'extension' => $objFile->extension,
 						'path'      => $objFile->dirname
-					);
+					];
 
 					$auxDate[] = $objFile->mtime;
 				}

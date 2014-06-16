@@ -14,45 +14,45 @@
 /**
  * Table tl_search_index
  */
-$GLOBALS['TL_DCA']['tl_search_index'] = array
-(
+$GLOBALS['TL_DCA']['tl_search_index'] =
+[
 
 	// Config
-	'config' => array
-	(
-		'sql' => array
-		(
-			'keys' => array
-			(
+	'config' =>
+	[
+		'sql' =>
+		[
+			'keys' =>
+			[
 				'id' => 'primary',
 				'pid' => 'index',
 				'word' => 'index'
-			)
-		)
-	),
+			]
+		]
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'id' => array
-		(
+	'fields' =>
+	[
+		'id' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-		),
-		'pid' => array
-		(
+		],
+		'pid' =>
+		[
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'word' => array
-		(
+		],
+		'word' =>
+		[
 			'sql'                     => "varchar(64) COLLATE utf8_bin NOT NULL default ''"
-		),
-		'relevance' => array
-		(
+		],
+		'relevance' =>
+		[
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
-		),
-		'language' => array
-		(
+		],
+		'language' =>
+		[
 			'sql'                     => "varchar(5) NOT NULL default ''"
-		)
-	)
-);
+		]
+	]
+];

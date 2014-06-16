@@ -65,7 +65,7 @@ class ModuleNavigation extends Module
 		// Set the trail and level
 		if ($this->defineRoot && $this->rootPage > 0)
 		{
-			$trail = array($this->rootPage);
+			$trail = [$this->rootPage];
 			$level = 0;
 		}
 		else

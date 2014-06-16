@@ -153,7 +153,7 @@ class BackendInstall extends Backend
 		// Purge the internal cache (see #6357)
 		if (is_dir(TL_ROOT . '/system/cache/dca'))
 		{
-			foreach (array('config', 'dca', 'language', 'sql') as $dir)
+			foreach (['config', 'dca', 'language', 'sql'] as $dir)
 			{
 				$objFolder = new Folder('system/cache/' . $dir);
 				$objFolder->delete();
@@ -293,7 +293,7 @@ class BackendInstall extends Backend
 	protected function setUpDatabaseConnection()
 	{
 		$strDrivers = '';
-		$arrDrivers = array('');
+		$arrDrivers = [''];
 
 		if (class_exists('mysqli', false))
 		{
@@ -405,7 +405,7 @@ class BackendInstall extends Backend
 	{
 		if (Input::post('FORM_SUBMIT') == 'tl_collation')
 		{
-			$arrTables = array();
+			$arrTables = [];
 			$strCharset = strtolower(Config::get('dbCharset'));
 			$strCollation = Input::post('dbCollation');
 
@@ -444,7 +444,7 @@ class BackendInstall extends Backend
 			$this->reload();
 		}
 
-		$arrOptions = array();
+		$arrOptions = [];
 
 		$objCollation = $this->Database->prepare("SHOW COLLATION LIKE ?")
 									   ->execute(Config::get('dbCharset') .'%');
@@ -484,7 +484,7 @@ class BackendInstall extends Backend
 				}
 			}
 
-			$_SESSION['sql_commands'] = array();
+			$_SESSION['sql_commands'] = [];
 			$this->reload();
 		}
 
@@ -654,7 +654,7 @@ class BackendInstall extends Backend
 		}
 
 		// The localconfig.php file is created by the Config class
-		foreach (array('dcaconfig', 'initconfig', 'langconfig') as $file)
+		foreach (['dcaconfig', 'initconfig', 'langconfig'] as $file)
 		{
 			if (!file_exists(TL_ROOT . '/system/config/' . $file . '.php'))
 			{
@@ -740,7 +740,7 @@ class BackendInstall extends Backend
 			Config::persist('maintenanceMode', true);
 		}
 
-		if (!Config::get('coreOnlyMode') && count(array_diff(scan(TL_ROOT . '/system/modules'), array('core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'))) > 0)
+		if (!Config::get('coreOnlyMode') && count(array_diff(scan(TL_ROOT . '/system/modules'), ['core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'])) > 0)
 		{
 			Config::set('coreOnlyMode', true);
 			Config::persist('coreOnlyMode', true);

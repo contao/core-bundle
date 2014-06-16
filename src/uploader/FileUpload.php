@@ -99,7 +99,7 @@ class FileUpload extends Backend
 
 		$maxlength_kb = $this->getMaximumUploadSize();
 		$maxlength_kb_readable = $this->getReadableSize($maxlength_kb);
-		$arrUploaded = array();
+		$arrUploaded = [];
 		$arrFiles = $this->getFilesFromGlobal();
 
 		foreach ($arrFiles as $file)
@@ -218,7 +218,7 @@ class FileUpload extends Backend
 	 */
 	protected function getFilesFromGlobal()
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 		$intCount = count($_FILES[$this->strName]['name']);
 
 		for ($i=0; $i<$intCount; $i++)
@@ -228,14 +228,14 @@ class FileUpload extends Backend
 				continue;
 			}
 
-			$arrFiles[] = array
-			(
+			$arrFiles[] =
+			[
 				'name'     => $_FILES[$this->strName]['name'][$i],
 				'type'     => $_FILES[$this->strName]['type'][$i],
 				'tmp_name' => $_FILES[$this->strName]['tmp_name'][$i],
 				'error'    => $_FILES[$this->strName]['error'][$i],
 				'size'     => $_FILES[$this->strName]['size'][$i],
-			);
+			];
 		}
 
 		return $arrFiles;
@@ -306,7 +306,7 @@ class FileUpload extends Backend
 			$blnResize = true;
 			$intWidth = Config::get('imageWidth');
 			$intHeight = round(Config::get('imageWidth') * $arrImageSize[1] / $arrImageSize[0]);
-			$arrImageSize = array($intWidth, $intHeight);
+			$arrImageSize = [$intWidth, $intHeight];
 		}
 
 		// The image exceeds the maximum image height
@@ -315,7 +315,7 @@ class FileUpload extends Backend
 			$blnResize = true;
 			$intWidth = round(Config::get('imageHeight') * $arrImageSize[0] / $arrImageSize[1]);
 			$intHeight = Config::get('imageHeight');
-			$arrImageSize = array($intWidth, $intHeight);
+			$arrImageSize = [$intWidth, $intHeight];
 		}
 
 		// Resized successfully

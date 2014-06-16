@@ -67,19 +67,19 @@ class DataContainer extends Backend
 	 * WHERE clause of the database query
 	 * @param array
 	 */
-	protected $procedure = array();
+	protected $procedure = [];
 
 	/**
 	 * Values for the WHERE clause of the database query
 	 * @param array
 	 */
-	protected $values = array();
+	protected $values = [];
 
 	/**
 	 * Form attribute "onsubmit"
 	 * @param array
 	 */
-	protected $onsubmit = array();
+	protected $onsubmit = [];
 
 	/**
 	 * Reload the page after the form has been submitted
@@ -446,7 +446,7 @@ class DataContainer extends Backend
 		// No 2-column layout in "edit all" mode
 		if (Input::get('act') == 'editAll' || Input::get('act') == 'overrideAll')
 		{
-			$arrData['eval']['tl_class'] = str_replace(array('w50', 'clr', 'wizard', 'long', 'm12', 'cbx'), '', $arrData['eval']['tl_class']);
+			$arrData['eval']['tl_class'] = str_replace(['w50', 'clr', 'wizard', 'long', 'm12', 'cbx'], '', $arrData['eval']['tl_class']);
 		}
 
 		$updateMode = '';
@@ -540,12 +540,12 @@ class DataContainer extends Backend
 	 */
 	protected function combiner($names)
 	{
-		$return = array('');
+		$return = [''];
 		$names = array_values($names);
 
 		for ($i=0, $c=count($names); $i<$c; $i++)
 		{
-			$buffer = array();
+			$buffer = [];
 
 			foreach ($return as $k=>$v)
 			{
@@ -567,8 +567,8 @@ class DataContainer extends Backend
 	 */
 	protected function switchToEdit($id)
 	{
-		$arrKeys = array();
-		$arrUnset = array('act', 'id', 'table');
+		$arrKeys = [];
+		$arrUnset = ['act', 'id', 'table'];
 
 		foreach (array_keys($_GET) as $strKey)
 		{
@@ -594,7 +594,7 @@ class DataContainer extends Backend
 	 * @param integer
 	 * @return string
 	 */
-	protected function generateButtons($arrRow, $strTable, $arrRootIds=array(), $blnCircularReference=false, $arrChildRecordIds=null, $strPrevious=null, $strNext=null)
+	protected function generateButtons($arrRow, $strTable, $arrRootIds=[], $blnCircularReference=false, $arrChildRecordIds=null, $strPrevious=null, $strNext=null)
 	{
 		if (empty($GLOBALS['TL_DCA'][$strTable]['list']['operations']))
 		{
@@ -605,7 +605,7 @@ class DataContainer extends Backend
 
 		foreach ($GLOBALS['TL_DCA'][$strTable]['list']['operations'] as $k=>$v)
 		{
-			$v = is_array($v) ? $v : array($v);
+			$v = is_array($v) ? $v : [$v];
 			$id = specialchars(rawurldecode($arrRow['id']));
 
 			$label = $v['label'][0] ?: $k;
@@ -650,8 +650,8 @@ class DataContainer extends Backend
 				continue;
 			}
 
-			$arrDirections = array('up', 'down');
-			$arrRootIds = is_array($arrRootIds) ? $arrRootIds : array($arrRootIds);
+			$arrDirections = ['up', 'down'];
+			$arrRootIds = is_array($arrRootIds) ? $arrRootIds : [$arrRootIds];
 
 			foreach ($arrDirections as $dir)
 			{
@@ -690,7 +690,7 @@ class DataContainer extends Backend
 
 		foreach ($GLOBALS['TL_DCA'][$this->strTable]['list']['global_operations'] as $k=>$v)
 		{
-			$v = is_array($v) ? $v : array($v);
+			$v = is_array($v) ? $v : [$v];
 			$label = is_array($v['label']) ? $v['label'][0] : $v['label'];
 			$title = is_array($v['label']) ? $v['label'][1] : $v['label'];
 			$attributes = ($v['attributes'] != '') ? ' ' . ltrim($v['attributes']) : '';

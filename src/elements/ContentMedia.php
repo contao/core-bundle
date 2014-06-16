@@ -55,7 +55,7 @@ class ContentMedia extends ContentElement
 			return '';
 		}
 
-		$objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4','m4v','mov','wmv','webm','ogv','m4a','mp3','wma','mpeg','wav','ogg'));
+		$objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, ['mp4','m4v','mov','wmv','webm','ogv','m4a','mp3','wma','mpeg','wav','ogg']);
 
 		if ($objFiles === null)
 		{
@@ -112,15 +112,15 @@ class ContentMedia extends ContentElement
 		}
 
 		// Pre-sort the array by preference
-		if (in_array($this->objFiles->extension , array('mp4','m4v','mov','wmv','webm','ogv')))
+		if (in_array($this->objFiles->extension , ['mp4','m4v','mov','wmv','webm','ogv']))
 		{
 			$this->Template->isVideo = true;
-			$arrFiles = array('mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'webm'=>null, 'ogv'=>null);
+			$arrFiles = ['mp4'=>null, 'm4v'=>null, 'mov'=>null, 'wmv'=>null, 'webm'=>null, 'ogv'=>null];
 		}
 		else
 		{
 			$this->Template->isVideo = false;
-			$arrFiles = array('m4a'=>null, 'mp3'=>null, 'wma'=>null, 'mpeg'=>null, 'wav'=>null, 'ogg'=>null);
+			$arrFiles = ['m4a'=>null, 'mp3'=>null, 'wma'=>null, 'mpeg'=>null, 'wav'=>null, 'ogg'=>null];
 		}
 
 		$this->objFiles->reset();

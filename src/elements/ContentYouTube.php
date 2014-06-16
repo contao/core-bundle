@@ -90,7 +90,7 @@ class ContentYouTube extends ContentElement
 		$objFile->path = $protocol . 'www.youtube.com/watch?v=' . $this->youtube;
 
 		$this->Template->isVideo = true;
-		$this->Template->files = array($objFile);
+		$this->Template->files = [$objFile];
 		$this->Template->autoplay = $this->autoplay;
 	}
 }

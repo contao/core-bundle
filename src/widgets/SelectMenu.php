@@ -105,7 +105,7 @@ class SelectMenu extends Widget
 	 */
 	public function generate()
 	{
-		$arrOptions = array();
+		$arrOptions = [];
 		$strClass = 'tl_select';
 
 		if ($this->multiple)
@@ -117,7 +117,7 @@ class SelectMenu extends Widget
 		// Add an empty option if there are none
 		if (empty($this->arrOptions))
 		{
-			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
+			$this->arrOptions = [['value'=>'', 'label'=>'-']];
 		}
 
 		foreach ($this->arrOptions as $strKey=>$arrOption)
@@ -131,7 +131,7 @@ class SelectMenu extends Widget
 			}
 			else
 			{
-				$arrOptgroups = array();
+				$arrOptgroups = [];
 
 				foreach ($arrOption as $arrOptgroup)
 				{

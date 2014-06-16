@@ -34,7 +34,7 @@ class PageSelector extends Widget
 	 * Path nodes
 	 * @var array
 	 */
-	protected $arrNodes = array();
+	protected $arrNodes = [];
 
 	/**
 	 * Template
@@ -72,7 +72,7 @@ class PageSelector extends Widget
 		$tree = '';
 		$this->getPathNodes();
 		$for = $this->Session->get('page_selector_search');
-		$arrIds = array();
+		$arrIds = [];
 
 		// Search for a specific page
 		if ($for != '')
@@ -91,7 +91,7 @@ class PageSelector extends Widget
 				// Respect existing limitations
 				if (is_array($this->rootNodes))
 				{
-					$arrRoot = array();
+					$arrRoot = [];
 
 					while ($objRoot->next())
 					{
@@ -111,7 +111,7 @@ class PageSelector extends Widget
 				}
 				else
 				{
-					$arrRoot = array();
+					$arrRoot = [];
 
 					while ($objRoot->next())
 					{
@@ -314,7 +314,7 @@ class PageSelector extends Widget
 
 		$return = '';
 		$intSpacing = 20;
-		$childs = array();
+		$childs = [];
 
 		// Check whether there are child records
 		if (!$blnNoRecursion)
@@ -400,7 +400,7 @@ class PageSelector extends Widget
 
 		if (!is_array($this->varValue))
 		{
-			$this->varValue = array($this->varValue);
+			$this->varValue = [$this->varValue];
 		}
 
 		foreach ($this->varValue as $id)

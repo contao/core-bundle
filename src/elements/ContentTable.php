@@ -45,9 +45,9 @@ class ContentTable extends ContentElement
 		$this->Template->useLeftTh = $this->tleft ? true : false;
 		$this->Template->sortable = $this->sortable ? true : false;
 
-		$arrHeader = array();
-		$arrBody = array();
-		$arrFooter = array();
+		$arrHeader = [];
+		$arrBody = [];
+		$arrFooter = [];
 
 		// Table header
 		if ($this->thead)
@@ -67,11 +67,11 @@ class ContentTable extends ContentElement
 				}
 
 				// Add cell
-				$arrHeader[] = array
-				(
+				$arrHeader[] =
+				[
 					'class' => 'head_'.$i . (($i == 0) ? ' col_first' : '') . (($i == (count($rows[0]) - 1)) ? ' col_last' : '') . (($i == 0 && $this->tleft) ? ' unsortable' : ''),
 					'content' => (($v != '') ? nl2br_html5($v) : '&nbsp;')
-				);
+				];
 			}
 
 			array_shift($rows);
@@ -111,11 +111,11 @@ class ContentTable extends ContentElement
 					$class_td .= ' col_last';
 				}
 
-				$arrBody['row_' . $j . $class_tr . $class_eo][] = array
-				(
+				$arrBody['row_' . $j . $class_tr . $class_eo][] =
+				[
 					'class' => 'col_'.$i . $class_td,
 					'content' => (($v != '') ? nl2br_html5($v) : '&nbsp;')
-				);
+				];
 			}
 		}
 
@@ -126,11 +126,11 @@ class ContentTable extends ContentElement
 		{
 			foreach ($rows[(count($rows)-1)] as $i=>$v)
 			{
-				$arrFooter[] = array
-				(
+				$arrFooter[] =
+				[
 					'class' => 'foot_'.$i . (($i == 0) ? ' col_first' : '') . (($i == (count($rows[(count($rows)-1)]) - 1)) ? ' col_last' : ''),
 					'content' => (($v != '') ? nl2br_html5($v) : '&nbsp;')
-				);
+				];
 			}
 		}
 

@@ -14,489 +14,489 @@
 /**
  * System configuration
  */
-$GLOBALS['TL_DCA']['tl_settings'] = array
-(
+$GLOBALS['TL_DCA']['tl_settings'] =
+[
 
 	// Config
-	'config' => array
-	(
+	'config' =>
+	[
 		'dataContainer'               => 'File',
 		'closed'                      => true
-	),
+	],
 
 	// Palettes
-	'palettes' => array
-	(
-		'__selector__'                => array('useSMTP'),
+	'palettes' =>
+	[
+		'__selector__'                => ['useSMTP'],
 		'default'                     => '{title_legend},websiteTitle;{date_legend},dateFormat,timeFormat,datimFormat,timeZone;{global_legend:hide},adminEmail,characterSet,minifyMarkup,gzipScripts,coreOnlyMode,bypassCache,debugMode,maintenanceMode;{backend_legend:hide},resultsPerPage,maxResultsPerPage,fileSyncExclude,doNotCollapse,staticFiles,staticPlugins;{frontend_legend},urlSuffix,cacheMode,rewriteURL,useAutoItem,addLanguageToUrl,doNotRedirectEmpty,folderUrl,disableAlias;{proxy_legend:hide},proxyServerIps,sslProxyDomain;{privacy_legend:hide},privacyAnonymizeIp,privacyAnonymizeGA;{security_legend},allowedTags,displayErrors,logErrors,disableRefererCheck,disableIpCheck;{files_legend:hide},allowedDownload,validImageTypes,editableFiles,templateFiles,maxImageWidth,jpgQuality,gdMaxImgWidth,gdMaxImgHeight;{uploads_legend:hide},uploadPath,uploadTypes,uploadFields,maxFileSize,imageWidth,imageHeight;{search_legend:hide},enableSearch,indexProtected;{smtp_legend:hide},useSMTP;{modules_legend:hide},inactiveModules;{cron_legend:hide},disableCron;{timeout_legend:hide},undoPeriod,versionPeriod,logPeriod,sessionTimeout,autologin,lockPeriod;{chmod_legend:hide},defaultUser,defaultGroup,defaultChmod;{update_legend:hide},liveUpdateBase'
-	),
+	],
 
 	// Subpalettes
-	'subpalettes' => array
-	(
+	'subpalettes' =>
+	[
 		'useSMTP'                     => 'smtpHost,smtpUser,smtpPass,smtpEnc,smtpPort'
-	),
+	],
 
 	// Fields
-	'fields' => array
-	(
-		'websiteTitle' => array
-		(
+	'fields' =>
+	[
+		'websiteTitle' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['websiteTitle'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true)
-		),
-		'dateFormat' => array
-		(
+			'eval'                    => ['mandatory'=>true]
+		],
+		'dateFormat' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['dateFormat'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'helpwizard'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+			'eval'                    => ['mandatory'=>true, 'helpwizard'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'],
 			'explanation'             => 'dateFormat'
-		),
-		'timeFormat' => array
-		(
+		],
+		'timeFormat' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['timeFormat'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50')
-		),
-		'datimFormat' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50']
+		],
+		'datimFormat' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['datimFormat'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50')
-		),
-		'timeZone' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50']
+		],
+		'timeZone' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['timeZone'],
 			'inputType'               => 'select',
 			'options'                 => System::getTimeZones(),
-			'eval'                    => array('chosen'=>true, 'tl_class'=>'w50')
-		),
-		'adminEmail' => array
-		(
+			'eval'                    => ['chosen'=>true, 'tl_class'=>'w50']
+		],
+		'adminEmail' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['adminEmail'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'friendly', 'decodeEntities'=>true, 'tl_class'=>'w50')
-		),
-		'characterSet' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'friendly', 'decodeEntities'=>true, 'tl_class'=>'w50']
+		],
+		'characterSet' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['characterSet'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'alnum', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'coreOnlyMode' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'alnum', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'coreOnlyMode' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['coreOnlyMode'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'changeCoreOnlyMode')
-			)
-		),
-		'disableCron' => array
-		(
+			'eval'                    => ['tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'changeCoreOnlyMode']
+			]
+		],
+		'disableCron' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['disableCron'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'minifyMarkup' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'minifyMarkup' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['minifyMarkup'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'gzipScripts' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'gzipScripts' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['gzipScripts'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'resultsPerPage' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'resultsPerPage' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['resultsPerPage'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'checkResultsPerPage')
-			)
-		),
-		'maxResultsPerPage' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'checkResultsPerPage']
+			]
+		],
+		'maxResultsPerPage' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxResultsPerPage'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'staticFiles' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'staticFiles' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['MSC']['staticFiles'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'trailingSlash'=>false, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'checkStaticUrl')
-			)
-		),
-		'staticPlugins' => array
-		(
+			'eval'                    => ['rgxp'=>'url', 'trailingSlash'=>false, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'checkStaticUrl']
+			]
+		],
+		'staticPlugins' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['MSC']['staticPlugins'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'trailingSlash'=>false, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'checkStaticUrl')
-			)
-		),
-		'fileSyncExclude' => array
-		(
+			'eval'                    => ['rgxp'=>'url', 'trailingSlash'=>false, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'checkStaticUrl']
+			]
+		],
+		'fileSyncExclude' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['fileSyncExclude'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'doNotCollapse' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'doNotCollapse' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['doNotCollapse'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12')
-		),
-		'urlSuffix' => array
-		(
+			'eval'                    => ['tl_class'=>'w50 m12']
+		],
+		'urlSuffix' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['urlSuffix'],
 			'inputType'               => 'text',
-			'eval'                    => array('nospace'=>'true', 'tl_class'=>'w50')
-		),
-		'rewriteURL' => array
-		(
+			'eval'                    => ['nospace'=>'true', 'tl_class'=>'w50']
+		],
+		'rewriteURL' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['rewriteURL'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'addLanguageToUrl' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'addLanguageToUrl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['addLanguageToUrl'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'doNotRedirectEmpty' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'doNotRedirectEmpty' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['doNotRedirectEmpty'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'useAutoItem' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'useAutoItem' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['useAutoItem'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'disableAlias' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'disableAlias' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['disableAlias'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'folderUrl' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'folderUrl' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['folderUrl'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'proxyServerIps' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'proxyServerIps' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['proxyServerIps'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'sslProxyDomain' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'sslProxyDomain' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['sslProxyDomain'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'tl_class'=>'w50')
-		),
-		'cacheMode' => array
-		(
+			'eval'                    => ['rgxp'=>'url', 'tl_class'=>'w50']
+		],
+		'cacheMode' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['cacheMode'],
 			'inputType'               => 'select',
-			'options'                 => array('both', 'server', 'browser', 'none'),
+			'options'                 => ['both', 'server', 'browser', 'none'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_settings'],
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'privacyAnonymizeIp' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'privacyAnonymizeIp' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['privacyAnonymizeIp'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'privacyAnonymizeGA' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'privacyAnonymizeGA' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['privacyAnonymizeGA'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'disableRefererCheck' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'disableRefererCheck' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['disableRefererCheck'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'allowedTags' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'allowedTags' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['allowedTags'],
 			'inputType'               => 'text',
-			'eval'                    => array('preserveTags'=>true, 'tl_class'=>'long')
-		),
-		'debugMode' => array
-		(
+			'eval'                    => ['preserveTags'=>true, 'tl_class'=>'long']
+		],
+		'debugMode' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['debugMode'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'maintenanceMode' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'maintenanceMode' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maintenanceMode'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'bypassCache' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'bypassCache' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['bypassCache'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'purgeInternalCache')
-			)
-		),
-		'displayErrors' => array
-		(
+			'eval'                    => ['tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'purgeInternalCache']
+			]
+		],
+		'displayErrors' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['displayErrors'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'logErrors' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'logErrors' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['logErrors'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'disableIpCheck' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'disableIpCheck' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['disableIpCheck'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'allowedDownload' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'allowedDownload' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['allowedDownload'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'validImageTypes' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'validImageTypes' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['validImageTypes'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'editableFiles' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'editableFiles' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['editableFiles'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'templateFiles' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'templateFiles' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['templateFiles'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'checkTemplateFiles')
-			)
-		),
-		'maxImageWidth' => array
-		(
+			'eval'                    => ['tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'checkTemplateFiles']
+			]
+		],
+		'maxImageWidth' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxImageWidth'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'jpgQuality' => array
-		(
+			'eval'                    => ['rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'jpgQuality' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['jpgQuality'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'prcnt', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'gdMaxImgWidth' => array
-		(
+			'eval'                    => ['rgxp'=>'prcnt', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'gdMaxImgWidth' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['gdMaxImgWidth'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'gdMaxImgHeight' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'gdMaxImgHeight' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['gdMaxImgHeight'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'uploadPath' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'uploadPath' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['uploadPath'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'trailingSlash'=>false, 'tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'checkUploadPath')
-			)
-		),
-		'uploadTypes' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'trailingSlash'=>false, 'tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'checkUploadPath']
+			]
+		],
+		'uploadTypes' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['uploadTypes'],
 			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'uploadFields' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'uploadFields' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['uploadFields'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'maxFileSize' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'maxFileSize' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxFileSize'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'imageWidth' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'imageWidth' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['imageWidth'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'imageHeight' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'imageHeight' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['imageHeight'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'enableSearch' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'enableSearch' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['enableSearch'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'indexProtected' => array
-		(
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'indexProtected' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['indexProtected'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
-			'save_callback' => array
-			(
-				array('tl_settings', 'clearSearchIndex')
-			)
-		),
-		'useSMTP' => array
-		(
+			'eval'                    => ['tl_class'=>'w50'],
+			'save_callback' =>
+			[
+				['tl_settings', 'clearSearchIndex']
+			]
+		],
+		'useSMTP' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['useSMTP'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true)
-		),
-		'smtpHost' => array
-		(
+			'eval'                    => ['submitOnChange'=>true]
+		],
+		'smtpHost' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpHost'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'nospace'=>true, 'tl_class'=>'long')
-		),
-		'smtpUser' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'nospace'=>true, 'tl_class'=>'long']
+		],
+		'smtpUser' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpUser'],
 			'inputType'               => 'text',
-			'eval'                    => array('decodeEntities'=>true, 'tl_class'=>'w50')
-		),
-		'smtpPass' => array
-		(
+			'eval'                    => ['decodeEntities'=>true, 'tl_class'=>'w50']
+		],
+		'smtpPass' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpPass'],
 			'inputType'               => 'textStore',
-			'eval'                    => array('decodeEntities'=>true, 'tl_class'=>'w50')
-		),
-		'smtpEnc' => array
-		(
+			'eval'                    => ['decodeEntities'=>true, 'tl_class'=>'w50']
+		],
+		'smtpEnc' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpEnc'],
 			'inputType'               => 'select',
-			'options'                 => array(''=>'-', 'ssl'=>'SSL', 'tls'=>'TLS'),
-			'eval'                    => array('tl_class'=>'w50')
-		),
-		'smtpPort' => array
-		(
+			'options'                 => [''=>'-', 'ssl'=>'SSL', 'tls'=>'TLS'],
+			'eval'                    => ['tl_class'=>'w50']
+		],
+		'smtpPort' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpPort'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'inactiveModules' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'inactiveModules' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['inactiveModules'],
-			'input_field_callback'    => array('tl_settings', 'disableModules')
-		),
-		'undoPeriod' => array
-		(
+			'input_field_callback'    => ['tl_settings', 'disableModules']
+		],
+		'undoPeriod' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['undoPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'versionPeriod' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'versionPeriod' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['versionPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'logPeriod' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'logPeriod' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['logPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'sessionTimeout' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'sessionTimeout' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['sessionTimeout'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'autologin' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'autologin' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['autologin'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'lockPeriod' => array
-		(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'lockPeriod' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['lockPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50')
-		),
-		'defaultUser' => array(
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+		],
+		'defaultUser' => [
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['defaultUser'],
 			'inputType'               => 'select',
 			'foreignKey'              => 'tl_user.username',
-			'eval'                    => array('chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50')
-		),
-		'defaultGroup' => array(
+			'eval'                    => ['chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50']
+		],
+		'defaultGroup' => [
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['defaultGroup'],
 			'inputType'               => 'select',
 			'foreignKey'              => 'tl_user_group.name',
-			'eval'                    => array('chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50')
-		),
-		'defaultChmod' => array
-		(
+			'eval'                    => ['chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50']
+		],
+		'defaultChmod' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['defaultChmod'],
 			'inputType'               => 'chmod',
-			'eval'                    => array('tl_class'=>'clr')
-		),
-		'liveUpdateBase' => array
-		(
+			'eval'                    => ['tl_class'=>'clr']
+		],
+		'liveUpdateBase' =>
+		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['liveUpdateBase'],
 			'inputType'               => 'text'
-		)
-	)
-);
+		]
+	]
+];
 
 
 /**
@@ -517,7 +517,7 @@ class tl_settings extends Backend
 	 */
 	public function disableModules(Contao\DataContainer $dc)
 	{
-		$arrModules = array();
+		$arrModules = [];
 		$arrFolders = scan(TL_ROOT . '/system/modules');
 
 		// Store all extensions with their status (based on the .skip file)
@@ -544,7 +544,7 @@ class tl_settings extends Backend
 
 			if (!is_array($arrDisabled))
 			{
-				$arrDisabled = array();
+				$arrDisabled = [];
 			}
 
 			// Check whether a module status has changed
@@ -695,7 +695,7 @@ class tl_settings extends Backend
 	 */
 	public function checkUploadPath($varValue)
 	{
-		$varValue = str_replace(array('../', '/..', '/.', './', '://'), '', $varValue);
+		$varValue = str_replace(['../', '/..', '/.', './', '://'], '', $varValue);
 
 		if ($varValue == '.' || $varValue == '..' || $varValue == '')
 		{

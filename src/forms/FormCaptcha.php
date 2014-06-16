@@ -145,12 +145,12 @@ class FormCaptcha extends Widget
 		$question = $GLOBALS['TL_LANG']['SEC']['question' . rand(1, 3)];
 		$question = sprintf($question, $int1, $int2);
 
-		$this->Session->set('captcha_' . $this->strId, array
-		(
+		$this->Session->set('captcha_' . $this->strId,
+		[
 			'sum' => $int1 + $int2,
 			'key' => $this->strCaptchaKey,
 			'time' => time()
-		));
+		]);
 
 		$strEncoded = '';
 		$arrCharacters = utf8_str_split($question);

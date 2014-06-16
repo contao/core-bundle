@@ -41,11 +41,11 @@ class ArticleModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no article
 	 */
-	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
+	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("($t.id=? OR $t.alias=?)");
-		$arrValues = array((is_numeric($varId) ? $varId : 0), $varId);
+		$arrColumns = ["($t.id=? OR $t.alias=?)"];
+		$arrValues = [(is_numeric($varId) ? $varId : 0), $varId];
 
 		if ($intPid)
 		{
@@ -65,10 +65,10 @@ class ArticleModel extends Model
 	 *
 	 * @return Model|null The model or null if there is no published article
 	 */
-	public static function findPublishedById($intId, array $arrOptions=array())
+	public static function findPublishedById($intId, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.id=?");
+		$arrColumns = ["$t.id=?"];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -89,11 +89,11 @@ class ArticleModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */
-	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
+	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.inColumn=?");
-		$arrValues = array($intPid, $strColumn);
+		$arrColumns = ["$t.pid=? AND $t.inColumn=?"];
+		$arrValues = [$intPid, $strColumn];
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -119,11 +119,11 @@ class ArticleModel extends Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */
-	public static function findPublishedWithTeaserByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
+	public static function findPublishedWithTeaserByPidAndColumn($intPid, $strColumn, array $arrOptions=[])
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.inColumn=? AND $t.showTeaser=1");
-		$arrValues = array($intPid, $strColumn);
+		$arrColumns = ["$t.pid=? AND $t.inColumn=? AND $t.showTeaser=1"];
+		$arrValues = [$intPid, $strColumn];
 
 		if (!BE_USER_LOGGED_IN)
 		{
