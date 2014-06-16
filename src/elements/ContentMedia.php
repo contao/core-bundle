@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentMedia extends \ContentElement
+class ContentMedia extends ContentElement
 {
 
 	/**
@@ -36,7 +32,7 @@ class ContentMedia extends \ContentElement
 
 	/**
 	 * Files object
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objFiles;
 
@@ -59,7 +55,7 @@ class ContentMedia extends \ContentElement
 			return '';
 		}
 
-		$objFiles = \FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4','m4v','mov','wmv','webm','ogv','m4a','mp3','wma','mpeg','wav','ogg'));
+		$objFiles = FilesModel::findMultipleByUuidsAndExtensions($source, array('mp4','m4v','mov','wmv','webm','ogv','m4a','mp3','wma','mpeg','wav','ogg'));
 
 		if ($objFiles === null)
 		{
@@ -73,7 +69,7 @@ class ContentMedia extends \ContentElement
 
 			while ($objFiles->next())
 			{
-				$objFile = new \File($objFiles->path);
+				$objFile = new File($objFiles->path);
 				$return .= '<li><img src="' . TL_ASSETS_URL . 'assets/contao/images/' . $objFile->icon . '" width="18" height="18" alt="" class="mime_icon"> <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
 			}
 
@@ -109,7 +105,7 @@ class ContentMedia extends \ContentElement
 		// Optional poster
 		if ($this->posterSRC != '')
 		{
-			if (($objFile = \FilesModel::findByUuid($this->posterSRC)) !== null)
+			if (($objFile = FilesModel::findByUuid($this->posterSRC)) !== null)
 			{
 				$this->Template->poster = $objFile->path;
 			}
@@ -146,7 +142,7 @@ class ContentMedia extends \ContentElement
 				$strTitle = $this->objFiles->name;
 			}
 
-			$objFile = new \File($this->objFiles->path);
+			$objFile = new File($this->objFiles->path);
 			$objFile->title = specialchars($strTitle);
 
 			$arrFiles[$objFile->extension] = $objFile;

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleQuicknav extends \Module
+class ModuleQuicknav extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleQuicknav extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['quicknav'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -54,9 +50,9 @@ class ModuleQuicknav extends \Module
 			return $objTemplate->parse();
 		}
 
-		if (\Input::post('FORM_SUBMIT') == 'tl_quicknav')
+		if (Input::post('FORM_SUBMIT') == 'tl_quicknav')
 		{
-			$this->redirect(\Input::post('target', true));
+			$this->redirect(Input::post('target', true));
 		}
 
 		return parent::generate();
@@ -82,10 +78,10 @@ class ModuleQuicknav extends \Module
 		// Overwrite the domain and language if the reference page belongs to a differnt root page (see #3765)
 		else
 		{
-			$objRootPage = \PageModel::findWithDetails($this->rootPage);
+			$objRootPage = PageModel::findWithDetails($this->rootPage);
 
 			// Set the language
-			if (\Config::get('addLanguageToUrl') && $objRootPage->rootLanguage != $objPage->rootLanguage)
+			if (Config::get('addLanguageToUrl') && $objRootPage->rootLanguage != $objPage->rootLanguage)
 			{
 				$lang = $objRootPage->rootLanguage;
 			}
@@ -100,7 +96,7 @@ class ModuleQuicknav extends \Module
 		$this->Template->targetPage = $GLOBALS['TL_LANG']['MSC']['targetPage'];
 		$this->Template->button = specialchars($GLOBALS['TL_LANG']['MSC']['go']);
 		$this->Template->title = $this->customLabel ?: $GLOBALS['TL_LANG']['MSC']['quicknav'];
-		$this->Template->request = ampersand(\Environment::get('request'), true);
+		$this->Template->request = ampersand(Environment::get('request'), true);
 		$this->Template->items = $this->getQuicknavPages($this->rootPage, 1, $host, $lang);
 	}
 
@@ -128,7 +124,7 @@ class ModuleQuicknav extends \Module
 		}
 
 		// Get all active subpages
-		$objSubpages = \PageModel::findPublishedRegularWithoutGuestsByPid($pid);
+		$objSubpages = PageModel::findPublishedRegularWithoutGuestsByPid($pid);
 
 		if ($objSubpages === null)
 		{

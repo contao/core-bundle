@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FileTree extends \Widget
+class FileTree extends Widget
 {
 
 	/**
@@ -89,7 +85,7 @@ class FileTree extends \Widget
 		// Store the order value
 		if ($this->orderField != '')
 		{
-			$arrNew = array_map('String::uuidToBin', explode(',', \Input::post($this->strOrderName)));
+			$arrNew = array_map('String::uuidToBin', explode(',', Input::post($this->strOrderName)));
 
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
@@ -113,13 +109,13 @@ class FileTree extends \Widget
 		}
 		elseif (strpos($varInput, ',') === false)
 		{
-			$varInput = \String::uuidToBin($varInput);
+			$varInput = String::uuidToBin($varInput);
 			return $this->multiple ? array($varInput) : $varInput;
 		}
 		else
 		{
 			$arrValue = array_filter(explode(',', $varInput));
-			return $this->multiple ? array_map('String::uuidToBin', $arrValue) : \String::uuidToBin($arrValue[0]);
+			return $this->multiple ? array_map('String::uuidToBin', $arrValue) : String::uuidToBin($arrValue[0]);
 		}
 	}
 
@@ -136,8 +132,8 @@ class FileTree extends \Widget
 
 		if (!empty($this->varValue)) // Can be an array
 		{
-			$objFiles = \FilesModel::findMultipleByUuids((array)$this->varValue);
-			$allowedDownload = trimsplit(',', strtolower(\Config::get('allowedDownload')));
+			$objFiles = FilesModel::findMultipleByUuids((array)$this->varValue);
+			$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 			if ($objFiles !== null)
 			{
@@ -156,27 +152,27 @@ class FileTree extends \Widget
 					{
 						if ($objFiles->type == 'folder')
 						{
-							$arrValues[$objFiles->uuid] = \Image::getHtml('folderC.gif') . ' ' . $objFiles->path;
+							$arrValues[$objFiles->uuid] = Image::getHtml('folderC.gif') . ' ' . $objFiles->path;
 						}
 						else
 						{
-							$objFile = new \File($objFiles->path);
+							$objFile = new File($objFiles->path);
 							$strInfo = $objFiles->path . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 							if ($objFile->isGdImage)
 							{
 								$image = 'placeholder.png';
 
-								if ($objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))
+								if ($objFile->height <= Config::get('gdMaxImgHeight') && $objFile->width <= Config::get('gdMaxImgWidth'))
 								{
-									$image = \Image::get($objFiles->path, 80, 60, 'center_center');
+									$image = Image::get($objFiles->path, 80, 60, 'center_center');
 								}
 
-								$arrValues[$objFiles->uuid] = \Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
+								$arrValues[$objFiles->uuid] = Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
 							}
 							else
 							{
-								$arrValues[$objFiles->uuid] = \Image::getHtml($objFile->icon) . ' ' . $strInfo;
+								$arrValues[$objFiles->uuid] = Image::getHtml($objFile->icon) . ' ' . $strInfo;
 							}
 						}
 					}
@@ -186,7 +182,7 @@ class FileTree extends \Widget
 					{
 						if ($objFiles->type == 'folder')
 						{
-							$objSubfiles = \FilesModel::findByPid($objFiles->uuid);
+							$objSubfiles = FilesModel::findByPid($objFiles->uuid);
 
 							if ($objSubfiles === null)
 							{
@@ -201,7 +197,7 @@ class FileTree extends \Widget
 									continue;
 								}
 
-								$objFile = new \File($objSubfiles->path);
+								$objFile = new File($objSubfiles->path);
 								$strInfo = '<span class="dirname">' . dirname($objSubfiles->path) . '/</span>' . $objFile->basename . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 								if ($this->isGallery)
@@ -211,12 +207,12 @@ class FileTree extends \Widget
 									{
 										$image = 'placeholder.png';
 
-										if ($objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))
+										if ($objFile->height <= Config::get('gdMaxImgHeight') && $objFile->width <= Config::get('gdMaxImgWidth'))
 										{
-											$image = \Image::get($objSubfiles->path, 80, 60, 'center_center');
+											$image = Image::get($objSubfiles->path, 80, 60, 'center_center');
 										}
 
-										$arrValues[$objSubfiles->uuid] = \Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
+										$arrValues[$objSubfiles->uuid] = Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
 									}
 								}
 								else
@@ -224,14 +220,14 @@ class FileTree extends \Widget
 									// Only show allowed download types
 									if (in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 									{
-										$arrValues[$objSubfiles->uuid] = \Image::getHtml($objFile->icon) . ' ' . $strInfo;
+										$arrValues[$objSubfiles->uuid] = Image::getHtml($objFile->icon) . ' ' . $strInfo;
 									}
 								}
 							}
 						}
 						else
 						{
-							$objFile = new \File($objFiles->path);
+							$objFile = new File($objFiles->path);
 							$strInfo = '<span class="dirname">' . dirname($objFiles->path) . '/</span>' . $objFile->basename . ' <span class="tl_gray">(' . $this->getReadableSize($objFile->size) . ($objFile->isGdImage ? ', ' . $objFile->width . 'x' . $objFile->height . ' px' : '') . ')</span>';
 
 							if ($this->isGallery)
@@ -241,12 +237,12 @@ class FileTree extends \Widget
 								{
 									$image = 'placeholder.png';
 
-									if ($objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))
+									if ($objFile->height <= Config::get('gdMaxImgHeight') && $objFile->width <= Config::get('gdMaxImgWidth'))
 									{
-										$image = \Image::get($objFiles->path, 80, 60, 'center_center');
+										$image = Image::get($objFiles->path, 80, 60, 'center_center');
 									}
 
-									$arrValues[$objFiles->uuid] = \Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
+									$arrValues[$objFiles->uuid] = Image::getHtml($image, '', 'class="gimage" title="' . specialchars($strInfo) . '"');
 								}
 							}
 							else
@@ -254,7 +250,7 @@ class FileTree extends \Widget
 								// Only show allowed download types
 								if (in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 								{
-									$arrValues[$objFiles->uuid] = \Image::getHtml($objFile->icon) . ' ' . $strInfo;
+									$arrValues[$objFiles->uuid] = Image::getHtml($objFile->icon) . ' ' . $strInfo;
 								}
 							}
 						}
@@ -290,7 +286,7 @@ class FileTree extends \Widget
 		}
 
 		// Load the fonts for the drag hint (see #4838)
-		\Config::set('loadGoogleFonts', true);
+		Config::set('loadGoogleFonts', true);
 
 		// Convert the binary UUIDs
 		$strSet = implode(',', array_map('String::binToUuid', $arrSet));
@@ -304,15 +300,15 @@ class FileTree extends \Widget
 
 		foreach ($arrValues as $k=>$v)
 		{
-			$return .= '<li data-id="'.\String::binToUuid($k).'">'.$v.'</li>';
+			$return .= '<li data-id="'.String::binToUuid($k).'">'.$v.'</li>';
 		}
 
 		$return .= '</ul>
-    <p><a href="contao/file.php?do='.\Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.$strSet.'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
+    <p><a href="contao/file.php?do='.Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.$strSet.'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
     <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'")</script>' : '') . '
   </div>';
 
-		if (!\Environment::get('isAjaxRequest'))
+		if (!Environment::get('isAjaxRequest'))
 		{
 			$return = '<div>' . $return . '</div>';
 		}

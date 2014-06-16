@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -24,7 +22,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class FormFieldModel extends \Model
+class FormFieldModel extends Model
 {
 
 	/**
@@ -40,7 +38,7 @@ class FormFieldModel extends \Model
 	 * @param integer $intPid     The form ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no form fields
+	 * @return Collection|null A collection of models or null if there are no form fields
 	 */
 	public static function findPublishedByPid($intPid, array $arrOptions=array())
 	{

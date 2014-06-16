@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendPreview extends \Backend
+class BackendPreview extends Backend
 {
 
 	/**
@@ -43,7 +39,7 @@ class BackendPreview extends \Backend
 		parent::__construct();
 
 		$this->User->authenticate();
-		\System::loadLanguageFile('default');
+		System::loadLanguageFile('default');
 	}
 
 
@@ -52,51 +48,51 @@ class BackendPreview extends \Backend
 	 */
 	public function run()
 	{
-		$this->Template = new \BackendTemplate('be_preview');
+		$this->Template = new BackendTemplate('be_preview');
 
-		$this->Template->base = \Environment::get('base');
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->title = specialchars($GLOBALS['TL_LANG']['MSC']['fePreview']);
-		$this->Template->charset = \Config::get('characterSet');
-		$this->Template->site = \Input::get('site', true);
+		$this->Template->charset = Config::get('characterSet');
+		$this->Template->site = Input::get('site', true);
 
-		if (\Input::get('url'))
+		if (Input::get('url'))
 		{
-			$this->Template->url = \Environment::get('base') . \Input::get('url');
+			$this->Template->url = Environment::get('base') . Input::get('url');
 		}
-		elseif (\Input::get('page'))
+		elseif (Input::get('page'))
 		{
-			$this->Template->url = $this->redirectToFrontendPage(\Input::get('page'), \Input::get('article'), true);
+			$this->Template->url = $this->redirectToFrontendPage(Input::get('page'), Input::get('article'), true);
 		}
 		else
 		{
-			$this->Template->url = \Environment::get('base');
+			$this->Template->url = Environment::get('base');
 		}
 
 		// Switch to a particular member (see #6546)
-		if (\Input::get('user') && $this->User->isAdmin)
+		if (Input::get('user') && $this->User->isAdmin)
 		{
-			$objUser = \MemberModel::findByUsername(\Input::get('user'));
+			$objUser = MemberModel::findByUsername(Input::get('user'));
 
 			if ($objUser !== null)
 			{
-				$strHash = sha1(session_id() . (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '') . 'FE_USER_AUTH');
+				$strHash = sha1(session_id() . (!Config::get('disableIpCheck') ? Environment::get('ip') : '') . 'FE_USER_AUTH');
 
 				// Remove old sessions
 				$this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
-							   ->execute((time() - \Config::get('sessionTimeout')), $strHash);
+							   ->execute((time() - Config::get('sessionTimeout')), $strHash);
 
 				// Insert the new session
 				$this->Database->prepare("INSERT INTO tl_session (pid, tstamp, name, sessionID, ip, hash) VALUES (?, ?, ?, ?, ?, ?)")
-							   ->execute($objUser->id, time(), 'FE_USER_AUTH', session_id(), \Environment::get('ip'), $strHash);
+							   ->execute($objUser->id, time(), 'FE_USER_AUTH', session_id(), Environment::get('ip'), $strHash);
 
 				// Set the cookie
-				$this->setCookie('FE_USER_AUTH', $strHash, (time() + \Config::get('sessionTimeout')), null, null, false, true);
-				$this->Template->user = \Input::post('user');
+				$this->setCookie('FE_USER_AUTH', $strHash, (time() + Config::get('sessionTimeout')), null, null, false, true);
+				$this->Template->user = Input::post('user');
 			}
 		}
 
-		\Config::set('debugMode', false);
+		Config::set('debugMode', false);
 		$this->Template->output();
 	}
 }

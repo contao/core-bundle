@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class RadioTable extends \Widget
+class RadioTable extends Widget
 {
 
 	/**
@@ -117,7 +113,7 @@ class RadioTable extends \Widget
 
 				if (strlen($value))
 				{
-					$label = \Image::getHtml($value.'.gif', $label, 'title="'.specialchars($label).'"');
+					$label = Image::getHtml($value.'.gif', $label, 'title="'.specialchars($label).'"');
 					$return .= '
       <td><input type="radio" name="'.$this->strName.'" id="'.$this->strName.'_'.$i.'_'.$j.'" class="tl_radio" value="'.specialchars($value).'" onfocus="Backend.getScrollOffset()"'.$this->isChecked($this->arrOptions[$j]).$this->getAttributes().'> <label for="'.$this->strName.'_'.$i.'_'.$j.'">'.$label.'</label></td>';
 				}

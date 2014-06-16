@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendIndex extends \Backend
+class BackendIndex extends Backend
 {
 
 	/**
@@ -48,9 +44,9 @@ class BackendIndex extends \Backend
 			$strUrl = 'contao/main.php';
 
 			// Redirect to the last page visited
-			if (\Input::get('referer', true) != '')
+			if (Input::get('referer', true) != '')
 			{
-				$strUrl = base64_decode(\Input::get('referer', true));
+				$strUrl = base64_decode(Input::get('referer', true));
 			}
 
 			$this->redirect($strUrl);
@@ -68,8 +64,8 @@ class BackendIndex extends \Backend
 			$this->reload();
 		}
 
-		\System::loadLanguageFile('default');
-		\System::loadLanguageFile('tl_user');
+		System::loadLanguageFile('default');
+		System::loadLanguageFile('tl_user');
 	}
 
 
@@ -81,33 +77,33 @@ class BackendIndex extends \Backend
 		$this->Template = new BackendTemplate('be_login');
 
 		// Show a cookie warning
-		if (\Input::get('referer', true) != '' && empty($_COOKIE))
+		if (Input::get('referer', true) != '' && empty($_COOKIE))
 		{
 			$this->Template->noCookies = $GLOBALS['TL_LANG']['MSC']['noCookies'];
 		}
 
-		$strHeadline = sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle'));
+		$strHeadline = sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], Config::get('websiteTitle'));
 
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->messages = \Message::generate();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->messages = Message::generate();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
-		$this->Template->languages = \System::getLanguages(true);
+		$this->Template->languages = System::getLanguages(true);
 		$this->Template->title = specialchars($strHeadline);
-		$this->Template->charset = \Config::get('characterSet');
-		$this->Template->action = ampersand(\Environment::get('request'));
+		$this->Template->charset = Config::get('characterSet');
+		$this->Template->action = ampersand(Environment::get('request'));
 		$this->Template->userLanguage = $GLOBALS['TL_LANG']['tl_user']['language'][0];
 		$this->Template->headline = $strHeadline;
-		$this->Template->curLanguage = \Input::post('language') ?: str_replace('-', '_', $GLOBALS['TL_LANGUAGE']);
-		$this->Template->curUsername = \Input::post('username') ?: '';
+		$this->Template->curLanguage = Input::post('language') ?: str_replace('-', '_', $GLOBALS['TL_LANGUAGE']);
+		$this->Template->curUsername = Input::post('username') ?: '';
 		$this->Template->uClass = ($_POST && empty($_POST['username'])) ? ' class="login_error"' : '';
 		$this->Template->pClass = ($_POST && empty($_POST['password'])) ? ' class="login_error"' : '';
 		$this->Template->loginButton = specialchars($GLOBALS['TL_LANG']['MSC']['loginBT']);
 		$this->Template->username = $GLOBALS['TL_LANG']['tl_user']['username'][0];
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];
 		$this->Template->feLink = $GLOBALS['TL_LANG']['MSC']['feLink'];
-		$this->Template->frontendFile = \Environment::get('base');
-		$this->Template->disableCron = \Config::get('disableCron');
+		$this->Template->frontendFile = Environment::get('base');
+		$this->Template->disableCron = Config::get('disableCron');
 		$this->Template->default = $GLOBALS['TL_LANG']['MSC']['default'];
 
 		$this->Template->output();

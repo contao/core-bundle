@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleBreadcrumb extends \Module
+class ModuleBreadcrumb extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleBreadcrumb extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['breadcrumb'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -71,7 +67,7 @@ class ModuleBreadcrumb extends \Module
 		$items = array();
 
 		// Get all pages up to the root page
-		$objPages = \PageModel::findParentsById($objPage->pid);
+		$objPages = PageModel::findParentsById($objPage->pid);
 
 		if ($objPages !== null)
 		{
@@ -86,13 +82,13 @@ class ModuleBreadcrumb extends \Module
 		// Get the first active regular page and display it instead of the root page
 		if ($type == 'root')
 		{
-			$objFirstPage = \PageModel::findFirstPublishedByPid($objPages->id);
+			$objFirstPage = PageModel::findFirstPublishedByPid($objPages->id);
 
 			$items[] = array
 			(
 				'isRoot'   => true,
 				'isActive' => false,
-				'href'     => (($objFirstPage !== null) ? $this->generateFrontendUrl($objFirstPage->row()) : \Environment::get('base')),
+				'href'     => (($objFirstPage !== null) ? $this->generateFrontendUrl($objFirstPage->row()) : Environment::get('base')),
 				'title'    => specialchars($objPages->pageTitle ?: $objPages->title, true),
 				'link'     => $objPages->title,
 				'data'     => $objFirstPage->row(),
@@ -118,12 +114,12 @@ class ModuleBreadcrumb extends \Module
 
 					if (strncasecmp($href, 'mailto:', 7) === 0)
 					{
-						$href = \String::encodeEmail($href);
+						$href = String::encodeEmail($href);
 					}
 					break;
 
 				case 'forward':
-					$objNext = \PageModel::findPublishedById($pages[$i]['jumpTo']);
+					$objNext = PageModel::findPublishedById($pages[$i]['jumpTo']);
 
 					if ($objNext !== null)
 					{
@@ -163,15 +159,15 @@ class ModuleBreadcrumb extends \Module
 				'class'    => ''
 			);
 
-			list($strSection, $strArticle) = explode(':', \Input::get('articles'));
+			list($strSection, $strArticle) = explode(':', Input::get('articles'));
 
 			if ($strArticle === null)
 			{
 				$strArticle = $strSection;
 			}
 
-			$objArticle = \ArticleModel::findByIdOrAlias($strArticle);
-			$strAlias = ($objArticle->alias != '' && !\Config::get('disableAlias')) ? $objArticle->alias : $objArticle->id;
+			$objArticle = ArticleModel::findByIdOrAlias($strArticle);
+			$strAlias = ($objArticle->alias != '' && !Config::get('disableAlias')) ? $objArticle->alias : $objArticle->id;
 
 			if ($objArticle->inColumn != 'main')
 			{

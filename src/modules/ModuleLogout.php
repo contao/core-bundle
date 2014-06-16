@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleLogout extends \Module
+class ModuleLogout extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleLogout extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['logout'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -61,7 +57,7 @@ class ModuleLogout extends \Module
 		}
 
 		$this->import('FrontendUser', 'User');
-		$strRedirect = \Environment::get('base');
+		$strRedirect = Environment::get('base');
 
 		// Redirect to last page visited
 		if ($this->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))

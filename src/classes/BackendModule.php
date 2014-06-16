@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-abstract class BackendModule extends \Backend
+abstract class BackendModule extends Backend
 {
 
 	/**
@@ -49,9 +45,9 @@ abstract class BackendModule extends \Backend
 
 	/**
 	 * Initialize the object
-	 * @param \DataContainer
+	 * @param DataContainer
 	 */
-	public function __construct(\DataContainer $objDc=null)
+	public function __construct(DataContainer $objDc=null)
 	{
 		parent::__construct();
 		$this->objDc = $objDc;
@@ -96,7 +92,7 @@ abstract class BackendModule extends \Backend
 	 */
 	public function generate()
 	{
-		$this->Template = new \BackendTemplate($this->strTemplate);
+		$this->Template = new BackendTemplate($this->strTemplate);
 		$this->compile();
 
 		return $this->Template->parse();

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FrontendCron extends \Frontend
+class FrontendCron extends Frontend
 {
 
 	/**
@@ -98,7 +94,7 @@ class FrontendCron extends \Frontend
 			$this->Database->query("UPDATE tl_cron SET value=$intCurrent WHERE name='$strInterval'");
 
 			// Add a log entry if in debug mode (see #4729)
-			if (\Config::get('debugMode'))
+			if (Config::get('debugMode'))
 			{
 				$this->log('Running the ' . $strInterval . ' cron jobs', __METHOD__, TL_CRON);
 			}
@@ -110,7 +106,7 @@ class FrontendCron extends \Frontend
 			}
 
 			// Add a log entry if in debug mode (see #4729)
-			if (\Config::get('debugMode'))
+			if (Config::get('debugMode'))
 			{
 				$this->log(ucfirst($strInterval) . ' cron jobs complete', __METHOD__, TL_CRON);
 			}
@@ -164,6 +160,6 @@ class FrontendCron extends \Frontend
 	 */
 	protected function updateCronTxt($time)
 	{
-		\File::putContent('system/cron/cron.txt', $time);
+		File::putContent('system/cron/cron.txt', $time);
 	}
 }

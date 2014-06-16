@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleLogin extends \Module
+class ModuleLogin extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleLogin extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['login'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -61,7 +57,7 @@ class ModuleLogin extends \Module
 		}
 
 		// Login
-		if (\Input::post('FORM_SUBMIT') == 'tl_login')
+		if (Input::post('FORM_SUBMIT') == 'tl_login')
 		{
 			// Check whether username and password are set
 			if (empty($_POST['username']) || empty($_POST['password']))
@@ -71,7 +67,7 @@ class ModuleLogin extends \Module
 			}
 
 			$this->import('FrontendUser', 'User');
-			$strRedirect = \Environment::get('request');
+			$strRedirect = Environment::get('request');
 
 			// Redirect to the last page visited
 			if ($this->redirectBack && $_SESSION['LAST_PAGE_VISITED'] != '')
@@ -87,7 +83,7 @@ class ModuleLogin extends \Module
 				}
 
 				// Overwrite the jumpTo page with an individual group setting
-				$objMember = \MemberModel::findByUsername(\Input::post('username'));
+				$objMember = MemberModel::findByUsername(Input::post('username'));
 
 				if ($objMember !== null)
 				{
@@ -95,7 +91,7 @@ class ModuleLogin extends \Module
 
 					if (!empty($arrGroups) && is_array($arrGroups))
 					{
-						$objGroupPage = \MemberGroupModel::findFirstActiveWithJumpToByIds($arrGroups);
+						$objGroupPage = MemberGroupModel::findFirstActiveWithJumpToByIds($arrGroups);
 
 						if ($objGroupPage !== null)
 						{
@@ -109,7 +105,7 @@ class ModuleLogin extends \Module
 			if (isset($_POST['autologin']) && !$this->autologin)
 			{
 				unset($_POST['autologin']);
-				\Input::setPost('autologin', null);
+				Input::setPost('autologin', null);
 			}
 
 			// Login and redirect
@@ -122,12 +118,12 @@ class ModuleLogin extends \Module
 		}
 
 		// Logout and redirect to the website root if the current page is protected
-		if (\Input::post('FORM_SUBMIT') == 'tl_logout')
+		if (Input::post('FORM_SUBMIT') == 'tl_logout')
 		{
 			global $objPage;
 
 			$this->import('FrontendUser', 'User');
-			$strRedirect = \Environment::get('request');
+			$strRedirect = Environment::get('request');
 
 			// Redirect to last page visited
 			if ($this->redirectBack && strlen($_SESSION['LAST_PAGE_VISITED']))
@@ -138,7 +134,7 @@ class ModuleLogin extends \Module
 			// Redirect home if the page is protected
 			elseif ($objPage->protected)
 			{
-				$strRedirect = \Environment::get('base');
+				$strRedirect = Environment::get('base');
 			}
 
 			// Logout and redirect
@@ -165,17 +161,17 @@ class ModuleLogin extends \Module
 			$this->import('FrontendUser', 'User');
 			$this->strTemplate = ($this->cols > 1) ? 'mod_logout_2cl' : 'mod_logout_1cl';
 
-			$this->Template = new \FrontendTemplate($this->strTemplate);
+			$this->Template = new FrontendTemplate($this->strTemplate);
 			$this->Template->setData($this->arrData);
 
 			$this->Template->slabel = specialchars($GLOBALS['TL_LANG']['MSC']['logout']);
 			$this->Template->loggedInAs = sprintf($GLOBALS['TL_LANG']['MSC']['loggedInAs'], $this->User->username);
-			$this->Template->action = ampersand(\Environment::get('indexFreeRequest'));
+			$this->Template->action = ampersand(Environment::get('indexFreeRequest'));
 
 			if ($this->User->lastLogin > 0)
 			{
 				global $objPage;
-				$this->Template->lastLogin = sprintf($GLOBALS['TL_LANG']['MSC']['lastLogin'][1], \Date::parse($objPage->datimFormat, $this->User->lastLogin));
+				$this->Template->lastLogin = sprintf($GLOBALS['TL_LANG']['MSC']['lastLogin'][1], Date::parse($objPage->datimFormat, $this->User->lastLogin));
 			}
 
 			return;
@@ -183,7 +179,7 @@ class ModuleLogin extends \Module
 
 		$this->strTemplate = ($this->cols > 1) ? 'mod_login_2cl' : 'mod_login_1cl';
 
-		$this->Template = new \FrontendTemplate($this->strTemplate);
+		$this->Template = new FrontendTemplate($this->strTemplate);
 		$this->Template->setData($this->arrData);
 
 		$blnHasError = false;
@@ -205,10 +201,10 @@ class ModuleLogin extends \Module
 		$this->Template->hasError = $blnHasError;
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['username'];
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];
-		$this->Template->action = ampersand(\Environment::get('indexFreeRequest'));
+		$this->Template->action = ampersand(Environment::get('indexFreeRequest'));
 		$this->Template->slabel = specialchars($GLOBALS['TL_LANG']['MSC']['login']);
-		$this->Template->value = specialchars(\Input::post('username'));
-		$this->Template->autologin = ($this->autologin && \Config::get('autologin') > 0);
+		$this->Template->value = specialchars(Input::post('username'));
+		$this->Template->autologin = ($this->autologin && Config::get('autologin') > 0);
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];
 	}
 }

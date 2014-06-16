@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormHeadline extends \Widget
+class FormHeadline extends Widget
 {
 
 	/**
@@ -50,6 +46,6 @@ class FormHeadline extends \Widget
 	 */
 	public function generate()
 	{
-		return \String::toHtml5($this->text);
+		return String::toHtml5($this->text);
 	}
 }

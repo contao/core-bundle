@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FrontendShare extends \Frontend
+class FrontendShare extends Frontend
 {
 
 	/**
@@ -33,24 +29,24 @@ class FrontendShare extends \Frontend
 	 */
 	public function run()
 	{
-		switch (\Input::get('p'))
+		switch (Input::get('p'))
 		{
 			case 'facebook':
-				$query  = '?u=' . rawurlencode(\Input::get('u', true));
-				$query .= '&t=' . rawurlencode(\Input::get('t', true));
+				$query  = '?u=' . rawurlencode(Input::get('u', true));
+				$query .= '&t=' . rawurlencode(Input::get('t', true));
 				$query .= '&display=popup';
 				$query .= '&redirect_uri=http%3A%2F%2Fwww.facebook.com';
 				header('Location: http://www.facebook.com/sharer/sharer.php' . $query);
 				exit; break;
 
 			case 'twitter':
-				$query  = '?url=' . rawurlencode(\Input::get('u', true));
-				$query .= '&text=' . rawurlencode(\Input::get('t', true));
+				$query  = '?url=' . rawurlencode(Input::get('u', true));
+				$query .= '&text=' . rawurlencode(Input::get('t', true));
 				header('Location: http://twitter.com/share' . $query);
 				exit; break;
 
 			case 'gplus':
-				$query  = '?url=' . rawurlencode(\Input::get('u', true));
+				$query  = '?url=' . rawurlencode(Input::get('u', true));
 				header('Location: https://plus.google.com/share' . $query);
 				exit; break;
 

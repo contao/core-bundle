@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentModule extends \ContentElement
+class ContentModule extends ContentElement
 {
 
 	/**
@@ -39,14 +35,14 @@ class ContentModule extends \ContentElement
 			return '';
 		}
 
-		$objModule = \ModuleModel::findByPk($this->module);
+		$objModule = ModuleModel::findByPk($this->module);
 
 		if ($objModule === null)
 		{
 			return '';
 		}
 
-		$strClass = \Module::findClass($objModule->type);
+		$strClass = Module::findClass($objModule->type);
 
 		if (!class_exists($strClass))
 		{

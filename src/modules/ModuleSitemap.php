@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleSitemap extends \Module
+class ModuleSitemap extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleSitemap extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['sitemap'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -77,10 +73,10 @@ class ModuleSitemap extends \Module
 		// Overwrite the domain and language if the reference page belongs to a differnt root page (see #3765)
 		else
 		{
-			$objRootPage = \PageModel::findWithDetails($this->rootPage);
+			$objRootPage = PageModel::findWithDetails($this->rootPage);
 
 			// Set the language
-			if (\Config::get('addLanguageToUrl') && $objRootPage->rootLanguage != $objPage->rootLanguage)
+			if (Config::get('addLanguageToUrl') && $objRootPage->rootLanguage != $objPage->rootLanguage)
 			{
 				$lang = $objRootPage->rootLanguage;
 			}

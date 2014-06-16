@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-abstract class Hybrid extends \Frontend
+abstract class Hybrid extends Frontend
 {
 
 	/**
@@ -87,11 +85,11 @@ abstract class Hybrid extends \Frontend
 		parent::__construct();
 
 		// Store the parent element (see #4556)
-		if ($objElement instanceof \Model)
+		if ($objElement instanceof Model)
 		{
 			$this->objParent = $objElement;
 		}
-		elseif ($objElement instanceof \Model\Collection)
+		elseif ($objElement instanceof Collection)
 		{
 			$this->objParent = $objElement->current();
 		}
@@ -101,7 +99,7 @@ abstract class Hybrid extends \Frontend
 			return;
 		}
 
-		$strModelClass = \Model::getClassFromTable($this->strTable);
+		$strModelClass = Model::getClassFromTable($this->strTable);
 
 		// Load the model
 		if (class_exists($strModelClass))
@@ -183,7 +181,7 @@ abstract class Hybrid extends \Frontend
 
 	/**
 	 * Return the model
-	 * @return \Model
+	 * @return Model
 	 */
 	public function getModel()
 	{
@@ -207,7 +205,7 @@ abstract class Hybrid extends \Frontend
 	 */
 	public function generate()
 	{
-		if ($this->objParent instanceof \ContentModel && TL_MODE == 'FE' && !BE_USER_LOGGED_IN && ($this->objParent->invisible || ($this->objParent->start != '' && $this->objParent->start > time()) || ($this->objParent->stop != '' && $this->objParent->stop < time())))
+		if ($this->objParent instanceof ContentModel && TL_MODE == 'FE' && !BE_USER_LOGGED_IN && ($this->objParent->invisible || ($this->objParent->start != '' && $this->objParent->start > time()) || ($this->objParent->stop != '' && $this->objParent->stop < time())))
 		{
 			return '';
 		}
@@ -222,7 +220,7 @@ abstract class Hybrid extends \Frontend
 			$this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
 		}
 
-		$this->Template = new \FrontendTemplate($this->strTemplate);
+		$this->Template = new FrontendTemplate($this->strTemplate);
 		$this->Template->setData($this->arrData);
 
 		$this->compile();

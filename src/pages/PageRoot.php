@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PageRoot extends \Frontend
+class PageRoot extends Frontend
 {
 
 	/**
@@ -37,7 +33,7 @@ class PageRoot extends \Frontend
 	 */
 	public function generate($pageId, $blnReturn=false)
 	{
-		$objNextPage = \PageModel::findFirstPublishedByPid($pageId);
+		$objNextPage = PageModel::findFirstPublishedByPid($pageId);
 
 		// No published pages yet
 		if ($objNextPage === null)

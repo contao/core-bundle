@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class DropZone extends \FileUpload
+class DropZone extends FileUpload
 {
 
 	/**
@@ -38,7 +34,7 @@ class DropZone extends \FileUpload
 		$intMaxSize = ($this->getMaximumUploadSize() / 1024000);
 
 		// String of accepted file extensions
-		$strAccepted = implode(',', array_map(function($a) { return '.' . $a; }, trimsplit(',', strtolower(\Config::get('uploadTypes')))));
+		$strAccepted = implode(',', array_map(function($a) { return '.' . $a; }, trimsplit(',', strtolower(Config::get('uploadTypes')))));
 
 		// Add the scripts
 		$GLOBALS['TL_CSS'][] = 'assets/dropzone/' . $GLOBALS['TL_ASSETS']['DROPZONE'] . '/css/dropzone.min.css';

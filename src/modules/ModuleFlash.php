@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleFlash extends \Module
+class ModuleFlash extends Module
 {
 
 	/**
@@ -53,11 +49,11 @@ class ModuleFlash extends \Module
 				return '';
 			}
 
-			$objFile = \FilesModel::findByUuid($this->singleSRC);
+			$objFile = FilesModel::findByUuid($this->singleSRC);
 
 			if ($objFile === null)
 			{
-				if (!\Validator::isUuid($this->singleSRC))
+				if (!Validator::isUuid($this->singleSRC))
 				{
 					return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 				}
@@ -86,8 +82,8 @@ class ModuleFlash extends \Module
 		$this->Template->transparent = $this->transparent ? true : false;
 		$this->Template->interactive = $this->interactive ? true : false;
 		$this->Template->flashId = $this->flashID ?: 'swf_' . $this->id;
-		$this->Template->fsCommand = '  ' . preg_replace('/[\n\r]/', "\n  ", \String::decodeEntities($this->flashJS));
-		$this->Template->flashvars = 'URL=' . \Environment::get('base');
+		$this->Template->fsCommand = '  ' . preg_replace('/[\n\r]/', "\n  ", String::decodeEntities($this->flashJS));
+		$this->Template->flashvars = 'URL=' . Environment::get('base');
 		$this->Template->version = $this->version ?: '6.0.0';
 
 		$size = deserialize($this->size);
@@ -95,7 +91,7 @@ class ModuleFlash extends \Module
 		$this->Template->width = $size[0];
 		$this->Template->height = $size[1];
 
-		$intMaxWidth = (TL_MODE == 'BE') ? 320 : \Config::get('maxImageWidth');
+		$intMaxWidth = (TL_MODE == 'BE') ? 320 : Config::get('maxImageWidth');
 
 		// Adjust movie size
 		if ($intMaxWidth > 0 && $size[0] > $intMaxWidth)
@@ -106,7 +102,7 @@ class ModuleFlash extends \Module
 
 		if (strlen($this->flashvars))
 		{
-			$this->Template->flashvars .= '&' . \String::decodeEntities($this->flashvars);
+			$this->Template->flashvars .= '&' . String::decodeEntities($this->flashvars);
 		}
 	}
 }

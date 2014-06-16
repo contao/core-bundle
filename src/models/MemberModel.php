@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class MemberModel extends \Model
+class MemberModel extends Model
 {
 
 	/**
@@ -41,7 +37,7 @@ class MemberModel extends \Model
 	 * @param string $strUsername The username
 	 * @param array  $arrOptions  An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no member
+	 * @return Model|null The model or null if there is no member
 	 */
 	public static function findActiveByEmailAndUsername($strEmail, $strUsername=null, array $arrOptions=array())
 	{

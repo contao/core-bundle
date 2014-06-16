@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendPassword extends \Backend
+class BackendPassword extends Backend
 {
 
 	/**
@@ -44,8 +40,8 @@ class BackendPassword extends \Backend
 
 		$this->User->authenticate();
 
-		\System::loadLanguageFile('default');
-		\System::loadLanguageFile('modules');
+		System::loadLanguageFile('default');
+		System::loadLanguageFile('modules');
 	}
 
 
@@ -54,27 +50,27 @@ class BackendPassword extends \Backend
 	 */
 	public function run()
 	{
-		$this->Template = new \BackendTemplate('be_password');
+		$this->Template = new BackendTemplate('be_password');
 
-		if (\Input::post('FORM_SUBMIT') == 'tl_password')
+		if (Input::post('FORM_SUBMIT') == 'tl_password')
 		{
-			$pw = \Input::postRaw('password');
-			$cnf = \Input::postRaw('confirm');
+			$pw = Input::postRaw('password');
+			$cnf = Input::postRaw('confirm');
 
 			// The passwords do not match
 			if ($pw != $cnf)
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['passwordMatch']);
+				Message::addError($GLOBALS['TL_LANG']['ERR']['passwordMatch']);
 			}
 			// Password too short
-			elseif (utf8_strlen($pw) < \Config::get('minPasswordLength'))
+			elseif (utf8_strlen($pw) < Config::get('minPasswordLength'))
 			{
-				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], \Config::get('minPasswordLength')));
+				Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], Config::get('minPasswordLength')));
 			}
 			// Password and username are the same
 			elseif ($pw == $this->User->username)
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['passwordName']);
+				Message::addError($GLOBALS['TL_LANG']['ERR']['passwordName']);
 			}
 			// Save the data
 			else
@@ -82,7 +78,7 @@ class BackendPassword extends \Backend
 				// Make sure the password has been changed
 				if (crypt($pw, $this->User->password) == $this->User->password)
 				{
-					\Message::addError($GLOBALS['TL_LANG']['MSC']['pw_change']);
+					Message::addError($GLOBALS['TL_LANG']['MSC']['pw_change']);
 				}
 				else
 				{
@@ -105,12 +101,12 @@ class BackendPassword extends \Backend
 						}
 					}
 
-					$objUser = \UserModel::findByPk($this->User->id);
+					$objUser = UserModel::findByPk($this->User->id);
 					$objUser->pwChange = '';
-					$objUser->password = \Encryption::hash($pw);
+					$objUser->password = Encryption::hash($pw);
 					$objUser->save();
 
-					\Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
+					Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
 					$this->redirect('contao/main.php');
 				}
 			}
@@ -118,13 +114,13 @@ class BackendPassword extends \Backend
 			$this->reload();
 		}
 
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->messages = \Message::generate();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->messages = Message::generate();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->title = specialchars($GLOBALS['TL_LANG']['MSC']['pw_new']);
-		$this->Template->charset = \Config::get('characterSet');
-		$this->Template->action = ampersand(\Environment::get('request'));
+		$this->Template->charset = Config::get('characterSet');
+		$this->Template->action = ampersand(Environment::get('request'));
 		$this->Template->headline = $GLOBALS['TL_LANG']['MSC']['pw_change'];
 		$this->Template->submitButton = specialchars($GLOBALS['TL_LANG']['MSC']['continue']);
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];

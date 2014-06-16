@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentDownload extends \ContentElement
+class ContentDownload extends ContentElement
 {
 
 	/**
@@ -47,11 +43,11 @@ class ContentDownload extends \ContentElement
 			return '';
 		}
 
-		$objFile = \FilesModel::findByUuid($this->singleSRC);
+		$objFile = FilesModel::findByUuid($this->singleSRC);
 
 		if ($objFile === null)
 		{
-			if (!\Validator::isUuid($this->singleSRC))
+			if (!Validator::isUuid($this->singleSRC))
 			{
 				return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 			}
@@ -59,7 +55,7 @@ class ContentDownload extends \ContentElement
 			return '';
 		}
 
-		$allowedDownload = trimsplit(',', strtolower(\Config::get('allowedDownload')));
+		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 		// Return if the file type is not allowed
 		if (!in_array($objFile->extension, $allowedDownload))
@@ -67,12 +63,12 @@ class ContentDownload extends \ContentElement
 			return '';
 		}
 
-		$file = \Input::get('file', true);
+		$file = Input::get('file', true);
 
 		// Send the file to the browser and do not send a 404 header (see #4632)
 		if ($file != '' && $file == $objFile->path)
 		{
-			\Controller::sendFileToBrowser($file);
+			Controller::sendFileToBrowser($file);
 		}
 
 		$this->singleSRC = $objFile->path;
@@ -85,14 +81,14 @@ class ContentDownload extends \ContentElement
 	 */
 	protected function compile()
 	{
-		$objFile = new \File($this->singleSRC);
+		$objFile = new File($this->singleSRC);
 
 		if ($this->linkTitle == '')
 		{
 			$this->linkTitle = specialchars($objFile->basename);
 		}
 
-		$strHref = \Environment::get('request');
+		$strHref = Environment::get('request');
 
 		// Remove an existing file parameter (see #5683)
 		if (preg_match('/(&(amp;)?|\?)file=/', $strHref))
@@ -100,7 +96,7 @@ class ContentDownload extends \ContentElement
 			$strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
 		}
 
-		$strHref .= ((\Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFile->value);
+		$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFile->value);
 
 		$this->Template->link = $this->linkTitle;
 		$this->Template->title = specialchars($this->titleText ?: $this->linkTitle);

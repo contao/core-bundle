@@ -10,11 +10,12 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use executable;
 
 
 /**
@@ -25,7 +26,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PurgeData extends \Backend implements \executable
+class PurgeData extends Backend implements executable
 {
 
 	/**
@@ -34,7 +35,7 @@ class PurgeData extends \Backend implements \executable
 	 */
 	public function isActive()
 	{
-		return (\Input::post('FORM_SUBMIT') == 'tl_purge');
+		return (Input::post('FORM_SUBMIT') == 'tl_purge');
 	}
 
 
@@ -45,7 +46,7 @@ class PurgeData extends \Backend implements \executable
 	public function run()
 	{
 		$arrJobs = array();
-		$objTemplate = new \BackendTemplate('be_purge_data');
+		$objTemplate = new BackendTemplate('be_purge_data');
 		$objTemplate->isActive = $this->isActive();
 
 		// Confirmation message
@@ -67,9 +68,9 @@ class PurgeData extends \Backend implements \executable
 		}
 
 		// Run the jobs
-		if (\Input::post('FORM_SUBMIT') == 'tl_purge')
+		if (Input::post('FORM_SUBMIT') == 'tl_purge')
 		{
-			$purge = \Input::post('purge');
+			$purge = Input::post('purge');
 
 			if (!empty($purge) && is_array($purge))
 			{
@@ -129,10 +130,10 @@ class PurgeData extends \Backend implements \executable
 				if (is_dir(TL_ROOT . '/' . $folder))
 				{
 					// Recursively scan all subfolders
-					$objFiles = new \RecursiveIteratorIterator(
-						new \RecursiveDirectoryIterator(
+					$objFiles = new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator(
 							TL_ROOT . '/' . $folder,
-							\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
+							FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
 						)
 					);
 
@@ -163,12 +164,12 @@ class PurgeData extends \Backend implements \executable
 		}
 
 		$objTemplate->jobs = $arrJobs;
-		$objTemplate->action = ampersand(\Environment::get('request'));
+		$objTemplate->action = ampersand(Environment::get('request'));
 		$objTemplate->headline = $GLOBALS['TL_LANG']['tl_maintenance']['clearCache'];
 		$objTemplate->job = $GLOBALS['TL_LANG']['tl_maintenance']['job'];
 		$objTemplate->description = $GLOBALS['TL_LANG']['tl_maintenance']['description'];
 		$objTemplate->submit = specialchars($GLOBALS['TL_LANG']['tl_maintenance']['clearCache']);
-		$objTemplate->help = (\Config::get('showHelp') && ($GLOBALS['TL_LANG']['tl_maintenance']['cacheTables'][1] != '')) ? $GLOBALS['TL_LANG']['tl_maintenance']['cacheTables'][1] : '';
+		$objTemplate->help = (Config::get('showHelp') && ($GLOBALS['TL_LANG']['tl_maintenance']['cacheTables'][1] != '')) ? $GLOBALS['TL_LANG']['tl_maintenance']['cacheTables'][1] : '';
 
 		return $objTemplate->parse();
 	}

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentText extends \ContentElement
+class ContentText extends ContentElement
 {
 
 	/**
@@ -40,26 +36,26 @@ class ContentText extends \ContentElement
 	 */
 	protected function compile()
 	{
-		$this->text = \String::toHtml5($this->text);
+		$this->text = String::toHtml5($this->text);
 
 		// Add the static files URL to images
 		if (TL_FILES_URL != '')
 		{
-			$path = \Config::get('uploadPath') . '/';
+			$path = Config::get('uploadPath') . '/';
 			$this->text = str_replace(' src="' . $path, ' src="' . TL_FILES_URL . $path, $this->text);
 		}
 
-		$this->Template->text = \String::encodeEmail($this->text);
+		$this->Template->text = String::encodeEmail($this->text);
 		$this->Template->addImage = false;
 
 		// Add an image
 		if ($this->addImage && $this->singleSRC != '')
 		{
-			$objModel = \FilesModel::findByUuid($this->singleSRC);
+			$objModel = FilesModel::findByUuid($this->singleSRC);
 
 			if ($objModel === null)
 			{
-				if (!\Validator::isUuid($this->singleSRC))
+				if (!Validator::isUuid($this->singleSRC))
 				{
 					$this->Template->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 				}

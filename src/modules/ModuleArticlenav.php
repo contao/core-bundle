@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleArticlenav extends \Module
+class ModuleArticlenav extends Module
 {
 
 	/**
@@ -49,7 +45,7 @@ class ModuleArticlenav extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['articlenav'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -61,7 +57,7 @@ class ModuleArticlenav extends \Module
 		}
 
 		global $objPage;
-		$this->objArticles = \ArticleModel::findPublishedWithTeaserByPidAndColumn($objPage->id, $this->strColumn);
+		$this->objArticles = ArticleModel::findPublishedWithTeaserByPidAndColumn($objPage->id, $this->strColumn);
 
 		// Return if there are no articles
 		if ($this->objArticles === null)
@@ -70,14 +66,14 @@ class ModuleArticlenav extends \Module
 		}
 
 		// Redirect to the first article if no article is selected
-		if (!\Input::get('articles'))
+		if (!Input::get('articles'))
 		{
 			if (!$this->loadFirst)
 			{
 				return '';
 			}
 
-			$strAlias = ($this->objArticles->alias != '' && !\Config::get('disableAlias')) ? $this->objArticles->alias : $this->objArticles->id;
+			$strAlias = ($this->objArticles->alias != '' && !Config::get('disableAlias')) ? $this->objArticles->alias : $this->objArticles->id;
 			$this->redirect($this->addToUrl('articles=' . $strAlias));
 		}
 
@@ -96,10 +92,10 @@ class ModuleArticlenav extends \Module
 
 		while ($this->objArticles->next())
 		{
-			$strAlias = ($this->objArticles->alias != '' && !\Config::get('disableAlias')) ? $this->objArticles->alias : $this->objArticles->id;
+			$strAlias = ($this->objArticles->alias != '' && !Config::get('disableAlias')) ? $this->objArticles->alias : $this->objArticles->id;
 
 			// Active article
-			if (\Input::get('articles') == $strAlias)
+			if (Input::get('articles') == $strAlias)
 			{
 				$articles[] = array
 				(

@@ -10,11 +10,11 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Exception;
+use OutOfBoundsException;
+use uploadable;
 
 
 /**
@@ -25,7 +25,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModulePersonalData extends \Module
+class ModulePersonalData extends Module
 {
 
 	/**
@@ -43,7 +43,7 @@ class ModulePersonalData extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['personalData'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -76,7 +76,7 @@ class ModulePersonalData extends \Module
 
 		$GLOBALS['TL_LANGUAGE'] = $objPage->language;
 
-		\System::loadLanguageFile('tl_member');
+		System::loadLanguageFile('tl_member');
 		$this->loadDataContainer('tl_member');
 
 		// Call onload_callback (e.g. to check permissions)
@@ -99,7 +99,7 @@ class ModulePersonalData extends \Module
 		// Set the template
 		if ($this->memberTpl != '')
 		{
-			$this->Template = new \FrontendTemplate($this->memberTpl);
+			$this->Template = new FrontendTemplate($this->memberTpl);
 			$this->Template->setData($this->arrData);
 		}
 
@@ -112,7 +112,7 @@ class ModulePersonalData extends \Module
 		$row = 0;
 
 		$blnModified = false;
-		$objMember = \MemberModel::findByPk($this->User->id);
+		$objMember = MemberModel::findByPk($this->User->id);
 
 		// Build the form
 		foreach ($this->editable as $field)
@@ -182,14 +182,14 @@ class ModulePersonalData extends \Module
 			$objWidget->rowClass = 'row_'.$row . (($row == 0) ? ' row_first' : '') . ((($row % 2) == 0) ? ' even' : ' odd');
 
 			// Increase the row count if it is a password field
-			if ($objWidget instanceof \FormPassword)
+			if ($objWidget instanceof FormPassword)
 			{
 				++$row;
 				$objWidget->rowClassConfirm = 'row_'.$row . ((($row % 2) == 0) ? ' even' : ' odd');
 			}
 
 			// Validate the form data
-			if (\Input::post('FORM_SUBMIT') == 'tl_member_' . $this->id)
+			if (Input::post('FORM_SUBMIT') == 'tl_member_' . $this->id)
 			{
 				$objWidget->validate();
 				$varValue = $objWidget->value;
@@ -201,10 +201,10 @@ class ModulePersonalData extends \Module
 				{
 					try
 					{
-						$objDate = new \Date($varValue);
+						$objDate = new Date($varValue);
 						$varValue = $objDate->tstamp;
 					}
-					catch (\OutOfBoundsException $e)
+					catch (OutOfBoundsException $e)
 					{
 						$objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
 					}
@@ -233,7 +233,7 @@ class ModulePersonalData extends \Module
 								$varValue = $callback($varValue, $this->User, $this);
 							}
 						}
-						catch (\Exception $e)
+						catch (Exception $e)
 						{
 							$objWidget->class = 'error';
 							$objWidget->addError($e->getMessage());
@@ -266,7 +266,7 @@ class ModulePersonalData extends \Module
 				}
 			}
 
-			if ($objWidget instanceof \uploadable)
+			if ($objWidget instanceof uploadable)
 			{
 				$hasUpload = true;
 			}
@@ -313,7 +313,7 @@ class ModulePersonalData extends \Module
 		$this->Template->hasError = $doNotSubmit;
 
 		// Redirect or reload if there was no error
-		if (\Input::post('FORM_SUBMIT') == 'tl_member_' . $this->id && !$doNotSubmit)
+		if (Input::post('FORM_SUBMIT') == 'tl_member_' . $this->id && !$doNotSubmit)
 		{
 			// HOOK: updated personal data
 			if (isset($GLOBALS['TL_HOOKS']['updatePersonalData']) && is_array($GLOBALS['TL_HOOKS']['updatePersonalData']))
@@ -364,26 +364,26 @@ class ModulePersonalData extends \Module
 
 		$this->Template->formId = 'tl_member_' . $this->id;
 		$this->Template->slabel = specialchars($GLOBALS['TL_LANG']['MSC']['saveData']);
-		$this->Template->action = \Environment::get('indexFreeRequest');
+		$this->Template->action = Environment::get('indexFreeRequest');
 		$this->Template->enctype = $hasUpload ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
 		$this->Template->rowLast = 'row_' . $row . ((($row % 2) == 0) ? ' even' : ' odd');
 
 		// HOOK: add memberlist fields
-		if (in_array('memberlist', \ModuleLoader::getActive()))
+		if (in_array('memberlist', ModuleLoader::getActive()))
 		{
 			$this->Template->profile = $arrFields['profile'];
 			$this->Template->profileDetails = $GLOBALS['TL_LANG']['tl_member']['profileDetails'];
 		}
 
 		// HOOK: add newsletter fields
-		if (in_array('newsletter', \ModuleLoader::getActive()))
+		if (in_array('newsletter', ModuleLoader::getActive()))
 		{
 			$this->Template->newsletter = $arrFields['newsletter'];
 			$this->Template->newsletterDetails = $GLOBALS['TL_LANG']['tl_member']['newsletterDetails'];
 		}
 
 		// HOOK: add helpdesk fields
-		if (in_array('helpdesk', \ModuleLoader::getActive()))
+		if (in_array('helpdesk', ModuleLoader::getActive()))
 		{
 			$this->Template->helpdesk = $arrFields['helpdesk'];
 			$this->Template->helpdeskDetails = $GLOBALS['TL_LANG']['tl_member']['helpdeskDetails'];

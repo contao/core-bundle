@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-abstract class ContentElement extends \Frontend
+abstract class ContentElement extends Frontend
 {
 
 	/**
@@ -72,11 +70,11 @@ abstract class ContentElement extends \Frontend
 	 */
 	public function __construct($objElement, $strColumn='main')
 	{
-		if ($objElement instanceof \Model)
+		if ($objElement instanceof Model)
 		{
 			$this->objModel = $objElement;
 		}
-		elseif ($objElement instanceof \Model\Collection)
+		elseif ($objElement instanceof Collection)
 		{
 			$this->objModel = $objElement->current();
 		}
@@ -139,7 +137,7 @@ abstract class ContentElement extends \Frontend
 
 	/**
 	 * Return the model
-	 * @return \Model
+	 * @return Model
 	 */
 	public function getModel()
 	{
@@ -168,7 +166,7 @@ abstract class ContentElement extends \Frontend
 			$this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
 		}
 
-		$this->Template = new \FrontendTemplate($this->strTemplate);
+		$this->Template = new FrontendTemplate($this->strTemplate);
 		$this->Template->setData($this->arrData);
 
 		$this->compile();

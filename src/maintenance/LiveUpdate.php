@@ -10,11 +10,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Exception;
+use executable;
 
 
 /**
@@ -25,7 +24,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class LiveUpdate extends \Backend implements \executable
+class LiveUpdate extends Backend implements executable
 {
 
 	/**
@@ -44,18 +43,18 @@ class LiveUpdate extends \Backend implements \executable
 	 */
 	public function run()
 	{
-		$objTemplate = new \BackendTemplate('be_live_update');
+		$objTemplate = new BackendTemplate('be_live_update');
 
 		$objTemplate->updateClass = 'tl_confirm';
 		$objTemplate->updateHeadline = $GLOBALS['TL_LANG']['tl_maintenance']['liveUpdate'];
 		$objTemplate->isActive = $this->isActive();
-		$strMessage = ' <a href="contao/changelog.php" onclick="Backend.openModalIframe({\'width\':860,\'title\':\'CHANGELOG\',\'url\':this.href});return false" title="' . specialchars($GLOBALS['TL_LANG']['tl_maintenance']['changelog']) . '"><img src="' . TL_FILES_URL . 'system/themes/' . \Backend::getTheme() . '/images/changelog.gif" width="14" height="14" alt="" style="vertical-align:text-bottom;padding-left:3px"></a>';
+		$strMessage = ' <a href="contao/changelog.php" onclick="Backend.openModalIframe({\'width\':860,\'title\':\'CHANGELOG\',\'url\':this.href});return false" title="' . specialchars($GLOBALS['TL_LANG']['tl_maintenance']['changelog']) . '"><img src="' . TL_FILES_URL . 'system/themes/' . Backend::getTheme() . '/images/changelog.gif" width="14" height="14" alt="" style="vertical-align:text-bottom;padding-left:3px"></a>';
 
 		// Newer version available
-		if (\Config::get('latestVersion') && version_compare(VERSION . '.' . BUILD, \Config::get('latestVersion'), '<'))
+		if (Config::get('latestVersion') && version_compare(VERSION . '.' . BUILD, Config::get('latestVersion'), '<'))
 		{
 			$objTemplate->updateClass = 'tl_info';
-			$objTemplate->updateMessage = sprintf($GLOBALS['TL_LANG']['tl_maintenance']['newVersion'], \Config::get('latestVersion')) . $strMessage;
+			$objTemplate->updateMessage = sprintf($GLOBALS['TL_LANG']['tl_maintenance']['newVersion'], Config::get('latestVersion')) . $strMessage;
 		}
 		// Current version up to date
 		else
@@ -65,20 +64,20 @@ class LiveUpdate extends \Backend implements \executable
 		}
 
 		// Automatically switch to SSL
-		if (\Environment::get('ssl'))
+		if (Environment::get('ssl'))
 		{
-			\Config::set('liveUpdateBase', str_replace('http://', 'https://', \Config::get('liveUpdateBase')));
+			Config::set('liveUpdateBase', str_replace('http://', 'https://', Config::get('liveUpdateBase')));
 		}
 		else
 		{
-			\Config::set('liveUpdateBase', str_replace('https://', 'http://', \Config::get('liveUpdateBase')));
+			Config::set('liveUpdateBase', str_replace('https://', 'http://', Config::get('liveUpdateBase')));
 		}
 
-		$objTemplate->uid = \Config::get('liveUpdateId');
-		$objTemplate->updateServer = \Config::get('liveUpdateBase') . 'index.php';
+		$objTemplate->uid = Config::get('liveUpdateId');
+		$objTemplate->updateServer = Config::get('liveUpdateBase') . 'index.php';
 
 		// Run the update
-		if (\Input::get('token') != '')
+		if (Input::get('token') != '')
 		{
 			$this->runLiveUpdate($objTemplate);
 		}
@@ -86,7 +85,7 @@ class LiveUpdate extends \Backend implements \executable
 		$objTemplate->version = VERSION . '.' .  BUILD;
 		$objTemplate->liveUpdateId = $GLOBALS['TL_LANG']['tl_maintenance']['liveUpdateId'];
 		$objTemplate->runLiveUpdate = specialchars($GLOBALS['TL_LANG']['tl_maintenance']['runLiveUpdate']);
-		$objTemplate->referer = base64_encode(\Environment::get('base') . \Environment::get('request') . '|' . \Environment::get('server'));
+		$objTemplate->referer = base64_encode(Environment::get('base') . Environment::get('request') . '|' . Environment::get('server'));
 		$objTemplate->updateHelp = sprintf($GLOBALS['TL_LANG']['tl_maintenance']['updateHelp'], '<a href="http://luid.inetrobots.com" target="_blank">Live Update ID</a>');
 		$objTemplate->phar = file_exists(TL_ROOT . '/contao/update.phar.php');
 		$objTemplate->toLiveUpdate = $GLOBALS['TL_LANG']['tl_maintenance']['toLiveUpdate'];
@@ -97,17 +96,17 @@ class LiveUpdate extends \Backend implements \executable
 
 	/**
 	 * Run the Live Update
-	 * @param \BackendTemplate
+	 * @param BackendTemplate
 	 */
-	protected function runLiveUpdate(\BackendTemplate $objTemplate)
+	protected function runLiveUpdate(BackendTemplate $objTemplate)
 	{
-		$archive = 'system/tmp/' . \Input::get('token');
+		$archive = 'system/tmp/' . Input::get('token');
 
 		// Download the archive
 		if (!file_exists(TL_ROOT . '/' . $archive))
 		{
-			$objRequest = new \Request();
-			$objRequest->send(\Config::get('liveUpdateBase') . 'request.php?token=' . \Input::get('token'));
+			$objRequest = new Request();
+			$objRequest->send(Config::get('liveUpdateBase') . 'request.php?token=' . Input::get('token'));
 
 			if ($objRequest->hasError())
 			{
@@ -116,10 +115,10 @@ class LiveUpdate extends \Backend implements \executable
 				return;
 			}
 
-			\File::putContent($archive, $objRequest->response);
+			File::putContent($archive, $objRequest->response);
 		}
 
-		$objArchive = new \ZipReader($archive);
+		$objArchive = new ZipReader($archive);
 
 		// Extract
 		while ($objArchive->next())
@@ -128,9 +127,9 @@ class LiveUpdate extends \Backend implements \executable
 			{
 				try
 				{
-					\File::putContent($objArchive->file_name, $objArchive->unzip());
+					File::putContent($objArchive->file_name, $objArchive->unzip());
 				}
-				catch (\Exception $e)
+				catch (Exception $e)
 				{
 					$objTemplate->updateClass = 'tl_error';
 					$objTemplate->updateMessage = 'Error updating ' . $objArchive->file_name . ': ' . $e->getMessage();

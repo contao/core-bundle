@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentToplink extends \ContentElement
+class ContentToplink extends ContentElement
 {
 
 	/**
@@ -47,6 +43,6 @@ class ContentToplink extends \ContentElement
 
 		$this->Template->label = $this->linkTitle;
 		$this->Template->title = specialchars($this->linkTitle);
-		$this->Template->request = ampersand(\Environment::get('request'), true);
+		$this->Template->request = ampersand(Environment::get('request'), true);
 	}
 }

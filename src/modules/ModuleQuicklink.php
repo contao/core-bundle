@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleQuicklink extends \Module
+class ModuleQuicklink extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleQuicklink extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['quicklink'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -55,9 +51,9 @@ class ModuleQuicklink extends \Module
 		}
 
 		// Redirect to selected page
-		if (\Input::post('FORM_SUBMIT') == 'tl_quicklink')
+		if (Input::post('FORM_SUBMIT') == 'tl_quicklink')
 		{
-			$this->redirect(\Input::post('target', true));
+			$this->redirect(Input::post('target', true));
 		}
 
 		// Always return an array (see #4616)
@@ -78,7 +74,7 @@ class ModuleQuicklink extends \Module
 	protected function compile()
 	{
 		// Get all active pages
-		$objPages = \PageModel::findPublishedRegularWithoutGuestsByIds($this->pages);
+		$objPages = PageModel::findPublishedRegularWithoutGuestsByIds($this->pages);
 
 		// Return if there are no pages
 		if ($objPages === null)
@@ -120,13 +116,13 @@ class ModuleQuicklink extends \Module
 					break;
 
 				case 'forward':
-					if (($objNext = \PageModel::findPublishedById($arrPage['jumpTo'])) !== null)
+					if (($objNext = PageModel::findPublishedById($arrPage['jumpTo'])) !== null)
 					{
 						$strForceLang = null;
 						$objNext->loadDetails();
 
 						// Check the target page language (see #4706)
-						if (\Config::get('addLanguageToUrl'))
+						if (Config::get('addLanguageToUrl'))
 						{
 							$strForceLang = $objNext->language;
 						}
@@ -150,7 +146,7 @@ class ModuleQuicklink extends \Module
 		}
 
 		$this->Template->items = $items;
-		$this->Template->request = ampersand(\Environment::get('request'), true);
+		$this->Template->request = ampersand(Environment::get('request'), true);
 		$this->Template->title = $this->customLabel ?: $GLOBALS['TL_LANG']['MSC']['quicklink'];
 		$this->Template->button = specialchars($GLOBALS['TL_LANG']['MSC']['go']);
 	}

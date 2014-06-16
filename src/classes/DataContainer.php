@@ -10,11 +10,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Exception;
+use uploadable;
 
 
 /**
@@ -25,7 +24,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class DataContainer extends \Backend
+class DataContainer extends Backend
 {
 
 	/**
@@ -161,7 +160,7 @@ class DataContainer extends \Backend
 	 * Render a row of a box and return it as HTML string
 	 * @param string
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function row($strPalette=null)
 	{
@@ -179,13 +178,13 @@ class DataContainer extends \Backend
 		// Toggle line wrap (textarea)
 		if ($arrData['inputType'] == 'textarea' && !isset($arrData['eval']['rte']))
 		{
-			$xlabel .= ' ' . \Image::getHtml('wrap.gif', $GLOBALS['TL_LANG']['MSC']['wordWrap'], 'title="' . specialchars($GLOBALS['TL_LANG']['MSC']['wordWrap']) . '" class="toggleWrap" onclick="Backend.toggleWrap(\'ctrl_'.$this->strInputName.'\')"');
+			$xlabel .= ' ' . Image::getHtml('wrap.gif', $GLOBALS['TL_LANG']['MSC']['wordWrap'], 'title="' . specialchars($GLOBALS['TL_LANG']['MSC']['wordWrap']) . '" class="toggleWrap" onclick="Backend.toggleWrap(\'ctrl_'.$this->strInputName.'\')"');
 		}
 
 		// Add the help wizard
 		if ($arrData['eval']['helpwizard'])
 		{
-			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'width\':735,\'height\':405,\'title\':\''.specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.gif', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
+			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'width\':735,\'height\':405,\'title\':\''.specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.Image::getHtml('about.gif', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
 		}
 
 		// Add a custom xlabel
@@ -248,7 +247,7 @@ class DataContainer extends \Backend
 		// Convert insert tags in src attributes (see #5965)
 		if (isset($arrData['eval']['rte']) && strncmp($arrData['eval']['rte'], 'tiny', 4) === 0)
 		{
-			$this->varValue = \String::insertTagToSrc($this->varValue);
+			$this->varValue = String::insertTagToSrc($this->varValue);
 		}
 
 		$objWidget = new $strClass($strClass::getAttributesFromDca($arrData, $this->strInputName, $this->varValue, $this->strField, $this->strTable, $this));
@@ -257,12 +256,12 @@ class DataContainer extends \Backend
 		$objWidget->currentRecord = $this->intId;
 
 		// Validate the field
-		if (\Input::post('FORM_SUBMIT') == $this->strTable)
+		if (Input::post('FORM_SUBMIT') == $this->strTable)
 		{
-			$key = (\Input::get('act') == 'editAll') ? 'FORM_FIELDS_' . $this->intId : 'FORM_FIELDS';
+			$key = (Input::get('act') == 'editAll') ? 'FORM_FIELDS_' . $this->intId : 'FORM_FIELDS';
 
 			// Calculate the current palette
-			$postPaletteFields = implode(',', \Input::post($key));
+			$postPaletteFields = implode(',', Input::post($key));
 			$postPaletteFields = array_unique(trimsplit('[,;]', $postPaletteFields));
 
 			// Compile the palette if there is none
@@ -279,7 +278,7 @@ class DataContainer extends \Backend
 				if (isset($GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']) && in_array($this->strField, $GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']))
 				{
 					// If the field value has changed, recompile the palette
-					if ($this->varValue != \Input::post($this->strInputName))
+					if ($this->varValue != Input::post($this->strInputName))
 					{
 						$newPaletteFields = trimsplit('[,;]', $this->getPalette());
 					}
@@ -287,7 +286,7 @@ class DataContainer extends \Backend
 			}
 
 			// Adjust the names in editAll mode
-			if (\Input::get('act') == 'editAll')
+			if (Input::get('act') == 'editAll')
 			{
 				foreach ($newPaletteFields as $k=>$v)
 				{
@@ -304,14 +303,14 @@ class DataContainer extends \Backend
 			$paletteFields = array_intersect($postPaletteFields, $newPaletteFields);
 
 			// Validate and save the field
-			if (in_array($this->strInputName, $paletteFields) || \Input::get('act') == 'overrideAll')
+			if (in_array($this->strInputName, $paletteFields) || Input::get('act') == 'overrideAll')
 			{
 				$objWidget->validate();
 
 				if ($objWidget->hasErrors())
 				{
 					// Skip mandatory fields on auto-submit (see #4077)
-					if (\Input::post('SUBMIT_TYPE') != 'auto' || !$objWidget->mandatory || $objWidget->value != '')
+					if (Input::post('SUBMIT_TYPE') != 'auto' || !$objWidget->mandatory || $objWidget->value != '')
 					{
 						$this->noReload = true;
 					}
@@ -330,7 +329,7 @@ class DataContainer extends \Backend
 					// Convert file paths in src attributes (see #5965)
 					if (isset($arrData['eval']['rte']) && strncmp($arrData['eval']['rte'], 'tiny', 4) === 0)
 					{
-						$varValue = \String::srcToInsertTag($varValue);
+						$varValue = String::srcToInsertTag($varValue);
 					}
 
 					// Save the current value
@@ -338,7 +337,7 @@ class DataContainer extends \Backend
 					{
 						$this->save($varValue);
 					}
-					catch (\Exception $e)
+					catch (Exception $e)
 					{
 						$this->noReload = true;
 						$objWidget->addError($e->getMessage());
@@ -354,7 +353,7 @@ class DataContainer extends \Backend
 		if ($arrData['eval']['datepicker'])
 		{
 			$rgxp = $arrData['eval']['rgxp'];
-			$format = \Date::formatToJs(\Config::get($rgxp.'Format'));
+			$format = Date::formatToJs(Config::get($rgxp.'Format'));
 
 			switch ($rgxp)
 			{
@@ -394,7 +393,7 @@ class DataContainer extends \Backend
 			// Support single fields as well (see #5240)
 			$strKey = $arrData['eval']['multiple'] ? $this->strField . '_0' : $this->strField;
 
-			$wizard .= ' ' . \Image::getHtml('pickcolor.gif', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'style="vertical-align:top;cursor:pointer" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '"') . '
+			$wizard .= ' ' . Image::getHtml('pickcolor.gif', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'style="vertical-align:top;cursor:pointer" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '"') . '
   <script>
     window.addEvent("domready", function() {
       new MooRainbow("moo_' . $this->strField . '", {
@@ -429,7 +428,7 @@ class DataContainer extends \Backend
 		$objWidget->wizard = $wizard;
 
 		// Set correct form enctype
-		if ($objWidget instanceof \uploadable)
+		if ($objWidget instanceof uploadable)
 		{
 			$this->blnUploadable = true;
 		}
@@ -445,7 +444,7 @@ class DataContainer extends \Backend
 		}
 
 		// No 2-column layout in "edit all" mode
-		if (\Input::get('act') == 'editAll' || \Input::get('act') == 'overrideAll')
+		if (Input::get('act') == 'editAll' || Input::get('act') == 'overrideAll')
 		{
 			$arrData['eval']['tl_class'] = str_replace(array('w50', 'clr', 'wizard', 'long', 'm12', 'cbx'), '', $arrData['eval']['tl_class']);
 		}
@@ -459,7 +458,7 @@ class DataContainer extends \Backend
 
 			if (!file_exists(TL_ROOT . '/system/config/' . $file . '.php'))
 			{
-				throw new \Exception(sprintf('Cannot find editor configuration file "%s.php"', $file));
+				throw new Exception(sprintf('Cannot find editor configuration file "%s.php"', $file));
 			}
 
 			// Backwards compatibility
@@ -479,7 +478,7 @@ class DataContainer extends \Backend
 		}
 
 		// Handle multi-select fields in "override all" mode
-		elseif (\Input::get('act') == 'overrideAll' && ($arrData['inputType'] == 'checkbox' || $arrData['inputType'] == 'checkboxWizard') && $arrData['eval']['multiple'])
+		elseif (Input::get('act') == 'overrideAll' && ($arrData['inputType'] == 'checkbox' || $arrData['inputType'] == 'checkboxWizard') && $arrData['eval']['multiple'])
 		{
 			$updateMode = '
 </div>
@@ -497,14 +496,14 @@ class DataContainer extends \Backend
 		// Show a preview image (see #4948)
 		if ($this->strTable == 'tl_files' && $this->strField == 'name' && $this->objActiveRecord !== null && $this->objActiveRecord->type == 'file')
 		{
-			$objFile = new \File($this->objActiveRecord->path);
+			$objFile = new File($this->objActiveRecord->path);
 
 			if ($objFile->isGdImage)
 			{
 				$strPreview = '
 
 <div class="tl_edit_preview">
-' . \Image::getHtml(\Image::get($objFile->path, 700, 150, 'box')) . '
+' . Image::getHtml(Image::get($objFile->path, 700, 150, 'box')) . '
 </div>';
 			}
 		}
@@ -524,7 +523,7 @@ class DataContainer extends \Backend
 	{
 		$return = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][1];
 
-		if (!\Config::get('showHelp') || $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['inputType'] == 'password' || $return == '')
+		if (!Config::get('showHelp') || $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['inputType'] == 'password' || $return == '')
 		{
 			return '';
 		}
@@ -575,12 +574,12 @@ class DataContainer extends \Backend
 		{
 			if (!in_array($strKey, $arrUnset))
 			{
-				$arrKeys[$strKey] = $strKey . '=' . \Input::get($strKey);
+				$arrKeys[$strKey] = $strKey . '=' . Input::get($strKey);
 			}
 		}
 
 		$strUrl = TL_SCRIPT . '?' . implode('&', $arrKeys);
-		return $strUrl . (!empty($arrKeys) ? '&' : '') . (\Input::get('table') ? 'table='.\Input::get('table').'&amp;' : '').'act=edit&amp;id='.$id;
+		return $strUrl . (!empty($arrKeys) ? '&' : '') . (Input::get('table') ? 'table='.Input::get('table').'&amp;' : '').'act=edit&amp;id='.$id;
 	}
 
 
@@ -641,11 +640,11 @@ class DataContainer extends \Backend
 			{
 				if ($k == 'show')
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.specialchars($title).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.Image::getHtml($v['icon'], $label).'</a> ';
 				}
 				else
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($v['icon'], $label).'</a> ';
 				}
 
 				continue;
@@ -659,16 +658,16 @@ class DataContainer extends \Backend
 				$label = $GLOBALS['TL_LANG'][$strTable][$dir][0] ?: $dir;
 				$title = $GLOBALS['TL_LANG'][$strTable][$dir][1] ?: $dir;
 
-				$label = \Image::getHtml($dir.'.gif', $label);
+				$label = Image::getHtml($dir.'.gif', $label);
 				$href = $v['href'] ?: '&amp;act=move';
 
 				if ($dir == 'up')
 				{
-					$return .= ((is_numeric($strPrevious) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strPrevious).'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('up_.gif')).' ';
+					$return .= ((is_numeric($strPrevious) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strPrevious).'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : Image::getHtml('up_.gif')).' ';
 					continue;
 				}
 
-				$return .= ((is_numeric($strNext) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strNext).'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('down_.gif')).' ';
+				$return .= ((is_numeric($strNext) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strNext).'" title="'.specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : Image::getHtml('down_.gif')).' ';
 			}
 		}
 
@@ -704,7 +703,7 @@ class DataContainer extends \Backend
 				// Add the theme path if only the file name is given
 				if (strpos($v['icon'], '/') === false)
 				{
-					$v['icon'] = 'system/themes/' . \Backend::getTheme() . '/images/' . $v['icon'];
+					$v['icon'] = 'system/themes/' . Backend::getTheme() . '/images/' . $v['icon'];
 				}
 
 				$attributes = sprintf('style="background-image:url(\'%s%s\')"', TL_ASSETS_URL, $v['icon']) . $attributes;

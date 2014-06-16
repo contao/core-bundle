@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class Password extends \Widget
+class Password extends Widget
 {
 
 	/**
@@ -111,9 +107,9 @@ class Password extends \Widget
 			return '*****';
 		}
 
-		if (utf8_strlen($varInput) < \Config::get('minPasswordLength'))
+		if (utf8_strlen($varInput) < Config::get('minPasswordLength'))
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], \Config::get('minPasswordLength')));
+			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], Config::get('minPasswordLength')));
 		}
 
 		if ($varInput != $this->getPost($this->strName . '_confirm'))
@@ -131,8 +127,8 @@ class Password extends \Widget
 		if (!$this->hasErrors())
 		{
 			$this->blnSubmitInput = true;
-			\Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
-			return \Encryption::hash($varInput);
+			Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
+			return Encryption::hash($varInput);
 		}
 
 		return '';
@@ -152,7 +148,7 @@ class Password extends \Widget
 						(($this->varValue != '') ? '*****' : ''),
 						$this->getAttributes(),
 						$this->wizard,
-						((strlen($this->description) && \Config::get('showHelp') && !$this->hasErrors()) ? "\n  " . '<p class="tl_help tl_tip">'.$this->description.'</p>' : ''));
+						((strlen($this->description) && Config::get('showHelp') && !$this->hasErrors()) ? "\n  " . '<p class="tl_help tl_tip">'.$this->description.'</p>' : ''));
 	}
 
 
@@ -183,6 +179,6 @@ class Password extends \Widget
 						(strlen($this->strClass) ? ' ' . $this->strClass : ''),
 						(($this->varValue != '') ? '*****' : ''),
 						$this->getAttributes(),
-						((strlen($GLOBALS['TL_LANG']['MSC']['confirm'][1]) && \Config::get('showHelp')) ? "\n  " . '<p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['MSC']['confirm'][1].'</p>' : ''));
+						((strlen($GLOBALS['TL_LANG']['MSC']['confirm'][1]) && Config::get('showHelp')) ? "\n  " . '<p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['MSC']['confirm'][1].'</p>' : ''));
 	}
 }

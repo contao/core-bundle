@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use uploadable;
 
 
 /**
@@ -28,7 +26,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class Upload extends \Widget implements \uploadable
+class Upload extends Widget implements uploadable
 {
 
 	/**
@@ -51,7 +49,7 @@ class Upload extends \Widget implements \uploadable
 
 	/**
 	 * Uploader
-	 * @var \FileUpload
+	 * @var FileUpload
 	 */
 	protected $objUploader;
 
@@ -64,7 +62,7 @@ class Upload extends \Widget implements \uploadable
 	{
 		parent::__construct($arrAttributes);
 
-		$this->objUploader = new \FileUpload();
+		$this->objUploader = new FileUpload();
 		$this->objUploader->setName($this->strName);
 	}
 

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentTeaser extends \ContentElement
+class ContentTeaser extends ContentElement
 {
 
 	/**
@@ -53,7 +49,7 @@ class ContentTeaser extends \ContentElement
 	 */
 	public function generate()
 	{
-		$objArticle = \ArticleModel::findPublishedById($this->article);
+		$objArticle = ArticleModel::findPublishedById($this->article);
 
 		if ($objArticle === null)
 		{
@@ -61,7 +57,7 @@ class ContentTeaser extends \ContentElement
 		}
 
 		// Use findPublished() instead of getRelated()
-		$objParent = \PageModel::findPublishedById($objArticle->pid);
+		$objParent = PageModel::findPublishedById($objArticle->pid);
 
 		if ($objParent === null)
 		{
@@ -88,11 +84,11 @@ class ContentTeaser extends \ContentElement
 			$link .= $objArticle->inColumn . ':';
 		}
 
-		$link .= ($objArticle->alias != '' && !\Config::get('disableAlias')) ? $objArticle->alias : $objArticle->id;
+		$link .= ($objArticle->alias != '' && !Config::get('disableAlias')) ? $objArticle->alias : $objArticle->id;
 		$this->Template->href = $this->generateFrontendUrl($this->objParent->row(), $link);
 
 		// Clean the RTE output
-		$this->Template->text = \String::toHtml5($objArticle->teaser);
+		$this->Template->text = String::toHtml5($objArticle->teaser);
 
 		$this->Template->headline = $objArticle->title;
 		$this->Template->readMore = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->title));

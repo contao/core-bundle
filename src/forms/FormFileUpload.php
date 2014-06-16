@@ -10,11 +10,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Exception;
+use uploadable;
 
 
 /**
@@ -24,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormFileUpload extends \Widget implements \uploadable
+class FormFileUpload extends Widget implements uploadable
 {
 
 	/**
@@ -154,20 +153,20 @@ class FormFileUpload extends \Widget implements \uploadable
 		if (($arrImageSize = @getimagesize($file['tmp_name'])) != false)
 		{
 			// Image exceeds maximum image width
-			if ($arrImageSize[0] > \Config::get('imageWidth'))
+			if ($arrImageSize[0] > Config::get('imageWidth'))
 			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], \Config::get('imageWidth')));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.\Config::get('imageWidth').' pixels', __METHOD__, TL_ERROR);
+				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], Config::get('imageWidth')));
+				$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.Config::get('imageWidth').' pixels', __METHOD__, TL_ERROR);
 
 				unset($_FILES[$this->strName]);
 				return;
 			}
 
 			// Image exceeds maximum image height
-			if ($arrImageSize[1] > \Config::get('imageHeight'))
+			if ($arrImageSize[1] > Config::get('imageHeight'))
 			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], \Config::get('imageHeight')));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.\Config::get('imageHeight').' pixels', __METHOD__, TL_ERROR);
+				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], Config::get('imageHeight')));
+				$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.Config::get('imageHeight').' pixels', __METHOD__, TL_ERROR);
 
 				unset($_FILES[$this->strName]);
 				return;
@@ -195,12 +194,12 @@ class FormFileUpload extends \Widget implements \uploadable
 					}
 				}
 
-				$objUploadFolder = \FilesModel::findByUuid($intUploadFolder);
+				$objUploadFolder = FilesModel::findByUuid($intUploadFolder);
 
 				// The upload folder could not be found
 				if ($objUploadFolder === null)
 				{
-					throw new \Exception("Invalid upload folder ID $intUploadFolder");
+					throw new Exception("Invalid upload folder ID $intUploadFolder");
 				}
 
 				$strUploadFolder = $objUploadFolder->path;
@@ -235,11 +234,11 @@ class FormFileUpload extends \Widget implements \uploadable
 					}
 
 					$this->Files->move_uploaded_file($file['tmp_name'], $strUploadFolder . '/' . $file['name']);
-					$this->Files->chmod($strUploadFolder . '/' . $file['name'], \Config::get('defaultFileChmod'));
+					$this->Files->chmod($strUploadFolder . '/' . $file['name'], Config::get('defaultFileChmod'));
 
 					// Generate the DB entries
 					$strFile = $strUploadFolder . '/' . $file['name'];
-					$objFile = \FilesModel::findByPath($strFile);
+					$objFile = FilesModel::findByPath($strFile);
 
 					// Existing file is being replaced (see #4818)
 					if ($objFile !== null)
@@ -251,11 +250,11 @@ class FormFileUpload extends \Widget implements \uploadable
 					}
 					else
 					{
-						$objFile = \Dbafs::addResource($strFile);
+						$objFile = Dbafs::addResource($strFile);
 					}
 
 					// Update the hash of the target folder
-					\Dbafs::updateFolderHashes($strUploadFolder);
+					Dbafs::updateFolderHashes($strUploadFolder);
 
 					// Add the session entry (see #6986)
 					$_SESSION['FILES'][$this->strName] = array
@@ -266,7 +265,7 @@ class FormFileUpload extends \Widget implements \uploadable
 						'error'    => $file['error'],
 						'size'     => $file['size'],
 						'uploaded' => true,
-						'uuid'     => \String::binToUuid($objFile->uuid)
+						'uuid'     => String::binToUuid($objFile->uuid)
 					);
 
 					// Add a log entry

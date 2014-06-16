@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendSwitch extends \Backend
+class BackendSwitch extends Backend
 {
 
 	/**
@@ -43,7 +39,7 @@ class BackendSwitch extends \Backend
 		parent::__construct();
 
 		$this->User->authenticate();
-		\System::loadLanguageFile('default');
+		System::loadLanguageFile('default');
 	}
 
 
@@ -52,13 +48,13 @@ class BackendSwitch extends \Backend
 	 */
 	public function run()
 	{
-		if (\Environment::get('isAjaxRequest'))
+		if (Environment::get('isAjaxRequest'))
 		{
 			$this->getDatalistOptions();
 		}
 
 		$strUser = '';
-		$strHash = sha1(session_id() . (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '') . 'FE_USER_AUTH');
+		$strHash = sha1(session_id() . (!Config::get('disableIpCheck') ? Environment::get('ip') : '') . 'FE_USER_AUTH');
 
 		// Get the front end user
 		if (FE_USER_LOGGED_IN)
@@ -74,18 +70,18 @@ class BackendSwitch extends \Backend
 		}
 
 		// Create the template object
-		$this->Template = new \BackendTemplate('be_switch');
+		$this->Template = new BackendTemplate('be_switch');
 		$this->Template->user = $strUser;
-		$this->Template->show = \Input::cookie('FE_PREVIEW');
+		$this->Template->show = Input::cookie('FE_PREVIEW');
 		$this->Template->update = false;
 
 		// Switch
-		if (\Input::post('FORM_SUBMIT') == 'tl_switch')
+		if (Input::post('FORM_SUBMIT') == 'tl_switch')
 		{
 			$time = time();
 
 			// Hide unpublished elements
-			if (\Input::post('unpublished') == 'hide')
+			if (Input::post('unpublished') == 'hide')
 			{
 				$this->setCookie('FE_PREVIEW', 0, ($time - 86400));
 				$this->Template->show = 0;
@@ -94,7 +90,7 @@ class BackendSwitch extends \Backend
 			// Show unpublished elements
 			else
 			{
-				$this->setCookie('FE_PREVIEW', 1, ($time + \Config::get('sessionTimeout')));
+				$this->setCookie('FE_PREVIEW', 1, ($time + Config::get('sessionTimeout')));
 				$this->Template->show = 1;
 			}
 
@@ -103,22 +99,22 @@ class BackendSwitch extends \Backend
 			{
 				// Remove old sessions
 				$this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
-							   ->execute(($time - \Config::get('sessionTimeout')), $strHash);
+							   ->execute(($time - Config::get('sessionTimeout')), $strHash);
 
 			   // Log in the front end user
-				if (\Input::post('user'))
+				if (Input::post('user'))
 				{
-					$objUser = \MemberModel::findByUsername(\Input::post('user'));
+					$objUser = MemberModel::findByUsername(Input::post('user'));
 
 					if ($objUser !== null)
 					{
 						// Insert the new session
 						$this->Database->prepare("INSERT INTO tl_session (pid, tstamp, name, sessionID, ip, hash) VALUES (?, ?, ?, ?, ?, ?)")
-									   ->execute($objUser->id, $time, 'FE_USER_AUTH', session_id(), \Environment::get('ip'), $strHash);
+									   ->execute($objUser->id, $time, 'FE_USER_AUTH', session_id(), Environment::get('ip'), $strHash);
 
 						// Set the cookie
-						$this->setCookie('FE_USER_AUTH', $strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
-						$this->Template->user = \Input::post('user');
+						$this->setCookie('FE_USER_AUTH', $strHash, ($time + Config::get('sessionTimeout')), null, null, false, true);
+						$this->Template->user = Input::post('user');
 					}
 				}
 
@@ -135,23 +131,23 @@ class BackendSwitch extends \Backend
 		}
 
 		// Default variables
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->apply = $GLOBALS['TL_LANG']['MSC']['apply'];
 		$this->Template->reload = $GLOBALS['TL_LANG']['MSC']['reload'];
 		$this->Template->feUser = $GLOBALS['TL_LANG']['MSC']['feUser'];
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['username'];
-		$this->Template->charset = \Config::get('characterSet');
+		$this->Template->charset = Config::get('characterSet');
 		$this->Template->lblHide = $GLOBALS['TL_LANG']['MSC']['hiddenHide'];
 		$this->Template->lblShow = $GLOBALS['TL_LANG']['MSC']['hiddenShow'];
 		$this->Template->fePreview = $GLOBALS['TL_LANG']['MSC']['fePreview'];
 		$this->Template->hiddenElements = $GLOBALS['TL_LANG']['MSC']['hiddenElements'];
-		$this->Template->closeSrc = TL_FILES_URL . 'system/themes/' . \Backend::getTheme() . '/images/close.gif';
-		$this->Template->action = ampersand(\Environment::get('request'));
+		$this->Template->closeSrc = TL_FILES_URL . 'system/themes/' . Backend::getTheme() . '/images/close.gif';
+		$this->Template->action = ampersand(Environment::get('request'));
 		$this->Template->isAdmin = $this->User->isAdmin;
 
-		\Config::set('debugMode', false);
+		Config::set('debugMode', false);
 		$this->Template->output();
 	}
 
@@ -173,7 +169,7 @@ class BackendSwitch extends \Backend
 		// Get the active front end users
 		$objUsers = $this->Database->prepare("SELECT username FROM tl_member WHERE username LIKE ? AND login=1 AND disable!=1 AND (start='' OR start<$time) AND (stop='' OR stop>$time) ORDER BY username")
 								   ->limit(10)
-								   ->execute(str_replace('%', '', \Input::post('value')) . '%');
+								   ->execute(str_replace('%', '', Input::post('value')) . '%');
 
 		if ($objUsers->numRows)
 		{

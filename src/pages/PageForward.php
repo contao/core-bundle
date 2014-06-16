@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PageForward extends \Frontend
+class PageForward extends Frontend
 {
 
 	/**
@@ -41,7 +37,7 @@ class PageForward extends \Frontend
 		}
 		else
 		{
-			$objNextPage = \PageModel::findFirstPublishedRegularByPid($objPage->id);
+			$objNextPage = PageModel::findFirstPublishedRegularByPid($objPage->id);
 		}
 
 		// Forward page does not exist
@@ -55,14 +51,14 @@ class PageForward extends \Frontend
 		$strForceLang = null;
 
 		// Check the target page language (see #4706)
-		if (\Config::get('addLanguageToUrl'))
+		if (Config::get('addLanguageToUrl'))
 		{
 			$objNextPage->loadDetails(); // see #3983
 			$strForceLang = $objNextPage->language;
 		}
 
 		$strGet = '';
-		$strQuery = \Environment::get('queryString');
+		$strQuery = Environment::get('queryString');
 		$arrQuery = array();
 
 		// Extract the query string keys (see #5867)
@@ -82,12 +78,12 @@ class PageForward extends \Frontend
 		{
 			foreach (array_keys($_GET) as $key)
 			{
-				if (\Config::get('disableAlias') && $key == 'id')
+				if (Config::get('disableAlias') && $key == 'id')
 				{
 					continue;
 				}
 
-				if (\Config::get('addLanguageToUrl') && $key == 'language')
+				if (Config::get('addLanguageToUrl') && $key == 'language')
 				{
 					continue;
 				}
@@ -101,11 +97,11 @@ class PageForward extends \Frontend
 				// Ignore the auto_item parameter (see #5886)
 				if ($key == 'auto_item')
 				{
-					$strGet .= '/' . \Input::get($key);
+					$strGet .= '/' . Input::get($key);
 				}
 				else
 				{
-					$strGet .= '/' . $key . '/' . \Input::get($key);
+					$strGet .= '/' . $key . '/' . Input::get($key);
 				}
 			}
 		}

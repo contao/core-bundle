@@ -13,6 +13,22 @@
 		"php": ">=5.4.0",
 		"contao-community-alliance/composer-plugin": "~2.0"
 	},
+	"autoload": {
+		"classmap": [
+			"src/classes/",
+			"src/controllers/",
+			"src/drivers/",
+			"src/elements/",
+			"src/forms/",
+			"src/hybrids/",
+			"src/maintenance/",
+			"src/models/",
+			"src/modules/",
+			"src/pages/",
+			"src/uploader/",
+			"src/widgets/"
+		]
+	},
 	"extra": {
 		"contao": {
 			"sources": {

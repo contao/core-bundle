@@ -90,7 +90,7 @@ $GLOBALS['BE_MOD'] = array
 		),
 		'maintenance' => array
 		(
-			'callback'    => 'ModuleMaintenance'
+			'callback'    => 'Contao\\ModuleMaintenance'
 		),
 		'undo' => array
 		(

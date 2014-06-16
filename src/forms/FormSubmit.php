@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormSubmit extends \Widget
+class FormSubmit extends Widget
 {
 
 	/**
@@ -100,11 +96,11 @@ class FormSubmit extends \Widget
 
 		if ($this->imageSubmit && $this->singleSRC != '')
 		{
-			$objModel = \FilesModel::findByUuid($this->singleSRC);
+			$objModel = FilesModel::findByUuid($this->singleSRC);
 
 			if ($objModel === null)
 			{
-				if (!\Validator::isUuid($this->singleSRC))
+				if (!Validator::isUuid($this->singleSRC))
 				{
 					return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 				}

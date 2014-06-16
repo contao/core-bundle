@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendConfirm extends \Backend
+class BackendConfirm extends Backend
 {
 
 	/**
@@ -44,8 +40,8 @@ class BackendConfirm extends \Backend
 
 		$this->User->authenticate();
 
-		\System::loadLanguageFile('default');
-		\System::loadLanguageFile('modules');
+		System::loadLanguageFile('default');
+		System::loadLanguageFile('modules');
 	}
 
 
@@ -55,13 +51,13 @@ class BackendConfirm extends \Backend
 	public function run()
 	{
 		// Redirect to the back end home page
-		if (\Input::post('FORM_SUBMIT') == 'invalid_token_url')
+		if (Input::post('FORM_SUBMIT') == 'invalid_token_url')
 		{
 			list($strUrl) = explode('?', $this->Session->get('INVALID_TOKEN_URL'));
 			$this->redirect($strUrl);
 		}
 
-		$this->Template = new \BackendTemplate('be_confirm');
+		$this->Template = new BackendTemplate('be_confirm');
 
 		// Prepare the URL
 		$url = preg_replace('/(\?|&)rt=[^&]*/', '', $this->Session->get('INVALID_TOKEN_URL'));
@@ -111,7 +107,7 @@ class BackendConfirm extends \Backend
 			}
 		}
 
-		\System::loadLanguageFile($arrInfo['table']);
+		System::loadLanguageFile($arrInfo['table']);
 
 		// Override the action label
 		if (isset($arrInfo['clipboard']))
@@ -147,11 +143,11 @@ class BackendConfirm extends \Backend
 		$this->Template->explain = $GLOBALS['TL_LANG']['ERR']['invalidTokenUrl'];
 		$this->Template->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 		$this->Template->continue = $GLOBALS['TL_LANG']['MSC']['continue'];
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->title = specialchars($GLOBALS['TL_LANG']['MSC']['invalidTokenUrl']);
-		$this->Template->charset = \Config::get('characterSet');
+		$this->Template->charset = Config::get('characterSet');
 
 		$this->Template->output();
 	}

@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-abstract class Module extends \Frontend
+abstract class Module extends Frontend
 {
 
 	/**
@@ -66,11 +64,11 @@ abstract class Module extends \Frontend
 	 */
 	public function __construct($objModule, $strColumn='main')
 	{
-		if ($objModule instanceof \Model)
+		if ($objModule instanceof Model)
 		{
 			$this->objModel = $objModule;
 		}
-		elseif ($objModule instanceof \Model\Collection)
+		elseif ($objModule instanceof Collection)
 		{
 			$this->objModel = $objModule->current();
 		}
@@ -133,7 +131,7 @@ abstract class Module extends \Frontend
 
 	/**
 	 * Return the model
-	 * @return \Model
+	 * @return Model
 	 */
 	public function getModel()
 	{
@@ -157,7 +155,7 @@ abstract class Module extends \Frontend
 			$this->arrStyle[] = 'margin-bottom:'.$this->arrData['space'][1].'px;';
 		}
 
-		$this->Template = new \FrontendTemplate($this->strTemplate);
+		$this->Template = new FrontendTemplate($this->strTemplate);
 		$this->Template->setData($this->arrData);
 
 		$this->compile();
@@ -205,7 +203,7 @@ abstract class Module extends \Frontend
 	protected function renderNavigation($pid, $level=1, $host=null, $language=null)
 	{
 		// Get all active subpages
-		$objSubpages = \PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $this->showHidden, $this instanceof \ModuleSitemap);
+		$objSubpages = PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $this->showHidden, $this instanceof ModuleSitemap);
 
 		if ($objSubpages === null)
 		{
@@ -228,7 +226,7 @@ abstract class Module extends \Frontend
 			$this->navigationTpl = 'nav_default';
 		}
 
-		$objTemplate = new \FrontendTemplate($this->navigationTpl);
+		$objTemplate = new FrontendTemplate($this->navigationTpl);
 
 		$objTemplate->type = get_class($this);
 		$objTemplate->cssID = $this->cssID; // see #4897
@@ -241,7 +239,7 @@ abstract class Module extends \Frontend
 		while ($objSubpages->next())
 		{
 			// Skip hidden sitemap pages
-			if ($this instanceof \ModuleSitemap && $objSubpages->sitemap == 'map_never')
+			if ($this instanceof ModuleSitemap && $objSubpages->sitemap == 'map_never')
 			{
 				continue;
 			}
@@ -256,7 +254,7 @@ abstract class Module extends \Frontend
 			}
 
 			// Do not show protected pages unless a back end or front end user is logged in
-			if (!$objSubpages->protected || BE_USER_LOGGED_IN || (is_array($_groups) && count(array_intersect($_groups, $groups))) || $this->showProtected || ($this instanceof \ModuleSitemap && $objSubpages->sitemap == 'map_always'))
+			if (!$objSubpages->protected || BE_USER_LOGGED_IN || (is_array($_groups) && count(array_intersect($_groups, $groups))) || $this->showProtected || ($this instanceof ModuleSitemap && $objSubpages->sitemap == 'map_always'))
 			{
 				// Check whether there will be subpages
 				if ($objSubpages->subpages > 0 && (!$this->showLevel || $this->showLevel >= $level || (!$this->hardLimit && ($objPage->id == $objSubpages->id || in_array($objPage->id, $this->Database->getChildRecords($objSubpages->id, 'tl_page'))))))
@@ -272,7 +270,7 @@ abstract class Module extends \Frontend
 
 						if (strncasecmp($href, 'mailto:', 7) === 0)
 						{
-							$href = \String::encodeEmail($href);
+							$href = String::encodeEmail($href);
 						}
 						break;
 
@@ -283,7 +281,7 @@ abstract class Module extends \Frontend
 						}
 						else
 						{
-							$objNext = \PageModel::findFirstPublishedRegularByPid($objSubpages->id);
+							$objNext = PageModel::findFirstPublishedRegularByPid($objSubpages->id);
 						}
 
 						if ($objNext !== null)
@@ -298,7 +296,7 @@ abstract class Module extends \Frontend
 							$objNext->loadDetails();
 
 							// Check the target page language (see #4706)
-							if (\Config::get('addLanguageToUrl'))
+							if (Config::get('addLanguageToUrl'))
 							{
 								$strForceLang = $objNext->language;
 							}
@@ -316,7 +314,7 @@ abstract class Module extends \Frontend
 				$row = $objSubpages->row();
 
 				// Active page
-				if (($objPage->id == $objSubpages->id || $objSubpages->type == 'forward' && $objPage->id == $objSubpages->jumpTo) && !$this instanceof \ModuleSitemap && !\Input::get('articles'))
+				if (($objPage->id == $objSubpages->id || $objSubpages->type == 'forward' && $objPage->id == $objSubpages->jumpTo) && !$this instanceof ModuleSitemap && !Input::get('articles'))
 				{
 					// Mark active forward pages (see #4822)
 					$strClass = (($objSubpages->type == 'forward' && $objPage->id == $objSubpages->jumpTo) ? 'forward' . (in_array($objSubpages->id, $objPage->trail) ? ' trail' : '') : 'active') . (($subitems != '') ? ' submenu' : '') . ($objSubpages->protected ? ' protected' : '') . (($objSubpages->cssClass != '') ? ' ' . $objSubpages->cssClass : '');

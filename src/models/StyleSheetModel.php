@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -27,7 +25,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class StyleSheetModel extends \Model
+class StyleSheetModel extends Model
 {
 
 	/**
@@ -42,7 +40,7 @@ class StyleSheetModel extends \Model
 	 *
 	 * @param array $arrIds An array of style sheet IDs
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no style sheets
+	 * @return Collection|null A collection of models or null if there are no style sheets
 	 */
 	public static function findByIds($arrIds)
 	{
@@ -51,7 +49,7 @@ class StyleSheetModel extends \Model
 			return null;
 		}
 
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 		$arrIds = array_map('intval', $arrIds);
 
 		$objResult = $objDatabase->execute("SELECT *, (SELECT tstamp FROM tl_theme WHERE tl_theme.id=tl_style_sheet.pid) AS tstamp3, (SELECT MAX(tstamp) FROM tl_style WHERE tl_style.pid=tl_style_sheet.id) AS tstamp2, (SELECT COUNT(*) FROM tl_style WHERE tl_style.selector='@font-face' AND tl_style.invisible='' AND tl_style.pid=tl_style_sheet.id) AS hasFontFace FROM tl_style_sheet WHERE id IN (" . implode(',', $arrIds) . ") ORDER BY " . $objDatabase->findInSet('id', $arrIds));

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormFieldset extends \Widget
+class FormFieldset extends Widget
 {
 
 	/**
@@ -56,7 +52,7 @@ class FormFieldset extends \Widget
 		// Return a wildcard in the back end
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			if ($this->fsType == 'fsStart')
 			{

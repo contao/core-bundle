@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class SessionModel extends \Model
+class SessionModel extends Model
 {
 
 	/**
@@ -41,7 +37,7 @@ class SessionModel extends \Model
 	 * @param string $strName    The session name
 	 * @param array  $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no session
+	 * @return Model|null The model or null if there is no session
 	 */
 	public static function findByHashAndName($strHash, $strName, array $arrOptions=array())
 	{

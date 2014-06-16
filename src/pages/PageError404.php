@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PageError404 extends \Frontend
+class PageError404 extends Frontend
 {
 
 	/**
@@ -40,45 +36,45 @@ class PageError404 extends \Frontend
 		// Add a log entry
 		if ($blnUnusedGet)
 		{
-			$this->log('The request for page ID "' . $pageId . '" contained unused GET parameters: "' . implode('", "', Input::getUnusedGet()) . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+			$this->log('The request for page ID "' . $pageId . '" contained unused GET parameters: "' . implode('", "', Input::getUnusedGet()) . '" (' . Environment::get('base') . Environment::get('request') . ')', __METHOD__, TL_ERROR);
 		}
 		elseif ($strDomain !== null || $strHost !== null)
 		{
-			$this->log('Page ID "' . $pageId . '" was requested via "' . $strHost . '" but can only be accessed via "' . $strDomain . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+			$this->log('Page ID "' . $pageId . '" was requested via "' . $strHost . '" but can only be accessed via "' . $strDomain . '" (' . Environment::get('base') . Environment::get('request') . ')', __METHOD__, TL_ERROR);
 		}
 		elseif ($pageId != 'favicon.ico' && $pageId != 'robots.txt')
 		{
-			$this->log('No active page for page ID "' . $pageId . '", host "' . \Environment::get('host') . '" and languages "' . implode(', ', \Environment::get('httpAcceptLanguage')) . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+			$this->log('No active page for page ID "' . $pageId . '", host "' . Environment::get('host') . '" and languages "' . implode(', ', Environment::get('httpAcceptLanguage')) . '" (' . Environment::get('base') . Environment::get('request') . ')', __METHOD__, TL_ERROR);
 		}
 
 		// Check the search index (see #3761)
-		\Search::removeEntry(\Environment::get('request'));
+		Search::removeEntry(Environment::get('request'));
 
 		// Find the matching root page
 		$objRootPage = $this->getRootPageFromUrl();
 
 		// Forward if the language should be but is not set (see #4028)
-		if (\Config::get('addLanguageToUrl'))
+		if (Config::get('addLanguageToUrl'))
 		{
 			// Get the request string without the index.php fragment
-			if (\Environment::get('request') == 'index.php')
+			if (Environment::get('request') == 'index.php')
 			{
 				$strRequest = '';
 			}
 			else
 			{
-				$strRequest = str_replace('index.php/', '', \Environment::get('request'));
+				$strRequest = str_replace('index.php/', '', Environment::get('request'));
 			}
 
 			// Only redirect if there is no language fragment (see #4669)
 			if ($strRequest != '' && !preg_match('@^[a-z]{2}(\-[A-Z]{2})?/@', $strRequest))
 			{
-				$this->redirect($objRootPage->language . '/' . \Environment::get('request'), 301);
+				$this->redirect($objRootPage->language . '/' . Environment::get('request'), 301);
 			}
 		}
 
 		// Look for an 404 page
-		$obj404 = \PageModel::find404ByPid($objRootPage->id);
+		$obj404 = PageModel::find404ByPid($objRootPage->id);
 
 		// Die if there is no page at all
 		if ($obj404 === null)
@@ -102,7 +98,7 @@ class PageError404 extends \Frontend
 		}
 
 		// Forward to another page
-		$objNextPage = \PageModel::findPublishedById($obj404->jumpTo);
+		$objNextPage = PageModel::findPublishedById($obj404->jumpTo);
 
 		if ($objNextPage === null)
 		{

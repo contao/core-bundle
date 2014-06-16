@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use TCPDF;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleArticle extends \Module
+class ModuleArticle extends Module
 {
 
 	/**
@@ -69,7 +67,7 @@ class ModuleArticle extends \Module
 
 		if ($this->blnNoMarkup)
 		{
-			$this->Template = new \FrontendTemplate('mod_article_plain');
+			$this->Template = new FrontendTemplate('mod_article_plain');
 			$this->Template->setData($this->arrData);
 		}
 
@@ -92,15 +90,15 @@ class ModuleArticle extends \Module
 
 		// Add the modification date
 		$this->Template->timestamp = $this->tstamp;
-		$this->Template->date = \Date::parse($objPage->datimFormat, $this->tstamp);
+		$this->Template->date = Date::parse($objPage->datimFormat, $this->tstamp);
 
 		// Clean the RTE output
-		$this->teaser = \String::toHtml5($this->teaser);
+		$this->teaser = String::toHtml5($this->teaser);
 
 		// Show the teaser only
 		if ($this->multiMode && $this->showTeaser)
 		{
-			$this->Template = new \FrontendTemplate('mod_article_teaser');
+			$this->Template = new FrontendTemplate('mod_article_teaser');
 			$this->Template->setData($this->arrData);
 
 			$this->cssID = array($alias, '');
@@ -117,7 +115,7 @@ class ModuleArticle extends \Module
 				$this->cssID = $arrCss;
 			}
 
-			$article = (!\Config::get('disableAlias') && $this->alias != '') ? $this->alias : $this->id;
+			$article = (!Config::get('disableAlias') && $this->alias != '') ? $this->alias : $this->id;
 			$href = 'articles=' . (($this->inColumn != 'main') ? $this->inColumn . ':' : '') . $article;
 
 			$this->Template->headline = $this->headline;
@@ -130,7 +128,7 @@ class ModuleArticle extends \Module
 		}
 
 		// Get section and article alias
-		list($strSection, $strArticle) = explode(':', \Input::get('articles'));
+		list($strSection, $strArticle) = explode(':', Input::get('articles'));
 
 		if ($strArticle === null)
 		{
@@ -159,7 +157,7 @@ class ModuleArticle extends \Module
 		}
 
 		$arrElements = array();
-		$objCte = \ContentModel::findPublishedByPidAndTable($this->id, 'tl_article');
+		$objCte = ContentModel::findPublishedByPidAndTable($this->id, 'tl_article');
 
 		if ($objCte !== null)
 		{
@@ -225,10 +223,10 @@ class ModuleArticle extends \Module
 		// Add syndication variables
 		if ($this->Template->printable)
 		{
-			$request = \Environment::get('indexFreeRequest');
+			$request = Environment::get('indexFreeRequest');
 
 			$this->Template->print = '#';
-			$this->Template->encUrl = rawurlencode(\Environment::get('base') . \Environment::get('request'));
+			$this->Template->encUrl = rawurlencode(Environment::get('base') . Environment::get('request'));
 			$this->Template->encTitle = rawurlencode($objPage->pageTitle);
 			$this->Template->href = $request . ((strpos($request, '?') !== false) ? '&amp;' : '?') . 'pdf=' . $this->id;
 
@@ -251,7 +249,7 @@ class ModuleArticle extends \Module
 
 		// Generate article
 		$strArticle = $this->replaceInsertTags($this->generate(), false);
-		$strArticle = html_entity_decode($strArticle, ENT_QUOTES, \Config::get('characterSet'));
+		$strArticle = html_entity_decode($strArticle, ENT_QUOTES, Config::get('characterSet'));
 		$strArticle = $this->convertRelativeUrls($strArticle, '', true);
 
 		// Remove form elements and JavaScript links
@@ -308,7 +306,7 @@ class ModuleArticle extends \Module
 
 		// TCPDF configuration
 		$l['a_meta_dir'] = 'ltr';
-		$l['a_meta_charset'] = \Config::get('characterSet');
+		$l['a_meta_charset'] = Config::get('characterSet');
 		$l['a_meta_language'] = substr($GLOBALS['TL_LANGUAGE'], 0, 2);
 		$l['w_page'] = 'page';
 
@@ -316,7 +314,7 @@ class ModuleArticle extends \Module
 		require_once TL_ROOT . '/system/config/tcpdf.php';
 
 		// Create new PDF document
-		$pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
 
 		// Set document information
 		$pdf->SetCreator(PDF_CREATOR);

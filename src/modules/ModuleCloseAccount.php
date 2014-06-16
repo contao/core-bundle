@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleCloseAccount extends \Module
+class ModuleCloseAccount extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleCloseAccount extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['closeAccount'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -80,11 +76,11 @@ class ModuleCloseAccount extends \Module
 			'eval' => array('hideInput'=>true, 'mandatory'=>true, 'required'=>true, 'tableless'=>$this->tableless)
 		);
 
-		$objWidget = new \FormTextField(\FormTextField::getAttributesFromDca($arrField, $arrField['name']));
+		$objWidget = new FormTextField(FormTextField::getAttributesFromDca($arrField, $arrField['name']));
 		$objWidget->rowClass = 'row_0 row_first even';
 
 		// Validate widget
-		if (\Input::post('FORM_SUBMIT') == 'tl_close_account')
+		if (Input::post('FORM_SUBMIT') == 'tl_close_account')
 		{
 			$objWidget->validate();
 
@@ -92,7 +88,7 @@ class ModuleCloseAccount extends \Module
 			if (!$objWidget->hasErrors())
 			{
 				// The password has been generated with crypt()
-				if (\Encryption::test($this->User->password))
+				if (Encryption::test($this->User->password))
 				{
 					$blnAuthenticated = (crypt($objWidget->value, $this->User->password) == $this->User->password);
 				}
@@ -122,7 +118,7 @@ class ModuleCloseAccount extends \Module
 					}
 				}
 
-				$objMember = \MemberModel::findByPk($this->User->id);
+				$objMember = MemberModel::findByPk($this->User->id);
 
 				// Remove the account
 				if ($this->reg_close == 'close_delete')
@@ -153,7 +149,7 @@ class ModuleCloseAccount extends \Module
 		$this->Template->fields = $objWidget->parse();
 
 		$this->Template->formId = 'tl_close_account';
-		$this->Template->action = \Environment::get('indexFreeRequest');
+		$this->Template->action = Environment::get('indexFreeRequest');
 		$this->Template->slabel = specialchars($GLOBALS['TL_LANG']['MSC']['closeAccount']);
 		$this->Template->rowLast = 'row_1 row_last odd';
 		$this->Template->tableless = $this->tableless;

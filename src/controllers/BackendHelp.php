@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendHelp extends \Backend
+class BackendHelp extends Backend
 {
 
 	/**
@@ -44,8 +40,8 @@ class BackendHelp extends \Backend
 
 		$this->User->authenticate();
 
-		\System::loadLanguageFile('default');
-		\System::loadLanguageFile('modules');
+		System::loadLanguageFile('default');
+		System::loadLanguageFile('modules');
 	}
 
 
@@ -54,13 +50,13 @@ class BackendHelp extends \Backend
 	 */
 	public function run()
 	{
-		$table = \Input::get('table');
-		$field = \Input::get('field');
+		$table = Input::get('table');
+		$field = Input::get('field');
 
-		\System::loadLanguageFile($table);
+		System::loadLanguageFile($table);
 		$this->loadDataContainer($table);
 
-		$this->Template = new \BackendTemplate('be_help');
+		$this->Template = new BackendTemplate('be_help');
 		$this->Template->rows = array();
 		$this->Template->explanation = '';
 
@@ -156,7 +152,7 @@ class BackendHelp extends \Backend
 		// Add an explanation
 		if (isset($arrData['explanation']))
 		{
-			\System::loadLanguageFile('explain');
+			System::loadLanguageFile('explain');
 			$key = $arrData['explanation'];
 
 			if (!is_array($GLOBALS['TL_LANG']['XPL'][$key]))
@@ -169,15 +165,15 @@ class BackendHelp extends \Backend
 			}
 		}
 
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->title = specialchars($GLOBALS['TL_LANG']['MSC']['helpWizardTitle']);
-		$this->Template->charset = \Config::get('characterSet');
+		$this->Template->charset = Config::get('characterSet');
 		$this->Template->headline = $arrData['label'][0] ?: $field;
 		$this->Template->helpWizard = $GLOBALS['TL_LANG']['MSC']['helpWizard'];
 
-		\Config::set('debugMode', false);
+		Config::set('debugMode', false);
 		$this->Template->output();
 	}
 }

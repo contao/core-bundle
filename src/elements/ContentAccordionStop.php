@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentAccordionStop extends \ContentElement
+class ContentAccordionStop extends ContentElement
 {
 
 	/**
@@ -43,7 +39,7 @@ class ContentAccordionStop extends \ContentElement
 		if (TL_MODE == 'BE')
 		{
 			$this->strTemplate = 'be_wildcard';
-			$this->Template = new \BackendTemplate($this->strTemplate);
+			$this->Template = new BackendTemplate($this->strTemplate);
 		}
 	}
 }

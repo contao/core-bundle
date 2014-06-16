@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleWizard extends \Widget
+class ModuleWizard extends Widget
 {
 
 	/**
@@ -53,24 +49,24 @@ class ModuleWizard extends \Widget
 		$strCommand = 'cmd_' . $this->strField;
 
 		// Change the order
-		if (\Input::get($strCommand) && is_numeric(\Input::get('cid')) && \Input::get('id') == $this->currentRecord)
+		if (Input::get($strCommand) && is_numeric(Input::get('cid')) && Input::get('id') == $this->currentRecord)
 		{
-			switch (\Input::get($strCommand))
+			switch (Input::get($strCommand))
 			{
 				case 'copy':
-					$this->varValue = array_duplicate($this->varValue, \Input::get('cid'));
+					$this->varValue = array_duplicate($this->varValue, Input::get('cid'));
 					break;
 
 				case 'up':
-					$this->varValue = array_move_up($this->varValue, \Input::get('cid'));
+					$this->varValue = array_move_up($this->varValue, Input::get('cid'));
 					break;
 
 				case 'down':
-					$this->varValue = array_move_down($this->varValue, \Input::get('cid'));
+					$this->varValue = array_move_down($this->varValue, Input::get('cid'));
 					break;
 
 				case 'delete':
-					$this->varValue = array_delete($this->varValue, \Input::get('cid'));
+					$this->varValue = array_delete($this->varValue, Input::get('cid'));
 					break;
 			}
 		}
@@ -111,9 +107,9 @@ class ModuleWizard extends \Widget
 		}
 
 		// Get the new value
-		if (\Input::post('FORM_SUBMIT') == $this->strTable)
+		if (Input::post('FORM_SUBMIT') == $this->strTable)
 		{
-			$this->varValue = \Input::post($this->strId);
+			$this->varValue = Input::post($this->strId);
 		}
 
 		// Make sure there is at least an empty array
@@ -145,25 +141,25 @@ class ModuleWizard extends \Widget
 		}
 
 		// Save the value
-		if (\Input::get($strCommand) || \Input::post('FORM_SUBMIT') == $this->strTable)
+		if (Input::get($strCommand) || Input::post('FORM_SUBMIT') == $this->strTable)
 		{
 			$this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "=? WHERE id=?")
 						   ->execute(serialize($this->varValue), $this->currentRecord);
 
 			// Reload the page
-			if (is_numeric(\Input::get('cid')) && \Input::get('id') == $this->currentRecord)
+			if (is_numeric(Input::get('cid')) && Input::get('id') == $this->currentRecord)
 			{
-				$this->redirect(preg_replace('/&(amp;)?cid=[^&]*/i', '', preg_replace('/&(amp;)?' . preg_quote($strCommand, '/') . '=[^&]*/i', '', \Environment::get('request'))));
+				$this->redirect(preg_replace('/&(amp;)?cid=[^&]*/i', '', preg_replace('/&(amp;)?' . preg_quote($strCommand, '/') . '=[^&]*/i', '', Environment::get('request'))));
 			}
 		}
 
 		// Initialize the tab index
-		if (!\Cache::has('tabindex'))
+		if (!Cache::has('tabindex'))
 		{
-			\Cache::set('tabindex', 1);
+			Cache::set('tabindex', 1);
 		}
 
-		$tabindex = \Cache::get('tabindex');
+		$tabindex = Cache::get('tabindex');
 
 		// Add the label and the return wizard
 		$return = '<table id="ctrl_'.$this->strId.'" class="tl_modulewizard">
@@ -177,7 +173,7 @@ class ModuleWizard extends \Widget
   <tbody class="sortable" data-tabindex="'.$tabindex.'">';
 
 		// Load the tl_article language file
-		\System::loadLanguageFile('tl_article');
+		System::loadLanguageFile('tl_article');
 
 		// Add the input fields
 		for ($i=0, $c=count($this->varValue); $i<$c; $i++)
@@ -213,19 +209,19 @@ class ModuleWizard extends \Widget
 
 				if ($button == 'edit')
 				{
-					$return .= ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->varValue[$i]['mod'] . '&amp;popup=1&amp;rt=' . REQUEST_TOKEN . '&amp;nb=1" title="' . specialchars($GLOBALS['TL_LANG']['tl_layout']['edit_module']) . '" class="module_link" ' . (($this->varValue[$i]['mod'] > 0) ? '' : ' style="display:none"') . ' onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['tl_layout']['edit_module'])) . '\',\'url\':this.href});return false">'.\Image::getHtml('edit.gif').'</a>' . \Image::getHtml('edit_.gif', '', 'class="module_image"' . (($this->varValue[$i]['mod'] > 0) ? ' style="display:none"' : ''));
+					$return .= ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->varValue[$i]['mod'] . '&amp;popup=1&amp;rt=' . REQUEST_TOKEN . '&amp;nb=1" title="' . specialchars($GLOBALS['TL_LANG']['tl_layout']['edit_module']) . '" class="module_link" ' . (($this->varValue[$i]['mod'] > 0) ? '' : ' style="display:none"') . ' onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['tl_layout']['edit_module'])) . '\',\'url\':this.href});return false">'.Image::getHtml('edit.gif').'</a>' . Image::getHtml('edit_.gif', '', 'class="module_image"' . (($this->varValue[$i]['mod'] > 0) ? ' style="display:none"' : ''));
 				}
 				elseif ($button == 'drag')
 				{
-					$return .= ' ' . \Image::getHtml('drag.gif', '', 'class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '"');
+					$return .= ' ' . Image::getHtml('drag.gif', '', 'class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '"');
 				}
 				elseif ($button == 'enable')
 				{
-					$return .= ' ' . \Image::getHtml((($this->varValue[$i]['enable']) ? 'visible.gif' : 'invisible.gif'), '', 'class="mw_enable" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['mw_enable']) . '"') . '<input name="'.$this->strId.'['.$i.'][enable]" type="checkbox" class="tl_checkbox mw_enable" value="1" tabindex="'.$tabindex++.'" onfocus="Backend.getScrollOffset()"'. (($this->varValue[$i]['enable']) ? ' checked' : '').'>';
+					$return .= ' ' . Image::getHtml((($this->varValue[$i]['enable']) ? 'visible.gif' : 'invisible.gif'), '', 'class="mw_enable" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['mw_enable']) . '"') . '<input name="'.$this->strId.'['.$i.'][enable]" type="checkbox" class="tl_checkbox mw_enable" value="1" tabindex="'.$tabindex++.'" onfocus="Backend.getScrollOffset()"'. (($this->varValue[$i]['enable']) ? ' checked' : '').'>';
 				}
 				else
 				{
-					$return .= ' <a href="'.$this->addToUrl('&amp;'.$strCommand.'='.$button.'&amp;cid='.$i.'&amp;id='.$this->currentRecord).'"' . $class . ' title="'.specialchars($GLOBALS['TL_LANG']['MSC']['mw_'.$button]).'" onclick="Backend.moduleWizard(this,\''.$button.'\',\'ctrl_'.$this->strId.'\');return false">'.\Image::getHtml($button.'.gif', $GLOBALS['TL_LANG']['MSC']['mw_'.$button], 'class="tl_listwizard_img"').'</a>';
+					$return .= ' <a href="'.$this->addToUrl('&amp;'.$strCommand.'='.$button.'&amp;cid='.$i.'&amp;id='.$this->currentRecord).'"' . $class . ' title="'.specialchars($GLOBALS['TL_LANG']['MSC']['mw_'.$button]).'" onclick="Backend.moduleWizard(this,\''.$button.'\',\'ctrl_'.$this->strId.'\');return false">'.Image::getHtml($button.'.gif', $GLOBALS['TL_LANG']['MSC']['mw_'.$button], 'class="tl_listwizard_img"').'</a>';
 				}
 			}
 
@@ -234,7 +230,7 @@ class ModuleWizard extends \Widget
 		}
 
 		// Store the tab index
-		\Cache::set('tabindex', $tabindex);
+		Cache::set('tabindex', $tabindex);
 
 		return $return.'
   </tbody>

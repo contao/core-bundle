@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleCustomnav extends \Module
+class ModuleCustomnav extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleCustomnav extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['customnav'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -85,7 +81,7 @@ class ModuleCustomnav extends \Module
 		}
 
 		// Get all active pages
-		$objPages = \PageModel::findPublishedRegularWithoutGuestsByIds($this->pages);
+		$objPages = PageModel::findPublishedRegularWithoutGuestsByIds($this->pages);
 
 		// Return if there are no pages
 		if ($objPages === null)
@@ -118,7 +114,7 @@ class ModuleCustomnav extends \Module
 			$this->navigationTpl = 'nav_default';
 		}
 
-		$objTemplate = new \FrontendTemplate($this->navigationTpl);
+		$objTemplate = new FrontendTemplate($this->navigationTpl);
 
 		$objTemplate->type = get_class($this);
 		$objTemplate->cssID = $this->cssID; // see #4897 and 6129
@@ -145,13 +141,13 @@ class ModuleCustomnav extends \Module
 						break;
 
 					case 'forward':
-						if (($objNext = \PageModel::findPublishedById($arrPage['jumpTo'])) !== null)
+						if (($objNext = PageModel::findPublishedById($arrPage['jumpTo'])) !== null)
 						{
 							$strForceLang = null;
 							$objNext->loadDetails();
 
 							// Check the target page language (see #4706)
-							if (\Config::get('addLanguageToUrl'))
+							if (Config::get('addLanguageToUrl'))
 							{
 								$strForceLang = $objNext->language;
 							}
@@ -225,7 +221,7 @@ class ModuleCustomnav extends \Module
 
 		$objTemplate->items = $items;
 
-		$this->Template->request = \Environment::get('indexFreeRequest');
+		$this->Template->request = Environment::get('indexFreeRequest');
 		$this->Template->skipId = 'skipNavigation' . $this->id;
 		$this->Template->skipNavigation = specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']);
 		$this->Template->items = !empty($items) ? $objTemplate->parse() : '';

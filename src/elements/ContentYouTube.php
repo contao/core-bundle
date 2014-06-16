@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use stdClass;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentYouTube extends \ContentElement
+class ContentYouTube extends ContentElement
 {
 
 	/**
@@ -78,16 +76,16 @@ class ContentYouTube extends \ContentElement
 		// Optional poster
 		if ($this->posterSRC != '')
 		{
-			if (($objFile = \FilesModel::findByUuid($this->posterSRC)) !== null)
+			if (($objFile = FilesModel::findByUuid($this->posterSRC)) !== null)
 			{
 				$this->Template->poster = $objFile->path;
 			}
 		}
 
 		// Check for SSL (see #6900)
-		$protocol = \Environment::get('ssl') ? 'https://' : 'http://';
+		$protocol = Environment::get('ssl') ? 'https://' : 'http://';
 
-		$objFile = new \stdClass();
+		$objFile = new stdClass();
 		$objFile->mime = 'video/x-youtube';
 		$objFile->path = $protocol . 'www.youtube.com/watch?v=' . $this->youtube;
 

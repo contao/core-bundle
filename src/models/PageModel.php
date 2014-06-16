@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -24,7 +22,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class PageModel extends \Model
+class PageModel extends Model
 {
 
 	/**
@@ -46,7 +44,7 @@ class PageModel extends \Model
 	 * @param integer $intId      The page ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no published page
+	 * @return Model|null The model or null if there is no published page
 	 */
 	public static function findPublishedById($intId, array $arrOptions=array())
 	{
@@ -70,12 +68,12 @@ class PageModel extends \Model
 	 * @param mixed  $varLanguage An ISO language code or an array of ISO language codes
 	 * @param array  $arrOptions  An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no matching root page
+	 * @return Model|null The model or null if there is no matching root page
 	 */
 	public static function findFirstPublishedRootByHostAndLanguage($strHost, $varLanguage, array $arrOptions=array())
 	{
 		$t = static::$strTable;
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 
 		if (is_array($varLanguage))
 		{
@@ -130,7 +128,7 @@ class PageModel extends \Model
 	 * @param integer $intPid     The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no published page
+	 * @return Model|null The model or null if there is no published page
 	 */
 	public static function findFirstPublishedByPid($intPid, array $arrOptions=array())
 	{
@@ -158,7 +156,7 @@ class PageModel extends \Model
 	 * @param integer $intPid The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no published regular page
+	 * @return Model|null The model or null if there is no published regular page
 	 */
 	public static function findFirstPublishedRegularByPid($intPid, array $arrOptions=array())
 	{
@@ -186,7 +184,7 @@ class PageModel extends \Model
 	 * @param integer $intPid     The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no 403 page
+	 * @return Model|null The model or null if there is no 403 page
 	 */
 	public static function find403ByPid($intPid, array $arrOptions=array())
 	{
@@ -214,7 +212,7 @@ class PageModel extends \Model
 	 * @param integer $intPid     The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no 404 page
+	 * @return Model|null The model or null if there is no 404 page
 	 */
 	public static function find404ByPid($intPid, array $arrOptions=array())
 	{
@@ -242,7 +240,7 @@ class PageModel extends \Model
 	 * @param array $arrAliases An array of possible alias names
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of Models or null if there is no matching pages
+	 * @return Collection|null A collection of Models or null if there is no matching pages
 	 */
 	public static function findByAliases($arrAliases, array $arrOptions=array())
 	{
@@ -274,7 +272,7 @@ class PageModel extends \Model
 
 		if (!isset($arrOptions['order']))
 		{
-			$arrOptions['order'] = \Database::getInstance()->findInSet("$t.alias", $arrAliases);
+			$arrOptions['order'] = Database::getInstance()->findInSet("$t.alias", $arrAliases);
 		}
 
 		return static::findBy($arrColumns, null, $arrOptions);
@@ -287,7 +285,7 @@ class PageModel extends \Model
 	 * @param mixed $varId      The numeric ID or the alias name
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no pages
+	 * @return Collection|null A collection of models or null if there are no pages
 	 */
 	public static function findPublishedByIdOrAlias($varId, array $arrOptions=array())
 	{
@@ -312,14 +310,14 @@ class PageModel extends \Model
 	 * @param boolean $blnShowHidden If true, hidden pages will be included
 	 * @param boolean $blnIsSitemap  If true, the sitemap settings apply
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no pages
+	 * @return Collection|null A collection of models or null if there are no pages
 	 */
 	public static function findPublishedSubpagesWithoutGuestsByPid($intPid, $blnShowHidden=false, $blnIsSitemap=false)
 	{
 		$time = time();
 
-		$objSubpages = \Database::getInstance()->prepare("SELECT p1.*, (SELECT COUNT(*) FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type!='error_403' AND p2.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p2.hide='' OR sitemap='map_always')" : " AND p2.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p2.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p2.start='' OR p2.start<$time) AND (p2.stop='' OR p2.stop>$time) AND p2.published=1" : "") . ") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type!='error_403' AND p1.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p1.hide='' OR sitemap='map_always')" : " AND p1.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p1.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p1.start='' OR p1.start<$time) AND (p1.stop='' OR p1.stop>$time) AND p1.published=1" : "") . " ORDER BY p1.sorting")
-											   ->execute($intPid);
+		$objSubpages = Database::getInstance()->prepare("SELECT p1.*, (SELECT COUNT(*) FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type!='error_403' AND p2.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p2.hide='' OR sitemap='map_always')" : " AND p2.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p2.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p2.start='' OR p2.start<$time) AND (p2.stop='' OR p2.stop>$time) AND p2.published=1" : "") . ") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type!='error_403' AND p1.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p1.hide='' OR sitemap='map_always')" : " AND p1.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p1.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p1.start='' OR p1.start<$time) AND (p1.stop='' OR p1.stop>$time) AND p1.published=1" : "") . " ORDER BY p1.sorting")
+											  ->execute($intPid);
 
 		if ($objSubpages->numRows < 1)
 		{
@@ -336,7 +334,7 @@ class PageModel extends \Model
 	 * @param integer $arrIds     An array of page IDs
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no pages
+	 * @return Collection|null A collection of models or null if there are no pages
 	 */
 	public static function findPublishedRegularWithoutGuestsByIds($arrIds, array $arrOptions=array())
 	{
@@ -361,7 +359,7 @@ class PageModel extends \Model
 
 		if (!isset($arrOptions['order']))
 		{
-			$arrOptions['order'] = \Database::getInstance()->findInSet("$t.id", $arrIds);
+			$arrOptions['order'] = Database::getInstance()->findInSet("$t.id", $arrIds);
 		}
 
 		return static::findBy($arrColumns, null, $arrOptions);
@@ -374,7 +372,7 @@ class PageModel extends \Model
 	 * @param integer $intPid     The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no pages
+	 * @return Collection|null A collection of models or null if there are no pages
 	 */
 	public static function findPublishedRegularWithoutGuestsByPid($intPid, array $arrOptions=array())
 	{
@@ -406,7 +404,7 @@ class PageModel extends \Model
 	 *
 	 * @param integer $intId The page's ID
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no parent pages
+	 * @return Collection|null A collection of models or null if there are no parent pages
 	 */
 	public static function findParentsById($intId)
 	{
@@ -432,7 +430,7 @@ class PageModel extends \Model
 	 *
 	 * @param integer $intId The page's ID
 	 *
-	 * @return \Model|null The model or null if there is no matching page
+	 * @return Model|null The model or null if there is no matching page
 	 */
 	public static function findWithDetails($intId)
 	{
@@ -450,7 +448,7 @@ class PageModel extends \Model
 	/**
 	 * Get the details of a page including inherited parameters
 	 *
-	 * @return \Model The page model
+	 * @return Model The page model
 	 */
 	public function loadDetails()
 	{
@@ -486,7 +484,7 @@ class PageModel extends \Model
 		else
 		{
 			// Load all parent pages
-			$objParentPage = \PageModel::findParentsById($pid);
+			$objParentPage = PageModel::findParentsById($pid);
 
 			if ($objParentPage !== null)
 			{
@@ -579,7 +577,7 @@ class PageModel extends \Model
 		elseif (TL_MODE == 'FE' && $this->type != 'root')
 		{
 			header('HTTP/1.1 404 Not Found');
-			\System::log('Page ID "'. $this->id .'" does not belong to a root page', __METHOD__, TL_ERROR);
+			System::log('Page ID "'. $this->id .'" does not belong to a root page', __METHOD__, TL_ERROR);
 			die_nicely('be_no_root', 'No root page found');
 		}
 
@@ -603,15 +601,15 @@ class PageModel extends \Model
 		// Use the global date format if none is set (see #6104)
 		if ($this->dateFormat == '')
 		{
-			$this->dateFormat = \Config::get('dateFormat');
+			$this->dateFormat = Config::get('dateFormat');
 		}
 		if ($this->timeFormat == '')
 		{
-			$this->timeFormat = \Config::get('timeFormat');
+			$this->timeFormat = Config::get('timeFormat');
 		}
 		if ($this->datimFormat == '')
 		{
-			$this->datimFormat = \Config::get('datimFormat');
+			$this->datimFormat = Config::get('datimFormat');
 		}
 
 		$this->blnDetailsLoaded = true;
@@ -629,6 +627,6 @@ class PageModel extends \Model
 	 */
 	public function getFrontendUrl($strParams=null, $strForceLang=null)
 	{
-		return \Controller::generateFrontendUrl($this->row(), $strParams, $strForceLang);
+		return Controller::generateFrontendUrl($this->row(), $strParams, $strForceLang);
 	}
 }

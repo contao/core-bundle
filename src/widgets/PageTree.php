@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PageTree extends \Widget
+class PageTree extends Widget
 {
 
 	/**
@@ -89,7 +85,7 @@ class PageTree extends \Widget
 		// Store the order value
 		if ($this->orderField != '')
 		{
-			$arrNew = explode(',', \Input::post($this->strOrderName));
+			$arrNew = explode(',', Input::post($this->strOrderName));
 
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
@@ -135,14 +131,14 @@ class PageTree extends \Widget
 
 		if (!empty($this->varValue)) // Can be an array
 		{
-			$objPages = \PageModel::findMultipleByIds((array)$this->varValue);
+			$objPages = PageModel::findMultipleByIds((array)$this->varValue);
 
 			if ($objPages !== null)
 			{
 				while ($objPages->next())
 				{
 					$arrSet[] = $objPages->id;
-					$arrValues[$objPages->id] = \Image::getHtml($this->getPageStatusIcon($objPages)) . ' ' . $objPages->title . ' (' . $objPages->alias . \Config::get('urlSuffix') . ')';
+					$arrValues[$objPages->id] = Image::getHtml($this->getPageStatusIcon($objPages)) . ' ' . $objPages->title . ' (' . $objPages->alias . Config::get('urlSuffix') . ')';
 				}
 			}
 
@@ -174,7 +170,7 @@ class PageTree extends \Widget
 		}
 
 		// Load the fonts for the drag hint (see #4838)
-		\Config::set('loadGoogleFonts', true);
+		Config::set('loadGoogleFonts', true);
 
 		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', $arrSet).'">' . ($blnHasOrder ? '
   <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->orderField}.'">' : '') . '
@@ -188,11 +184,11 @@ class PageTree extends \Widget
 		}
 
 		$return .= '</ul>
-    <p><a href="contao/page.php?do='.\Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.implode(',', $arrSet).'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
+    <p><a href="contao/page.php?do='.Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.implode(',', $arrSet).'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
     <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'")</script>' : '') . '
   </div>';
 
-		if (!\Environment::get('isAjaxRequest'))
+		if (!Environment::get('isAjaxRequest'))
 		{
 			$return = '<div>' . $return . '</div>';
 		}

@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class MetaWizard extends \Widget
+class MetaWizard extends Widget
 {
 
 	/**
@@ -98,7 +94,7 @@ class MetaWizard extends \Widget
 				$return .= '
     <li class="' . (($count%2 == 0) ? 'even' : 'odd') . '" data-language="' . $lang . '">';
 
-				$return .= '<span class="lang">' . $languages[$lang] . ' ' . \Image::getHtml('delete.gif', '', 'class="tl_metawizard_img" onclick="Backend.metaDelete(this)" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['aw_delete']) . '"') . '</span>';
+				$return .= '<span class="lang">' . $languages[$lang] . ' ' . Image::getHtml('delete.gif', '', 'class="tl_metawizard_img" onclick="Backend.metaDelete(this)" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['aw_delete']) . '"') . '</span>';
 
 				// Take the fields from the DCA (see #4327)
 				foreach ($this->metaFields as $field)

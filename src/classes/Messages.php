@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class Messages extends \Backend
+class Messages extends Backend
 {
 
 	/**
@@ -34,9 +30,9 @@ class Messages extends \Backend
 	 */
 	public function versionCheck()
 	{
-		if (\Config::get('latestVersion') && version_compare(VERSION . '.' . BUILD, \Config::get('latestVersion'), '<'))
+		if (Config::get('latestVersion') && version_compare(VERSION . '.' . BUILD, Config::get('latestVersion'), '<'))
 		{
-			return '<p class="tl_info"><a href="contao/main.php?do=maintenance">' . sprintf($GLOBALS['TL_LANG']['MSC']['updateVersion'], \Config::get('latestVersion')) . '</a></p>';
+			return '<p class="tl_info"><a href="contao/main.php?do=maintenance">' . sprintf($GLOBALS['TL_LANG']['MSC']['updateVersion'], Config::get('latestVersion')) . '</a></p>';
 		}
 
 		return '';
@@ -53,7 +49,7 @@ class Messages extends \Backend
 
 		if ($this->User->lastLogin > 0)
 		{
-			return '<p class="tl_info">' . sprintf($GLOBALS['TL_LANG']['MSC']['lastLogin'][1], \Date::parse(\Config::get('datimFormat'), $this->User->lastLogin)) . '</p>';
+			return '<p class="tl_info">' . sprintf($GLOBALS['TL_LANG']['MSC']['lastLogin'][1], Date::parse(Config::get('datimFormat'), $this->User->lastLogin)) . '</p>';
 		}
 
 		return '';

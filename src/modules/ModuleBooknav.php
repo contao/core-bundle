@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleBooknav extends \Module
+class ModuleBooknav extends Module
 {
 
 	/**
@@ -49,7 +45,7 @@ class ModuleBooknav extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['booknav'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -157,7 +153,7 @@ class ModuleBooknav extends \Module
 	 */
 	protected function getBookPages($intParentId, $groups, $time)
 	{
-		$objPages = \PageModel::findPublishedSubpagesWithoutGuestsByPid($intParentId, $this->showHidden);
+		$objPages = PageModel::findPublishedSubpagesWithoutGuestsByPid($intParentId, $this->showHidden);
 
 		if ($objPages !== null)
 		{

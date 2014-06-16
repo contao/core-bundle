@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentHyperlink extends \ContentElement
+class ContentHyperlink extends ContentElement
 {
 
 	/**
@@ -44,7 +40,7 @@ class ContentHyperlink extends \ContentElement
 
 		if (substr($this->url, 0, 7) == 'mailto:')
 		{
-			$this->url = \String::encodeEmail($this->url);
+			$this->url = String::encodeEmail($this->url);
 		}
 		else
 		{
@@ -61,26 +57,26 @@ class ContentHyperlink extends \ContentElement
 		// Use an image instead of the title
 		if ($this->useImage && $this->singleSRC != '')
 		{
-			$objModel = \FilesModel::findByUuid($this->singleSRC);
+			$objModel = FilesModel::findByUuid($this->singleSRC);
 
 			if ($objModel === null)
 			{
-				if (!\Validator::isUuid($this->singleSRC))
+				if (!Validator::isUuid($this->singleSRC))
 				{
 					$this->Template->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 				}
 			}
 			elseif (is_file(TL_ROOT . '/' . $objModel->path))
 			{
-				$this->Template = new \FrontendTemplate('ce_hyperlink_image');
+				$this->Template = new FrontendTemplate('ce_hyperlink_image');
 				$this->Template->setData($this->arrData);
 
-				$objFile = new \File($objModel->path);
+				$objFile = new File($objModel->path);
 
 				if ($objFile->isGdImage)
 				{
 					$size = deserialize($this->size);
-					$intMaxWidth = (TL_MODE == 'BE') ? 320 : \Config::get('maxImageWidth');
+					$intMaxWidth = (TL_MODE == 'BE') ? 320 : Config::get('maxImageWidth');
 
 					// Adjust the image size
 					if ($intMaxWidth > 0  && ($size[0] > $intMaxWidth || (!$size[0] && $objFile->width > $intMaxWidth)))
@@ -89,7 +85,7 @@ class ContentHyperlink extends \ContentElement
 						$size[1] = floor($intMaxWidth * $objFile->height / $objFile->width);
 					}
 
-					$src = \Image::get($objModel->path, $size[0], $size[1], $size[2]);
+					$src = Image::get($objModel->path, $size[0], $size[1], $size[2]);
 
 					if (($imgSize = @getimagesize(TL_ROOT . '/' . rawurldecode($src))) !== false)
 					{

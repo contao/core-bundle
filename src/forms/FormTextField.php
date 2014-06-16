@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormTextField extends \Widget
+class FormTextField extends Widget
 {
 
 	/**
@@ -104,7 +100,7 @@ class FormTextField extends \Widget
 				// Hide the Punycode format (see #2750)
 				if ($this->rgxp == 'email' || $this->rgxp == 'friendly' || $this->rgxp == 'url')
 				{
-					return \Idna::decode($this->varValue);
+					return Idna::decode($this->varValue);
 				}
 				else
 				{
@@ -165,11 +161,11 @@ class FormTextField extends \Widget
 		// Convert to Punycode format (see #5571)
 		if ($this->rgxp == 'url')
 		{
-			$varInput = \Idna::encodeUrl($varInput);
+			$varInput = Idna::encodeUrl($varInput);
 		}
 		elseif ($this->rgxp == 'email' || $this->rgxp == 'friendly')
 		{
-			$varInput = \Idna::encodeEmail($varInput);
+			$varInput = Idna::encodeEmail($varInput);
 		}
 
 		return parent::validator(trim($varInput));

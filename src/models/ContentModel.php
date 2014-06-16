@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -24,7 +22,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class ContentModel extends \Model
+class ContentModel extends Model
 {
 
 	/**
@@ -41,7 +39,7 @@ class ContentModel extends \Model
 	 * @param string  $strParentTable The parent table name
 	 * @param array   $arrOptions     An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no content elements
+	 * @return Collection|null A collection of models or null if there are no content elements
 	 */
 	public static function findPublishedByPidAndTable($intPid, $strParentTable, array $arrOptions=array())
 	{

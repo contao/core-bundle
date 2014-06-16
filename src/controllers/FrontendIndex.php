@@ -13,6 +13,7 @@
 namespace Contao;
 
 use Contao\Model\Collection;
+use UnusedArgumentsException;
 
 
 /**
@@ -23,7 +24,7 @@ use Contao\Model\Collection;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FrontendIndex extends \Frontend
+class FrontendIndex extends Frontend
 {
 
 	/**
@@ -46,14 +47,14 @@ class FrontendIndex extends \Frontend
 		if (!$_SESSION['DISABLE_CACHE'])
 		{
 			// Maintenance mode (see #4561 and #6353)
-			if (\Config::get('maintenanceMode'))
+			if (Config::get('maintenanceMode'))
 			{
 				header('HTTP/1.1 503 Service Unavailable');
 				die_nicely('be_unavailable', 'This site is currently down for maintenance. Please come back later.');
 			}
 
 			// Disable the debug mode (see #6450)
-			\Config::set('debugMode', false);
+			Config::set('debugMode', false);
 		}
 	}
 
@@ -82,7 +83,7 @@ class FrontendIndex extends \Frontend
 			$objHandler->generate($pageId);
 		}
 		// Throw a 404 error if URL rewriting is active and the URL contains the index.php fragment
-		elseif (\Config::get('rewriteURL') && strncmp(\Environment::get('request'), 'index.php/', 10) === 0)
+		elseif (Config::get('rewriteURL') && strncmp(Environment::get('request'), 'index.php/', 10) === 0)
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
@@ -90,7 +91,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Get the current page object(s)
-		$objPage = \PageModel::findPublishedByIdOrAlias($pageId);
+		$objPage = PageModel::findPublishedByIdOrAlias($pageId);
 
 		// Check the URL and language of each page if there are multiple results
 		if ($objPage !== null && $objPage->count() > 1)
@@ -113,7 +114,7 @@ class FrontendIndex extends \Frontend
 				}
 			}
 
-			$strHost = \Environment::get('host');
+			$strHost = Environment::get('host');
 
 			// Look for a root page whose domain name matches the host name
 			if (isset($arrPages[$strHost]))
@@ -126,13 +127,13 @@ class FrontendIndex extends \Frontend
 			}
 
 			// Use the first result (see #4872)
-			if (!\Config::get('addLanguageToUrl'))
+			if (!Config::get('addLanguageToUrl'))
 			{
 				$objNewPage = current($arrLangs);
 			}
 
 			// Try to find a page matching the language parameter
-			elseif (($lang = \Input::get('language')) != '' && isset($arrLangs[$lang]))
+			elseif (($lang = Input::get('language')) != '' && isset($arrLangs[$lang]))
 			{
 				$objNewPage = $arrLangs[$lang];
 			}
@@ -177,11 +178,11 @@ class FrontendIndex extends \Frontend
 		// Set the admin e-mail address
 		if ($objPage->adminEmail != '')
 		{
-			list($GLOBALS['TL_ADMIN_NAME'], $GLOBALS['TL_ADMIN_EMAIL']) = \String::splitFriendlyEmail($objPage->adminEmail);
+			list($GLOBALS['TL_ADMIN_NAME'], $GLOBALS['TL_ADMIN_EMAIL']) = String::splitFriendlyEmail($objPage->adminEmail);
 		}
 		else
 		{
-			list($GLOBALS['TL_ADMIN_NAME'], $GLOBALS['TL_ADMIN_EMAIL']) = \String::splitFriendlyEmail(\Config::get('adminEmail'));
+			list($GLOBALS['TL_ADMIN_NAME'], $GLOBALS['TL_ADMIN_EMAIL']) = String::splitFriendlyEmail(Config::get('adminEmail'));
 		}
 
 		// Exit if the root page has not been published (see #2425)
@@ -193,7 +194,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Check wether the language matches the root page language
-		if (\Config::get('addLanguageToUrl') && \Input::get('language') != $objPage->rootLanguage)
+		if (Config::get('addLanguageToUrl') && Input::get('language') != $objPage->rootLanguage)
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
@@ -204,11 +205,11 @@ class FrontendIndex extends \Frontend
 		if ($objPage->domain != '')
 		{
 			// Load an error 404 page object
-			if ($objPage->domain != \Environment::get('host'))
+			if ($objPage->domain != Environment::get('host'))
 			{
 				$this->User->authenticate();
 				$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-				$objHandler->generate($objPage->id, $objPage->domain, \Environment::get('host'));
+				$objHandler->generate($objPage->id, $objPage->domain, Environment::get('host'));
 			}
 		}
 
@@ -255,7 +256,7 @@ class FrontendIndex extends \Frontend
 					break;
 			}
 		}
-		catch (\UnusedArgumentsException $e)
+		catch (UnusedArgumentsException $e)
 		{
 			// Render the error page (see #5570)
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
@@ -273,7 +274,7 @@ class FrontendIndex extends \Frontend
 	protected function outputFromCache()
 	{
 		// Build the page if a user is (potentially) logged in or there is POST data
-		if (!empty($_POST) || \Input::cookie('FE_USER_AUTH') || \Input::cookie('FE_AUTO_LOGIN') || $_SESSION['DISABLE_CACHE'] || isset($_SESSION['LOGIN_ERROR']) || \Config::get('debugMode'))
+		if (!empty($_POST) || Input::cookie('FE_USER_AUTH') || Input::cookie('FE_AUTO_LOGIN') || $_SESSION['DISABLE_CACHE'] || isset($_SESSION['LOGIN_ERROR']) || Config::get('debugMode'))
 		{
 			return;
 		}
@@ -284,20 +285,20 @@ class FrontendIndex extends \Frontend
 		 * empty requests at all and considering all browser languages, which
 		 * is not possible for various reasons.
 		 */
-		if (\Environment::get('request') == '' || \Environment::get('request') == 'index.php')
+		if (Environment::get('request') == '' || Environment::get('request') == 'index.php')
 		{
 			// Return if the language is added to the URL and the empty domain will be redirected
-			if (\Config::get('addLanguageToUrl') && !\Config::get('doNotRedirectEmpty'))
+			if (Config::get('addLanguageToUrl') && !Config::get('doNotRedirectEmpty'))
 			{
 				return;
 			}
 
-			$arrLanguage = \Environment::get('httpAcceptLanguage');
-			$strCacheKey = \Environment::get('base') .'empty.'. $arrLanguage[0];
+			$arrLanguage = Environment::get('httpAcceptLanguage');
+			$strCacheKey = Environment::get('base') .'empty.'. $arrLanguage[0];
 		}
 		else
 		{
-			$strCacheKey = \Environment::get('base') . \Environment::get('request');
+			$strCacheKey = Environment::get('base') . Environment::get('request');
 		}
 
 		// HOOK: add custom logic
@@ -314,7 +315,7 @@ class FrontendIndex extends \Frontend
 		$strCacheFile = null;
 
 		// Check for a mobile layout
-		if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
+		if (Input::cookie('TL_VIEW') == 'mobile' || (Environment::get('agent')->mobile && Input::cookie('TL_VIEW') != 'desktop'))
 		{
 			$strCacheKey = md5($strCacheKey . '.mobile');
 			$strCacheFile = TL_ROOT . '/system/cache/html/' . substr($strCacheKey, 0, 1) . '/' . $strCacheKey . '.html';
@@ -367,10 +368,10 @@ class FrontendIndex extends \Frontend
 		$session = $this->Session->getData();
 
 		// Set the new referer
-		if (!isset($_GET['pdf']) && !isset($_GET['file']) && !isset($_GET['id']) && $session['referer']['current'] != \Environment::get('requestUri'))
+		if (!isset($_GET['pdf']) && !isset($_GET['file']) && !isset($_GET['id']) && $session['referer']['current'] != Environment::get('requestUri'))
 		{
 			$session['referer']['last'] = $session['referer']['current'];
-			$session['referer']['current'] = substr(\Environment::get('requestUri'), strlen(TL_PATH) + 1);
+			$session['referer']['current'] = substr(Environment::get('requestUri'), strlen(TL_PATH) + 1);
 		}
 
 		// Store the session data
@@ -378,7 +379,7 @@ class FrontendIndex extends \Frontend
 
 		// Load the default language file (see #2644)
 		$this->import('Config');
-		\System::loadLanguageFile('default');
+		System::loadLanguageFile('default');
 
 		// Replace the insert tags and then re-replace the request_token
 		// tag in case a form element has been loaded via insert tag
@@ -406,10 +407,10 @@ class FrontendIndex extends \Frontend
 		}
 
 		header('Vary: User-Agent', false);
-		header('Content-Type: ' . $content . '; charset=' . \Config::get('characterSet'));
+		header('Content-Type: ' . $content . '; charset=' . Config::get('characterSet'));
 
 		// Send the cache headers
-		if ($expire !== null && (\Config::get('cacheMode') == 'both' || \Config::get('cacheMode') == 'browser'))
+		if ($expire !== null && (Config::get('cacheMode') == 'both' || Config::get('cacheMode') == 'browser'))
 		{
 			header('Cache-Control: public, max-age=' . ($expire - time()));
 			header('Expires: ' . gmdate('D, d M Y H:i:s', $expire) . ' GMT');

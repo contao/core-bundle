@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use stdClass;
 
 
 /**
@@ -25,12 +23,12 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentGallery extends \ContentElement
+class ContentGallery extends ContentElement
 {
 
 	/**
 	 * Files object
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objFiles;
 
@@ -69,11 +67,11 @@ class ContentGallery extends \ContentElement
 		}
 
 		// Get the file entries from the database
-		$this->objFiles = \FilesModel::findMultipleByUuids($this->multiSRC);
+		$this->objFiles = FilesModel::findMultipleByUuids($this->multiSRC);
 
 		if ($this->objFiles === null)
 		{
-			if (!\Validator::isUuid($this->multiSRC[0]))
+			if (!Validator::isUuid($this->multiSRC[0]))
 			{
 				return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 			}
@@ -108,7 +106,7 @@ class ContentGallery extends \ContentElement
 			// Single files
 			if ($objFiles->type == 'file')
 			{
-				$objFile = new \File($objFiles->path);
+				$objFile = new File($objFiles->path);
 
 				if (!$objFile->isGdImage)
 				{
@@ -141,7 +139,7 @@ class ContentGallery extends \ContentElement
 			// Folders
 			else
 			{
-				$objSubfiles = \FilesModel::findByPid($objFiles->uuid);
+				$objSubfiles = FilesModel::findByPid($objFiles->uuid);
 
 				if ($objSubfiles === null)
 				{
@@ -156,7 +154,7 @@ class ContentGallery extends \ContentElement
 						continue;
 					}
 
-					$objFile = new \File($objSubfiles->path);
+					$objFile = new File($objSubfiles->path);
 
 					if (!$objFile->isGdImage)
 					{
@@ -264,7 +262,7 @@ class ContentGallery extends \ContentElement
 		{
 			// Get the current page
 			$id = 'page_g' . $this->id;
-			$page = \Input::get($id) ?: 1;
+			$page = Input::get($id) ?: 1;
 
 			// Do not index or cache the page if the page number is outside the range
 			if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
@@ -282,13 +280,13 @@ class ContentGallery extends \ContentElement
 			$offset = ($page - 1) * $this->perPage;
 			$limit = min($this->perPage + $offset, $total);
 
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+			$objPagination = new Pagination($total, $this->perPage, Config::get('maxPaginationLinks'), $id);
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
 		$rowcount = 0;
 		$colwidth = floor(100/$this->perRow);
-		$intMaxWidth = (TL_MODE == 'BE') ? floor((640 / $this->perRow)) : floor((\Config::get('maxImageWidth') / $this->perRow));
+		$intMaxWidth = (TL_MODE == 'BE') ? floor((640 / $this->perRow)) : floor((Config::get('maxImageWidth') / $this->perRow));
 		$strLightboxId = 'lightbox[lb' . $this->id . ']';
 		$body = array();
 
@@ -324,7 +322,7 @@ class ContentGallery extends \ContentElement
 					$class_td = ' col_last';
 				}
 
-				$objCell = new \stdClass();
+				$objCell = new stdClass();
 				$key = 'row_' . $rowcount . $class_tr . $class_eo;
 
 				// Empty cell
@@ -361,7 +359,7 @@ class ContentGallery extends \ContentElement
 			$strTemplate = $this->galleryTpl;
 		}
 
-		$objTemplate = new \FrontendTemplate($strTemplate);
+		$objTemplate = new FrontendTemplate($strTemplate);
 		$objTemplate->setData($this->arrData);
 
 		$objTemplate->body = $body;

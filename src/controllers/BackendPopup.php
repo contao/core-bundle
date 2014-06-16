@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class BackendPopup extends \Backend
+class BackendPopup extends Backend
 {
 
 	/**
@@ -50,9 +46,9 @@ class BackendPopup extends \Backend
 		parent::__construct();
 
 		$this->User->authenticate();
-		\System::loadLanguageFile('default');
+		System::loadLanguageFile('default');
 
-		$strFile = \Input::get('src', true);
+		$strFile = Input::get('src', true);
 		$strFile = base64_decode($strFile);
 		$strFile = preg_replace('@^/+@', '', rawurldecode($strFile));
 
@@ -77,7 +73,7 @@ class BackendPopup extends \Backend
 		}
 
 		// Limit preview to the files directory
-		if (!preg_match('@^' . preg_quote(\Config::get('uploadPath'), '@') . '@i', $this->strFile))
+		if (!preg_match('@^' . preg_quote(Config::get('uploadPath'), '@') . '@i', $this->strFile))
 		{
 			die('Invalid path');
 		}
@@ -95,29 +91,29 @@ class BackendPopup extends \Backend
 		}
 
 		// Open the download dialogue
-		if (\Input::get('download'))
+		if (Input::get('download'))
 		{
-			$objFile = new \File($this->strFile);
+			$objFile = new File($this->strFile);
 			$objFile->sendToBrowser();
 		}
 
 		// Add the resource (see #6880)
-		if (($objModel = \FilesModel::findByPath($this->strFile)) === null)
+		if (($objModel = FilesModel::findByPath($this->strFile)) === null)
 		{
-			$objModel = \Dbafs::addResource($this->strFile);
+			$objModel = Dbafs::addResource($this->strFile);
 		}
 
-		$this->Template = new \BackendTemplate('be_popup');
-		$this->Template->uuid = \String::binToUuid($objModel->uuid); // see #5211
+		$this->Template = new BackendTemplate('be_popup');
+		$this->Template->uuid = String::binToUuid($objModel->uuid); // see #5211
 
 		// Add the file info
 		if (is_dir(TL_ROOT . '/' . $this->strFile))
 		{
-			$objFile = new \Folder($this->strFile);
+			$objFile = new Folder($this->strFile);
 		}
 		else
 		{
-			$objFile = new \File($this->strFile);
+			$objFile = new File($this->strFile);
 
 			// Image
 			if ($objFile->isGdImage)
@@ -128,15 +124,15 @@ class BackendPopup extends \Backend
 				$this->Template->src = $this->urlEncode($this->strFile);
 			}
 
-			$this->Template->href = ampersand(\Environment::get('request'), true) . '&amp;download=1';
+			$this->Template->href = ampersand(Environment::get('request'), true) . '&amp;download=1';
 			$this->Template->filesize = $this->getReadableSize($objFile->filesize) . ' (' . number_format($objFile->filesize, 0, $GLOBALS['TL_LANG']['MSC']['decimalSeparator'], $GLOBALS['TL_LANG']['MSC']['thousandsSeparator']) . ' Byte)';
 		}
 
 		$this->Template->icon = $objFile->icon;
 		$this->Template->mime = $objFile->mime;
-		$this->Template->ctime = \Date::parse(\Config::get('datimFormat'), $objFile->ctime);
-		$this->Template->mtime = \Date::parse(\Config::get('datimFormat'), $objFile->mtime);
-		$this->Template->atime = \Date::parse(\Config::get('datimFormat'), $objFile->atime);
+		$this->Template->ctime = Date::parse(Config::get('datimFormat'), $objFile->ctime);
+		$this->Template->mtime = Date::parse(Config::get('datimFormat'), $objFile->mtime);
+		$this->Template->atime = Date::parse(Config::get('datimFormat'), $objFile->atime);
 		$this->Template->path = $this->strFile;
 
 		$this->output();
@@ -148,12 +144,12 @@ class BackendPopup extends \Backend
 	 */
 	protected function output()
 	{
-		$this->Template->theme = \Backend::getTheme();
-		$this->Template->base = \Environment::get('base');
+		$this->Template->theme = Backend::getTheme();
+		$this->Template->base = Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
 		$this->Template->title = specialchars($this->strFile);
-		$this->Template->charset = \Config::get('characterSet');
-		$this->Template->headline = basename(utf8_convert_encoding($this->strFile, \Config::get('characterSet')));
+		$this->Template->charset = Config::get('characterSet');
+		$this->Template->headline = basename(utf8_convert_encoding($this->strFile, Config::get('characterSet')));
 		$this->Template->label_uuid = $GLOBALS['TL_LANG']['MSC']['fileUuid'];
 		$this->Template->label_imagesize = $GLOBALS['TL_LANG']['MSC']['fileImageSize'];
 		$this->Template->label_filesize = $GLOBALS['TL_LANG']['MSC']['fileSize'];
@@ -163,7 +159,7 @@ class BackendPopup extends \Backend
 		$this->Template->label_path = $GLOBALS['TL_LANG']['MSC']['filePath'];
 		$this->Template->download = specialchars($GLOBALS['TL_LANG']['MSC']['fileDownload']);
 
-		\Config::set('debugMode', false);
+		Config::set('debugMode', false);
 		$this->Template->output();
 	}
 }

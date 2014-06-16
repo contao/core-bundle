@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,12 +21,12 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentDownloads extends \ContentElement
+class ContentDownloads extends ContentElement
 {
 
 	/**
 	 * Files object
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objFiles;
 
@@ -69,11 +65,11 @@ class ContentDownloads extends \ContentElement
 		}
 
 		// Get the file entries from the database
-		$this->objFiles = \FilesModel::findMultipleByUuids($this->multiSRC);
+		$this->objFiles = FilesModel::findMultipleByUuids($this->multiSRC);
 
 		if ($this->objFiles === null)
 		{
-			if (!\Validator::isUuid($this->multiSRC[0]))
+			if (!Validator::isUuid($this->multiSRC[0]))
 			{
 				return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 			}
@@ -81,7 +77,7 @@ class ContentDownloads extends \ContentElement
 			return '';
 		}
 
-		$file = \Input::get('file', true);
+		$file = Input::get('file', true);
 
 		// Send the file to the browser and do not send a 404 header (see #4632)
 		if ($file != '' && !preg_match('/^meta(_[a-z]{2})?\.txt$/', basename($file)))
@@ -90,7 +86,7 @@ class ContentDownloads extends \ContentElement
 			{
 				if ($file == $this->objFiles->path || dirname($file) == $this->objFiles->path)
 				{
-					\Controller::sendFileToBrowser($file);
+					Controller::sendFileToBrowser($file);
 				}
 			}
 
@@ -112,7 +108,7 @@ class ContentDownloads extends \ContentElement
 		$auxDate = array();
 
 		$objFiles = $this->objFiles;
-		$allowedDownload = trimsplit(',', strtolower(\Config::get('allowedDownload')));
+		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 		// Get all files
 		while ($objFiles->next())
@@ -126,7 +122,7 @@ class ContentDownloads extends \ContentElement
 			// Single files
 			if ($objFiles->type == 'file')
 			{
-				$objFile = new \File($objFiles->path);
+				$objFile = new File($objFiles->path);
 
 				if (!in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 				{
@@ -141,7 +137,7 @@ class ContentDownloads extends \ContentElement
 					$arrMeta['title'] = specialchars($objFile->basename);
 				}
 
-				$strHref = \Environment::get('request');
+				$strHref = Environment::get('request');
 
 				// Remove an existing file parameter (see #5683)
 				if (preg_match('/(&(amp;)?|\?)file=/', $strHref))
@@ -149,7 +145,7 @@ class ContentDownloads extends \ContentElement
 					$strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
 				}
 
-				$strHref .= ((\Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFiles->path);
+				$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFiles->path);
 
 				// Add the image
 				$files[$objFiles->path] = array
@@ -175,7 +171,7 @@ class ContentDownloads extends \ContentElement
 			// Folders
 			else
 			{
-				$objSubfiles = \FilesModel::findByPid($objFiles->uuid);
+				$objSubfiles = FilesModel::findByPid($objFiles->uuid);
 
 				if ($objSubfiles === null)
 				{
@@ -190,7 +186,7 @@ class ContentDownloads extends \ContentElement
 						continue;
 					}
 
-					$objFile = new \File($objSubfiles->path);
+					$objFile = new File($objSubfiles->path);
 
 					if (!in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 					{
@@ -205,7 +201,7 @@ class ContentDownloads extends \ContentElement
 						$arrMeta['title'] = specialchars($objFile->basename);
 					}
 
-					$strHref = \Environment::get('request');
+					$strHref = Environment::get('request');
 
 					// Remove an existing file parameter (see #5683)
 					if (preg_match('/(&(amp;)?|\?)file=/', $strHref))
@@ -213,7 +209,7 @@ class ContentDownloads extends \ContentElement
 						$strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
 					}
 
-					$strHref .= ((\Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objSubfiles->path);
+					$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objSubfiles->path);
 
 					// Add the image
 					$files[$objSubfiles->path] = array

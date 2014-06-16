@@ -11,9 +11,6 @@
  */
 
 
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +22,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PageError403 extends \Frontend
+class PageError403 extends Frontend
 {
 
 	/**
@@ -45,11 +42,11 @@ class PageError403 extends \Frontend
 		}
 		else
 		{
-			$objRootPage = \PageModel::findPublishedById(is_integer($objRootPage) ? $objRootPage : $objRootPage->id);
+			$objRootPage = PageModel::findPublishedById(is_integer($objRootPage) ? $objRootPage : $objRootPage->id);
 		}
 
 		// Look for an error_403 page
-		$obj403 = \PageModel::find403ByPid($objRootPage->id);
+		$obj403 = PageModel::find403ByPid($objRootPage->id);
 
 		// Die if there is no page at all
 		if ($obj403 === null)
@@ -73,7 +70,7 @@ class PageError403 extends \Frontend
 		}
 
 		// Forward to another page
-		$objNextPage = \PageModel::findPublishedById($obj403->jumpTo);
+		$objNextPage = PageModel::findPublishedById($obj403->jumpTo);
 
 		if ($objNextPage === null)
 		{

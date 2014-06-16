@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use SimplePie;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleRssReader extends \Module
+class ModuleRssReader extends Module
 {
 
 	/**
@@ -49,7 +47,7 @@ class ModuleRssReader extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['rss_reader'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -60,7 +58,7 @@ class ModuleRssReader extends \Module
 			return $objTemplate->parse();
 		}
 
-		$this->objFeed = new \SimplePie();
+		$this->objFeed = new SimplePie();
 		$arrUrls = trimsplit('[\n\t ]', trim($this->rss_feed));
 
 		if (count($arrUrls) > 1)
@@ -72,7 +70,7 @@ class ModuleRssReader extends \Module
 			$this->objFeed->set_feed_url($arrUrls[0]);
 		}
 
-		$this->objFeed->set_output_encoding(\Config::get('characterSet'));
+		$this->objFeed->set_output_encoding(Config::get('characterSet'));
 		$this->objFeed->set_cache_location(TL_ROOT . '/system/tmp');
 		$this->objFeed->enable_cache(false);
 
@@ -104,7 +102,7 @@ class ModuleRssReader extends \Module
 		{
 			$this->strTemplate = $this->rss_template;
 
-			$this->Template = new \FrontendTemplate($this->strTemplate);
+			$this->Template = new FrontendTemplate($this->strTemplate);
 			$this->Template->setData($this->arrData);
 		}
 
@@ -136,7 +134,7 @@ class ModuleRssReader extends \Module
 		{
 			// Get the current page
 			$id = 'page_r' . $this->id;
-			$page = \Input::get($id) ?: 1;
+			$page = Input::get($id) ?: 1;
 
 			// Do not index or cache the page if the page number is outside the range
 			if ($page < 1 || $page > max(ceil(count($arrItems)/$this->perPage), 1))
@@ -155,7 +153,7 @@ class ModuleRssReader extends \Module
 			$offset = (($page - 1) * $this->perPage);
 			$limit = $this->perPage + $offset;
 
-			$objPagination = new \Pagination(count($arrItems), $this->perPage, \Config::get('maxPaginationLinks'), $id);
+			$objPagination = new Pagination(count($arrItems), $this->perPage, Config::get('maxPaginationLinks'), $id);
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
@@ -171,7 +169,7 @@ class ModuleRssReader extends \Module
 				'permalink' => $arrItems[$i]->get_permalink(),
 				'description' => str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $arrItems[$i]->get_description()),
 				'class' => (($i == 0) ? ' first' : '') . (($i == $last) ? ' last' : '') . ((($i % 2) == 0) ? ' even' : ' odd'),
-				'pubdate' => \Date::parse($objPage->datimFormat, $arrItems[$i]->get_date('U')),
+				'pubdate' => Date::parse($objPage->datimFormat, $arrItems[$i]->get_date('U')),
 				'category' => $arrItems[$i]->get_category(0)
 			);
 

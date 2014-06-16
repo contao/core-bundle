@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormExplanation extends \Widget
+class FormExplanation extends Widget
 {
 
 	/**
@@ -51,15 +47,15 @@ class FormExplanation extends \Widget
 	 */
 	public function generate()
 	{
-		$this->text = \String::toHtml5($this->text);
+		$this->text = String::toHtml5($this->text);
 
 		// Add the static files URL to images
 		if (TL_FILES_URL != '')
 		{
-			$path = \Config::get('uploadPath') . '/';
+			$path = Config::get('uploadPath') . '/';
 			$this->text = str_replace(' src="' . $path, ' src="' . TL_FILES_URL . $path, $this->text);
 		}
 
-		return \String::encodeEmail($this->text);
+		return String::encodeEmail($this->text);
 	}
 }

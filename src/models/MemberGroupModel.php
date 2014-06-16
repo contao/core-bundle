@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -24,7 +22,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class MemberGroupModel extends \Model
+class MemberGroupModel extends Model
 {
 
 	/**
@@ -40,7 +38,7 @@ class MemberGroupModel extends \Model
 	 * @param integer $intId      The member group ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model|null The model or null if there is no member group
+	 * @return Model|null The model or null if there is no member group
 	 */
 	public static function findPublishedById($intId, array $arrOptions=array())
 	{
@@ -62,7 +60,7 @@ class MemberGroupModel extends \Model
 	 *
 	 * @param string $arrIds An array of member group IDs
 	 *
-	 * @return \Model|null The model or null if there is no matching member group
+	 * @return Model|null The model or null if there is no matching member group
 	 */
 	public static function findFirstActiveWithJumpToByIds($arrIds)
 	{
@@ -72,7 +70,7 @@ class MemberGroupModel extends \Model
 		}
 
 		$time = time();
-		$objDatabase = \Database::getInstance();
+		$objDatabase = Database::getInstance();
 		$arrIds = array_map('intval', $arrIds);
 
 		$objResult = $objDatabase->prepare("SELECT p.* FROM tl_member_group g LEFT JOIN tl_page p ON g.jumpTo=p.id WHERE g.id IN(" . implode(',', $arrIds) . ") AND g.jumpTo>0 AND g.redirect=1 AND g.disable!=1 AND (g.start='' OR g.start<$time) AND (g.stop='' OR g.stop>$time) AND p.published=1 AND (p.start='' OR p.start<$time) AND (p.stop='' OR p.stop>$time) ORDER BY " . $objDatabase->findInSet('g.id', $arrIds))
@@ -93,7 +91,7 @@ class MemberGroupModel extends \Model
 	 *
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no member groups
+	 * @return Collection|null A collection of models or null if there are no member groups
 	 */
 	public static function findAllActive(array $arrOptions=array())
 	{

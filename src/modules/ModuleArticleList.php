@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,7 +21,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleArticleList extends \Module
+class ModuleArticleList extends Module
 {
 
 	/**
@@ -43,7 +39,7 @@ class ModuleArticleList extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['articleList'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -75,7 +71,7 @@ class ModuleArticleList extends \Module
 		$articles = array();
 		$id = $objPage->id;
 
-		$this->Template->request = \Environment::get('request');
+		$this->Template->request = Environment::get('request');
 
 		// Show the articles of a different page
 		if ($this->defineRoot && $this->rootPage > 0)
@@ -88,7 +84,7 @@ class ModuleArticleList extends \Module
 		}
 
 		// Get published articles
-		$objArticles = \ArticleModel::findPublishedByPidAndColumn($id, $this->inColumn);
+		$objArticles = ArticleModel::findPublishedByPidAndColumn($id, $this->inColumn);
 
 		if ($objArticles === null)
 		{

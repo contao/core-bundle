@@ -10,11 +10,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Exception;
+use executable;
 
 
 /**
@@ -25,7 +24,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleMaintenance extends \BackendModule
+class ModuleMaintenance extends BackendModule
 {
 
 	/**
@@ -37,11 +36,11 @@ class ModuleMaintenance extends \BackendModule
 
 	/**
 	 * Generate the module
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function compile()
 	{
-		\System::loadLanguageFile('tl_maintenance');
+		System::loadLanguageFile('tl_maintenance');
 
 		$this->Template->content = '';
 		$this->Template->href = $this->getReferer(true);
@@ -52,9 +51,9 @@ class ModuleMaintenance extends \BackendModule
 		{
 			$this->import($callback);
 
-			if (!$this->$callback instanceof \executable)
+			if (!$this->$callback instanceof executable)
 			{
-				throw new \Exception("$callback is not an executable class");
+				throw new Exception("$callback is not an executable class");
 			}
 
 			$buffer = $this->$callback->run();

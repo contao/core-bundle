@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -25,12 +21,12 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ModuleRandomImage extends \Module
+class ModuleRandomImage extends Module
 {
 
 	/**
 	 * Files object
-	 * @var \FilesModel
+	 * @var FilesModel
 	 */
 	protected $objFiles;
 
@@ -54,11 +50,11 @@ class ModuleRandomImage extends \Module
 			return '';
 		}
 
-		$this->objFiles = \FilesModel::findMultipleByUuids($this->multiSRC);
+		$this->objFiles = FilesModel::findMultipleByUuids($this->multiSRC);
 
 		if ($this->objFiles === null)
 		{
-			if (!\Validator::isUuid($this->multiSRC[0]))
+			if (!Validator::isUuid($this->multiSRC[0]))
 			{
 				return '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
 			}
@@ -92,7 +88,7 @@ class ModuleRandomImage extends \Module
 			// Single files
 			if ($objFiles->type == 'file')
 			{
-				$objFile = new \File($objFiles->path);
+				$objFile = new File($objFiles->path);
 
 				if (!$objFile->isGdImage)
 				{
@@ -122,7 +118,7 @@ class ModuleRandomImage extends \Module
 			// Folders
 			else
 			{
-				$objSubfiles = \FilesModel::findByPid($objFiles->uuid);
+				$objSubfiles = FilesModel::findByPid($objFiles->uuid);
 
 				if ($objSubfiles === null)
 				{
@@ -137,7 +133,7 @@ class ModuleRandomImage extends \Module
 						continue;
 					}
 
-					$objFile = new \File($objSubfiles->path);
+					$objFile = new File($objSubfiles->path);
 
 					if (!$objFile->isGdImage)
 					{

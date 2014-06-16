@@ -10,10 +10,6 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
 
 
@@ -24,7 +20,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormPassword extends \Widget
+class FormPassword extends Widget
 {
 
 	/**
@@ -111,9 +107,9 @@ class FormPassword extends \Widget
 			return '';
 		}
 
-		if (utf8_strlen($varInput) < \Config::get('minPasswordLength'))
+		if (utf8_strlen($varInput) < Config::get('minPasswordLength'))
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], \Config::get('minPasswordLength')));
+			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['passwordLength'], Config::get('minPasswordLength')));
 		}
 
 		if ($varInput != $this->getPost($this->strName . '_confirm'))
@@ -126,8 +122,8 @@ class FormPassword extends \Widget
 		if (!$this->hasErrors())
 		{
 			$this->blnSubmitInput = true;
-			\Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
-			return \Encryption::hash($varInput);
+			Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
+			return Encryption::hash($varInput);
 		}
 
 		return '';

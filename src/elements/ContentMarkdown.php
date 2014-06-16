@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Michelf\MarkdownExtra;
 
 
 /**
@@ -25,7 +23,7 @@ namespace Contao;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class ContentMarkdown extends \ContentElement
+class ContentMarkdown extends ContentElement
 {
 
 	/**
@@ -62,7 +60,7 @@ class ContentMarkdown extends \ContentElement
 	 */
 	protected function compile()
 	{
-		$this->code = \Michelf\MarkdownExtra::defaultTransform($this->code);
-		$this->Template->content = strip_tags($this->code, \Config::get('allowedTags'));
+		$this->code = MarkdownExtra::defaultTransform($this->code);
+		$this->Template->content = strip_tags($this->code, Config::get('allowedTags'));
 	}
 }

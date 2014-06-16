@@ -10,11 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace Contao;
+
+use Contao\Model\Collection;
 
 
 /**
@@ -27,7 +25,7 @@ namespace Contao;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class FilesModel extends \Model
+class FilesModel extends Model
 {
 
 	/**
@@ -43,7 +41,7 @@ class FilesModel extends \Model
 	 * @param mixed $varValue   The value
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model|null A model or null if there is no file
+	 * @return Model|null A model or null if there is no file
 	 */
 	public static function findByPk($varValue, array $arrOptions=array())
 	{
@@ -62,11 +60,11 @@ class FilesModel extends \Model
 	 * @param mixed $intId      The ID or UUID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model|null A model or null if there is no file
+	 * @return Model|null A model or null if there is no file
 	 */
 	public static function findById($intId, array $arrOptions=array())
 	{
-		if (\Validator::isUuid($intId))
+		if (Validator::isUuid($intId))
 		{
 			return static::findByUuid($intId, $arrOptions);
 		}
@@ -81,7 +79,7 @@ class FilesModel extends \Model
 	 * @param array $arrIds     An array of IDs or UUIDs
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no files
+	 * @return Collection|null A collection of models or null if there are no files
 	 */
 	public static function findMultipleByIds($arrIds, array $arrOptions=array())
 	{
@@ -90,7 +88,7 @@ class FilesModel extends \Model
 			return null;
 		}
 
-		if (\Validator::isUuid(current($arrIds)))
+		if (Validator::isUuid(current($arrIds)))
 		{
 			return static::findMultipleByUuids($arrIds, $arrOptions);
 		}
@@ -105,16 +103,16 @@ class FilesModel extends \Model
 	 * @param array $strUuid    The UUID string
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model|null A model or null if there is no file
+	 * @return Model|null A model or null if there is no file
 	 */
 	public static function findByUuid($strUuid, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 
 		// Convert UUIDs to binary
-		if (\Validator::isStringUuid($strUuid))
+		if (Validator::isStringUuid($strUuid))
 		{
-			$strUuid = \String::uuidToBin($strUuid);
+			$strUuid = String::uuidToBin($strUuid);
 		}
 
 		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);
@@ -127,7 +125,7 @@ class FilesModel extends \Model
 	 * @param array $arrUuids   An array of UUIDs
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no files
+	 * @return Collection|null A collection of models or null if there are no files
 	 */
 	public static function findMultipleByUuids($arrUuids, array $arrOptions=array())
 	{
@@ -141,9 +139,9 @@ class FilesModel extends \Model
 		foreach ($arrUuids as $k=>$v)
 		{
 			// Convert UUIDs to binary
-			if (\Validator::isStringUuid($v))
+			if (Validator::isStringUuid($v))
 			{
-				$v = \String::uuidToBin($v);
+				$v = String::uuidToBin($v);
 			}
 
 			$arrUuids[$k] = "UNHEX('" . bin2hex($v) . "')";
@@ -164,7 +162,7 @@ class FilesModel extends \Model
 	 * @param array $arrPaths   An array of file paths
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no files
+	 * @return Collection|null A collection of models or null if there are no files
 	 */
 	public static function findMultipleByPaths($arrPaths, array $arrOptions=array())
 	{
@@ -177,7 +175,7 @@ class FilesModel extends \Model
 
 		if (!isset($arrOptions['order']))
 		{
-			$arrOptions['order'] = \Database::getInstance()->findInSet("$t.path", $arrPaths);
+			$arrOptions['order'] = Database::getInstance()->findInSet("$t.path", $arrPaths);
 		}
 
 		return static::findBy(array("$t.path IN(" . implode(',', array_fill(0, count($arrPaths), '?')) . ")"), $arrPaths, $arrOptions);
@@ -190,7 +188,7 @@ class FilesModel extends \Model
 	 * @param string $strPath    The base path
 	 * @param array  $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no matching files
+	 * @return Collection|null A collection of models or null if there are no matching files
 	 */
 	public static function findMultipleByBasepath($strPath, array $arrOptions=array())
 	{
@@ -206,7 +204,7 @@ class FilesModel extends \Model
 	 * @param array $arrExtensions An array of file extensions
 	 * @param array $arrOptions    An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null of there are no matching files
+	 * @return Collection|null A collection of models or null of there are no matching files
 	 */
 	public static function findMultipleByUuidsAndExtensions($arrUuids, $arrExtensions, array $arrOptions=array())
 	{
@@ -228,9 +226,9 @@ class FilesModel extends \Model
 		foreach ($arrUuids as $k=>$v)
 		{
 			// Convert UUIDs to binary
-			if (\Validator::isStringUuid($v))
+			if (Validator::isStringUuid($v))
 			{
-				$v = \String::uuidToBin($v);
+				$v = String::uuidToBin($v);
 			}
 
 			$arrUuids[$k] = "UNHEX('" . bin2hex($v) . "')";
@@ -251,7 +249,7 @@ class FilesModel extends \Model
 	 * @param string $strPath    The folder path
 	 * @param array  $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if there are no matching files
+	 * @return Collection|null A collection of models or null if there are no matching files
 	 */
 	public static function findMultipleFilesByFolder($strPath, array $arrOptions=array())
 	{
