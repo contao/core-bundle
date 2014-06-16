@@ -34,13 +34,13 @@ class Filter extends RecursiveFilterIterator
 	 * Exempted folders
 	 * @var array
 	 */
-	protected $arrExempt = array();
+	protected $arrExempt = [];
 
 	/**
 	 * Ignored files
 	 * @var array
 	 */
-	protected $arrIgnore = array('.DS_Store', '.svn');
+	protected $arrIgnore = ['.DS_Store', '.svn'];
 
 
 	/**

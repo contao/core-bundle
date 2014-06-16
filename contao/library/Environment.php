@@ -43,7 +43,7 @@ class Environment
 	 * Cache
 	 * @var array
 	 */
-	protected static $arrCache = array();
+	protected static $arrCache = [];
 
 
 	/**
@@ -131,7 +131,7 @@ class Environment
 	protected static function documentRoot()
 	{
 		$strDocumentRoot = '';
-		$arrUriSegments = array();
+		$arrUriSegments = [];
 		$scriptName = static::get('scriptName');
 		$scriptFilename = static::get('scriptFilename');
 
@@ -195,8 +195,8 @@ class Environment
 	 */
 	protected static function httpAcceptLanguage()
 	{
-		$arrAccepted = array();
-		$arrLanguages = array();
+		$arrAccepted = [];
+		$arrLanguages = [];
 
 		// The implementation differs from the original implementation and also works with .jp browsers
 		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $arrAccepted);
@@ -356,7 +356,7 @@ class Environment
 		}
 		else
 		{
-			$arrIps = array($strXip);
+			$arrIps = [$strXip];
 		}
 
 		$arrIps = array_reverse($arrIps);
@@ -429,7 +429,7 @@ class Environment
 		// anymore if the request string is empty (see #1844).
 
 		// IE security fix (thanks to Michiel Leideman)
-		$strRequest = str_replace(array('<', '>', '"'), array('%3C', '%3E', '%22'), $strRequest);
+		$strRequest = str_replace(['<', '>', '"'], ['%3C', '%3E', '%22'], $strRequest);
 
 		// Do not urldecode() here (thanks to Russ McRee)!
 		return $strRequest;

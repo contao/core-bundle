@@ -48,13 +48,13 @@ class Feed
 	 * Data
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Items
 	 * @var array
 	 */
-	protected $arrItems = array();
+	protected $arrItems = [];
 
 
 	/**
@@ -76,7 +76,7 @@ class Feed
 	 */
 	public function __set($strKey, $varValue)
 	{
-		$this->arrData[$strKey] = str_replace(array('[-]', '&shy;', '[nbsp]', '&nbsp;'), array('', '', ' ', ' '), $varValue);
+		$this->arrData[$strKey] = str_replace(['[-]', '&shy;', '[nbsp]', '&nbsp;'], ['', '', ' ', ' '], $varValue);
 	}
 
 

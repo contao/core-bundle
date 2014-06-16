@@ -72,7 +72,7 @@ class Search
 		}
 
 		// Replace special characters
-		$strContent = str_replace(array("\n", "\r", "\t", '&#160;', '&nbsp;'), ' ', $arrData['content']);
+		$strContent = str_replace(["\n", "\r", "\t", '&#160;', '&nbsp;'], ' ', $arrData['content']);
 
 		// Strip script tags
 		while (($intStart = strpos($strContent, '<script')) !== false)
@@ -154,7 +154,7 @@ class Search
 			return false;
 		}
 
-		$arrMatches = array();
+		$arrMatches = [];
 		preg_match('/<\/head>/', $strContent, $arrMatches, PREG_OFFSET_CAPTURE);
 		$intOffset = strlen($arrMatches[0][0]) + $arrMatches[0][1];
 
@@ -163,7 +163,7 @@ class Search
 		$strBody = substr($strContent, $intOffset);
 
 		unset($strContent);
-		$tags = array();
+		$tags = [];
 
 		// Get description
 		if (preg_match('/<meta[^>]+name="description"[^>]+content="([^"]*)"[^>]*>/i', $strHead, $tags))
@@ -184,7 +184,7 @@ class Search
 		}
 
 		// Add a whitespace character before line-breaks and between consecutive tags (see #5363)
-		$strBody = str_ireplace(array('<br', '><'), array(' <br', '> <'), $strBody);
+		$strBody = str_ireplace(['<br', '><'], [' <br', '> <'], $strBody);
 		$strBody = strip_tags($strBody);
 
 		// Put everything together
@@ -236,7 +236,7 @@ class Search
 		}
 
 		// Remove quotes
-		$strText = str_replace(array('´', '`'), "'", $arrSet['text']);
+		$strText = str_replace(['´', '`'], "'", $arrSet['text']);
 		unset($arrSet);
 
 		// Remove special characters
@@ -246,12 +246,12 @@ class Search
 		}
 		else
 		{
-			$strText = preg_replace(array('/- /', '/ -/', "/' /", "/ '/", '/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\pN\pL\'\.:,\+_-]/u'), ' ', $strText);
+			$strText = preg_replace(['/- /', '/ -/', "/' /", "/ '/", '/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\pN\pL\'\.:,\+_-]/u'], ' ', $strText);
 		}
 
 		// Split words
 		$arrWords = preg_split('/ +/', utf8_strtolower($strText));
-		$arrIndex = array();
+		$arrIndex = [];
 
 		// Index words
 		foreach ($arrWords as $strWord)
@@ -317,7 +317,7 @@ class Search
 	 *
 	 * @throws Exception If the cleaned keyword string is empty
 	 */
-	public static function searchFor($strKeywords, $blnOrSearch=false, $arrPid=array(), $intRows=0, $intOffset=0, $blnFuzzy=false)
+	public static function searchFor($strKeywords, $blnOrSearch=false, $arrPid=[], $intRows=0, $intOffset=0, $blnFuzzy=false)
 	{
 		// Clean the keywords
 		$strKeywords = utf8_strtolower($strKeywords);
@@ -329,7 +329,7 @@ class Search
 		}
 		else
 		{
-			$strKeywords = preg_replace(array('/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\pN\pL \*\+\'"\.:,_-]/u'), ' ', $strKeywords);
+			$strKeywords = preg_replace(['/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\pN\pL \*\+\'"\.:,_-]/u'], ' ', $strKeywords);
 		}
 
 		// Check keyword string
@@ -339,14 +339,14 @@ class Search
 		}
 
 		// Split keywords
-		$arrChunks = array();
+		$arrChunks = [];
 		preg_match_all('/"[^"]+"|[\+\-]?[^ ]+\*?/', $strKeywords, $arrChunks);
 
-		$arrPhrases = array();
-		$arrKeywords = array();
-		$arrWildcards = array();
-		$arrIncluded = array();
-		$arrExcluded = array();
+		$arrPhrases = [];
+		$arrKeywords = [];
+		$arrWildcards = [];
+		$arrIncluded = [];
+		$arrExcluded = [];
 
 		foreach ($arrChunks[0] as $strKeyword)
 		{
@@ -362,7 +362,7 @@ class Search
 				case '"':
 					if (($strKeyword = trim(substr($strKeyword, 1, -1))) != false)
 					{
-						$arrPhrases[] = '[[:<:]]' . str_replace(array(' ', '*'), array('[^[:alnum:]]+', ''), $strKeyword) . '[[:>:]]';
+						$arrPhrases[] = '[[:<:]]' . str_replace([' ', '*'], ['[^[:alnum:]]+', ''], $strKeyword) . '[[:>:]]';
 					}
 					break;
 
@@ -405,7 +405,7 @@ class Search
 				$arrWildcards[] = '%' . $strKeyword . '%';
 			}
 
-			$arrKeywords = array();
+			$arrKeywords = [];
 		}
 
 		// Count keywords
@@ -415,7 +415,7 @@ class Search
 		$intExcluded = count($arrExcluded);
 
 		$intKeywords = 0;
-		$arrValues = array();
+		$arrValues = [];
 
 		// Remember found words so we can highlight them later
 		$strQuery = "SELECT tl_search_index.pid AS sid, GROUP_CONCAT(word) AS matches";
@@ -437,7 +437,7 @@ class Search
 		$strQuery .= ", tl_search.*"; // see #4506
 
 		// Prepare keywords array
-		$arrAllKeywords = array();
+		$arrAllKeywords = [];
 
 		// Get keywords
 		if (!empty($arrKeywords))

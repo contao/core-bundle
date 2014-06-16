@@ -87,7 +87,7 @@ abstract class Controller extends System
 	 */
 	public static function getTemplateGroup($strPrefix)
 	{
-		$arrTemplates = array();
+		$arrTemplates = [];
 
 		// Get the default templates
 		foreach (TemplateLoader::getPrefixedFiles($strPrefix) as $strTemplate)
@@ -113,7 +113,7 @@ abstract class Controller extends System
 			// Try to select the themes (see #5210)
 			try
 			{
-				$objTheme = ThemeModel::findAll(array('order'=>'name'));
+				$objTheme = ThemeModel::findAll(['order'=>'name']);
 			}
 			catch (Exception $e)
 			{
@@ -221,7 +221,7 @@ abstract class Controller extends System
 					}
 
 					// Add the "first" and "last" classes (see #2583)
-					$objArticle->classes = array('first', 'last');
+					$objArticle->classes = ['first', 'last'];
 
 					return static::getArticle($objArticle);
 				}
@@ -253,7 +253,7 @@ abstract class Controller extends System
 				// Add the "first" and "last" classes (see #2583)
 				if ($intCount == 0 || $intCount == $intLast)
 				{
-					$arrCss = array();
+					$arrCss = [];
 
 					if ($intCount == 0)
 					{
@@ -545,7 +545,7 @@ abstract class Controller extends System
 	{
 		System::loadLanguageFile('languages');
 
-		$return = array();
+		$return = [];
 		$langs = scan(TL_ROOT . '/system/modules/core/languages');
 		array_unshift($langs, $GLOBALS['TL_LANGUAGE']);
 
@@ -582,13 +582,13 @@ abstract class Controller extends System
 		}
 
 		// Page hidden from menu
-		if ($objPage->hide && !in_array($objPage->type, array('redirect', 'forward', 'root', 'error_403', 'error_404')))
+		if ($objPage->hide && !in_array($objPage->type, ['redirect', 'forward', 'root', 'error_403', 'error_404']))
 		{
 			$sub += 2;
 		}
 
 		// Page protected
-		if ($objPage->protected && !in_array($objPage->type, array('root', 'error_403', 'error_404')))
+		if ($objPage->protected && !in_array($objPage->type, ['root', 'error_403', 'error_404']))
 		{
 			$sub += 4;
 		}
@@ -678,7 +678,7 @@ abstract class Controller extends System
 		$tags = preg_split('/\{\{(([^\{\}]*|(?R))*)\}\}/', $strBuffer, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 		$strBuffer = '';
-		static $arrCache = array();
+		static $arrCache = [];
 
 		for ($_rit=0, $_cnt=count($tags); $_rit<$_cnt; $_rit+=3)
 		{
@@ -883,7 +883,7 @@ abstract class Controller extends System
 					{
 						$strUrl = $elements[1];
 						$strTitle = $elements[1];
-						$strName = str_replace(array('http://', 'https://'), '', $elements[1]);
+						$strName = str_replace(['http://', 'https://'], '', $elements[1]);
 					}
 
 					// Regular link
@@ -1115,7 +1115,7 @@ abstract class Controller extends System
 					}
 					elseif ($objNews->source == 'article')
 					{
-						if (($objArticle = ArticleModel::findByPk($objNews->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+						if (($objArticle = ArticleModel::findByPk($objNews->articleId, ['eager'=>true])) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
 						{
 							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
 						}
@@ -1175,7 +1175,7 @@ abstract class Controller extends System
 					}
 					elseif ($objEvent->source == 'article')
 					{
-						if (($objArticle = ArticleModel::findByPk($objEvent->articleId, array('eager'=>true))) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
+						if (($objArticle = ArticleModel::findByPk($objEvent->articleId, ['eager'=>true])) !== null && ($objPid = $objArticle->getRelated('pid')) !== null)
 						{
 							$strUrl = $this->generateFrontendUrl($objPid->row(), '/articles/' . ((!Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id));
 						}
@@ -1744,7 +1744,7 @@ abstract class Controller extends System
 
 		global $objPage;
 
-		$arrReplace = array();
+		$arrReplace = [];
 		$strScripts = '';
 
 		// Add the internal jQuery scripts
@@ -1917,7 +1917,7 @@ abstract class Controller extends System
 		// Initialize an empty array (see #5217)
 		if (!is_array($arrValues))
 		{
-			$arrValues = array('top'=>'', 'right'=>'', 'bottom'=>'', 'left'=>'', 'unit'=>'');
+			$arrValues = ['top'=>'', 'right'=>'', 'bottom'=>'', 'left'=>'', 'unit'=>''];
 		}
 
 		$top = $arrValues['top'];
@@ -1946,8 +1946,8 @@ abstract class Controller extends System
 			}
 		}
 
-		$return = array();
-		$arrDir = array('top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left);
+		$return = [];
+		$arrDir = ['top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left];
 
 		foreach ($arrDir as $k=>$v)
 		{
@@ -1970,7 +1970,7 @@ abstract class Controller extends System
 	 *
 	 * @return string The new URL
 	 */
-	public static function addToUrl($strRequest, $blnAddRef=true, $arrUnset=array())
+	public static function addToUrl($strRequest, $blnAddRef=true, $arrUnset=[])
 	{
 		$strRequest = preg_replace('/^&(amp;)?/i', '', $strRequest);
 
@@ -2332,7 +2332,7 @@ abstract class Controller extends System
 			return '';
 		}
 
-		$arrParent = array();
+		$arrParent = [];
 
 		do
 		{
@@ -2378,10 +2378,10 @@ abstract class Controller extends System
 	{
 		if (!is_array($arrPaths) || empty($arrPaths))
 		{
-			return array();
+			return [];
 		}
 
-		$nested = array();
+		$nested = [];
 
 		foreach ($arrPaths as $path)
 		{
@@ -2405,7 +2405,7 @@ abstract class Controller extends System
 	{
 		if (!is_array($arrPages) || empty($arrPages))
 		{
-			return array();
+			return [];
 		}
 
 		if (!$strTable)
@@ -2559,7 +2559,7 @@ abstract class Controller extends System
 		{
 			if (!Validator::isUuid($arrEnclosures[0]))
 			{
-				foreach (array('details', 'answer', 'text') as $key)
+				foreach (['details', 'answer', 'text'] as $key)
 				{
 					if (isset($objTemplate->$key))
 					{
@@ -2587,7 +2587,7 @@ abstract class Controller extends System
 			$objFiles->reset();
 		}
 
-		$arrEnclosures = array();
+		$arrEnclosures = [];
 		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
 		// Add download links
@@ -2611,8 +2611,8 @@ abstract class Controller extends System
 
 				$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFiles->path);
 
-				$arrEnclosures[] = array
-				(
+				$arrEnclosures[] =
+				[
 					'link'      => $objFiles->name,
 					'filesize'  => static::getReadableSize($objFile->filesize),
 					'title'     => ucfirst(str_replace('_', ' ', $objFile->filename)),
@@ -2620,7 +2620,7 @@ abstract class Controller extends System
 					'enclosure' => $objFiles->path,
 					'icon'      => TL_ASSETS_URL . 'assets/contao/images/' . $objFile->icon,
 					'mime'      => $objFile->mime
-				);
+				];
 			}
 		}
 
@@ -2646,11 +2646,11 @@ abstract class Controller extends System
 			global $objPage;
 		}
 
-		$arrConstants = array
-		(
+		$arrConstants =
+		[
 			'staticFiles'   => 'TL_FILES_URL',
 			'staticPlugins' => 'TL_ASSETS_URL'
-		);
+		];
 
 		foreach ($arrConstants as $strKey=>$strConstant)
 		{
@@ -2966,7 +2966,7 @@ abstract class Controller extends System
 	 *
 	 * @deprecated Use Database::getChildRecords() instead
 	 */
-	protected function getChildRecords($arrParentIds, $strTable, $blnSorting=false, $arrReturn=array(), $strWhere='')
+	protected function getChildRecords($arrParentIds, $strTable, $blnSorting=false, $arrReturn=[], $strWhere='')
 	{
 		return $this->Database->getChildRecords($arrParentIds, $strTable, $blnSorting, $arrReturn, $strWhere);
 	}
@@ -3011,7 +3011,7 @@ abstract class Controller extends System
 	 */
 	public static function getPageSections()
 	{
-		return array('header', 'left', 'right', 'main', 'footer');
+		return ['header', 'left', 'right', 'main', 'footer'];
 	}
 
 

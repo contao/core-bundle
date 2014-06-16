@@ -27,19 +27,19 @@ abstract class Frontend extends Controller
 	 * Meta array
 	 * @var array
 	 */
-	protected $arrMeta = array();
+	protected $arrMeta = [];
 
 	/**
 	 * Aux array
 	 * @var array
 	 */
-	protected $arrAux = array();
+	protected $arrAux = [];
 
 	/**
 	 * Processed files array
 	 * @var array
 	 */
-	protected $arrProcessed = array();
+	protected $arrProcessed = [];
 
 
 	/**
@@ -113,7 +113,7 @@ abstract class Frontend extends Controller
 		// Extract the language
 		if (Config::get('addLanguageToUrl'))
 		{
-			$arrMatches = array();
+			$arrMatches = [];
 
 			// Use the matches instead of substr() (thanks to Mario Müller)
 			if (preg_match('@^([a-z]{2}(\-[A-Z]{2})?)/(.*)$@', $strRequest, $arrMatches))
@@ -140,7 +140,7 @@ abstract class Frontend extends Controller
 		if (Config::get('folderUrl') && strpos($strRequest, '/') !== false)
 		{
 			$strAlias = $strRequest;
-			$arrOptions = array($strAlias);
+			$arrOptions = [$strAlias];
 
 			// Compile all possible aliases by applying dirname() to the request (e.g. news/archive/item, news/archive, news)
 			while ($strAlias != '/' && strpos($strAlias, '/') !== false)
@@ -154,7 +154,7 @@ abstract class Frontend extends Controller
 
 			if ($objPages !== null)
 			{
-				$arrPages = array();
+				$arrPages = [];
 
 				// Order by domain and language
 				while ($objPages->next())
@@ -183,7 +183,7 @@ abstract class Frontend extends Controller
 					$arrLangs = $arrPages['*']; // Empty domain
 				}
 
-				$arrAliases = array();
+				$arrAliases = [];
 
 				// Use the first result (see #4872)
 				if (!Config::get('addLanguageToUrl'))
@@ -207,7 +207,7 @@ abstract class Frontend extends Controller
 				// The request consists of the alias only
 				if ($strRequest == $objPage->alias)
 				{
-					$arrFragments = array($strRequest);
+					$arrFragments = [$strRequest];
 				}
 				// Remove the alias from the request string, explode it and then re-insert the alias at the beginning
 				else
@@ -234,7 +234,7 @@ abstract class Frontend extends Controller
 		// Add the second fragment as auto_item if the number of fragments is even
 		if (Config::get('useAutoItem') && count($arrFragments) % 2 == 0)
 		{
-			array_insert($arrFragments, 1, array('auto_item'));
+			array_insert($arrFragments, 1, ['auto_item']);
 		}
 
 		// HOOK: add custom logic
@@ -362,9 +362,9 @@ abstract class Frontend extends Controller
 	 *
 	 * @return string The new URL
 	 */
-	public static function addToUrl($strRequest, $blnIgnoreParams=false, $arrUnset=array())
+	public static function addToUrl($strRequest, $blnIgnoreParams=false, $arrUnset=[])
 	{
-		$arrGet = $blnIgnoreParams ? array() : $_GET;
+		$arrGet = $blnIgnoreParams ? [] : $_GET;
 
 		// Clean the $_GET values (thanks to thyon)
 		foreach (array_keys($arrGet) as $key)
@@ -561,7 +561,7 @@ abstract class Frontend extends Controller
 
 		if (!is_array($arrData) || !isset($arrData[$strLanguage]))
 		{
-			return array();
+			return [];
 		}
 
 		return $arrData[$strLanguage];

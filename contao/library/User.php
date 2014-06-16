@@ -77,7 +77,7 @@ abstract class User extends System
 	 * Data
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 
 	/**

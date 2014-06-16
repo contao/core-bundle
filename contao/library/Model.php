@@ -80,25 +80,25 @@ abstract class Model
 	 * Data
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Modified keys
 	 * @var array
 	 */
-	protected $arrModified = array();
+	protected $arrModified = [];
 
 	/**
 	 * Relations
 	 * @var array
 	 */
-	protected $arrRelations = array();
+	protected $arrRelations = [];
 
 	/**
 	 * Related
 	 * @var array
 	 */
-	protected $arrRelated = array();
+	protected $arrRelated = [];
 
 	/**
 	 * Prevent saving
@@ -114,14 +114,14 @@ abstract class Model
 	 */
 	public function __construct(Result $objResult=null)
 	{
-		$this->arrModified = array();
+		$this->arrModified = [];
 
 		$objDca = new DcaExtractor(static::$strTable);
 		$this->arrRelations = $objDca->getRelations();
 
 		if ($objResult !== null)
 		{
-			$arrRelated = array();
+			$arrRelated = [];
 			$arrData = $objResult->row();
 
 			// Look for joined fields
@@ -133,7 +133,7 @@ abstract class Model
 
 					if (!isset($arrRelated[$key]))
 					{
-						$arrRelated[$key] = array();
+						$arrRelated[$key] = [];
 					}
 
 					$arrRelated[$key][$field] = $v;
@@ -182,7 +182,7 @@ abstract class Model
 	 */
 	public function __clone()
 	{
-		$this->arrModified = array();
+		$this->arrModified = [];
 		unset($this->arrData[static::$strPk]);
 	}
 
@@ -383,7 +383,7 @@ abstract class Model
 		// The model is in the registry
 		if (Registry::getInstance()->isRegistered($this))
 		{
-			$arrSet = array();
+			$arrSet = [];
 			$arrRow = $this->row();
 
 			// Only update modified fields
@@ -418,7 +418,7 @@ abstract class Model
 						->execute($intPk);
 
 			$this->postSave(self::UPDATE);
-			$this->arrModified = array(); // reset after postSave()
+			$this->arrModified = []; // reset after postSave()
 		}
 
 		// The model is not yet in the registry
@@ -454,7 +454,7 @@ abstract class Model
 			}
 
 			$this->postSave(self::INSERT);
-			$this->arrModified = array(); // reset after postSave()
+			$this->arrModified = []; // reset after postSave()
 
 			Registry::getInstance()->register($this);
 		}
@@ -533,7 +533,7 @@ abstract class Model
 	 *
 	 * @throws Exception If $strKey is not a related field
 	 */
-	public function getRelated($strKey, array $arrOptions=array())
+	public function getRelated($strKey, array $arrOptions=[])
 	{
 		// The related model has been loaded before
 		if (array_key_exists($strKey, $this->arrRelated))
@@ -576,15 +576,14 @@ abstract class Model
 			{
 				$arrOptions = array_merge
 				(
-					array
-					(
+					[
 						'order' => Database::getInstance()->findInSet($strField, $arrValues)
-					),
+					],
 
 					$arrOptions
 				);
 
-				$objModel = $strClass::findBy(array($strField . " IN('" . implode("','", $arrValues) . "')"), null, $arrOptions);
+				$objModel = $strClass::findBy([$strField . " IN('" . implode("','", $arrValues) . "')"], null, $arrOptions);
 			}
 
 			$this->arrRelated[$strKey] = $objModel;
@@ -642,7 +641,7 @@ abstract class Model
 	 *
 	 * @return Model|null The model or null if the result is empty
 	 */
-	public static function findByPk($varValue, array $arrOptions=array())
+	public static function findByPk($varValue, array $arrOptions=[])
 	{
 		// Try to load from the registry
 		if (empty($arrOptions))
@@ -657,13 +656,12 @@ abstract class Model
 
 		$arrOptions = array_merge
 		(
-			array
-			(
+			[
 				'limit'  => 1,
 				'column' => static::$strPk,
 				'value'  => $varValue,
 				'return' => 'Model'
-			),
+			],
 
 			$arrOptions
 		);
@@ -680,7 +678,7 @@ abstract class Model
 	 *
 	 * @return Model|null The model or null if the result is empty
 	 */
-	public static function findByIdOrAlias($varId, array $arrOptions=array())
+	public static function findByIdOrAlias($varId, array $arrOptions=[])
 	{
 		// Try to load from the registry
 		if (is_numeric($varId) && empty($arrOptions))
@@ -697,13 +695,12 @@ abstract class Model
 
 		$arrOptions = array_merge
 		(
-			array
-			(
+			[
 				'limit'  => 1,
-				'column' => array("($t.id=? OR $t.alias=?)"),
-				'value'  => array((is_numeric($varId) ? $varId : 0), $varId),
+				'column' => ["($t.id=? OR $t.alias=?)"],
+				'value'  => [(is_numeric($varId) ? $varId : 0), $varId],
 				'return' => 'Model'
-			),
+			],
 
 			$arrOptions
 		);
@@ -720,15 +717,15 @@ abstract class Model
 	 *
 	 * @return Collection|null A collection of models or null if there are no records
 	 */
-	public static function findMultipleByIds($arrIds, array $arrOptions=array())
+	public static function findMultipleByIds($arrIds, array $arrOptions=[])
 	{
 		if (empty($arrIds) || !is_array($arrIds))
 		{
 			return null;
 		}
 
-		$arrRegistered = array();
-		$arrUnregistered = array();
+		$arrRegistered = [];
+		$arrUnregistered = [];
 
 		// Search for registered models
 		foreach ($arrIds as $intId)
@@ -753,13 +750,12 @@ abstract class Model
 
 			$arrOptions = array_merge
 			(
-				array
-				(
-					'column' => array("$t.id IN(" . implode(',', array_map('intval', $arrUnregistered)) . ")"),
+				[
+					'column' => ["$t.id IN(" . implode(',', array_map('intval', $arrUnregistered)) . ")"],
 					'value'  => null,
 					'order'  => Database::getInstance()->findInSet("$t.id", $arrIds),
 					'return' => 'Collection'
-				),
+				],
 
 				$arrOptions
 			);
@@ -789,7 +785,7 @@ abstract class Model
 	 *
 	 * @return Model|null The model or null if the result is empty
 	 */
-	public static function findOneBy($strColumn, $varValue, array $arrOptions=array())
+	public static function findOneBy($strColumn, $varValue, array $arrOptions=[])
 	{
 		$intId = is_array($varValue) ? $varValue[0] : $varValue;
 
@@ -814,13 +810,12 @@ abstract class Model
 
 		$arrOptions = array_merge
 		(
-			array
-			(
+			[
 				'limit'  => 1,
 				'column' => $strColumn,
 				'value'  => $varValue,
 				'return' => 'Model'
-			),
+			],
 
 			$arrOptions
 		);
@@ -838,16 +833,15 @@ abstract class Model
 	 *
 	 * @return Collection|null The model collection or null if the result is empty
 	 */
-	public static function findBy($strColumn, $varValue, array $arrOptions=array())
+	public static function findBy($strColumn, $varValue, array $arrOptions=[])
 	{
 		$arrOptions = array_merge
 		(
-			array
-			(
+			[
 				'column' => $strColumn,
 				'value'  => $varValue,
 				'return' => 'Collection'
-			),
+			],
 
 			$arrOptions
 		);
@@ -863,14 +857,13 @@ abstract class Model
 	 *
 	 * @return Collection|null The model collection or null if the result is empty
 	 */
-	public static function findAll(array $arrOptions=array())
+	public static function findAll(array $arrOptions=[])
 	{
 		$arrOptions = array_merge
 		(
-			array
-			(
+			[
 				'return' => 'Collection'
-			),
+			],
 
 			$arrOptions
 		);
@@ -1028,12 +1021,12 @@ abstract class Model
 			return 0;
 		}
 
-		$strQuery = static::buildCountQuery(array
-		(
+		$strQuery = static::buildCountQuery(
+		[
 			'table'  => static::$strTable,
 			'column' => $strColumn,
 			'value'  => $varValue
-		));
+		]);
 
 		return (int) Database::getInstance()->prepare($strQuery)->execute($varValue)->count;
 	}

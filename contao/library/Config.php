@@ -66,13 +66,13 @@ class Config
 	 * Data
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Cache
 	 * @var array
 	 */
-	protected $arrCache = array();
+	protected $arrCache = [];
 
 
 	/**

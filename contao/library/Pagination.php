@@ -122,7 +122,7 @@ class Pagination
 	 * Data array
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 	/**
 	 * Data array
@@ -268,33 +268,33 @@ class Pagination
 		$objTemplate->items = $this->getItemsAsString($strSeparator);
 		$objTemplate->total = sprintf($this->lblTotal, $this->intPage, $this->intTotalPages);
 
-		$objTemplate->first = array
-		(
+		$objTemplate->first =
+		[
 			'link' => $this->lblFirst,
 			'href' => $this->linkToPage(1),
 			'title' => sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['goToPage']), 1)
-		);
+		];
 
-		$objTemplate->previous = array
-		(
+		$objTemplate->previous =
+		[
 			'link' => $this->lblPrevious,
 			'href' => $this->linkToPage($this->intPage - 1),
 			'title' => sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['goToPage']), ($this->intPage - 1))
-		);
+		];
 
-		$objTemplate->next = array
-		(
+		$objTemplate->next =
+		[
 			'link' => $this->lblNext,
 			'href' => $this->linkToPage($this->intPage + 1),
 			'title' => sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['goToPage']), ($this->intPage + 1))
-		);
+		];
 
-		$objTemplate->last = array
-		(
+		$objTemplate->last =
+		[
 			'link' => $this->lblLast,
 			'href' => $this->linkToPage($this->intTotalPages),
 			'title' => sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['goToPage']), $this->intTotalPages)
-		);
+		];
 
 		$objTemplate->class = 'pagination-' . $this->strParameter;
 
@@ -314,7 +314,7 @@ class Pagination
 	 */
 	public function getItemsAsString($strSeparator=' ')
 	{
-		$arrLinks = array();
+		$arrLinks = [];
 
 		$intNumberOfLinks = floor($this->intNumberOfLinks / 2);
 		$intFirstOffset = $this->intPage - $intNumberOfLinks - 1;

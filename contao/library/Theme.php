@@ -58,7 +58,7 @@ class Theme extends Backend
 					$this->reload();
 				}
 
-				$arrFiles = array();
+				$arrFiles = [];
 
 				foreach ($arrUploaded as $strFile)
 				{
@@ -94,14 +94,14 @@ class Theme extends Backend
 			}
 
 			// Store the field names of the theme tables
-			$arrDbFields = array
-			(
+			$arrDbFields =
+			[
 				'tl_theme'       => $this->Database->getFieldNames('tl_theme'),
 				'tl_style_sheet' => $this->Database->getFieldNames('tl_style_sheet'),
 				'tl_style'       => $this->Database->getFieldNames('tl_style'),
 				'tl_module'      => $this->Database->getFieldNames('tl_module'),
 				'tl_layout'      => $this->Database->getFieldNames('tl_layout')
-			);
+			];
 
 			// Proceed
 			if (Input::post('confirm') == 1)
@@ -350,9 +350,9 @@ class Theme extends Backend
 				continue;
 			}
 
-			$arrMapper = array();
+			$arrMapper = [];
 			$tables = $xml->getElementsByTagName('table');
-			$arrNewFolders = array();
+			$arrNewFolders = [];
 
 			// Extract the folder names from the XML file
 			for ($i=0; $i<$tables->length; $i++)
@@ -396,15 +396,15 @@ class Theme extends Backend
 			}
 
 			// Lock the tables
-			$arrLocks = array
-			(
+			$arrLocks =
+			[
 				'tl_files'       => 'WRITE',
 				'tl_layout'      => 'WRITE',
 				'tl_module'      => 'WRITE',
 				'tl_style_sheet' => 'WRITE',
 				'tl_style'       => 'WRITE',
 				'tl_theme'       => 'WRITE',
-			);
+			];
 
 			$this->Database->lockTables($arrLocks);
 
@@ -437,7 +437,7 @@ class Theme extends Backend
 				// Loop through the rows
 				for ($j=0; $j<$rows->length; $j++)
 				{
-					$set = array();
+					$set = [];
 					$fields = $rows->item($j)->childNodes;
 
 					// Loop through the fields
@@ -873,7 +873,7 @@ class Theme extends Backend
 	 * @param Result      $objData  The database result object
 	 * @param array       $arrOrder An array of order fields
 	 */
-	protected function addDataRow(DOMDocument $xml, DOMElement $table, Result $objData, array $arrOrder=array())
+	protected function addDataRow(DOMDocument $xml, DOMElement $table, Result $objData, array $arrOrder=[])
 	{
 		$t = $table->getAttribute('name');
 
@@ -928,7 +928,7 @@ class Theme extends Backend
 						// Standardize the upload path if it is not "files"
 						if (Config::get('uploadPath') != 'files')
 						{
-							$arrTmp = array();
+							$arrTmp = [];
 
 							while ($objFiles->next())
 							{

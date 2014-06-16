@@ -68,7 +68,7 @@ abstract class Backend extends Controller
 	 */
 	public static function getThemes()
 	{
-		$arrReturn = array();
+		$arrReturn = [];
 		$arrThemes = scan(TL_ROOT . '/system/themes');
 
 		foreach ($arrThemes as $strTheme)
@@ -208,7 +208,7 @@ abstract class Backend extends Controller
 			return '';
 		}
 
-		$arrFiles = array();
+		$arrFiles = [];
 		$arrTemplates = scan(TL_ROOT . '/' . $strDir);
 
 		foreach ($arrTemplates as $strFile)
@@ -232,7 +232,7 @@ abstract class Backend extends Controller
 	 *
 	 * @return string The new URL
 	 */
-	public static function addToUrl($strRequest, $blnAddRef=true, $arrUnset=array())
+	public static function addToUrl($strRequest, $blnAddRef=true, $arrUnset=[])
 	{
 		// Unset the "no back button" flag
 		$arrUnset[] = 'nb';
@@ -249,7 +249,7 @@ abstract class Backend extends Controller
 	protected function handleRunOnce()
 	{
 		$this->import('Files');
-		$arrFiles = array('system/runonce.php');
+		$arrFiles = ['system/runonce.php'];
 
 		// Always scan all folders and not just the active modules (see #4200)
 		foreach (scan(TL_ROOT . '/system/modules') as $strModule)
@@ -293,7 +293,7 @@ abstract class Backend extends Controller
 	 */
 	protected function getBackendModule($module)
 	{
-		$arrModule = array();
+		$arrModule = [];
 
 		foreach ($GLOBALS['BE_MOD'] as &$arrGroup)
 		{
@@ -318,7 +318,7 @@ abstract class Backend extends Controller
 		// Dynamically add the "personal data" module (see #4193)
 		if (Input::get('do') == 'login')
 		{
-			$arrModule = array('tables'=>array('tl_user'), 'callback'=>'ModuleUser');
+			$arrModule = ['tables'=>['tl_user'], 'callback'=>'ModuleUser'];
 		}
 
 		// Check whether the current user has access to the current module
@@ -601,7 +601,7 @@ abstract class Backend extends Controller
 
 		if ($objPages->numRows < 1)
 		{
-			return array();
+			return [];
 		}
 
 		// Fallback domain
@@ -610,7 +610,7 @@ abstract class Backend extends Controller
 			$domain = Environment::get('base');
 		}
 
-		$arrPages = array();
+		$arrPages = [];
 
 		// Recursively walk through all subpages
 		while($objPages->next())
@@ -687,8 +687,8 @@ abstract class Backend extends Controller
 			return;
 		}
 
-		$arrIds   = array();
-		$arrLinks = array();
+		$arrIds   = [];
+		$arrLinks = [];
 		$objUser  = BackendUser::getInstance();
 
 		// Generate breadcrumb trail
@@ -748,7 +748,7 @@ abstract class Backend extends Controller
 		}
 
 		// Limit tree
-		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = array($intNode);
+		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = [$intNode];
 
 		// Add root link
 		$arrLinks[] = '<img src="' . TL_FILES_URL . 'system/themes/' . self::getTheme() . '/images/pagemounts.gif" width="18" height="18" alt=""> <a href="' . Controller::addToUrl('node=0') . '" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']).'">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
@@ -837,7 +837,7 @@ abstract class Backend extends Controller
 		$objUser  = BackendUser::getInstance();
 		$strPath  = Config::get('uploadPath');
 		$arrNodes = explode('/', preg_replace('/^' . preg_quote(Config::get('uploadPath'), '/') . '\//', '', $strNode));
-		$arrLinks = array();
+		$arrLinks = [];
 
 		// Add root link
 		$arrLinks[] = '<img src="' . TL_FILES_URL . 'system/themes/' . self::getTheme() . '/images/filemounts.gif" width="18" height="18" alt=""> <a href="' . Controller::addToUrl('node=') . '" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']).'">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
@@ -874,7 +874,7 @@ abstract class Backend extends Controller
 		}
 
 		// Limit tree
-		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['root'] = array($strNode);
+		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['root'] = [$strNode];
 
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['breadcrumb'] .= '
@@ -900,7 +900,7 @@ abstract class Backend extends Controller
 		}
 
 		$return = '';
-		$processed = array();
+		$processed = [];
 
 		foreach ($this->eliminateNestedPages($this->User->pagemounts) as $page)
 		{
@@ -1010,12 +1010,12 @@ abstract class Backend extends Controller
 		}
 
 		$return = '';
-		$processed = array();
+		$processed = [];
 
 		// Set custom filemount
 		if ($filemount)
 		{
-			$this->User->filemounts = array($filemount);
+			$this->User->filemounts = [$filemount];
 		}
 
 		// Limit nodes to the filemounts of the user

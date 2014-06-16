@@ -71,7 +71,7 @@ abstract class Result
 	 * Result cache
 	 * @var array
 	 */
-	protected $arrCache = array();
+	protected $arrCache = [];
 
 
 	/**
@@ -237,7 +237,7 @@ abstract class Result
 	public function fetchEach($strKey)
 	{
 		$this->reset();
-		$arrReturn = array();
+		$arrReturn = [];
 
 		while (($arrRow = $this->fetchAssoc()) !== false)
 		{
@@ -263,7 +263,7 @@ abstract class Result
 	public function fetchAllAssoc()
 	{
 		$this->reset();
-		$arrReturn = array();
+		$arrReturn = [];
 
 		while (($arrRow = $this->fetchAssoc()) !== false)
 		{
@@ -429,7 +429,7 @@ abstract class Result
 		$this->intIndex = -1;
 		$this->blnDone = false;
 		$this->data_seek(0);
-		$this->arrCache = array();
+		$this->arrCache = [];
 
 		return $this;
 	}

@@ -94,15 +94,15 @@ class ModuleLoader
 		}
 		else
 		{
-			$load = array();
+			$load = [];
 
-			static::$active = array();
-			static::$disabled = array();
+			static::$active = [];
+			static::$disabled = [];
 
 			// Ignore non-core modules if the system runs in safe mode
 			if (Config::get('coreOnlyMode'))
 			{
-				$modules = array('core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository');
+				$modules = ['core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'];
 			}
 			else
 			{
@@ -125,7 +125,7 @@ class ModuleLoader
 				}
 
 				// Ignore legacy modules
-				if (in_array($file, array('backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor')))
+				if (in_array($file, ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor']))
 				{
 					continue;
 				}
@@ -145,13 +145,13 @@ class ModuleLoader
 					continue;
 				}
 
-				$load[$file] = array();
+				$load[$file] = [];
 
 				// Read the autoload.ini if any
 				if (file_exists($path . '/config/autoload.ini'))
 				{
 					$config = parse_ini_file($path . '/config/autoload.ini', true);
-					$load[$file] = $config['requires'] ?: array();
+					$load[$file] = $config['requires'] ?: [];
 
 					foreach ($load[$file] as $k=>$v)
 					{

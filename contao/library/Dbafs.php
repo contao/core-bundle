@@ -67,11 +67,11 @@ class Dbafs
 			throw new InvalidArgumentException("Invalid resource $strResource");
 		}
 
-		$arrPaths    = array();
+		$arrPaths    = [];
 		$arrChunks   = explode('/', $strResource);
 		$strPath     = array_shift($arrChunks);
-		$arrPids     = array($strPath => null);
-		$arrUpdate   = array($strResource);
+		$arrPids     = [$strPath => null];
+		$arrUpdate   = [$strResource];
 		$objDatabase = Database::getInstance();
 
 		// Build the paths
@@ -400,11 +400,11 @@ class Dbafs
 	 */
 	public static function updateFolderHashes($varResource)
 	{
-		$arrPaths  = array();
+		$arrPaths  = [];
 
 		if (!is_array($varResource))
 		{
-			$varResource = array($varResource);
+			$varResource = [$varResource];
 		}
 
 		foreach ($varResource as $strResource)
@@ -464,7 +464,7 @@ class Dbafs
 		$objDatabase = Database::getInstance();
 
 		// Lock the files table
-		$objDatabase->lockTables(array('tl_files'));
+		$objDatabase->lockTables(['tl_files']);
 
 		// Reset the "found" flag
 		$objDatabase->query("UPDATE tl_files SET found=''");
@@ -485,7 +485,7 @@ class Dbafs
 		$objLog = new File($strLog);
 		$objLog->truncate();
 
-		$arrModels = array();
+		$arrModels = [];
 
 		// Create or update the database entries
 		foreach ($objFiles as $objFile)
@@ -596,12 +596,12 @@ class Dbafs
 
 		if ($objFiles !== null)
 		{
-			$arrMapped = array();
-			$arrPidUpdate = array();
+			$arrMapped = [];
+			$arrPidUpdate = [];
 
 			while ($objFiles->next())
 			{
-				$objFound = FilesModel::findBy(array('hash=?', 'found=2'), $objFiles->hash);
+				$objFound = FilesModel::findBy(['hash=?', 'found=2'], $objFiles->hash);
 
 				if ($objFound !== null)
 				{

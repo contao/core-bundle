@@ -111,7 +111,7 @@ class Email
 	 * Invalid addresses
 	 * @var array
 	 */
-	protected $arrFailures = array();
+	protected $arrFailures = [];
 
 	/**
 	 * Log file name
@@ -188,7 +188,7 @@ class Email
 		switch ($strKey)
 		{
 			case 'subject':
-				$this->strSubject = preg_replace(array('/[\t]+/', '/[\n\r]+/'), array(' ', ''), $varValue);
+				$this->strSubject = preg_replace(['/[\t]+/', '/[\n\r]+/'], [' ', ''], $varValue);
 				break;
 
 			case 'text':
@@ -454,8 +454,8 @@ class Email
 					$this->strImageDir = TL_ROOT . '/';
 				}
 
-				$arrCid = array();
-				$arrMatches = array();
+				$arrCid = [];
+				$arrMatches = [];
 				$strBase = Environment::get('base');
 
 				// Thanks to @ofriedrich and @aschempp (see #4562)
@@ -511,7 +511,7 @@ class Email
 		// Sender
 		if ($this->strSenderName != '')
 		{
-			$this->objMessage->setFrom(array($this->strSender=>$this->strSenderName));
+			$this->objMessage->setFrom([$this->strSender=>$this->strSenderName]);
 		}
 		else
 		{
@@ -566,7 +566,7 @@ class Email
 	 */
 	protected function compileRecipients($arrRecipients)
 	{
-		$arrReturn = array();
+		$arrReturn = [];
 
 		foreach ($arrRecipients as $varRecipients)
 		{

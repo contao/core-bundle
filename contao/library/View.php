@@ -59,13 +59,13 @@ abstract class View extends Controller
 	 * Blocks
 	 * @var array
 	 */
-	protected $arrBlocks = array();
+	protected $arrBlocks = [];
 
 	/**
 	 * Block names
 	 * @var array
 	 */
-	protected $arrBlockNames = array();
+	protected $arrBlockNames = [];
 
 
 	/**
@@ -107,7 +107,7 @@ abstract class View extends Controller
 		}
 
 		// Reset the internal arrays
-		$this->arrBlocks = array();
+		$this->arrBlocks = [];
 
 		// Add start and end markers in debug mode
 		if (Config::get('debugMode'))

@@ -55,7 +55,7 @@ class Date
 	 * Date range
 	 * @var array
 	 */
-	protected $arrRange = array();
+	protected $arrRange = [];
 
 
 	/**
@@ -237,8 +237,8 @@ class Date
 		return preg_replace_callback('/[a-zA-Z]/', function($matches)
 			{
 				// Thanks to Christian Labuda
-				$arrRegexp = array
-				(
+				$arrRegexp =
+				[
 					'a' => '(?P<a>am|pm)',
 					'A' => '(?P<A>AM|PM)',
 					'd' => '(?P<d>0[1-9]|[12][0-9]|3[01])',
@@ -253,7 +253,7 @@ class Date
 					's' => '(?P<s>[0-5][0-9])',
 					'Y' => '(?P<Y>[0-9]{4})',
 					'y' => '(?P<y>[0-9]{2})',
-				);
+				];
 
 				return isset($arrRegexp[$matches[0]]) ? $arrRegexp[$matches[0]] : $matches[0];
 			}
@@ -282,8 +282,8 @@ class Date
 			throw new Exception(sprintf('Invalid date format "%s"', $strFormat));
 		}
 
-		$arrCharacterMapper = array
-		(
+		$arrCharacterMapper =
+		[
 			'a' => 'am',
 			'A' => 'AM',
 			'd' => 'DD',
@@ -298,9 +298,9 @@ class Date
 			'G' => 'h',
 			'i' => 'mm',
 			's' => 'ss',
-		);
+		];
 
-		$arrInputFormat = array();
+		$arrInputFormat = [];
 		$arrCharacters = str_split($strFormat);
 
 		foreach ($arrCharacters as $strCharacter)
@@ -343,8 +343,8 @@ class Date
 		$blnMeridiem = false;
 		$blnCorrectHour = false;
 
-		$arrCharacterMapper = array
-		(
+		$arrCharacterMapper =
+		[
 			'd' => 'intDay',
 			'j' => 'intDay',
 			'm' => 'intMonth',
@@ -357,7 +357,7 @@ class Date
 			'G' => 'intHour',
 			'i' => 'intMinute',
 			's' => 'intSecond'
-		);
+		];
 
 		$arrCharacters = str_split($this->strFormat);
 
@@ -569,8 +569,8 @@ class Date
 	{
 		$strModified = str_replace
 		(
-			array('l', 'D', 'F', 'M'),
-			array('w::1', 'w::2', 'n::3', 'n::4'),
+			['l', 'D', 'F', 'M'],
+			['w::1', 'w::2', 'n::3', 'n::4'],
 			$strFormat
 		);
 

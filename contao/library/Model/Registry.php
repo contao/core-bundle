@@ -128,7 +128,7 @@ class Registry implements Countable
 
 		if (!is_array($this->arrRegistry[$strTable]))
 		{
-			$this->arrRegistry[$strTable] = array();
+			$this->arrRegistry[$strTable] = [];
 		}
 
 		$strPk = $objModel->getPk();

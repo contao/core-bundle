@@ -72,7 +72,7 @@ class FrontendTemplate extends Template
 		// Add the meta keywords
 		if (strlen($arrKeywords[0]))
 		{
-			$this->keywords = str_replace(array("\n", "\r", '"'), array(' ' , '', ''), implode(', ', array_unique($arrKeywords)));
+			$this->keywords = str_replace(["\n", "\r", '"'], [' ' , '', ''], implode(', ', array_unique($arrKeywords)));
 		}
 
 		// Parse the template
@@ -93,7 +93,7 @@ class FrontendTemplate extends Template
 
 		// Replace insert tags and then re-replace the request_token tag in case a form element has been loaded via insert tag
 		$this->strBuffer = $this->replaceInsertTags($this->strBuffer, false);
-		$this->strBuffer = str_replace(array('{{request_token}}', '[{]', '[}]'), array(REQUEST_TOKEN, '{{', '}}'), $this->strBuffer);
+		$this->strBuffer = str_replace(['{{request_token}}', '[{]', '[}]'], [REQUEST_TOKEN, '{{', '}}'], $this->strBuffer);
 		$this->strBuffer = $this->replaceDynamicScriptTags($this->strBuffer); // see #4203
 
 		// HOOK: allow to modify the compiled markup (see #4291)
@@ -180,7 +180,7 @@ class FrontendTemplate extends Template
 	 *
 	 * @return string The new URI string
 	 */
-	public static function addToUrl($strRequest, $blnIgnoreParams=false, $arrUnset=array())
+	public static function addToUrl($strRequest, $blnIgnoreParams=false, $arrUnset=[])
 	{
 		return Frontend::addToUrl($strRequest, $blnIgnoreParams, $arrUnset);
 	}
@@ -290,8 +290,8 @@ class FrontendTemplate extends Template
 
 				if ($blnIndex)
 				{
-					$arrData = array
-					(
+					$arrData =
+					[
 						'url' => Environment::get('request'),
 						'content' => $this->strBuffer,
 						'title' => $objPage->pageTitle ?: $objPage->title,
@@ -299,7 +299,7 @@ class FrontendTemplate extends Template
 						'groups' => $objPage->groups,
 						'pid' => $objPage->id,
 						'language' => $objPage->language
-					);
+					];
 
 					Search::indexPage($arrData);
 				}

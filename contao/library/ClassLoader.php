@@ -36,16 +36,13 @@ class ClassLoader
 	 * Known namespaces
 	 * @var array
 	 */
-	protected static $namespaces = array
-	(
-		'Contao'
-	);
+	protected static $namespaces = ['Contao'];
 
 	/**
 	 * Known classes
 	 * @var array
 	 */
-	protected static $classes = array();
+	protected static $classes = [];
 
 
 	/**

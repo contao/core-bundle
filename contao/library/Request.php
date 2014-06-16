@@ -79,13 +79,13 @@ class Request
 	 * Headers array (these headers will be sent)
 	 * @var array
 	 */
-	protected $arrHeaders = array();
+	protected $arrHeaders = [];
 
 	/**
 	 * Response headers (these headers are returned)
 	 * @var array
 	 */
-	protected $arrResponseHeaders = array();
+	protected $arrResponseHeaders = [];
 
 	/**
 	 * Request username
@@ -320,13 +320,13 @@ class Request
 			$path .= '?' . $uri['query'];
 		}
 
-		$default = array
-		(
+		$default =
+		[
 			'Host' => 'Host: ' . $host,
 			'User-Agent' => 'User-Agent: Contao (+https://contao.org/)',
 			'Content-Length' => 'Content-Length: '. strlen($this->strData),
 			'Connection' => 'Connection: close'
-		);
+		];
 
 		if (isset($uri['user']))
 		{
@@ -364,7 +364,7 @@ class Request
 
 		list($split, $this->strResponse) = explode("\r\n\r\n", $response, 2);
 		$split = preg_split("/\r\n|\n|\r/", $split);
-		$this->arrResponseHeaders = array();
+		$this->arrResponseHeaders = [];
 		list(, $code, $text) = explode(' ', trim(array_shift($split)), 3);
 
 		while (($line = trim(array_shift($split))) != false)
@@ -381,8 +381,8 @@ class Request
 			}
 		}
 
-		$responses = array
-		(
+		$responses =
+		[
 			100 => 'Continue',
 			101 => 'Switching Protocols',
 			200 => 'OK',
@@ -423,7 +423,7 @@ class Request
 			503 => 'Service Unavailable',
 			504 => 'Gateway Timeout',
 			505 => 'HTTP Version Not Supported'
-		);
+		];
 
 		if (!isset($responses[$code]))
 		{

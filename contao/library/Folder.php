@@ -346,7 +346,7 @@ class Folder extends System
 	 */
 	protected function getHash()
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		$it = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator(

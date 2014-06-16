@@ -45,13 +45,13 @@ class Input
 	 * Cache
 	 * @var array
 	 */
-	protected static $arrCache = array();
+	protected static $arrCache = [];
 
 	/**
 	 * Unused $_GET parameters
 	 * @var array
 	 */
-	protected static $arrUnusedGet = array();
+	protected static $arrUnusedGet = [];
 
 	/**
 	 * Magic quotes setting
@@ -350,7 +350,7 @@ class Input
 	 */
 	public static function resetCache()
 	{
-		static::$arrCache = array();
+		static::$arrCache = [];
 	}
 
 
@@ -400,7 +400,7 @@ class Input
 		// Recursively clean arrays
 		if (is_array($varValue))
 		{
-			$return = array();
+			$return = [];
 
 			foreach ($varValue as $k=>$v)
 			{
@@ -481,9 +481,9 @@ class Input
 			return $varValue;
 		}
 
-		$varValue = str_replace(array('<!--','<![', '-->'), array('&lt;!--', '&lt;![', '--&gt;'), $varValue);
+		$varValue = str_replace(['<!--','<![', '-->'], ['&lt;!--', '&lt;![', '--&gt;'], $varValue);
 		$varValue = strip_tags($varValue, $strAllowedTags);
-		$varValue = str_replace(array('&lt;!--', '&lt;![', '--&gt;'), array('<!--', '<![', '-->'), $varValue);
+		$varValue = str_replace(['&lt;!--', '&lt;![', '--&gt;'], ['<!--', '<![', '-->'], $varValue);
 
 		// Recheck for encoded null bytes
 		while (strpos($varValue, '\\0') !== false)
@@ -547,8 +547,8 @@ class Input
 		}
 
 		// Define a list of keywords
-		$arrKeywords = array
-		(
+		$arrKeywords =
+		[
 			'/\bj\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\b/is', // javascript
 			'/\bv\s*b\s*s\s*c\s*r\s*i\s*p\s*t\b/is', // vbscript
 			'/\bv\s*b\s*s\s*c\s*r\s*p\s*t\b/is', // vbscrpt
@@ -559,12 +559,12 @@ class Input
 			'/\bw\s*r\s*i\s*t\s*e\b/is', // write
 			'/\bc\s*o\s*o\s*k\s*i\s*e\b/is', // cookie
 			'/\bw\s*i\s*n\s*d\s*o\s*w\b/is' // window
-		);
+		];
 
 		// Compact exploded keywords like "j a v a s c r i p t"
 		foreach ($arrKeywords as $strKeyword)
 		{
-			$arrMatches = array();
+			$arrMatches = [];
 			preg_match_all($strKeyword, $varValue, $arrMatches);
 
 			foreach ($arrMatches[0] as $strMatch)
@@ -681,8 +681,8 @@ class Input
 
 		$varValue = str_replace
 		(
-			array('[&amp;]', '&amp;', '[&lt;]', '&lt;', '[&gt;]', '&gt;', '[&nbsp;]', '&nbsp;', '[&shy;]', '&shy;'),
-			array('[&]', '[&]', '[lt]', '[lt]', '[gt]', '[gt]', '[nbsp]', '[nbsp]', '[-]', '[-]'),
+			['[&amp;]', '&amp;', '[&lt;]', '&lt;', '[&gt;]', '&gt;', '[&nbsp;]', '&nbsp;', '[&shy;]', '&shy;'],
+			['[&]', '[&]', '[lt]', '[lt]', '[gt]', '[gt]', '[nbsp]', '[nbsp]', '[-]', '[-]'],
 			$varValue
 		);
 
@@ -715,8 +715,8 @@ class Input
 			return $varValue;
 		}
 
-		$arrSearch = array('#', '<', '>', '(', ')', '\\', '=');
-		$arrReplace = array('&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;');
+		$arrSearch = ['#', '<', '>', '(', ')', '\\', '='];
+		$arrReplace = ['&#35;', '&#60;', '&#62;', '&#40;', '&#41;', '&#92;', '&#61;'];
 
 		return str_replace($arrSearch, $arrReplace, $varValue);
 	}

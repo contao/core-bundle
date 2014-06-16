@@ -81,7 +81,7 @@ class BackendUser extends User
 	 * Allowed excluded fields
 	 * @var array
 	 */
-	protected $alexf = array();
+	protected $alexf = [];
 
 	/**
 	 * File mount IDs
@@ -136,7 +136,7 @@ class BackendUser extends User
 				{
 					if (!isset($session[$key][TL_REFERER_ID]))
 					{
-						$session[$key][TL_REFERER_ID] = array();
+						$session[$key][TL_REFERER_ID] = [];
 					}
 
 					$session[$key][TL_REFERER_ID] = array_merge($session[$key][TL_REFERER_ID], $session[$key][$ref]);
@@ -176,15 +176,15 @@ class BackendUser extends User
 				break;
 
 			case 'groups':
-				return is_array($this->arrData['groups']) ? $this->arrData['groups'] : array($this->arrData['groups']);
+				return is_array($this->arrData['groups']) ? $this->arrData['groups'] : [$this->arrData['groups']];
 				break;
 
 			case 'pagemounts':
-				return is_array($this->arrData['pagemounts']) ? $this->arrData['pagemounts'] : (($this->arrData['pagemounts'] != '') ? array($this->arrData['pagemounts']) : false);
+				return is_array($this->arrData['pagemounts']) ? $this->arrData['pagemounts'] : (($this->arrData['pagemounts'] != '') ? [$this->arrData['pagemounts']] : false);
 				break;
 
 			case 'filemounts':
-				return is_array($this->arrData['filemounts']) ? $this->arrData['filemounts'] : (($this->arrData['filemounts'] != '') ? array($this->arrData['filemounts']) : false);
+				return is_array($this->arrData['filemounts']) ? $this->arrData['filemounts'] : (($this->arrData['filemounts'] != '') ? [$this->arrData['filemounts']] : false);
 				break;
 
 			case 'filemountIds':
@@ -192,7 +192,7 @@ class BackendUser extends User
 				break;
 
 			case 'fop':
-				return is_array($this->arrData['fop']) ? $this->arrData['fop'] : (($this->arrData['fop'] != '') ? array($this->arrData['fop']) : false);
+				return is_array($this->arrData['fop']) ? $this->arrData['fop'] : (($this->arrData['fop'] != '') ? [$this->arrData['fop']] : false);
 				break;
 
 			case 'alexf':
@@ -244,7 +244,7 @@ class BackendUser extends User
 
 		if (!is_array($field))
 		{
-			$field = array($field);
+			$field = [$field];
 		}
 
 		if (is_array($this->$array) && array_intersect($field, $this->$array))
@@ -325,8 +325,8 @@ class BackendUser extends User
 
 		// Set permissions
 		$chmod = deserialize($row['chmod']);
-		$chmod = is_array($chmod) ? $chmod : array($chmod);
-		$permission = array('w'.$int);
+		$chmod = is_array($chmod) ? $chmod : [$chmod];
+		$permission = ['w'.$int];
 
 		if (in_array($row['cgroup'], $this->groups))
 		{
@@ -403,8 +403,8 @@ class BackendUser extends User
 		Config::set('backendTheme', $this->backendTheme);
 
 		// Inherit permissions
-		$always = array('alexf');
-		$depends = array('modules', 'themes', 'pagemounts', 'alpty', 'filemounts', 'fop', 'forms', 'formp');
+		$always = ['alexf'];
+		$depends = ['modules', 'themes', 'pagemounts', 'alpty', 'filemounts', 'fop', 'forms', 'formp'];
 
 		// HOOK: Take custom permissions
 		if (!empty($GLOBALS['TL_PERMISSIONS']) && is_array($GLOBALS['TL_PERMISSIONS']))
@@ -417,12 +417,12 @@ class BackendUser extends User
 		{
 			foreach ($depends as $field)
 			{
-				$this->$field = array();
+				$this->$field = [];
 			}
 		}
 
 		// Merge permissions
-		$inherit = in_array($this->inherit, array('group', 'extend')) ? array_merge($always, $depends) : $always;
+		$inherit = in_array($this->inherit, ['group', 'extend']) ? array_merge($always, $depends) : $always;
 		$time = time();
 
 		foreach ((array) $this->groups as $id)
@@ -440,7 +440,7 @@ class BackendUser extends User
 					// The new page/file picker can return integers instead of arrays, so use empty() instead of is_array() and deserialize(true) here
 					if (!empty($value))
 					{
-						$this->$field = array_merge((is_array($this->$field) ? $this->$field : (($this->$field != '') ? array($this->$field) : array())), $value);
+						$this->$field = array_merge((is_array($this->$field) ? $this->$field : (($this->$field != '') ? [$this->$field] : [])), $value);
 						$this->$field = array_unique($this->$field);
 					}
 				}
@@ -454,13 +454,13 @@ class BackendUser extends User
 		}
 		else
 		{
-			$this->session = array();
+			$this->session = [];
 		}
 
 		// Make sure pagemounts and filemounts are set!
 		if (!is_array($this->pagemounts))
 		{
-			$this->pagemounts = array();
+			$this->pagemounts = [];
 		}
 		else
 		{
@@ -469,7 +469,7 @@ class BackendUser extends User
 
 		if (!is_array($this->filemounts))
 		{
-			$this->filemounts = array();
+			$this->filemounts = [];
 		}
 		else
 		{
@@ -501,7 +501,7 @@ class BackendUser extends User
 	 */
 	public function navigation($blnShowAll=false)
 	{
-		$arrModules = array();
+		$arrModules = [];
 		$session = $this->Session->getData();
 
 		// Toggle nodes

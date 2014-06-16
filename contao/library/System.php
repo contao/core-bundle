@@ -44,31 +44,31 @@ abstract class System
 	 * Cache
 	 * @var array
 	 */
-	protected $arrCache = array(); // Backwards compatibility
+	protected $arrCache = []; // Backwards compatibility
 
 	/**
 	 * Default libraries
 	 * @var array
 	 */
-	protected $arrObjects = array();
+	protected $arrObjects = [];
 
 	/**
 	 * Static objects
 	 * @var array
 	 */
-	protected static $arrStaticObjects = array();
+	protected static $arrStaticObjects = [];
 
 	/**
 	 * Available languages
 	 * @var array
 	 */
-	protected static $arrLanguages = array();
+	protected static $arrLanguages = [];
 
 	/**
 	 * Loaded language files
 	 * @var array
 	 */
-	protected static $arrLanguageFiles = array();
+	protected static $arrLanguageFiles = [];
 
 
 	/**
@@ -122,7 +122,7 @@ abstract class System
 
 		if ($blnForce || !isset($this->arrObjects[$strKey]))
 		{
-			$this->arrObjects[$strKey] = (in_array('getInstance', get_class_methods($strClass))) ? call_user_func(array($strClass, 'getInstance')) : new $strClass();
+			$this->arrObjects[$strKey] = (in_array('getInstance', get_class_methods($strClass))) ? call_user_func([$strClass, 'getInstance']) : new $strClass();
 		}
 	}
 
@@ -142,7 +142,7 @@ abstract class System
 
 		if ($blnForce || !isset(static::$arrStaticObjects[$strKey]))
 		{
-			static::$arrStaticObjects[$strKey] = (in_array('getInstance', get_class_methods($strClass))) ? call_user_func(array($strClass, 'getInstance')) : new $strClass();
+			static::$arrStaticObjects[$strKey] = (in_array('getInstance', get_class_methods($strClass))) ? call_user_func([$strClass, 'getInstance']) : new $strClass();
 		}
 
 		return static::$arrStaticObjects[$strKey];
@@ -287,7 +287,7 @@ abstract class System
 		static::$arrLanguageFiles[$strName][$strCacheKey] = $strLanguage;
 
 		// Fall back to English
-		$arrCreateLangs = ($strLanguage == 'en') ? array('en') : array('en', $strLanguage);
+		$arrCreateLangs = ($strLanguage == 'en') ? ['en'] : ['en', $strLanguage];
 
 		// Load the language(s)
 		foreach ($arrCreateLangs as $strCreateLang)
@@ -365,9 +365,9 @@ abstract class System
 	 */
 	public static function getCountries()
 	{
-		$return = array();
-		$countries = array();
-		$arrAux = array();
+		$return = [];
+		$countries = [];
+		$arrAux = [];
 
 		static::loadLanguageFile('countries');
 		include TL_ROOT . '/system/config/countries.php';
@@ -406,10 +406,10 @@ abstract class System
 	 */
 	public static function getLanguages($blnInstalledOnly=false)
 	{
-		$return = array();
-		$languages = array();
-		$arrAux = array();
-		$langsNative = array();
+		$return = [];
+		$languages = [];
+		$arrAux = [];
+		$langsNative = [];
 
 		static::loadLanguageFile('languages');
 		include TL_ROOT . '/system/config/languages.php';
@@ -457,8 +457,8 @@ abstract class System
 	 */
 	public static function getTimeZones()
 	{
-		$arrReturn = array();
-		$timezones = array();
+		$arrReturn = [];
+		$timezones = [];
 
 		require TL_ROOT . '/system/config/timezones.php';
 
@@ -613,10 +613,10 @@ abstract class System
 		}
 
 		// die() statement
-		$strCode = str_replace(array(
+		$strCode = str_replace([
 			" if (!defined('TL_ROOT')) die('You cannot access this file directly!');",
 			" if (!defined('TL_ROOT')) die('You can not access this file directly!');"
-		), '', $strCode);
+		], '', $strCode);
 
 		// Closing tag
 		if (substr($strCode, -2) == '?>')
@@ -696,7 +696,7 @@ abstract class System
 			// Handle keys with dots
 			if (preg_match('/tl_layout\.[a-z]+\.css\./', $unit->getAttribute('id')))
 			{
-				$chunks = array($chunks[0], $chunks[1] . '.' . $chunks[2], $chunks[3]);
+				$chunks = [$chunks[0], $chunks[1] . '.' . $chunks[2], $chunks[3]];
 			}
 
 			// Create the array entries

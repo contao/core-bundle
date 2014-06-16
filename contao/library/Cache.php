@@ -48,7 +48,7 @@ class Cache
 	 * The cache data
 	 * @var array
 	 */
-	protected static $arrData = array();
+	protected static $arrData = [];
 
 
 	/**

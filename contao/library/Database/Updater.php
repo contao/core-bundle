@@ -78,7 +78,7 @@ class Updater extends Controller
 
 		while ($objLayout->next())
 		{
-			$mootools = array('moo_mediabox');
+			$mootools = ['moo_mediabox'];
 
 			if ($objLayout->mootools != '')
 			{
@@ -163,7 +163,7 @@ class Updater extends Controller
 				continue;
 			}
 
-			$themes = array();
+			$themes = [];
 
 			foreach ($modules as $k=>$v)
 			{
@@ -181,11 +181,11 @@ class Updater extends Controller
 
 			$modules = array_values($modules);
 
-			$set = array
-			(
+			$set =
+			[
 				'modules' => (!empty($modules) ? serialize($modules) : null),
 				'themes'  => (!empty($themes) ? serialize($themes) : null)
-			);
+			];
 
 			$this->Database->prepare("UPDATE " . $objUser->tbl . " %s WHERE id=?")
 						   ->set($set)
@@ -388,7 +388,7 @@ class Updater extends Controller
 		// Activate the "j_mediaelement" template instead
 		while ($objLayout->next())
 		{
-			$arrSet = array();
+			$arrSet = [];
 
 			// jQuery already activated
 			if ($objLayout->addjQuery)
@@ -398,7 +398,7 @@ class Updater extends Controller
 				// Add j_mediaelement
 				if (!is_array($arrJQuery))
 				{
-					$arrSet['jquery'] = serialize(array('j_mediaelement'));
+					$arrSet['jquery'] = serialize(['j_mediaelement']);
 				}
 				elseif (!in_array('j_mediaelement', $arrJQuery))
 				{
@@ -410,7 +410,7 @@ class Updater extends Controller
 			{
 				$arrSet['addJQuery'] = 1;
 				$arrSet['jSource'] = 'j_local';
-				$arrSet['jquery'] = serialize(array('j_mediaelement'));
+				$arrSet['jquery'] = serialize(['j_mediaelement']);
 			}
 
 			$arrMooTools = deserialize($objLayout->mootools);
@@ -590,10 +590,10 @@ class Updater extends Controller
 			$strPath = Config::get('uploadPath');
 		}
 
-		$arrMeta = array();
-		$arrMapper = array();
-		$arrFolders = array();
-		$arrFiles = array();
+		$arrMeta = [];
+		$arrMapper = [];
+		$arrFolders = [];
+		$arrFiles = [];
 		$arrScan = scan(TL_ROOT . '/' . $strPath);
 
 		foreach ($arrScan as $strFile)
@@ -628,7 +628,7 @@ class Updater extends Controller
 		// Files
 		foreach ($arrFiles as $strFile)
 		{
-			$matches = array();
+			$matches = [];
 
 			// Handle meta.txt files
 			if (preg_match('/^meta(_([a-z]{2}))?\.txt$/', basename($strFile), $matches))
@@ -640,7 +640,7 @@ class Updater extends Controller
 				{
 					list($name, $info) = explode('=', $line, 2);
 					list($title, $link, $caption) = explode('|', $info);
-					$arrMeta[trim($name)][$key] = array('title'=>trim($title), 'link'=>trim($link), 'caption'=>trim($caption));
+					$arrMeta[trim($name)][$key] = ['title'=>trim($title), 'link'=>trim($link), 'caption'=>trim($caption)];
 				}
 			}
 
@@ -673,7 +673,7 @@ class Updater extends Controller
 	 */
 	public function updateFileTreeFields()
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		// Parse all modules (see #6058)
 		foreach (scan(TL_ROOT . '/system/modules') as $strModule)
@@ -697,7 +697,7 @@ class Updater extends Controller
 			}
 		}
 
-		$arrFields = array();
+		$arrFields = [];
 
 		// Find all fileTree fields
 		foreach ($arrFiles as $strTable)
@@ -960,8 +960,8 @@ class Updater extends Controller
 	 */
 	protected function createContentElement(Result $objElement, $strPtable, $strField)
 	{
-		$set = array
-		(
+		$set =
+		[
 			'pid'         => $objElement->id,
 			'ptable'      => $strPtable,
 			'sorting'     => 128,
@@ -977,7 +977,7 @@ class Updater extends Controller
 			'fullsize'    => $objElement->fullsize,
 			'caption'     => $objElement->caption,
 			'floating'    => $objElement->floating
-		);
+		];
 
 		$this->Database->prepare("INSERT INTO tl_content %s")->set($set)->execute();
 	}

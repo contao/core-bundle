@@ -85,25 +85,25 @@ abstract class Widget extends View
 	 * Errors
 	 * @var array
 	 */
-	protected $arrErrors = array();
+	protected $arrErrors = [];
 
 	/**
 	 * Attributes
 	 * @var array
 	 */
-	protected $arrAttributes = array();
+	protected $arrAttributes = [];
 
 	/**
 	 * Configuration
 	 * @var array
 	 */
-	protected $arrConfiguration = array();
+	protected $arrConfiguration = [];
 
 	/**
 	 * Options
 	 * @var array
 	 */
-	protected $arrOptions = array();
+	protected $arrOptions = [];
 
 	/**
 	 * Submit indicator
@@ -620,7 +620,7 @@ abstract class Widget extends View
 	 *
 	 * @return string The attributes string
 	 */
-	public function getAttributes($arrStrip=array())
+	public function getAttributes($arrStrip=[])
 	{
 		// Strip certain attributes
 		if (is_array($arrStrip))
@@ -1130,7 +1130,7 @@ abstract class Widget extends View
 	{
 		if (!is_array($varInput))
 		{
-			$varInput = array($varInput);
+			$varInput = [$varInput];
 		}
 
 		// Check each option
@@ -1239,7 +1239,7 @@ abstract class Widget extends View
 		{
 			$arrKey = explode('.', $arrData['foreignKey'], 2);
 			$objOptions = Database::getInstance()->query("SELECT id, " . $arrKey[1] . " AS value FROM " . $arrKey[0] . " WHERE tstamp>0 ORDER BY value");
-			$arrData['options'] = array();
+			$arrData['options'] = [];
 
 			while ($objOptions->next())
 			{
@@ -1252,11 +1252,11 @@ abstract class Widget extends View
 		{
 			if (TL_MODE == 'FE' && isset($arrAttributes['description']))
 			{
-				$arrAttributes['options'][] = array('value'=>1, 'label'=>$arrAttributes['description']);
+				$arrAttributes['options'][] = ['value'=>1, 'label'=>$arrAttributes['description']];
 			}
 			else
 			{
-				$arrAttributes['options'][] = array('value'=>1, 'label'=>$arrAttributes['label']);
+				$arrAttributes['options'][] = ['value'=>1, 'label'=>$arrAttributes['label']];
 			}
 		}
 
@@ -1269,14 +1269,14 @@ abstract class Widget extends View
 			if ($arrData['eval']['includeBlankOption'] && !$arrData['eval']['multiple'])
 			{
 				$strLabel = isset($arrData['eval']['blankOptionLabel']) ? $arrData['eval']['blankOptionLabel'] : '-';
-				$arrAttributes['options'][] = array('value'=>'', 'label'=>$strLabel);
+				$arrAttributes['options'][] = ['value'=>'', 'label'=>$strLabel];
 			}
 
 			foreach ($arrData['options'] as $k=>$v)
 			{
 				if (!is_array($v))
 				{
-					$arrAttributes['options'][] = array('value'=>($blnIsAssociative ? $k : $v), 'label'=>($blnUseReference ? ((($ref = (is_array($arrData['reference'][$v]) ? $arrData['reference'][$v][0] : $arrData['reference'][$v])) != false) ? $ref : $v) : $v));
+					$arrAttributes['options'][] = ['value'=>($blnIsAssociative ? $k : $v), 'label'=>($blnUseReference ? ((($ref = (is_array($arrData['reference'][$v]) ? $arrData['reference'][$v][0] : $arrData['reference'][$v])) != false) ? $ref : $v) : $v)];
 					continue;
 				}
 
@@ -1285,7 +1285,7 @@ abstract class Widget extends View
 
 				foreach ($v as $kk=>$vv)
 				{
-					$arrAttributes['options'][$key][] = array('value'=>($blnIsAssoc ? $kk : $vv), 'label'=>($blnUseReference ? ((($ref = (is_array($arrData['reference'][$vv]) ? $arrData['reference'][$vv][0] : $arrData['reference'][$vv])) != false) ? $ref : $vv) : $vv));
+					$arrAttributes['options'][$key][] = ['value'=>($blnIsAssoc ? $kk : $vv), 'label'=>($blnUseReference ? ((($ref = (is_array($arrData['reference'][$vv]) ? $arrData['reference'][$vv][0] : $arrData['reference'][$vv])) != false) ? $ref : $vv) : $vv)];
 				}
 			}
 		}
@@ -1350,11 +1350,11 @@ abstract class Widget extends View
 
 		$type = preg_replace('/^([A-Za-z]+)(\(| ).*$/', '$1', $sql);
 
-		if (in_array($type, array('binary', 'varbinary', 'tinyblob', 'blob', 'mediumblob', 'longblob')))
+		if (in_array($type, ['binary', 'varbinary', 'tinyblob', 'blob', 'mediumblob', 'longblob']))
 		{
 			return null;
 		}
-		elseif (in_array($type, array('int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal')))
+		elseif (in_array($type, ['int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal']))
 		{
 			return 0;
 		}

@@ -80,13 +80,13 @@ class ZipReader
 	 * Archive header
 	 * @var array
 	 */
-	protected $arrHeader = array();
+	protected $arrHeader = [];
 
 	/**
 	 * File list
 	 * @var array
 	 */
-	protected $arrFiles = array();
+	protected $arrFiles = [];
 
 
 	/**
@@ -216,7 +216,7 @@ class ZipReader
 	 */
 	public function getFileList()
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		foreach ($this->arrFiles as $arrFile)
 		{
@@ -476,7 +476,7 @@ class ZipReader
 			throw new Exception('Error reading central directory');
 		}
 
-		$arrHeader = array();
+		$arrHeader = [];
 
 		$arrHeader['number_of_this_disk']    = unpack('v', @fread($this->resFile, 2));
 		$arrHeader['number_of_disk_with_cd'] = unpack('v', @fread($this->resFile, 2));
@@ -502,7 +502,7 @@ class ZipReader
 		// Build file list
 		while ($strSignature == self::CENTRAL_DIR_START )
 		{
-			$arrFile = array();
+			$arrFile = [];
 
 			$arrFile['version_made_by']           = unpack('v', @fread($this->resFile, 2));
 			$arrFile['version_needed_to_extract'] = unpack('v', @fread($this->resFile, 2));

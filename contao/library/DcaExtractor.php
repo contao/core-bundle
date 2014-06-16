@@ -55,37 +55,37 @@ class DcaExtractor extends Controller
 	 * Meta data
 	 * @var array
 	 */
-	protected $arrMeta = array();
+	protected $arrMeta = [];
 
 	/**
 	 * Fields
 	 * @var array
 	 */
-	protected $arrFields = array();
+	protected $arrFields = [];
 
 	/**
 	 * Order fields
 	 * @var array
 	 */
-	protected $arrOrderFields = array();
+	protected $arrOrderFields = [];
 
 	/**
 	 * Keys
 	 * @var array
 	 */
-	protected $arrKeys = array();
+	protected $arrKeys = [];
 
 	/**
 	 * Relations
 	 * @var array
 	 */
-	protected $arrRelations = array();
+	protected $arrRelations = [];
 
 	/**
 	 * SQL buffer
 	 * @var array
 	 */
-	protected static $arrSql = array();
+	protected static $arrSql = [];
 
 	/**
 	 * Database table
@@ -253,7 +253,7 @@ class DcaExtractor extends Controller
 	 */
 	public function getDbInstallerArray()
 	{
-		$return = array();
+		$return = [];
 
 		// Fields
 		foreach ($this->arrFields as $k=>$v)
@@ -272,7 +272,7 @@ class DcaExtractor extends Controller
 			}
 			else
 			{
-				$f = array($k);
+				$f = [$k];
 			}
 
 			if ($v == 'primary')
@@ -329,7 +329,7 @@ class DcaExtractor extends Controller
 		}
 
 		$blnFromFile = false;
-		$arrRelations = array();
+		$arrRelations = [];
 
 		// Check whether there are fields (see #4826)
 		if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields']))
@@ -346,7 +346,7 @@ class DcaExtractor extends Controller
 				if (isset($config['relation']))
 				{
 					$table = substr($config['foreignKey'], 0, strrpos($config['foreignKey'], '.'));
-					$arrRelations[$field] = array_merge(array('table'=>$table, 'field'=>'id'), $config['relation']);
+					$arrRelations[$field] = array_merge(['table'=>$table, 'field'=>'id'], $config['relation']);
 
 					// Table name and field name are mandatory
 					if (empty($arrRelations[$field]['table']) || empty($arrRelations[$field]['field']))
@@ -357,8 +357,8 @@ class DcaExtractor extends Controller
 			}
 		}
 
-		$sql = $GLOBALS['TL_DCA'][$this->strTable]['config']['sql'] ?: array();
-		$fields = $GLOBALS['TL_DCA'][$this->strTable]['fields'] ?: array();
+		$sql = $GLOBALS['TL_DCA'][$this->strTable]['config']['sql'] ?: [];
+		$fields = $GLOBALS['TL_DCA'][$this->strTable]['fields'] ?: [];
 
 		// Get the SQL information from the database.sql files (backwards compatibility)
 		if ($blnFromFile)
@@ -419,17 +419,17 @@ class DcaExtractor extends Controller
 		}
 
 		// Meta
-		$this->arrMeta = array
-		(
+		$this->arrMeta =
+		[
 			'engine'  => $sql['engine'],
 			'charset' => $sql['charset']
-		);
+		];
 
 		// Fields
 		if (!empty($fields))
 		{
-			$this->arrFields = array();
-			$this->arrOrderFields = array();
+			$this->arrFields = [];
+			$this->arrOrderFields = [];
 
 			foreach ($fields as $field=>$config)
 			{
@@ -448,7 +448,7 @@ class DcaExtractor extends Controller
 		// Keys
 		if (!empty($sql['keys']) && is_array($sql['keys']))
 		{
-			$this->arrKeys = array();
+			$this->arrKeys = [];
 
 			foreach ($sql['keys'] as $field=>$type)
 			{
@@ -459,11 +459,11 @@ class DcaExtractor extends Controller
 		// Relations
 		if (!empty($arrRelations))
 		{
-			$this->arrRelations = array();
+			$this->arrRelations = [];
 
 			foreach ($arrRelations as $field=>$config)
 			{
-				$this->arrRelations[$field] = array();
+				$this->arrRelations[$field] = [];
 
 				foreach ($config as $k=>$v)
 				{

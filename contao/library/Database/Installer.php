@@ -56,16 +56,16 @@ class Installer extends Controller
 			return '';
 		}
 
-		$_SESSION['sql_commands'] = array();
+		$_SESSION['sql_commands'] = [];
 
-		$arrOperations = array
-		(
+		$arrOperations =
+		[
 			'CREATE'        => $GLOBALS['TL_LANG']['tl_install']['CREATE'],
 			'ALTER_ADD'     => $GLOBALS['TL_LANG']['tl_install']['ALTER_ADD'],
 			'ALTER_CHANGE'  => $GLOBALS['TL_LANG']['tl_install']['ALTER_CHANGE'],
 			'ALTER_DROP'    => $GLOBALS['TL_LANG']['tl_install']['ALTER_DROP'],
 			'DROP'          => $GLOBALS['TL_LANG']['tl_install']['DROP']
-		);
+		];
 
 		foreach ($arrOperations as $command=>$label)
 		{
@@ -114,9 +114,9 @@ class Installer extends Controller
 	 */
 	protected function compileCommands()
 	{
-		$drop = array();
-		$create = array();
-		$return = array();
+		$drop = [];
+		$create = [];
+		$return = [];
 
 		$sql_current = $this->getFromDb();
 		$sql_target = $this->getFromDca();
@@ -277,8 +277,8 @@ class Installer extends Controller
 	 */
 	public function getFromDca()
 	{
-		$return = array();
-		$included = array();
+		$return = [];
+		$included = [];
 
 		// Ignore the internal cache
 		$blnBypassCache = Config::get('bypassCache');
@@ -339,7 +339,7 @@ class Installer extends Controller
 	public function getFromFile()
 	{
 		$table = '';
-		$return = array();
+		$return = [];
 
 		// Only check the active modules (see #4541)
 		foreach (ModuleLoader::getActive() as $strModule)
@@ -350,7 +350,7 @@ class Installer extends Controller
 			}
 
 			// Ignore the database.sql of the not renamed core modules
-			if (in_array($strModule, array('calendar', 'comments', 'faq', 'listing', 'news', 'newsletter')))
+			if (in_array($strModule, ['calendar', 'comments', 'faq', 'listing', 'news', 'newsletter']))
 			{
 				continue;
 			}
@@ -366,8 +366,8 @@ class Installer extends Controller
 
 			foreach ($data as $k=>$v)
 			{
-				$key_name = array();
-				$subpatterns = array();
+				$key_name = [];
+				$subpatterns = [];
 
 				// Unset comments and empty lines
 				if (preg_match('/^[#-]+/', $v) || !strlen(trim($v)))
@@ -395,7 +395,7 @@ class Installer extends Controller
 					$key = $key_name[1];
 
 					// Create definitions
-					if (in_array($first, array('KEY', 'PRIMARY', 'PRIMARY KEY', 'FOREIGN', 'FOREIGN KEY', 'INDEX', 'UNIQUE', 'FULLTEXT', 'CHECK')))
+					if (in_array($first, ['KEY', 'PRIMARY', 'PRIMARY KEY', 'FOREIGN', 'FOREIGN KEY', 'INDEX', 'UNIQUE', 'FULLTEXT', 'CHECK']))
 					{
 						if (strncmp($first, 'PRIMARY', 7) === 0)
 						{
@@ -438,10 +438,10 @@ class Installer extends Controller
 
 		if (empty($tables))
 		{
-			return array();
+			return [];
 		}
 
-		$return = array();
+		$return = [];
 
 		foreach ($tables as $table)
 		{
@@ -476,12 +476,12 @@ class Installer extends Controller
 					}
 
 					// Default values
-					if (in_array(strtolower($field['type']), array('text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob')) || stristr($field['extra'], 'auto_increment') || $field['default'] === null || strtolower($field['null']) == 'null')
+					if (in_array(strtolower($field['type']), ['text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob']) || stristr($field['extra'], 'auto_increment') || $field['default'] === null || strtolower($field['null']) == 'null')
 					{
 						unset($field['default']);
 					}
 					// Date/time constants (see #5089)
-					elseif (in_array(strtolower($field['default']), array('current_date', 'current_time', 'current_timestamp')))
+					elseif (in_array(strtolower($field['default']), ['current_date', 'current_time', 'current_timestamp']))
 					{
 						$field['default'] = "default " . $field['default'];
 					}

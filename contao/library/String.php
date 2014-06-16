@@ -61,7 +61,7 @@ class String
 		}
 
 		$intCharCount = 0;
-		$arrWords = array();
+		$arrWords = [];
 		$arrChunks = preg_split('/\s+/', $strString);
 		$blnAddEllipsis = false;
 
@@ -115,9 +115,9 @@ class String
 	{
 		$strReturn = "";
 		$intCharCount = 0;
-		$arrOpenTags = array();
-		$arrTagBuffer = array();
-		$arrEmptyTags = array('area', 'base', 'br', 'col', 'hr', 'img', 'input', 'frame', 'link', 'meta', 'param');
+		$arrOpenTags = [];
+		$arrTagBuffer = [];
+		$arrEmptyTags = ['area', 'base', 'br', 'col', 'hr', 'img', 'input', 'frame', 'link', 'meta', 'param'];
 
 		$strString = preg_replace('/[\t\n\r]+/', ' ', $strString);
 		$strString = strip_tags($strString, Config::get('allowedTags'));
@@ -198,7 +198,7 @@ class String
 					$strReturn .= implode('', $arrTagBuffer) . $arrChunks[$i];
 				}
 
-				$arrTagBuffer = array();
+				$arrTagBuffer = [];
 				continue;
 			}
 
@@ -254,7 +254,7 @@ class String
 	 */
 	public static function restoreBasicEntities($strBuffer)
 	{
-		return str_replace(array('[&]', '[&amp;]', '[lt]', '[gt]', '[nbsp]', '[-]'), array('&amp;', '&amp;', '&lt;', '&gt;', '&nbsp;', '&shy;'), $strBuffer);
+		return str_replace(['[&]', '[&amp;]', '[lt]', '[gt]', '[nbsp]', '[-]'], ['&amp;', '&amp;', '&lt;', '&gt;', '&nbsp;', '&shy;'], $strBuffer);
 	}
 
 
@@ -287,7 +287,7 @@ class String
 	 */
 	public static function encodeEmail($strString)
 	{
-		$arrEmails = array();
+		$arrEmails = [];
 		preg_match_all('/\w([-._\w]*\w)?@\w([-._\w]*\w)?\.\w{2,6}/', $strString, $arrEmails);
 
 		foreach ((array) $arrEmails[0] as $strEmail)
@@ -334,7 +334,7 @@ class String
 		}
 		else
 		{
-			return array('', $strEmail);
+			return ['', $strEmail];
 		}
 	}
 
@@ -405,14 +405,14 @@ class String
 	 */
 	public static function toXhtml($strString)
 	{
-		$arrPregReplace = array
-		(
+		$arrPregReplace =
+		[
 			'/<(br|hr|img)([^>]*)>/i' => '<$1$2 />', // Close stand-alone tags
 			'/ border="[^"]*"/'       => ''          // Remove deprecated attributes
-		);
+		];
 
-		$arrStrReplace = array
-		(
+		$arrStrReplace =
+		[
 			'/ />'             => ' />',        // Fix incorrectly closed tags
 			'<b>'              => '<strong>',   // Replace <b> with <strong>
 			'</b>'             => '</strong>',
@@ -422,7 +422,7 @@ class String
 			'</u>'             => '</span>',
 			' target="_self"'  => '',
 			' target="_blank"' => ' onclick="return !window.open(this.href)"'
-		);
+		];
 
 		$strString = preg_replace(array_keys($arrPregReplace), array_values($arrPregReplace), $strString);
 		$strString = str_ireplace(array_keys($arrStrReplace), array_values($arrStrReplace), $strString);
@@ -440,22 +440,22 @@ class String
 	 */
 	public static function toHtml5($strString)
 	{
-		$arrPregReplace = array
-		(
+		$arrPregReplace =
+		[
 			'/<(br|hr|img)([^>]*) \/>/i'                  => '<$1$2>',             // Close stand-alone tags
 			'/ (cellpadding|cellspacing|border)="[^"]*"/' => '',                   // Remove deprecated attributes
 			'/ rel="lightbox(\[([^\]]+)\])?"/'            => ' data-lightbox="$2"' // see #4073
-		);
+		];
 
-		$arrStrReplace = array
-		(
+		$arrStrReplace =
+		[
 			'<u>'                                              => '<span style="text-decoration:underline">',
 			'</u>'                                             => '</span>',
 			' target="_self"'                                  => '',
 			' onclick="window.open(this.href); return false"'  => ' target="_blank"',
 			' onclick="window.open(this.href);return false"'   => ' target="_blank"',
 			' onclick="window.open(this.href); return false;"' => ' target="_blank"'
-		);
+		];
 
 		$strString = preg_replace(array_keys($arrPregReplace), array_values($arrPregReplace), $strString);
 		$strString = str_ireplace(array_keys($arrStrReplace), array_values($arrStrReplace), $strString);

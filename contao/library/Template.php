@@ -52,7 +52,7 @@ abstract class Template extends View
 	 * Template data
 	 * @var array
 	 */
-	protected $arrData = array();
+	protected $arrData = [];
 
 
 	/**
@@ -405,14 +405,14 @@ abstract class Template extends View
 				$blnOptimizeNext = false;
 
 				// Minify inline scripts
-				$strChunk = str_replace(array("/* <![CDATA[ */\n", "<!--\n", "\n//-->"), array('/* <![CDATA[ */', '', ''), $strChunk);
-				$strChunk = preg_replace(array('@(?<![:\'"])//(?!W3C|DTD|EN).*@', '/[ \n\t]*(;|=|\{|\}|\[|\]|&&|,|<|>|\',|",|\':|":|: |\|\|)[ \n\t]*/'), array('', '$1'), $strChunk);
+				$strChunk = str_replace(["/* <![CDATA[ */\n", "<!--\n", "\n//-->"], ['/* <![CDATA[ */', '', ''], $strChunk);
+				$strChunk = preg_replace(['@(?<![:\'"])//(?!W3C|DTD|EN).*@', '/[ \n\t]*(;|=|\{|\}|\[|\]|&&|,|<|>|\',|",|\':|":|: |\|\|)[ \n\t]*/'], ['', '$1'], $strChunk);
 				$strChunk = trim($strChunk);
 			}
 			else
 			{
-				$arrReplace = array
-				(
+				$arrReplace =
+				[
 					'/\n ?\n+/'                   => "\n",    // Convert multiple line-breaks
 					'/^[\t ]+</m'                 => '<',     // Remove tag indentation
 					'/>\n<(a|input|select|span)/' => '> <$1', // Remove line-breaks between tags
@@ -420,7 +420,7 @@ abstract class Template extends View
 					'/  +/'                       => ' ',     // Remove redundant whitespace characters
 					'/\n/'                        => '',      // Remove all remaining line-breaks
 					'/ <\/(div|p)>/'              => '</$1>'  // Remove spaces before closing DIV and P tags
-				);
+				];
 
 				$strChunk = str_replace("\r", '', $strChunk);
 				$strChunk = preg_replace(array_keys($arrReplace), array_values($arrReplace), $strChunk);

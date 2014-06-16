@@ -51,7 +51,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 * Models
 	 * @var array
 	 */
-	protected $arrModels = array();
+	protected $arrModels = [];
 
 
 	/**
@@ -147,7 +147,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 */
 	public static function createFromDbResult(Result $objResult, $strTable)
 	{
-		$arrModels = array();
+		$arrModels = [];
 		$strClass = Model::getClassFromTable($strTable);
 
 		while ($objResult->next())
@@ -373,7 +373,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	public function fetchEach($strKey)
 	{
 		$this->reset();
-		$return = array();
+		$return = [];
 
 		while ($this->next())
 		{
@@ -401,7 +401,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	public function fetchAll()
 	{
 		$this->reset();
-		$return = array();
+		$return = [];
 
 		while ($this->next())
 		{

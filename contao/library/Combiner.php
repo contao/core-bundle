@@ -78,7 +78,7 @@ class Combiner extends System
 	 * Files
 	 * @var array
 	 */
-	protected $arrFiles = array();
+	protected $arrFiles = [];
 
 
 	/**
@@ -155,13 +155,13 @@ class Combiner extends System
 		}
 
 		// Store the file
-		$arrFile = array
-		(
+		$arrFile =
+		[
 			'name' => $strFile,
 			'version' => $strVersion,
 			'media' => $strMedia,
 			'extension' => $strType
-		);
+		];
 
 		$this->arrFiles[$strFile] = $arrFile;
 		$this->strKey .= '-f' . $strFile . '-v' . $strVersion . '-m' . $strMedia;
@@ -215,7 +215,7 @@ class Combiner extends System
 		// Do not combine the files in debug mode (see #6450)
 		if (Config::get('debugMode'))
 		{
-			$return = array();
+			$return = [];
 
 			foreach ($this->arrFiles as $arrFile)
 			{
@@ -342,11 +342,11 @@ class Combiner extends System
 			$objCompiler = new scssc();
 			new scss_compass($objCompiler);
 
-			$objCompiler->setImportPaths(array
-			(
+			$objCompiler->setImportPaths(
+			[
 				TL_ROOT . '/' . dirname($arrFile['name']),
 				TL_ROOT . '/vendor/leafo/scssphp-compass/stylesheets'
-			));
+			]);
 
 			$objCompiler->setFormatter((Config::get('debugMode') ? 'scss_formatter' : 'scss_formatter_compressed'));
 		}
@@ -354,10 +354,10 @@ class Combiner extends System
 		{
 			$objCompiler = new lessc();
 
-			$objCompiler->setImportDir(array
-			(
+			$objCompiler->setImportDir(
+			[
 				TL_ROOT . '/' . dirname($arrFile['name'])
-			));
+			]);
 
 			$objCompiler->setFormatter((Config::get('debugMode') ? 'lessjs' : 'compressed'));
 		}

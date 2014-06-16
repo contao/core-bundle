@@ -37,7 +37,7 @@ class TemplateLoader
 	 * Known files
 	 * @var array
 	 */
-	protected static $files = array();
+	protected static $files = [];
 
 
 	/**

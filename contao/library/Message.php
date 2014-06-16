@@ -112,7 +112,7 @@ class Message
 
 		if (!is_array($_SESSION[$strType]))
 		{
-			$_SESSION[$strType] = array();
+			$_SESSION[$strType] = [];
 		}
 
 		$_SESSION[$strType][] = $strMessage;
@@ -156,7 +156,7 @@ class Message
 
 			if (!$_POST)
 			{
-				$_SESSION[$strType] = array();
+				$_SESSION[$strType] = [];
 			}
 		}
 
@@ -179,7 +179,7 @@ class Message
 	{
 		foreach (static::getTypes() as $strType)
 		{
-			$_SESSION[$strType] = array();
+			$_SESSION[$strType] = [];
 		}
 	}
 
@@ -191,6 +191,6 @@ class Message
 	 */
 	public static function getTypes()
 	{
-		return array('TL_ERROR', 'TL_CONFIRM', 'TL_NEW', 'TL_INFO', 'TL_RAW');
+		return ['TL_ERROR', 'TL_CONFIRM', 'TL_NEW', 'TL_INFO', 'TL_RAW'];
 	}
 }

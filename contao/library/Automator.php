@@ -161,7 +161,7 @@ class Automator extends System
 	public function purgeScriptCache()
 	{
 		// assets/js and assets/css
-		foreach (array('assets/js', 'assets/css') as $dir)
+		foreach (['assets/js', 'assets/css'] as $dir)
 		{
 			// Purge the folder
 			$objFolder = new Folder($dir);
@@ -221,7 +221,7 @@ class Automator extends System
 		// Check whether the cache exists
 		if (is_dir(TL_ROOT . '/system/cache/dca'))
 		{
-			foreach (array('config', 'dca', 'language', 'sql') as $dir)
+			foreach (['config', 'dca', 'language', 'sql'] as $dir)
 			{
 				// Purge the folder
 				$objFolder = new Folder('system/cache/' . $dir);
@@ -287,7 +287,7 @@ class Automator extends System
 	 */
 	public function purgeXmlFiles($blnReturn=false)
 	{
-		$arrFeeds = array();
+		$arrFeeds = [];
 		$objDatabase = Database::getInstance();
 
 		// XML sitemaps
@@ -420,7 +420,7 @@ class Automator extends System
 			foreach ($arrPages as $strUrl)
 			{
 				$strUrl = rawurlencode($strUrl);
-				$strUrl = str_replace(array('%2F', '%3F', '%3D', '%26', '%3A//'), array('/', '?', '=', '&', '://'), $strUrl);
+				$strUrl = str_replace(['%2F', '%3F', '%3D', '%26', '%3A//'], ['/', '?', '=', '&', '://'], $strUrl);
 				$strUrl = ampersand($strUrl, true);
 
 				$objFile->append('  <url><loc>' . $strUrl . '</loc></url>');
@@ -632,7 +632,7 @@ class Automator extends System
 	 */
 	public function generateDcaCache()
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		// Parse all active modules
 		foreach (ModuleLoader::getActive() as $strModule)
@@ -688,7 +688,7 @@ class Automator extends System
 	 */
 	public function generateLanguageCache()
 	{
-		$arrLanguages = array();
+		$arrLanguages = [];
 		$objLanguages = Database::getInstance()->query("SELECT language FROM tl_member UNION SELECT language FROM tl_user UNION SELECT REPLACE(language, '-', '_') FROM tl_page WHERE type='root'");
 
 		// Only cache the languages which are in use (see #6013)
@@ -712,7 +712,7 @@ class Automator extends System
 
 		foreach ($arrLanguages as $strLanguage)
 		{
-			$arrFiles = array();
+			$arrFiles = [];
 
 			// Parse all active modules
 			foreach (ModuleLoader::getActive() as $strModule)
@@ -790,8 +790,8 @@ class Automator extends System
 	 */
 	public function generateDcaExtracts()
 	{
-		$included = array();
-		$arrExtracts = array();
+		$included = [];
+		$arrExtracts = [];
 
 		// Only check the active modules (see #4541)
 		foreach (ModuleLoader::getActive() as $strModule)

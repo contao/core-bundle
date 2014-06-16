@@ -140,7 +140,7 @@ class StyleSheets extends Backend
 			return;
 		}
 
-		$vars = array();
+		$vars = [];
 
 		// Get the global theme variables
 		$objTheme = $this->Database->prepare("SELECT vars FROM tl_theme WHERE id=?")
@@ -200,7 +200,7 @@ class StyleSheets extends Backend
 	 *
 	 * @return string The compiled format definition
 	 */
-	public function compileDefinition($row, $blnWriteToFile=false, $vars=array(), $parent=array())
+	public function compileDefinition($row, $blnWriteToFile=false, $vars=[], $parent=[])
 	{
 		if ($blnWriteToFile)
 		{
@@ -220,7 +220,7 @@ class StyleSheets extends Backend
 		// Comment
 		if (!$blnWriteToFile && $row['comment'] != '')
 		{
-			$search = array('@^\s*/\*+@', '@\*+/\s*$@');
+			$search = ['@^\s*/\*+@', '@\*+/\s*$@'];
 			$comment = preg_replace($search, '', $row['comment']);
 			$comment = wordwrap(trim($comment), 72);
 			$return .= "\n" . '<span class="comment">' . $comment . '</span>' . "\n";
@@ -381,7 +381,7 @@ class StyleSheets extends Backend
 					}
 					else
 					{
-						$arrDir = array('top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left);
+						$arrDir = ['top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left];
 
 						foreach ($arrDir as $k=>$v)
 						{
@@ -428,7 +428,7 @@ class StyleSheets extends Backend
 					}
 					else
 					{
-						$arrDir = array('top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left);
+						$arrDir = ['top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left];
 
 						foreach ($arrDir as $k=>$v)
 						{
@@ -669,7 +669,7 @@ class StyleSheets extends Backend
 				}
 				else
 				{
-					$arrDir = array('top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left);
+					$arrDir = ['top'=>$top, 'right'=>$right, 'bottom'=>$bottom, 'left'=>$left];
 
 					foreach ($arrDir as $k=>$v)
 					{
@@ -732,7 +732,7 @@ class StyleSheets extends Backend
 					}
 					else
 					{
-						$arrDir = array('top-left'=>$top, 'top-right'=>$right, 'bottom-right'=>$bottom, 'bottom-left'=>$left);
+						$arrDir = ['top-left'=>$top, 'top-right'=>$right, 'bottom-right'=>$bottom, 'bottom-left'=>$left];
 
 						foreach ($arrDir as $k=>$v)
 						{
@@ -976,7 +976,7 @@ class StyleSheets extends Backend
 	 *
 	 * @return string The compiled color
 	 */
-	protected function compileColor($color, $blnWriteToFile=false, $vars=array())
+	protected function compileColor($color, $blnWriteToFile=false, $vars=[])
 	{
 		if (!is_array($color))
 		{
@@ -1022,14 +1022,14 @@ class StyleSheets extends Backend
 	 *
 	 * @see http://de3.php.net/manual/de/function.hexdec.php#99478
 	 */
-	protected function convertHexColor($color, $blnWriteToFile=false, $vars=array())
+	protected function convertHexColor($color, $blnWriteToFile=false, $vars=[])
 	{
 		// Support global variables
 		if (strncmp($color, '$', 1) === 0)
 		{
 			if (!$blnWriteToFile)
 			{
-				return array($color);
+				return [$color];
 			}
 			else
 			{
@@ -1037,7 +1037,7 @@ class StyleSheets extends Backend
 			}
 		}
 
-		$rgb = array();
+		$rgb = [];
 
 		// Try to convert using bitwise operation
 		if (strlen($color) == 6)
@@ -1120,7 +1120,7 @@ class StyleSheets extends Backend
 
 				// Create the new style sheet
 				$objStyleSheet = $this->Database->prepare("INSERT INTO tl_style_sheet (pid, tstamp, name, media) VALUES (?, ?, ?, ?)")
-												->execute(Input::get('id'), time(), $strName, array('all'));
+												->execute(Input::get('id'), time(), $strName, ['all']);
 
 				$insertId = $objStyleSheet->insertId;
 
@@ -1133,7 +1133,7 @@ class StyleSheets extends Backend
 				$strFile = $objFile->getContent();
 				$strFile = str_replace("\r", '', $strFile);
 
-				$arrTokens   = array();
+				$arrTokens   = [];
 				$strBuffer   = '';
 				$intSorting  = 0;
 				$strComment  = '';
@@ -1162,11 +1162,11 @@ class StyleSheets extends Backend
 
 								if ($strFile[$i] == '/' && $strFile[$i-1] == '*')
 								{
-									$arrTokens[] = array
-									(
+									$arrTokens[] =
+									[
 										'type'    => 'comment',
 										'content' => $strBuffer . $strFile[$i]
-									);
+									];
 
 									$strBuffer = '';
 									break;
@@ -1198,12 +1198,12 @@ class StyleSheets extends Backend
 							{
 								if (--$intLevel == 0)
 								{
-									$arrTokens[] = array
-									(
+									$arrTokens[] =
+									[
 										'type'     => 'atblock',
 										'selector' => $strSelector,
 										'content'  => $strBuffer
-									);
+									];
 
 									$strBuffer = '';
 									break;
@@ -1227,12 +1227,12 @@ class StyleSheets extends Backend
 							}
 							elseif ($strFile[$i] == '}')
 							{
-								$arrTokens[] = array
-								(
+								$arrTokens[] =
+								[
 									'type'     => 'block',
 									'selector' => $strSelector,
 									'content'  => $strBuffer
-								);
+								];
 
 								$strBuffer = '';
 								break;
@@ -1249,28 +1249,28 @@ class StyleSheets extends Backend
 						// Category (comments start with /** and contain only one line)
 						if (strncmp($arrToken['content'], '/**', 3) === 0 && substr_count($arrToken['content'], "\n") == 2)
 						{
-							$strCategory = trim(str_replace(array('/*', '*/', '*'), '', $arrToken['content']));
+							$strCategory = trim(str_replace(['/*', '*/', '*'], '', $arrToken['content']));
 						}
 
 						// Declaration comment
 						elseif (strpos($arrToken['content'], "\n") === false)
 						{
-							$strComment = trim(str_replace(array('/*', '*/', '*'), '', $arrToken['content']));
+							$strComment = trim(str_replace(['/*', '*/', '*'], '', $arrToken['content']));
 						}
 					}
 
 					// At blocks like @media or @-webkit-keyframe
 					elseif ($arrToken['type'] == 'atblock')
 					{
-						$arrSet = array
-						(
+						$arrSet =
+						[
 							'pid'        => $insertId,
 							'category'   => $strCategory,
 							'comment'    => $strComment,
 							'sorting'    => $intSorting += 128,
 							'selector'   => trim($arrToken['selector']),
 							'own'        => $arrToken['content']
-						);
+						];
 
 						$this->Database->prepare("INSERT INTO tl_style %s")->set($arrSet)->execute();
 						$strComment = '';
@@ -1279,15 +1279,15 @@ class StyleSheets extends Backend
 					// Regular blocks
 					else
 					{
-						$arrDefinition = array
-						(
+						$arrDefinition =
+						[
 							'pid'        => $insertId,
 							'category'   => $strCategory,
 							'comment'    => $strComment,
 							'sorting'    => $intSorting += 128,
 							'selector'   => trim($arrToken['selector']),
 							'attributes' => $arrToken['content']
-						);
+						];
 
 						$this->createDefinition($arrDefinition);
 						$strComment = '';
@@ -1378,15 +1378,15 @@ class StyleSheets extends Backend
 	 */
 	protected function createDefinition($arrDefinition)
 	{
-		$arrSet = array
-		(
+		$arrSet =
+		[
 			'pid'      => $arrDefinition['pid'],
 			'sorting'  => $arrDefinition['sorting'],
 			'tstamp'   => time(),
 			'comment'  => $arrDefinition['comment'],
 			'category' => $arrDefinition['category'],
 			'selector' => $arrDefinition['selector']
-		);
+		];
 
 		$arrAttributes = array_map('trim', explode(';', $arrDefinition['attributes']));
 
@@ -1507,7 +1507,7 @@ class StyleSheets extends Backend
 				case 'padding':
 					$arrSet['alignment'] = 1;
 					$arrTRBL = preg_split('/\s+/', $arrChunks[1]);
-					$arrUnits = array();
+					$arrUnits = [];
 					switch (count($arrTRBL))
 					{
 						case 1:
@@ -1521,14 +1521,14 @@ class StyleSheets extends Backend
 								$strUnit = preg_replace('/[^ceimnptx%]/', '', $arrTRBL[0]);
 								$varValue = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]);
 							}
-							$arrSet[$strKey] = array
-							(
+							$arrSet[$strKey] =
+							[
 								'top' => $varValue,
 								'right' => $varValue,
 								'bottom' => $varValue,
 								'left' => $varValue,
 								'unit' => $strUnit
-							);
+							];
 							break;
 
 						case 2:
@@ -1557,14 +1557,14 @@ class StyleSheets extends Backend
 								$arrSet['own'][] = $strDefinition;
 								break;
 							}
-							$arrSet[$strKey] = array
-							(
+							$arrSet[$strKey] =
+							[
 								'top' => $varValue_1,
 								'right' => $varValue_2,
 								'bottom' => $varValue_1,
 								'left' => $varValue_2,
 								'unit' => ''
-							);
+							];
 							// Overwrite the unit
 							foreach ($arrUnits as $strUnit)
 							{
@@ -1611,14 +1611,14 @@ class StyleSheets extends Backend
 								$arrSet['own'][] = $strDefinition;
 								break;
 							}
-							$arrSet[$strKey] = array
-							(
+							$arrSet[$strKey] =
+							[
 								'top' => $varValue_1,
 								'right' => $varValue_2,
 								'bottom' => $varValue_3,
 								'left' => $varValue_2,
 								'unit' => ''
-							);
+							];
 							// Overwrite the unit
 							foreach ($arrUnits as $strUnit)
 							{
@@ -1674,14 +1674,14 @@ class StyleSheets extends Backend
 								$arrSet['own'][] = $strDefinition;
 								break;
 							}
-							$arrSet[$strKey] = array
-							(
+							$arrSet[$strKey] =
+							[
 								'top' => $varValue_1,
 								'right' => $varValue_2,
 								'bottom' => $varValue_3,
 								'left' => $varValue_4,
 								'unit' => ''
-							);
+							];
 							// Overwrite the unit
 							foreach ($arrUnits as $strUnit)
 							{
@@ -1811,14 +1811,14 @@ class StyleSheets extends Backend
 					$arrSet['border'] = 1;
 					$varValue = preg_replace('/[^0-9\.-]+/', '', $arrWSC[0]);
 					$strUnit = preg_replace('/[^ceimnptx%]/', '', $arrWSC[0]);
-					$arrSet['borderwidth'] = array
-					(
+					$arrSet['borderwidth'] =
+					[
 						'top' => $varValue,
 						'right' => $varValue,
 						'bottom' => $varValue,
 						'left' => $varValue,
 						'unit' => $strUnit
-					);
+					];
 					if ($arrWSC[1] != '')
 					{
 						$arrSet['borderstyle'] = $arrWSC[1];
@@ -1880,36 +1880,36 @@ class StyleSheets extends Backend
 					{
 						case 1:
 							$varValue = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]);
-							$arrSet['borderwidth'] = array
-							(
+							$arrSet['borderwidth'] =
+							[
 								'top' => $varValue,
 								'right' => $varValue,
 								'bottom' => $varValue,
 								'left' => $varValue,
 								'unit' => $strUnit
-							);
+							];
 							break;
 						case 2:
 							$varValue_1 = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]);
 							$varValue_2 = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[1]);
-							$arrSet['borderwidth'] = array
-							(
+							$arrSet['borderwidth'] =
+							[
 								'top' => $varValue_1,
 								'right' => $varValue_2,
 								'bottom' => $varValue_1,
 								'left' => $varValue_2,
 								'unit' => $strUnit
-							);
+							];
 							break;
 						case 4:
-							$arrSet['borderwidth'] = array
-							(
+							$arrSet['borderwidth'] =
+							[
 								'top' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]),
 								'right' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[1]),
 								'bottom' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[2]),
 								'left' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[3]),
 								'unit' => $strUnit
-							);
+							];
 							break;
 					}
 					break;
@@ -1941,36 +1941,36 @@ class StyleSheets extends Backend
 					{
 						case 1:
 							$varValue = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]);
-							$arrSet['borderradius'] = array
-							(
+							$arrSet['borderradius'] =
+							[
 								'top' => $varValue,
 								'right' => $varValue,
 								'bottom' => $varValue,
 								'left' => $varValue,
 								'unit' => $strUnit
-							);
+							];
 							break;
 						case 2:
 							$varValue_1 = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]);
 							$varValue_2 = preg_replace('/[^0-9\.-]+/', '', $arrTRBL[1]);
-							$arrSet['borderradius'] = array
-							(
+							$arrSet['borderradius'] =
+							[
 								'top' => $varValue_1,
 								'right' => $varValue_2,
 								'bottom' => $varValue_1,
 								'left' => $varValue_2,
 								'unit' => $strUnit
-							);
+							];
 							break;
 						case 4:
-							$arrSet['borderradius'] = array
-							(
+							$arrSet['borderradius'] =
+							[
 								'top' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[0]),
 								'right' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[1]),
 								'bottom' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[2]),
 								'left' => preg_replace('/[^0-9\.-]+/', '', $arrTRBL[3]),
 								'unit' => $strUnit
-							);
+							];
 							break;
 					}
 					break;
@@ -1988,11 +1988,11 @@ class StyleSheets extends Backend
 
 				case 'border-spacing':
 					$arrSet['border'] = 1;
-					$arrSet['borderspacing'] = array
-					(
+					$arrSet['borderspacing'] =
+					[
 						'value' => preg_replace('/[^0-9\.-]+/', '', $arrChunks[1]),
 						'unit' => preg_replace('/[^ceimnptx%]/', '', $arrChunks[1])
-					);
+					];
 					break;
 
 				case 'font-family':
@@ -2008,11 +2008,11 @@ class StyleSheets extends Backend
 					else
 					{
 						$arrSet['font'] = 1;
-						$arrSet['fontsize'] = array
-						(
+						$arrSet['fontsize'] =
+						[
 							'value' => preg_replace('/[^0-9\.-]+/', '', $arrChunks[1]),
 							'unit' => preg_replace('/[^ceimnptx%]/', '', $arrChunks[1])
-						);
+						];
 					}
 					break;
 
@@ -2085,11 +2085,11 @@ class StyleSheets extends Backend
 
 				case 'line-height':
 					$arrSet['font'] = 1;
-					$arrSet['lineheight'] = array
-					(
+					$arrSet['lineheight'] =
+					[
 						'value' => preg_replace('/[^0-9\.-]+/', '', $arrChunks[1]),
 						'unit' => preg_replace('/[^ceimnptx%]/', '', $arrChunks[1])
-					);
+					];
 					break;
 
 				case 'text-transform':
@@ -2102,11 +2102,11 @@ class StyleSheets extends Backend
 				case 'word-spacing':
 					$strName = str_replace('-', '', $strKey);
 					$arrSet['font'] = 1;
-					$arrSet[$strName] = array
-					(
+					$arrSet[$strName] =
+					[
 						'value' => preg_replace('/[^0-9\.-]+/', '', $arrChunks[1]),
 						'unit' => preg_replace('/[^ceimnptx%]/', '', $arrChunks[1])
-					);
+					];
 					break;
 
 				case 'list-style-type':

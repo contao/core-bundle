@@ -41,13 +41,13 @@ abstract class Database
 	 * Object instances (Singleton)
 	 * @var array
 	 */
-	protected static $arrInstances = array();
+	protected static $arrInstances = [];
 
 	/**
 	 * Connection configuration
 	 * @var array
 	 */
-	protected $arrConfig = array();
+	protected $arrConfig = [];
 
 	/**
 	 * Connection ID
@@ -65,7 +65,7 @@ abstract class Database
 	 * Cache
 	 * @var array
 	 */
-	protected $arrCache = array();
+	protected $arrCache = [];
 
 
 	/**
@@ -136,8 +136,8 @@ abstract class Database
 	 */
 	public static function getInstance(array $arrCustom=null)
 	{
-		$arrConfig = array
-		(
+		$arrConfig =
+		[
 			'dbDriver'   => Config::get('dbDriver'),
 			'dbHost'     => Config::get('dbHost'),
 			'dbUser'     => Config::get('dbUser'),
@@ -148,7 +148,7 @@ abstract class Database
 			'dbPort'     => Config::get('dbPort'),
 			'dbSocket'   => Config::get('dbSocket'),
 			'dbSqlMode'  => Config::get('dbSqlMode')
-		);
+		];
 
 		if (is_array($arrCustom))
 		{
@@ -248,7 +248,7 @@ abstract class Database
 			return $this->arrCache[$strDatabase];
 		}
 
-		$arrReturn = array();
+		$arrReturn = [];
 		$objTables = $this->query(sprintf($this->strListTables, $strDatabase));
 
 		while ($objTables->next())
@@ -367,7 +367,7 @@ abstract class Database
 	 */
 	public function getFieldNames($strTable, $blnNoCache=false)
 	{
-		$arrNames = array();
+		$arrNames = [];
 		$arrFields = $this->listFields($strTable, $blnNoCache);
 
 		foreach ($arrFields as $arrField)
@@ -419,11 +419,11 @@ abstract class Database
 	 *
 	 * @return array An array of child record IDs
 	 */
-	public function getChildRecords($arrParentIds, $strTable, $blnSorting=false, $arrReturn=array(), $strWhere='')
+	public function getChildRecords($arrParentIds, $strTable, $blnSorting=false, $arrReturn=[], $strWhere='')
 	{
 		if (!is_array($arrParentIds))
 		{
-			$arrParentIds = array($arrParentIds);
+			$arrParentIds = [$arrParentIds];
 		}
 
 		if (empty($arrParentIds))
@@ -438,8 +438,8 @@ abstract class Database
 		{
 			if ($blnSorting)
 			{
-				$arrChilds = array();
-				$arrOrdered = array();
+				$arrChilds = [];
+				$arrOrdered = [];
 
 				while ($objChilds->next())
 				{
@@ -476,7 +476,7 @@ abstract class Database
 	 */
 	public function getParentRecords($intId, $strTable)
 	{
-		$arrReturn = array();
+		$arrReturn = [];
 
 		// Currently supports a nesting-level of 10
 		$objPages = $this->prepare("SELECT id, @pid:=pid FROM $strTable WHERE id=?" . str_repeat(" UNION SELECT id, @pid:=pid FROM $strTable WHERE id=@pid", 9))

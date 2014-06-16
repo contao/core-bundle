@@ -142,12 +142,12 @@ class Mysql extends Database
 	 */
 	protected function list_fields($strTable)
 	{
-		$arrReturn = array();
+		$arrReturn = [];
 		$objFields = $this->query("SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` LIKE '{$this->arrConfig['dbDatabase']}' AND `TABLE_NAME` LIKE '%$strTable'");
 
 		while ($objFields->next())
 		{
-			$arrTmp = array();
+			$arrTmp = [];
 			$arrChunks = preg_split('/(\([^\)]+\))/', $objFields->COLUMN_TYPE, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 
 			$arrTmp['name'] = $objFields->COLUMN_NAME;
@@ -155,7 +155,7 @@ class Mysql extends Database
 
 			if (!empty($arrChunks[1]))
 			{
-				$arrChunks[1] = str_replace(array('(', ')'), '', $arrChunks[1]);
+				$arrChunks[1] = str_replace(['(', ')'], '', $arrChunks[1]);
 
 				// Handle enum fields (see #6387)
 				if ($arrChunks[0] == 'enum')
@@ -275,7 +275,7 @@ class Mysql extends Database
 	 */
 	protected function lock_tables($arrTables)
 	{
-		$arrLocks = array();
+		$arrLocks = [];
 
 		foreach ($arrTables as $table=>$mode)
 		{

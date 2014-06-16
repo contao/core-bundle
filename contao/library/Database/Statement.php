@@ -64,7 +64,7 @@ abstract class Statement
 	 * Result cache
 	 * @var array
 	 */
-	protected static $arrCache = array();
+	protected static $arrCache = [];
 
 
 	/**
@@ -199,7 +199,7 @@ abstract class Statement
 		// UPDATE
 		elseif (strncasecmp($this->strQuery, 'UPDATE', 6) === 0)
 		{
-			$arrSet = array();
+			$arrSet = [];
 
 			foreach ($arrParams as $k=>$v)
 			{
@@ -502,7 +502,7 @@ abstract class Statement
 	 */
 	public function executeUncached()
 	{
-		return call_user_func_array(array($this, 'execute'), func_get_args());
+		return call_user_func_array([$this, 'execute'], func_get_args());
 	}
 
 
@@ -515,6 +515,6 @@ abstract class Statement
 	 */
 	public function executeCached()
 	{
-		return call_user_func_array(array($this, 'execute'), func_get_args());
+		return call_user_func_array([$this, 'execute'], func_get_args());
 	}
 }
