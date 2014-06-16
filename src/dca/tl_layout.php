@@ -518,10 +518,10 @@ class tl_layout extends Backend
 
 	/**
 	 * Return all style sheets of the current theme
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return array
 	 */
-	public function getStyleSheets(DataContainer $dc)
+	public function getStyleSheets(Contao\DataContainer $dc)
 	{
 		$intPid = $dc->activeRecord->pid;
 
@@ -660,10 +660,10 @@ class tl_layout extends Backend
 
 	/**
 	 * Add a link to edit the stylesheets of the theme
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function styleSheetLink(DataContainer $dc)
+	public function styleSheetLink(Contao\DataContainer $dc)
 	{
 		return ' <a href="contao/main.php?do=themes&amp;table=tl_style_sheet&amp;id=' . $dc->activeRecord->pid . '&amp;popup=1&amp;rt=' . REQUEST_TOKEN . '" title="' . specialchars($GLOBALS['TL_LANG']['tl_layout']['edit_styles']) . '" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['tl_layout']['edit_styles'])).'\',\'url\':this.href});return false"><img width="12" height="16" alt="" src="system/themes/' . Backend::getTheme() . '/images/edit.gif" style="vertical-align:text-bottom"></a>';
 	}

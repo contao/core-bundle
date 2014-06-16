@@ -527,11 +527,11 @@ class tl_user extends Backend
 	 * Add an image to each record
 	 * @param array
 	 * @param string
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @param array
 	 * @return string
 	 */
-	public function addIcon($row, $label, DataContainer $dc, $args)
+	public function addIcon($row, $label, Contao\DataContainer $dc, $args)
 	{
 		$image = $row['admin'] ? 'admin' :  'user';
 
@@ -629,10 +629,10 @@ class tl_user extends Backend
 
 	/**
 	 * Return a checkbox to delete session data
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function sessionField(DataContainer $dc)
+	public function sessionField(Contao\DataContainer $dc)
 	{
 		if (Input::post('FORM_SUBMIT') == 'tl_user')
 		{
@@ -699,10 +699,10 @@ class tl_user extends Backend
 	/**
 	 * Prevent administrators from downgrading their own account
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
 	 */
-	public function checkAdminStatus($varValue, DataContainer $dc)
+	public function checkAdminStatus($varValue, Contao\DataContainer $dc)
 	{
 		if ($varValue == '' && $this->User->id == $dc->id)
 		{
@@ -716,10 +716,10 @@ class tl_user extends Backend
 	/**
 	 * Prevent administrators from disabling their own account
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
 	 */
-	public function checkAdminDisable($varValue, DataContainer $dc)
+	public function checkAdminDisable($varValue, Contao\DataContainer $dc)
 	{
 		if ($varValue == 1 && $this->User->id == $dc->id)
 		{
@@ -732,9 +732,9 @@ class tl_user extends Backend
 
 	/**
 	 * Store the date when the account has been added
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function storeDateAdded(DataContainer $dc)
+	public function storeDateAdded(Contao\DataContainer $dc)
 	{
 		// Return if there is no active record (override all)
 		if (!$dc->activeRecord || $dc->activeRecord->dateAdded > 0)
@@ -759,9 +759,9 @@ class tl_user extends Backend
 
 	/**
 	 * Check whether the user session should be removed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function checkRemoveSession(DataContainer $dc)
+	public function checkRemoveSession(Contao\DataContainer $dc)
 	{
 		if ($dc->activeRecord)
 		{
@@ -775,9 +775,9 @@ class tl_user extends Backend
 
 	/**
 	 * Remove the session if a user is deleted (see #5353)
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function removeSession(DataContainer $dc)
+	public function removeSession(Contao\DataContainer $dc)
 	{
 		if (!$dc->activeRecord)
 		{

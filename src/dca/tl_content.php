@@ -1159,10 +1159,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the edit article alias wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function editArticleAlias(DataContainer $dc)
+	public function editArticleAlias(Contao\DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_content&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
 	}
@@ -1170,10 +1170,10 @@ class tl_content extends Backend
 
 	/**
 	 * Get all articles and return them as array (article alias)
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return array
 	 */
-	public function getArticleAlias(DataContainer $dc)
+	public function getArticleAlias(Contao\DataContainer $dc)
 	{
 		$arrPids = array();
 		$arrAlias = array();
@@ -1217,10 +1217,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the edit alias wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function editAlias(DataContainer $dc)
+	public function editAlias(Contao\DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_content&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
 	}
@@ -1292,10 +1292,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the edit form wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function editForm(DataContainer $dc)
+	public function editForm(Contao\DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=form&amp;table=tl_form_field&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
 	}
@@ -1329,10 +1329,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the edit module wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function editModule(DataContainer $dc)
+	public function editModule(Contao\DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
 	}
@@ -1378,10 +1378,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the edit article teaser wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function editArticle(DataContainer $dc)
+	public function editArticle(Contao\DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_article&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editarticle'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editarticle'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editarticle'][0], 'style="vertical-align:top"') . '</a>';
 	}
@@ -1389,10 +1389,10 @@ class tl_content extends Backend
 
 	/**
 	 * Get all articles and return them as array (article teaser)
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return array
 	 */
-	public function getArticles(DataContainer $dc)
+	public function getArticles(Contao\DataContainer $dc)
 	{
 		$arrPids = array();
 		$arrArticle = array();
@@ -1463,10 +1463,10 @@ class tl_content extends Backend
 	/**
 	 * Dynamically set the ace syntax
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function setRteSyntax($varValue, DataContainer $dc)
+	public function setRteSyntax($varValue, Contao\DataContainer $dc)
 	{
 		switch ($dc->activeRecord->highlight)
 		{
@@ -1538,10 +1538,10 @@ class tl_content extends Backend
 
 	/**
 	 * Return the link picker wizard
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function pagePicker(DataContainer $dc)
+	public function pagePicker(Contao\DataContainer $dc)
 	{
 		return ' <a href="contao/page.php?do=' . Input::get('do') . '&amp;table=' . $dc->table . '&amp;field=' . $dc->field . '&amp;value=' . str_replace(array('{{link_url::', '}}'), '', $dc->value) . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['page'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top;cursor:pointer"') . '</a>';
 	}
@@ -1570,10 +1570,10 @@ class tl_content extends Backend
 	/**
 	 * Dynamically set the "isGallery" or "isDownloads" flag depending on the type
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
 	 */
-	public function setFileTreeFlags($varValue, DataContainer $dc)
+	public function setFileTreeFlags($varValue, Contao\DataContainer $dc)
 	{
 		if ($dc->activeRecord)
 		{
@@ -1594,17 +1594,17 @@ class tl_content extends Backend
 	/**
 	 * Pre-fill the "alt" and "caption" fields with the file meta data
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
 	 */
-	public function storeFileMetaInformation($varValue, DataContainer $dc)
+	public function storeFileMetaInformation($varValue, Contao\DataContainer $dc)
 	{
 		if ($dc->activeRecord->singleSRC == $varValue)
 		{
 			return $varValue;
 		}
 
-		$objFile = \FilesModel::findByUuid($varValue);
+		$objFile = FilesModel::findByUuid($varValue);
 
 		if ($objFile !== null)
 		{
@@ -1626,8 +1626,8 @@ class tl_content extends Backend
 
 					if (isset($arrMeta[$strLanguage]))
 					{
-						\Input::setPost('alt', $arrMeta[$strLanguage]['title']);
-						\Input::setPost('caption', $arrMeta[$strLanguage]['caption']);
+						Input::setPost('alt', $arrMeta[$strLanguage]['title']);
+						Input::setPost('caption', $arrMeta[$strLanguage]['caption']);
 					}
 				}
 			}

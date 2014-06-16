@@ -582,11 +582,11 @@ class tl_article extends Backend
 	/**
 	 * Auto-generate an article alias if it has not been set yet
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function generateAlias($varValue, Contao\DataContainer $dc)
 	{
 		$autoAlias = false;
 
@@ -623,10 +623,10 @@ class tl_article extends Backend
 
 	/**
 	 * Return all active layout sections as array
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return array
 	 */
-	public function getActiveLayoutSections(DataContainer $dc)
+	public function getActiveLayoutSections(Contao\DataContainer $dc)
 	{
 		// Show only active sections
 		if ($dc->activeRecord->pid)
@@ -792,14 +792,14 @@ class tl_article extends Backend
 
 	/**
 	 * Return the paste article button
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @param array
 	 * @param string
 	 * @param boolean
 	 * @param array
 	 * @return string
 	 */
-	public function pasteArticle(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
+	public function pasteArticle(Contao\DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
 	{
 		$imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id']));
 		$imagePasteInto = Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id']));

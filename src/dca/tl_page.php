@@ -881,9 +881,9 @@ class tl_page extends Backend
 
 	/**
 	 * Make new top-level pages root pages
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function setRootType(DataContainer $dc)
+	public function setRootType(Contao\DataContainer $dc)
 	{
 		if (Input::get('act') != 'create')
 		{
@@ -912,11 +912,11 @@ class tl_page extends Backend
 	/**
 	 * Make sure that top-level pages are root pages
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function checkRootType($varValue, DataContainer $dc)
+	public function checkRootType($varValue, Contao\DataContainer $dc)
 	{
 		if ($varValue != 'root' && $dc->activeRecord->pid == 0)
 		{
@@ -946,11 +946,11 @@ class tl_page extends Backend
 	/**
 	 * Auto-generate a page alias if it has not been set yet
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function generateAlias($varValue, Contao\DataContainer $dc)
 	{
 		$autoAlias = false;
 
@@ -1039,9 +1039,9 @@ class tl_page extends Backend
 
 	/**
 	 * Automatically create an article in the main column of a new page
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function generateArticle(DataContainer $dc)
+	public function generateArticle(Contao\DataContainer $dc)
 	{
 		// Return if there is no active record (override all)
 		if (!$dc->activeRecord)
@@ -1088,9 +1088,9 @@ class tl_page extends Backend
 
 	/**
 	 * Purge the search index if a page is being deleted
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function purgeSearchIndex(DataContainer $dc)
+	public function purgeSearchIndex(Contao\DataContainer $dc)
 	{
 		if (!$dc->id)
 		{
@@ -1108,11 +1108,11 @@ class tl_page extends Backend
 	/**
 	 * Check the sitemap alias
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function checkFeedAlias($varValue, DataContainer $dc)
+	public function checkFeedAlias($varValue, Contao\DataContainer $dc)
 	{
 		// No change or empty value
 		if ($varValue == $dc->value || $varValue == '')
@@ -1138,11 +1138,11 @@ class tl_page extends Backend
 	/**
 	 * Prevent circular references
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function checkJumpTo($varValue, DataContainer $dc)
+	public function checkJumpTo($varValue, Contao\DataContainer $dc)
 	{
 		if ($varValue == $dc->id)
 		{
@@ -1167,11 +1167,11 @@ class tl_page extends Backend
 	/**
 	 * Make sure there is only one fallback per domain (thanks to Andreas Schempp)
 	 * @param mixed
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function checkFallback($varValue, DataContainer $dc)
+	public function checkFallback($varValue, Contao\DataContainer $dc)
 	{
 		if ($varValue == '')
 		{
@@ -1208,10 +1208,10 @@ class tl_page extends Backend
 
 	/**
 	 * Returns all allowed page types as array
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function getPageTypes(DataContainer $dc)
+	public function getPageTypes(Contao\DataContainer $dc)
 	{
 		$arrOptions = array();
 
@@ -1262,13 +1262,13 @@ class tl_page extends Backend
 	 * Add an image to each page in the tree
 	 * @param array
 	 * @param string
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @param string
 	 * @param boolean
 	 * @param boolean
 	 * @return string
 	 */
-	public function addIcon($row, $label, DataContainer $dc=null, $imageAttribute='', $blnReturnImage=false, $blnProtected=false)
+	public function addIcon($row, $label, Contao\DataContainer $dc=null, $imageAttribute='', $blnReturnImage=false, $blnProtected=false)
 	{
 		return Backend::addPageIcon($row, $label, $dc, $imageAttribute, $blnReturnImage, $blnProtected);
 	}
@@ -1356,14 +1356,14 @@ class tl_page extends Backend
 
 	/**
 	 * Return the paste page button
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @param array
 	 * @param string
 	 * @param boolean
 	 * @param array
 	 * @return string
 	 */
-	public function pastePage(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
+	public function pastePage(Contao\DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
 	{
 		$disablePA = false;
 		$disablePI = false;
@@ -1538,9 +1538,9 @@ class tl_page extends Backend
 
 	/**
 	 * Recursively add pages to a sitemap
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 */
-	public function updateSitemap(DataContainer $dc)
+	public function updateSitemap(Contao\DataContainer $dc)
 	{
 		$this->import('Automator');
 		$this->Automator->generateSitemap($dc->id);

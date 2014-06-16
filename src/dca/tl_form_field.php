@@ -599,7 +599,7 @@ class tl_form_field extends Backend
 		$strWidget = preg_replace('/ name="[^"]+"/i', '', $strWidget);
 		$strWidget = str_replace(array(' type="submit"', ' autofocus', ' required'), array(' type="button"', '', ''), $strWidget);
 
-		if ($objWidget instanceof \FormHidden)
+		if ($objWidget instanceof Contao\FormHidden)
 		{
 			return $strType . "\n" . $objWidget->value . "\n</div>\n";
 		}
@@ -613,10 +613,10 @@ class tl_form_field extends Backend
 
 	/**
 	 * Return a list of form fields
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return array
 	 */
-	public function getFields(DataContainer $dc)
+	public function getFields(Contao\DataContainer $dc)
 	{
 		$arrFields = $GLOBALS['TL_FFL'];
 		$intPid = $dc->activeRecord->pid;

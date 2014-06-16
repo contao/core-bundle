@@ -378,10 +378,10 @@ class tl_files extends Backend
 
 	/**
 	 * Add the file location instead of the help text (see #6503)
-	 * @param DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function addFileLocation(DataContainer $dc)
+	public function addFileLocation(Contao\DataContainer $dc)
 	{
 		if ($dc->activeRecord === null)
 		{
@@ -399,7 +399,7 @@ class tl_files extends Backend
 	 * Check a file name and romanize it
 	 * @param mixed
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function checkFilename($varValue)
 	{
@@ -562,10 +562,10 @@ class tl_files extends Backend
 
 	/**
 	 * Return a checkbox to delete session data
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function protectFolder(DataContainer $dc)
+	public function protectFolder(Contao\DataContainer $dc)
 	{
 		$count = 0;
 		$strPath = $dc->id;

@@ -512,10 +512,10 @@ class tl_settings extends Backend
 
 	/**
 	 * Disable modules
-	 * @param \DataContainer
+	 * @param Contao\DataContainer
 	 * @return string
 	 */
-	public function disableModules(DataContainer $dc)
+	public function disableModules(Contao\DataContainer $dc)
 	{
 		$arrModules = array();
 		$arrFolders = scan(TL_ROOT . '/system/modules');
@@ -691,7 +691,7 @@ class tl_settings extends Backend
 	 * Check the upload path
 	 * @param mixed
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function checkUploadPath($varValue)
 	{
