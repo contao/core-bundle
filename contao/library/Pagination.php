@@ -349,7 +349,7 @@ class Pagination
 		{
 			if ($i == $this->intPage)
 			{
-				$arrLinks[] = sprintf('<li><span class="current">%s</span></li>', $i);
+				$arrLinks[] = sprintf('<li><span class="active">%s</span></li>', $i);
 				continue;
 			}
 
