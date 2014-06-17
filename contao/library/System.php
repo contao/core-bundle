@@ -902,16 +902,15 @@ abstract class System
 	/**
 	 * Return all messages as HTML
 	 *
-	 * @param boolean $blnDcLayout If true, the line breaks are different
-	 * @param boolean $blnNoWrapper If true, there will be no wrapping DIV
+	 * @param string $strScope An optional message scope
 	 *
 	 * @return string The messages HTML markup
 	 *
 	 * @deprecated Use Message::generate() instead
 	 */
-	protected function getMessages($blnDcLayout=false, $blnNoWrapper=false)
+	protected function getMessages($strScope=TL_MODE)
 	{
-		return Message::generate($blnDcLayout, $blnNoWrapper);
+		return Message::generate($strScope);
 	}
 
 
