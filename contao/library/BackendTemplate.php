@@ -136,7 +136,7 @@ class BackendTemplate extends Template
 					. 'picker:"' . $GLOBALS['TL_LANG']['MSC']['pickerNoSelection'] . '"'
 				. '},'
 				. 'script_url:"' . TL_ASSETS_URL . '",'
-				. 'path:"' . TL_PATH . '",'
+				. 'path:"' . Environment::get('path') . '",'
 				. 'request_token:"' . REQUEST_TOKEN . '",'
 				. 'referer_id:"' . TL_REFERER_ID . '"'
 			. '};';

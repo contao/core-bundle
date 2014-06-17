@@ -360,6 +360,19 @@ class Config
 
 
 	/**
+	 * Check whether a configuration value exists
+	 *
+	 * @param string $strKey The short key (e.g. "displayErrors")
+	 *
+	 * @return boolean True if the configuration value exists
+	 */
+	public static function has($strKey)
+	{
+		return array_key_exists($strKey, $GLOBALS['TL_CONFIG']);
+	}
+
+
+	/**
 	 * Return a configuration value
 	 *
 	 * @param string $strKey The short key (e.g. "displayErrors")

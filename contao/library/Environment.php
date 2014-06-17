@@ -60,7 +60,7 @@ class Environment
 			return static::$arrCache[$strKey];
 		}
 
-		if (in_array($strKey, get_class_methods('Environment')))
+		if (in_array($strKey, get_class_methods('Contao\\Environment')))
 		{
 			static::$arrCache[$strKey] = static::$strKey();
 		}
@@ -397,11 +397,16 @@ class Environment
 	/**
 	 * Return the relative path to the base directory (e.g. /path)
 	 *
+	 * The real path is being set during the Contao initialization process, so
+	 * this method is only called if static::$arrCache['path'] is not set. It is
+	 * required to prevent the Environment class from returning the value of the
+	 * global $_SERVER['path'] variable.
+	 *
 	 * @return string The relative path to the installation
 	 */
 	protected static function path()
 	{
-		return TL_PATH;
+		return '';
 	}
 
 
@@ -412,7 +417,7 @@ class Environment
 	 */
 	protected static function script()
 	{
-		return preg_replace('/^' . preg_quote(TL_PATH, '/') . '\/?/', '', static::get('scriptName'));
+		return preg_replace('/^' . preg_quote(static::get('path'), '/') . '\/?/', '', static::get('scriptName'));
 	}
 
 
@@ -423,7 +428,7 @@ class Environment
 	 */
 	protected static function request()
 	{
-		$strRequest = preg_replace('/^' . preg_quote(TL_PATH, '/') . '\/?/', '', static::get('requestUri'));
+		$strRequest = preg_replace('/^' . preg_quote(static::get('path'), '/') . '\/?/', '', static::get('requestUri'));
 
 		// From version 2.9, do not fallback to $this->script
 		// anymore if the request string is empty (see #1844).
@@ -461,7 +466,7 @@ class Environment
 	 */
 	protected static function base()
 	{
-		return static::get('url') . TL_PATH . '/';
+		return static::get('url') . static::get('path') . '/';
 	}
 
 

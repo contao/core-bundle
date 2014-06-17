@@ -620,7 +620,7 @@ abstract class Backend extends Controller
 			{
 				if ($objPages->dns != '')
 				{
-					$domain = (Environment::get('ssl') ? 'https://' : 'http://') . $objPages->dns . TL_PATH . '/';
+					$domain = (Environment::get('ssl') ? 'https://' : 'http://') . $objPages->dns . Environment::get('path') . '/';
 				}
 				else
 				{

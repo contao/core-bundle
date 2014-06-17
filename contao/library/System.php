@@ -502,7 +502,7 @@ abstract class System
 	{
 		if ($strPath == '')
 		{
-			$strPath = TL_PATH ?: '/'; // see #4390
+			$strPath = Environment::get('path') ?: '/'; // see #4390
 		}
 
 		$objCookie = new stdClass();

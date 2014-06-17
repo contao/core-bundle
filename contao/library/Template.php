@@ -348,7 +348,7 @@ abstract class Template extends View
 					. "$(document.body).setStyle('margin-bottom',$('contao-debug').hasClass('closed')?'60px':'320px');"
 					. "$('debug-tog').addEvent('click',function(e) {"
 						. "$('contao-debug').toggleClass('closed');"
-						. "Cookie.write('CONTAO_CONSOLE',$('contao-debug').hasClass('closed')?'closed':'',{path:'" . (TL_PATH ?: '/') . "'});"
+						. "Cookie.write('CONTAO_CONSOLE',$('contao-debug').hasClass('closed')?'closed':'',{path:'" . (Environment::get('path') ?: '/') . "'});"
 						. "$(document.body).setStyle('margin-bottom',$('contao-debug').hasClass('closed')?'60px':'320px');"
 					. "});"
 					. "window.addEvent('resize',function() {"
