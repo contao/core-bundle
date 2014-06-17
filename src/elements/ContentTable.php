@@ -95,7 +95,7 @@ class ContentTable extends ContentElement
 				$class_tr .= ' row_last';
 			}
 
-			$class_eo = (($j % 2) == 0) ? ' even' : ' odd';
+			$class_eo = (($j % 2) == 0) ? ' odd' : ' even';
 
 			foreach ($rows[$j] as $i=>$v)
 			{
