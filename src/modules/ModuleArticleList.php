@@ -51,6 +51,7 @@ class ModuleArticleList extends Module
 		}
 
 		$strBuffer = parent::generate();
+
 		return !empty($this->Template->articles) ? $strBuffer : '';
 	}
 
@@ -100,13 +101,12 @@ class ModuleArticleList extends Module
 			}
 
 			$cssID = deserialize($objArticles->cssID, true);
-			$alias = $objArticles->alias ?: $objArticles->title;
 
 			$articles[] =
 			[
 				'link' => $objArticles->title,
 				'title' => specialchars($objArticles->title),
-				'id' => $cssID[0] ?: standardize($alias),
+				'id' => $cssID[0] ?: 'article-' . $objArticles->id,
 				'articleId' => $objArticles->id
 			];
 		}

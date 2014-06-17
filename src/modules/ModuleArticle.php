@@ -71,19 +71,12 @@ class ModuleArticle extends Module
 			$this->Template->setData($this->arrData);
 		}
 
-		$alias = $this->alias ?: 'article';
+		$id = 'article-' . $this->id;
 
-		if (in_array($alias, ['article', 'top', 'wrapper', 'header', 'container', 'left', 'main', 'right', 'footer']))
-		{
-			$alias .= '-' . $this->id;
-		}
-
-		$alias = standardize($alias);
-
-		// Generate the cssID if it is not set
+		// Generate the CSS ID if it is not set
 		if ($this->cssID[0] == '')
 		{
-			$this->cssID = [$alias, $this->cssID[1]];
+			$this->cssID = [$id, $this->cssID[1]];
 		}
 
 		$this->Template->column = $this->inColumn;
@@ -101,7 +94,7 @@ class ModuleArticle extends Module
 			$this->Template = new FrontendTemplate('mod_article_teaser');
 			$this->Template->setData($this->arrData);
 
-			$this->cssID = [$alias, ''];
+			$this->cssID = [$id, ''];
 			$arrCss = deserialize($this->teaserCssID);
 
 			// Override the CSS ID and class
@@ -109,7 +102,7 @@ class ModuleArticle extends Module
 			{
 				if ($arrCss[0] == '')
 				{
-					$arrCss[0] = $alias;
+					$arrCss[0] = $id;
 				}
 
 				$this->cssID = $arrCss;
