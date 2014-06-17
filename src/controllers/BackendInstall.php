@@ -680,28 +680,14 @@ class BackendInstall extends Backend
 	 */
 	protected function storeRelativePath()
 	{
-		if (TL_PATH === null)
+		if (Environment::get('path') === null)
 		{
 			return;
 		}
 
-		if (file_exists(TL_ROOT . '/system/config/pathconfig.php'))
+		if (Config::get('websitePath') !== Environment::get('path'))
 		{
-			$strPath = include TL_ROOT . '/system/config/pathconfig.php';
-
-			if (TL_PATH == $strPath)
-			{
-				return;
-			}
-		}
-
-		try
-		{
-			File::putContent('system/config/pathconfig.php', '<?php' . "\n\n// Relative path to the installation\nreturn " . var_export(TL_PATH, true) . ";\n");
-		}
-		catch (Exception $e)
-		{
-			log_message($e->getMessage());
+			Config::persist('websitePath', Environment::get('path'));
 		}
 	}
 

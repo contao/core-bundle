@@ -11,7 +11,7 @@ $GLOBALS['TL_CSS'][] = 'assets/jquery/mediaelement/'. $GLOBALS['TL_ASSETS']['MED
     $(document).ready(function() {
       $('video,audio').mediaelementplayer({
         // Put custom options here
-        pluginPath: '<?= TL_PATH ?>/assets/jquery/mediaelement/<?= $GLOBALS['TL_ASSETS']['MEDIAELEMENT'] ?>/',
+        pluginPath: '<?= Environment::get('path') ?>/assets/jquery/mediaelement/<?= $GLOBALS['TL_ASSETS']['MEDIAELEMENT'] ?>/',
         flashName: 'legacy/flashmediaelement.swf',
         silverlightName: 'legacy/silverlightmediaelement.xap'
       });
