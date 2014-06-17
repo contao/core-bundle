@@ -284,7 +284,7 @@ class ModuleSearch extends Module
 				if (!empty($arrContext))
 				{
 					$objTemplate->context = trim(String::substrHtml(implode('…', $arrContext), $this->totalLength));
-					$objTemplate->context = preg_replace('/(\PL)(' . implode('|', $arrMatches) . ')(\PL)/ui', '$1<span class="highlight">$2</span>$3', $objTemplate->context);
+					$objTemplate->context = preg_replace('/(\PL)(' . implode('|', $arrMatches) . ')(\PL)/ui', '$1<strong class="highlight">$2</strong>$3', $objTemplate->context);
 
 					$objTemplate->hasContext = true;
 				}
