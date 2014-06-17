@@ -17,7 +17,7 @@
 
     <?php foreach ($this->articles as $article): ?>
       <?php if ($article['isActive']): ?>
-        <li class="current"><span class="current"><?= $article['link'] ?></span></li>
+        <li class="active"><strong class="active"><?= $article['link'] ?></strong></li>
       <?php else: ?>
         <li class="link"><a href="<?= $article['href'] ?>" class="link" title="<?= $article['title'] ?>"><?= $article['link'] ?></a></li>
       <?php endif; ?>
