@@ -99,12 +99,15 @@
       </trans-unit>
       <trans-unit id="tl_install.filePermissions.0">
         <source>File permission error</source>
+        <target>Fout in bestandstoegang</target>
       </trans-unit>
       <trans-unit id="tl_install.filePermissions.1">
         <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+        <target>Uw server ondersteunt geen toegang tot bestanden via PHP; hoogstwaarschijnlijk draait PHP als Apache module onder een andere gebruiker. Neem contact op met uw serverbeheerder en vraag hem om het probleem op te lossen. &lt;strong&gt; Probeer niet om dit zelf op te lossen &lt;/ strong&gt; door bestanden en mappen beschrijfbaar te maken voor iedereen!</target>
       </trans-unit>
       <trans-unit id="tl_install.lcfNotWritable">
         <source>The local configuration file could not be written!</source>
+        <target>Het lokale configuratie bestand kan niet worden beschreven!</target>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>

@@ -65,17 +65,9 @@
         <source>The installation has not been completed, therefore Contao cannot work properly.</source>
         <target>نصب تکمیل نشده است، بنابراین کانتائو به درستی کار نخواهد کرد.</target>
       </trans-unit>
-      <trans-unit id="XPT.incompleteFixOne">
-        <source>Point your browser to the following URL:</source>
-        <target>با مرورگر خود را به نشانی وب زیر بروید:</target>
-      </trans-unit>
-      <trans-unit id="XPT.installPath">
-        <source>path-to-installation</source>
-        <target>مسیر-نصب</target>
-      </trans-unit>
-      <trans-unit id="XPT.incompleteFixTwo">
-        <source>This will open the Contao install tool, which will guide you through the installation process.</source>
-        <target>این شما را به ابزار نصب کانتائو برده و شما را در حین مراحل نصب راهنمایی خواهد کرد.</target>
+      <trans-unit id="XPT.incompleteFix">
+        <source>Please open the Contao install tool by pointing your browser to &lt;code&gt;contao/install.php&lt;/code&gt; or, if you have not yet set the document root, to &lt;code&gt;web/contao/install.php&lt;/code&gt;.</source>
+        <target>لطفا ابزار نصب کانتائو را با اشاره مرورگرتان به &lt;code&gt;contao/install.php&lt;/code&gt; یا، اگر شما هنوز ریشه سند را تنظیم نکرده‌اید به &lt;code&gt;web/contao/install.php&lt;/code&gt; باز نمایید.</target>
       </trans-unit>
       <trans-unit id="XPT.incompleteExplain">
         <source>For more information, please refer to the &lt;a href=&quot;https://contao.org/manual/installation.html&quot; target=&quot;_blank&quot;&gt;Contao manual&lt;/a&gt;.</source>
@@ -167,15 +159,19 @@
       </trans-unit>
       <trans-unit id="XPT.insecureRoot">
         <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+        <target>نصب شما امن نیست، زیرا منابع غیر-عمومی از طریق HTTP در دسترس عموم هستند.</target>
       </trans-unit>
       <trans-unit id="XPT.insecureFix">
         <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+        <target>لطفا ریشه سند را به زیرشاخه &lt;code&gt;web/&lt;/code&gt; تنظیم کنید. معمولا این کار از طریق بخش مسیریابی در پنل مدیریت سرور شما و یا در پرونده هاست‌های مجازی سرور وب انجام می‌شود.</target>
       </trans-unit>
       <trans-unit id="XPT.insecureExplainOne">
         <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+        <target>کانتائو 4 دیگر بر اساس پرونده‌های  &lt;code&gt;.htaccess&lt;/code&gt; کار نمی‌کند و از یک زیرشاخه عمومی به عنوان ریشه سند استفاده می‌کند. اگر شما نمی‌توانید ریشه سند را به این زیرشاخه تنظیم نمایید،‌شما می‌توانید این بررسی را با افزودن خط زیر به پرونده تنظیمات محلی‌تان کنار بگذارید.</target>
       </trans-unit>
       <trans-unit id="XPT.insecureExplainTwo">
         <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+        <target>همچنین، توجه داشته باشید که شما &lt;strong&gt;محاسبات دیگری&lt;/strong&gt; را برای امان کردن نصب در این حالت انجام دهید. اگر شما این کار را نکنید، هر پرونده‌ای، شامل پرونده‌های تنظیمات و کاربران در دسترس عموم خواهد بود.</target>
       </trans-unit>
     </body>
   </file>

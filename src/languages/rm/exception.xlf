@@ -65,17 +65,8 @@
         <source>The installation has not been completed, therefore Contao cannot work properly.</source>
         <target>L'installaziun n'è betg vegnida cumplettada, perquai na funcziunescha Contao betg correctamain.</target>
       </trans-unit>
-      <trans-unit id="XPT.incompleteFixOne">
-        <source>Point your browser to the following URL:</source>
-        <target>Avra suandanta URL en tes navigatur:</target>
-      </trans-unit>
-      <trans-unit id="XPT.installPath">
-        <source>path-to-installation</source>
-        <target>percurs-a-la-installaziun</target>
-      </trans-unit>
-      <trans-unit id="XPT.incompleteFixTwo">
-        <source>This will open the Contao install tool, which will guide you through the installation process.</source>
-        <target>Quai vegn ad avrir l'utensil d'installaziun da Contao che ta guida entras il process d'installaziun.</target>
+      <trans-unit id="XPT.incompleteFix">
+        <source>Please open the Contao install tool by pointing your browser to &lt;code&gt;contao/install.php&lt;/code&gt; or, if you have not yet set the document root, to &lt;code&gt;web/contao/install.php&lt;/code&gt;.</source>
       </trans-unit>
       <trans-unit id="XPT.incompleteExplain">
         <source>For more information, please refer to the &lt;a href=&quot;https://contao.org/manual/installation.html&quot; target=&quot;_blank&quot;&gt;Contao manual&lt;/a&gt;.</source>

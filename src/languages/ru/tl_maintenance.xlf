@@ -114,32 +114,32 @@
         <target>Очитить поисковый индекс</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
-        <target>Очищает таблицы &lt;em&gt;tl_search&lt;/em&gt; и &lt;em&gt;tl_search_index&lt;/em&gt;. После этого вы должны перестроить поисковый индекс (см. выше).</target>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
+        <target>Очищает таблицы &lt;code&gt;tl_search&lt;/code&gt; и &lt;code&gt;tl_search_index&lt;/code&gt;. После этого вы должны перестроить поисковый индекс (см. выше).</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>Очитить таблицу востановлений</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>Очищает &lt;em&gt;tl_undo&lt;/em&gt; таблицу, которая хранит удаленные данные. Это задание постоянно удаляет эти данные.</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
+        <target>Очищает &lt;code&gt;tl_undo&lt;/code&gt; таблицу, которая хранит удаленные данные. Это задание постоянно удаляет эти данные.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
         <target>Очитить таблицу с версиями</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
-        <target>Очищает &lt;em&gt;tl_version&lt;/em&gt; таблицу, которая хранит предыдущие версии данных. Это задание постоянно удаляет эти версии.</target>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
+        <target>Очищает &lt;code&gt;tl_version&lt;/code&gt; таблицу, которая хранит предыдущие версии данных. Это задание постоянно удаляет эти версии.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
         <target>Очистить системный журнал</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>Очищает &lt;em&gt;tl_log&lt;/em&gt; таблицу, которая хранит все записи системного журнала. Это задание постоянно удаляет эти данные.</target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
+        <target>Очищает &lt;code&gt;tl_log&lt;/code&gt; таблицу, которая хранит все записи системного журнала. Это задание постоянно удаляет эти данные.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -154,8 +154,8 @@
         <target>Очистить кэш скриптов</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
-        <target>Удаляет автоматически созданные .css и .js файлы, создает заново внутренние таблицы стилей и затем очищает кэш страниц.</target>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
+        <target>Удаляет автоматически созданные &lt;code&gt;.css&lt;/code&gt; и &lt;code&gt;.js&lt;/code&gt; файлы, создает заново внутренние таблицы стилей и затем очищает кэш страниц.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -196,6 +196,14 @@
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
         <target>Создает заново XML файлы (карты веб-сайта и каналы), а затем очищает кэш страниц, при этом очищаются ссылки на удаленные ресурсы.</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+        <target>Воссоздать символические ссылки</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
+        <target>Воссоздает символические ссылки в каталоге &lt;code&gt;web/&lt;/code&gt; (корень документа).</target>
       </trans-unit>
     </body>
   </file>

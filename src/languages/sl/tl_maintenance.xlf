@@ -114,28 +114,26 @@
         <target>Sprazni indeks iskalnika</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>Sprazni tabelo razveljavitev</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>Izbriše vse vrstice v tabeli &lt;em&gt;tl_undo&lt;/em&gt;, ki hrani vse izbrisane elemente. S tem bodo ti elementi za vedno izbrisani.</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>Izbriše vse vrstice v tabeli &lt;em&gt;tl_log&lt;/em&gt;, ki hrani vse vnose v sistemski dnevnik. S tem bodo ti vnosi za vedno izbrisani.</target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -149,7 +147,7 @@
         <target>Sprazni skriptni predpomnilnik</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -186,6 +184,12 @@
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
       </trans-unit>
     </body>
   </file>

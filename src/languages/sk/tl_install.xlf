@@ -87,6 +87,7 @@
       </trans-unit>
       <trans-unit id="tl_install.repository.1">
         <source>We are currently beta testing a new version of the extension repository, which uses Composer to manage packages. Please install the Composer client to participate in the beta test.</source>
+        <target>Sme v štádiu beta testovania novej verzie repozitára rozšírení, ktorá využíva Composer na správu balíčkov. Ak sa chcete podieľať na testovaní, nainštalujte si Composer klienta.</target>
       </trans-unit>
       <trans-unit id="tl_install.completed.0">
         <source>Congratulations!</source>
@@ -98,12 +99,15 @@
       </trans-unit>
       <trans-unit id="tl_install.filePermissions.0">
         <source>File permission error</source>
+        <target>Chyba prístupu k súboru</target>
       </trans-unit>
       <trans-unit id="tl_install.filePermissions.1">
         <source>Your server does not support file access via PHP; most likely PHP runs as Apache module under a different user. Please contact your server administrator and ask him to fix the problem. &lt;strong&gt;Do not attempt to fix this yourself&lt;/strong&gt; by making files and folders writable for everyone!</source>
+        <target>Váš server nepodporuje prístup k súborom pomocou PHP; pravdepodobne PHP beží ako Apache modul pod rôznymi užívateľmi. Odporúčame kontaktovať vášho administrátora servra a spolu s ním vyriešiť problém. &lt;strong&gt;Nepokúšajte sa vyriešiť problém sami&lt;/strong&gt; tým, že povolíte zapisovanie do súborov a adresárov všetkým!</target>
       </trans-unit>
       <trans-unit id="tl_install.lcfNotWritable">
         <source>The local configuration file could not be written!</source>
+        <target>Lokálny konfiguračný súbor nemôže byť zapísaný!</target>
       </trans-unit>
       <trans-unit id="tl_install.accept">
         <source>Accept license</source>
@@ -275,12 +279,15 @@
       </trans-unit>
       <trans-unit id="tl_install.repositoryDefault">
         <source>You are using the default extension repository.</source>
+        <target>Používate prednastavený repozitár rozšírení.</target>
       </trans-unit>
       <trans-unit id="tl_install.repositoryComposer">
         <source>You are using the Composer based extension repository.</source>
+        <target>Používate repozitár rozšírení Composer.</target>
       </trans-unit>
       <trans-unit id="tl_install.repositoryInstall">
         <source>Install the Composer client</source>
+        <target>Nainštalovať Composer klienta</target>
       </trans-unit>
       <trans-unit id="tl_install.installConfirm">
         <source>You have successfully installed Contao.</source>

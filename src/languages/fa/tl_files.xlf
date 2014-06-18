@@ -11,9 +11,11 @@
       </trans-unit>
       <trans-unit id="tl_files.protected.0">
         <source>Public</source>
+        <target>عمومی</target>
       </trans-unit>
       <trans-unit id="tl_files.protected.1">
         <source>Make the folder and its sub-folders accessible via HTTP.</source>
+        <target>شاخه و زیرشاخه‌هایش را قابل دسترس از طریق HTTP می‌کند.</target>
       </trans-unit>
       <trans-unit id="tl_files.meta.0">
         <source>Meta information</source>

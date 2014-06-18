@@ -114,32 +114,32 @@
         <target>Vyprázdniť index vyhľadávania</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
-        <target>Vyprázdni tabuľky &lt;em&gt;tl_search&lt;/em&gt; a &lt;em&gt;tl_search_index&lt;/em&gt;. Potom môžete prestavať index vyhľadávania (viď vyššie).</target>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
+        <target>Vyprázdniť tabuľky &lt;code&gt;tl_search&lt;/code&gt; a &lt;code&gt;tl_search_index&lt;/code&gt;. Potom môžete prestavať index vyhľadávania (viď vyššie).</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>Vyprázdniť tabuľku histórie</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>Vyprázdni tabuľku &lt;em&gt;tl_undo&lt;/em&gt;, v ktorej sa ukladajú odstránené záznamy. Tento krok navždy odstráni dané záznamy.</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
+        <target>Vyprázdniť tabuľku &lt;code&gt;tl_undo&lt;/code&gt;, v ktorej sa ukladajú odstránené záznamy. Tento krok navždy odstráni dané záznamy.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
         <target>Vyprázdniť tabuľku verzií</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
-        <target>Vyprázdni tabuľku &lt;em&gt;tl_version&lt;/em&gt;, v ktorej sa ukladajú predošlé verzie záznamov. Tento krok navždy odstráni dané záznamy..</target>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
+        <target>Vyprázdniť tabuľku &lt;code&gt;tl_version&lt;/code&gt;, v ktorej sa ukladajú predošlé verzie záznamov. Tento krok navždy odstráni dané záznamy.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
         <target>Vyprázdniť systémové správy</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>Vyprázdniť tabuľku &lt;e&gt;tl_log&lt;/em&gt;, ktorá zaznamenáva správy systému. Tento krok navždy odstráni súčasné záznamy z danej tabuľky. </target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
+        <target>Vyprázdniť tabuľku &lt;code&gt;tl_log&lt;/code&gt;, ktorá zaznamenáva správy systému. Tento krok navždy odstráni súčasné záznamy z danej tabuľky. </target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -154,8 +154,8 @@
         <target>Vyprázdniť dočasné úložisko skriptov</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
-        <target>Odstráni automaticky vytvorené súbory .css a .js, znovuvytvorí súbor už nadefinovaných kaskádových štýlov a potom vyprázdni dočasné úložisko stránok.</target>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
+        <target>Odstráni automaticky vytvorené súbory &lt;code&gt;.css&lt;/code&gt; a &lt;code&gt;.js&lt;/code&gt;, znovuvytvorí súbory už nadefinovaných kaskádových štýlov a potom vyprázdni dočasné úložisko stránok.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -196,6 +196,14 @@
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
         <target>Znovu vytvorí XML súbory (mapu stránky a kanály) a vyprázdni dočasné úložisko stránok. Týmto krokom zaniknú odkazy k odstráneným zdrojom.</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+        <target>Znovu vytvorí symlinks</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
+        <target>Znovu vytvorí symlinks v adresári &lt;code&gt;web/&lt;/code&gt; (koreň dokumentu).</target>
       </trans-unit>
     </body>
   </file>

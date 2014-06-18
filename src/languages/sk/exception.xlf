@@ -65,17 +65,9 @@
         <source>The installation has not been completed, therefore Contao cannot work properly.</source>
         <target>Inštalácia nebola dokončená, Contao nebude môcť fungovať správne.</target>
       </trans-unit>
-      <trans-unit id="XPT.incompleteFixOne">
-        <source>Point your browser to the following URL:</source>
-        <target>Nasmerujte váš prehliadač na následujúcu stránku:</target>
-      </trans-unit>
-      <trans-unit id="XPT.installPath">
-        <source>path-to-installation</source>
-        <target>Cesta k inštalácii</target>
-      </trans-unit>
-      <trans-unit id="XPT.incompleteFixTwo">
-        <source>This will open the Contao install tool, which will guide you through the installation process.</source>
-        <target>Tým sa otvorí inštalačný nástroj Contaa, ktorý vás prevedie procesom inštalácie.</target>
+      <trans-unit id="XPT.incompleteFix">
+        <source>Please open the Contao install tool by pointing your browser to &lt;code&gt;contao/install.php&lt;/code&gt; or, if you have not yet set the document root, to &lt;code&gt;web/contao/install.php&lt;/code&gt;.</source>
+        <target>Prosím otvorte inštalačný nástroj Contaa zadaním do prehliadača &lt;code&gt;contao/install.php&lt;/code&gt;, alebo ak ste ešte nenastavili koreňový adresár zadajte &lt;code&gt;web/contao/install.php&lt;/code&gt;.</target>
       </trans-unit>
       <trans-unit id="XPT.incompleteExplain">
         <source>For more information, please refer to the &lt;a href=&quot;https://contao.org/manual/installation.html&quot; target=&quot;_blank&quot;&gt;Contao manual&lt;/a&gt;.</source>
@@ -167,15 +159,19 @@
       </trans-unit>
       <trans-unit id="XPT.insecureRoot">
         <source>Your installation is not secure, because non-public resources are publicy available via HTTP.</source>
+        <target>Vaša inštalácia nie je bezpečná, pretože sú prístupné neverejné zdroje cez HTTP.</target>
       </trans-unit>
       <trans-unit id="XPT.insecureFix">
         <source>Please set the document root to the &lt;code&gt;web/&lt;/code&gt; subfolder. This is usually done in the domain routing section of your server administration panel or in the vhosts file of your web server.</source>
+        <target>Prosím zadajte koreňový adresár dokumentu ako &lt;code&gt;web/&lt;/code&gt; podadresár. Obyčajne to nájdete v administračnom paneli vášho servera alebo v vhosts súbore vášho servra.</target>
       </trans-unit>
       <trans-unit id="XPT.insecureExplainOne">
         <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
+        <target>Contao 4 viac nevyužíva &lt;code&gt;.htaccess&lt;/code&gt; súbory.  Namiesto toho používa verejný podadresár ako koreňový adresár dokumentu. Ak nemôžte nastaviť koreňový adresár do tohoto podadresára, môžete to obísť vložením nasledujúceho kódu do vášho lokálneho konfiguračného súboru:</target>
       </trans-unit>
       <trans-unit id="XPT.insecureExplainTwo">
         <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
+        <target>Vezmite na vedomie, že &lt;strong&gt;musíte urobiť dodatočné opatrenia&lt;/strong&gt;, aby ste zabezpečili vašu inštaláciu. Ak to neurobíte všetky súbory (vrátane konfiguračných aj súborov užívateľov) budú verejne dostupné!</target>
       </trans-unit>
     </body>
   </file>

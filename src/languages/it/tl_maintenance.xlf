@@ -114,32 +114,32 @@
         <target>Ripulisci gli indici del motore di ricerca interno</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
-        <target>Ripulisci le tabelle &lt;em&gt; tl_search &lt;/em&gt; e &lt;em&gt; tl_search_index &lt;/em&gt;. In seguito, sarà necessario ricostruire l'indice di ricerca.</target>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
+        <target>Tronca le tabelle &lt;code&gt; tl_search &lt;/ code&gt; e &lt;code&gt; tl_search_index &lt;/ code&gt;. Successivamente sarà necessario ricostruire l'indice di ricerca (vedi sopra).</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>Ripulisci la tabella degli elementi eliminati</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>Ripulisce la tabella &lt;em&gt;tl_undo&lt;/em&gt; che memorizza i record eliminati. Questo processo elimina permanentemente questi record.</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
+        <target>Tronca la tabella &lt;code&gt;tl_undo&lt;/code&gt; che memorizza i record eliminati. Questa operazione elimina definitivamente questi elementi.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
         <target>Ripulisci la tabella delle versioni</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
-        <target>Ripulisce la tabella &lt;em&gt;tl_version &lt;/em&gt; che memorizza le varie versioni degli elementi modificati. Questo processo elimina permanentemente questi record.</target>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
+        <target>Tronca la tabella &lt;code&gt;tl_version&lt;/code&gt; che memorizza le versioni precedenti di un record. Questo lavoro elimina definitivamente questi record.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
         <target>Ripulisci il registro eventi</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>Ripulisce la tabella &lt;em&gt;tl_log &lt;/em&gt; che memorizza il log degli eventi. Questa operazione elimina permanentemente questi record.</target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
+        <target>Tronca la tabella &lt;code&gt;tl_log&lt;/code&gt;  che memorizza tutte le voci del registro di sistema. Questo lavoro elimina definitivamente questi record.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -154,8 +154,8 @@
         <target>Ripulisci la cache degli script</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
-        <target>Rimuove i file .css e .js generati automaticamente, ricrea i fogli di stile interni ed elimina la cache delle pagine.</target>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
+        <target>Rimuove il &lt;code&gt; generato automaticamente. Css &lt;/ code&gt; e &lt;code&gt;. &lt;/ Code&gt; js, ricrea i fogli di stile interni e quindi eliminato la cache di pagina.</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -196,6 +196,14 @@
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
         <target>Ricrea  i file XML (le sitemap ed i feeds) e ripulisci le pagine eliminate dalla cache.</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+        <target>Ricrea i link simbolici</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
+        <target>Ricrea i link simbolici nella cartella &lt;code&gt;web/&lt;/code&gt; (document root).</target>
       </trans-unit>
     </body>
   </file>

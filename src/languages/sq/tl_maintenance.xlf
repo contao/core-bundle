@@ -114,32 +114,28 @@
         <target>Spastro indeksin e kërkimit</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
-        <target>Fshij tabelat &lt;em&gt;tl_search&lt;/em&gt; dhe &lt;em&gt;tl_search_index&lt;/em&gt;. Më pas, ju keni për të rindërtuar indeksin e kërkimit (shih më lart).</target>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>Spastrao tablen e zhbërjeve</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>Fshij tabelen  &lt;em&gt; tl_undo &lt;/em&gt;  e cila ruan të dhënat e fshirë. Kjo gjë përgjithmonë fshin këto të dhëna.</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
         <target>Spastro tabelen e verzioneve</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
-        <target>Fshij tabelen  &lt;em&gt; tl_version &lt;/em&gt;  e cila ruan verzionet e më hershëm të të dhënave. Kjo gjë përgjithmonë fshin këto të dhëna.</target>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
         <target>Spastron shkrimet e sistemit</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>Fshij tabelen &lt;em&gt; tl_log &lt;/em&gt; e cila ruan shkrimet e sistemit. Kjo gjë përgjithmonë fshin këto të dhëna.</target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -154,8 +150,7 @@
         <target>Spastra depon e fshehur të script</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
-        <target>Heq skedaret .css dhe .js të krijuara automatikisht, rikrijon style sheets të brendshme dhe spastron depon e fshehur të faqes.</target>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -194,6 +189,12 @@
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
         <target>Rikrijon skedaret XML (Hartat e faqeve dhe furnizimet) dhe pastaj bënë spastrimet cache-it të faqes, kështu që nuk do të ketë lidhje me burimet e fshirë.</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
       </trans-unit>
     </body>
   </file>

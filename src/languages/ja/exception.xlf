@@ -68,17 +68,9 @@ system/logs/error.log&lt;/code&gt;というファイルに記録しています�
         <source>The installation has not been completed, therefore Contao cannot work properly.</source>
         <target>インストールは完了していません、このためContaoは適切に動作しません。</target>
       </trans-unit>
-      <trans-unit id="XPT.incompleteFixOne">
-        <source>Point your browser to the following URL:</source>
-        <target>次のURLにブラウザーでアクセスしてください:</target>
-      </trans-unit>
-      <trans-unit id="XPT.installPath">
-        <source>path-to-installation</source>
-        <target>インストール先のパス</target>
-      </trans-unit>
-      <trans-unit id="XPT.incompleteFixTwo">
-        <source>This will open the Contao install tool, which will guide you through the installation process.</source>
-        <target>ここからContaoのインストールツールを開いて、インストールの作業を案内します。</target>
+      <trans-unit id="XPT.incompleteFix">
+        <source>Please open the Contao install tool by pointing your browser to &lt;code&gt;contao/install.php&lt;/code&gt; or, if you have not yet set the document root, to &lt;code&gt;web/contao/install.php&lt;/code&gt;.</source>
+        <target>ブラウザーに&lt;code&gt;contao/install.php&lt;/code&gt;を指定してインストールツールを開くか、ドキュメントルートを&lt;code&gt;web/contao/install.php&lt;/code&gt;に設定しているか確認してください。</target>
       </trans-unit>
       <trans-unit id="XPT.incompleteExplain">
         <source>For more information, please refer to the &lt;a href=&quot;https://contao.org/manual/installation.html&quot; target=&quot;_blank&quot;&gt;Contao manual&lt;/a&gt;.</source>

@@ -114,32 +114,33 @@
         <target>検索のインデックスを消去</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.index.1">
-        <source>Truncates the tables &lt;em&gt;tl_search&lt;/em&gt; and &lt;em&gt;tl_search_index&lt;/em&gt;. Afterwards, you have to rebuild the search index (see above).</source>
-        <target>&lt;em&gt;tl_seach&lt;/em&gt; と &lt;em&gt;tl_search_index&lt;/em&gt; のテーブルを切り捨てます。その後、検索のインデックスを再構築しなければなりません(上を参照)。</target>
+        <source>Truncates the tables &lt;code&gt;tl_search&lt;/code&gt; and &lt;code&gt;tl_search_index&lt;/code&gt;. Afterwards, you have to rebuild the search index (see above).</source>
+        <target>&lt;code&gt;tl_seach&lt;/code&gt;と&lt;code&gt;tl_search_index&lt;/code&gt; のテーブルを切り捨てます。その後、検索のインデックスを再構築しなければな
+りません(上を参照)。</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.0">
         <source>Purge the undo table</source>
         <target>復元のテーブルを消去</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.undo.1">
-        <source>Truncates the &lt;em&gt;tl_undo&lt;/em&gt; table which stores the deleted records. This job permanently deletes these records.</source>
-        <target>&lt;em&gt;tl_undo&lt;/em&gt; のテーブルを切り捨てます。この作業は恒久的にこれらのレコードを削除します。</target>
+        <source>Truncates the &lt;code&gt;tl_undo&lt;/code&gt; table which stores the deleted records. This job permanently deletes these records.</source>
+        <target>&lt;code&gt;tl_undo&lt;/code&gt; のテーブルを切り捨てます。この作業は恒久的にこれらのレコードを削除します。</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.0">
         <source>Purge the version table</source>
         <target>バージョンを消去</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.versions.1">
-        <source>Truncates the &lt;em&gt;tl_version&lt;/em&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
-        <target>レコードの以前のバージョンを保持している、 &lt;em&gt;tl_version&lt;/em&gt; のテーブルを切り捨てます。この作業は恒久的にこれらのレコードを削除します。</target>
+        <source>Truncates the &lt;code&gt;tl_version&lt;/code&gt; table which stores the previous versions of a record. This job permanently deletes these records.</source>
+        <target>レコードの以前のバージョンを保持している、 &lt;code&gt;tl_version&lt;/code&gt; のテーブルを切り捨てます。この作業は恒久的にこれらのレコードを削除します。</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.0">
         <source>Purge the system log</source>
         <target>システムログの消去</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.log.1">
-        <source>Truncates the &lt;em&gt;tl_log&lt;/em&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
-        <target>すべてのシステムログの項目を保持しているテーブル&lt;em&gt;tl_log&lt;/em&gt;を切り捨てます。この処理で、これらのレコードを完全に削除します。</target>
+        <source>Truncates the &lt;code&gt;tl_log&lt;/code&gt; table which stores all the system log entries. This job permanently deletes these records.</source>
+        <target>すべてのシステムログの項目を保持しているテーブル&lt;code&gt;tl_log&lt;/code&gt;を切り捨てます。この処理で、これらのレコードを完全に削除します。</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.images.0">
         <source>Purge the image cache</source>
@@ -154,8 +155,8 @@
         <target>スクリプトのキャッシュを消去</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.scripts.1">
-        <source>Removes the automatically generated .css and .js files, recreates the internal style sheets and then purges the page cache.</source>
-        <target>自動的に生成した拡張子が .css と .js のファイルを削除し、内部のスタイルシートを再作成して、ページキャッシュを消去します。</target>
+        <source>Removes the automatically generated &lt;code&gt;.css&lt;/code&gt; and &lt;code&gt;.js&lt;/code&gt; files, recreates the internal style sheets and then purges the page cache.</source>
+        <target>自動的に生成した拡張子が&lt;code&gt;.css&lt;/code&gt;と&lt;code&gt;.js&lt;/code&gt;のファイルを削除し、内部のスタイルシートを再作成して、ページキャッシュを消去します。</target>
       </trans-unit>
       <trans-unit id="tl_maintenance_jobs.pages.0">
         <source>Purge the page cache</source>
@@ -196,6 +197,14 @@
       <trans-unit id="tl_maintenance_jobs.xml.1">
         <source>Recreates the XML files (sitemaps and feeds) and then purges the page cache, so there are no links to deleted resources.</source>
         <target>XMLファイル(サイトマップとフィード)を再作成してページキャッシュを消去し、削除したリソースへのリンクはなくなります。</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.0">
+        <source>Recreate the symlinks</source>
+        <target>シンボリックリンクを再作成</target>
+      </trans-unit>
+      <trans-unit id="tl_maintenance_jobs.symlinks.1">
+        <source>Recreates the symlinks in the &lt;code&gt;web/&lt;/code&gt; folder (document root).</source>
+        <target>&lt;code&gt;web/&lt;/code&gt;フォルダー(ドキュメントルート)のシンボリックリンクを再作成します。</target>
       </trans-unit>
     </body>
   </file>

@@ -19,7 +19,7 @@
       </trans-unit>
       <trans-unit id="XPT.hint">
         <source>To customize this notice, create a custom template file named &lt;em&gt;%s&lt;/em&gt;.</source>
-        <target>Om deze mededeling aan te passen, maakt u een template met de naam &lt;em&gt;% s &lt;/em&gt;.</target>
+        <target>Om deze mededeling aan te passen, maakt u een template met de naam &lt;em&gt;%s&lt;/em&gt;.</target>
       </trans-unit>
       <trans-unit id="XPT.errorOccurred">
         <source>An error occurred while executing this script. Something does not work properly.</source>
@@ -31,11 +31,11 @@
       </trans-unit>
       <trans-unit id="XPT.errorFixTwo">
         <source>However, please be aware that &lt;strong&gt;anyone&lt;/strong&gt; will be able to see error messages on your website then!</source>
-        <target>Bedenk echter, dat &lt;strong&gt; iedereen &lt;/strong&gt; in staat zal zijn om foutmeldingen te bekijken op uw website!</target>
+        <target>Bedenk echter, dat &lt;strong&gt;iedereen&lt;/strong&gt; in staat zal zijn om foutmeldingen te bekijken op uw website!</target>
       </trans-unit>
       <trans-unit id="XPT.errorExplain">
         <source>The script execution stopped, because something does not work properly. The actual error message is hidden by this notice for security reasons and can be found in in the &lt;code&gt;system/logs/error.log&lt;/code&gt; file (see above). If you do not understand the error message or do not know how to fix the problem, search the &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt;Contao FAQs&lt;/a&gt; or visit the &lt;a href=&quot;https://contao.org/support.html&quot; target=&quot;_blank&quot;&gt;Contao support page&lt;/a&gt;.</source>
-        <target>De uitvoering van het script is gestopt, omdat er iets niet correct werkt. De eigenlijke foutmelding is verborgen door deze mededeling om veiligheidsredenen en kan worden gevonden in het &lt;code&gt; systeem / logs / error.log &lt;/code&gt;-bestand (zie hierboven). Als u de foutmelding niet begrijpt of hoe het probleem op te lossen, bezoek dan &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt; Contao FAQs &lt;/a&gt; of &lt;a href=&quot;https://contao.org/support.html&quot; target=&quot;_blank&quot;&gt; Contao support pagina &lt;/a&gt;.</target>
+        <target>De uitvoering van het script is gestopt, omdat er iets niet correct werkt. De eigenlijke foutmelding is verborgen door deze mededeling om veiligheidsredenen en kan worden gevonden in het &lt;code&gt;systeem/logs/error.log&lt;/code&gt;-bestand (zie hierboven). Als u de foutmelding niet begrijpt of hoe het probleem op te lossen, bezoek dan &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt;Contao FAQs&lt;/a&gt; of &lt;a href=&quot;https://contao.org/support.html&quot; target=&quot;_blank&quot;&gt;Contao support pagina&lt;/a&gt;.</target>
       </trans-unit>
       <trans-unit id="XPT.requestToken">
         <source>Invalid request token</source>
@@ -55,7 +55,7 @@
       </trans-unit>
       <trans-unit id="XPT.tokenExplainTwo">
         <source>For more information, search the &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt;Contao FAQs&lt;/a&gt; or visit the &lt;a href=&quot;https://contao.org/support.html&quot; target=&quot;_blank&quot;&gt;Contao support page&lt;/a&gt;.</source>
-        <target>Voor meer informatie, zoek in de &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt; Contao FAQs &lt;/a&gt; of ga naar &lt;a href = &quot;https://contao.org / support.html &quot;target =&quot; _blank &quot;&gt; Contao support pagina &lt;/a&gt;.</target>
+        <target>Voor meer informatie, zoek in de &lt;a href=&quot;https://contao.org/faq.html&quot; target=&quot;_blank&quot;&gt;Contao FAQs&lt;/a&gt; of ga naar &lt;a href = &quot;https://contao.org/support.html&quot; target =&quot; _blank&quot;&gt;Contao support pagina&lt;/a&gt;.</target>
       </trans-unit>
       <trans-unit id="XPT.incomplete">
         <source>Incomplete installation</source>
@@ -65,17 +65,9 @@
         <source>The installation has not been completed, therefore Contao cannot work properly.</source>
         <target>De installatie is niet voltooid, hierdoor zal Contao niet naar behoren werken.</target>
       </trans-unit>
-      <trans-unit id="XPT.incompleteFixOne">
-        <source>Point your browser to the following URL:</source>
-        <target>Verwijs uw browser naar de volgende URL:</target>
-      </trans-unit>
-      <trans-unit id="XPT.installPath">
-        <source>path-to-installation</source>
-        <target>pad-naar-installatie</target>
-      </trans-unit>
-      <trans-unit id="XPT.incompleteFixTwo">
-        <source>This will open the Contao install tool, which will guide you through the installation process.</source>
-        <target>Dit opent het Contao installatie tool, welke u door het installatieproces zal begeleiden.</target>
+      <trans-unit id="XPT.incompleteFix">
+        <source>Please open the Contao install tool by pointing your browser to &lt;code&gt;contao/install.php&lt;/code&gt; or, if you have not yet set the document root, to &lt;code&gt;web/contao/install.php&lt;/code&gt;.</source>
+        <target>Open het Contao install tool door uw browser te verwijzen naar &lt;code&gt;contao/install.php&lt;/code&gt; of, als u de document root nog niet hebt ingesteld, naar &lt;code&gt;web/contao/install.php&lt;/ code&gt;.</target>
       </trans-unit>
       <trans-unit id="XPT.incompleteExplain">
         <source>For more information, please refer to the &lt;a href=&quot;https://contao.org/manual/installation.html&quot; target=&quot;_blank&quot;&gt;Contao manual&lt;/a&gt;.</source>
@@ -175,7 +167,7 @@
       </trans-unit>
       <trans-unit id="XPT.insecureExplainOne">
         <source>Contao 4 does not rely on &lt;code&gt;.htaccess&lt;/code&gt; files anymore and uses a public subfolder as document root instead. If you cannot set the document root to this subfolder, you can bypass this check by adding the following line to your local configuration file:</source>
-        <target>Contao 4 is niet meer afhankelijk van &lt;code&gt;.htaccess&lt;/ code&gt; bestanden en maakt in plaats hiervan gebruik van een openbare submap als document root. Als u de document root voor deze submap niet kunt instellen, dan kunt u deze controle omzeilen door de volgende regel toe te voegen aan het lokale configuratiebestand:</target>
+        <target>Contao 4 is niet meer afhankelijk van &lt;code&gt;.htaccess&lt;/code&gt; bestanden en maakt in plaats hiervan gebruik van een openbare submap als document root. Als u de document root voor deze submap niet kunt instellen, dan kunt u deze controle omzeilen door de volgende regel toe te voegen aan het lokale configuratiebestand:</target>
       </trans-unit>
       <trans-unit id="XPT.insecureExplainTwo">
         <source>However, please note that you &lt;strong&gt;must take additional measures&lt;/strong&gt; to secure your installation in this case. If you do not, any file, including user and configuration files, will be publicy accessible!</source>
