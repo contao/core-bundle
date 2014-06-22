@@ -266,17 +266,17 @@ class Files
 		// Check the source
 		if ($strSource == '')
 		{
-			throw new Exception("No symlink name provided");
+			throw new Exception('No symlink name provided');
 		}
 
 		// Check the target
 		if ($strTarget == '')
 		{
-			throw new Exception("No symlink target provided");
+			throw new Exception('No symlink target provided');
 		}
 		elseif (strpos($strTarget, '../') !== false)
 		{
-			throw new Exception("The symlink target must not be relative");
+			throw new Exception('The symlink target must not be relative');
 		}
 
 		// Remove an existing symlink
