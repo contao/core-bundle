@@ -701,7 +701,7 @@ class tl_settings extends Backend
 		{
 			$varValue = 'files';
 		}
-		elseif (preg_match('@^(assets|contao|plugins|share|system|templates)(/|$)@', $varValue))
+		elseif (preg_match('@^(app|assets|contao|plugins|share|system|templates|vendor|web)(/|$)@', $varValue))
 		{
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidName']);
 		}
