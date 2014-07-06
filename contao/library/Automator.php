@@ -477,16 +477,17 @@ class Automator extends System
 	public function generateSymlinks()
 	{
 		$this->import('Files');
+		$strUploadPath = Config::get('uploadPath');
 
-		// Remove the web/files directory
-		if (is_dir(TL_ROOT . '/web/files'))
+		// Remove the files directory in the document root
+		if (is_dir(TL_ROOT . '/web/' . $strUploadPath))
 		{
-			$this->Files->rrdir('web/files');
+			$this->Files->rrdir('web/' . $strUploadPath);
 		}
 
-		$this->generateFilesSymlinks(Config::get('uploadPath'));
+		$this->generateFilesSymlinks($strUploadPath);
 
-		// Remove the web/system/modules directory
+		// Remove the system/modules directory in the document root
 		if (is_dir(TL_ROOT . '/web/system/modules'))
 		{
 			$this->Files->rrdir('web/system/modules');
