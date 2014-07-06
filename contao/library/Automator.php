@@ -493,7 +493,7 @@ class Automator extends System
 			$this->Files->rrdir('web/system/modules');
 		}
 
-		$arrPublic = glob(TL_ROOT . '/system/modules/*/{assets,themes}', GLOB_BRACE);
+		$arrPublic = $this->getPublicModuleFolders();
 
 		// Symlink the public extension subfolders
 		if (!empty($arrPublic))
@@ -502,8 +502,7 @@ class Automator extends System
 
 			foreach ($arrPublic as $strFolder)
 			{
-				$strRelpath = str_replace(TL_ROOT . '/', '', $strFolder);
-				$this->Files->symlink('../../../../' . $strRelpath, 'web/' . $strRelpath);
+				$this->Files->symlink('../../../../' . $strFolder, 'web/' . $strFolder);
 			}
 		}
 
@@ -535,6 +534,39 @@ class Automator extends System
 				}
 			}
 		}
+	}
+
+
+
+	/**
+	 * Return all public module folders as array
+	 *
+	 * @return array An array of public folders
+	 */
+	protected function getPublicModuleFolders()
+	{
+		$arrPublic = [];
+
+		foreach (ModuleLoader::getActive() as $strModule)
+		{
+			$strAutoload = 'system/modules/' . $strModule . '/config/autoload.ini';
+
+			// Read the autoload.ini if any
+			if (file_exists(TL_ROOT . '/' . $strAutoload))
+			{
+				$config = parse_ini_file(TL_ROOT . '/' . $strAutoload, true);
+
+				if (!empty($config['public']))
+				{
+					foreach ($config['public'] as $strFolder)
+					{
+						$arrPublic[] = 'system/modules/' . $strModule . '/' . $strFolder;
+					}
+				}
+			}
+		}
+
+		return $arrPublic;
 	}
 
 
