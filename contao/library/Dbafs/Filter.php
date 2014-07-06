@@ -40,7 +40,7 @@ class Filter extends RecursiveFilterIterator
 	 * Ignored files
 	 * @var array
 	 */
-	protected $arrIgnore = ['.DS_Store', '.svn'];
+	protected $arrIgnore = ['.DS_Store', '.public', '.git', '.svn'];
 
 
 	/**
