@@ -522,12 +522,6 @@ class Environment
 			}
 		}
 
-		// Android tablets are not mobile (see #4150)
-		if ($os == 'android' && stripos($ua, 'mobile') === false)
-		{
-			$mobile = false;
-		}
-
 		$return->os = $os;
 
 		// Browser and version
@@ -552,6 +546,12 @@ class Environment
 		if ($version != '')
 		{
 			$return->class .= ' ' . $shorty . $version;
+		}
+
+		// Android tablets are not mobile (see #4150 and #5869)
+		if ($os == 'android' && $engine != 'presto' && stripos($ua, 'mobile') === false)
+		{
+			$mobile = false;
 		}
 
 		// Mark mobile devices
