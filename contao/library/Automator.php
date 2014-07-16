@@ -614,25 +614,23 @@ class Automator extends System
 
 		$strContent = "\n\n";
 		$strContent .= "/**\n * Active modules\n */\n";
-		$strContent .= "static::\$active = array\n";
-		$strContent .= "(\n";
+		$strContent .= "static::\$active = [\n";
 
 		foreach (ModuleLoader::getActive() as $strModule)
 		{
 			$strContent .= "\t'$strModule',\n";
 		}
 
-		$strContent .= ");\n\n";
+		$strContent .= "];\n\n";
 		$strContent .= "/**\n * Disabled modules\n */\n";
-		$strContent .= "static::\$disabled = array\n";
-		$strContent .= "(\n";
+		$strContent .= "static::\$disabled = [\n";
 
 		foreach (ModuleLoader::getDisabled() as $strModule)
 		{
 			$strContent .= "\t'$strModule',\n";
 		}
 
-		$strContent .= ");";
+		$strContent .= "];";
 		$objCacheFile->append($strContent);
 
 		// Close the file (moves it to its final destination)
@@ -866,14 +864,14 @@ class Automator extends System
 			// Meta
 			$arrMeta = $objExtract->getMeta();
 
-			$objFile->append("\$this->arrMeta = array\n(");
+			$objFile->append("\$this->arrMeta = [");
 			$objFile->append("\t'engine' => '{$arrMeta['engine']}',");
 			$objFile->append("\t'charset' => '{$arrMeta['charset']}',");
-			$objFile->append(');', "\n\n");
+			$objFile->append('];', "\n\n");
 
 			// Fields
 			$arrFields = $objExtract->getFields();
-			$objFile->append("\$this->arrFields = array\n(");
+			$objFile->append("\$this->arrFields = [");
 
 			foreach ($arrFields as $field=>$sql)
 			{
@@ -881,47 +879,47 @@ class Automator extends System
 				$objFile->append("\t'$field' => \"$sql\",");
 			}
 
-			$objFile->append(');', "\n\n");
+			$objFile->append('];', "\n\n");
 
 			// Order fields
 			$arrFields = $objExtract->getOrderFields();
-			$objFile->append("\$this->arrOrderFields = array\n(");
+			$objFile->append("\$this->arrOrderFields = [");
 
 			foreach ($arrFields as $field)
 			{
 				$objFile->append("\t'$field',");
 			}
 
-			$objFile->append(');', "\n\n");
+			$objFile->append('];', "\n\n");
 
 			// Keys
 			$arrKeys = $objExtract->getKeys();
-			$objFile->append("\$this->arrKeys = array\n(");
+			$objFile->append("\$this->arrKeys = [");
 
 			foreach ($arrKeys as $field=>$type)
 			{
 				$objFile->append("\t'$field' => '$type',");
 			}
 
-			$objFile->append(');', "\n\n");
+			$objFile->append('];', "\n\n");
 
 			// Relations
 			$arrRelations = $objExtract->getRelations();
-			$objFile->append("\$this->arrRelations = array\n(");
+			$objFile->append("\$this->arrRelations = [");
 
 			foreach ($arrRelations as $field=>$config)
 			{
-				$objFile->append("\t'$field' => array\n\t(");
+				$objFile->append("\t'$field' => [");
 
 				foreach ($config as $k=>$v)
 				{
 					$objFile->append("\t\t'$k' => '$v',");
 				}
 
-				$objFile->append("\t),");
+				$objFile->append("\t],");
 			}
 
-			$objFile->append(');', "\n\n");
+			$objFile->append('];', "\n\n");
 
 			// Set the database table flag
 			$objFile->append("\$this->blnIsDbTable = true;", "\n");
