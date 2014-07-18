@@ -10,10 +10,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-
-/**
- * Register the templates
- */
+// Templates
 TemplateLoader::addFiles(
 [
 	'analytics_google'    => 'system/modules/core/templates/analytics',
