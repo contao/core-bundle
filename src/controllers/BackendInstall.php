@@ -661,12 +661,6 @@ class BackendInstall extends Backend
 				File::putContent('system/config/'. $file .'.php', '<?php' . "\n\n// Put your custom configuration here\n");
 			}
 		}
-
-		if (!file_exists(TL_ROOT . '/app/config/parameters.yml'))
-		{
-			$secret = md5(uniqid(mt_rand(), true));
-			File::putContent('app/config/parameters.yml', "parameters:\n    locale: en\n    secret: $secret\n");
-		}
 	}
 
 
