@@ -622,41 +622,46 @@ abstract class Widget extends View
 	 */
 	public function getAttributes($arrStrip=[])
 	{
-		// Strip certain attributes
-		if (is_array($arrStrip))
-		{
-			foreach ($arrStrip as $strAttribute)
-			{
-				unset($this->arrAttributes[$strAttribute]);
-			}
-		}
-
 		$strAttributes = '';
 
-		// Add the remaining attributes
-		foreach ($this->arrAttributes as $k=>$v)
+		foreach (array_keys($this->arrAttributes) as $strKey)
 		{
-			if ($k == 'disabled' || $k == 'readonly' || $k == 'required' || $k == 'autofocus' || $k == 'multiple')
+			if (!in_array($strKey, $arrStrip))
 			{
-				if (TL_MODE == 'FE') // see #3878
-				{
-					$strAttributes .= ' ' . $k;
-				}
-				elseif ($k == 'disabled' || $k == 'readonly' || $k == 'multiple') // see #4131
-				{
-					$strAttributes .= ' ' . $k;
-				}
-			}
-			else
-			{
-				if ($v != '')
-				{
-					$strAttributes .= ' ' . $k . '="' . $v . '"';
-				}
+				$strAttributes .= $this->getAttribute($strKey);
 			}
 		}
 
 		return $strAttributes;
+	}
+
+
+	/**
+	 * Return a single attribute
+	 *
+	 * @param string $strKey The attribute name
+	 *
+	 * @return string The attribute markup
+	 */
+	public function getAttribute($strKey)
+	{
+		if (!isset($this->arrAttributes[$strKey]))
+		{
+			return '';
+		}
+
+		$varValue = $this->arrAttributes[$strKey];
+
+		if ($strKey == 'disabled' || $strKey == 'readonly' || $strKey == 'required' || $strKey == 'autofocus' || $strKey == 'multiple')
+		{
+			return ' ' . $strKey;
+		}
+		elseif ($varValue != '')
+		{
+			return ' ' . $strKey . '="' . $varValue . '"';
+		}
+
+		return '';
 	}
 
 
@@ -715,7 +720,7 @@ abstract class Widget extends View
 		$arrParts = explode('[', str_replace(']', '', $strKey));
 
 		if (!empty($arrParts))
-    	{
+		{
 			$varValue = Input::$strMethod(array_shift($arrParts), $this->decodeEntities);
 
 			foreach($arrParts as $part)
@@ -729,7 +734,7 @@ abstract class Widget extends View
 			}
 
 			return $varValue;
-    	}
+		}
 
 		return Input::$strMethod($strKey, $this->decodeEntities);
 	}
