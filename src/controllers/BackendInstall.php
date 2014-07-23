@@ -224,7 +224,7 @@ class BackendInstall extends Backend
 		// The password has been generated with crypt()
 		if (Encryption::test(Config::get('installPassword')))
 		{
-			if (crypt(Input::postRaw('password'), Config::get('installPassword')) == Config::get('installPassword'))
+			if (crypt(Input::postRaw('password'), Config::get('installPassword')) === Config::get('installPassword'))
 			{
 				$this->setAuthCookie();
 				Config::persist('installCount', 0);
@@ -235,7 +235,7 @@ class BackendInstall extends Backend
 		else
 		{
 			list($strPassword, $strSalt) = explode(':', Config::get('installPassword'));
-			$blnAuthenticated = ($strSalt == '') ? ($strPassword == sha1(Input::postRaw('password'))) : ($strPassword == sha1($strSalt . Input::postRaw('password')));
+			$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1(Input::postRaw('password'))) : ($strPassword === sha1($strSalt . Input::postRaw('password')));
 
 			if ($blnAuthenticated)
 			{
