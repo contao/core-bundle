@@ -38,7 +38,6 @@ class FrontendTemplate extends Template
 		if ($objPage->outputFormat != '')
 		{
 			$this->strFormat = $objPage->outputFormat;
-			$this->strTagEnding = '>';
 		}
 
 		$strBuffer = parent::parse();

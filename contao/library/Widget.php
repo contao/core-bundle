@@ -141,7 +141,6 @@ abstract class Widget extends View
 			if ($objPage->outputFormat != '')
 			{
 				$this->strFormat = $objPage->outputFormat;
-				$this->strTagEnding = '>';
 			}
 		}
 
