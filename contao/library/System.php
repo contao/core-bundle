@@ -12,6 +12,7 @@
 
 namespace Contao;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use DOMDocument;
 use stdClass;
 
@@ -761,6 +762,19 @@ abstract class System
 		$objFile->close();
 
 		return true;
+	}
+
+
+	/**
+	 * Return the Symfony container object
+	 *
+	 * @return ContainerInterface
+	 */
+	public static function getContainer()
+	{
+		global $kernel;
+
+		return $kernel->getContainer();
 	}
 
 
