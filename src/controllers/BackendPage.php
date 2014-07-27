@@ -55,8 +55,8 @@ class BackendPage extends Backend
 	 */
 	public function run()
 	{
-		$this->Template = new BackendTemplate('be_picker');
-		$this->Template->main = '';
+		$objTemplate = new BackendTemplate('be_picker');
+		$objTemplate->main = '';
 
 		// Ajax request
 		if ($_POST && Environment::get('isAjaxRequest'))
@@ -87,21 +87,21 @@ class BackendPage extends Backend
 		$class = $GLOBALS['BE_FFL']['pageSelector'];
 		$objPageTree = new $class($class::getAttributesFromDca($GLOBALS['TL_DCA'][$strTable]['fields'][$strField], $strField, array_filter(explode(',', Input::get('value'))), $strField, $strTable, $objDca));
 
-		$this->Template->main = $objPageTree->generate();
-		$this->Template->theme = Backend::getTheme();
-		$this->Template->base = Environment::get('base');
-		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
-		$this->Template->title = specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']);
-		$this->Template->charset = Config::get('characterSet');
-		$this->Template->addSearch = true;
-		$this->Template->search = $GLOBALS['TL_LANG']['MSC']['search'];
-		$this->Template->action = ampersand(Environment::get('request'));
-		$this->Template->value = $this->Session->get('page_selector_search');
-		$this->Template->manager = $GLOBALS['TL_LANG']['MSC']['pageManager'];
-		$this->Template->managerHref = 'contao/main.php?do=page&amp;popup=1';
-		$this->Template->breadcrumb = $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'];
+		$objTemplate->main = $objPageTree->generate();
+		$objTemplate->theme = Backend::getTheme();
+		$objTemplate->base = Environment::get('base');
+		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
+		$objTemplate->title = specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']);
+		$objTemplate->charset = Config::get('characterSet');
+		$objTemplate->addSearch = true;
+		$objTemplate->search = $GLOBALS['TL_LANG']['MSC']['search'];
+		$objTemplate->action = ampersand(Environment::get('request'));
+		$objTemplate->value = $this->Session->get('page_selector_search');
+		$objTemplate->manager = $GLOBALS['TL_LANG']['MSC']['pageManager'];
+		$objTemplate->managerHref = 'contao/main.php?do=page&amp;popup=1';
+		$objTemplate->breadcrumb = $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'];
 
 		Config::set('debugMode', false);
-		$this->Template->output();
+		$objTemplate->output();
 	}
 }

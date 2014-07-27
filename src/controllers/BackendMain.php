@@ -30,6 +30,11 @@ class BackendMain extends Backend
 	 */
 	protected $objAjax;
 
+	/**
+	 * @var Template
+	 */
+	protected $Template;
+
 
 	/**
 	 * Initialize the controller
