@@ -259,9 +259,6 @@ class FrontendIndex extends Frontend
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
 			$objHandler->generate($pageId, null, null, true);
 		}
-
-		// Stop the script (see #4565)
-		exit;
 	}
 
 
