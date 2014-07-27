@@ -11,6 +11,7 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
+		"contao/contao-library": "dev-develop",
 		"contao-community-alliance/composer-plugin": "~2.0"
 	},
 	"autoload": {
