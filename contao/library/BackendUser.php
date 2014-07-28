@@ -14,7 +14,7 @@ namespace Contao;
 
 
 /**
- * Provides methods to manage front end users
+ * Provides methods to manage back end users
  *
  * @copyright  Leo Feyer 2005-2014
  * @author     Leo Feyer <https://contao.org>
