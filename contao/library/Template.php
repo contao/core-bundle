@@ -271,19 +271,6 @@ abstract class Template extends View
 		}
 
 		echo $this->strBuffer;
-
-		// Flush the output buffers (see #6962)
-		$this->flushAllData();
-
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['postFlushData']) && is_array($GLOBALS['TL_HOOKS']['postFlushData']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postFlushData'] as $callback)
-			{
-				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($this->strBuffer, $this);
-			}
-		}
 	}
 
 
