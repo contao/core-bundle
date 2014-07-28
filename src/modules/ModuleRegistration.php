@@ -544,7 +544,7 @@ class ModuleRegistration extends Module
 
 	/**
 	 * Send an admin notification e-mail
-	 * @param integer
+	 * @param int
 	 * @param array
 	 */
 	protected function sendAdminNotification($intId, $arrData)

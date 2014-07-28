@@ -27,7 +27,7 @@ class PageError403 extends Frontend
 
 	/**
 	 * Generate an error 403 page
-	 * @param integer
+	 * @param int
 	 * @param object
 	 */
 	public function generate($pageId, $objRootPage=null)

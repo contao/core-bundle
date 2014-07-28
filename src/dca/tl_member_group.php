@@ -250,8 +250,8 @@ class tl_member_group extends Backend
 
 	/**
 	 * Disable/enable a user group
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{

@@ -27,7 +27,7 @@ class CheckBoxWizard extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
@@ -170,7 +170,7 @@ class CheckBoxWizard extends Widget
 	/**
 	 * Generate a checkbox and return it as string
 	 * @param array
-	 * @param integer
+	 * @param int
 	 * @param string
 	 * @return string
 	 */

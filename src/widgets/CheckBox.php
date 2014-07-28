@@ -26,7 +26,7 @@ class CheckBox extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
@@ -175,7 +175,7 @@ class CheckBox extends Widget
 	/**
 	 * Generate a checkbox and return it as string
 	 * @param array
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	protected function generateCheckbox($arrOption, $i)

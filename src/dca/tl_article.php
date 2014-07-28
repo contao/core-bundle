@@ -795,7 +795,7 @@ class tl_article extends Backend
 	 * @param Contao\DataContainer
 	 * @param array
 	 * @param string
-	 * @param boolean
+	 * @param bool
 	 * @param array
 	 * @return string
 	 */
@@ -936,8 +936,8 @@ class tl_article extends Backend
 
 	/**
 	 * Disable/enable a user group
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{

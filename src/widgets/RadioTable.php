@@ -26,13 +26,13 @@ class RadioTable extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
 	/**
 	 * Columns
-	 * @var integer
+	 * @var int
 	 */
 	protected $intCols = 4;
 

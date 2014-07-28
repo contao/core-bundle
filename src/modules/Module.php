@@ -121,7 +121,7 @@ abstract class Module extends Frontend
 	/**
 	 * Check whether a property is set
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
 	public function __isset($strKey)
 	{
@@ -194,8 +194,8 @@ abstract class Module extends Frontend
 
 	/**
 	 * Recursively compile the navigation menu and return it as HTML string
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @param string
 	 * @param string
 	 * @return string

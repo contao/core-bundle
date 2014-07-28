@@ -28,13 +28,13 @@ class FileUpload extends Backend
 
 	/**
 	 * Error indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnHasError = false;
 
 	/**
 	 * Resized indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnHasResized = false;
 
@@ -56,7 +56,7 @@ class FileUpload extends Backend
 
 	/**
 	 * Return true if there was an error
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasError()
 	{
@@ -66,7 +66,7 @@ class FileUpload extends Backend
 
 	/**
 	 * Return true if there was a resized image
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasResized()
 	{
@@ -272,7 +272,7 @@ class FileUpload extends Backend
 	/**
 	 * Resize an uploaded image if neccessary
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function resizeUploadedImage($strImage)
 	{

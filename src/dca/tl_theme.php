@@ -328,7 +328,7 @@ class tl_theme extends Backend
 	/**
 	 * Return all template folders as array
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @return array
 	 */
 	protected function doGetTemplateFolders($path, $level=0)

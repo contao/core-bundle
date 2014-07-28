@@ -732,7 +732,7 @@ class tl_style extends Backend
 
 	/**
 	 * Update a style sheet after a version has been restored
-	 * @param integer
+	 * @param int
 	 * @param string
 	 * @param array
 	 */
@@ -784,8 +784,8 @@ class tl_style extends Backend
 
 	/**
 	 * Toggle the visibility of a format definition
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{

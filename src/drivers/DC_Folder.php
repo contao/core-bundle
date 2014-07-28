@@ -66,13 +66,13 @@ class DC_Folder extends DataContainer implements listable, editable
 
 	/**
 	 * True if a new version has to be created
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $blnCreateNewVersion = false;
 
 	/**
 	 * Database assisted
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $blnIsDbAssisted = false;
 
@@ -857,7 +857,7 @@ class DC_Folder extends DataContainer implements listable, editable
 
 	/**
 	 * Move one or more local files to the server
-	 * @param boolean
+	 * @param bool
 	 * @return string
 	 */
 	public function move($blnIsAjax=false)
@@ -2189,7 +2189,7 @@ class DC_Folder extends DataContainer implements listable, editable
 	/**
 	 * Generate a particular subpart of the tree and return it as HTML string
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	public function ajaxTreeView($strFolder, $level)
@@ -2221,9 +2221,9 @@ class DC_Folder extends DataContainer implements listable, editable
 	/**
 	 * Render the file tree and return it as HTML string
 	 * @param string
-	 * @param integer
-	 * @param boolean
-	 * @param boolean
+	 * @param int
+	 * @param bool
+	 * @param bool
 	 * @param array
 	 * @return string
 	 */
@@ -2445,7 +2445,7 @@ class DC_Folder extends DataContainer implements listable, editable
 	/**
 	 * Return true if the current folder is mounted
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isMounted($strFolder)
 	{
@@ -2478,7 +2478,7 @@ class DC_Folder extends DataContainer implements listable, editable
 	/**
 	 * Check a file operation
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function isValid($strFile)
 	{

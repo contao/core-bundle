@@ -26,10 +26,10 @@ class PageRoot extends Frontend
 
 	/**
 	 * Redirect to the first active regular page
-	 * @param integer
-	 * @param boolean
-	 * @return integer
-	 * @return integer
+	 * @param int
+	 * @param bool
+	 * @return int
+	 * @return int
 	 */
 	public function generate($pageId, $blnReturn=false)
 	{

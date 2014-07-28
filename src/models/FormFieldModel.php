@@ -35,8 +35,8 @@ class FormFieldModel extends Model
 	/**
 	 * Find published form fields by their parent ID
 	 *
-	 * @param integer $intPid     The form ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid     The form ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no form fields
 	 */

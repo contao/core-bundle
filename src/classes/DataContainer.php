@@ -29,7 +29,7 @@ class DataContainer extends Backend
 
 	/**
 	 * Current ID
-	 * @param integer
+	 * @param int
 	 */
 	protected $intId;
 
@@ -83,7 +83,7 @@ class DataContainer extends Backend
 
 	/**
 	 * Reload the page after the form has been submitted
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $noReload = false;
 
@@ -569,7 +569,7 @@ class DataContainer extends Backend
 
 	/**
 	 * Return a query string that switches into edit mode
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	protected function switchToEdit($id)
@@ -595,10 +595,10 @@ class DataContainer extends Backend
 	 * @param array
 	 * @param string
 	 * @param array
-	 * @param boolean
+	 * @param bool
 	 * @param array
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @return string
 	 */
 	protected function generateButtons($arrRow, $strTable, $arrRootIds=[], $blnCircularReference=false, $arrChildRecordIds=null, $strPrevious=null, $strNext=null)

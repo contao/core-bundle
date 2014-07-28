@@ -26,7 +26,7 @@ class FormCheckBox extends Widget
 	/**
 	 * Submit user input
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
@@ -191,7 +191,7 @@ class FormCheckBox extends Widget
 	/**
 	 * Override the parent method and inject the error message inside the fieldset (see #3392)
 	 *
-	 * @param boolean $blnSwitchOrder If true, the error message will be shown below the field
+	 * @param bool $blnSwitchOrder If true, the error message will be shown below the field
 	 *
 	 * @return string The form field markup
 	 */

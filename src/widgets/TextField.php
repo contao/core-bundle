@@ -26,13 +26,13 @@ class TextField extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
 	/**
 	 * Add a for attribute
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnForAttribute = true;
 

@@ -26,7 +26,7 @@ class FileSelector extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
@@ -125,10 +125,10 @@ class FileSelector extends Widget
 
 	/**
 	 * Generate a particular subpart of the file tree and return it as HTML string
-	 * @param integer
+	 * @param int
 	 * @param string
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 * @return string
 	 */
 	public function generateAjax($folder, $strField, $level, $mount=false)
@@ -178,9 +178,9 @@ class FileSelector extends Widget
 	/**
 	 * Recursively render the filetree
 	 * @param string
-	 * @param integer
-	 * @param boolean
-	 * @param boolean
+	 * @param int
+	 * @param bool
+	 * @param bool
 	 * @return string
 	 */
 	protected function renderFiletree($path, $intMargin, $mount=false, $blnProtected=true)

@@ -26,7 +26,7 @@ class PageSelector extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
@@ -217,9 +217,9 @@ class PageSelector extends Widget
 
 	/**
 	 * Generate a particular subpart of the page tree and return it as HTML string
-	 * @param integer
+	 * @param int
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	public function generateAjax($id, $strField, $level)
@@ -280,9 +280,9 @@ class PageSelector extends Widget
 	/**
 	 * Recursively render the pagetree
 	 * @param int
-	 * @param integer
-	 * @param boolean
-	 * @param boolean
+	 * @param int
+	 * @param bool
+	 * @param bool
 	 * @return string
 	 */
 	protected function renderPagetree($id, $intMargin, $protectedPage=false, $blnNoRecursion=false)

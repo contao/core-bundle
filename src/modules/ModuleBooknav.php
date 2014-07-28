@@ -147,9 +147,9 @@ class ModuleBooknav extends Module
 
 	/**
 	 * Recursively get all book pages
-	 * @param integer
+	 * @param int
 	 * @param array
-	 * @param integer
+	 * @param int
 	 */
 	protected function getBookPages($intParentId, $groups, $time)
 	{

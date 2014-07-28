@@ -26,19 +26,19 @@ class TableWizard extends Widget
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
 	/**
 	 * Rows
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRows = 12;
 
 	/**
 	 * Columns
-	 * @var integer
+	 * @var int
 	 */
 	protected $intCols = 80;
 

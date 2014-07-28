@@ -35,9 +35,9 @@ class ArticleModel extends Model
 	/**
 	 * Find an article by its ID or alias and its page
 	 *
-	 * @param mixed   $varId      The numeric ID or alias name
-	 * @param integer $intPid     The page ID
-	 * @param array   $arrOptions An optional options array
+	 * @param mixed $varId      The numeric ID or alias name
+	 * @param int   $intPid     The page ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no article
 	 */
@@ -60,8 +60,8 @@ class ArticleModel extends Model
 	/**
 	 * Find a published article by its ID
 	 *
-	 * @param integer $intId      The article ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intId      The article ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no published article
 	 */
@@ -83,9 +83,9 @@ class ArticleModel extends Model
 	/**
 	 * Find all published articles by their parent ID and column
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param int    $intPid     The page ID
+	 * @param string $strColumn  The column name
+	 * @param array  $arrOptions An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */
@@ -113,9 +113,9 @@ class ArticleModel extends Model
 	/**
 	 * Find all published articles with teaser by their parent ID and column
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param int    $intPid     The page ID
+	 * @param string $strColumn  The column name
+	 * @param array  $arrOptions An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */

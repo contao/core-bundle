@@ -336,7 +336,7 @@ class tl_templates extends Backend
 	/**
 	 * Recursively scan the templates directory and return all folders as array
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	protected function getTargetFolders($strFolder, $intLevel=1)

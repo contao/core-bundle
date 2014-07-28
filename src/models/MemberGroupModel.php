@@ -35,8 +35,8 @@ class MemberGroupModel extends Model
 	/**
 	 * Find a published group by its ID
 	 *
-	 * @param integer $intId      The member group ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intId      The member group ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no member group
 	 */

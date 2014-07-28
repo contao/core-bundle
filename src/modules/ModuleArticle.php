@@ -34,14 +34,14 @@ class ModuleArticle extends Module
 
 	/**
 	 * No markup
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnNoMarkup = false;
 
 
 	/**
 	 * Check whether the article is published
-	 * @param boolean
+	 * @param bool
 	 * @return string
 	 */
 	public function generate($blnNoMarkup=false)

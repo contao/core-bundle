@@ -687,8 +687,8 @@ class tl_form_field extends Backend
 
 	/**
 	 * Toggle the visibility of a form field
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{

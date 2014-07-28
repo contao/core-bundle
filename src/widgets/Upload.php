@@ -31,13 +31,13 @@ class Upload extends Widget implements uploadable
 
 	/**
 	 * Submit user input
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
 	/**
 	 * Add a for attribute
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnForAttribute = false;
 

@@ -116,7 +116,7 @@ class FrontendCron extends Frontend
 
 	/**
 	 * Check whether the last script execution was less than a minute ago
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function hasToWait()
 	{
@@ -156,7 +156,7 @@ class FrontendCron extends Frontend
 
 	/**
 	 * Update the cron.txt file
-	 * @param integer
+	 * @param int
 	 */
 	protected function updateCronTxt($time)
 	{

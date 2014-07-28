@@ -127,7 +127,7 @@ abstract class ContentElement extends Frontend
 	/**
 	 * Check whether a property is set
 	 * @param string
-	 * @return boolean
+	 * @return bool
 	 */
 	public function __isset($strKey)
 	{

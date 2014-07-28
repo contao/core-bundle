@@ -29,7 +29,7 @@ class PageRegular extends Frontend
 	/**
 	 * Generate a regular page
 	 * @param object
-	 * @param boolean
+	 * @param bool
 	 */
 	public function generate($objPage, $blnCheckRequest=false)
 	{

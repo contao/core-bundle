@@ -28,7 +28,7 @@ class RebuildIndex extends Backend implements executable
 
 	/**
 	 * Return true if the module is active
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isActive()
 	{

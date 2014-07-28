@@ -26,28 +26,28 @@ class FormTextArea extends Widget
 	/**
 	 * Submit user input
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = true;
 
 	/**
 	 * Add a for attribute
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnForAttribute = true;
 
 	/**
 	 * Rows
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRows = 12;
 
 	/**
 	 * Columns
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $intCols = 80;
 

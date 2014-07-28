@@ -26,10 +26,10 @@ class PageError404 extends Frontend
 
 	/**
 	 * Generate an error 404 page
-	 * @param integer
+	 * @param int
 	 * @param string
 	 * @param string
-	 * @param boolean
+	 * @param bool
 	 */
 	public function generate($pageId, $strDomain=null, $strHost=null, $blnUnusedGet=false)
 	{

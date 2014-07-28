@@ -90,19 +90,19 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Show the current table as tree
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $treeView = false;
 
 	/**
 	 * True if a new version has to be created
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $blnCreateNewVersion = false;
 
 	/**
 	 * True if one of the form fields is uploadable
-	 * @param boolean
+	 * @param bool
 	 */
 	protected $blnUploadable = false;
 
@@ -709,7 +709,7 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Assign a new position to an existing record
-	 * @param boolean
+	 * @param bool
 	 */
 	public function cut($blnDoNotRedirect=false)
 	{
@@ -833,8 +833,8 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Duplicate a particular record of the current table
-	 * @param boolean
-	 * @return integer|boolean
+	 * @param bool
+	 * @return int|bool
 	 */
 	public function copy($blnDoNotRedirect=false)
 	{
@@ -1013,9 +1013,9 @@ class DC_Table extends DataContainer implements listable, editable
 	/**
 	 * Duplicate all child records of a duplicated record
 	 * @param string
-	 * @param integer
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
+	 * @param int
 	 */
 	protected function copyChilds($table, $insertID, $id, $parentId)
 	{
@@ -1162,8 +1162,8 @@ class DC_Table extends DataContainer implements listable, editable
 	/**
 	 * Calculate the new position of a moved or inserted record
 	 * @param string
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	protected function getNewPosition($mode, $pid=null, $insertInto=false)
 	{
@@ -1385,7 +1385,7 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Delete a record of the current table table and save it to tl_undo
-	 * @param boolean
+	 * @param bool
 	 */
 	public function delete($blnDoNotRedirect=false)
 	{
@@ -1541,7 +1541,7 @@ class DC_Table extends DataContainer implements listable, editable
 	/**
 	 * Recursively get all related table names and records
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @param array
 	 */
 	public function deleteChilds($table, $id, &$delete)
@@ -1688,8 +1688,8 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Auto-generate a form to edit the current database record
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @return string
 	 */
 	public function edit($intID=null, $ajaxId=null)
@@ -2116,8 +2116,8 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Auto-generate a form to edit all records that are currently shown
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @return string
 	 */
 	public function editAll($intId=null, $ajaxId=null)
@@ -3423,8 +3423,8 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Generate a particular subpart of the tree and return it as HTML string
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @return string
 	 */
 	public function ajaxTreeView($id, $level)
@@ -3493,14 +3493,14 @@ class DC_Table extends DataContainer implements listable, editable
 	/**
 	 * Recursively generate the tree and return it as HTML string
 	 * @param string
-	 * @param integer
+	 * @param int
 	 * @param array
-	 * @param boolean
-	 * @param integer
+	 * @param bool
+	 * @param int
 	 * @param array
-	 * @param boolean
-	 * @param boolean
-	 * @param boolean
+	 * @param bool
+	 * @param bool
+	 * @param bool
 	 * @return string
 	 */
 	protected function generateTree($table, $id, $arrPrevNext, $blnHasSorting, $intMargin=0, $arrClipboard=null, $blnCircularReference=false, $protectedPage=false, $blnNoRecursion=false)
@@ -4939,7 +4939,7 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Return a select menu to limit results
-	 * @param boolean
+	 * @param bool
 	 * @return string
 	 */
 	protected function limitMenu($blnOptional=false)
@@ -5066,7 +5066,7 @@ class DC_Table extends DataContainer implements listable, editable
 
 	/**
 	 * Generate the filter panel and return it as HTML string
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	protected function filterMenu($intFilterPanel)
@@ -5498,7 +5498,7 @@ class DC_Table extends DataContainer implements listable, editable
 	 * Return the formatted group header as string
 	 * @param string
 	 * @param mixed
-	 * @param integer
+	 * @param int
 	 * @return string
 	 */
 	protected function formatCurrentValue($field, $value, $mode)
@@ -5591,7 +5591,7 @@ class DC_Table extends DataContainer implements listable, editable
 	 * Return the formatted group header as string
 	 * @param string
 	 * @param mixed
-	 * @param integer
+	 * @param int
 	 * @param array
 	 * @return string
 	 */

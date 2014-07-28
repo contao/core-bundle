@@ -263,7 +263,7 @@ class FilesModel extends Model
 	/**
 	 * Do not reload the data upon insert
 	 *
-	 * @param integer $intType The query type (Model::INSERT or Model::UPDATE)
+	 * @param int $intType The query type (Model::INSERT or Model::UPDATE)
 	 */
 	protected function postSave($intType) {}
 }

@@ -520,7 +520,7 @@ class Form extends Hybrid
 
 	/**
 	 * Get the maximum file size that is allowed for file uploads
-	 * @return integer
+	 * @return int
 	 */
 	protected function getMaxFileSize()
 	{

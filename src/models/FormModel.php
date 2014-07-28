@@ -33,7 +33,7 @@ class FormModel extends Model
 	/**
 	 * Get the maximum file size that is allowed for file uploads
 	 *
-	 * @return integer The maximum file size in bytes
+	 * @return int The maximum file size in bytes
 	 */
 	public function getMaxUploadFileSize()
 	{

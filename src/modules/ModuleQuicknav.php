@@ -103,8 +103,8 @@ class ModuleQuicknav extends Module
 
 	/**
 	 * Recursively get all quicknav pages and return them as array
-	 * @param integer
-	 * @param integer
+	 * @param int
+	 * @param int
 	 * @param sting
 	 * @param sting
 	 * @return array

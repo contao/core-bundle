@@ -33,7 +33,7 @@ class PageModel extends Model
 
 	/**
 	 * Details loaded
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnDetailsLoaded = false;
 
@@ -41,8 +41,8 @@ class PageModel extends Model
 	/**
 	 * Find a published page by its ID
 	 *
-	 * @param integer $intId      The page ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intId      The page ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no published page
 	 */
@@ -125,8 +125,8 @@ class PageModel extends Model
 	/**
 	 * Find the first published page by its parent ID
 	 *
-	 * @param integer $intPid     The parent page's ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid     The parent page's ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no published page
 	 */
@@ -153,8 +153,8 @@ class PageModel extends Model
 	/**
 	 * Find the first published regular page by its parent ID
 	 *
-	 * @param integer $intPid The parent page's ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid The parent page's ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no published regular page
 	 */
@@ -181,8 +181,8 @@ class PageModel extends Model
 	/**
 	 * Find an error 403 page by its parent ID
 	 *
-	 * @param integer $intPid     The parent page's ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid     The parent page's ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no 403 page
 	 */
@@ -209,8 +209,8 @@ class PageModel extends Model
 	/**
 	 * Find an error 404 page by its parent ID
 	 *
-	 * @param integer $intPid     The parent page's ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid     The parent page's ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model|null The model or null if there is no 404 page
 	 */
@@ -306,9 +306,9 @@ class PageModel extends Model
 	/**
 	 * Find all published subpages by their parent ID and exclude pages only visible for guests
 	 *
-	 * @param integer $intPid        The parent page's ID
-	 * @param boolean $blnShowHidden If true, hidden pages will be included
-	 * @param boolean $blnIsSitemap  If true, the sitemap settings apply
+	 * @param int  $intPid        The parent page's ID
+	 * @param bool $blnShowHidden If true, hidden pages will be included
+	 * @param bool $blnIsSitemap  If true, the sitemap settings apply
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
@@ -331,8 +331,8 @@ class PageModel extends Model
 	/**
 	 * Find all published regular pages by their IDs and exclude pages only visible for guests
 	 *
-	 * @param integer $arrIds     An array of page IDs
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $arrIds     An array of page IDs
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
@@ -369,8 +369,8 @@ class PageModel extends Model
 	/**
 	 * Find all published regular pages by their parent IDs and exclude pages only visible for guests
 	 *
-	 * @param integer $intPid     The parent page's ID
-	 * @param array   $arrOptions An optional options array
+	 * @param int   $intPid     The parent page's ID
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no pages
 	 */
@@ -402,7 +402,7 @@ class PageModel extends Model
 	/**
 	 * Find the parent pages of a page
 	 *
-	 * @param integer $intId The page's ID
+	 * @param int $intId The page's ID
 	 *
 	 * @return Collection|null A collection of models or null if there are no parent pages
 	 */
@@ -428,7 +428,7 @@ class PageModel extends Model
 	/**
 	 * Find a page by its ID and return it with the inherited details
 	 *
-	 * @param integer $intId The page's ID
+	 * @param int $intId The page's ID
 	 *
 	 * @return Model|null The model or null if there is no matching page
 	 */
@@ -459,7 +459,7 @@ class PageModel extends Model
 		}
 
 		// Set some default values
-		$this->protected = (boolean) $this->protected;
+		$this->protected = (bool) $this->protected;
 		$this->groups = $this->protected ? deserialize($this->groups) : false;
 		$this->layout = $this->includeLayout ? $this->layout : false;
 		$this->mobileLayout = $this->includeLayout ? $this->mobileLayout : false;

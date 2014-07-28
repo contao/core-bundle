@@ -35,9 +35,9 @@ class ContentModel extends Model
 	/**
 	 * Find all published content elements by their parent ID and parent table
 	 *
-	 * @param integer $intPid         The article ID
-	 * @param string  $strParentTable The parent table name
-	 * @param array   $arrOptions     An optional options array
+	 * @param int    $intPid         The article ID
+	 * @param string $strParentTable The parent table name
+	 * @param array  $arrOptions     An optional options array
 	 *
 	 * @return Collection|null A collection of models or null if there are no content elements
 	 */

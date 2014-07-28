@@ -935,10 +935,10 @@ class tl_content extends Backend
 
 	/**
 	 * Check access to a particular content element
-	 * @param integer
+	 * @param int
 	 * @param array
-	 * @param boolean
-	 * @return boolean
+	 * @param bool
+	 * @return bool
 	 */
 	protected function checkAccessToElement($id, $pagemounts, $blnIsPid=false)
 	{
@@ -1674,8 +1674,8 @@ class tl_content extends Backend
 
 	/**
 	 * Toggle the visibility of an element
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{

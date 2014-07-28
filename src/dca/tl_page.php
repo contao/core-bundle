@@ -1264,8 +1264,8 @@ class tl_page extends Backend
 	 * @param string
 	 * @param Contao\DataContainer
 	 * @param string
-	 * @param boolean
-	 * @param boolean
+	 * @param bool
+	 * @param bool
 	 * @return string
 	 */
 	public function addIcon($row, $label, Contao\DataContainer $dc=null, $imageAttribute='', $blnReturnImage=false, $blnProtected=false)
@@ -1359,7 +1359,7 @@ class tl_page extends Backend
 	 * @param Contao\DataContainer
 	 * @param array
 	 * @param string
-	 * @param boolean
+	 * @param bool
 	 * @param array
 	 * @return string
 	 */
@@ -1604,8 +1604,8 @@ class tl_page extends Backend
 
 	/**
 	 * Disable/enable a user group
-	 * @param integer
-	 * @param boolean
+	 * @param int
+	 * @param bool
 	 */
 	public function toggleVisibility($intId, $blnVisible)
 	{
