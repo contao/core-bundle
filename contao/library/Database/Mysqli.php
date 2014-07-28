@@ -85,9 +85,9 @@ class Mysqli extends Database
 	/**
 	 * Auto-generate a FIND_IN_SET() statement
 	 *
-	 * @param string  $strKey     The field name
-	 * @param mixed   $varSet     The set to find the key in
-	 * @param boolean $blnIsField If true, the set will not be quoted
+	 * @param string $strKey     The field name
+	 * @param mixed  $varSet     The set to find the key in
+	 * @param bool   $blnIsField If true, the set will not be quoted
 	 *
 	 * @return string The FIND_IN_SET() statement
 	 */
@@ -212,7 +212,7 @@ class Mysqli extends Database
 	 *
 	 * @param string $strDatabase The name of the target database
 	 *
-	 * @return boolean True if the database was changed successfully
+	 * @return bool True if the database was changed successfully
 	 */
 	protected function set_database($strDatabase)
 	{
@@ -282,7 +282,7 @@ class Mysqli extends Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The table size in bytes
+	 * @return int The table size in bytes
 	 */
 	protected function get_size_of($strTable)
 	{
@@ -298,7 +298,7 @@ class Mysqli extends Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The autoincrement ID
+	 * @return int The autoincrement ID
 	 */
 	protected function get_next_id($strTable)
 	{
@@ -336,7 +336,7 @@ class Mysqli extends Database
 	 * Create a Statement object
 	 *
 	 * @param resource $resConnection        The connection ID
-	 * @param boolean  $blnDisableAutocommit If true, autocommitting will be disabled
+	 * @param bool     $blnDisableAutocommit If true, autocommitting will be disabled
 	 *
 	 * @return Statement The Statement object
 	 */

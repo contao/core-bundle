@@ -35,7 +35,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is numeric
+	 * @return bool True if the value is numeric
 	 */
 	public static function isNumeric($varValue)
 	{
@@ -48,7 +48,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is alphabetic
+	 * @return bool True if the value is alphabetic
 	 */
 	public static function isAlphabetic($varValue)
 	{
@@ -68,7 +68,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is alphanumeric
+	 * @return bool True if the value is alphanumeric
 	 */
 	public static function isAlphanumeric($varValue)
 	{
@@ -88,7 +88,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value does not match the characters
+	 * @return bool True if the value does not match the characters
 	 */
 	public static function isExtendedAlphanumeric($varValue)
 	{
@@ -101,7 +101,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid date format
+	 * @return bool True if the value is a valid date format
 	 */
 	public static function isDate($varValue)
 	{
@@ -114,7 +114,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid time format
+	 * @return bool True if the value is a valid time format
 	 */
 	public static function isTime($varValue)
 	{
@@ -127,7 +127,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid date and time format
+	 * @return bool True if the value is a valid date and time format
 	 */
 	public static function isDatim($varValue)
 	{
@@ -140,7 +140,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid e-mail address
+	 * @return bool True if the value is a valid e-mail address
 	 */
 	public static function isEmail($varValue)
 	{
@@ -153,7 +153,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid URL
+	 * @return bool True if the value is a valid URL
 	 */
 	public static function isUrl($varValue)
 	{
@@ -173,7 +173,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid alias name
+	 * @return bool True if the value is a valid alias name
 	 */
 	public static function isAlias($varValue)
 	{
@@ -193,7 +193,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid folder alias name
+	 * @return bool True if the value is a valid folder alias name
 	 */
 	public static function isFolderAlias($varValue)
 	{
@@ -213,7 +213,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid phone number
+	 * @return bool True if the value is a valid phone number
 	 */
 	public static function isPhone($varValue)
 	{
@@ -226,7 +226,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid percentage
+	 * @return bool True if the value is a valid percentage
 	 */
 	public static function isPercent($varValue)
 	{
@@ -239,7 +239,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid locale
+	 * @return bool True if the value is a valid locale
 	 */
 	public static function isLocale($varValue)
 	{
@@ -252,7 +252,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a valid language code
+	 * @return bool True if the value is a valid language code
 	 */
 	public static function isLanguage($varValue)
 	{
@@ -265,7 +265,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a UUID
+	 * @return bool True if the value is a UUID
 	 */
 	public static function isUuid($varValue)
 	{
@@ -278,7 +278,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a binary UUID
+	 * @return bool True if the value is a binary UUID
 	 *
 	 * @author Martin Auswöger <https://github.com/ausi>
 	 * @author Tristan Lins <https://github.com/tristanlins>
@@ -299,7 +299,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The value to be validated
 	 *
-	 * @return boolean True if the value is a string UUID
+	 * @return bool True if the value is a string UUID
 	 *
 	 * @author Martin Auswöger <https://github.com/ausi>
 	 * @author Tristan Lins <https://github.com/tristanlins>
@@ -320,7 +320,7 @@ class Validator
 	 *
 	 * @param mixed $varValue The numeric ID or vanity name
 	 *
-	 * @return boolean True if the value is a Google+ ID
+	 * @return bool True if the value is a Google+ ID
 	 */
 	public static function isGooglePlusId($varValue)
 	{

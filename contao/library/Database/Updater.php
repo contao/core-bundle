@@ -580,8 +580,8 @@ class Updater extends Controller
 	/**
 	 * Scan the upload folder and create the database entries
 	 *
-	 * @param string  $strPath The target folder
-	 * @param integer $pid     The parent ID
+	 * @param string $strPath The target folder
+	 * @param int    $pid     The parent ID
 	 */
 	public function scanUploadFolder($strPath=null, $pid=null)
 	{

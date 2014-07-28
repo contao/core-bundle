@@ -93,7 +93,7 @@ class RequestToken
 	 *
 	 * @param string $strToken The request token
 	 *
-	 * @return boolean True if the token matches the stored one
+	 * @return bool True if the token matches the stored one
 	 */
 	public static function validate($strToken)
 	{

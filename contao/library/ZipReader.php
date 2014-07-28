@@ -66,13 +66,13 @@ class ZipReader
 
 	/**
 	 * Current file index
-	 * @var integer
+	 * @var int
 	 */
 	private $intIndex = -1;
 
 	/**
 	 * Last file index
-	 * @var integer
+	 * @var int
 	 */
 	private $intLast = 0;
 
@@ -232,7 +232,7 @@ class ZipReader
 	 *
 	 * @param string $strName The file name
 	 *
-	 * @return boolean True if the file was found
+	 * @return bool True if the file was found
 	 */
 	public function getFile($strName)
 	{
@@ -264,7 +264,7 @@ class ZipReader
 	/**
 	 * Go to the next file of the archive
 	 *
-	 * @return ZipReader|boolean The object instance or false if there is no next file
+	 * @return ZipReader|bool The object instance or false if there is no next file
 	 */
 	public function next()
 	{
@@ -281,7 +281,7 @@ class ZipReader
 	/**
 	 * Go to the previous file of the archive
 	 *
-	 * @return ZipReader|boolean The object instance or false if there is no previous file
+	 * @return ZipReader|bool The object instance or false if there is no previous file
 	 */
 	public function prev()
 	{
@@ -559,10 +559,10 @@ class ZipReader
 	/**
 	 * Calculate the Unix timestamp from two hexadecimal values
 	 *
-	 * @param integer $intTime The time integer
-	 * @param integer $intDate The date integer
+	 * @param int $intTime The time integer
+	 * @param int $intDate The date integer
 	 *
-	 * @return integer The Unix timestamp
+	 * @return int The Unix timestamp
 	 */
 	protected function decToUnix($intTime, $intDate)
 	{

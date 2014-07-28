@@ -332,7 +332,7 @@ class File extends System
 	/**
 	 * Check whether the file exists
 	 *
-	 * @return boolean True if the file exists
+	 * @return bool True if the file exists
 	 */
 	public function exists()
 	{
@@ -343,7 +343,7 @@ class File extends System
 	/**
 	 * Truncate the file
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function truncate()
 	{
@@ -361,7 +361,7 @@ class File extends System
 	 *
 	 * @param mixed $varData The data to be written
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function write($varData)
 	{
@@ -375,7 +375,7 @@ class File extends System
 	 * @param mixed  $varData The data to be appended
 	 * @param string $strLine The line ending (defaults to LF)
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function append($varData, $strLine="\n")
 	{
@@ -389,7 +389,7 @@ class File extends System
 	 * @param mixed  $varData The data to be prepended
 	 * @param string $strLine The line ending (defaults to LF)
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function prepend($varData, $strLine="\n")
 	{
@@ -400,7 +400,7 @@ class File extends System
 	/**
 	 * Delete the file
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function delete()
 	{
@@ -419,9 +419,9 @@ class File extends System
 	/**
 	 * Set the file permissions
 	 *
-	 * @param integer $intChmod The CHMOD settings
+	 * @param int $intChmod The CHMOD settings
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function chmod($intChmod)
 	{
@@ -432,7 +432,7 @@ class File extends System
 	/**
 	 * Close the file handle
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function close()
 	{
@@ -535,7 +535,7 @@ class File extends System
 	 *
 	 * @param string $strNewName The new path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function renameTo($strNewName)
 	{
@@ -572,7 +572,7 @@ class File extends System
 	 *
 	 * @param string $strNewName The target path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function copyTo($strNewName)
 	{
@@ -599,11 +599,11 @@ class File extends System
 	/**
 	 * Resize the file if it is an image
 	 *
-	 * @param integer $width  The target width
-	 * @param integer $height The target height
-	 * @param string  $mode   The resize mode
+	 * @param int    $width  The target width
+	 * @param int    $height The target height
+	 * @param string $mode   The resize mode
 	 *
-	 * @return boolean True if the image could be resized successfully
+	 * @return bool True if the image could be resized successfully
 	 */
 	public function resizeTo($width, $height, $mode='')
 	{
@@ -667,7 +667,7 @@ class File extends System
 	 * @param mixed  $varData The data to be written
 	 * @param string $strMode The operation mode
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	protected function fputs($varData, $strMode)
 	{

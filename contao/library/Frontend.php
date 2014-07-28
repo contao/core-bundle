@@ -60,7 +60,7 @@ abstract class Frontend extends Controller
 	 * Splits the current request into fragments, strips the URL suffix,
 	 * recreates the $_GET array and then returns the page ID.
 	 *
-	 * @return integer|false|null The page ID, null or false
+	 * @return int|false|null The page ID, null or false
 	 */
 	public static function getPageIdFromUrl()
 	{
@@ -283,7 +283,7 @@ abstract class Frontend extends Controller
 	/**
 	 * Return the root page ID (backwards compatibility)
 	 *
-	 * @return integer The root page ID
+	 * @return int The root page ID
 	 */
 	public static function getRootIdFromUrl()
 	{
@@ -356,9 +356,9 @@ abstract class Frontend extends Controller
 	/**
 	 * Add a request string to the current URL
 	 *
-	 * @param string  $strRequest       The string to be added
-	 * @param boolean $blnIgnoreParams  If true, existing GET parameters are ignored
-	 * @param array   $arrUnset         An optional array of keys to unset
+	 * @param string $strRequest       The string to be added
+	 * @param bool   $blnIgnoreParams  If true, existing GET parameters are ignored
+	 * @param array  $arrUnset         An optional array of keys to unset
 	 *
 	 * @return string The new URL
 	 */
@@ -453,9 +453,9 @@ abstract class Frontend extends Controller
 	/**
 	 * Redirect to a jumpTo page or reload the current page
 	 *
-	 * @param integer|array $intId        The page ID or data array
-	 * @param string        $strParams    Optional parameters to be added
-	 * @param string        $strForceLang An optional language to enforce
+	 * @param int|array $intId        The page ID or data array
+	 * @param string    $strParams    Optional parameters to be added
+	 * @param string    $strForceLang An optional language to enforce
 	 */
 	protected function jumpToOrReload($intId, $strParams=null, $strForceLang=null)
 	{
@@ -494,7 +494,7 @@ abstract class Frontend extends Controller
 	 *
 	 * @param string $strCookie The cookie name
 	 *
-	 * @return boolean True if the user is logged in
+	 * @return bool True if the user is logged in
 	 */
 	protected function getLoginStatus($strCookie)
 	{
@@ -571,8 +571,8 @@ abstract class Frontend extends Controller
 	/**
 	 * Parse the meta.txt file of a folder
 	 *
-	 * @param string  $strPath   The file path
-	 * @param boolean $blnIsFile If true, the corresponding entry will not be added to the auxiliary array
+	 * @param string $strPath   The file path
+	 * @param bool   $blnIsFile If true, the corresponding entry will not be added to the auxiliary array
 	 *
 	 * @deprecated Meta data is now stored in the database
 	 */
@@ -635,7 +635,7 @@ abstract class Frontend extends Controller
 	/**
 	 * Return the cron timeout in seconds
 	 *
-	 * @return integer The cron timeout in seconds
+	 * @return int The cron timeout in seconds
 	 */
 	public static function getCronTimeout()
 	{

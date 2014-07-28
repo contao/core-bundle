@@ -30,31 +30,31 @@ class Pagination
 
 	/**
 	 * Current page number
-	 * @var integer
+	 * @var int
 	 */
 	protected $intPage;
 
 	/**
 	 * Total number of rows
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRows;
 
 	/**
 	 * Number of rows per page
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRowsPerPage;
 
 	/**
 	 * Total number of pages
-	 * @var integer
+	 * @var int
 	 */
 	protected $intTotalPages;
 
 	/**
 	 * Total number of links
-	 * @var integer
+	 * @var int
 	 */
 	protected $intNumberOfLinks;
 
@@ -96,7 +96,7 @@ class Pagination
 
 	/**
 	 * Show "<< first" and "last >>" links
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnShowFirstLast = true;
 
@@ -134,12 +134,12 @@ class Pagination
 	/**
 	 * Set the number of rows, the number of results per pages and the number of links
 	 *
-	 * @param integer   $intRows          The number of rows
-	 * @param integer   $intPerPage       The number of items per page
-	 * @param integer   $intNumberOfLinks The number of links to generate
-	 * @param string    $strParameter     The parameter name
-	 * @param Template  $objTemplate      The template object
-	 * @param boolean   $blnForceParam    Force the URL parameter
+	 * @param int      $intRows          The number of rows
+	 * @param int      $intPerPage       The number of items per page
+	 * @param int      $intNumberOfLinks The number of links to generate
+	 * @param string   $strParameter     The parameter name
+	 * @param Template $objTemplate      The template object
+	 * @param bool     $blnForceParam    Force the URL parameter
 	 */
 	public function __construct($intRows, $intPerPage, $intNumberOfLinks=7, $strParameter='page', Template $objTemplate=null, $blnForceParam=false)
 	{
@@ -176,7 +176,7 @@ class Pagination
 	/**
 	 * Return true if the pagination menu has a "<< first" link
 	 *
-	 * @return boolean True if the pagination menu has a "<< first" link
+	 * @return bool True if the pagination menu has a "<< first" link
 	 */
 	public function hasFirst()
 	{
@@ -187,7 +187,7 @@ class Pagination
 	/**
 	 * Return true if the pagination menu has a "< previous" link
 	 *
-	 * @return boolean True if the pagination menu has a "< previous" link
+	 * @return bool True if the pagination menu has a "< previous" link
 	 */
 	public function hasPrevious()
 	{
@@ -198,7 +198,7 @@ class Pagination
 	/**
 	 * Return true if the pagination menu has a "next >" link
 	 *
-	 * @return boolean True if the pagination menu has a "next >" link
+	 * @return bool True if the pagination menu has a "next >" link
 	 */
 	public function hasNext()
 	{
@@ -209,7 +209,7 @@ class Pagination
 	/**
 	 * Return true if the pagination menu has a "last >>" link
 	 *
-	 * @return boolean True if the pagination menu has a "last >>" link
+	 * @return bool True if the pagination menu has a "last >>" link
 	 */
 	public function hasLast()
 	{
@@ -366,7 +366,7 @@ class Pagination
 	/**
 	 * Generate a link and return the URL
 	 *
-	 * @param integer $intPage The page ID
+	 * @param int $intPage The page ID
 	 *
 	 * @return string The URL string
 	 */

@@ -54,8 +54,8 @@ class Statement extends AbstractStatement
 	/**
 	 * Add limit and offset to the query string
 	 *
-	 * @param integer $intRows   The maximum number of rows
-	 * @param integer $intOffset The number of rows to skip
+	 * @param int $intRows   The maximum number of rows
+	 * @param int $intOffset The number of rows to skip
 	 */
 	protected function limit_query($intRows, $intOffset)
 	{
@@ -95,7 +95,7 @@ class Statement extends AbstractStatement
 	/**
 	 * Return the number of affected rows
 	 *
-	 * @return integer The number of affected rows
+	 * @return int The number of affected rows
 	 */
 	protected function affected_rows()
 	{
@@ -106,7 +106,7 @@ class Statement extends AbstractStatement
 	/**
 	 * Return the last insert ID
 	 *
-	 * @return integer The last insert ID
+	 * @return int The last insert ID
 	 */
 	protected function insert_id()
 	{

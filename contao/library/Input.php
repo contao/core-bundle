@@ -55,7 +55,7 @@ class Input
 
 	/**
 	 * Magic quotes setting
-	 * @var boolean
+	 * @var bool
 	 */
 	protected static $blnMagicQuotes;
 
@@ -77,9 +77,9 @@ class Input
 	/**
 	 * Return a $_GET variable
 	 *
-	 * @param string  $strKey            The variable name
-	 * @param boolean $blnDecodeEntities If true, all entities will be decoded
-	 * @param boolean $blnKeepUnused     If true, the parameter will not be marked as used (see #4277)
+	 * @param string $strKey            The variable name
+	 * @param bool   $blnDecodeEntities If true, all entities will be decoded
+	 * @param bool   $blnKeepUnused     If true, the parameter will not be marked as used (see #4277)
 	 *
 	 * @return mixed The cleaned variable value
 	 */
@@ -122,8 +122,8 @@ class Input
 	/**
 	 * Return a $_POST variable
 	 *
-	 * @param string  $strKey            The variable name
-	 * @param boolean $blnDecodeEntities If true, all entities will be decoded
+	 * @param string $strKey            The variable name
+	 * @param bool   $blnDecodeEntities If true, all entities will be decoded
 	 *
 	 * @return mixed The cleaned variable value
 	 */
@@ -160,8 +160,8 @@ class Input
 	/**
 	 * Return a $_POST variable preserving allowed HTML tags
 	 *
-	 * @param string  $strKey            The variable name
-	 * @param boolean $blnDecodeEntities If true, all entities will be decoded
+	 * @param string $strKey            The variable name
+	 * @param bool   $blnDecodeEntities If true, all entities will be decoded
 	 *
 	 * @return mixed The cleaned variable value
 	 */
@@ -229,8 +229,8 @@ class Input
 	/**
 	 * Return a $_COOKIE variable
 	 *
-	 * @param string  $strKey            The variable name
-	 * @param boolean $blnDecodeEntities If true, all entities will be decoded
+	 * @param string $strKey            The variable name
+	 * @param bool   $blnDecodeEntities If true, all entities will be decoded
 	 *
 	 * @return mixed The cleaned variable value
 	 */
@@ -267,9 +267,9 @@ class Input
 	/**
 	 * Set a $_GET variable
 	 *
-	 * @param string  $strKey       The variable name
-	 * @param mixed   $varValue     The variable value
-	 * @param boolean $blnAddUnused If true, the value usage will be checked
+	 * @param string $strKey       The variable name
+	 * @param mixed  $varValue     The variable value
+	 * @param bool   $blnAddUnused If true, the value usage will be checked
 	 */
 	public static function setGet($strKey, $varValue, $blnAddUnused=false)
 	{
@@ -357,7 +357,7 @@ class Input
 	/**
 	 * Return whether there are unused GET parameters
 	 *
-	 * @return boolean True if there are unused GET parameters
+	 * @return bool True if there are unused GET parameters
 	 */
 	public static function hasUnusedGet()
 	{
@@ -498,8 +498,8 @@ class Input
 	/**
 	 * Clean a value and try to prevent XSS attacks
 	 *
-	 * @param mixed   $varValue      A string or array
-	 * @param boolean $blnStrictMode If true, the function removes also JavaScript event handlers
+	 * @param mixed $varValue      A string or array
+	 * @param bool  $blnStrictMode If true, the function removes also JavaScript event handlers
 	 *
 	 * @return mixed The cleaned string or array
 	 */

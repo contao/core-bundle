@@ -42,7 +42,7 @@ class Versions extends Backend
 
 	/**
 	 * Parent ID
-	 * @var integer
+	 * @var int
 	 */
 	protected $intPid;
 
@@ -56,8 +56,8 @@ class Versions extends Backend
 	/**
 	 * Initialize the object
 	 *
-	 * @param string  $strTable The table name
-	 * @param integer $intPid   The parent ID
+	 * @param string $strTable The table name
+	 * @param int    $intPid   The parent ID
 	 */
 	public function __construct($strTable, $intPid)
 	{
@@ -185,7 +185,7 @@ class Versions extends Backend
 	/**
 	 * Restore a version
 	 *
-	 * @param integer $intVersion The version number
+	 * @param int $intVersion The version number
 	 */
 	public function restore($intVersion)
 	{
@@ -557,8 +557,8 @@ class Versions extends Backend
 	/**
 	 * Implode a multi-dimensional array recursively
 	 *
-	 * @param mixed   $var    The data array
-	 * @param boolean $binary If true, binary data will be converted to UUIDs
+	 * @param mixed $var    The data array
+	 * @param bool  $binary If true, binary data will be converted to UUIDs
 	 *
 	 * @return string The imploded string
 	 */

@@ -44,9 +44,9 @@ class String
 	 * The function preserves words, so the result might be a bit shorter or
 	 * longer than the number of characters given. It strips all tags.
 	 *
-	 * @param string  $strString        The string to shorten
-	 * @param integer $intNumberOfChars The target number of characters
-	 * @param string  $strEllipsis      An optional ellipsis to append to the shortened string
+	 * @param string $strString        The string to shorten
+	 * @param int    $intNumberOfChars The target number of characters
+	 * @param string $strEllipsis      An optional ellipsis to append to the shortened string
 	 *
 	 * @return string The shortened string
 	 */
@@ -106,8 +106,8 @@ class String
 	 * The function preserves words, so the result might be a bit shorter or
 	 * longer than the number of characters given. It preserves allowed tags.
 	 *
-	 * @param string  $strString        The string to shorten
-	 * @param integer $intNumberOfChars The target number of characters
+	 * @param string $strString        The string to shorten
+	 * @param int    $intNumberOfChars The target number of characters
 	 *
 	 * @return string The shortened HTML string
 	 */
@@ -220,9 +220,9 @@ class String
 	/**
 	 * Decode all entities
 	 *
-	 * @param string  $strString     The string to decode
-	 * @param integer $strQuoteStyle The quote style (defaults to ENT_COMPAT)
-	 * @param string  $strCharset    An optional charset
+	 * @param string $strString     The string to decode
+	 * @param int    $strQuoteStyle The quote style (defaults to ENT_COMPAT)
+	 * @param string $strCharset    An optional charset
 	 *
 	 * @return string The decoded string
 	 */
@@ -342,9 +342,9 @@ class String
 	/**
 	 * Wrap words after a particular number of characers
 	 *
-	 * @param string  $strString The string to wrap
-	 * @param integer $strLength The number of characters to wrap after
-	 * @param string  $strBreak  An optional break character
+	 * @param string $strString The string to wrap
+	 * @param int    $strLength The number of characters to wrap after
+	 * @param string $strBreak  An optional break character
 	 *
 	 * @return string The wrapped string
 	 */

@@ -54,12 +54,12 @@ class Image
 	/**
 	 * Resize or crop an image and replace the original with the resized version
 	 *
-	 * @param string  $image  The image path
-	 * @param integer $width  The target width
-	 * @param integer $height The target height
-	 * @param string  $mode   The resize mode
+	 * @param string $image  The image path
+	 * @param int    $width  The target width
+	 * @param int    $height The target height
+	 * @param string $mode   The resize mode
 	 *
-	 * @return boolean True if the image could be resized successfully
+	 * @return bool True if the image could be resized successfully
 	 */
 	public static function resize($image, $width, $height, $mode='')
 	{
@@ -70,12 +70,12 @@ class Image
 	/**
 	 * Resize an image and store the resized version in the assets/images folder
 	 *
-	 * @param string  $image  The image path
-	 * @param integer $width  The target width
-	 * @param integer $height The target height
-	 * @param string  $mode   The resize mode
-	 * @param string  $target An optional target path
-	 * @param boolean $force  Override existing target images
+	 * @param string $image  The image path
+	 * @param int    $width  The target width
+	 * @param int    $height The target height
+	 * @param string $mode   The resize mode
+	 * @param string $target An optional target path
+	 * @param bool   $force  Override existing target images
 	 *
 	 * @return string|null The path of the resized image or null
 	 */

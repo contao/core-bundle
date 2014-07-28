@@ -67,7 +67,7 @@ class Email
 
 	/**
 	 * E-mail priority
-	 * @var integer
+	 * @var int
 	 */
 	protected $intPriority = 3;
 
@@ -103,7 +103,7 @@ class Email
 
 	/**
 	 * Embed images
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnEmbedImages = true;
 
@@ -333,7 +333,7 @@ class Email
 	/**
 	 * Return true if there are failures
 	 *
-	 * @return boolean True if there are failures
+	 * @return bool True if there are failures
 	 */
 	public function hasFailures()
 	{
@@ -420,7 +420,7 @@ class Email
 	 * Friendly name portions (e.g. Admin <admin@example.com>) are allowed. The
 	 * method takes an unlimited number of recipient addresses.
 	 *
-	 * @return boolean True if the e-mail was sent successfully
+	 * @return bool True if the e-mail was sent successfully
 	 */
 	public function sendTo()
 	{

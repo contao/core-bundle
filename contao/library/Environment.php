@@ -294,7 +294,7 @@ class Environment
 	/**
 	 * Return true if the current page was requested via an SSL connection
 	 *
-	 * @return boolean True if SSL is enabled
+	 * @return bool True if SSL is enabled
 	 */
 	protected static function ssl()
 	{
@@ -484,7 +484,7 @@ class Environment
 	/**
 	 * Return true on Ajax requests
 	 *
-	 * @return boolean True if it is an Ajax request
+	 * @return bool True if it is an Ajax request
 	 */
 	protected static function isAjaxRequest()
 	{

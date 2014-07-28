@@ -233,7 +233,7 @@ class BackendUser extends User
 	 * @param string $field The field name
 	 * @param array  $array The name of the array field
 	 *
-	 * @return boolean True if the user has access
+	 * @return bool True if the user has access
 	 */
 	public function hasAccess($field, $array)
 	{
@@ -270,10 +270,10 @@ class BackendUser extends User
 	/**
 	 * Return true if the current user is allowed to execute an operation on a page
 	 *
-	 * @param integer $int The operation number
-	 * @param array   $row The data row
+	 * @param int   $int The operation number
+	 * @param array $row The data row
 	 *
-	 * @return boolean True if the user is allowed to execute the operation
+	 * @return bool True if the user is allowed to execute the operation
 	 */
 	public function isAllowed($int, $row)
 	{
@@ -347,7 +347,7 @@ class BackendUser extends User
 	 *
 	 * @param string $table The table name
 	 *
-	 * @return boolean True if there is an allowed excluded field
+	 * @return bool True if there is an allowed excluded field
 	 */
 	public function canEditFieldsOf($table)
 	{
@@ -495,7 +495,7 @@ class BackendUser extends User
 	/**
 	 * Generate the navigation menu and return it as array
 	 *
-	 * @param boolean $blnShowAll If true, also items in closed groups will be rendered
+	 * @param bool $blnShowAll If true, also items in closed groups will be rendered
 	 *
 	 * @return array The navigation items as array
 	 */

@@ -281,7 +281,7 @@ class Automator extends System
 	/**
 	 * Remove old XML files from the share directory
 	 *
-	 * @param boolean $blnReturn If true, only return the finds and don't delete
+	 * @param bool $blnReturn If true, only return the finds and don't delete
 	 *
 	 * @return array An array of old XML files
 	 */
@@ -334,7 +334,7 @@ class Automator extends System
 	/**
 	 * Generate the Google XML sitemaps
 	 *
-	 * @param integer $intId The root page ID
+	 * @param int $intId The root page ID
 	 */
 	public function generateSitemap($intId=0)
 	{

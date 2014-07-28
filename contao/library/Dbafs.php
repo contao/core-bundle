@@ -40,8 +40,8 @@ class Dbafs
 	/**
 	 * Adds a file or folder with its parent folders
 	 *
-	 * @param string  $strResource      The path to the file or folder
-	 * @param boolean $blnUpdateFolders If true, the parent folders will be updated
+	 * @param string $strResource      The path to the file or folder
+	 * @param bool   $blnUpdateFolders If true, the parent folders will be updated
 	 *
 	 * @return FilesModel The files model
 	 *

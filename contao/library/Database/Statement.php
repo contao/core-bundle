@@ -56,7 +56,7 @@ abstract class Statement
 
 	/**
 	 * Autocommit indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnDisableAutocommit = false;
 
@@ -71,7 +71,7 @@ abstract class Statement
 	 * Validate the connection resource and store the query string
 	 *
 	 * @param resource $resConnection        The connection resource
-	 * @param boolean  $blnDisableAutocommit Optionally disable autocommitting
+	 * @param bool     $blnDisableAutocommit Optionally disable autocommitting
 	 *
 	 * @throws Exception If $resConnection is not a valid resource
 	 */
@@ -217,8 +217,8 @@ abstract class Statement
 	/**
 	 * Handle limit and offset
 	 *
-	 * @param integer $intRows   The maximum number of rows
-	 * @param integer $intOffset The number of rows to skip
+	 * @param int $intRows   The maximum number of rows
+	 * @param int $intOffset The number of rows to skip
 	 *
 	 * @return Statement The statement object
 	 */
@@ -436,8 +436,8 @@ abstract class Statement
 	/**
 	 * Add limit and offset to the query string
 	 *
-	 * @param integer $intRows   The maximum number of rows
-	 * @param integer $intOffset The number of rows to skip
+	 * @param int $intRows   The maximum number of rows
+	 * @param int $intOffset The number of rows to skip
 	 */
 	abstract protected function limit_query($intRows, $intOffset);
 
@@ -461,7 +461,7 @@ abstract class Statement
 	/**
 	 * Return the last insert ID
 	 *
-	 * @return integer The last insert ID
+	 * @return int The last insert ID
 	 */
 	abstract protected function affected_rows();
 
@@ -469,7 +469,7 @@ abstract class Statement
 	/**
 	 * Return the last insert ID
 	 *
-	 * @return integer The last insert ID
+	 * @return int The last insert ID
 	 */
 	abstract protected function insert_id();
 

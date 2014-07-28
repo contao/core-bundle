@@ -57,7 +57,7 @@ abstract class Database
 
 	/**
 	 * Disable autocommit
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnDisableAutocommit = false;
 
@@ -211,9 +211,9 @@ abstract class Database
 	/**
 	 * Auto-generate a FIND_IN_SET() statement
 	 *
-	 * @param string  $strKey     The field name
-	 * @param mixed   $varSet     The set to find the key in
-	 * @param boolean $blnIsField If true, the set will not be quoted
+	 * @param string $strKey     The field name
+	 * @param mixed  $varSet     The set to find the key in
+	 * @param bool   $blnIsField If true, the set will not be quoted
 	 *
 	 * @return string The FIND_IN_SET() statement
 	 */
@@ -231,8 +231,8 @@ abstract class Database
 	/**
 	 * Return all tables of a database as array
 	 *
-	 * @param string  $strDatabase The database name
-	 * @param boolean $blnNoCache  If true, the cache will be bypassed
+	 * @param string $strDatabase The database name
+	 * @param bool   $blnNoCache  If true, the cache will be bypassed
 	 *
 	 * @return array An array of table names
 	 */
@@ -264,11 +264,11 @@ abstract class Database
 	/**
 	 * Determine if a particular database table exists
 	 *
-	 * @param string  $strTable    The table name
-	 * @param string  $strDatabase The optional database name
-	 * @param boolean $blnNoCache  If true, the cache will be bypassed
+	 * @param string $strTable    The table name
+	 * @param string $strDatabase The optional database name
+	 * @param bool   $blnNoCache  If true, the cache will be bypassed
 	 *
-	 * @return boolean True if the table exists
+	 * @return bool True if the table exists
 	 */
 	public function tableExists($strTable, $strDatabase=null, $blnNoCache=false)
 	{
@@ -284,8 +284,8 @@ abstract class Database
 	/**
 	 * Return all columns of a particular table as array
 	 *
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param string $strTable   The table name
+	 * @param bool   $blnNoCache If true, the cache will be bypassed
 	 *
 	 * @return array An array of column names
 	 */
@@ -304,11 +304,11 @@ abstract class Database
 	/**
 	 * Determine if a particular column exists
 	 *
-	 * @param string  $strField   The field name
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param string $strField   The field name
+	 * @param string $strTable   The table name
+	 * @param bool   $blnNoCache If true, the cache will be bypassed
 	 *
-	 * @return boolean True if the field exists
+	 * @return bool True if the field exists
 	 */
 	public function fieldExists($strField, $strTable, $blnNoCache=false)
 	{
@@ -332,11 +332,11 @@ abstract class Database
 	/**
 	 * Determine if a particular index exists
 	 *
-	 * @param string  $strName    The index name
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param string $strName    The index name
+	 * @param string $strTable   The table name
+	 * @param bool   $blnNoCache If true, the cache will be bypassed
 	 *
-	 * @return boolean True if the index exists
+	 * @return bool True if the index exists
 	 */
 	public function indexExists($strName, $strTable, $blnNoCache=false)
 	{
@@ -360,8 +360,8 @@ abstract class Database
 	/**
 	 * Return the field names of a particular table as array
 	 *
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param string $strTable   The table name
+	 * @param bool   $blnNoCache If true, the cache will be bypassed
 	 *
 	 * @return array An array of field names
 	 */
@@ -382,12 +382,12 @@ abstract class Database
 	/**
 	 * Check whether a field value in the database is unique
 	 *
-	 * @param string  $strTable The table name
-	 * @param string  $strField The field name
-	 * @param mixed   $varValue The field value
-	 * @param integer $intId    The ID of a record to exempt
+	 * @param string $strTable The table name
+	 * @param string $strField The field name
+	 * @param mixed  $varValue The field value
+	 * @param int    $intId    The ID of a record to exempt
 	 *
-	 * @return boolean True if the field value is unique
+	 * @return bool True if the field value is unique
 	 */
 	public function isUniqueValue($strTable, $strField, $varValue, $intId=null)
 	{
@@ -411,11 +411,11 @@ abstract class Database
 	 *
 	 * @author Andreas Schempp
 	 *
-	 * @param mixed   $arrParentIds An array of parent IDs
-	 * @param string  $strTable     The table name
-	 * @param boolean $blnSorting   True if the table has a sorting field
-	 * @param array   $arrReturn    The array to be returned
-	 * @param string  $strWhere     Additional WHERE condition
+	 * @param mixed  $arrParentIds An array of parent IDs
+	 * @param string $strTable     The table name
+	 * @param bool   $blnSorting   True if the table has a sorting field
+	 * @param array  $arrReturn    The array to be returned
+	 * @param string $strWhere     Additional WHERE condition
 	 *
 	 * @return array An array of child record IDs
 	 */
@@ -469,8 +469,8 @@ abstract class Database
 	/**
 	 * Return the IDs of all parent records of a particular record
 	 *
-	 * @param integer $intId    The ID of the record
-	 * @param string  $strTable The table name
+	 * @param int    $intId    The ID of the record
+	 * @param string $strTable The table name
 	 *
 	 * @return array An array of parent record IDs
 	 */
@@ -496,7 +496,7 @@ abstract class Database
 	 *
 	 * @param string $strDatabase The name of the target database
 	 *
-	 * @return boolean True if the database was changed successfully
+	 * @return bool True if the database was changed successfully
 	 */
 	public function setDatabase($strDatabase)
 	{
@@ -556,7 +556,7 @@ abstract class Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The table size in bytes
+	 * @return int The table size in bytes
 	 */
 	public function getSizeOf($strTable)
 	{
@@ -569,7 +569,7 @@ abstract class Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The autoincrement ID
+	 * @return int The autoincrement ID
 	 */
 	public function getNextId($strTable)
 	{
@@ -611,9 +611,9 @@ abstract class Database
 	/**
 	 * Auto-generate a FIND_IN_SET() statement
 	 *
-	 * @param string  $strKey     The field name
-	 * @param mixed   $varSet     The set to find the key in
-	 * @param boolean $blnIsField If true, the set will not be quoted
+	 * @param string $strKey     The field name
+	 * @param mixed  $varSet     The set to find the key in
+	 * @param bool   $blnIsField If true, the set will not be quoted
 	 *
 	 * @return string The FIND_IN_SET() statement
 	 */
@@ -647,7 +647,7 @@ abstract class Database
 	 *
 	 * @param string $strDatabase The name of the target database
 	 *
-	 * @return boolean True if the database was changed successfully
+	 * @return bool True if the database was changed successfully
 	 */
 	abstract protected function set_database($strDatabase);
 
@@ -689,7 +689,7 @@ abstract class Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The table size in bytes
+	 * @return int The table size in bytes
 	 */
 	abstract protected function get_size_of($strTable);
 
@@ -699,7 +699,7 @@ abstract class Database
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @return integer The autoincrement ID
+	 * @return int The autoincrement ID
 	 */
 	abstract protected function get_next_id($strTable);
 
@@ -716,7 +716,7 @@ abstract class Database
 	 * Create a Statement object
 	 *
 	 * @param resource $resConnection        The connection ID
-	 * @param boolean  $blnDisableAutocommit If true, autocommitting will be disabled
+	 * @param bool     $blnDisableAutocommit If true, autocommitting will be disabled
 	 *
 	 * @return Statement The Statement object
 	 */

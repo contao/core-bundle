@@ -56,7 +56,7 @@ class Cache
 	 *
 	 * @param string $strKey The cache key
 	 *
-	 * @return boolean True if the key is set
+	 * @return bool True if the key is set
 	 */
 	public static function has($strKey)
 	{
@@ -121,7 +121,7 @@ class Cache
 	 *
 	 * @param string $strKey The cache key
 	 *
-	 * @return boolean True if the key is set
+	 * @return bool True if the key is set
 	 *
 	 * @deprecated Use Cache::has() instead
 	 */

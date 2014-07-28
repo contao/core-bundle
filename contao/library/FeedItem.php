@@ -94,7 +94,7 @@ class FeedItem
 	 *
 	 * @param string $strKey The property name
 	 *
-	 * @return boolean True if the property is set
+	 * @return bool True if the property is set
 	 */
 	public function __isset($strKey)
 	{

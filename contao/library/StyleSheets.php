@@ -38,7 +38,7 @@ class StyleSheets extends Backend
 	/**
 	 * Update a particular style sheet
 	 *
-	 * @param integer $intId The style sheet ID
+	 * @param int $intId The style sheet ID
 	 */
 	public function updateStyleSheet($intId)
 	{
@@ -193,10 +193,10 @@ class StyleSheets extends Backend
 	/**
 	 * Compile format definitions and return them as string
 	 *
-	 * @param array   $row            The data array
-	 * @param boolean $blnWriteToFile If true, the output will be compressed
-	 * @param array   $vars           An array of variables
-	 * @param array   $parent         The style sheet settings
+	 * @param array $row            The data array
+	 * @param bool  $blnWriteToFile If true, the output will be compressed
+	 * @param array $vars           An array of variables
+	 * @param array $parent         The style sheet settings
 	 *
 	 * @return string The compiled format definition
 	 */
@@ -970,9 +970,9 @@ class StyleSheets extends Backend
 	/**
 	 * Compile a color value and return a hex or rgba color
 	 *
-	 * @param mixed   $color          A color string or array
-	 * @param boolean $blnWriteToFile If true, the output will be compressed
-	 * @param array   $vars           An array of variables
+	 * @param mixed $color          A color string or array
+	 * @param bool  $blnWriteToFile If true, the output will be compressed
+	 * @param array $vars           An array of variables
 	 *
 	 * @return string The compiled color
 	 */
@@ -1014,9 +1014,9 @@ class StyleSheets extends Backend
 	/**
 	 * Convert hex colors to rgb
 	 *
-	 * @param mixed   $color          The color string
-	 * @param boolean $blnWriteToFile If true, the output will be compressed
-	 * @param array   $vars           An array of variables
+	 * @param mixed $color          The color string
+	 * @param bool  $blnWriteToFile If true, the output will be compressed
+	 * @param array $vars           An array of variables
 	 *
 	 * @return array An array with the RGB values
 	 *
@@ -2169,7 +2169,7 @@ class StyleSheets extends Backend
 	 * @param string $strImage  The image path
 	 * @param array  $arrParent The style sheet settings
 	 *
-	 * @return string|boolean The data string or false
+	 * @return string|bool The data string or false
 	 */
 	protected function generateBase64Image($strImage, $arrParent)
 	{

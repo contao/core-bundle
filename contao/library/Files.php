@@ -79,7 +79,7 @@ class Files
 	 *
 	 * @param string $strDirectory The directory name
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function mkdir($strDirectory)
 	{
@@ -93,7 +93,7 @@ class Files
 	 *
 	 * @param string $strDirectory The directory name
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function rmdir($strDirectory)
 	{
@@ -105,8 +105,8 @@ class Files
 	/**
 	 * Recursively remove a directory
 	 *
-	 * @param string  $strFolder       The directory name
-	 * @param boolean $blnPreserveRoot If true, the root folder will not be removed
+	 * @param string $strFolder       The directory name
+	 * @param bool   $blnPreserveRoot If true, the root folder will not be removed
 	 */
 	public function rrdir($strFolder, $blnPreserveRoot=false)
 	{
@@ -168,7 +168,7 @@ class Files
 	 *
 	 * @param resource $resFile The file handle
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function fclose($resFile)
 	{
@@ -182,7 +182,7 @@ class Files
 	 * @param string $strOldName The old name
 	 * @param string $strNewName The new name
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function rename($strOldName, $strNewName)
 	{
@@ -217,7 +217,7 @@ class Files
 	 * @param string $strSource      The source file or folder
 	 * @param string $strDestination The new file or folder path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function copy($strSource, $strDestination)
 	{
@@ -329,7 +329,7 @@ class Files
 	 *
 	 * @param string $strFile The file name
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function delete($strFile)
 	{
@@ -344,7 +344,7 @@ class Files
 	 * @param string $strFile The file name
 	 * @param mixed  $varMode The new file mode
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function chmod($strFile, $varMode)
 	{
@@ -358,7 +358,7 @@ class Files
 	 *
 	 * @param string $strFile The file name
 	 *
-	 * @return boolean True if the file is writeable
+	 * @return bool True if the file is writeable
 	 */
 	public function is_writeable($strFile)
 	{
@@ -373,7 +373,7 @@ class Files
 	 * @param string $strSource      The source file
 	 * @param string $strDestination The new file path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function move_uploaded_file($strSource, $strDestination)
 	{

@@ -61,8 +61,8 @@ class Date
 	/**
 	 * Set the object properties
 	 *
-	 * @param integer $strDate   An optional date string
-	 * @param string  $strFormat An optional format string
+	 * @param int    $strDate   An optional date string
+	 * @param string $strFormat An optional format string
 	 */
 	public function __construct($strDate=null, $strFormat=null)
 	{
@@ -183,9 +183,9 @@ class Date
 	/**
 	 * Return the begin of the week as timestamp
 	 *
-	 * @param integer $intStartDay The week start day
+	 * @param int $intStartDay The week start day
 	 *
-	 * @return integer The Unix timestamp
+	 * @return int The Unix timestamp
 	 */
 	public function getWeekBegin($intStartDay=0)
 	{
@@ -203,9 +203,9 @@ class Date
 	/**
 	 * Return the end of the week as timestamp
 	 *
-	 * @param integer $intStartDay The week start day
+	 * @param int $intStartDay The week start day
 	 *
-	 * @return integer The Unix timestamp
+	 * @return int The Unix timestamp
 	 */
 	public function getWeekEnd($intStartDay=0)
 	{
@@ -486,7 +486,7 @@ class Date
 	 *
 	 * @param string $strFormat The PHP format string
 	 *
-	 * @return boolean True if the date format is numeric
+	 * @return bool True if the date format is numeric
 	 */
 	public static function isNumericFormat($strFormat)
 	{
@@ -560,8 +560,8 @@ class Date
 	/**
 	 * Parse a date format string and translate textual representations
 	 *
-	 * @param string  $strFormat The date format string
-	 * @param integer $intTstamp An optional timestamp
+	 * @param string $strFormat The date format string
+	 * @param int    $intTstamp An optional timestamp
 	 *
 	 * @return string The textual representation of the date
 	 */

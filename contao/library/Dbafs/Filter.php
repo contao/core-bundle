@@ -64,7 +64,7 @@ class Filter extends RecursiveFilterIterator
 	/**
 	 * Check whether the current element of the iterator is acceptable
 	 *
-	 * @return boolean True if the element is acceptable
+	 * @return bool True if the element is acceptable
 	 */
 	public function accept()
 	{

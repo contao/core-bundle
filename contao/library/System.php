@@ -113,9 +113,9 @@ abstract class System
 	/**
 	 * Import a library and make it accessible by its name or an optional key
 	 *
-	 * @param string  $strClass The class name
-	 * @param string  $strKey   An optional key to store the object under
-	 * @param boolean $blnForce If true, existing objects will be overridden
+	 * @param string $strClass The class name
+	 * @param string $strKey   An optional key to store the object under
+	 * @param bool   $blnForce If true, existing objects will be overridden
 	 */
 	protected function import($strClass, $strKey=null, $blnForce=false)
 	{
@@ -131,9 +131,9 @@ abstract class System
 	/**
 	 * Import a library in non-object context
 	 *
-	 * @param string  $strClass The class name
-	 * @param string  $strKey   An optional key to store the object under
-	 * @param boolean $blnForce If true, existing objects will be overridden
+	 * @param string $strClass The class name
+	 * @param string $strKey   An optional key to store the object under
+	 * @param bool   $blnForce If true, existing objects will be overridden
 	 *
 	 * @return object The imported object
 	 */
@@ -188,8 +188,8 @@ abstract class System
 	/**
 	 * Return the referer URL and optionally encode ampersands
 	 *
-	 * @param boolean $blnEncodeAmpersands If true, ampersands will be encoded
-	 * @param string  $strTable            An optional table name
+	 * @param bool   $blnEncodeAmpersands If true, ampersands will be encoded
+	 * @param string $strTable            An optional table name
 	 *
 	 * @return string The referer URL
 	 */
@@ -241,9 +241,9 @@ abstract class System
 	/**
 	 * Load a set of language files
 	 *
-	 * @param string  $strName     The table name
-	 * @param boolean $strLanguage An optional language code
-	 * @param boolean $blnNoCache  If true, the cache will be bypassed
+	 * @param string $strName     The table name
+	 * @param bool   $strLanguage An optional language code
+	 * @param bool   $blnNoCache  If true, the cache will be bypassed
 	 */
 	public static function loadLanguageFile($strName, $strLanguage=null, $blnNoCache=false)
 	{
@@ -344,9 +344,9 @@ abstract class System
 	/**
 	 * Check whether a language is installed
 	 *
-	 * @param boolean $strLanguage The language code
+	 * @param bool $strLanguage The language code
 	 *
-	 * @return boolean True if the language is installed
+	 * @return bool True if the language is installed
 	 */
 	public static function isInstalledLanguage($strLanguage)
 	{
@@ -401,7 +401,7 @@ abstract class System
 	/**
 	 * Return the available languages as array
 	 *
-	 * @param boolean $blnInstalledOnly If true, return only installed languages
+	 * @param bool $blnInstalledOnly If true, return only installed languages
 	 *
 	 * @return array An array of languages
 	 */
@@ -491,13 +491,13 @@ abstract class System
 	/**
 	 * Set a cookie
 	 *
-	 * @param string  $strName     The cookie name
-	 * @param mixed   $varValue    The cookie value
-	 * @param integer $intExpires  The expiration date
-	 * @param string  $strPath     An optional path
-	 * @param string  $strDomain   An optional domain name
-	 * @param boolean $blnSecure   If true, the secure flag will be set
-	 * @param boolean $blnHttpOnly If true, the http-only flag will be set
+	 * @param string $strName     The cookie name
+	 * @param mixed  $varValue    The cookie value
+	 * @param int    $intExpires  The expiration date
+	 * @param string $strPath     An optional path
+	 * @param string $strDomain   An optional domain name
+	 * @param bool   $blnSecure   If true, the secure flag will be set
+	 * @param bool   $blnHttpOnly If true, the http-only flag will be set
 	 */
 	public static function setCookie($strName, $varValue, $intExpires, $strPath=null, $strDomain=null, $blnSecure=false, $blnHttpOnly=false)
 	{
@@ -532,8 +532,8 @@ abstract class System
 	/**
 	 * Convert a byte value into a human readable format
 	 *
-	 * @param integer $intSize     The size in bytes
-	 * @param integer $intDecimals The number of decimals to show
+	 * @param int $intSize     The size in bytes
+	 * @param int $intDecimals The number of decimals to show
 	 *
 	 * @return string The human readable size
 	 */
@@ -551,8 +551,8 @@ abstract class System
 	/**
 	 * Format a number
 	 *
-	 * @param mixed   $varNumber   An integer or float number
-	 * @param integer $intDecimals The number of decimals to show
+	 * @param mixed $varNumber   An integer or float number
+	 * @param int   $intDecimals The number of decimals to show
 	 *
 	 * @return mixed The formatted number
 	 */
@@ -726,7 +726,7 @@ abstract class System
 	 *
 	 * @param string $strName The module name
 	 *
-	 * @return boolean True if the module was enabled
+	 * @return bool True if the module was enabled
 	 */
 	public static function enableModule($strName)
 	{
@@ -747,7 +747,7 @@ abstract class System
 	 *
 	 * @param string $strName The module name
 	 *
-	 * @return boolean True if the module was disabled
+	 * @return bool True if the module was disabled
 	 */
 	public static function disableModule($strName)
 	{
@@ -781,8 +781,8 @@ abstract class System
 	/**
 	 * Parse a date format string and translate textual representations
 	 *
-	 * @param string  $strFormat The date format string
-	 * @param integer $intTstamp An optional timestamp
+	 * @param string $strFormat The date format string
+	 * @param int    $intTstamp An optional timestamp
 	 *
 	 * @return string The textual representation of the date
 	 *
@@ -823,8 +823,8 @@ abstract class System
 	/**
 	 * Redirect to another page
 	 *
-	 * @param string  $strLocation The target URL
-	 * @param integer $intStatus   The HTTP status code (defaults to 303)
+	 * @param string $strLocation The target URL
+	 * @param int    $intStatus   The HTTP status code (defaults to 303)
 	 *
 	 * @deprecated Use Controller::redirect() instead
 	 */
@@ -1017,7 +1017,7 @@ abstract class System
 	 *
 	 * @param string $strEmail The e-mail address
 	 *
-	 * @return boolean True if it is a valid e-mail address
+	 * @return bool True if it is a valid e-mail address
 	 *
 	 * @deprecated Use Validator::isEmail() instead
 	 */
@@ -1045,7 +1045,7 @@ abstract class System
 	/**
 	 * Return the request string without the index.php fragment
 	 *
-	 * @param boolean $blnAmpersand If true, ampersands will be encoded
+	 * @param bool $blnAmpersand If true, ampersands will be encoded
 	 *
 	 * @return string The request string
 	 *

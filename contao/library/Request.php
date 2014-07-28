@@ -59,7 +59,7 @@ class Request
 
 	/**
 	 * Response code
-	 * @var integer
+	 * @var int
 	 */
 	protected $intCode;
 
@@ -101,21 +101,21 @@ class Request
 
 	/**
 	 * Follow redirects
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnFollowRedirects = false;
 
 
 	/**
 	 * Number of redirects
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRedirects = 0;
 
 
 	/**
 	 * Maximum number of redirects
-	 * @var integer
+	 * @var int
 	 */
 	protected $intRedirectLimit = 3;
 
@@ -256,7 +256,7 @@ class Request
 	/**
 	 * Return true if there was an error
 	 *
-	 * @return boolean True if there was an error
+	 * @return bool True if there was an error
 	 */
 	public function hasError()
 	{

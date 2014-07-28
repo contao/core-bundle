@@ -46,7 +46,7 @@ class SortedIterator extends SplHeap
 	 * @param mixed $a The first SplFileInfo object
 	 * @param mixed $b The second SplFileInfo object
 	 *
-	 * @return integer Negative value if $b is less than $a, positive value if $b is greater than $a or 0 if they are equal
+	 * @return int Negative value if $b is less than $a, positive value if $b is greater than $a or 0 if they are equal
 	 */
 	public function compare($a, $b)
 	{

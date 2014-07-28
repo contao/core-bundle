@@ -47,7 +47,7 @@ abstract class Widget extends View
 
 	/**
 	 * Id
-	 * @var integer
+	 * @var int
 	 */
 	protected $strId;
 
@@ -107,13 +107,13 @@ abstract class Widget extends View
 
 	/**
 	 * Submit indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSubmitInput = false;
 
 	/**
 	 * For attribute indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnForAttribute = false;
 
@@ -454,7 +454,7 @@ abstract class Widget extends View
 	/**
 	 * Return true if the widget has errors
 	 *
-	 * @return boolean True if there are errors
+	 * @return bool True if there are errors
 	 */
 	public function hasErrors()
 	{
@@ -476,7 +476,7 @@ abstract class Widget extends View
 	/**
 	 * Return a particular error as string
 	 *
-	 * @param integer $intIndex The message index
+	 * @param int $intIndex The message index
 	 *
 	 * @return string The corresponding error message
 	 */
@@ -507,7 +507,7 @@ abstract class Widget extends View
 	/**
 	 * Return a particular error as HTML string
 	 *
-	 * @param integer $intIndex The message index
+	 * @param int $intIndex The message index
 	 *
 	 * @return string The HTML markup of the corresponding error message
 	 */
@@ -520,7 +520,7 @@ abstract class Widget extends View
 	/**
 	 * Return true if the widgets submits user input
 	 *
-	 * @return boolean True if the widget submits user input
+	 * @return bool True if the widget submits user input
 	 */
 	public function submitInput()
 	{
@@ -599,7 +599,7 @@ abstract class Widget extends View
 	/**
 	 * Generate the widget with error message and return it as string
 	 *
-	 * @param boolean $blnSwitchOrder If true, the error message will be shown below the field
+	 * @param bool $blnSwitchOrder If true, the error message will be shown below the field
 	 *
 	 * @return string The form field markup
 	 */
@@ -1128,7 +1128,7 @@ abstract class Widget extends View
 	 *
 	 * @param mixed $varInput The input string or array
 	 *
-	 * @return boolean True if the selected option exists
+	 * @return bool True if the selected option exists
 	 */
 	protected function isValidOption($varInput)
 	{
@@ -1325,7 +1325,7 @@ abstract class Widget extends View
 	/**
 	 * Return the empty value based on the SQL string
 	 *
-	 * @return string|integer|null The empty value
+	 * @return string|int|null The empty value
 	 */
 	public function getEmptyValue()
 	{
@@ -1343,7 +1343,7 @@ abstract class Widget extends View
 	 *
 	 * @param string $sql The SQL string
 	 *
-	 * @return string|integer|null The empty value
+	 * @return string|int|null The empty value
 	 */
 	public static function getEmptyValueByFieldType($sql)
 	{

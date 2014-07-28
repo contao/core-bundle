@@ -52,13 +52,13 @@ class Config
 
 	/**
 	 * Modification indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnIsModified = false;
 
 	/**
 	 * Local file existance
-	 * @var boolean
+	 * @var bool
 	 */
 	protected static $blnHasLcf;
 
@@ -303,7 +303,7 @@ class Config
 	/**
 	 * Return true if the installation is completed
 	 *
-	 * @return boolean True if the local configuration file exists
+	 * @return bool True if the local configuration file exists
 	 */
 	public function isComplete()
 	{
@@ -364,7 +364,7 @@ class Config
 	 *
 	 * @param string $strKey The short key (e.g. "displayErrors")
 	 *
-	 * @return boolean True if the configuration value exists
+	 * @return bool True if the configuration value exists
 	 */
 	public static function has($strKey)
 	{

@@ -51,7 +51,7 @@ class Search
 	 *
 	 * @param array $arrData The data array
 	 *
-	 * @return boolean True if a new record was created
+	 * @return bool True if a new record was created
 	 */
 	public static function indexPage($arrData)
 	{
@@ -306,12 +306,12 @@ class Search
 	/**
 	 * Search the index and return the result object
 	 *
-	 * @param string  $strKeywords The keyword string
-	 * @param boolean $blnOrSearch If true, the result can contain any keyword
-	 * @param array   $arrPid      An optional array of page IDs to limit the result to
-	 * @param integer $intRows     An optional maximum number of result rows
-	 * @param integer $intOffset   An optional result offset
-	 * @param boolean $blnFuzzy    If true, the search will be fuzzy
+	 * @param string $strKeywords The keyword string
+	 * @param bool   $blnOrSearch If true, the result can contain any keyword
+	 * @param array  $arrPid      An optional array of page IDs to limit the result to
+	 * @param int    $intRows     An optional maximum number of result rows
+	 * @param int    $intOffset   An optional result offset
+	 * @param bool   $blnFuzzy    If true, the search will be fuzzy
 	 *
 	 * @return Database\Result The database result object
 	 *

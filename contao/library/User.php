@@ -45,7 +45,7 @@ abstract class User extends System
 
 	/**
 	 * User ID
-	 * @var integer
+	 * @var int
 	 */
 	protected $intId;
 
@@ -131,7 +131,7 @@ abstract class User extends System
 	 *
 	 * @param string $strKey The property name
 	 *
-	 * @return boolean True if the property is set
+	 * @return bool True if the property is set
 	 */
 	public function __isset($strKey)
 	{
@@ -168,7 +168,7 @@ abstract class User extends System
 	/**
 	 * Authenticate a user
 	 *
-	 * @return boolean True if the user could be authenticated
+	 * @return bool True if the user could be authenticated
 	 */
 	public function authenticate()
 	{
@@ -220,7 +220,7 @@ abstract class User extends System
 	/**
 	 * Try to login the current user
 	 *
-	 * @return boolean True if the user could be logged in
+	 * @return bool True if the user could be logged in
 	 */
 	public function login()
 	{
@@ -374,7 +374,7 @@ abstract class User extends System
 	/**
 	 * Check the account status and return true if it is active
 	 *
-	 * @return boolean True if the account is active
+	 * @return bool True if the account is active
 	 */
 	protected function checkAccountStatus()
 	{
@@ -431,7 +431,7 @@ abstract class User extends System
 	 * @param string $strColumn The field name
 	 * @param mixed  $varValue  The field value
 	 *
-	 * @return boolean True if the user was found
+	 * @return bool True if the user was found
 	 */
 	public function findBy($strColumn, $varValue)
 	{
@@ -489,7 +489,7 @@ abstract class User extends System
 	/**
 	 * Remove the authentication cookie and destroy the current session
 	 *
-	 * @return boolean True if the user could be logged out
+	 * @return bool True if the user could be logged out
 	 */
 	public function logout()
 	{
@@ -558,9 +558,9 @@ abstract class User extends System
 	/**
 	 * Return true if the user is member of a particular group
 	 *
-	 * @param integer $id The group ID
+	 * @param int $id The group ID
 	 *
-	 * @return boolean True if the user is a member of the group
+	 * @return bool True if the user is a member of the group
 	 */
 	public function isMemberOf($id)
 	{

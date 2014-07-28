@@ -51,7 +51,7 @@ class Result extends AbstractResult
 	/**
 	 * Return the number of rows in the result set
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	protected function num_rows()
 	{
@@ -62,7 +62,7 @@ class Result extends AbstractResult
 	/**
 	 * Return the number of fields of the result set
 	 *
-	 * @return integer The number of fields
+	 * @return int The number of fields
 	 */
 	protected function num_fields()
 	{
@@ -73,7 +73,7 @@ class Result extends AbstractResult
 	/**
 	 * Get the column information and return it as array
 	 *
-	 * @param integer $intOffset The field offset
+	 * @param int $intOffset The field offset
 	 *
 	 * @return array An array with the column information
 	 */
@@ -86,7 +86,7 @@ class Result extends AbstractResult
 	/**
 	 * Navigate to a certain row in the result set
 	 *
-	 * @param integer $intIndex The row index
+	 * @param int $intIndex The row index
 	 *
 	 * @throws OutOfBoundsException If $intIndex is out of bounds
 	 */

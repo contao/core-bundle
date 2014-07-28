@@ -51,7 +51,7 @@ class Folder extends System
 
 	/**
 	 * Synchronize the database
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnSyncDb = false;
 
@@ -167,7 +167,7 @@ class Folder extends System
 	/**
 	 * Return true if the folder is empty
 	 *
-	 * @return boolean True if the folder is empty
+	 * @return bool True if the folder is empty
 	 */
 	public function isEmpty()
 	{
@@ -231,7 +231,7 @@ class Folder extends System
 	 *
 	 * @param string $intChmod The CHMOD settings
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function chmod($intChmod)
 	{
@@ -244,7 +244,7 @@ class Folder extends System
 	 *
 	 * @param string $strNewName The new path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function renameTo($strNewName)
 	{
@@ -279,7 +279,7 @@ class Folder extends System
 	 *
 	 * @param string $strNewName The target path
 	 *
-	 * @return boolean True if the operation was successful
+	 * @return bool True if the operation was successful
 	 */
 	public function copyTo($strNewName)
 	{
@@ -372,7 +372,7 @@ class Folder extends System
 	/**
 	 * Return the size of the folder
 	 *
-	 * @return integer The folder size in bytes
+	 * @return int The folder size in bytes
 	 */
 	protected function getSize()
 	{

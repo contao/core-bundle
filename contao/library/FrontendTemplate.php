@@ -59,7 +59,7 @@ class FrontendTemplate extends Template
 	/**
 	 * Parse the template file, replace insert tags and print it to the screen
 	 *
-	 * @param boolean $blnCheckRequest If true, check for unsued $_GET parameters
+	 * @param bool $blnCheckRequest If true, check for unsued $_GET parameters
 	 *
 	 * @throws UnusedArgumentsException If there are unused $_GET parameters
 	 */
@@ -173,9 +173,9 @@ class FrontendTemplate extends Template
 	/**
 	 * Point to `Frontend::addToUrl()` in front end templates (see #6736)
 	 *
-	 * @param string  $strRequest      The request string to be added
-	 * @param boolean $blnIgnoreParams If true, the $_GET parameters will be ignored
-	 * @param array   $arrUnset        An optional array of keys to unset
+	 * @param string $strRequest      The request string to be added
+	 * @param bool   $blnIgnoreParams If true, the $_GET parameters will be ignored
+	 * @param array  $arrUnset        An optional array of keys to unset
 	 *
 	 * @return string The new URI string
 	 */

@@ -63,7 +63,7 @@ class DcaLoader extends Controller
 	/**
 	 * Load a set of DCA files
 	 *
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param bool $blnNoCache If true, the cache will be bypassed
 	 */
 	public function load($blnNoCache=false)
 	{

@@ -81,7 +81,7 @@ class ZipWriter
 
 	/**
 	 * File count
-	 * @var integer
+	 * @var int
 	 */
 	protected $intCount = 0;
 
@@ -156,9 +156,9 @@ class ZipWriter
 	/**
 	 * Add a file from a string to the archive
 	 *
-	 * @param string  $strData The data to be added
-	 * @param string  $strName The file path
-	 * @param integer $intTime An optional modification timestamp
+	 * @param string $strData The data to be added
+	 * @param string $strName The file path
+	 * @param int    $intTime An optional modification timestamp
 	 */
 	public function addString($strData, $strName, $intTime=0)
 	{
@@ -269,9 +269,9 @@ class ZipWriter
 	/**
 	 * Convert a Unix timestamp to a hexadecimal value
 	 *
-	 * @param integer $intTime The Unix timestamp
+	 * @param int $intTime The Unix timestamp
 	 *
-	 * @return integer The hexadecimal value
+	 * @return int The hexadecimal value
 	 */
 	protected function unixToHex($intTime=0)
 	{

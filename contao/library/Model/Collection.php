@@ -43,7 +43,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 
 	/**
 	 * Current index
-	 * @var integer
+	 * @var int
 	 */
 	protected $intIndex = -1;
 
@@ -124,7 +124,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 *
 	 * @param string $strKey The property name
 	 *
-	 * @return boolean True if the property is set
+	 * @return bool True if the property is set
 	 */
 	public function __isset($strKey)
 	{
@@ -224,7 +224,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Delete the current model and return the number of affected rows
 	 *
-	 * @return integer The number of affected rows
+	 * @return int The number of affected rows
 	 */
 	public function delete()
 	{
@@ -269,7 +269,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Return the number of rows in the result set
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	public function count()
 	{
@@ -325,7 +325,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Go to the next row
 	 *
-	 * @return Collection|boolean The model collection object or false if there is no next row
+	 * @return Collection|bool The model collection object or false if there is no next row
 	 */
 	public function next()
 	{
@@ -415,9 +415,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Check whether an offset exists
 	 *
-	 * @param integer $offset The offset
+	 * @param int $offset The offset
 	 *
-	 * @return boolean True if the offset exists
+	 * @return bool True if the offset exists
 	 */
 	public function offsetExists($offset)
 	{
@@ -428,7 +428,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Retrieve a particular offset
 	 *
-	 * @param integer $offset The offset
+	 * @param int $offset The offset
 	 *
 	 * @return Model|null The model or null
 	 */
@@ -441,8 +441,8 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Set a particular offset
 	 *
-	 * @param integer $offset The offset
-	 * @param mixed   $value  The value to set
+	 * @param int   $offset The offset
+	 * @param mixed $value  The value to set
 	 *
 	 * @throws RuntimeException The collection is immutable
 	 */
@@ -455,7 +455,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	/**
 	 * Unset a particular offset
 	 *
-	 * @param integer $offset The offset
+	 * @param int $offset The offset
 	 *
 	 * @throws RuntimeException The collection is immutable
 	 */

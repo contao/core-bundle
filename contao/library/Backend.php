@@ -226,9 +226,9 @@ abstract class Backend extends Controller
 	/**
 	 * Add a request string to the current URL
 	 *
-	 * @param string  $strRequest The string to be added
-	 * @param boolean $blnAddRef  Add the referer ID
-	 * @param array   $arrUnset   An optional array of keys to unset
+	 * @param string $strRequest The string to be added
+	 * @param bool   $blnAddRef  Add the referer ID
+	 * @param array  $arrUnset   An optional array of keys to unset
 	 *
 	 * @return string The new URL
 	 */
@@ -588,10 +588,10 @@ abstract class Backend extends Controller
 	/**
 	 * Get all searchable pages and return them as array
 	 *
-	 * @param integer $pid          The parent ID
-	 * @param string  $domain       An optional domain name
-	 * @param boolean $blnIsSitemap If true, the sitemap options will be considered
-	 * @param string  $strLanguage  An optional language code
+	 * @param int    $pid          The parent ID
+	 * @param string $domain       An optional domain name
+	 * @param bool   $blnIsSitemap If true, the sitemap options will be considered
+	 * @param string $strLanguage  An optional language code
 	 *
 	 * @return array The pages array
 	 */
@@ -775,8 +775,8 @@ abstract class Backend extends Controller
 	 * @param string        $label          The label
 	 * @param DataContainer $dc             An optional data container object
 	 * @param string        $imageAttribute An optional image attribute string
-	 * @param boolean       $blnReturnImage If true, only the image tag will be returned
-	 * @param boolean       $blnProtected   If true, the page will be treated as protected page
+	 * @param bool          $blnReturnImage If true, only the image tag will be returned
+	 * @param bool          $blnProtected   If true, the page will be treated as protected page
 	 *
 	 * @return string The image markup
 	 */
@@ -948,8 +948,8 @@ abstract class Backend extends Controller
 	/**
 	 * Recursively get all allowed pages and return them as string
 	 *
-	 * @param integer $intId The parent ID
-	 * @param integer $level The nesting level
+	 * @param int $intId The parent ID
+	 * @param int $level The nesting level
 	 *
 	 * @return string The HTML markup
 	 */
@@ -994,8 +994,8 @@ abstract class Backend extends Controller
 	/**
 	 * Get all allowed files and return them as string
 	 *
-	 * @param string  $strFilter An optional list of file extensions
-	 * @param boolean $filemount A custom file mount
+	 * @param string $strFilter An optional list of file extensions
+	 * @param bool   $filemount A custom file mount
 	 *
 	 * @return string The HTML markup
 	 */
@@ -1042,9 +1042,9 @@ abstract class Backend extends Controller
 	/**
 	 * Recursively get all allowed files and return them as string
 	 *
-	 * @param integer $strFolder The parent folder
-	 * @param integer $level     The nesting level
-	 * @param string  $strFilter An optional list of file extensions
+	 * @param int    $strFolder The parent folder
+	 * @param int    $level     The nesting level
+	 * @param string $strFilter An optional list of file extensions
 	 *
 	 * @return string The HTML markup
 	 */

@@ -187,7 +187,7 @@ class Combiner extends System
 	/**
 	 * Check whether files have been added
 	 *
-	 * @return boolean True if there are files
+	 * @return bool True if there are files
 	 */
 	public function hasEntries()
 	{

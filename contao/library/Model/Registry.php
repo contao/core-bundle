@@ -80,7 +80,7 @@ class Registry implements Countable
 	/**
 	 * Count the elements
 	 *
-	 * @return integer The number of models
+	 * @return int The number of models
 	 */
 	public function count()
 	{
@@ -91,8 +91,8 @@ class Registry implements Countable
 	/**
 	 * Fetch a model by table name and primary key
 	 *
-	 * @param string  $strTable The table name
-	 * @param integer $intPk    The primary key
+	 * @param string $strTable The table name
+	 * @param int    $intPk    The primary key
 	 *
 	 * @return Model|null The model or null
 	 */
@@ -174,7 +174,7 @@ class Registry implements Countable
 	 *
 	 * @param Model $objModel The model object
 	 *
-	 * @return boolean True if the model is registered
+	 * @return bool True if the model is registered
 	 */
 	public function isRegistered(Model $objModel)
 	{

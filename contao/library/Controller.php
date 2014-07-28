@@ -334,12 +334,12 @@ abstract class Controller extends System
 	/**
 	 * Generate an article and return it as string
 	 *
-	 * @param mixed   $varId          The article ID or a Model object
-	 * @param boolean $blnMultiMode   If true, only teasers will be shown
-	 * @param boolean $blnIsInsertTag If true, there will be no page relation
-	 * @param string  $strColumn      The name of the column
+	 * @param mixed  $varId          The article ID or a Model object
+	 * @param bool   $blnMultiMode   If true, only teasers will be shown
+	 * @param bool   $blnIsInsertTag If true, there will be no page relation
+	 * @param string $strColumn      The name of the column
 	 *
-	 * @return string|boolean The article HTML markup or false
+	 * @return string|bool The article HTML markup or false
 	 */
 	public static function getArticle($varId, $blnMultiMode=false, $blnIsInsertTag=false, $strColumn='main')
 	{
@@ -608,7 +608,7 @@ abstract class Controller extends System
 	 *
 	 * @param Model $objElement The element model
 	 *
-	 * @return boolean True if the element is visible
+	 * @return bool True if the element is visible
 	 */
 	public static function isVisibleElement(Model $objElement)
 	{
@@ -660,8 +660,8 @@ abstract class Controller extends System
 	/**
 	 * Replace insert tags with their values
 	 *
-	 * @param string  $strBuffer The text with the tags to be replaced
-	 * @param boolean $blnCache  If false, non-cacheable tags will be replaced
+	 * @param string $strBuffer The text with the tags to be replaced
+	 * @param bool   $blnCache  If false, non-cacheable tags will be replaced
 	 *
 	 * @return string The text with the replaced tags
 	 */
@@ -1964,9 +1964,9 @@ abstract class Controller extends System
 	/**
 	 * Add a request string to the current URL
 	 *
-	 * @param string  $strRequest The string to be added
-	 * @param boolean $blnAddRef  Add the referer ID
-	 * @param array   $arrUnset   An optional array of keys to unset
+	 * @param string $strRequest The string to be added
+	 * @param bool   $blnAddRef  Add the referer ID
+	 * @param array  $arrUnset   An optional array of keys to unset
 	 *
 	 * @return string The new URL
 	 */
@@ -2034,8 +2034,8 @@ abstract class Controller extends System
 	/**
 	 * Redirect to another page
 	 *
-	 * @param string  $strLocation The target URL
-	 * @param integer $intStatus   The HTTP status code (defaults to 303)
+	 * @param string $strLocation The target URL
+	 * @param int    $intStatus   The HTTP status code (defaults to 303)
 	 */
 	public static function redirect($strLocation, $intStatus=303)
 	{
@@ -2090,10 +2090,10 @@ abstract class Controller extends System
 	/**
 	 * Generate an URL depending on the current rewriteURL setting
 	 *
-	 * @param array   $arrRow       An array of page parameters
-	 * @param string  $strParams    An optional string of URL parameters
-	 * @param string  $strForceLang Force a certain language
-	 * @param boolean $blnFixDomain Check the domain of the target page and append it if necessary
+	 * @param array  $arrRow       An array of page parameters
+	 * @param string $strParams    An optional string of URL parameters
+	 * @param string $strForceLang Force a certain language
+	 * @param bool   $blnFixDomain Check the domain of the target page and append it if necessary
 	 *
 	 * @return string An URL that can be used in the front end
 	 */
@@ -2169,9 +2169,9 @@ abstract class Controller extends System
 	/**
 	 * Convert relative URLs in href and src attributes to absolute URLs
 	 *
-	 * @param string  $strContent  The text with the URLs to be converted
-	 * @param string  $strBase     An optional base URL
-	 * @param boolean $blnHrefOnly If true, only href attributes will be converted
+	 * @param string $strContent  The text with the URLs to be converted
+	 * @param string $strBase     An optional base URL
+	 * @param bool   $blnHrefOnly If true, only href attributes will be converted
 	 *
 	 * @return string The text with the replaced URLs
 	 */
@@ -2265,8 +2265,8 @@ abstract class Controller extends System
 	/**
 	 * Load a set of DCA files
 	 *
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnNoCache If true, the cache will be bypassed
+	 * @param string $strTable   The table name
+	 * @param bool   $blnNoCache If true, the cache will be bypassed
 	 */
 	public static function loadDataContainer($strTable, $blnNoCache=false)
 	{
@@ -2278,9 +2278,9 @@ abstract class Controller extends System
 	/**
 	 * Redirect to a front end page
 	 *
-	 * @param integer $intPage    The page ID
-	 * @param mixed   $varArticle An optional article alias
-	 * @param boolean $blnReturn  If true, return the URL and don't redirect
+	 * @param int   $intPage    The page ID
+	 * @param mixed $varArticle An optional article alias
+	 * @param bool  $blnReturn  If true, return the URL and don't redirect
 	 *
 	 * @return string The URL of the target page
 	 */
@@ -2319,8 +2319,8 @@ abstract class Controller extends System
 	 * Get the parent records of an entry and return them as string which can
 	 * be used in a log message
 	 *
-	 * @param string  $strTable The table name
-	 * @param integer $intId    The record ID
+	 * @param string $strTable The table name
+	 * @param int    $intId    The record ID
 	 *
 	 * @return string A string that can be used in a log message
 	 */
@@ -2395,9 +2395,9 @@ abstract class Controller extends System
 	/**
 	 * Take an array of pages and eliminate the nested ones
 	 *
-	 * @param array   $arrPages   The array of page IDs
-	 * @param string  $strTable   The table name
-	 * @param boolean $blnSorting True if the table has a sorting field
+	 * @param array  $arrPages   The array of page IDs
+	 * @param string $strTable   The table name
+	 * @param bool   $blnSorting True if the table has a sorting field
 	 *
 	 * @return array The page IDs array without the nested IDs
 	 */
@@ -2424,10 +2424,10 @@ abstract class Controller extends System
 	/**
 	 * Add an image to a template
 	 *
-	 * @param object  $objTemplate   The template object to add the image to
-	 * @param array   $arrItem       The element or module as array
-	 * @param integer $intMaxWidth   An optional maximum width of the image
-	 * @param string  $strLightboxId An optional lightbox ID
+	 * @param object $objTemplate   The template object to add the image to
+	 * @param array  $arrItem       The element or module as array
+	 * @param int    $intMaxWidth   An optional maximum width of the image
+	 * @param string $strLightboxId An optional lightbox ID
 	 */
 	public static function addImageToTemplate($objTemplate, $arrItem, $intMaxWidth=null, $strLightboxId=null)
 	{
@@ -2792,7 +2792,7 @@ abstract class Controller extends System
 	/**
 	 * Remove old XML files from the share directory
 	 *
-	 * @param boolean $blnReturn If true, only return the finds and don't delete
+	 * @param bool $blnReturn If true, only return the finds and don't delete
 	 *
 	 * @return array An array of old XML files
 	 *
@@ -2810,7 +2810,7 @@ abstract class Controller extends System
 	 *
 	 * @param string $strClass The class name
 	 *
-	 * @return boolean True if the class exists
+	 * @return bool True if the class exists
 	 *
 	 * @deprecated Use the PHP function class_exists() instead
 	 */
@@ -2838,12 +2838,12 @@ abstract class Controller extends System
 	/**
 	 * Resize an image and crop it if necessary
 	 *
-	 * @param string  $image  The image path
-	 * @param integer $width  The target width
-	 * @param integer $height The target height
-	 * @param string  $mode   An optional resize mode
+	 * @param string $image  The image path
+	 * @param int    $width  The target width
+	 * @param int    $height The target height
+	 * @param string $mode   An optional resize mode
 	 *
-	 * @return boolean True if the image has been resized correctly
+	 * @return bool True if the image has been resized correctly
 	 *
 	 * @deprecated Use Image::resize() instead
 	 */
@@ -2856,12 +2856,12 @@ abstract class Controller extends System
 	/**
 	 * Resize an image and crop it if necessary
 	 *
-	 * @param string  $image  The image path
-	 * @param integer $width  The target width
-	 * @param integer $height The target height
-	 * @param string  $mode   An optional resize mode
-	 * @param string  $target An optional target to be replaced
-	 * @param boolean $force  Override existing target images
+	 * @param string $image  The image path
+	 * @param int    $width  The target width
+	 * @param int    $height The target height
+	 * @param string $mode   An optional resize mode
+	 * @param string $target An optional target to be replaced
+	 * @param bool   $force  Override existing target images
 	 *
 	 * @return string|null The image path or null
 	 *
@@ -2893,7 +2893,7 @@ abstract class Controller extends System
 	/**
 	 * Return true for backwards compatibility (see #3218)
 	 *
-	 * @return boolean
+	 * @return bool
 	 *
 	 * @deprecated Specify 'datepicker'=>true in your DCA file instead
 	 */
@@ -2956,11 +2956,11 @@ abstract class Controller extends System
 	 *
 	 * @author Andreas Schempp
 	 *
-	 * @param mixed   $arrParentIds An array of parent IDs
-	 * @param string  $strTable     The table name
-	 * @param boolean $blnSorting   True if the table has a sorting field
-	 * @param array   $arrReturn    The array to be returned
-	 * @param string  $strWhere     Additional WHERE condition
+	 * @param mixed  $arrParentIds An array of parent IDs
+	 * @param string $strTable     The table name
+	 * @param bool   $blnSorting   True if the table has a sorting field
+	 * @param array  $arrReturn    The array to be returned
+	 * @param string $strWhere     Additional WHERE condition
 	 *
 	 * @return array An array of child record IDs
 	 *
@@ -2975,8 +2975,8 @@ abstract class Controller extends System
 	/**
 	 * Return the IDs of all parent records of a particular record
 	 *
-	 * @param integer $intId    The ID of the record
-	 * @param string  $strTable The table name
+	 * @param int    $intId    The ID of the record
+	 * @param string $strTable The table name
 	 *
 	 * @return array An array of parent record IDs
 	 *
@@ -3080,8 +3080,8 @@ abstract class Controller extends System
 	/**
 	 * Create an initial version of a record
 	 *
-	 * @param string  $strTable The table name
-	 * @param integer $intId    The ID of the element to be versioned
+	 * @param string $strTable The table name
+	 * @param int    $intId    The ID of the element to be versioned
 	 *
 	 * @deprecated Use Versions->initialize() instead
 	 */
@@ -3095,8 +3095,8 @@ abstract class Controller extends System
 	/**
 	 * Create a new version of a record
 	 *
-	 * @param string  $strTable The table name
-	 * @param integer $intId    The ID of the element to be versioned
+	 * @param string $strTable The table name
+	 * @param int    $intId    The ID of the element to be versioned
 	 *
 	 * @deprecated Use Versions->create() instead
 	 */

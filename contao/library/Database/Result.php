@@ -51,19 +51,19 @@ abstract class Result
 
 	/**
 	 * Current row index
-	 * @var integer
+	 * @var int
 	 */
 	private $intIndex = -1;
 
 	/**
 	 * End indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	private $blnDone = false;
 
 	/**
 	 * Modification indicator
-	 * @var boolean
+	 * @var bool
 	 */
 	private $blnModified = false;
 
@@ -126,7 +126,7 @@ abstract class Result
 	 *
 	 * @param mixed $strKey The field name
 	 *
-	 * @return boolean True if the field exists
+	 * @return bool True if the field exists
 	 */
 	public function __isset($strKey)
 	{
@@ -277,7 +277,7 @@ abstract class Result
 	/**
 	 * Get the column information and return it as array
 	 *
-	 * @param integer $intOffset The field offset
+	 * @param int $intOffset The field offset
 	 *
 	 * @return array An array with the column information
 	 */
@@ -297,7 +297,7 @@ abstract class Result
 	/**
 	 * Go to the first row of the current result
 	 *
-	 * @return Result|boolean The result object or false if there is no first row
+	 * @return Result|bool The result object or false if there is no first row
 	 */
 	public function first()
 	{
@@ -319,7 +319,7 @@ abstract class Result
 	/**
 	 * Go to the previous row of the current result
 	 *
-	 * @return Result|boolean The result object or false if there is no previous row
+	 * @return Result|bool The result object or false if there is no previous row
 	 */
 	public function prev()
 	{
@@ -346,7 +346,7 @@ abstract class Result
 	/**
 	 * Go to the next row of the current result
 	 *
-	 * @return Result|boolean The result object or false if there is no next row
+	 * @return Result|bool The result object or false if there is no next row
 	 */
 	public function next()
 	{
@@ -371,7 +371,7 @@ abstract class Result
 	/**
 	 * Go to the last row of the current result
 	 *
-	 * @return Result|boolean The result object or false if there is no last row
+	 * @return Result|bool The result object or false if there is no last row
 	 */
 	public function last()
 	{
@@ -393,7 +393,7 @@ abstract class Result
 	/**
 	 * Return the number of rows in the result set
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	public function count()
 	{
@@ -404,7 +404,7 @@ abstract class Result
 	/**
 	 * Return the current row as associative array
 	 *
-	 * @param boolean $blnEnumerated If true, an enumerated array will be returned
+	 * @param bool $blnEnumerated If true, an enumerated array will be returned
 	 *
 	 * @return array The row as array
 	 */
@@ -454,7 +454,7 @@ abstract class Result
 	/**
 	 * Return the number of rows in the result set
 	 *
-	 * @return integer The number of rows
+	 * @return int The number of rows
 	 */
 	abstract protected function num_rows();
 
@@ -462,7 +462,7 @@ abstract class Result
 	/**
 	 * Return the number of fields of the result set
 	 *
-	 * @return integer The number of fields
+	 * @return int The number of fields
 	 */
 	abstract protected function num_fields();
 
@@ -470,7 +470,7 @@ abstract class Result
 	/**
 	 * Get the column information and return it as array
 	 *
-	 * @param integer $intOffset The field offset
+	 * @param int $intOffset The field offset
 	 *
 	 * @return array An array with the column information
 	 */
@@ -480,7 +480,7 @@ abstract class Result
 	/**
 	 * Navigate to a certain row in the result set
 	 *
-	 * @param integer $intIndex The row index
+	 * @param int $intIndex The row index
 	 *
 	 * @throws OutOfBoundsException If $intIndex is out of bounds
 	 */

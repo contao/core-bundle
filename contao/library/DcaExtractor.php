@@ -89,7 +89,7 @@ class DcaExtractor extends Controller
 
 	/**
 	 * Database table
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnIsDbTable = false;
 
@@ -139,7 +139,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if there is meta data
 	 *
-	 * @return boolean True if there is meta data
+	 * @return bool True if there is meta data
 	 */
 	public function hasMeta()
 	{
@@ -161,7 +161,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if there are fields
 	 *
-	 * @return boolean True if there are fields
+	 * @return bool True if there are fields
 	 */
 	public function hasFields()
 	{
@@ -183,7 +183,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if there are order fields
 	 *
-	 * @return boolean True if there are order fields
+	 * @return bool True if there are order fields
 	 */
 	public function hasOrderFields()
 	{
@@ -205,7 +205,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if there are keys
 	 *
-	 * @return boolean True if there are keys
+	 * @return bool True if there are keys
 	 */
 	public function hasKeys()
 	{
@@ -227,7 +227,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if there are relations
 	 *
-	 * @return boolean True if there are relations
+	 * @return bool True if there are relations
 	 */
 	public function hasRelations()
 	{
@@ -238,7 +238,7 @@ class DcaExtractor extends Controller
 	/**
 	 * Return true if the extract relates to a database table
 	 *
-	 * @return boolean True if the extract relates to a database table
+	 * @return bool True if the extract relates to a database table
 	 */
 	public function isDbTable()
 	{

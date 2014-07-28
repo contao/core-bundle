@@ -205,7 +205,7 @@ class Encryption
 	 *
 	 * @param string $strHash The password hash
 	 *
-	 * @return boolean True if the password hash has been generated with crypt()
+	 * @return bool True if the password hash has been generated with crypt()
 	 */
 	public static function test($strHash)
 	{

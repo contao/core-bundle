@@ -54,13 +54,13 @@ abstract class Model
 
 	/**
 	 * Insert flag
-	 * @var integer
+	 * @var int
 	 */
 	const INSERT = 1;
 
 	/**
 	 * Update flag
-	 * @var integer
+	 * @var int
 	 */
 	const UPDATE = 2;
 
@@ -102,7 +102,7 @@ abstract class Model
 
 	/**
 	 * Prevent saving
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $blnPreventSaving = false;
 
@@ -230,7 +230,7 @@ abstract class Model
 	 *
 	 * @param string $strKey The property key
 	 *
-	 * @return boolean True if the property is set
+	 * @return bool True if the property is set
 	 */
 	public function __isset($strKey)
 	{
@@ -274,7 +274,7 @@ abstract class Model
 	/**
 	 * Return true if the model has been modified
 	 *
-	 * @return boolean True if the model has been modified
+	 * @return bool True if the model has been modified
 	 */
 	public function isModified()
 	{
@@ -479,7 +479,7 @@ abstract class Model
 	/**
 	 * Modify the current row after it has been stored in the database
 	 *
-	 * @param integer $intType The query type (Model::INSERT or Model::UPDATE)
+	 * @param int $intType The query type (Model::INSERT or Model::UPDATE)
 	 */
 	protected function postSave($intType)
 	{
@@ -493,7 +493,7 @@ abstract class Model
 	/**
 	 * Delete the current record and return the number of affected rows
 	 *
-	 * @return integer The number of affected rows
+	 * @return int The number of affected rows
 	 */
 	public function delete()
 	{
@@ -1012,7 +1012,7 @@ abstract class Model
 	 * @param mixed $strColumn An optional property name
 	 * @param mixed $varValue  An optional property value
 	 *
-	 * @return integer The number of matching rows
+	 * @return int The number of matching rows
 	 */
 	public static function countBy($strColumn=null, $varValue=null)
 	{
@@ -1035,7 +1035,7 @@ abstract class Model
 	/**
 	 * Return the total number of rows
 	 *
-	 * @return integer The total number of rows
+	 * @return int The total number of rows
 	 */
 	public static function countAll()
 	{

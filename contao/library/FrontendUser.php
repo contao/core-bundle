@@ -149,7 +149,7 @@ class FrontendUser extends User
 	/**
 	 * Authenticate a user
 	 *
-	 * @return boolean True if the use could be authenticated
+	 * @return bool True if the use could be authenticated
 	 */
 	public function authenticate()
 	{
@@ -200,7 +200,7 @@ class FrontendUser extends User
 	/**
 	 * Add the auto login resources
 	 *
-	 * @return boolean True if successful
+	 * @return bool True if successful
 	 */
 	public function login()
 	{
@@ -230,7 +230,7 @@ class FrontendUser extends User
 	/**
 	 * Remove the auto login resources
 	 *
-	 * @return boolean True if successful
+	 * @return bool True if successful
 	 */
 	public function logout()
 	{
@@ -260,7 +260,7 @@ class FrontendUser extends User
 	 * @param string $strColumn The column name
 	 * @param mixed  $varValue  The column value
 	 *
-	 * @return boolean True if the user could be found
+	 * @return bool True if the user could be found
 	 */
 	public function findBy($strColumn, $varValue)
 	{
