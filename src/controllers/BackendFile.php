@@ -94,8 +94,10 @@ class BackendFile extends Backend
 			}
 		}
 
-		// Prepare the widget
+		/** @var Widget $class */
 		$class = $GLOBALS['BE_FFL']['fileSelector'];
+
+		/** @var FileSelector $objFileTree */
 		$objFileTree = new $class($class::getAttributesFromDca($GLOBALS['TL_DCA'][$strTable]['fields'][$strField], $strField, $arrValues, $strField, $strTable, $objDca));
 
 		$objTemplate->main = $objFileTree->generate();

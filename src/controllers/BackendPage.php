@@ -83,8 +83,10 @@ class BackendPage extends Backend
 
 		$this->Session->set('filePickerRef', Environment::get('request'));
 
-		// Prepare the widget
+		/** @var Widget $class */
 		$class = $GLOBALS['BE_FFL']['pageSelector'];
+
+		/** @var PageSelector $objPageTree */
 		$objPageTree = new $class($class::getAttributesFromDca($GLOBALS['TL_DCA'][$strTable]['fields'][$strField], $strField, array_filter(explode(',', Input::get('value'))), $strField, $strTable, $objDca));
 
 		$objTemplate->main = $objPageTree->generate();

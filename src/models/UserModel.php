@@ -16,6 +16,9 @@ namespace Contao;
 /**
  * Reads and writes users
  *
+ * @property string  password
+ * @property integer pwChange
+ *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014

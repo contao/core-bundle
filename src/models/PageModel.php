@@ -18,6 +18,74 @@ use Contao\Model\Collection;
 /**
  * Reads and writes pages
  *
+ * @property integer id              The ID
+ * @property integer pid             The parent ID
+ * @property integer sorting         The sorting position
+ * @property integer tstamp          The modification date
+ * @property string  title           The page title
+ * @property string  alias           The page alias
+ * @property string  type            The page type
+ * @property string  pageTitle       The meta title content
+ * @property string  language        The page language
+ * @property string  robots          The meta robots content
+ * @property string  description     The page description
+ * @property string  redirect        An optional redirect status code
+ * @property integer jumpTo          An optional forward page ID
+ * @property string  url             An optional redirect URL
+ * @property boolean target          True to open the page in a new browser window
+ * @property string  dns             An optional domain name
+ * @property string  staticFiles     An optional static URL for files
+ * @property string  staticPlugins   An optional static URL for plugins
+ * @property boolean fallback        True if the page is the language fallback
+ * @property string  adminEmail      An optional admin e-mail address
+ * @property string  dateFormat      An optional date format
+ * @property string  timeFormat      An optional time format
+ * @property string  datimFormat     An optional date and time format
+ * @property boolean createSitemap   True to create a sitemap file
+ * @property string  sitemapName     The name of the sitemap file
+ * @property boolean useSSL          True if the front end uses SSL
+ * @property boolean autoforward     True to automatically forward visitors
+ * @property boolean protected       True to protect the page
+ * @property array   groups          An array of allowed groups
+ * @property boolean includeLayout   True to apply a layout
+ * @property integer layout          The ID of the layout
+ * @property integer mobileLayout    The ID of the mobile layout
+ * @property boolean includeCache    True to apply a cache timeout value
+ * @property integer cache           The cache timeout value
+ * @property boolean includeChmod    True to apply page permissions
+ * @property integer cuser           The ID of the page owner
+ * @property integer cgroup          The ID of the page owner group
+ * @property array   chmod           The page permission array
+ * @property boolean noSearch        True to exempt the page from searching
+ * @property string  cssClass        The CSS ID and/or class
+ * @property string  sitemap         The sitemap status
+ * @property boolean hide            True to hide the page in the navigation menu
+ * @property boolean guests          True to show the page to guests only
+ * @property integer tabindex        An optional tab index
+ * @property string  accesskey       An optional access key
+ * @property boolean published       True if the page has been published
+ * @property integer start           An optional start date
+ * @property integer stop            An optional end date
+ * @property string  mainAlias       The alias of the main page
+ * @property string  mainTitle       The title of the main page
+ * @property string  mainPageTitle   The meta title content of the main page
+ * @property string  parentAlias     The alias of the parent page
+ * @property string  parentTitle     The title of the parent page
+ * @property string  parentPageTitle The meta title content of the parent page
+ * @property string  folderUrl       The folder URL prefix
+ * @property integer rootId          The ID of the root page
+ * @property string  rootAlias       The alias of the root page
+ * @property string  rootTitle       The title of the root page
+ * @property string  rootPageTitle   The meta title content of the root page
+ * @property string  domain          The domain name
+ * @property string  rootLanguage    The language of the root page
+ * @property boolean rootIsPublic    The publication status of the root page
+ * @property boolean rootIsFallback  True if the root page is the language fallback
+ * @property boolean rootUseSSL      True if the root page uses SSL
+ * @property array   trail           An array of page IDs (current to root)
+ *
+ * @method PageModel current()
+ *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014

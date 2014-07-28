@@ -18,6 +18,29 @@ use Contao\Model\Collection;
 /**
  * Reads and writes articles
  *
+ * @property integer id          The ID
+ * @property integer pid         The parent ID
+ * @property integer sorting     The sorting position
+ * @property integer tstamp      The modification date
+ * @property string  title       The article title
+ * @property string  alias       The article alias
+ * @property integer author      The article author
+ * @property string  inColumn    The column to display the article in
+ * @property string  keywords    An optional list of keywords
+ * @property boolean showTeaser  True if the teaser shall be displayed
+ * @property string  teaserCssID The CSS ID and/or class of the teaser
+ * @property string  teaser      The teaser text
+ * @property boolean printable   True if the article is printable
+ * @property string  customTpl   A custom template
+ * @property boolean protected   True if the article is protected
+ * @property array   groups      An array of allowed groups
+ * @property boolean guests      True to show the article to guests only
+ * @property string  cssID       The CSS ID and/or class
+ * @property string  space       The space before and after the article
+ * @property boolean published   True if the article has been published
+ * @property integer start       An optional start date
+ * @property integer stop        An optional end date
+ *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
