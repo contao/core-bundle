@@ -14,6 +14,7 @@ namespace Contao;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use DOMDocument;
+use RuntimeException;
 use stdClass;
 
 
@@ -70,6 +71,12 @@ abstract class System
 	 * @var array
 	 */
 	protected static $arrLanguageFiles = [];
+
+	/**
+	 * The Symfony DI container
+	 * @var ContainerInterface
+	 */
+	protected static $objContainer;
 
 
 	/**
@@ -768,15 +775,31 @@ abstract class System
 
 
 	/**
+	 * Set the Symfony container object
+	 *
+	 * @param ContainerInterface $container A container object
+	 *
+	 * @throws RuntimeException If the container is already set
+	 */
+	public static function setContainer(ContainerInterface $container)
+	{
+		if (static::$objContainer !== null)
+		{
+			throw new RuntimeException('The container is already set and cannot be changed');
+		}
+
+		static::$objContainer = $container;
+	}
+
+
+	/**
 	 * Return the Symfony container object
 	 *
 	 * @return ContainerInterface
 	 */
 	public static function getContainer()
 	{
-		global $kernel;
-
-		return $kernel->getContainer();
+		return static::$objContainer;
 	}
 
 
