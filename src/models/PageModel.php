@@ -18,71 +18,71 @@ use Contao\Model\Collection;
 /**
  * Reads and writes pages
  *
- * @property integer id              The ID
- * @property integer pid             The parent ID
- * @property integer sorting         The sorting position
- * @property integer tstamp          The modification date
- * @property string  title           The page title
- * @property string  alias           The page alias
- * @property string  type            The page type
- * @property string  pageTitle       The meta title content
- * @property string  language        The page language
- * @property string  robots          The meta robots content
- * @property string  description     The page description
- * @property string  redirect        An optional redirect status code
- * @property integer jumpTo          An optional forward page ID
- * @property string  url             An optional redirect URL
- * @property boolean target          True to open the page in a new browser window
- * @property string  dns             An optional domain name
- * @property string  staticFiles     An optional static URL for files
- * @property string  staticPlugins   An optional static URL for plugins
- * @property boolean fallback        True if the page is the language fallback
- * @property string  adminEmail      An optional admin e-mail address
- * @property string  dateFormat      An optional date format
- * @property string  timeFormat      An optional time format
- * @property string  datimFormat     An optional date and time format
- * @property boolean createSitemap   True to create a sitemap file
- * @property string  sitemapName     The name of the sitemap file
- * @property boolean useSSL          True if the front end uses SSL
- * @property boolean autoforward     True to automatically forward visitors
- * @property boolean protected       True to protect the page
- * @property array   groups          An array of allowed groups
- * @property boolean includeLayout   True to apply a layout
- * @property integer layout          The ID of the layout
- * @property integer mobileLayout    The ID of the mobile layout
- * @property boolean includeCache    True to apply a cache timeout value
- * @property integer cache           The cache timeout value
- * @property boolean includeChmod    True to apply page permissions
- * @property integer cuser           The ID of the page owner
- * @property integer cgroup          The ID of the page owner group
- * @property array   chmod           The page permission array
- * @property boolean noSearch        True to exempt the page from searching
- * @property string  cssClass        The CSS ID and/or class
- * @property string  sitemap         The sitemap status
- * @property boolean hide            True to hide the page in the navigation menu
- * @property boolean guests          True to show the page to guests only
- * @property integer tabindex        An optional tab index
- * @property string  accesskey       An optional access key
- * @property boolean published       True if the page has been published
- * @property integer start           An optional start date
- * @property integer stop            An optional end date
- * @property string  mainAlias       The alias of the main page
- * @property string  mainTitle       The title of the main page
- * @property string  mainPageTitle   The meta title content of the main page
- * @property string  parentAlias     The alias of the parent page
- * @property string  parentTitle     The title of the parent page
- * @property string  parentPageTitle The meta title content of the parent page
- * @property string  folderUrl       The folder URL prefix
- * @property integer rootId          The ID of the root page
- * @property string  rootAlias       The alias of the root page
- * @property string  rootTitle       The title of the root page
- * @property string  rootPageTitle   The meta title content of the root page
- * @property string  domain          The domain name
- * @property string  rootLanguage    The language of the root page
- * @property boolean rootIsPublic    The publication status of the root page
- * @property boolean rootIsFallback  True if the root page is the language fallback
- * @property boolean rootUseSSL      True if the root page uses SSL
- * @property array   trail           An array of page IDs (current to root)
+ * @property int    id
+ * @property int    pid
+ * @property int    sorting
+ * @property int    tstamp
+ * @property string title
+ * @property string alias
+ * @property string type
+ * @property string pageTitle
+ * @property string language
+ * @property string robots
+ * @property string description
+ * @property string redirect
+ * @property int    jumpTo
+ * @property string url
+ * @property bool   target
+ * @property string dns
+ * @property string staticFiles
+ * @property string staticPlugins
+ * @property bool   fallback
+ * @property string adminEmail
+ * @property string dateFormat
+ * @property string timeFormat
+ * @property string datimFormat
+ * @property bool   createSitemap
+ * @property string sitemapName
+ * @property bool   useSSL
+ * @property bool   autoforward
+ * @property bool   protected
+ * @property array  groups
+ * @property bool   includeLayout
+ * @property int    layout
+ * @property int    mobileLayout
+ * @property bool   includeCache
+ * @property int    cache
+ * @property bool   includeChmod
+ * @property int    cuser
+ * @property int    cgroup
+ * @property array  chmod
+ * @property bool   noSearch
+ * @property string cssClass
+ * @property string sitemap
+ * @property bool   hide
+ * @property bool   guests
+ * @property int    tabindex
+ * @property string accesskey
+ * @property bool   published
+ * @property int    start
+ * @property int    stop
+ * @property string mainAlias
+ * @property string mainTitle
+ * @property string mainPageTitle
+ * @property string parentAlias
+ * @property string parentTitle
+ * @property string parentPageTitle
+ * @property string folderUrl
+ * @property int    rootId
+ * @property string rootAlias
+ * @property string rootTitle
+ * @property string rootPageTitle
+ * @property string domain
+ * @property string rootLanguage
+ * @property bool   rootIsPublic
+ * @property bool   rootIsFallback
+ * @property bool   rootUseSSL
+ * @property array  trail
  *
  * @method PageModel current()
  *
@@ -112,7 +112,7 @@ class PageModel extends Model
 	 * @param int   $intId      The page ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no published page
+	 * @return static The model or null if there is no published page
 	 */
 	public static function findPublishedById($intId, array $arrOptions=[])
 	{
@@ -136,7 +136,7 @@ class PageModel extends Model
 	 * @param mixed  $varLanguage An ISO language code or an array of ISO language codes
 	 * @param array  $arrOptions  An optional options array
 	 *
-	 * @return Model|null The model or null if there is no matching root page
+	 * @return static The model or null if there is no matching root page
 	 */
 	public static function findFirstPublishedRootByHostAndLanguage($strHost, $varLanguage, array $arrOptions=[])
 	{
@@ -196,7 +196,7 @@ class PageModel extends Model
 	 * @param int   $intPid     The parent page's ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no published page
+	 * @return static The model or null if there is no published page
 	 */
 	public static function findFirstPublishedByPid($intPid, array $arrOptions=[])
 	{
@@ -224,7 +224,7 @@ class PageModel extends Model
 	 * @param int   $intPid The parent page's ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no published regular page
+	 * @return static The model or null if there is no published regular page
 	 */
 	public static function findFirstPublishedRegularByPid($intPid, array $arrOptions=[])
 	{
@@ -252,7 +252,7 @@ class PageModel extends Model
 	 * @param int   $intPid     The parent page's ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no 403 page
+	 * @return static The model or null if there is no 403 page
 	 */
 	public static function find403ByPid($intPid, array $arrOptions=[])
 	{
@@ -280,7 +280,7 @@ class PageModel extends Model
 	 * @param int   $intPid     The parent page's ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no 404 page
+	 * @return static The model or null if there is no 404 page
 	 */
 	public static function find404ByPid($intPid, array $arrOptions=[])
 	{
@@ -353,7 +353,7 @@ class PageModel extends Model
 	 * @param mixed $varId      The numeric ID or the alias name
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Collection|null A collection of models or null if there are no pages
+	 * @return Collection|object A collection of models or null if there are no pages
 	 */
 	public static function findPublishedByIdOrAlias($varId, array $arrOptions=[])
 	{
@@ -378,7 +378,7 @@ class PageModel extends Model
 	 * @param bool $blnShowHidden If true, hidden pages will be included
 	 * @param bool $blnIsSitemap  If true, the sitemap settings apply
 	 *
-	 * @return Collection|null A collection of models or null if there are no pages
+	 * @return Collection|object A collection of models or null if there are no pages
 	 */
 	public static function findPublishedSubpagesWithoutGuestsByPid($intPid, $blnShowHidden=false, $blnIsSitemap=false)
 	{
@@ -402,7 +402,7 @@ class PageModel extends Model
 	 * @param int   $arrIds     An array of page IDs
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Collection|null A collection of models or null if there are no pages
+	 * @return Collection|object A collection of models or null if there are no pages
 	 */
 	public static function findPublishedRegularWithoutGuestsByIds($arrIds, array $arrOptions=[])
 	{
@@ -440,7 +440,7 @@ class PageModel extends Model
 	 * @param int   $intPid     The parent page's ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Collection|null A collection of models or null if there are no pages
+	 * @return Collection|object A collection of models or null if there are no pages
 	 */
 	public static function findPublishedRegularWithoutGuestsByPid($intPid, array $arrOptions=[])
 	{
@@ -472,7 +472,7 @@ class PageModel extends Model
 	 *
 	 * @param int $intId The page's ID
 	 *
-	 * @return Collection|null A collection of models or null if there are no parent pages
+	 * @return Collection|object A collection of models or null if there are no parent pages
 	 */
 	public static function findParentsById($intId)
 	{
@@ -498,7 +498,7 @@ class PageModel extends Model
 	 *
 	 * @param int $intId The page's ID
 	 *
-	 * @return Model|null The model or null if there is no matching page
+	 * @return static The model or null if there is no matching page
 	 */
 	public static function findWithDetails($intId)
 	{

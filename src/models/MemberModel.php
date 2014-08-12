@@ -16,33 +16,33 @@ namespace Contao;
 /**
  * Reads and writes members
  *
- * @method static findById()          Find members by their ID
- * @method static findByTstamp()      Find members by their modification date
- * @method static findByFirstname()   Find members by their firstname
- * @method static findByLastname()    Find members by their lastname
- * @method static findByDateOfBirth() Find members by their date of birth
- * @method static findByGender()      Find members by their gender
- * @method static findByCompany()     Find members by their company name
- * @method static findByStreet()      Find members by their street
- * @method static findByPostal()      Find members by their postal code
- * @method static findByCity()        Find members by their city
- * @method static findByState()       Find members by their state
- * @method static findByCountry()     Find members by their country
- * @method static findByPhone()       Find members by their phone number
- * @method static findByMobile()      Find members by their mobile phone number
- * @method static findByFax()         Find members by their fax number
- * @method static findByEmail()       Find members by their e-mail address
- * @method static findByWebsite()     Find members by their website URL
- * @method static findByLanguage()    Find members by their language
- * @method static findByLogin()       Find members who are allowed to log in
- * @method static findByUsername()    Find members by their username
- * @method static findByHomeDir()     Find members by their home directory
- * @method static findByDisable()     Find members by their status
- * @method static findByStart()       Find members by their "activate on" date
- * @method static findByStop()        Find members by their "deactivate on" date
- * @method static findByDateAdded()   Find members by their date added
- * @method static findByLastLogin()   Find members by their last login date
- * @method static findByCreatedOn()   Find members by their "created on" date
+ * @method static findById()
+ * @method static findByTstamp()
+ * @method static findByFirstname()
+ * @method static findByLastname()
+ * @method static findByDateOfBirth()
+ * @method static findByGender()
+ * @method static findByCompany()
+ * @method static findByStreet()
+ * @method static findByPostal()
+ * @method static findByCity()
+ * @method static findByState()
+ * @method static findByCountry()
+ * @method static findByPhone()
+ * @method static findByMobile()
+ * @method static findByFax()
+ * @method static findByEmail()
+ * @method static findByWebsite()
+ * @method static findByLanguage()
+ * @method static findByLogin()
+ * @method static findByUsername()
+ * @method static findByHomeDir()
+ * @method static findByDisable()
+ * @method static findByStart()
+ * @method static findByStop()
+ * @method static findByDateAdded()
+ * @method static findByLastLogin()
+ * @method static findByCreatedOn()
  *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
