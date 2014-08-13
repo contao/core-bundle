@@ -18,28 +18,28 @@ use Contao\Model\Collection;
 /**
  * Reads and writes articles
  *
- * @property int    $id
- * @property int    $pid
- * @property int    $sorting
- * @property int    $tstamp
- * @property string $title
- * @property string $alias
- * @property int    $author
- * @property string $inColumn
- * @property string $keywords
- * @property bool   $showTeaser
- * @property string $teaserCssID
- * @property string $teaser
- * @property bool   $printable
- * @property string $customTpl
- * @property bool   $protected
- * @property array  $groups
- * @property bool   $guests
- * @property string $cssID
- * @property string $space
- * @property bool   $published
- * @property int    $start
- * @property int    $stop
+ * @property int    $id          the ID
+ * @property int    $pid         the parent ID
+ * @property int    $sorting     the sorting position
+ * @property int    $tstamp      the modification date
+ * @property string $title       the article title
+ * @property string $alias       the article alias
+ * @property int    $author      the ID of the author of the article
+ * @property string $inColumn    the column to display the article in
+ * @property string $keywords    an optional list of keywords
+ * @property bool   $showTeaser  true if the teaser shall be displayed
+ * @property string $teaserCssID the CSS ID and/or class of the teaser
+ * @property string $teaser      the teaser text
+ * @property bool   $printable   true if the article is printable
+ * @property string $customTpl   an optional custom template
+ * @property bool   $protected   true if the article is protected
+ * @property array  $groups      an array of allowed groups
+ * @property bool   $guests      true to show the article to guests only
+ * @property string $cssID       the CSS ID and/or class of the article
+ * @property array  $space       an optional space before and after the article
+ * @property bool   $published   true if the article has been published
+ * @property int    $start       an optional start date
+ * @property int    $stop        an optional end date
  *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
@@ -62,7 +62,7 @@ class ArticleModel extends Model
 	 * @param int   $intPid     The page ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return static The model or null if there is no article
+	 * @return self|null The model or null if there is no article
 	 */
 	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=[])
 	{
@@ -86,7 +86,7 @@ class ArticleModel extends Model
 	 * @param int   $intId      The article ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return static The model or null if there is no published article
+	 * @return self|null The model or null if there is no published article
 	 */
 	public static function findPublishedById($intId, array $arrOptions=[])
 	{
@@ -110,7 +110,7 @@ class ArticleModel extends Model
 	 * @param string $strColumn  The column name
 	 * @param array  $arrOptions An optional options array
 	 *
-	 * @return Collection|object A collection of models or null if there are no articles in the given column
+	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */
 	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=[])
 	{
@@ -140,7 +140,7 @@ class ArticleModel extends Model
 	 * @param string $strColumn  The column name
 	 * @param array  $arrOptions An optional options array
 	 *
-	 * @return Collection|object A collection of models or null if there are no articles in the given column
+	 * @return Collection|null A collection of models or null if there are no articles in the given column
 	 */
 	public static function findPublishedWithTeaserByPidAndColumn($intPid, $strColumn, array $arrOptions=[])
 	{
