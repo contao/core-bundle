@@ -18,28 +18,28 @@ use Contao\Model\Collection;
 /**
  * Reads and writes articles
  *
- * @property int    id
- * @property int    pid
- * @property int    sorting
- * @property int    tstamp
- * @property string title
- * @property string alias
- * @property int    author
- * @property string inColumn
- * @property string keywords
- * @property bool   showTeaser
- * @property string teaserCssID
- * @property string teaser
- * @property bool   printable
- * @property string customTpl
- * @property bool   protected
- * @property array  groups
- * @property bool   guests
- * @property string cssID
- * @property string space
- * @property bool   published
- * @property int    start
- * @property int    stop
+ * @property int    $id
+ * @property int    $pid
+ * @property int    $sorting
+ * @property int    $tstamp
+ * @property string $title
+ * @property string $alias
+ * @property int    $author
+ * @property string $inColumn
+ * @property string $keywords
+ * @property bool   $showTeaser
+ * @property string $teaserCssID
+ * @property string $teaser
+ * @property bool   $printable
+ * @property string $customTpl
+ * @property bool   $protected
+ * @property array  $groups
+ * @property bool   $guests
+ * @property string $cssID
+ * @property string $space
+ * @property bool   $published
+ * @property int    $start
+ * @property int    $stop
  *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
