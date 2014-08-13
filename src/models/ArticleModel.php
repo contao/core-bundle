@@ -30,7 +30,7 @@ use Contao\Model\Collection;
  * @property bool   $showTeaser  true if the teaser shall be displayed
  * @property string $teaserCssID the CSS ID and/or class of the teaser
  * @property string $teaser      the teaser text
- * @property bool   $printable   true if the article is printable
+ * @property array  $printable   the syndication options
  * @property string $customTpl   an optional custom template
  * @property bool   $protected   true if the article is protected
  * @property array  $groups      an array of allowed groups
@@ -40,6 +40,29 @@ use Contao\Model\Collection;
  * @property bool   $published   true if the article has been published
  * @property int    $start       an optional start date
  * @property int    $stop        an optional end date
+ *
+ * @method static findById()          find articles by their ID
+ * @method static findByPid()         find articles by their parent ID
+ * @method static findBySorting()     find articles by their sorting position
+ * @method static findByTstamp()      find articles by their modification time
+ * @method static findByTitle()       find articles by their title
+ * @method static findByAlias()       find articles by their alias
+ * @method static findByAuthor()      find articles by their author
+ * @method static findByInColumn()    find articles by their column
+ * @method static findByKeywords()    find articles by their keywords
+ * @method static findByShowTeaser()  find articles which have a teaser text
+ * @method static findByTeaserCssID() find articles by their teaser CSS ID and/or class
+ * @method static findByTeaser()      find articles by their teaser text
+ * @method static findByPrintable()   find articles by their syndication settings
+ * @method static findByCustomTpl()   find articles by their custom template
+ * @method static findByProtected()   find articles by their protection status
+ * @method static findByGroups()      find articles by their allowed groups
+ * @method static findByGuests()      find articles by their "guests only" setting
+ * @method static findByCssID()       find articles by their CSS ID and/or class
+ * @method static findBySpace()       find articles by their space before and after
+ * @method static findByPublished()   find articles by their publication status
+ * @method static findByStart()       find articles by their start date
+ * @method static findByStop()        find articles by their end date
  *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
