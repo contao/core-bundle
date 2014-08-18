@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use OutOfBoundsException;
-
 
 /**
  * Generates and validates form fields
@@ -854,7 +852,7 @@ abstract class Widget extends View
 						{
 							new Date($varInput);
 						}
-						catch (OutOfBoundsException $e)
+						catch (\OutOfBoundsException $e)
 						{
 							$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varInput));
 						}
@@ -882,7 +880,7 @@ abstract class Widget extends View
 						{
 							new Date($varInput);
 						}
-						catch (OutOfBoundsException $e)
+						catch (\OutOfBoundsException $e)
 						{
 							$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varInput));
 						}

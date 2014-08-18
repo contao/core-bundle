@@ -12,14 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use Swift_Attachment;
-use Swift_EmbeddedFile;
-use Swift_Mailer;
-use Swift_MailTransport;
-use Swift_Message;
-use Swift_SmtpTransport;
-
 
 /**
  * A SwiftMailer adapter class
@@ -49,7 +41,7 @@ class Email
 
 	/**
 	 * Message object
-	 * @var Swift_Message
+	 * @var \Swift_Message
 	 */
 	protected $objMessage;
 
@@ -133,12 +125,12 @@ class Email
 			if (!Config::get('useSMTP'))
 			{
 				// Mail
-				$objTransport = Swift_MailTransport::newInstance();
+				$objTransport = \Swift_MailTransport::newInstance();
 			}
 			else
 			{
 				// SMTP
-				$objTransport = Swift_SmtpTransport::newInstance(Config::get('smtpHost'), Config::get('smtpPort'));
+				$objTransport = \Swift_SmtpTransport::newInstance(Config::get('smtpHost'), Config::get('smtpPort'));
 
 				// Encryption
 				if (Config::get('smtpEnc') == 'ssl' || Config::get('smtpEnc') == 'tls')
@@ -153,11 +145,11 @@ class Email
 				}
 			}
 
-			self::$objMailer = Swift_Mailer::newInstance($objTransport);
+			self::$objMailer = \Swift_Mailer::newInstance($objTransport);
 		}
 
 		// Instantiate Swift_Message
-		$this->objMessage = Swift_Message::newInstance();
+		$this->objMessage = \Swift_Message::newInstance();
 		$this->objMessage->getHeaders()->addTextHeader('X-Mailer', 'Contao Open Source CMS');
 	}
 
@@ -181,7 +173,7 @@ class Email
 	 * @param string $strKey   The property name
 	 * @param mixed  $varValue The property value
 	 *
-	 * @throws Exception If $strKey is unknown
+	 * @throws \Exception If $strKey is unknown
 	 */
 	public function __set($strKey, $varValue)
 	{
@@ -250,7 +242,7 @@ class Email
 				break;
 
 			default:
-				throw new Exception(sprintf('Invalid argument "%s"', $strKey));
+				throw new \Exception(sprintf('Invalid argument "%s"', $strKey));
 				break;
 		}
 	}
@@ -397,7 +389,7 @@ class Email
 	 */
 	public function attachFile($strFile, $strMime='application/octet-stream')
 	{
-		$this->objMessage->attach(Swift_Attachment::fromPath($strFile, $strMime)->setFilename(basename($strFile)));
+		$this->objMessage->attach(\Swift_Attachment::fromPath($strFile, $strMime)->setFilename(basename($strFile)));
 	}
 
 
@@ -410,7 +402,7 @@ class Email
 	 */
 	public function attachFileFromString($strContent, $strFilename, $strMime='application/octet-stream')
 	{
-		$this->objMessage->attach(Swift_Attachment::newInstance($strContent, $strFilename, $strMime));
+		$this->objMessage->attach(\Swift_Attachment::newInstance($strContent, $strFilename, $strMime));
 	}
 
 
@@ -477,7 +469,7 @@ class Email
 						{
 							if (!isset($arrCid[$src]))
 							{
-								$arrCid[$src] = $this->objMessage->embed(Swift_EmbeddedFile::fromPath($this->strImageDir . $src));
+								$arrCid[$src] = $this->objMessage->embed(\Swift_EmbeddedFile::fromPath($this->strImageDir . $src));
 							}
 
 							$this->strHtml = str_replace($arrMatches[1][$i] . $arrMatches[3][$i] . $arrMatches[5][$i], $arrMatches[1][$i] . $arrCid[$src] . $arrMatches[5][$i], $this->strHtml);

@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Replace insert tags
@@ -929,7 +927,7 @@ class InsertTags extends Controller
 							$arrCache[$strTag] = '<img src="' . TL_FILES_URL . $src . '" ' . $dimensions . ' alt="' . $alt . '"' . (($class != '') ? ' class="' . $class . '"' : '') . '>';
 						}
 					}
-					catch (Exception $e)
+					catch (\Exception $e)
 					{
 						$arrCache[$strTag] = '';
 					}

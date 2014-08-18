@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Diff;
-use Diff_Renderer_Html_Contao;
-use Exception;
-
 
 /**
  * Provides versioning methods
@@ -395,8 +391,8 @@ class Versions extends Backend
 							$from[$k] = explode("\n", $from[$k]);
 						}
 
-						$objDiff = new Diff($from[$k], $to[$k]);
-						$strBuffer .= $objDiff->Render(new Diff_Renderer_Html_Contao(['field'=>($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['label'][0] ?: (isset($GLOBALS['TL_LANG']['MSC'][$k]) ? (is_array($GLOBALS['TL_LANG']['MSC'][$k]) ? $GLOBALS['TL_LANG']['MSC'][$k][0] : $GLOBALS['TL_LANG']['MSC'][$k]) : $k))]));
+						$objDiff = new \Diff($from[$k], $to[$k]);
+						$strBuffer .= $objDiff->Render(new \Diff_Renderer_Html_Contao(['field'=>($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['label'][0] ?: (isset($GLOBALS['TL_LANG']['MSC'][$k]) ? (is_array($GLOBALS['TL_LANG']['MSC'][$k]) ? $GLOBALS['TL_LANG']['MSC'][$k][0] : $GLOBALS['TL_LANG']['MSC'][$k]) : $k))]));
 					}
 				}
 			}
@@ -542,7 +538,7 @@ class Versions extends Backend
 
 				$arrVersions[$k]['deleted'] = ($objDeleted->count < 1);
 			}
-			catch (Exception $e)
+			catch (\Exception $e)
 			{
 				// Probably a disabled module
 				--$intCount;

@@ -14,7 +14,6 @@ namespace Contao;
 
 use Contao\Database\Result;
 use Contao\Database\Statement;
-use Exception;
 
 
 /**
@@ -73,7 +72,7 @@ abstract class Database
 	 *
 	 * @param array $arrConfig A configuration array
 	 *
-	 * @throws Exception If a connection cannot be established
+	 * @throws \Exception If a connection cannot be established
 	 */
 	protected function __construct(array $arrConfig)
 	{
@@ -82,7 +81,7 @@ abstract class Database
 
 		if (!is_resource($this->resConnection) && !is_object($this->resConnection))
 		{
-			throw new Exception(sprintf('Could not connect to database (%s)', $this->error));
+			throw new \Exception(sprintf('Could not connect to database (%s)', $this->error));
 		}
 	}
 

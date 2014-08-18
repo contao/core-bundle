@@ -13,7 +13,6 @@
 namespace Contao;
 
 use Contao\Model\Collection;
-use Exception;
 
 
 /**
@@ -48,7 +47,7 @@ abstract class Controller extends System
 	 *
 	 * @return string The path to the template file
 	 *
-	 * @throws Exception If $strFormat is unknown
+	 * @throws \Exception If $strFormat is unknown
 	 */
 	public static function getTemplate($strTemplate, $strFormat='html5')
 	{
@@ -57,7 +56,7 @@ abstract class Controller extends System
 
 		if (!in_array($strFormat, $arrAllowed))
 		{
-			throw new Exception("Invalid output format $strFormat");
+			throw new \Exception("Invalid output format $strFormat");
 		}
 
 		$strTemplate = basename($strTemplate);
@@ -115,7 +114,7 @@ abstract class Controller extends System
 			{
 				$objTheme = ThemeModel::findAll(['order'=>'name']);
 			}
-			catch (Exception $e)
+			catch (\Exception $e)
 			{
 				$objTheme = null;
 			}

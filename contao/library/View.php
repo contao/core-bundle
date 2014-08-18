@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Provides shared logic for views
@@ -145,7 +143,7 @@ abstract class View extends Controller
 	 *
 	 * @param string $name The block name
 	 *
-	 * @throws Exception If a child templates contains nested blocks
+	 * @throws \Exception If a child templates contains nested blocks
 	 */
 	public function block($name)
 	{
@@ -198,7 +196,7 @@ abstract class View extends Controller
 			// Check for nested blocks
 			if (count($this->arrBlockNames) > 1)
 			{
-				throw new Exception('Nested blocks are not allowed in child templates');
+				throw new \Exception('Nested blocks are not allowed in child templates');
 			}
 
 			// Start a new output buffer
@@ -210,14 +208,14 @@ abstract class View extends Controller
 	/**
 	 * End a block
 	 *
-	 * @throws Exception If there is no open block
+	 * @throws \Exception If there is no open block
 	 */
 	public function endblock()
 	{
 		// Check for open blocks
 		if (empty($this->arrBlockNames))
 		{
-			throw new Exception('You must start a block before you can end it');
+			throw new \Exception('You must start a block before you can end it');
 		}
 
 		// Get the block name

@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Loads a set of DCA files
@@ -45,13 +43,13 @@ class DcaLoader extends Controller
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @throws Exception If $strTable is empty
+	 * @throws \Exception If $strTable is empty
 	 */
 	public function __construct($strTable)
 	{
 		if ($strTable == '')
 		{
-			throw new Exception('The table name must not be empty');
+			throw new \Exception('The table name must not be empty');
 		}
 
 		parent::__construct();

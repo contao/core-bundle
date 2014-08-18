@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use RecursiveDirectoryIterator;
-use FilesystemIterator;
-use RecursiveIteratorIterator;
-
 
 /**
  * Creates, reads, writes and deletes folders
@@ -61,7 +56,7 @@ class Folder extends System
 	 *
 	 * @param string $strFolder The folder path
 	 *
-	 * @throws Exception If $strFolder is not a folder
+	 * @throws \Exception If $strFolder is not a folder
 	 */
 	public function __construct($strFolder)
 	{
@@ -74,7 +69,7 @@ class Folder extends System
 		// Check whether it is a directory
 		if (is_file(TL_ROOT . '/' . $strFolder))
 		{
-			throw new Exception(sprintf('File "%s" is not a directory', $strFolder));
+			throw new \Exception(sprintf('File "%s" is not a directory', $strFolder));
 		}
 
 		$this->import('Files');
@@ -348,11 +343,11 @@ class Folder extends System
 	{
 		$arrFiles = [];
 
-		$it = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(
+		$it = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator(
 				TL_ROOT . '/' . $this->strFolder,
-				FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
-			), RecursiveIteratorIterator::SELF_FIRST
+				\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
+			), \RecursiveIteratorIterator::SELF_FIRST
 		);
 
 		while ($it->valid())

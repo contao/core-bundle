@@ -14,7 +14,6 @@ namespace Contao\Database;
 
 use Contao\Database;
 use Contao\Database\Mysqli\Statement;
-use Exception;
 
 
 /**
@@ -37,7 +36,7 @@ class Mysqli extends Database
 	/**
 	 * Connect to the database server and select the database
 	 *
-	 * @throws Exception If the connection cannot be established
+	 * @throws \Exception If the connection cannot be established
 	 */
 	protected function connect()
 	{
@@ -55,7 +54,7 @@ class Mysqli extends Database
 
 		if ($this->resConnection->connect_error)
 		{
-			throw new Exception($this->resConnection->connect_error);
+			throw new \Exception($this->resConnection->connect_error);
 		}
 
 		$this->resConnection->set_charset($this->arrConfig['dbCharset']);

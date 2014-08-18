@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Provides string manipulation methods
@@ -472,7 +470,7 @@ class String
 	 *
 	 * @return string The converted string
 	 *
-	 * @throws Exception If $strString cannot be parsed
+	 * @throws \Exception If $strString cannot be parsed
 	 */
 	public static function parseSimpleTokens($strString, $arrData)
 	{
@@ -520,7 +518,7 @@ class String
 		// Throw an exception if there is an eval() error
 		if ($blnEval === false)
 		{
-			throw new Exception("Error parsing simple tokens ($strReturn)");
+			throw new \Exception("Error parsing simple tokens ($strReturn)");
 		}
 
 		// Return the evaled code

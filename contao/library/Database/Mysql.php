@@ -14,7 +14,6 @@ namespace Contao\Database;
 
 use Contao\Database;
 use Contao\Database\Mysql\Statement;
-use Exception;
 
 
 /**
@@ -37,7 +36,7 @@ class Mysql extends Database
 	/**
 	 * Connect to the database server and select the database
 	 *
-	 * @throws Exception If the connection cannot be established
+	 * @throws \Exception If the connection cannot be established
 	 */
 	protected function connect()
 	{
@@ -64,7 +63,7 @@ class Mysql extends Database
 
 		if (mysql_error())
 		{
-			throw new Exception(mysql_error());
+			throw new \Exception(mysql_error());
 		}
 
 		mysql_query("SET NAMES " . $this->arrConfig['dbCharset'], $this->resConnection);

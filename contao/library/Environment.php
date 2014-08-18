@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use stdClass;
-
 
 /**
  * Reads the environment variables
@@ -501,7 +499,7 @@ class Environment
 	{
 		$ua = static::get('httpUserAgent');
 
-		$return = new stdClass();
+		$return = new \stdClass();
 		$return->string = $ua;
 
 		$os = 'unknown';

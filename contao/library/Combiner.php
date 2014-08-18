@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use lessc;
-use scssc;
-use scss_compass;
-
 
 /**
  * Combines .css or .js files into one single file
@@ -97,7 +92,7 @@ class Combiner extends System
 	 * @param string $strVersion An optional version number
 	 * @param string $strMedia   The media type of the file (.css only)
 	 *
-	 * @throws Exception If $strFile is invalid
+	 * @throws \Exception If $strFile is invalid
 	 */
 	public function add($strFile, $strVersion=null, $strMedia='all')
 	{
@@ -106,7 +101,7 @@ class Combiner extends System
 		// Check the file type
 		if ($strType != self::CSS && $strType != self::JS && $strType != self::SCSS && $strType != self::LESS)
 		{
-			throw new Exception("Invalid file $strFile");
+			throw new \Exception("Invalid file $strFile");
 		}
 
 		$strMode = ($strType == self::JS) ? self::JS : self::CSS;
@@ -118,7 +113,7 @@ class Combiner extends System
 		}
 		elseif ($this->strMode != $strMode)
 		{
-			throw new Exception('You cannot mix different file types. Create another Combiner object instead.');
+			throw new \Exception('You cannot mix different file types. Create another Combiner object instead.');
 		}
 
 		// Prevent duplicates
@@ -138,12 +133,12 @@ class Combiner extends System
 
 				if (!file_exists(TL_ROOT . '/' . $strFile))
 				{
-					throw new Exception("File $strFile does not exist");
+					throw new \Exception("File $strFile does not exist");
 				}
 			}
 			else
 			{
-				throw new Exception("File $strFile does not exist");
+				throw new \Exception("File $strFile does not exist");
 			}
 
 		}
@@ -339,8 +334,8 @@ class Combiner extends System
 	{
 		if ($arrFile['extension'] == self::SCSS)
 		{
-			$objCompiler = new scssc();
-			new scss_compass($objCompiler);
+			$objCompiler = new \scssc();
+			new \scss_compass($objCompiler);
 
 			$objCompiler->setImportPaths(
 			[
@@ -352,7 +347,7 @@ class Combiner extends System
 		}
 		else
 		{
-			$objCompiler = new lessc();
+			$objCompiler = new \lessc();
 
 			$objCompiler->setImportDir(
 			[

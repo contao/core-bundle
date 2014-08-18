@@ -13,9 +13,6 @@
 namespace Contao;
 
 use Contao\Database\Result;
-use DOMDocument;
-use DOMElement;
-use Exception;
 
 
 /**
@@ -195,7 +192,7 @@ class Theme extends Backend
 			}
 
 			// Open the XML file
-			$xml = new DOMDocument();
+			$xml = new \DOMDocument();
 			$xml->preserveWhiteSpace = false;
 			$xml->loadXML($objArchive->unzip());
 			$tables = $xml->getElementsByTagName('table');
@@ -305,7 +302,7 @@ class Theme extends Backend
 				// Load the XML file
 				if ($objArchive->file_name == 'theme.xml')
 				{
-					$xml = new DOMDocument();
+					$xml = new \DOMDocument();
 					$xml->preserveWhiteSpace = false;
 					$xml->loadXML($objArchive->unzip());
 					continue;
@@ -337,14 +334,14 @@ class Theme extends Backend
 
 					File::putContent($strFileName, $objArchive->unzip());
 				}
-				catch (Exception $e)
+				catch (\Exception $e)
 				{
 					Message::addError($e->getMessage());
 				}
 			}
 
 			// Continue if there is no XML file
-			if (!$xml instanceof DOMDocument)
+			if (!$xml instanceof \DOMDocument)
 			{
 				Message::addError(sprintf($GLOBALS['TL_LANG']['tl_theme']['missing_xml'], basename($strZipFile)));
 				continue;
@@ -664,7 +661,7 @@ class Theme extends Backend
 		$strName = basename($strName);
 
 		// Create a new XML document
-		$xml = new DOMDocument('1.0', 'UTF-8');
+		$xml = new \DOMDocument('1.0', 'UTF-8');
 		$xml->formatOutput = true;
 
 		// Root element
@@ -715,11 +712,11 @@ class Theme extends Backend
 	/**
 	 * Add the table tl_theme
 	 *
-	 * @param DOMDocument $xml      The XML document
-	 * @param DOMElement  $tables   The tables node
+	 * @param \DOMDocument $xml      The XML document
+	 * @param \DOMElement  $tables   The tables node
 	 * @param Result      $objTheme The database result object
 	 */
-	protected function addTableTlTheme(DOMDocument $xml, DOMElement $tables, Result $objTheme)
+	protected function addTableTlTheme(\DOMDocument $xml, \DOMElement $tables, Result $objTheme)
 	{
 		// Add the table
 		$table = $xml->createElement('table');
@@ -741,11 +738,11 @@ class Theme extends Backend
 	/**
 	 * Add the table tl_style_sheet
 	 *
-	 * @param DOMDocument $xml      The XML document
-	 * @param DOMElement  $tables   The tables node
+	 * @param \DOMDocument $xml      The XML document
+	 * @param \DOMElement  $tables   The tables node
 	 * @param Result      $objTheme The database result object
 	 */
-	protected function addTableTlStyleSheet(DOMDocument $xml, DOMElement $tables, Result $objTheme)
+	protected function addTableTlStyleSheet(\DOMDocument $xml, \DOMElement $tables, Result $objTheme)
 	{
 		// Add the table
 		$table = $xml->createElement('table');
@@ -802,11 +799,11 @@ class Theme extends Backend
 	/**
 	 * Add the table tl_module
 	 *
-	 * @param DOMDocument $xml      The XML document
-	 * @param DOMElement  $tables   The tables node
+	 * @param \DOMDocument $xml      The XML document
+	 * @param \DOMElement  $tables   The tables node
 	 * @param Result      $objTheme The database result object
 	 */
-	protected function addTableTlModule(DOMDocument $xml, DOMElement $tables, Result $objTheme)
+	protected function addTableTlModule(\DOMDocument $xml, \DOMElement $tables, Result $objTheme)
 	{
 		// Add the table
 		$table = $xml->createElement('table');
@@ -835,11 +832,11 @@ class Theme extends Backend
 	/**
 	 * Add the table tl_layout
 	 *
-	 * @param DOMDocument $xml      The XML document
-	 * @param DOMElement  $tables   The tables node
+	 * @param \DOMDocument $xml      The XML document
+	 * @param \DOMElement  $tables   The tables node
 	 * @param Result      $objTheme The database result object
 	 */
-	protected function addTableTlLayout(DOMDocument $xml, DOMElement $tables, Result $objTheme)
+	protected function addTableTlLayout(\DOMDocument $xml, \DOMElement $tables, Result $objTheme)
 	{
 		// Add the table
 		$table = $xml->createElement('table');
@@ -868,12 +865,12 @@ class Theme extends Backend
 	/**
 	 * Add a data row to the XML document
 	 *
-	 * @param DOMDocument $xml      The XML document
-	 * @param DOMElement  $table    The table node
+	 * @param \DOMDocument $xml      The XML document
+	 * @param \DOMElement  $table    The table node
 	 * @param Result      $objData  The database result object
 	 * @param array       $arrOrder An array of order fields
 	 */
-	protected function addDataRow(DOMDocument $xml, DOMElement $table, Result $objData, array $arrOrder=[])
+	protected function addDataRow(\DOMDocument $xml, \DOMElement $table, Result $objData, array $arrOrder=[])
 	{
 		$t = $table->getAttribute('name');
 

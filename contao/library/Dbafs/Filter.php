@@ -13,8 +13,6 @@
 namespace Contao\Dbafs;
 
 use Contao\Config;
-use RecursiveFilterIterator;
-use RecursiveIterator;
 
 
 /**
@@ -27,7 +25,7 @@ use RecursiveIterator;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Filter extends RecursiveFilterIterator
+class Filter extends \RecursiveFilterIterator
 {
 
 	/**
@@ -46,9 +44,9 @@ class Filter extends RecursiveFilterIterator
 	/**
 	 * Exempt folders from the synchronisation (see #4522)
 	 *
-	 * @param RecursiveIterator $iterator The iterator object
+	 * @param \RecursiveIterator $iterator The iterator object
 	 */
-	public function __construct(RecursiveIterator $iterator)
+	public function __construct(\RecursiveIterator $iterator)
 	{
 		if (Config::get('fileSyncExclude') != '')
 		{

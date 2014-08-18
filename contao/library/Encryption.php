@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Encrypts and decrypts data
@@ -149,23 +147,23 @@ class Encryption
 	/**
 	 * Initialize the encryption module
 	 *
-	 * @throws Exception If the encryption module cannot be initialized
+	 * @throws \Exception If the encryption module cannot be initialized
 	 */
 	protected static function initialize()
 	{
 		if (!in_array('mcrypt', get_loaded_extensions()))
 		{
-			throw new Exception('The PHP mcrypt extension is not installed');
+			throw new \Exception('The PHP mcrypt extension is not installed');
 		}
 
 		if ((self::$resTd = mcrypt_module_open(Config::get('encryptionCipher'), '', Config::get('encryptionMode'), '')) == false)
 		{
-			throw new Exception('Error initializing encryption module');
+			throw new \Exception('Error initializing encryption module');
 		}
 
 		if (Config::get('encryptionKey') == '')
 		{
-			throw new Exception('Encryption key not set');
+			throw new \Exception('Encryption key not set');
 		}
 	}
 
@@ -177,7 +175,7 @@ class Encryption
 	 *
 	 * @return string The encrypted password
 	 *
-	 * @throws Exception If none of the algorithms is available
+	 * @throws \Exception If none of the algorithms is available
 	 */
 	public static function hash($strPassword)
 	{
@@ -195,7 +193,7 @@ class Encryption
 		}
 		else
 		{
-			throw new Exception('None of the required crypt() algorithms is available');
+			throw new \Exception('None of the required crypt() algorithms is available');
 		}
 	}
 

@@ -13,8 +13,6 @@
 namespace Contao\Model;
 
 use Contao\Model;
-use Countable;
-use RuntimeException;
 
 
 /**
@@ -27,7 +25,7 @@ use RuntimeException;
  * @author    Tristan Lins <tristan.lins@bit3.de>
  * @copyright Leo Feyer 2005-2014
  */
-class Registry implements Countable
+class Registry implements \Countable
 {
 
 	/**
@@ -112,7 +110,7 @@ class Registry implements Countable
 	 *
 	 * @param Model $objModel The model object
 	 *
-	 * @throws RuntimeException If the instance exists already
+	 * @throws \RuntimeException If the instance exists already
 	 */
 	public function register(Model $objModel)
 	{
@@ -137,7 +135,7 @@ class Registry implements Countable
 		// Another model object is pointing to the DB record already
 		if (isset($this->arrRegistry[$strTable][$intPk]))
 		{
-			throw new RuntimeException("The registry already contains an instance for $strTable::$strPk($intPk)");
+			throw new \RuntimeException("The registry already contains an instance for $strTable::$strPk($intPk)");
 		}
 
 		$this->arrIdentities[$intObjectId] = $objModel;

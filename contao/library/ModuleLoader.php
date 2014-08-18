@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use UnresolvableDependenciesException;
-
 
 /**
  * Loads modules based on their autoload.ini configuration
@@ -81,7 +79,7 @@ class ModuleLoader
 	/**
 	 * Scan the modules and resolve their dependencies
 	 *
-	 * @throws UnresolvableDependenciesException If the dependencies cannot be resolved
+	 * @throws \UnresolvableDependenciesException If the dependencies cannot be resolved
 	 */
 	protected static function scanAndResolve()
 	{
@@ -204,7 +202,7 @@ class ModuleLoader
 					dump($load);
 					$buffer = ob_get_clean();
 
-					throw new UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
+					throw new \UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
 				}
 			}
 		}

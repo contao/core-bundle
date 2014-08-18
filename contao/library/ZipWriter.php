@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Creates .zip files and stores them on the disk
@@ -91,7 +89,7 @@ class ZipWriter
 	 *
 	 * @param string $strFile The file path
 	 *
-	 * @throws Exception If the temporary file cannot be created or opened
+	 * @throws \Exception If the temporary file cannot be created or opened
 	 */
 	public function __construct($strFile)
 	{
@@ -100,13 +98,13 @@ class ZipWriter
 		// Create temporary file
 		if (($this->strTemp = tempnam(TL_ROOT . '/' . self::TEMPORARY_FOLDER , 'zip')) == false)
 		{
-			throw new Exception("Cannot create temporary file");
+			throw new \Exception("Cannot create temporary file");
 		}
 
 		// Open temporary file
 		if (($this->resFile = @fopen($this->strTemp, 'wb')) == false)
 		{
-			throw new Exception("Cannot open temporary file");
+			throw new \Exception("Cannot open temporary file");
 		}
 	}
 
@@ -134,13 +132,13 @@ class ZipWriter
 	 * @param string $strFile The file path
 	 * @param string $strName An optional file name
 	 *
-	 * @throws Exception If $strFile does not exist
+	 * @throws \Exception If $strFile does not exist
 	 */
 	public function addFile($strFile, $strName=null)
 	{
 		if (!file_exists(TL_ROOT . '/' . $strFile))
 		{
-			throw new Exception("File $strFile does not exist");
+			throw new \Exception("File $strFile does not exist");
 		}
 
 		// Remove leading slashes (see #4502)

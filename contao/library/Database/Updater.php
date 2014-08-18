@@ -17,8 +17,6 @@ use Contao\Controller;
 use Contao\Database;
 use Contao\File;
 use Contao\Folder;
-use Exception;
-use stdClass;
 
 
 /**
@@ -530,7 +528,7 @@ class Updater extends Controller
 
 				if ($objParent->numRows < 1)
 				{
-					throw new Exception('Invalid parent ID ' . $objFiles->pid_backup);
+					throw new \Exception('Invalid parent ID ' . $objFiles->pid_backup);
 				}
 
 				$this->Database->prepare("UPDATE tl_files SET pid=? WHERE pid_backup=?")
@@ -706,7 +704,7 @@ class Updater extends Controller
 			{
 				$this->loadDataContainer($strTable);
 			}
-			catch (Exception $e)
+			catch (\Exception $e)
 			{
 				continue;
 			}
@@ -928,11 +926,11 @@ class Updater extends Controller
 	 *
 	 * @param mixed $value The field value
 	 *
-	 * @return stdClass The helper object
+	 * @return \stdClass The helper object
 	 */
 	protected static function generateHelperObject($value)
 	{
-		$return = new stdClass();
+		$return = new \stdClass();
 
 		if (!is_array($value))
 		{

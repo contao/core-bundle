@@ -13,11 +13,6 @@
 namespace Contao;
 
 use Contao\Dbafs\Filter;
-use Exception;
-use InvalidArgumentException;
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 
 /**
@@ -45,8 +40,8 @@ class Dbafs
 	 *
 	 * @return FilesModel The files model
 	 *
-	 * @throws Exception                If a parent ID entry is missing
-	 * @throws InvalidArgumentException If the resource is outside the upload folder
+	 * @throws \Exception                If a parent ID entry is missing
+	 * @throws \InvalidArgumentException If the resource is outside the upload folder
 	 */
 	public static function addResource($strResource, $blnUpdateFolders=true)
 	{
@@ -64,7 +59,7 @@ class Dbafs
 		// The resource does not exist or lies outside the upload directory
 		if ($strResource == '' || strncmp($strResource,  $strUploadPath, strlen($strUploadPath)) !== 0 || !file_exists(TL_ROOT . '/' . $strResource))
 		{
-			throw new InvalidArgumentException("Invalid resource $strResource");
+			throw new \InvalidArgumentException("Invalid resource $strResource");
 		}
 
 		$arrPaths    = [];
@@ -117,13 +112,13 @@ class Dbafs
 		if (is_dir(TL_ROOT . '/' . $strResource))
 		{
 			// Get a filtered list of all files
-			$objFiles = new RecursiveIteratorIterator(
+			$objFiles = new \RecursiveIteratorIterator(
 				new Filter(
-					new RecursiveDirectoryIterator(
+					new \RecursiveDirectoryIterator(
 						TL_ROOT . '/' . $strResource,
-						FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
+						\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
 					)
-				), RecursiveIteratorIterator::SELF_FIRST
+				), \RecursiveIteratorIterator::SELF_FIRST
 			);
 
 			// Add the relative path
@@ -155,7 +150,7 @@ class Dbafs
 			}
 			else
 			{
-				throw new Exception("No parent entry for $strParent");
+				throw new \Exception("No parent entry for $strParent");
 			}
 
 			// Create the file or folder
@@ -453,7 +448,7 @@ class Dbafs
 	 *
 	 * @return string The path to the synchronization log file
 	 *
-	 * @throws Exception If a parent ID entry is missing
+	 * @throws \Exception If a parent ID entry is missing
 	 */
 	public static function syncFiles()
 	{
@@ -470,13 +465,13 @@ class Dbafs
 		$objDatabase->query("UPDATE tl_files SET found=''");
 
 		// Get a filtered list of all files
-		$objFiles = new RecursiveIteratorIterator(
+		$objFiles = new \RecursiveIteratorIterator(
 			new Filter(
-				new RecursiveDirectoryIterator(
+				new \RecursiveDirectoryIterator(
 					TL_ROOT . '/' . Config::get('uploadPath'),
-					FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
+					\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
 				)
-			), RecursiveIteratorIterator::SELF_FIRST
+			), \RecursiveIteratorIterator::SELF_FIRST
 		);
 
 		$strLog = 'system/tmp/' . md5(uniqid(mt_rand(), true));
@@ -535,7 +530,7 @@ class Dbafs
 
 					if ($objParent === null)
 					{
-						throw new Exception("No parent entry for $strParent");
+						throw new \Exception("No parent entry for $strParent");
 					}
 
 					$strPid = $objParent->uuid;

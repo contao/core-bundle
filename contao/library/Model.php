@@ -17,9 +17,6 @@ use Contao\Database\Statement;
 use Contao\Model\Collection;
 use Contao\Model\QueryBuilder;
 use Contao\Model\Registry;
-use Exception;
-use InvalidArgumentException;
-use LogicException;
 
 
 /**
@@ -360,21 +357,21 @@ abstract class Model
 	 *
 	 * @return Model The model object
 	 *
-	 * @throws InvalidArgumentException If an argument is passed
-	 * @throws LogicException           If the model cannot be saved
+	 * @throws \InvalidArgumentException If an argument is passed
+	 * @throws \LogicException           If the model cannot be saved
 	 */
 	public function save()
 	{
 		// Deprecated call
 		if (count(func_get_args()))
 		{
-			throw new InvalidArgumentException('The $blnForceInsert argument has been removed (see system/docs/UPGRADE.md)');
+			throw new \InvalidArgumentException('The $blnForceInsert argument has been removed (see system/docs/UPGRADE.md)');
 		}
 
 		// The instance cannot be saved
 		if ($this->blnPreventSaving)
 		{
-			throw new LogicException('The model instance has been detached and cannot be saved');
+			throw new \LogicException('The model instance has been detached and cannot be saved');
 		}
 
 		$objDatabase = Database::getInstance();
@@ -531,7 +528,7 @@ abstract class Model
 	 *
 	 * @return Model|Collection The model or a model collection if there are multiple rows
 	 *
-	 * @throws Exception If $strKey is not a related field
+	 * @throws \Exception If $strKey is not a related field
 	 */
 	public function getRelated($strKey, array $arrOptions=[])
 	{
@@ -544,7 +541,7 @@ abstract class Model
 		// The relation does not exist
 		if (!isset($this->arrRelations[$strKey]))
 		{
-			throw new Exception("Field $strKey does not seem to be related");
+			throw new \Exception("Field $strKey does not seem to be related");
 		}
 
 		// The relation exists but there is no reference yet (see #6161)
@@ -880,7 +877,7 @@ abstract class Model
 	 *
 	 * @return Model|Collection A model or model collection
 	 *
-	 * @throws Exception If the method name is invalid
+	 * @throws \Exception If the method name is invalid
 	 */
 	public static function __callStatic($name, $args)
 	{
@@ -900,7 +897,7 @@ abstract class Model
 			return call_user_func_array('static::countBy', $args);
 		}
 
-		throw new Exception("Unknown method $name");
+		throw new \Exception("Unknown method $name");
 	}
 
 

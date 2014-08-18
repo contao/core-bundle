@@ -13,7 +13,6 @@
 namespace Contao;
 
 use Contao\Model\Registry;
-use InvalidArgumentException;
 
 
 /**
@@ -108,13 +107,13 @@ abstract class Template extends View
 	 *
 	 * @return mixed The callable return value
 	 *
-	 * @throws InvalidArgumentException If the callable does not exist
+	 * @throws \InvalidArgumentException If the callable does not exist
 	 */
 	public function __call($strKey, $arrParams)
 	{
 		if (!isset($this->arrData[$strKey]) || !is_callable($this->arrData[$strKey]))
 		{
-			throw new InvalidArgumentException("$strKey is not set or not a callable");
+			throw new \InvalidArgumentException("$strKey is not set or not a callable");
 		}
 
 		return call_user_func_array($this->arrData[$strKey], $arrParams);

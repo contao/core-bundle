@@ -13,7 +13,6 @@
 namespace Contao;
 
 use Contao\Database\Installer;
-use Exception;
 
 
 /**
@@ -99,13 +98,13 @@ class DcaExtractor extends Controller
 	 *
 	 * @param string $strTable The table name
 	 *
-	 * @throws Exception If $strTable is empty
+	 * @throws \Exception If $strTable is empty
 	 */
 	public function __construct($strTable)
 	{
 		if ($strTable == '')
 		{
-			throw new Exception('The table name must not be empty');
+			throw new \Exception('The table name must not be empty');
 		}
 
 		parent::__construct();
@@ -357,7 +356,7 @@ class DcaExtractor extends Controller
 					// Table name and field name are mandatory
 					if (empty($arrRelations[$field]['table']) || empty($arrRelations[$field]['field']))
 					{
-						throw new Exception('Incomplete relation defined for ' . $this->strTable . '.' . $field);
+						throw new \Exception('Incomplete relation defined for ' . $this->strTable . '.' . $field);
 					}
 				}
 			}

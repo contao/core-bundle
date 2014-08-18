@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Allows to import and write style sheets
@@ -1052,7 +1050,7 @@ class StyleSheets extends Backend
 	 *
 	 * @return string The import form
 	 *
-	 * @throws Exception If the insert ID is not valid
+	 * @throws \Exception If the insert ID is not valid
 	 */
 	public function importStyleSheet()
 	{
@@ -1113,7 +1111,7 @@ class StyleSheets extends Backend
 
 				if (!is_numeric($insertId) || $insertId < 0)
 				{
-					throw new Exception('Invalid insert ID');
+					throw new \Exception('Invalid insert ID');
 				}
 
 				// Read the file and remove carriage returns

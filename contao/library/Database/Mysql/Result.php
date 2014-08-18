@@ -13,7 +13,6 @@
 namespace Contao\Database\Mysql;
 
 use Contao\Database\Result as AbstractResult;
-use OutOfBoundsException;
 
 
 /**
@@ -88,13 +87,13 @@ class Result extends AbstractResult
 	 *
 	 * @param int $intIndex The row index
 	 *
-	 * @throws OutOfBoundsException If $intIndex is out of bounds
+	 * @throws \OutOfBoundsException If $intIndex is out of bounds
 	 */
 	protected function data_seek($intIndex)
 	{
 		if ($intIndex < 0)
 		{
-			throw new OutOfBoundsException("Invalid index $intIndex (must be >= 0)");
+			throw new \OutOfBoundsException("Invalid index $intIndex (must be >= 0)");
 		}
 
 		$intTotal = $this->num_rows();
@@ -106,7 +105,7 @@ class Result extends AbstractResult
 
 		if ($intIndex >= $intTotal)
 		{
-			throw new OutOfBoundsException("Invalid index $intIndex (only $intTotal rows in the result set)");
+			throw new \OutOfBoundsException("Invalid index $intIndex (only $intTotal rows in the result set)");
 		}
 
 		mysql_data_seek($this->resResult, $intIndex);

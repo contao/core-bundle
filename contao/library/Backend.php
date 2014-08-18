@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use editable;
-use listable;
-
 
 /**
  * Provides miscellaneous methods for back end controllers
@@ -244,7 +240,7 @@ abstract class Backend extends Controller
 	/**
 	 * Handle the "run once" files
 	 *
-	 * @throws Exception If a file cannot be deleted
+	 * @throws \Exception If a file cannot be deleted
 	 */
 	protected function handleRunOnce()
 	{
@@ -271,11 +267,11 @@ abstract class Backend extends Controller
 				{
 					include TL_ROOT . '/' . $strFile;
 				}
-				catch (Exception $e) {}
+				catch (\Exception $e) {}
 
 				if (!$this->Files->delete($strFile))
 				{
-					throw new Exception("The $strFile file cannot be deleted. Please remove the file manually and correct the file permission settings on your server.");
+					throw new \Exception("The $strFile file cannot be deleted. Please remove the file manually and correct the file permission settings on your server.");
 				}
 
 				$this->log("File $strFile ran once and has then been removed successfully", __METHOD__, TL_GENERAL);
@@ -455,7 +451,7 @@ abstract class Backend extends Controller
 
 			if ($act == '' || $act == 'paste' || $act == 'select')
 			{
-				$act = ($dc instanceof listable) ? 'showAll' : 'edit';
+				$act = ($dc instanceof \listable) ? 'showAll' : 'edit';
 			}
 
 			switch ($act)
@@ -464,7 +460,7 @@ abstract class Backend extends Controller
 				case 'show':
 				case 'showAll':
 				case 'undo':
-					if (!$dc instanceof listable)
+					if (!$dc instanceof \listable)
 					{
 						$this->log('Data container ' . $strTable . ' is not listable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not listable', E_USER_ERROR);
@@ -478,7 +474,7 @@ abstract class Backend extends Controller
 				case 'copyAll':
 				case 'move':
 				case 'edit':
-					if (!$dc instanceof editable)
+					if (!$dc instanceof \editable)
 					{
 						$this->log('Data container ' . $strTable . ' is not editable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not editable', E_USER_ERROR);

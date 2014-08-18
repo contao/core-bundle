@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Creates, reads, writes and deletes files
@@ -77,7 +75,7 @@ class File extends System
 	 *
 	 * @param string $strFile The file path
 	 *
-	 * @throws Exception If $strFile is a directory
+	 * @throws \Exception If $strFile is a directory
 	 */
 	public function __construct($strFile)
 	{
@@ -90,7 +88,7 @@ class File extends System
 		// Make sure we are not pointing to a directory
 		if (is_dir(TL_ROOT . '/' . $strFile))
 		{
-			throw new Exception(sprintf('Directory "%s" is not a file', $strFile));
+			throw new \Exception(sprintf('Directory "%s" is not a file', $strFile));
 		}
 
 		$this->import('Files');
@@ -299,7 +297,7 @@ class File extends System
 	/**
 	 * Create the file if it does not yet exist
 	 *
-	 * @throws Exception If the file cannot be written
+	 * @throws \Exception If the file cannot be written
 	 */
 	protected function createIfNotExists()
 	{
@@ -324,7 +322,7 @@ class File extends System
 		// Open the file
 		if (($this->resFile = $this->Files->fopen($this->strFile, 'wb')) == false)
 		{
-			throw new Exception(sprintf('Cannot create file "%s"', $this->strFile));
+			throw new \Exception(sprintf('Cannot create file "%s"', $this->strFile));
 		}
 	}
 

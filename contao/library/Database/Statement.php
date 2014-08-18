@@ -13,7 +13,6 @@
 namespace Contao\Database;
 
 use Contao\Config;
-use Exception;
 
 
 /**
@@ -73,13 +72,13 @@ abstract class Statement
 	 * @param resource $resConnection        The connection resource
 	 * @param bool     $blnDisableAutocommit Optionally disable autocommitting
 	 *
-	 * @throws Exception If $resConnection is not a valid resource
+	 * @throws \Exception If $resConnection is not a valid resource
 	 */
 	public function __construct($resConnection, $blnDisableAutocommit=false)
 	{
 		if (!is_resource($resConnection) && !is_object($resConnection))
 		{
-			throw new Exception('Invalid connection resource');
+			throw new \Exception('Invalid connection resource');
 		}
 
 		$this->resConnection = $resConnection;
@@ -133,13 +132,13 @@ abstract class Statement
 	 *
 	 * @return Statement The statement object
 	 *
-	 * @throws Exception If $strQuery is empty
+	 * @throws \Exception If $strQuery is empty
 	 */
 	public function prepare($strQuery)
 	{
 		if ($strQuery == '')
 		{
-			throw new Exception('Empty query string');
+			throw new \Exception('Empty query string');
 		}
 
 		$this->resResult = null;
@@ -265,7 +264,7 @@ abstract class Statement
 	 *
 	 * @return Result|Statement The result object or the statement object if there is no result set
 	 *
-	 * @throws Exception If the query cannot be executed
+	 * @throws \Exception If the query cannot be executed
 	 */
 	public function query($strQuery='')
 	{
@@ -277,13 +276,13 @@ abstract class Statement
 		// Make sure there is a query string
 		if ($this->strQuery == '')
 		{
-			throw new Exception('Empty query string');
+			throw new \Exception('Empty query string');
 		}
 
 		// Execute the query
 		if (($this->resResult = $this->execute_query()) == false)
 		{
-			throw new Exception(sprintf('Query error: %s (%s)', $this->error, $this->strQuery));
+			throw new \Exception(sprintf('Query error: %s (%s)', $this->error, $this->strQuery));
 		}
 
 		// No result set available
@@ -306,7 +305,7 @@ abstract class Statement
 	 *
 	 * @param array $arrValues The values array
 	 *
-	 * @throws Exception If $arrValues has too few values to replace the wildcards in the query string
+	 * @throws \Exception If $arrValues has too few values to replace the wildcards in the query string
 	 */
 	protected function replaceWildcards($arrValues)
 	{
@@ -316,7 +315,7 @@ abstract class Statement
 		// Replace wildcards
 		if (($this->strQuery = @vsprintf($this->strQuery, $arrValues)) == false)
 		{
-			throw new Exception('Too few arguments to build the query string');
+			throw new \Exception('Too few arguments to build the query string');
 		}
 	}
 

@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use OutOfBoundsException;
-
 
 /**
  * Converts dates and date format string
@@ -220,7 +217,7 @@ class Date
 	 *
 	 * @return string The regular expression string
 	 *
-	 * @throws Exception If $strFormat is invalid
+	 * @throws \Exception If $strFormat is invalid
 	 */
 	public static function getRegexp($strFormat=null)
 	{
@@ -231,7 +228,7 @@ class Date
 
 		if (!static::isNumericFormat($strFormat))
 		{
-			throw new Exception(sprintf('Invalid date format "%s"', $strFormat));
+			throw new \Exception(sprintf('Invalid date format "%s"', $strFormat));
 		}
 
 		return preg_replace_callback('/[a-zA-Z]/', function($matches)
@@ -268,7 +265,7 @@ class Date
 	 *
 	 * @return string The input format string
 	 *
-	 * @throws Exception If $strFormat is invalid
+	 * @throws \Exception If $strFormat is invalid
 	 */
 	public static function getInputFormat($strFormat=null)
 	{
@@ -279,7 +276,7 @@ class Date
 
 		if (!static::isNumericFormat($strFormat))
 		{
-			throw new Exception(sprintf('Invalid date format "%s"', $strFormat));
+			throw new \Exception(sprintf('Invalid date format "%s"', $strFormat));
 		}
 
 		$arrCharacterMapper =
@@ -322,14 +319,14 @@ class Date
 	/**
 	 * Convert a date string into a Unix timestamp using the format string
 	 *
-	 * @throws Exception            If the format string is invalid
-	 * @throws OutOfBoundsException If the timestamp does not map to a valid date
+	 * @throws \Exception            If the format string is invalid
+	 * @throws \OutOfBoundsException If the timestamp does not map to a valid date
 	 */
 	protected function dateToUnix()
 	{
 		if (!static::isNumericFormat($this->strFormat))
 		{
-			throw new Exception(sprintf('Invalid date format "%s"', $this->strFormat));
+			throw new \Exception(sprintf('Invalid date format "%s"', $this->strFormat));
 		}
 
 		$intCount  = 0;
@@ -438,7 +435,7 @@ class Date
 		// Validate the date (see #5086)
 		if (checkdate($intMonth, $intDay, $intYear) === false)
 		{
-			throw new OutOfBoundsException(sprintf('Invalid date "%s"', $this->strDate));
+			throw new \OutOfBoundsException(sprintf('Invalid date "%s"', $this->strDate));
 		}
 
 		$this->strDate = mktime((int) $intHour, (int) $intMinute, (int) $intSecond, (int) $intMonth, (int) $intDay, (int) $intYear);

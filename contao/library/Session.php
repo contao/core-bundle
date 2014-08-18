@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Handles reading and updating the session data
@@ -165,13 +163,13 @@ class Session
 	 *
 	 * @param array $arrData The session data
 	 *
-	 * @throws Exception If $arrData is not an array
+	 * @throws \Exception If $arrData is not an array
 	 */
 	public function setData($arrData)
 	{
 		if (!is_array($arrData))
 		{
-			throw new Exception('Array required to set session data');
+			throw new \Exception('Array required to set session data');
 		}
 
 		$this->arrSession = $arrData;
@@ -183,7 +181,7 @@ class Session
 	 *
 	 * @param mixed $varData The data object or array
 	 *
-	 * @throws Exception If $varData is not an array or object
+	 * @throws \Exception If $varData is not an array or object
 	 */
 	public function appendData($varData)
 	{
@@ -194,7 +192,7 @@ class Session
 
 		if (!is_array($varData))
 		{
-			throw new Exception('Array or object required to append session data');
+			throw new \Exception('Array or object required to append session data');
 		}
 
 		$this->arrSession = array_merge($this->arrSession, $varData);

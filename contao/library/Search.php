@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Creates and queries the search index
@@ -315,7 +313,7 @@ class Search
 	 *
 	 * @return Database\Result The database result object
 	 *
-	 * @throws Exception If the cleaned keyword string is empty
+	 * @throws \Exception If the cleaned keyword string is empty
 	 */
 	public static function searchFor($strKeywords, $blnOrSearch=false, $arrPid=[], $intRows=0, $intOffset=0, $blnFuzzy=false)
 	{
@@ -335,7 +333,7 @@ class Search
 		// Check keyword string
 		if (!strlen($strKeywords))
 		{
-			throw new Exception('Empty keyword string');
+			throw new \Exception('Empty keyword string');
 		}
 
 		// Split keywords

@@ -13,9 +13,6 @@
 namespace Contao;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use DOMDocument;
-use RuntimeException;
-use stdClass;
 
 
 /**
@@ -513,7 +510,7 @@ abstract class System
 			$strPath = Environment::get('path') ?: '/'; // see #4390
 		}
 
-		$objCookie = new stdClass();
+		$objCookie = new \stdClass();
 
 		$objCookie->strName     = $strName;
 		$objCookie->varValue    = $varValue;
@@ -647,7 +644,7 @@ abstract class System
 	public static function convertXlfToPhp($strName, $strLanguage)
 	{
 		// Read the .xlf file
-		$xml = new DOMDocument();
+		$xml = new \DOMDocument();
 		$xml->preserveWhiteSpace = false;
 
 		// Use loadXML() instead of load() (see 7192)
@@ -779,13 +776,13 @@ abstract class System
 	 *
 	 * @param ContainerInterface $container A container object
 	 *
-	 * @throws RuntimeException If the container is already set
+	 * @throws \RuntimeException If the container is already set
 	 */
 	public static function setContainer(ContainerInterface $container)
 	{
 		if (static::$objContainer !== null)
 		{
-			throw new RuntimeException('The container is already set and cannot be changed');
+			throw new \RuntimeException('The container is already set and cannot be changed');
 		}
 
 		static::$objContainer = $container;

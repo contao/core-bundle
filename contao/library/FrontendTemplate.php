@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use UnusedArgumentsException;
-
 
 /**
  * Parses and outputs front end template files
@@ -61,7 +59,7 @@ class FrontendTemplate extends Template
 	 *
 	 * @param bool $blnCheckRequest If true, check for unsued $_GET parameters
 	 *
-	 * @throws UnusedArgumentsException If there are unused $_GET parameters
+	 * @throws \UnusedArgumentsException If there are unused $_GET parameters
 	 */
 	public function output($blnCheckRequest=false)
 	{
@@ -108,7 +106,7 @@ class FrontendTemplate extends Template
 		// Check whether all $_GET parameters have been used (see #4277)
 		if ($blnCheckRequest && Input::hasUnusedGet())
 		{
-			throw new UnusedArgumentsException();
+			throw new \UnusedArgumentsException();
 		}
 
 		// Send the response to the client

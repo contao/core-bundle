@@ -12,9 +12,6 @@
 
 namespace Contao\Database;
 
-use Exception;
-use OutOfBoundsException;
-
 
 /**
  * Lazy load the result set rows
@@ -80,13 +77,13 @@ abstract class Result
 	 * @param resource $resResult The database result
 	 * @param string   $strQuery  The query string
 	 *
-	 * @throws Exception If $resResult is not a valid resource
+	 * @throws \Exception If $resResult is not a valid resource
 	 */
 	public function __construct($resResult, $strQuery)
 	{
 		if (!is_resource($resResult) && !is_object($resResult))
 		{
-			throw new Exception('Invalid result resource');
+			throw new \Exception('Invalid result resource');
 		}
 
 		$this->resResult = $resResult;
@@ -482,7 +479,7 @@ abstract class Result
 	 *
 	 * @param int $intIndex The row index
 	 *
-	 * @throws OutOfBoundsException If $intIndex is out of bounds
+	 * @throws \OutOfBoundsException If $intIndex is out of bounds
 	 */
 	abstract protected function data_seek($intIndex);
 

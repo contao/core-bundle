@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use idna_convert;
-
 
 /**
  * An idna_encode adapter class
@@ -43,7 +41,7 @@ class Idna
 	 */
 	public static function encode($strDomain)
 	{
-		$objIdn = new idna_convert(['idn_version'=>2008]);
+		$objIdn = new \idna_convert(['idn_version'=>2008]);
 
 		return $objIdn->encode($strDomain);
 	}
@@ -58,7 +56,7 @@ class Idna
 	 */
 	public static function decode($strDomain)
 	{
-		$objIdn = new idna_convert(['idn_version'=>2008]);
+		$objIdn = new \idna_convert(['idn_version'=>2008]);
 
 		return $objIdn->decode($strDomain);
 	}

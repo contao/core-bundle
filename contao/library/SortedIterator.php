@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Iterator;
-use SplHeap;
-
 
 /**
  * Sort iterator items ascending
@@ -23,15 +20,15 @@ use SplHeap;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class SortedIterator extends SplHeap
+class SortedIterator extends \SplHeap
 {
 
 	/**
 	 * Insert the elements
 	 *
-	 * @param Iterator $iterator
+	 * @param \Iterator $iterator
 	 */
-	public function __construct(Iterator $iterator)
+	public function __construct(\Iterator $iterator)
 	{
 		foreach ($iterator as $item)
 		{

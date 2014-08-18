@@ -14,12 +14,6 @@ namespace Contao\Model;
 
 use Contao\Database\Result;
 use Contao\Model;
-use ArrayAccess;
-use ArrayIterator;
-use Countable;
-use InvalidArgumentException;
-use IteratorAggregate;
-use RuntimeException;
 
 
 /**
@@ -32,7 +26,7 @@ use RuntimeException;
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
  */
-class Collection implements ArrayAccess, Countable, IteratorAggregate
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
 
 	/**
@@ -60,7 +54,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 * @param array  $arrModels An array of models
 	 * @param string $strTable  The table name
 	 *
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(array $arrModels, $strTable)
 	{
@@ -70,7 +64,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 		{
 			if (!$objModel instanceof Model)
 			{
-				throw new InvalidArgumentException('Invalid type: ' . gettype($objModel));
+				throw new \InvalidArgumentException('Invalid type: ' . gettype($objModel));
 			}
 		}
 
@@ -444,11 +438,11 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 * @param int   $offset The offset
 	 * @param mixed $value  The value to set
 	 *
-	 * @throws RuntimeException The collection is immutable
+	 * @throws \RuntimeException The collection is immutable
 	 */
 	public function offsetSet($offset, $value)
 	{
-		throw new RuntimeException('This collection is immutable');
+		throw new \RuntimeException('This collection is immutable');
 	}
 
 
@@ -457,21 +451,21 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 *
 	 * @param int $offset The offset
 	 *
-	 * @throws RuntimeException The collection is immutable
+	 * @throws \RuntimeException The collection is immutable
 	 */
 	public function offsetUnset($offset)
 	{
-		throw new RuntimeException('This collection is immutable');
+		throw new \RuntimeException('This collection is immutable');
 	}
 
 
 	/**
 	 * Retrieve the iterator object
 	 *
-	 * @return ArrayIterator The iterator object
+	 * @return \ArrayIterator The iterator object
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->arrModels);
+		return new \ArrayIterator($this->arrModels);
 	}
 }
