@@ -215,8 +215,6 @@ class StyleSheets extends Backend
 			$return = "\n" . '<pre'. ($row['invisible'] ? ' class="disabled"' : '') .'>';
 		}
 
-		$blnNeedsPie = false;
-
 		// Comment
 		if (!$blnWriteToFile && $row['comment'] != '')
 		{
@@ -524,7 +522,6 @@ class StyleSheets extends Backend
 
 				if (is_array($row['gradientColors']) && count(array_filter($row['gradientColors'])) > 0)
 				{
-					$blnNeedsPie = true;
 					$bgImage = '';
 
 					// CSS3 PIE only supports -pie-background, so if there is a background image, include it here, too.
@@ -592,8 +589,6 @@ class StyleSheets extends Backend
 
 				if (is_array($row['shadowsize']) && $row['shadowsize']['top'] != '' && $row['shadowsize']['right'] != '')
 				{
-					$blnNeedsPie = true;
-
 					$offsetx = $row['shadowsize']['top'];
 					$offsety = $row['shadowsize']['right'];
 					$blursize = $row['shadowsize']['bottom'];
@@ -700,8 +695,6 @@ class StyleSheets extends Backend
 
 				if (is_array($row['borderradius']) && ($row['borderradius']['top'] != '' || $row['borderradius']['right'] != '' || $row['borderradius']['bottom'] != '' || $row['borderradius']['left'] != ''))
 				{
-					$blnNeedsPie = true;
-
 					$top = $row['borderradius']['top'];
 					$right = $row['borderradius']['right'];
 					$bottom = $row['borderradius']['bottom'];
@@ -908,12 +901,6 @@ class StyleSheets extends Backend
 
 		// Optimize floating-point numbers (see #6634)
 		$return = preg_replace('/([^0-9\.\+\-])0\.([0-9]+)/', '$1.$2', $return);
-
-		// CSS3PIE
-		if ($blnNeedsPie && !$parent['disablePie'])
-		{
-			$return .= $lb . 'behavior:url(\'assets/css3pie/' . $GLOBALS['TL_ASSETS']['CSS3PIE'] . '/PIE.htc\');';
-		}
 
 		// Custom code
 		if ($row['own'] != '')
@@ -2120,10 +2107,7 @@ class StyleSheets extends Backend
 					break;
 
 				case 'behavior':
-					if ($arrChunks[1] != 'url(\'assets/' . $GLOBALS['TL_ASSETS']['CSS3PIE'] . '/css3pie/PIE.htc\')')
-					{
-						$arrSet['own'][] = $strDefinition;
-					}
+					$arrSet['own'][] = $strDefinition;
 					break;
 
 				default:
