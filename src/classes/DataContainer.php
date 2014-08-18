@@ -473,8 +473,7 @@ class DataContainer extends Backend
 
 			ob_start();
 			include TL_ROOT . '/system/config/' . $file . '.php';
-			$updateMode = ob_get_contents();
-			ob_end_clean();
+			$updateMode = ob_get_clean();
 		}
 
 		// Handle multi-select fields in "override all" mode

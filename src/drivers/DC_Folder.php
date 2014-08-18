@@ -1778,8 +1778,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			// Load the code editor configuration
 			ob_start();
 			include TL_ROOT . '/system/config/ace.php';
-			$codeEditor = ob_get_contents();
-			ob_end_clean();
+			$codeEditor = ob_get_clean();
 		}
 
 		// Versions overview
