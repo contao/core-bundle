@@ -977,8 +977,7 @@ class InsertTags extends Controller
 					{
 						ob_start();
 						include TL_ROOT . '/templates/' . $strFile;
-						$arrCache[$strTag] = ob_get_contents();
-						ob_end_clean();
+						$arrCache[$strTag] = ob_get_clean();
 					}
 
 					$_GET = $arrGet;

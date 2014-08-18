@@ -202,8 +202,7 @@ class ModuleLoader
 				{
 					ob_start();
 					dump($load);
-					$buffer = ob_get_contents();
-					ob_end_clean();
+					$buffer = ob_get_clean();
 
 					throw new UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
 				}

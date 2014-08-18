@@ -323,8 +323,7 @@ abstract class Template extends View
 
 		ob_start();
 		print_r($GLOBALS['TL_DEBUG']);
-		$strDebug .= ob_get_contents();
-		ob_end_clean();
+		$strDebug .= ob_get_clean();
 
 		unset($GLOBALS['TL_DEBUG']);
 

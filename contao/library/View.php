@@ -248,8 +248,7 @@ abstract class View extends Controller
 		else
 		{
 			// Capture the block content
-			$this->arrBlocks[$name][] = ob_get_contents();
-			ob_end_clean();
+			$this->arrBlocks[$name][] = ob_get_clean();
 
 			// Start a new output buffer
 			ob_start();
