@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use TCPDF;
-
 
 /**
  * Class ModuleArticle
@@ -307,7 +305,7 @@ class ModuleArticle extends Module
 		require_once TL_ROOT . '/system/config/tcpdf.php';
 
 		// Create new PDF document
-		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
+		$pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
 
 		// Set document information
 		$pdf->SetCreator(PDF_CREATOR);

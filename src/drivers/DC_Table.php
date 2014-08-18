@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use editable;
-use listable;
-
 
 /**
  * Class DC_Table
@@ -25,7 +21,7 @@ use listable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class DC_Table extends DataContainer implements listable, editable
+class DC_Table extends DataContainer implements \listable, \editable
 {
 
 	/**
@@ -117,7 +113,6 @@ class DC_Table extends DataContainer implements listable, editable
 	 * Initialize the object
 	 * @param string
 	 * @param array
-	 * @throws Exception
 	 */
 	public function __construct($strTable, $arrModule=[])
 	{
@@ -2823,7 +2818,7 @@ class DC_Table extends DataContainer implements listable, editable
 	/**
 	 * Save the current value
 	 * @param mixed
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function save($varValue)
 	{
@@ -2844,7 +2839,7 @@ class DC_Table extends DataContainer implements listable, editable
 		// Make sure unique fields are unique
 		if ($arrData['eval']['unique'] && $varValue != '' && !$this->Database->isUniqueValue($this->strTable, $this->strField, $varValue, $this->objActiveRecord->id))
 		{
-			throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $arrData['label'][0] ?: $this->strField));
+			throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $arrData['label'][0] ?: $this->strField));
 		}
 
 		// Handle multi-select fields in "override all" mode
@@ -4798,7 +4793,7 @@ class DC_Table extends DataContainer implements listable, editable
 
 					$session['search'][$this->strTable]['value'] = Input::postRaw('tl_value');
 				}
-				catch (Exception $e) {}
+				catch (\Exception $e) {}
 			}
 
 			$this->Session->setData($session);

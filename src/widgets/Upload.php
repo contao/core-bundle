@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use uploadable;
-
 
 /**
  * Class Upload
@@ -26,7 +24,7 @@ use uploadable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class Upload extends Widget implements uploadable
+class Upload extends Widget implements \uploadable
 {
 
 	/**

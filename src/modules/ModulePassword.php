@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Class ModulePassword
@@ -297,7 +295,7 @@ class ModulePassword extends Module
 					{
 						$strConfirmation = str_replace($strChunk, $objMember->$strKey, $strConfirmation);
 					}
-					catch (Exception $e)
+					catch (\Exception $e)
 					{
 						$strConfirmation = str_replace($strChunk, '', $strConfirmation);
 						$this->log('Invalid wildcard "' . $strKey . '" used in password request e-mail', __METHOD__, TL_GENERAL, $e->getMessage());

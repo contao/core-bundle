@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Class FileUpload
@@ -88,13 +86,13 @@ class FileUpload extends Backend
 	 * Check the uploaded files and move them to the target directory
 	 * @param string
 	 * @return array
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function uploadTo($strTarget)
 	{
 		if ($strTarget == '' || strpos($strTarget, '../') !== false)
 		{
-			throw new Exception("Invalid target path $strTarget");
+			throw new \Exception("Invalid target path $strTarget");
 		}
 
 		$maxlength_kb = $this->getMaximumUploadSize();

@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Class Ajax
@@ -54,13 +52,13 @@ class Ajax extends Backend
 	/**
 	 * Get the current action
 	 * @param string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function __construct($strAction)
 	{
 		if ($strAction == '')
 		{
-			throw new Exception('Missing Ajax action');
+			throw new \Exception('Missing Ajax action');
 		}
 
 		$this->strAction = $strAction;
@@ -154,7 +152,7 @@ class Ajax extends Backend
 					$objFile->close();
 					$objFile->delete();
 				}
-				catch (Exception $e)
+				catch (\Exception $e)
 				{
 					if ($e->getCode() == 0)
 					{

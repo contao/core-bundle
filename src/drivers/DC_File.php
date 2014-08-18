@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use editable;
-
 
 /**
  * Class DC_File
@@ -23,7 +21,7 @@ use editable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class DC_File extends DataContainer implements editable
+class DC_File extends DataContainer implements \editable
 {
 
 	/**

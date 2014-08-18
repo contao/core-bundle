@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Class PageRegular
@@ -436,7 +434,6 @@ class PageRegular extends Frontend
 	 * Create all header scripts
 	 * @param object
 	 * @param object
-	 * @throws Exception
 	 */
 	protected function createHeaderScripts($objPage, $objLayout)
 	{

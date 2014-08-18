@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use executable;
-
 
 /**
  * Class ModuleMaintenance
@@ -36,7 +33,7 @@ class ModuleMaintenance extends BackendModule
 
 	/**
 	 * Generate the module
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function compile()
 	{
@@ -51,9 +48,9 @@ class ModuleMaintenance extends BackendModule
 		{
 			$this->import($callback);
 
-			if (!$this->$callback instanceof executable)
+			if (!$this->$callback instanceof \executable)
 			{
-				throw new Exception("$callback is not an executable class");
+				throw new \Exception("$callback is not an executable class");
 			}
 
 			$buffer = $this->$callback->run();

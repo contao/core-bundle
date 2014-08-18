@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use uploadable;
-
 
 /**
  * Class DataContainer
@@ -160,7 +157,7 @@ class DataContainer extends Backend
 	 * Render a row of a box and return it as HTML string
 	 * @param string
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function row($strPalette=null)
 	{
@@ -337,7 +334,7 @@ class DataContainer extends Backend
 					{
 						$this->save($varValue);
 					}
-					catch (Exception $e)
+					catch (\Exception $e)
 					{
 						$this->noReload = true;
 						$objWidget->addError($e->getMessage());
@@ -428,7 +425,7 @@ class DataContainer extends Backend
 		$objWidget->wizard = $wizard;
 
 		// Set correct form enctype
-		if ($objWidget instanceof uploadable)
+		if ($objWidget instanceof \uploadable)
 		{
 			$this->blnUploadable = true;
 		}
@@ -458,7 +455,7 @@ class DataContainer extends Backend
 
 			if (!file_exists(TL_ROOT . '/system/config/' . $file . '.php'))
 			{
-				throw new Exception(sprintf('Cannot find editor configuration file "%s.php"', $file));
+				throw new \Exception(sprintf('Cannot find editor configuration file "%s.php"', $file));
 			}
 
 			// Backwards compatibility

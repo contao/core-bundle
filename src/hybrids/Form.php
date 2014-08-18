@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Swift_SwiftException;
-use uploadable;
-
 
 /**
  * Class Form
@@ -201,7 +198,7 @@ class Form extends Hybrid
 					}
 				}
 
-				if ($objWidget instanceof uploadable)
+				if ($objWidget instanceof \uploadable)
 				{
 					$hasUpload = true;
 				}
@@ -416,7 +413,7 @@ class Form extends Hybrid
 			{
 				$email->sendTo($recipients);
 			}
-			catch (Swift_SwiftException $e)
+			catch (\Swift_SwiftException $e)
 			{
 				$this->log('Form "' . $this->title . '" could not be sent: ' . $e->getMessage(), __METHOD__, TL_ERROR);
 			}

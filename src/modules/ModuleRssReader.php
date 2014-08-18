@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use SimplePie;
-
 
 /**
  * Class ModuleRssReader
@@ -58,7 +56,7 @@ class ModuleRssReader extends Module
 			return $objTemplate->parse();
 		}
 
-		$this->objFeed = new SimplePie();
+		$this->objFeed = new \SimplePie();
 		$arrUrls = trimsplit('[\n\t ]', trim($this->rss_feed));
 
 		if (count($arrUrls) > 1)

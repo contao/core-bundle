@@ -12,11 +12,6 @@
 
 namespace Contao;
 
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use executable;
-
 
 /**
  * Class PurgeData
@@ -26,7 +21,7 @@ use executable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class PurgeData extends Backend implements executable
+class PurgeData extends Backend implements \executable
 {
 
 	/**
@@ -130,10 +125,10 @@ class PurgeData extends Backend implements executable
 				if (is_dir(TL_ROOT . '/' . $folder))
 				{
 					// Recursively scan all subfolders
-					$objFiles = new RecursiveIteratorIterator(
-						new RecursiveDirectoryIterator(
+					$objFiles = new \RecursiveIteratorIterator(
+						new \RecursiveDirectoryIterator(
 							TL_ROOT . '/' . $folder,
-							FilesystemIterator::UNIX_PATHS|FilesystemIterator::FOLLOW_SYMLINKS|FilesystemIterator::SKIP_DOTS
+							\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
 						)
 					);
 

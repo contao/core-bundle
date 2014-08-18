@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use uploadable;
-
 
 /**
  * Class FormFileUpload
@@ -23,7 +20,7 @@ use uploadable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class FormFileUpload extends Widget implements uploadable
+class FormFileUpload extends Widget implements \uploadable
 {
 
 	/**
@@ -199,7 +196,7 @@ class FormFileUpload extends Widget implements uploadable
 				// The upload folder could not be found
 				if ($objUploadFolder === null)
 				{
-					throw new Exception("Invalid upload folder ID $intUploadFolder");
+					throw new \Exception("Invalid upload folder ID $intUploadFolder");
 				}
 
 				$strUploadFolder = $objUploadFolder->path;

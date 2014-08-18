@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use editable;
-use listable;
-
 
 /**
  * Class DC_Folder
@@ -25,7 +21,7 @@ use listable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class DC_Folder extends DataContainer implements listable, editable
+class DC_Folder extends DataContainer implements \listable, \editable
 {
 
 	/**
@@ -1883,7 +1879,7 @@ class DC_Folder extends DataContainer implements listable, editable
 	/**
 	 * Save the current value
 	 * @param mixed
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function save($varValue)
 	{
@@ -1925,7 +1921,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			// The target exists
 			if (strcasecmp($this->strPath . '/' . $this->varValue . $this->strExtension, $this->strPath . '/' . $varValue . $this->strExtension) !== 0 && file_exists(TL_ROOT . '/' . $this->strPath . '/' . $varValue . $this->strExtension))
 			{
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['fileExists'], $varValue));
+				throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['fileExists'], $varValue));
 			}
 
 			$arrImageTypes = trimsplit(',', strtolower(Config::get('validImageTypes')));
@@ -1984,7 +1980,7 @@ class DC_Folder extends DataContainer implements listable, editable
 			// Make sure unique fields are unique
 			if ($arrData['eval']['unique'] && $varValue != '' && !$this->Database->isUniqueValue($this->strTable, $this->strField, $varValue, $this->objActiveRecord->id))
 			{
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $arrData['label'][0] ?: $this->strField));
+				throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['unique'], $arrData['label'][0] ?: $this->strField));
 			}
 
 			// Handle multi-select fields in "override all" mode

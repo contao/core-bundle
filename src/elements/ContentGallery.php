@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use stdClass;
-
 
 /**
  * Class ContentGallery
@@ -322,7 +320,7 @@ class ContentGallery extends ContentElement
 					$class_td = ' col_last';
 				}
 
-				$objCell = new stdClass();
+				$objCell = new \stdClass();
 				$key = 'row_' . $rowcount . $class_tr . $class_eo;
 
 				// Empty cell

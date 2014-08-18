@@ -12,10 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use OutOfBoundsException;
-use uploadable;
-
 
 /**
  * Class ModuleRegistration
@@ -207,7 +203,7 @@ class ModuleRegistration extends Module
 						$objDate = new Date($varValue);
 						$varValue = $objDate->tstamp;
 					}
-					catch (OutOfBoundsException $e)
+					catch (\OutOfBoundsException $e)
 					{
 						$objWidget->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
 					}
@@ -236,7 +232,7 @@ class ModuleRegistration extends Module
 								$varValue = $callback($varValue, null);
 							}
 						}
-						catch (Exception $e)
+						catch (\Exception $e)
 						{
 							$objWidget->class = 'error';
 							$objWidget->addError($e->getMessage());
@@ -261,7 +257,7 @@ class ModuleRegistration extends Module
 				}
 			}
 
-			if ($objWidget instanceof uploadable)
+			if ($objWidget instanceof \uploadable)
 			{
 				$hasUpload = true;
 			}

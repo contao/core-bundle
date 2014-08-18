@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use executable;
-
 
 /**
  * Class RebuildIndex
@@ -23,7 +21,7 @@ use executable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class RebuildIndex extends Backend implements executable
+class RebuildIndex extends Backend implements \executable
 {
 
 	/**

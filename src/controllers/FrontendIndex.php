@@ -13,7 +13,6 @@
 namespace Contao;
 
 use Contao\Model\Collection;
-use UnusedArgumentsException;
 
 
 /**
@@ -250,7 +249,7 @@ class FrontendIndex extends Frontend
 					break;
 			}
 		}
-		catch (UnusedArgumentsException $e)
+		catch (\UnusedArgumentsException $e)
 		{
 			// Render the error page (see #5570)
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();

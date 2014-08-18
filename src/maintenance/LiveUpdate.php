@@ -12,9 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-use executable;
-
 
 /**
  * Class LiveUpdate
@@ -24,7 +21,7 @@ use executable;
  * @author     Leo Feyer <https://contao.org>
  * @package    Core
  */
-class LiveUpdate extends Backend implements executable
+class LiveUpdate extends Backend implements \executable
 {
 
 	/**
@@ -129,7 +126,7 @@ class LiveUpdate extends Backend implements executable
 				{
 					File::putContent($objArchive->file_name, $objArchive->unzip());
 				}
-				catch (Exception $e)
+				catch (\Exception $e)
 				{
 					$objTemplate->updateClass = 'tl_error';
 					$objTemplate->updateMessage = 'Error updating ' . $objArchive->file_name . ': ' . $e->getMessage();

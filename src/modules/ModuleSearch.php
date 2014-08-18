@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Exception;
-
 
 /**
  * Class ModuleSearch
@@ -169,7 +167,7 @@ class ModuleSearch extends Module
 					$objSearch = Search::searchFor($strKeywords, ($strQueryType == 'or'), $arrPages, 0, 0, $blnFuzzy);
 					$arrResult = $objSearch->fetchAllAssoc();
 				}
-				catch (Exception $e)
+				catch (\Exception $e)
 				{
 					$this->log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
 					$arrResult = [];
