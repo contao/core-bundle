@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="<?php
     $objCombiner = new Combiner();
-    $objCombiner->add('assets/mootools/stylect/css/stylect.css');
+    $objCombiner->add('assets/mootools/stylect/css/stylect.min.css');
     $objCombiner->add('system/themes/'. $this->theme .'/basic.css');
     $objCombiner->add('system/themes/'. $this->theme .'/login.css');
     echo $objCombiner->getCombinedFile();
@@ -21,10 +21,10 @@
   <script><?= $this->getLocaleString() ?></script>
   <script src="<?php
     $objCombiner = new Combiner();
-    $objCombiner->add('assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools.js', $GLOBALS['TL_ASSETS']['MOOTOOLS']);
-    $objCombiner->add('assets/mootools/stylect/js/stylect.js');
-    $objCombiner->add('assets/mootools/mootao/Mootao.js');
-    $objCombiner->add('assets/contao/js/core.js');
+    $objCombiner->add('assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools.min.js', $GLOBALS['TL_ASSETS']['MOOTOOLS']);
+    $objCombiner->add('assets/mootools/stylect/js/stylect.min.js');
+    $objCombiner->add('assets/mootools/mootao/Mootao.min.js');
+    $objCombiner->add('assets/contao/js/core.min.js');
     echo $objCombiner->getCombinedFile();
   ?>"></script>
   <script><?= $this->getDateString() ?></script>

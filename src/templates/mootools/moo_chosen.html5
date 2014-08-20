@@ -1,13 +1,13 @@
 <?php
 
 // CSS files
-$GLOBALS['TL_CSS'][] = 'assets/mootools/chosen/chosen.css||static';
-$GLOBALS['TL_CSS'][] = 'assets/mootools/stylect/css/stylect.css||static';
+$GLOBALS['TL_CSS'][] = 'assets/mootools/chosen/chosen.min.css||static';
+$GLOBALS['TL_CSS'][] = 'assets/mootools/stylect/css/stylect.min.css||static';
 
 // JavaScript files
 $objCombiner = new Combiner();
-$objCombiner->add('assets/mootools/chosen/chosen.js');
-$objCombiner->add('assets/mootools/stylect/js/stylect.js');
+$objCombiner->add('assets/mootools/chosen/chosen.min.js');
+$objCombiner->add('assets/mootools/stylect/js/stylect.min.js');
 
 ?>
 

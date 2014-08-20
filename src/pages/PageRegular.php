@@ -385,22 +385,22 @@ class PageRegular extends Frontend
 				// Local fallback (thanks to DyaGa)
 				if ($objLayout->mooSource == 'moo_fallback')
 				{
-					$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.js">\x3C/script>\')') . "\n";
+					$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.min.js">\x3C/script>\')') . "\n";
 				}
 
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-more.js|static';
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-mobile.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-more.min.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-mobile.min.js|static';
 			}
 			else
 			{
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools.min.js|static';
 			}
 		}
 
 		// Load MooTools core for the debug bar (see #5195)
 		if (Config::get('debugMode') && !$objLayout->addMooTools)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.js|static';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.min.js|static';
 		}
 
 		// Check whether TL_APPEND_JS exists (see #4890)
@@ -455,7 +455,7 @@ class PageRegular extends Frontend
 			{
 				if ($strFile != 'tinymce.css')
 				{
-					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'assets/contao/css/' . $strFile;
+					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'assets/contao/css/' . basename($strFile, '.css') . '.min.css';
 				}
 			}
 		}
@@ -587,7 +587,7 @@ class PageRegular extends Frontend
 		// Add the debug style sheet
 		if (Config::get('debugMode'))
 		{
-			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('assets/contao/css/debug.css'), 'all') . "\n";
+			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('assets/contao/css/debug.min.css'), 'all') . "\n";
 		}
 
 		// Always add conditional style sheets at the end

@@ -1,11 +1,11 @@
 <?php
 
 // Add the tablesorter style sheet
-$GLOBALS['TL_CSS'][] = 'assets/mootools/tablesort/css/tablesort.css||static';
+$GLOBALS['TL_CSS'][] = 'assets/mootools/tablesort/css/tablesort.min.css||static';
 
 ?>
 
-<script src="<?= TL_ASSETS_URL ?>assets/mootools/tablesort/js/tablesort.js"></script>
+<script src="<?= TL_ASSETS_URL ?>assets/mootools/tablesort/js/tablesort.min.js"></script>
 <script>
   (function() {
     window.addEvent('domready', function() {
