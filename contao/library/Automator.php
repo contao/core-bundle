@@ -506,6 +506,12 @@ class Automator extends System
 			}
 		}
 
+        // Symlink the components directory
+        if (is_dir(TL_ROOT . '/components'))
+        {
+            $this->Files->symlink('../components', 'web/components');
+        }
+
 		// Symlink the assets and themes directory
 		$this->Files->symlink('../assets', 'web/assets');
 		$this->Files->symlink('../../system/themes', 'web/system/themes');
