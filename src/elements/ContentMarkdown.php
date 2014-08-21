@@ -34,7 +34,7 @@ class ContentMarkdown extends ContentElement
 
 
 	/**
-	 * Return if the highlighter plugin is not loaded
+	 * Show the raw markdown code in the back end
 	 * @return string
 	 */
 	public function generate()

@@ -17,8 +17,8 @@
   <!--[if IE]><link rel="stylesheet" href="<?= TL_ASSETS_URL ?>system/themes/<?= $this->theme ?>/iefixes.css"><![endif]-->
   <?= $this->stylesheets ?>
 
-  <script src="assets/mootools/core/<?= $GLOBALS['TL_ASSETS']['MOOTOOLS'] ?>/mootools.min.js"></script>
-  <!--[if lt IE 9]><script src="<?= TL_ASSETS_URL ?>assets/html5shiv/<?= $GLOBALS['TL_ASSETS']['HTML5SHIV'] ?>/html5shiv.js"></script><![endif]-->
+  <script src="<?= TL_ASSETS_URL ?>components/mootools/js/mootools.min.js"></script>
+  <!--[if lt IE 9]><script src="<?= TL_ASSETS_URL ?>components/html5shiv/js/html5shiv.min.js"></script><![endif]-->
 
 </head>
 <body class="<?= $this->ua ?>">

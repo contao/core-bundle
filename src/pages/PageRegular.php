@@ -361,17 +361,35 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->jSource == 'j_googleapis' || $objLayout->jSource == 'j_fallback')
 			{
-				$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $GLOBALS['TL_ASSETS']['JQUERY'] . '.min.js') . "\n";
+                $strVersion = null;
+                $objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
 
-				// Local fallback (thanks to DyaGa)
-				if ($objLayout->jSource == 'j_fallback')
-				{
-					$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/jquery/core/' . $GLOBALS['TL_ASSETS']['JQUERY'] . '/jquery.min.js">\x3C/script>\')') . "\n";
-				}
+                foreach ($objJson->packages as $objPackage)
+                {
+                    if ($objPackage->name == 'contao-components/jquery')
+                    {
+                        $strVersion = $objPackage->version;
+                    }
+                }
+
+                if ($strVersion !== null)
+                {
+				    $this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
+
+    				// Local fallback (thanks to DyaGa)
+    				if ($objLayout->jSource == 'j_fallback')
+    				{
+    					$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'components/jquery/js/jquery.min.js">\x3C/script>\')') . "\n";
+    				}
+                }
+                else
+                {
+    				$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
+                }
 			}
 			else
 			{
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/core/' . $GLOBALS['TL_ASSETS']['JQUERY'] . '/jquery.min.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
 			}
 		}
 
@@ -380,27 +398,45 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->mooSource == 'moo_googleapis' || $objLayout->mooSource == 'moo_fallback')
 			{
-				$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-yui-compressed.js') . "\n";
+                $strVersion = null;
+                $objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
 
-				// Local fallback (thanks to DyaGa)
-				if ($objLayout->mooSource == 'moo_fallback')
-				{
-					$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.min.js">\x3C/script>\')') . "\n";
-				}
+                foreach ($objJson->packages as $objPackage)
+                {
+                    if ($objPackage->name == 'contao-components/mootools')
+                    {
+                        $strVersion = $objPackage->version;
+                    }
+                }
 
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-more.min.js|static';
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-mobile.min.js|static';
+                if ($strVersion !== null)
+                {
+                    $this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
+
+                    // Local fallback (thanks to DyaGa)
+                    if ($objLayout->mooSource == 'moo_fallback')
+                    {
+                        $this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'components/mootools/js/mootools-core.min.js">\x3C/script>\')') . "\n";
+                    }
+
+                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-more.min.js|static';
+                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-mobile.min.js|static';
+                }
+                else
+                {
+                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
+                }
 			}
 			else
 			{
-				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools.min.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
 			}
 		}
 
 		// Load MooTools core for the debug bar (see #5195)
 		if (Config::get('debugMode') && !$objLayout->addMooTools)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/core/' . $GLOBALS['TL_ASSETS']['MOOTOOLS'] . '/mootools-core.min.js|static';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-core.min.js|static';
 		}
 
 		// Check whether TL_APPEND_JS exists (see #4890)

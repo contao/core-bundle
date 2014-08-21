@@ -32,7 +32,7 @@ class ContentYouTube extends ContentElement
 
 
 	/**
-	 * Extend the parent method
+	 * Show the YouTube link in the back end
 	 * @return string
 	 */
 	public function generate()

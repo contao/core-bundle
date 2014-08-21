@@ -132,7 +132,6 @@ TemplateLoader::addFiles(
 	'moo_chosen'          => 'system/modules/core/templates/mootools',
 	'moo_mediabox'        => 'system/modules/core/templates/mootools',
 	'moo_slider'          => 'system/modules/core/templates/mootools',
-	'moo_slimbox'         => 'system/modules/core/templates/mootools',
 	'moo_tablesort'       => 'system/modules/core/templates/mootools',
 	'nav_default'         => 'system/modules/core/templates/navigation',
 	'pagination'          => 'system/modules/core/templates/pagination',

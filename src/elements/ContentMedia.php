@@ -38,7 +38,7 @@ class ContentMedia extends ContentElement
 
 
 	/**
-	 * Extend the parent method
+	 * Return if there are no files
 	 * @return string
 	 */
 	public function generate()
@@ -77,6 +77,7 @@ class ContentMedia extends ContentElement
 		}
 
 		$this->objFiles = $objFiles;
+
 		return parent::generate();
 	}
 
