@@ -1566,7 +1566,7 @@ abstract class Controller extends System
 					'title'     => ucfirst(str_replace('_', ' ', $objFile->filename)),
 					'href'      => $strHref,
 					'enclosure' => $objFiles->path,
-					'icon'      => TL_ASSETS_URL . 'assets/contao/images/' . $objFile->icon,
+					'icon'      => TL_ASSETS_URL . 'assets/icons/' . $objFile->icon,
 					'mime'      => $objFile->mime
 				];
 			}
