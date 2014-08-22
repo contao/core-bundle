@@ -71,7 +71,7 @@ class BackendTemplate extends Template
 		// Add the debug style sheet
 		if (Config::get('debugMode'))
 		{
-			$this->stylesheets .= '<link rel="stylesheet" href="' . $this->addStaticUrlTo('assets/contao/css/debug.min.css') . '">' . "\n";
+			$this->stylesheets .= '<link rel="stylesheet" href="' . $this->addStaticUrlTo('assets/framework/debug.min.css') . '">' . "\n";
 		}
 
 		// JavaScripts
