@@ -43,17 +43,17 @@ abstract class Backend extends Controller
 	{
 		if (Config::get('coreOnlyMode'))
 		{
-			return 'default'; // see #6505
+			return 'flexible'; // see #6505
 		}
 
 		$theme = Config::get('backendTheme');
 
-		if ($theme != '' && $theme != 'default' && is_dir(TL_ROOT . '/system/themes/' . $theme))
+		if ($theme != '' && $theme != 'flexible' && is_dir(TL_ROOT . '/system/themes/' . $theme))
 		{
 			return $theme;
 		}
 
-		return 'default';
+		return 'flexible';
 	}
 
 
