@@ -24,7 +24,7 @@
     $objCombiner->add('components/mootools/js/mootools.min.js');
     $objCombiner->add('assets/stylect/js/stylect.min.js');
     $objCombiner->add('assets/mootao/mootao.min.js');
-    $objCombiner->add('assets/contao/js/core.min.js');
+    $objCombiner->add('assets/core/core.min.js');
     echo $objCombiner->getCombinedFile();
   ?>"></script>
   <script><?= $this->getDateString() ?></script>
