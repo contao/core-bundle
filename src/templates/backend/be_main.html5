@@ -15,7 +15,7 @@
     $objCombiner = new Combiner();
     $objCombiner->add('components/colorpicker/css/mooRainbow.min.css');
     $objCombiner->add('components/chosen/css/chosen.min.css');
-    $objCombiner->add('assets/mootools/stylect/css/stylect.min.css');
+    $objCombiner->add('assets/stylect/css/stylect.min.css');
     $objCombiner->add('components/simplemodal/css/simplemodal.min.css');
     $objCombiner->add('components/datepicker/css/datepicker.min.css');
     $objCombiner->add('system/themes/'. $this->theme .'/basic.css');
@@ -31,7 +31,7 @@
     $objCombiner->add('components/mootools/js/mootools.min.js');
     $objCombiner->add('components/colorpicker/js/mooRainbow.min.js');
     $objCombiner->add('components/chosen/js/chosen.min.js');
-    $objCombiner->add('assets/mootools/stylect/js/stylect.min.js');
+    $objCombiner->add('assets/stylect/js/stylect.min.js');
     $objCombiner->add('components/simplemodal/js/simplemodal.min.js');
     $objCombiner->add('components/datepicker/js/datepicker.min.js');
     $objCombiner->add('assets/mootao/mootao.min.js');

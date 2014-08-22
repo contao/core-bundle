@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="<?php
     $objCombiner = new Combiner();
-    $objCombiner->add('assets/mootools/stylect/css/stylect.min.css');
+    $objCombiner->add('assets/stylect/css/stylect.min.css');
     $objCombiner->add('system/themes/'. $this->theme .'/basic.css');
     $objCombiner->add('system/themes/'. $this->theme .'/login.css');
     echo $objCombiner->getCombinedFile();
@@ -22,7 +22,7 @@
   <script src="<?php
     $objCombiner = new Combiner();
     $objCombiner->add('components/mootools/js/mootools.min.js');
-    $objCombiner->add('assets/mootools/stylect/js/stylect.min.js');
+    $objCombiner->add('assets/stylect/js/stylect.min.js');
     $objCombiner->add('assets/mootao/mootao.min.js');
     $objCombiner->add('assets/contao/js/core.min.js');
     echo $objCombiner->getCombinedFile();
