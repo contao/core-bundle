@@ -140,6 +140,11 @@ class Dbafs
 		// Create the new resources
 		foreach ($arrPaths as $strPath)
 		{
+			if (basename($strPath) == '.public')
+			{
+				continue;
+			}
+
 			$strParent = dirname($strPath);
 
 			// The parent ID should be in $arrPids
