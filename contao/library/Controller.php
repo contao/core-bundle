@@ -666,9 +666,9 @@ abstract class Controller extends System
 	 */
 	public static function replaceInsertTags($strBuffer, $blnCache=true)
 	{
-        $objIt = new InsertTags();
+		$objIt = new InsertTags();
 
-        return $objIt->replace($strBuffer, $blnCache);
+		return $objIt->replace($strBuffer, $blnCache);
 	}
 
 
