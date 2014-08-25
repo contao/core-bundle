@@ -361,31 +361,31 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->jSource == 'j_googleapis' || $objLayout->jSource == 'j_fallback')
 			{
-                $strVersion = null;
-                $objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
+				$strVersion = null;
+				$objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
 
-                foreach ($objJson->packages as $objPackage)
-                {
-                    if ($objPackage->name == 'contao-components/jquery')
-                    {
-                        $strVersion = $objPackage->version;
-                    }
-                }
+				foreach ($objJson->packages as $objPackage)
+				{
+					if ($objPackage->name == 'contao-components/jquery')
+					{
+						$strVersion = $objPackage->version;
+					}
+				}
 
-                if ($strVersion !== null)
-                {
-				    $this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
+				if ($strVersion !== null)
+				{
+					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
 
-    				// Local fallback (thanks to DyaGa)
-    				if ($objLayout->jSource == 'j_fallback')
-    				{
-    					$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'components/jquery/js/jquery.min.js">\x3C/script>\')') . "\n";
-    				}
-                }
-                else
-                {
-    				$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
-                }
+					// Local fallback (thanks to DyaGa)
+					if ($objLayout->jSource == 'j_fallback')
+					{
+						$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'components/jquery/js/jquery.min.js">\x3C/script>\')') . "\n";
+					}
+				}
+				else
+				{
+					$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
+				}
 			}
 			else
 			{
@@ -398,34 +398,34 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->mooSource == 'moo_googleapis' || $objLayout->mooSource == 'moo_fallback')
 			{
-                $strVersion = null;
-                $objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
+				$strVersion = null;
+				$objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
 
-                foreach ($objJson->packages as $objPackage)
-                {
-                    if ($objPackage->name == 'contao-components/mootools')
-                    {
-                        $strVersion = $objPackage->version;
-                    }
-                }
+				foreach ($objJson->packages as $objPackage)
+				{
+					if ($objPackage->name == 'contao-components/mootools')
+					{
+						$strVersion = $objPackage->version;
+					}
+				}
 
-                if ($strVersion !== null)
-                {
-                    $this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
+				if ($strVersion !== null)
+				{
+					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
 
-                    // Local fallback (thanks to DyaGa)
-                    if ($objLayout->mooSource == 'moo_fallback')
-                    {
-                        $this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'components/mootools/js/mootools-core.min.js">\x3C/script>\')') . "\n";
-                    }
+					// Local fallback (thanks to DyaGa)
+					if ($objLayout->mooSource == 'moo_fallback')
+					{
+						$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'components/mootools/js/mootools-core.min.js">\x3C/script>\')') . "\n";
+					}
 
-                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-more.min.js|static';
-                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-mobile.min.js|static';
-                }
-                else
-                {
-                    $GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
-                }
+					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-more.min.js|static';
+					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-mobile.min.js|static';
+				}
+				else
+				{
+					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
+				}
 			}
 			else
 			{
