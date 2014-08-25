@@ -180,6 +180,8 @@ abstract class Model
 	public function __clone()
 	{
 		$this->arrModified = [];
+		$this->blnPreventSaving = false;
+
 		unset($this->arrData[static::$strPk]);
 	}
 
