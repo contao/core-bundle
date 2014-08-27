@@ -312,7 +312,7 @@ abstract class System
 
 					if (file_exists(TL_ROOT . '/' . $strFile . '.xlf'))
 					{
-						eval(static::convertXlfToPhp($strFile . '.xlf', $strCreateLang));
+						static::convertXlfToPhp($strFile . '.xlf', $strCreateLang, true);
 					}
 					elseif (file_exists(TL_ROOT . '/' . $strFile . '.php'))
 					{
@@ -638,10 +638,11 @@ abstract class System
 	 *
 	 * @param string $strName     The name of the .xlf file
 	 * @param string $strLanguage The language code
+	 * @param bool   $blnLoad     Add the labels to the global language array
 	 *
 	 * @return string The PHP code
 	 */
-	public static function convertXlfToPhp($strName, $strLanguage)
+	public static function convertXlfToPhp($strName, $strLanguage, $blnLoad=false)
 	{
 		// Read the .xlf file
 		$xml = new \DOMDocument();
@@ -670,6 +671,19 @@ abstract class System
 			}
 		};
 
+		// Set up the quotevalue function
+		$quotevalue = function($value)
+		{
+			if (strpos($value, '\n') !== false)
+			{
+				return '"' . str_replace('"', '\\"', $value) . '"';
+			}
+			else
+			{
+				return "'" . str_replace("'", "\\'", $value) . "'";
+			}
+		};
+
 		// Add the labels
 		foreach ($units as $unit)
 		{
@@ -688,16 +702,6 @@ abstract class System
 				$value = str_replace('</ em>', '</em>', $value);
 			}
 
-			// Quote the value
-			if (strpos($value, '\n') !== false)
-			{
-				$value = '"' . str_replace('"', '\\"', $value) . '"';
-			}
-			else
-			{
-				$value = "'" . str_replace("'", "\\'", $value) . "'";
-			}
-
 			$chunks = explode('.', $unit->getAttribute('id'));
 
 			// Handle keys with dots
@@ -710,15 +714,30 @@ abstract class System
 			switch (count($chunks))
 			{
 				case 2:
-					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "] = " . $value . ";\n";
+					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "] = " . $quotevalue($value) . ";\n";
+
+					if ($blnLoad)
+					{
+						$GLOBALS['TL_LANG'][$chunks[0]][$chunks[1]] = $value;
+					}
 					break;
 
 				case 3:
-					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "][" . $quotekey($chunks[2]) . "] = " . $value . ";\n";
+					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "][" . $quotekey($chunks[2]) . "] = " . $quotevalue($value) . ";\n";
+
+					if ($blnLoad)
+					{
+						$GLOBALS['TL_LANG'][$chunks[0]][$chunks[1]][$chunks[2]] = $value;
+					}
 					break;
 
 				case 4:
-					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "][" . $quotekey($chunks[2]) . "][" . $quotekey($chunks[3]) . "] = " . $value . ";\n";
+					$return .= "\$GLOBALS['TL_LANG']['" . $chunks[0] . "'][" . $quotekey($chunks[1]) . "][" . $quotekey($chunks[2]) . "][" . $quotekey($chunks[3]) . "] = " . $quotevalue($value) . ";\n";
+
+					if ($blnLoad)
+					{
+						$GLOBALS['TL_LANG'][$chunks[0]][$chunks[1]][$chunks[2]][$chunks[3]] = $value;
+					}
 					break;
 			}
 		}
