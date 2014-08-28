@@ -360,7 +360,7 @@ class Environment
 		// Generate an array of X-Forwarded-For IPs
 		if (strpos($strXip, ',') !== false)
 		{
-			$arrIps = trimsplit(',', $strXip);
+			$arrIps = array_map('trim', explode(',', $strXip));
 		}
 		else
 		{
