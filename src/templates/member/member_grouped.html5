@@ -11,109 +11,20 @@
       <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
       <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 
-      <?php if ($this->personal): ?>
-        <fieldset>
-          <legend><?= $this->personalData ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->personal) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->address): ?>
-        <fieldset>
-          <legend><?= $this->addressDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->address) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->contact): ?>
-        <fieldset>
-          <legend><?= $this->contactDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->contact) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->login): ?>
-        <fieldset>
-          <legend><?= $this->loginDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->login) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->profile): ?>
-        <fieldset>
-          <legend><?= $this->profileDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->profile) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->newsletter): ?>
-        <fieldset>
-          <legend><?= $this->newsletterDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->newsletter) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->helpdesk): ?>
-        <fieldset>
-          <legend><?= $this->helpdeskDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= implode('', $this->helpdesk) ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
-
-      <?php if ($this->captcha): ?>
-        <fieldset>
-          <legend><?= $this->captchaDetails ?></legend>
-          <?php if (!$this->tableless): ?>
-            <table>
-          <?php endif; ?>
-          <?= $this->captcha ?>
-          <?php if (!$this->tableless): ?>
-            </table>
-          <?php endif; ?>
-        </fieldset>
-      <?php endif; ?>
+      <?php foreach ($this->categories as $legend=>$category): ?>
+        <?php if (!empty($category)): ?>
+          <fieldset>
+            <legend><?= $legend ?></legend>
+            <?php if (!$this->tableless): ?>
+              <table>
+            <?php endif; ?>
+            <?= implode('', $category) ?>
+            <?php if (!$this->tableless): ?>
+              </table>
+            <?php endif; ?>
+          </fieldset>
+        <?php endif; ?>
+      <?php endforeach; ?>
 
       <div class="submit_container">
         <input type="submit" class="submit" value="<?= $this->slabel ?>">
