@@ -130,6 +130,7 @@ TemplateLoader::addFiles(
 	'mod_sitemap'         => 'system/modules/core/templates/modules',
 	'moo_accordion'       => 'system/modules/core/templates/mootools',
 	'moo_chosen'          => 'system/modules/core/templates/mootools',
+	'moo_highlight'       => 'system/modules/core/templates/mootools',
 	'moo_mediabox'        => 'system/modules/core/templates/mootools',
 	'moo_slider'          => 'system/modules/core/templates/mootools',
 	'moo_tablesort'       => 'system/modules/core/templates/mootools',

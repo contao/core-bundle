@@ -1,0 +1,9 @@
+<?php
+
+// Add the highlight style sheet
+$GLOBALS['TL_CSS'][] = 'components/highlight/css/foundation.css||static';
+
+?>
+
+<script src="<?= TL_ASSETS_URL ?>components/highlight/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
