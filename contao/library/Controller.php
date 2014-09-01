@@ -728,20 +728,6 @@ abstract class Controller extends System
 			}
 		}
 
-		// Add the syntax highlighter scripts
-		if (!empty($GLOBALS['TL_HIGHLIGHTER']) && is_array($GLOBALS['TL_HIGHLIGHTER']))
-		{
-			$objCombiner = new Combiner();
-
-			foreach (array_unique($GLOBALS['TL_HIGHLIGHTER']) as $script)
-			{
-				$objCombiner->add($script);
-			}
-
-			$strScripts .= "\n" . Template::generateScriptTag($objCombiner->getCombinedFile());
-			$strScripts .= "\n" . Template::generateInlineScript('SyntaxHighlighter.defaults.toolbar=false;SyntaxHighlighter.all()') . "\n";
-		}
-
 		// Command scheduler
 		if (!Config::get('disableCron'))
 		{
