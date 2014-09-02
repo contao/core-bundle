@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 	'palettes' =>
 	[
 		'__selector__'                => ['rows', 'cols', 'addJQuery', 'addMooTools', 'static'],
-		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head;{jquery_legend},addJQuery;{mootools_legend},addMooTools;{script_legend:hide},analytics,script;{static_legend},static'
+		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head;{jquery_legend},addJQuery;{mootools_legend},addMooTools;{script_legend},analytics,scripts,script;{static_legend},static'
 	],
 
 	// Subpalettes
@@ -436,6 +436,16 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 			'eval'                    => ['multiple'=>true],
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		],
+		'scripts' =>
+		[
+			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['scripts'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'checkboxWizard',
+			'options_callback'        => ['tl_layout', 'getScriptTemplates'],
+			'eval'                    => ['multiple'=>true],
+			'sql'                     => "text NULL"
+		],
 		'script' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['script'],
@@ -634,6 +644,16 @@ class tl_layout extends Backend
 	public function getJqueryTemplates()
 	{
 		return $this->getTemplateGroup('j_');
+	}
+
+
+	/**
+	 * Return all script templates as array
+	 * @return array
+	 */
+	public function getScriptTemplates()
+	{
+		return $this->getTemplateGroup('js_');
 	}
 
 

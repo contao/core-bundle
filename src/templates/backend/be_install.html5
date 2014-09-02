@@ -1145,6 +1145,25 @@ Library.
                 </div>
               </fieldset>
 
+            <?php elseif ($this->is40Update): ?>
+              <fieldset class="tl_box<?php if (!$this->is40Update): ?> collapsed<?php endif; ?>">
+                <legend onclick="this.getParent().toggleClass('collapsed')"><?= $GLOBALS['TL_LANG']['tl_install']['update'][0] ?></legend>
+                <div>
+                  <h3><?= $GLOBALS['TL_LANG']['tl_install']['update'][0] ?></h3>
+                  <p class="tl_error"><?= $GLOBALS['TL_LANG']['tl_install']['updateError'] ?></p>
+                  <p><?= sprintf($GLOBALS['TL_LANG']['tl_install']['updateX'], '4.0', '4.0') ?></p>
+                  <form action="<?= $this->action ?>" class="tl_install_form" method="post">
+                    <div class="tl_formbody_submit">
+                      <input type="hidden" name="FORM_SUBMIT" value="tl_40update">
+                      <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
+                      <div class="tl_submit_container">
+                        <input type="submit" class="tl_submit" value="<?= sprintf($GLOBALS['TL_LANG']['tl_install']['updateXrun'], '4.0') ?>" onclick="Backend.getScrollOffset()">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </fieldset>
+
             <?php elseif ($this->dbConnection): ?>
               <fieldset class="tl_box collapsed">
                 <legend onclick="this.getParent().toggleClass('collapsed')"><?= $GLOBALS['TL_LANG']['tl_install']['collation'][0] ?></legend>

@@ -997,4 +997,26 @@ class BackendInstall extends Backend
 			$this->outputAndExit();
 		}
 	}
+
+
+	/**
+	 * Version 4.0.0 update
+	 */
+	protected function update40()
+	{
+		if ($this->Database->tableExists('tl_layout') && !$this->Database->fieldExists('scripts', 'tl_layout'))
+		{
+			$this->enableSafeMode();
+
+			if (Input::post('FORM_SUBMIT') == 'tl_40update')
+			{
+				$this->import('Contao\\Database\\Updater', 'Updater');
+				$this->Updater->run40Update();
+				$this->reload();
+			}
+
+			$this->Template->is40Update = true;
+			$this->outputAndExit();
+		}
+	}
 }

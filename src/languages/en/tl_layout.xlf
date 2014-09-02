@@ -272,11 +272,17 @@
       <trans-unit id="tl_layout.mootools.1">
         <source>Here you can select one or more MooTools templates.</source>
       </trans-unit>
+      <trans-unit id="tl_layout.scripts.0">
+        <source>JavaScript templates</source>
+      </trans-unit>
+      <trans-unit id="tl_layout.scripts.1">
+        <source>Here you can select one or more JavaScript templates.</source>
+      </trans-unit>
       <trans-unit id="tl_layout.analytics.0">
         <source>Analytics templates</source>
       </trans-unit>
       <trans-unit id="tl_layout.analytics.1">
-        <source>Here you can activate the analytics templates (e.g. for Google Analytics or Piwik). Note that you have to adjust those templates and add your analytics ID before you can use them!</source>
+        <source>Here you can select one or more analytics templates.</source>
       </trans-unit>
       <trans-unit id="tl_layout.script.0">
         <source>Custom JavaScript code</source>
@@ -330,7 +336,7 @@
         <source>Expert settings</source>
       </trans-unit>
       <trans-unit id="tl_layout.script_legend">
-        <source>Script settings</source>
+        <source>JavaScript</source>
       </trans-unit>
       <trans-unit id="tl_layout.static_legend">
         <source>Static layout</source>
@@ -362,12 +368,6 @@
       <trans-unit id="tl_layout.html5">
         <source>HTML</source>
       </trans-unit>
-      <trans-unit id="tl_layout.xhtml_strict">
-        <source>XHTML Strict</source>
-      </trans-unit>
-      <trans-unit id="tl_layout.xhtml_trans">
-        <source>XHTML Transitional</source>
-      </trans-unit>
       <trans-unit id="tl_layout.top">
         <source>Before the wrapper</source>
       </trans-unit>
@@ -390,7 +390,7 @@
         <source>Edit the module</source>
       </trans-unit>
       <trans-unit id="tl_layout.analytics_google">
-        <source>Google</source>
+        <source>Google Analytics</source>
       </trans-unit>
       <trans-unit id="tl_layout.analytics_piwik">
         <source>Piwik</source>

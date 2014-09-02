@@ -718,6 +718,21 @@ class PageRegular extends Frontend
 			$strScripts .= '[[TL_MOOTOOLS]]';
 		}
 
+		// Add the framework agnostic JavaScripts
+		if ($objLayout->scripts != '')
+		{
+			$arrScripts = deserialize($objLayout->scripts, true);
+
+			foreach ($arrScripts as $strTemplate)
+			{
+				if ($strTemplate != '')
+				{
+					$objTemplate = new FrontendTemplate($strTemplate);
+					$strScripts .= $objTemplate->parse();
+				}
+			}
+		}
+
 		// Add a placeholder for dynamic scripts (see #4203, #5583)
 		$strScripts .= '[[TL_BODY]]';
 
