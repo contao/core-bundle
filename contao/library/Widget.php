@@ -278,14 +278,7 @@ abstract class Widget extends View
 
 			case 'disabled':
 			case 'readonly':
-				if ($varValue)
-				{
-					$this->blnSubmitInput = false;
-				}
-				else
-				{
-					$this->blnSubmitInput = true;
-				}
+				$this->blnSubmitInput = $varValue ? false : true;
 				// Do not add a break; statement here
 
 			case 'autofocus':
@@ -325,6 +318,12 @@ abstract class Widget extends View
 
 			case 'dataContainer':
 				$this->objDca = $varValue;
+				break;
+
+			case strncmp($strKey, 'ng-', 3) === 0:
+			case strncmp($strKey, 'data-', 5) === 0:
+				dump($strKey);
+				$this->arrAttributes[$strKey] = $strKey;
 				break;
 
 			default:
