@@ -611,7 +611,7 @@ class PageRegular extends Frontend
 				{
 					if (file_exists(TL_ROOT . '/' . $objFiles->path))
 					{
-						$GLOBALS['TL_USER_CSS'][] = $objFiles->path . '||static';
+						$GLOBALS['TL_USER_CSS'][] = $objFiles->path . '|static';
 					}
 				}
 			}

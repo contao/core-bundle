@@ -1,7 +1,7 @@
 <?php
 
 // Add the tablesorter style sheet
-$GLOBALS['TL_CSS'][] = 'components/tablesorter/css/tablesorter.min.css||static';
+$GLOBALS['TL_CSS'][] = 'components/tablesorter/css/tablesorter.min.css|static';
 
 ?>
 

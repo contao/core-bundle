@@ -1,8 +1,8 @@
 <?php
 
 // CSS files
-$GLOBALS['TL_CSS'][] = 'components/chosen/css/chosen.min.css||static';
-$GLOBALS['TL_CSS'][] = 'assets/stylect/css/stylect.min.css||static';
+$GLOBALS['TL_CSS'][] = 'components/chosen/css/chosen.min.css|static';
+$GLOBALS['TL_CSS'][] = 'assets/stylect/css/stylect.min.css|static';
 
 // JavaScript files
 $objCombiner = new Combiner();

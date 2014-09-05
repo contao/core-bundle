@@ -1,7 +1,7 @@
 <?php
 
 // Add the swipe style sheet
-$GLOBALS['TL_CSS'][] = 'components/swipe/css/swipe.min.css||static';
+$GLOBALS['TL_CSS'][] = 'components/swipe/css/swipe.min.css|static';
 
 ?>
 

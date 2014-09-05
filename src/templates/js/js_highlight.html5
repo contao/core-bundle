@@ -1,7 +1,7 @@
 <?php
 
 // Add the highlight style sheet
-$GLOBALS['TL_CSS'][] = 'components/highlight/css/foundation.css||static';
+$GLOBALS['TL_CSS'][] = 'components/highlight/css/foundation.css|static';
 
 ?>
 
