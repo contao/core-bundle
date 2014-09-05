@@ -754,14 +754,15 @@ abstract class Controller extends System
 			foreach (array_unique($GLOBALS['TL_CSS']) as $stylesheet)
 			{
 				list($stylesheet, $media, $mode) = explode('|', $stylesheet);
+				$options = String::resolveFlaggedUrl($stylesheet);
 
-				if ($mode == 'static')
+				if ($options->static)
 				{
-					$objCombiner->add($stylesheet, filemtime(TL_ROOT . '/' . $stylesheet), $media);
+					$objCombiner->add($stylesheet, filemtime(TL_ROOT . '/' . $stylesheet), $options->media);
 				}
 				else
 				{
-					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
+					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media) . "\n";
 				}
 			}
 		}
@@ -771,20 +772,20 @@ abstract class Controller extends System
 		{
 			foreach (array_unique($GLOBALS['TL_USER_CSS']) as $stylesheet)
 			{
-				list($stylesheet, $media, $mode, $version) = explode('|', $stylesheet);
+				$options = String::resolveFlaggedUrl($stylesheet);
 
-				if (!$version)
+				if ($options->static)
 				{
-					$version = filemtime(TL_ROOT . '/' . $stylesheet);
-				}
+					if ($options->mtime === null)
+					{
+						$options->mtime = filemtime(TL_ROOT . '/' . $stylesheet);
+					}
 
-				if ($mode == 'static')
-				{
-					$objCombiner->add($stylesheet, $version, $media);
+					$objCombiner->add($stylesheet, $options->mtime, $options->media);
 				}
 				else
 				{
-					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $media) . "\n";
+					$strScripts .= Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media) . "\n";
 				}
 			}
 		}

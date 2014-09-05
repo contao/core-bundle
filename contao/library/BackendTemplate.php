@@ -61,8 +61,8 @@ class BackendTemplate extends Template
 
 			foreach (array_unique($GLOBALS['TL_CSS']) as $stylesheet)
 			{
-				list($stylesheet, $media) = explode('|', $stylesheet);
-				$strStyleSheets .= '<link rel="stylesheet" href="' . $this->addStaticUrlTo($stylesheet) . '"' . (($media != '' && $media != 'all') ? ' media="' . $media . '"' : '') . '>' . "\n";
+				$options = String::resolveFlaggedUrl($stylesheet);
+				$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo($stylesheet), $options->media);
 			}
 
 			$this->stylesheets = $strStyleSheets;
@@ -71,7 +71,7 @@ class BackendTemplate extends Template
 		// Add the debug style sheet
 		if (Config::get('debugMode'))
 		{
-			$this->stylesheets .= '<link rel="stylesheet" href="' . $this->addStaticUrlTo('assets/framework/debug.min.css') . '">' . "\n";
+			$this->stylesheets .= Template::generateStyleTag($this->addStaticUrlTo('assets/framework/debug.min.css')) . "\n";
 		}
 
 		// JavaScripts
@@ -81,7 +81,8 @@ class BackendTemplate extends Template
 
 			foreach (array_unique($GLOBALS['TL_JAVASCRIPT']) as $javascript)
 			{
-				$strJavaScripts .= '<script src="' . $this->addStaticUrlTo($javascript) . '"></script>' . "\n";
+				$options = String::resolveFlaggedUrl($javascript);
+				$strJavaScripts .= Template::generateScriptTag($this->addStaticUrlTo($javascript), $options->async) . "\n";
 			}
 
 			$this->javascripts = $strJavaScripts;

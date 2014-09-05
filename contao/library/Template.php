@@ -427,9 +427,9 @@ abstract class Template extends View
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateStyleTag($href, $media)
+	public static function generateStyleTag($href, $media=null)
 	{
-		return '<link rel="stylesheet" href="' . $href . '"' . (($media != '' && $media != 'all') ? ' media="' . $media . '"' : '') . '>';
+		return '<link rel="stylesheet" href="' . $href . '"' . (($media && $media != 'all') ? ' media="' . $media . '"' : '') . '>';
 	}
 
 
@@ -449,13 +449,14 @@ abstract class Template extends View
 	/**
 	 * Generate the markup for a JavaScript tag
 	 *
-	 * @param string $src The script path
+	 * @param string $src   The script path
+	 * @param bool   $async True to add the async attribute
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateScriptTag($src)
+	public static function generateScriptTag($src, $async=false)
 	{
-		return '<script src="' . $src . '"></script>';
+		return '<script src="' . $src . '"' . ($async ? ' async' : '') . '></script>';
 	}
 
 
