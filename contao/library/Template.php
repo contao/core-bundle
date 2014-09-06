@@ -215,9 +215,7 @@ abstract class Template extends View
 	 */
 	public function dumpTemplateVars()
 	{
-		echo "<pre>\n";
-		var_dump($this->arrData);
-		echo "</pre>\n";
+		dump($this->arrData);
 	}
 
 
