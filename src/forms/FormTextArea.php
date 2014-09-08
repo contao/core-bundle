@@ -58,6 +58,13 @@ class FormTextArea extends Widget
 	 */
 	protected $strTemplate = 'form_textarea';
 
+	/**
+	 * The CSS class prefix
+	 *
+	 * @var string
+	 */
+	protected $strPrefix = 'widget widget-textarea';
+
 
 	/**
 	 * Add specific attributes

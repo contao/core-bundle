@@ -44,6 +44,13 @@ class FormSelectMenu extends Widget
 	 */
 	protected $strTemplate = 'form_select';
 
+	/**
+	 * The CSS class prefix
+	 *
+	 * @var string
+	 */
+	protected $strPrefix = 'widget widget-select';
+
 
 	/**
 	 * Add specific attributes

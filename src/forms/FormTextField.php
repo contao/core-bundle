@@ -44,6 +44,13 @@ class FormTextField extends Widget
 	 */
 	protected $strTemplate = 'form_textfield';
 
+	/**
+	 * The CSS class prefix
+	 *
+	 * @var string
+	 */
+	protected $strPrefix = 'widget widget-text';
+
 
 	/**
 	 * Add specific attributes

@@ -30,6 +30,13 @@ class FormExplanation extends Widget
 	 */
 	protected $strTemplate = 'form_explanation';
 
+	/**
+	 * The CSS class prefix
+	 *
+	 * @var string
+	 */
+	protected $strPrefix = 'widget widget-explanation';
+
 
 	/**
 	 * Do not validate

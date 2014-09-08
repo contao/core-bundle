@@ -44,6 +44,13 @@ class FormRadioButton extends Widget
 	 */
 	protected $strError = '';
 
+	/**
+	 * The CSS class prefix
+	 *
+	 * @var string
+	 */
+	protected $strPrefix = 'widget widget-radio';
+
 
 	/**
 	 * Add specific attributes
