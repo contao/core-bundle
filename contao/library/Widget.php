@@ -74,6 +74,12 @@ abstract class Widget extends View
 	protected $strClass;
 
 	/**
+	 * CSS class prefix
+	 * @var string
+	 */
+	protected $strPrefix;
+
+	/**
 	 * Wizard
 	 * @var string
 	 */
@@ -156,6 +162,7 @@ abstract class Widget extends View
 	 * * label:             the field label
 	 * * value:             the field value
 	 * * class:             one or more CSS classes
+	 * * prefix:            the CSS class prefix
 	 * * template:          the template name
 	 * * wizard:            the field wizard markup
 	 * * alt:               an alternative text
@@ -229,6 +236,10 @@ abstract class Widget extends View
 				{
 					$this->strClass = trim($this->strClass . ' ' . $varValue);
 				}
+				break;
+
+			case 'prefix':
+				$this->strPrefix = $varValue;
 				break;
 
 			case 'template':
@@ -342,6 +353,7 @@ abstract class Widget extends View
 	 * * label:    the field label
 	 * * value:    the field value
 	 * * class:    one or more CSS classes
+	 * * prefix:   the CSS class prefix
 	 * * template: the template name
 	 * * wizard:   the field wizard markup
 	 * * required: makes the widget a required field
@@ -381,6 +393,10 @@ abstract class Widget extends View
 
 			case 'class':
 				return $this->strClass;
+				break;
+
+			case 'prefix':
+				return $this->strPrefix;
 				break;
 
 			case 'template':
