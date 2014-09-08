@@ -117,6 +117,12 @@ $GLOBALS['TL_DCA']['tl_style_sheet'] =
 				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
+			],
+			'export' =>
+			[
+				'label'               => &$GLOBALS['TL_LANG']['tl_style_sheet']['export'],
+				'href'                => 'key=export',
+				'icon'                => 'theme_export.gif'
 			]
 		]
 	],
