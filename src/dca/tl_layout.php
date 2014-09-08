@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 	'palettes' =>
 	[
 		'__selector__'                => ['rows', 'cols', 'addJQuery', 'addMooTools', 'static'],
-		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{feed_legend:hide},newsfeeds,calendarfeeds;{sections_legend:hide},sections,sPosition;{modules_legend},modules;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head;{jquery_legend},addJQuery;{mootools_legend},addMooTools;{script_legend},analytics,scripts,script;{static_legend},static'
+		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{jquery_legend:hide},addJQuery;{mootools_legend:hide},addMooTools;{script_legend},analytics,scripts,script;{static_legend:hide},static;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head'
 	],
 
 	// Subpalettes
