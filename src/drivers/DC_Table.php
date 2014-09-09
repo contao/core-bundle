@@ -1472,11 +1472,11 @@ class DC_Table extends DataContainer implements \listable, \editable
 					if (is_array($callback))
 					{
 						$this->import($callback[0]);
-						$this->$callback[0]->$callback[1]($this, $insertID);
+						$this->$callback[0]->$callback[1]($insertID, $this);
 					}
 					elseif (is_callable($callback))
 					{
-						$callback($this, $insertID);
+						$callback($insertID, $this);
 					}
 				}
 			}

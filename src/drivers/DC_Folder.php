@@ -777,11 +777,11 @@ class DC_Folder extends DataContainer implements \listable, \editable
 				if (is_array($callback))
 				{
 					$this->import($callback[0]);
-					$this->$callback[0]->$callback[1]($this, $source);
+					$this->$callback[0]->$callback[1]($source, $this);
 				}
 				elseif (is_callable($callback))
 				{
-					$callback($this, $source);
+					$callback($source, $this);
 				}
 			}
 		}
