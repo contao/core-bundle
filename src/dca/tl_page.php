@@ -511,9 +511,10 @@ $GLOBALS['TL_DCA']['tl_page'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_page']['cuser'],
 			'default'                 => intval(Config::get('defaultUser')),
+			'search'                  => true,
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'foreignKey'              => 'tl_user.username',
+			'foreignKey'              => 'tl_user.name',
 			'eval'                    => ['mandatory'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => ['type'=>'hasOne', 'load'=>'lazy']
@@ -522,6 +523,7 @@ $GLOBALS['TL_DCA']['tl_page'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_page']['cgroup'],
 			'default'                 => intval(Config::get('defaultGroup')),
+			'search'                  => true,
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'foreignKey'              => 'tl_user_group.name',

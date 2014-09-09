@@ -207,6 +207,7 @@ $GLOBALS['TL_DCA']['tl_article'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['author'],
 			'default'                 => BackendUser::getInstance()->id,
+			'search'                  => true,
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'foreignKey'              => 'tl_user.name',
