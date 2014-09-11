@@ -362,9 +362,9 @@ class PageRegular extends Frontend
 			if ($objLayout->jSource == 'j_googleapis' || $objLayout->jSource == 'j_fallback')
 			{
 				$strVersion = null;
-				$objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
+				$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'));
 
-				foreach ($objJson->packages as $objPackage)
+				foreach ($objJson as $objPackage)
 				{
 					if ($objPackage->name == 'contao-components/jquery')
 					{
@@ -399,9 +399,9 @@ class PageRegular extends Frontend
 			if ($objLayout->mooSource == 'moo_googleapis' || $objLayout->mooSource == 'moo_fallback')
 			{
 				$strVersion = null;
-				$objJson = json_decode(file_get_contents(TL_ROOT . '/composer.lock'));
+				$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'));
 
-				foreach ($objJson->packages as $objPackage)
+				foreach ($objJson as $objPackage)
 				{
 					if ($objPackage->name == 'contao-components/mootools')
 					{
