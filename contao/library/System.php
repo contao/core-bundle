@@ -69,12 +69,6 @@ abstract class System
 	 */
 	protected static $arrLanguageFiles = [];
 
-	/**
-	 * The Symfony DI container
-	 * @var ContainerInterface
-	 */
-	protected static $objContainer;
-
 
 	/**
 	 * Import the Config and Session instances
@@ -787,35 +781,6 @@ abstract class System
 		$objFile->close();
 
 		return true;
-	}
-
-
-	/**
-	 * Set the Symfony container object
-	 *
-	 * @param ContainerInterface $container A container object
-	 *
-	 * @throws \RuntimeException If the container is already set
-	 */
-	public static function setContainer(ContainerInterface $container)
-	{
-		if (static::$objContainer !== null)
-		{
-			throw new \RuntimeException('The container is already set and cannot be changed');
-		}
-
-		static::$objContainer = $container;
-	}
-
-
-	/**
-	 * Return the Symfony container object
-	 *
-	 * @return ContainerInterface
-	 */
-	public static function getContainer()
-	{
-		return static::$objContainer;
 	}
 
 
