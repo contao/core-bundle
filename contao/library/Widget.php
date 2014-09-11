@@ -319,7 +319,6 @@ abstract class Widget extends View
 			case 'storeValues':
 			case 'trailingSlash':
 			case 'spaceToUnderscore':
-			case 'nullIfEmpty':
 				$this->arrConfiguration[$strKey] = $varValue ? true : false;
 				break;
 
@@ -384,9 +383,9 @@ abstract class Widget extends View
 				{
 					return Encryption::encrypt($this->varValue);
 				}
-				elseif ($this->arrConfiguration['nullIfEmpty'] && $this->varValue == '')
+				elseif ($this->varValue == '')
 				{
-					return null;
+					return $this->getEmptyStringOrNull();
 				}
 				return $this->varValue;
 				break;
@@ -1374,9 +1373,49 @@ abstract class Widget extends View
 		{
 			return 0;
 		}
-		else
+
+		return '';
+	}
+
+
+	/**
+	 * Return either an empty string or null based on the SQL string
+	 *
+	 * @return string|int|null The empty value
+	 */
+	public function getEmptyStringOrNull()
+	{
+		if (!isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['sql']))
 		{
 			return '';
 		}
+
+		return static::getEmptyStringOrNullByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['sql']);
+	}
+
+
+	/**
+	 * Return either an empty string or null based on the SQL string
+	 *
+	 * @param string $sql The SQL string
+	 *
+	 * @return string|null The empty string or null
+	 */
+	public static function getEmptyStringOrNullByFieldType($sql)
+	{
+		if ($sql == '')
+		{
+			return '';
+		}
+
+		// Strip the field type definition
+		list(, $def) = explode(' ', $sql, 2);
+
+		if (strpos($def, 'NULL') !== false && strpos($def, 'NOT NULL') === false)
+		{
+			return null;
+		}
+
+		return '';
 	}
 }
