@@ -2884,7 +2884,7 @@ class DC_Table extends DataContainer implements \listable, \editable
 
 				if (!is_array($varValue) || empty($varValue))
 				{
-					$varValue = $arrData['eval']['nullIfEmpty'] ? null : '';
+					$varValue = Widget::getEmptyStringOrNullByFieldType($arrData['sql']);
 				}
 				elseif (isset($arrData['eval']['csv']))
 				{
