@@ -275,12 +275,10 @@ class FrontendIndex extends Frontend
 			return;
 		}
 
-		/**
-		 * If the request string is empty, look for a cached page matching the
-		 * primary browser language. This is a compromise between not caching
-		 * empty requests at all and considering all browser languages, which
-		 * is not possible for various reasons.
-		 */
+		// If the request string is empty, look for a cached page matching the
+		// primary browser language. This is a compromise between not caching
+		// empty requests at all and considering all browser languages, which
+		// is not possible for various reasons.
 		if (Environment::get('request') == '' || Environment::get('request') == 'index.php')
 		{
 			// Return if the language is added to the URL and the empty domain will be redirected
