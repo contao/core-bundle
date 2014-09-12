@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 /**
  * Abstract library base class
