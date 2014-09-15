@@ -783,6 +783,45 @@ abstract class System
 
 
 	/**
+	 * Return the installed version of a component
+	 *
+	 * @param string $strName The component name
+	 *
+	 * @return string|null The version number or null
+	 */
+	public static function getComponentVersion($strName)
+	{
+		$strCacheFile = 'system/cache/packages/installed.php';
+
+		// Try to load from cache
+		if (!Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
+		{
+			$arrPackages = include TL_ROOT . '/' . $strCacheFile;
+
+			return $arrPackages[$strName];
+		}
+
+		$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'), true);
+
+		// Try to find a matching package
+		foreach ($objJson as $objPackage)
+		{
+			if ($objPackage['name'] == $strName)
+			{
+				$strVersion = substr($objPackage['version_normalized'], 0, strrpos($objPackage['version_normalized'], '.'));
+
+				if (preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/', $strVersion))
+				{
+					return $strVersion;
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Parse a date format string and translate textual representations
 	 *
 	 * @param string $strFormat The date format string

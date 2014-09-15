@@ -221,7 +221,7 @@ class Automator extends System
 		// Check whether the cache exists
 		if (is_dir(TL_ROOT . '/system/cache/dca'))
 		{
-			foreach (['config', 'dca', 'language', 'sql'] as $dir)
+			foreach (['config', 'dca', 'language', 'packages', 'sql'] as $dir)
 			{
 				// Purge the folder
 				$objFolder = new Folder('system/cache/' . $dir);
@@ -595,6 +595,7 @@ class Automator extends System
 		$this->generateDcaCache();
 		$this->generateLanguageCache();
 		$this->generateDcaExtracts();
+		$this->generatePackageCache();
 	}
 
 
@@ -942,5 +943,31 @@ class Automator extends System
 
 		// Add a log entry
 		$this->log('Generated the DCA extracts', __METHOD__, TL_CRON);
+	}
+
+
+	/**
+	 * Create the packages cache
+	 */
+	public function generatePackageCache()
+	{
+		$objFile = new File('system/cache/packages/installed.php');
+		$objFile->write("<?php\n\nreturn [\n");
+
+		$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'));
+
+		foreach ($objJson as $objPackage)
+		{
+			$strName = str_replace("'", "\\'", $objPackage->name);
+			$strVersion = substr($objPackage->version_normalized, 0, strrpos($objPackage->version_normalized, '.'));
+
+			if (preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/', $strVersion))
+			{
+				$objFile->append("\t'$strName' => '$strVersion',");
+			}
+		}
+
+		$objFile->append('];');
+		$objFile->close();
 	}
 }
