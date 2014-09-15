@@ -329,7 +329,7 @@ $GLOBALS['TL_PURGE'] =
 		'internal' =>
 		[
 			'callback' => ['Automator', 'purgeInternalCache'],
-			'affected' => ['system/cache/config', 'system/cache/dca', 'system/cache/language', 'system/cache/sql']
+			'affected' => ['system/cache/config', 'system/cache/dca', 'system/cache/language', 'system/cache/packages', 'system/cache/sql']
 		],
 		'temp' =>
 		[

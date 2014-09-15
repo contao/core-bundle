@@ -361,18 +361,7 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->jSource == 'j_googleapis' || $objLayout->jSource == 'j_fallback')
 			{
-				$strVersion = null;
-				$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'));
-
-				foreach ($objJson as $objPackage)
-				{
-					if ($objPackage->name == 'contao-components/jquery')
-					{
-						$strVersion = $objPackage->version;
-					}
-				}
-
-				if ($strVersion !== null)
+				if (($strVersion = System::getComponentVersion('contao-components/jquery')) !== null)
 				{
 					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
 
@@ -398,18 +387,7 @@ class PageRegular extends Frontend
 		{
 			if ($objLayout->mooSource == 'moo_googleapis' || $objLayout->mooSource == 'moo_fallback')
 			{
-				$strVersion = null;
-				$objJson = json_decode(file_get_contents(TL_ROOT . '/vendor/composer/installed.json'));
-
-				foreach ($objJson as $objPackage)
-				{
-					if ($objPackage->name == 'contao-components/mootools')
-					{
-						$strVersion = $objPackage->version;
-					}
-				}
-
-				if ($strVersion !== null)
+				if (($strVersion = System::getComponentVersion('contao-components/mootools')) !== null)
 				{
 					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
 
