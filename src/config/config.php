@@ -448,6 +448,5 @@ $GLOBALS['TL_WRAPPERS'] =
 /**
  * Other global arrays
  */
-$GLOBALS['TL_MIME'] = [];
-$GLOBALS['TL_PERMISSIONS'] = [];
 $GLOBALS['TL_MODELS'] = [];
+$GLOBALS['TL_PERMISSIONS'] = [];
