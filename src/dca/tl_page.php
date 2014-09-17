@@ -254,7 +254,7 @@ $GLOBALS['TL_DCA']['tl_page'] =
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'language', 'maxlength'=>5, 'nospace'=>true, 'tl_class'=>'w50 clr'],
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'language', 'maxlength'=>5, 'nospace'=>true, 'doNotCopy'=>true, 'tl_class'=>'w50 clr'],
 			'sql'                     => "varchar(5) NOT NULL default ''"
 		],
 		'robots' =>
@@ -356,7 +356,7 @@ $GLOBALS['TL_DCA']['tl_page'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_page']['fallback'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'eval'                    => ['tl_class'=>'w50 m12'],
+			'eval'                    => ['doNotCopy'=>true, 'tl_class'=>'w50 m12'],
 			'save_callback' =>
 			[
 				['tl_page', 'checkFallback']
