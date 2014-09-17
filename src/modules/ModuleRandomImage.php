@@ -90,7 +90,7 @@ class ModuleRandomImage extends Module
 			{
 				$objFile = new File($objFiles->path);
 
-				if (!$objFile->isGdImage)
+				if (!$objFile->isImage)
 				{
 					continue;
 				}
@@ -135,7 +135,7 @@ class ModuleRandomImage extends Module
 
 					$objFile = new File($objSubfiles->path);
 
-					if (!$objFile->isGdImage)
+					if (!$objFile->isImage)
 					{
 						continue;
 					}

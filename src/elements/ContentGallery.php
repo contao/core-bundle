@@ -106,7 +106,7 @@ class ContentGallery extends ContentElement
 			{
 				$objFile = new File($objFiles->path);
 
-				if (!$objFile->isGdImage)
+				if (!$objFile->isImage)
 				{
 					continue;
 				}
@@ -154,7 +154,7 @@ class ContentGallery extends ContentElement
 
 					$objFile = new File($objSubfiles->path);
 
-					if (!$objFile->isGdImage)
+					if (!$objFile->isImage)
 					{
 						continue;
 					}

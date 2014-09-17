@@ -116,7 +116,7 @@ class BackendPopup extends Backend
 			$objFile = new File($this->strFile);
 
 			// Image
-			if ($objFile->isGdImage)
+			if ($objFile->isImage)
 			{
 				$objTemplate->isImage = true;
 				$objTemplate->width = $objFile->width;

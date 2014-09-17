@@ -73,7 +73,7 @@ class ContentHyperlink extends ContentElement
 
 				$objFile = new File($objModel->path);
 
-				if ($objFile->isGdImage)
+				if ($objFile->isImage)
 				{
 					$size = deserialize($this->size);
 					$intMaxWidth = (TL_MODE == 'BE') ? 320 : Config::get('maxImageWidth');
