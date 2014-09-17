@@ -1008,26 +1008,33 @@ abstract class Model
 	/**
 	 * Return the number of records matching certain criteria
 	 *
-	 * @param mixed $strColumn An optional property name
-	 * @param mixed $varValue  An optional property value
+	 * @param mixed $strColumn  An optional property name
+	 * @param mixed $varValue   An optional property value
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return int The number of matching rows
 	 */
-	public static function countBy($strColumn=null, $varValue=null)
+	public static function countBy($strColumn=null, $varValue=null, array $arrOptions=[])
 	{
 		if (static::$strTable == '')
 		{
 			return 0;
 		}
 
-		$strQuery = static::buildCountQuery(
-		[
-			'table'  => static::$strTable,
-			'column' => $strColumn,
-			'value'  => $varValue
-		]);
+		$arrOptions = array_merge
+		(
+			[
+				'table'  => static::$strTable,
+				'column' => $strColumn,
+				'value'  => $varValue
+			],
 
-		return (int) Database::getInstance()->prepare($strQuery)->execute($varValue)->count;
+			$arrOptions
+		);
+
+		$strQuery = static::buildCountQuery($arrOptions);
+
+		return (int) Database::getInstance()->prepare($strQuery)->execute($arrOptions['value'])->count;
 	}
 
 
