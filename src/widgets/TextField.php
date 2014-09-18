@@ -122,7 +122,7 @@ class TextField extends Widget
 			}
 		}
 
-		return parent::validator(trim($varInput));
+		return parent::validator($varInput);
 	}
 
 

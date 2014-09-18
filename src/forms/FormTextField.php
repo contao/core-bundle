@@ -180,7 +180,7 @@ class FormTextField extends Widget
 			$varInput = Idna::encodeEmail($varInput);
 		}
 
-		return parent::validator(trim($varInput));
+		return parent::validator($varInput);
 	}
 
 
