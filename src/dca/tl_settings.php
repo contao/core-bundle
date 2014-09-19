@@ -116,17 +116,13 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['resultsPerPage'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
-			'save_callback' =>
-			[
-				['tl_settings', 'checkResultsPerPage']
-			]
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'minval'=>1, 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'maxResultsPerPage' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxResultsPerPage'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'staticFiles' =>
 		[
@@ -318,7 +314,7 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxImageWidth'],
 			'inputType'               => 'text',
-			'eval'                    => ['rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'jpgQuality' =>
 		[
@@ -330,13 +326,13 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['gdMaxImgWidth'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'gdMaxImgHeight' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['gdMaxImgHeight'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'uploadPath' =>
 		[
@@ -358,25 +354,25 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['uploadFields'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'maxFileSize' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['maxFileSize'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'imageWidth' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['imageWidth'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'imageHeight' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['imageHeight'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'enableSearch' =>
 		[
@@ -429,7 +425,7 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['smtpPort'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'inactiveModules' =>
 		[
@@ -440,37 +436,37 @@ $GLOBALS['TL_DCA']['tl_settings'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['undoPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'versionPeriod' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['versionPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'logPeriod' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['logPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'sessionTimeout' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['sessionTimeout'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'autologin' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['autologin'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'lockPeriod' =>
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['lockPeriod'],
 			'inputType'               => 'text',
-			'eval'                    => ['mandatory'=>true, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50']
+			'eval'                    => ['mandatory'=>true, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50']
 		],
 		'defaultUser' => [
 			'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['defaultUser'],
@@ -648,22 +644,6 @@ class tl_settings extends Backend
 		if (!$varValue)
 		{
 			$this->Database->execute("DELETE FROM tl_search WHERE protected=1");
-		}
-
-		return $varValue;
-	}
-
-
-	/**
-	 * Make sure that resultsPerPage > 0
-	 * @param mixed
-	 * @return mixed
-	 */
-	public function checkResultsPerPage($varValue)
-	{
-		if ($varValue < 1)
-		{
-			$varValue = 30;
 		}
 
 		return $varValue;

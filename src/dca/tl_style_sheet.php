@@ -165,7 +165,7 @@ $GLOBALS['TL_DCA']['tl_style_sheet'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_style_sheet']['embedImages'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
-			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
+			'eval'                    => ['rgxp'=>'natural', 'tl_class'=>'w50'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		],
 		'cc' =>

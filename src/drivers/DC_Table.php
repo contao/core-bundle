@@ -2191,8 +2191,8 @@ class DC_Table extends DataContainer implements \listable, \editable
 						array_unshift($this->strPalette, 'pid');
 					}
 
-					$GLOBALS['TL_DCA'][$this->strTable]['fields']['pid'] = ['label'=>&$GLOBALS['TL_LANG']['MSC']['pid'], 'inputType'=>'text', 'eval'=>['rgxp'=>'digit']];
-					$GLOBALS['TL_DCA'][$this->strTable]['fields']['sorting'] = ['label'=>&$GLOBALS['TL_LANG']['MSC']['sorting'], 'inputType'=>'text', 'eval'=>['rgxp'=>'digit']];
+					$GLOBALS['TL_DCA'][$this->strTable]['fields']['pid'] = ['label'=>&$GLOBALS['TL_LANG']['MSC']['pid'], 'inputType'=>'text', 'eval'=>['rgxp'=>'natural']];
+					$GLOBALS['TL_DCA'][$this->strTable]['fields']['sorting'] = ['label'=>&$GLOBALS['TL_LANG']['MSC']['sorting'], 'inputType'=>'text', 'eval'=>['rgxp'=>'natural']];
 				}
 
 				// Begin current row

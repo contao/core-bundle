@@ -247,7 +247,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'inputType'               => 'imageSize',
 			'options'                 => $GLOBALS['TL_CROP'],
 			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'eval'                    => ['rgxp'=>'digit', 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'],
+			'eval'                    => ['rgxp'=>'natural', 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		],
 		'imagemargin' =>
@@ -389,7 +389,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['sortIndex'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
+			'eval'                    => ['rgxp'=>'natural', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
 		],
 		'sortOrder' =>
@@ -555,7 +555,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['perPage'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
+			'eval'                    => ['rgxp'=>'natural', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
 		],
 		'numberOfItems' =>
@@ -563,7 +563,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['numberOfItems'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => ['rgxp'=>'digit', 'tl_class'=>'w50'],
+			'eval'                    => ['rgxp'=>'natural', 'tl_class'=>'w50'],
 			'sql'                     => "smallint(5) unsigned NOT NULL default '0'"
 		],
 		'sortBy' =>
@@ -631,7 +631,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerSize'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'digit', 'nospace'=>true, 'tl_class'=>'w50'],
+			'eval'                    => ['multiple'=>true, 'size'=>2, 'rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		],
 		'autoplay' =>
