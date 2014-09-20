@@ -21,6 +21,15 @@ use Contao\Model\Collection;
  * The files themselves reside in the files directory. This class only handles
  * the corresponding database entries (database aided file system).
  *
+ * @method static findByPid()       find files by their parent ID
+ * @method static findByTstamp()    find files by their modification date
+ * @method static findByType()      find files by their type
+ * @method static findByPath()      find files by their path
+ * @method static findByExtension() find files by their extension
+ * @method static findByHash()      find files by their hash
+ * @method static findByName()      find files by their name
+ * @method static findByProtected() find files by their protection status
+ *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014

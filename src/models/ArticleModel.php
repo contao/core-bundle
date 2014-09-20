@@ -18,6 +18,52 @@ use Contao\Model\Collection;
 /**
  * Reads and writes articles
  *
+ * @property int    $id          the ID
+ * @property int    $pid         the parent ID
+ * @property int    $sorting     the sorting position
+ * @property int    $tstamp      the modification date
+ * @property string $title       the article title
+ * @property string $alias       the article alias
+ * @property int    $author      the ID of the author of the article
+ * @property string $inColumn    the column to display the article in
+ * @property string $keywords    an optional list of keywords
+ * @property bool   $showTeaser  true if the teaser shall be displayed
+ * @property string $teaserCssID the CSS ID and/or class of the teaser
+ * @property string $teaser      the teaser text
+ * @property array  $printable   the syndication options
+ * @property string $customTpl   an optional custom template
+ * @property bool   $protected   true if the article is protected
+ * @property array  $groups      an array of allowed groups
+ * @property bool   $guests      true to show the article to guests only
+ * @property string $cssID       the CSS ID and/or class of the article
+ * @property array  $space       an optional space before and after the article
+ * @property bool   $published   true if the article has been published
+ * @property int    $start       an optional start date
+ * @property int    $stop        an optional end date
+ *
+ * @method static findById()          find articles by their ID
+ * @method static findByPid()         find articles by their parent ID
+ * @method static findBySorting()     find articles by their sorting position
+ * @method static findByTstamp()      find articles by their modification time
+ * @method static findByTitle()       find articles by their title
+ * @method static findByAlias()       find articles by their alias
+ * @method static findByAuthor()      find articles by their author
+ * @method static findByInColumn()    find articles by their column
+ * @method static findByKeywords()    find articles by their keywords
+ * @method static findByShowTeaser()  find articles which have a teaser text
+ * @method static findByTeaserCssID() find articles by their teaser CSS ID and/or class
+ * @method static findByTeaser()      find articles by their teaser text
+ * @method static findByPrintable()   find articles by their syndication settings
+ * @method static findByCustomTpl()   find articles by their custom template
+ * @method static findByProtected()   find articles by their protection status
+ * @method static findByGroups()      find articles by their allowed groups
+ * @method static findByGuests()      find articles by their "guests only" setting
+ * @method static findByCssID()       find articles by their CSS ID and/or class
+ * @method static findBySpace()       find articles by their space before and after
+ * @method static findByPublished()   find articles by their publication status
+ * @method static findByStart()       find articles by their start date
+ * @method static findByStop()        find articles by their end date
+ *
  * @package   Models
  * @author    Leo Feyer <https://github.com/leofeyer>
  * @copyright Leo Feyer 2005-2014
@@ -39,7 +85,7 @@ class ArticleModel extends Model
 	 * @param int   $intPid     The page ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no article
+	 * @return self|null The model or null if there is no article
 	 */
 	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=[])
 	{
@@ -63,7 +109,7 @@ class ArticleModel extends Model
 	 * @param int   $intId      The article ID
 	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model|null The model or null if there is no published article
+	 * @return self|null The model or null if there is no published article
 	 */
 	public static function findPublishedById($intId, array $arrOptions=[])
 	{

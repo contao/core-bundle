@@ -42,7 +42,7 @@ class PageError403 extends Frontend
 		}
 		else
 		{
-			$objRootPage = PageModel::findPublishedById(is_integer($objRootPage) ? $objRootPage : $objRootPage->id);
+			$objRootPage = PageModel::findPublishedById(is_int($objRootPage) ? $objRootPage : $objRootPage->id);
 		}
 
 		// Look for an error_403 page
