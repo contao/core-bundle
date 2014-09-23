@@ -217,6 +217,10 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'inputType'               => 'fileTree',
 			'eval'                    => ['filesOnly'=>true, 'fieldType'=>'radio', 'mandatory'=>true, 'tl_class'=>'clr'],
 			'sql'                     => "binary(16) NULL",
+			'load_callback' =>
+			[
+				['tl_content', 'setSingleSrcFlags']
+			],
 			'save_callback' =>
 			[
 				['tl_content', 'storeFileMetaInformation']
@@ -524,7 +528,7 @@ $GLOBALS['TL_DCA']['tl_content'] =
 			'sql'                     => "blob NULL",
 			'load_callback' =>
 			[
-				['tl_content', 'setFileTreeFlags']
+				['tl_content', 'setMultiSrcFlags']
 			]
 		],
 		'orderSRC' =>
@@ -1571,22 +1575,55 @@ class tl_content extends Backend
 
 
 	/**
-	 * Dynamically set the "isGallery" or "isDownloads" flag depending on the type
+	 * Dynamically add flags to the "singleSRC" field
 	 * @param mixed
 	 * @param Contao\DataContainer
 	 * @return mixed
 	 */
-	public function setFileTreeFlags($varValue, Contao\DataContainer $dc)
+	public function setSingleSrcFlags($varValue, Contao\DataContainer $dc)
 	{
 		if ($dc->activeRecord)
 		{
-			if ($dc->activeRecord->type == 'gallery')
+			switch ($dc->activeRecord->type)
 			{
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
+				case 'text':
+				case 'hyperlink':
+				case 'image':
+				case 'accordionSingle':
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
+					break;
+
+				case 'download':
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('allowedDownload');
+					break;
 			}
-			elseif ($dc->activeRecord->type == 'downloads')
+		}
+
+		return $varValue;
+	}
+
+
+	/**
+	 * Dynamically add flags to the "multiSRC" field
+	 * @param mixed
+	 * @param Contao\DataContainer
+	 * @return mixed
+	 */
+	public function setMultiSrcFlags($varValue, Contao\DataContainer $dc)
+	{
+		if ($dc->activeRecord)
+		{
+			switch ($dc->activeRecord->type)
 			{
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isDownloads'] = true;
+				case 'gallery':
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
+					break;
+
+				case 'downloads':
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isDownloads'] = true;
+					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('allowedDownload');
+					break;
 			}
 		}
 
