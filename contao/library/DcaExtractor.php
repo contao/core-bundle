@@ -24,7 +24,7 @@ use Contao\Database\Installer;
  *
  * Usage:
  *
- *     $user = new DcaExtractor('tl_user');
+ *     $user = DcaExtractor::getInstance('tl_user');
  *
  *     if ($user->hasRelations())
  *     {
@@ -37,6 +37,12 @@ use Contao\Database\Installer;
  */
 class DcaExtractor extends Controller
 {
+
+	/**
+	 * Instances
+	 * @var string
+	 */
+	protected static $arrInstances = [];
 
 	/**
 	 * Table name
@@ -100,7 +106,7 @@ class DcaExtractor extends Controller
 	 *
 	 * @throws \Exception If $strTable is empty
 	 */
-	public function __construct($strTable)
+	protected function __construct($strTable)
 	{
 		if ($strTable == '')
 		{
@@ -121,6 +127,30 @@ class DcaExtractor extends Controller
 		{
 			$this->createExtract();
 		}
+	}
+
+
+	/**
+	 * Prevent cloning of the object (Singleton)
+	 */
+	final public function __clone() {}
+
+
+	/**
+	 * Get one object instance per table
+	 *
+	 * @param string $strTable The table name
+	 *
+	 * @return DcaExtractor The object instance
+	 */
+	public static function getInstance($strTable)
+	{
+		if (!isset(static::$arrInstances[$strTable]))
+		{
+			static::$arrInstances[$strTable] = new static($strTable);
+		}
+
+		return static::$arrInstances[$strTable];
 	}
 
 
