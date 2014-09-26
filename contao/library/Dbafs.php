@@ -12,7 +12,7 @@
 
 namespace Contao;
 
-use Contao\Dbafs\Filter;
+use Contao\Filter\SyncExclude;
 
 
 /**
@@ -113,7 +113,7 @@ class Dbafs
 		{
 			// Get a filtered list of all files
 			$objFiles = new \RecursiveIteratorIterator(
-				new Filter(
+				new SyncExclude(
 					new \RecursiveDirectoryIterator(
 						TL_ROOT . '/' . $strResource,
 						\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
@@ -471,7 +471,7 @@ class Dbafs
 
 		// Get a filtered list of all files
 		$objFiles = new \RecursiveIteratorIterator(
-			new Filter(
+			new SyncExclude(
 				new \RecursiveDirectoryIterator(
 					TL_ROOT . '/' . Config::get('uploadPath'),
 					\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
