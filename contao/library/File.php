@@ -260,11 +260,23 @@ class File extends System
 
 						$svgElement = $doc->documentElement;
 
-						$this->arrImageSize = array
-						(
-							Image::getPixelValue($svgElement->getAttribute('width')),
-							Image::getPixelValue($svgElement->getAttribute('height'))
-						);
+						if ($svgElement->getAttribute('width') && $svgElement->getAttribute('height'))
+						{
+							$this->arrImageSize =
+							[
+								\Image::getPixelValue($svgElement->getAttribute('width')),
+								\Image::getPixelValue($svgElement->getAttribute('height'))
+							];
+						}
+						elseif ($svgElement->getAttribute('viewBox'))
+						{
+							$svgViewBox = preg_split('/[\s,]+/', $svgElement->getAttribute('viewBox'));
+							$this->arrImageSize = [$svgViewBox[2], $svgViewBox[3]];
+						}
+						else
+						{
+							$this->arrImageSize = [0, 0];
+						}
 					}
 				}
 				return $this->arrImageSize;
