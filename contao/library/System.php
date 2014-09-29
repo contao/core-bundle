@@ -907,7 +907,7 @@ abstract class System
 		{
 			Environment::set('path', Config::get('websitePath'));
 		}
-		elseif (TL_MODE != 'BE')
+		elseif (TL_MODE == 'BE')
 		{
 			Environment::set('path', preg_replace('/\/contao\/[a-z]+\.php$/i', '', Environment::get('scriptName')));
 		}
@@ -955,7 +955,7 @@ abstract class System
 		Input::initialize();
 
 		// Always show error messages if logged into the install tool (see #5001)
-		if (Input::cookie('TL_INSTALL_AUTH') && !empty($_SESSION['TL_INSTALL_AUTH']) && Input::cookie('TL_INSTALL_AUTH') === $_SESSION['TL_INSTALL_AUTH'] && $_SESSION['TL_INSTALL_EXPIRE'] > time())
+		if (Input::cookie('TL_INSTALL_AUTH') && !empty($_SESSION['TL_INSTALL_AUTH']) && Input::cookie('TL_INSTALL_AUTH') == $_SESSION['TL_INSTALL_AUTH'] && $_SESSION['TL_INSTALL_EXPIRE'] > time())
 		{
 			Config::set('displayErrors', 1);
 		}
