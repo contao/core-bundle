@@ -424,7 +424,7 @@ abstract class System
 		}
 
 		asort($arrAux);
-		$arrBackendLanguages = scan(TL_ROOT . '/system/modules/core/languages');
+		$arrBackendLanguages = scan(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages');
 
 		foreach (array_keys($arrAux) as $strKey)
 		{
