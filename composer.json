@@ -11,7 +11,8 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
-		"contao/contao-library": "dev-develop",
+		"contao/contao-bundle": "dev-feature/symfony2",
+		"contao/contao-library": "dev-feature/symfony2",
         "contao-components/ace": "~1.1",
         "contao-components/chosen": "~1.0",
         "contao-components/colorbox": "~1.5",
