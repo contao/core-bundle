@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Contao\Bundle\ContaoBundle\HttpKernel\Bundle\ContaoBundleInterface;
+
 
 /**
  * Loads a set of DCA files
@@ -81,13 +83,18 @@ class DcaLoader extends Controller
 		}
 		else
 		{
-			foreach (ModuleLoader::getActive() as $strModule)
-			{
-				$strFile = 'system/modules/' . $strModule . '/dca/' . $this->strTable . '.php';
+			global $kernel;
 
-				if (file_exists(TL_ROOT . '/' . $strFile))
+			foreach ($kernel->getBundles() as $bundle)
+			{
+				if ($bundle instanceof ContaoBundleInterface)
 				{
-					include TL_ROOT . '/' . $strFile;
+					$strFile = $bundle->getDcaPath() . '/' . $this->strTable . '.php';
+
+					if (file_exists($strFile))
+					{
+						include $strFile;
+					}
 				}
 			}
 		}

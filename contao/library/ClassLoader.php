@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Contao\Bundle\ContaoBundle\HttpKernel\Bundle\ContaoBundleInterface;
+
 
 /**
  * Automatically loads class files based on a mapper array
@@ -230,13 +232,18 @@ class ClassLoader
 		}
 		else
 		{
-			foreach (ModuleLoader::getActive() as $module)
-			{
-				$file = 'system/modules/' . $module . '/config/autoload.php';
+			global $kernel;
 
-				if (file_exists(TL_ROOT . '/' . $file))
+			foreach ($kernel->getBundles() as $bundle)
+			{
+				if ($bundle instanceof ContaoBundleInterface)
 				{
-					include TL_ROOT . '/' . $file;
+					$strFile = $bundle->getConfigPath() . '/autoload.php';
+
+					if (file_exists($strFile))
+					{
+						include $strFile;
+					}
 				}
 			}
 		}

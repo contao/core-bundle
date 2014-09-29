@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Contao\Bundle\ContaoBundle\HttpKernel\Bundle\ContaoLegacyBundle;
+
 
 /**
  * Loads modules based on their autoload.ini configuration
@@ -35,13 +37,13 @@ class ModuleLoader
 	 * Active modules
 	 * @var array
 	 */
-	protected static $active;
+	protected static $active = [];
 
 	/**
 	 * Disabled modules
 	 * @var array
 	 */
-	protected static $disabled;
+	protected static $disabled = [];
 
 
 	/**
@@ -51,9 +53,18 @@ class ModuleLoader
 	 */
 	public static function getActive()
 	{
-		if (static::$active === null)
+		if (empty(static::$active))
 		{
-			static::scanAndResolve();
+			global $kernel;
+
+			foreach ($kernel->getBundles() as $k=>$v)
+			{
+				// Only add the legacy bundles
+				if ($v instanceof ContaoLegacyBundle)
+				{
+					static::$active[] = $v->getName();
+				}
+			}
 		}
 
 		return static::$active;
@@ -67,144 +78,6 @@ class ModuleLoader
 	 */
 	public static function getDisabled()
 	{
-		if (static::$active === null)
-		{
-			static::scanAndResolve();
-		}
-
-		return static::$disabled;
-	}
-
-
-	/**
-	 * Scan the modules and resolve their dependencies
-	 *
-	 * @throws \UnresolvableDependenciesException If the dependencies cannot be resolved
-	 */
-	protected static function scanAndResolve()
-	{
-		$strCacheFile = 'system/cache/config/modules.php';
-
-		// Try to load from cache
-		if (!Config::get('bypassCache') && file_exists(TL_ROOT . '/' . $strCacheFile))
-		{
-			include TL_ROOT . '/' . $strCacheFile;
-		}
-		else
-		{
-			$load = [];
-
-			static::$active = [];
-			static::$disabled = [];
-
-			// Ignore non-core modules if the system runs in safe mode
-			if (Config::get('coreOnlyMode'))
-			{
-				$modules = ['core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'];
-			}
-			else
-			{
-				// Sort the modules (see #6391)
-				$modules = scan(TL_ROOT . '/system/modules');
-				sort($modules);
-
-				// Load the "core" module first
-				array_unshift($modules, 'core');
-				$modules = array_unique($modules);
-			}
-
-			// Walk through the modules
-			foreach ($modules as $file)
-			{
-				// Ignore dot resources
-				if (strncmp($file, '.', 1) === 0)
-				{
-					continue;
-				}
-
-				// Ignore legacy modules
-				if (in_array($file, ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor']))
-				{
-					continue;
-				}
-
-				$path = TL_ROOT . '/system/modules/' . $file;
-
-				// Ignore files
-				if (!is_dir($path))
-				{
-					continue;
-				}
-
-				// Ignore disabled module
-				if (file_exists($path . '/.skip'))
-				{
-					static::$disabled[] = $file;
-					continue;
-				}
-
-				$load[$file] = [];
-
-				// Read the autoload.ini if any
-				if (file_exists($path . '/config/autoload.ini'))
-				{
-					$config = parse_ini_file($path . '/config/autoload.ini', true);
-					$load[$file] = $config['requires'] ?: [];
-
-					foreach ($load[$file] as $k=>$v)
-					{
-						// Optional requirements (see #6835)
-						if (strncmp($v, '*', 1) === 0)
-						{
-							$key = substr($v, 1);
-
-							if (!in_array($key, $modules))
-							{
-								unset($load[$file][$k]);
-							}
-							else
-							{
-								$load[$file][$k] = $key;
-							}
-						}
-					}
-				}
-			}
-
-			// Resolve the dependencies
-			while (!empty($load))
-			{
-				$failed = true;
-
-				foreach ($load as $name=>$requires)
-				{
-					if (empty($requires))
-					{
-						$resolved = true;
-					}
-					else
-					{
-						$resolved = count(array_diff($requires, static::$active)) === 0;
-					}
-
-					if ($resolved === true)
-					{
-						unset($load[$name]);
-						static::$active[] = $name;
-						$failed = false;
-					}
-				}
-
-				// The dependencies cannot be resolved
-				if ($failed === true)
-				{
-					ob_start();
-					dump($load);
-					$buffer = ob_get_clean();
-
-					throw new \UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
-				}
-			}
-		}
+		return static::$disabled; # FIXME
 	}
 }
