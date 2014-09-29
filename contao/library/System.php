@@ -831,7 +831,7 @@ abstract class System
 	/**
 	 * Initialize the system
 	 */
-	public static function initialize()
+	public static function boot()
 	{
 		global $objConfig;
 
