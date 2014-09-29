@@ -12,7 +12,7 @@
 
 namespace Contao;
 
-use Contao\Bundle\ContaoBundle\HttpKernel\Bundle\ContaoLegacyBundle;
+use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
 
 
 /**
