@@ -1423,7 +1423,7 @@ abstract class Controller extends System
 		if (($imgSize = $objFile->imageSize) !== false)
 		{
 			$objTemplate->arrSize = $imgSize;
-			$objTemplate->imgSize = ' ' . $imgSize[3];
+			$objTemplate->imgSize = ' width="' . $imgSize[0] . '" height="' . $imgSize[1] . '"';
 		}
 
 		// Provide an ID for single lightbox images in HTML5 (see #3742)
