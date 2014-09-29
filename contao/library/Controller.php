@@ -1538,6 +1538,8 @@ abstract class Controller extends System
 			$objFiles->reset();
 		}
 
+		global $objPage;
+
 		$arrEnclosures = [];
 		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
 
@@ -1562,15 +1564,29 @@ abstract class Controller extends System
 
 				$strHref .= ((Config::get('disableAlias') || strpos($strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . System::urlEncode($objFiles->path);
 
+				$arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->language);
+
+				if (empty($arrMeta) && $objPage->rootFallbackLanguage !== null)
+				{
+					$arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
+				}
+
+				// Use the file name as title if none is given
+				if ($arrMeta['title'] == '')
+				{
+					$arrMeta['title'] = specialchars($objFile->basename);
+				}
+
 				$arrEnclosures[] =
 				[
-					'link'      => $objFiles->name,
+					'link'      => $arrMeta['title'],
 					'filesize'  => static::getReadableSize($objFile->filesize),
-					'title'     => ucfirst(str_replace('_', ' ', $objFile->filename)),
+					'title'     => specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
 					'href'      => $strHref,
 					'enclosure' => $objFiles->path,
 					'icon'      => TL_ASSETS_URL . 'assets/icons/' . $objFile->icon,
-					'mime'      => $objFile->mime
+					'mime'      => $objFile->mime,
+					'meta'      => $arrMeta
 				];
 			}
 		}
