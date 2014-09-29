@@ -91,18 +91,6 @@ class ContentGallery extends ContentElement
 		$images = [];
 		$auxDate = [];
 		$objFiles = $this->objFiles;
-		$strFallback = null;
-
-		// Determine the fallback language (see #6874)
-		if (!$objPage->rootIsFallback)
-		{
-			$objFallback = PageModel::findPublishedFallbackByHostname($objPage->domain);
-
-			if ($objFallback !== null)
-			{
-				$strFallback = $objFallback->language;
-			}
-		}
 
 		// Get all images
 		while ($objFiles->next())
@@ -131,9 +119,9 @@ class ContentGallery extends ContentElement
 					{
 						continue;
 					}
-					elseif ($strFallback !== null)
+					elseif ($objPage->rootFallbackLanguage !== null)
 					{
-						$arrMeta = $this->getMetaData($objFiles->meta, $strFallback);
+						$arrMeta = $this->getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
 					}
 				}
 
@@ -191,9 +179,9 @@ class ContentGallery extends ContentElement
 						{
 							continue;
 						}
-						elseif ($strFallback !== null)
+						elseif ($objPage->rootFallbackLanguage !== null)
 						{
-							$arrMeta = $this->getMetaData($objFiles->meta, $strFallback);
+							$arrMeta = $this->getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
 						}
 					}
 

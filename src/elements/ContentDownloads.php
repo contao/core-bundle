@@ -109,18 +109,6 @@ class ContentDownloads extends ContentElement
 
 		$objFiles = $this->objFiles;
 		$allowedDownload = trimsplit(',', strtolower(Config::get('allowedDownload')));
-		$strFallback = null;
-
-		// Determine the fallback language (see #6874)
-		if (!$objPage->rootIsFallback)
-		{
-			$objFallback = PageModel::findPublishedFallbackByHostname($objPage->domain);
-
-			if ($objFallback !== null)
-			{
-				$strFallback = $objFallback->language;
-			}
-		}
 
 		// Get all files
 		while ($objFiles->next())
@@ -149,9 +137,9 @@ class ContentDownloads extends ContentElement
 					{
 						continue;
 					}
-					elseif ($strFallback !== null)
+					elseif ($objPage->rootFallbackLanguage !== null)
 					{
-						$arrMeta = $this->getMetaData($objFiles->meta, $strFallback);
+						$arrMeta = $this->getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
 					}
 				}
 
@@ -177,7 +165,7 @@ class ContentDownloads extends ContentElement
 					'id'        => $objFiles->id,
 					'uuid'      => $objFiles->uuid,
 					'name'      => $objFile->basename,
-					'title'     => $arrMeta['title'],
+					'title'     => specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
 					'link'      => $arrMeta['title'],
 					'caption'   => $arrMeta['caption'],
 					'href'      => $strHref,
@@ -225,9 +213,9 @@ class ContentDownloads extends ContentElement
 						{
 							continue;
 						}
-						elseif ($strFallback !== null)
+						elseif ($objPage->rootFallbackLanguage !== null)
 						{
-							$arrMeta = $this->getMetaData($objFiles->meta, $strFallback);
+							$arrMeta = $this->getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
 						}
 					}
 
@@ -253,7 +241,7 @@ class ContentDownloads extends ContentElement
 						'id'        => $objSubfiles->id,
 						'uuid'      => $objSubfiles->uuid,
 						'name'      => $objFile->basename,
-						'title'     => $arrMeta['title'],
+						'title'     => specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
 						'link'      => $arrMeta['title'],
 						'caption'   => $arrMeta['caption'],
 						'href'      => $strHref,
