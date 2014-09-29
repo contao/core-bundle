@@ -1,6 +1,6 @@
 {
 	"name": "contao/module-core",
-	"type": "contao-module",
+	"type": "library",
 	"description": "Contao 4 core module",
 	"license": "LGPL-3.0+",
 	"authors": [
@@ -29,7 +29,6 @@
         "contao-components/swipe": "~2.0",
         "contao-components/tablesorter": "~2.0",
         "contao-components/tinymce4": "~4.1",
-		"contao-community-alliance/composer-plugin": "~2.0",
         "michelf/php-markdown": "~1.4",
         "phpspec/php-diff": "~1.0",
         "simplepie/simplepie": "~1.3",
