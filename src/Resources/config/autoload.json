@@ -1,0 +1,16 @@
+{
+    "replace": [
+        "core"
+    ],
+    "bundles": {
+        "Contao\\Bundle\\CoreBundle\\CoreBundle": {
+            "environments": ["all"]
+        },
+        "Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle": {
+            "environments": ["all"]
+        },
+        "Sensio\\Bundle\\DistributionBundle\\SensioDistributionBundle": {
+            "environments": ["dev", "test"]
+        }
+    }
+}
