@@ -510,6 +510,8 @@ class tl_settings extends Backend
 	 * Disable modules
 	 * @param Contao\DataContainer
 	 * @return string
+	 *
+	 * @todo Handle Symfony bundles?
 	 */
 	public function disableModules(Contao\DataContainer $dc)
 	{

@@ -759,10 +759,20 @@ class BackendInstall extends Backend
 			Config::persist('maintenanceMode', true);
 		}
 
-		if (!Config::get('coreOnlyMode') && count(array_diff(scan(TL_ROOT . '/system/modules'), ['core', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'])) > 0)
+		if (!Config::get('coreOnlyMode'))
 		{
-			Config::set('coreOnlyMode', true);
-			Config::persist('coreOnlyMode', true);
+			$modules = [];
+
+			foreach (System::getKernel()->getContaoBundles() as $bundle)
+			{
+				$modules[] = $bundle->getName();
+			}
+
+			if (count(array_diff($modules, ['CoreBundle', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'])) > 0)
+			{
+				Config::set('coreOnlyMode', true);
+				Config::persist('coreOnlyMode', true);
+			}
 		}
 	}
 

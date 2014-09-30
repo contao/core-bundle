@@ -12,13 +12,22 @@
 
 namespace Contao\Bundle\CoreBundle\HttpKernel\Bundle;
 
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+
 /**
  * Configures a Contao bundle
  *
  * @author Leo Feyer <https://contao.org>
  */
-interface ContaoBundleInterface
+interface ContaoBundleInterface extends BundleInterface
 {
+    /**
+     * Return the relative path to the bundle
+     *
+     * @return string The relative path
+     */
+    public function getRelativePath();
+
     /**
      * Return the path to the assets directory
      *

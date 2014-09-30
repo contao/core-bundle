@@ -36,8 +36,8 @@ class CoreBundle extends ContaoBundle
      */
     public function build(ContainerBuilder $container)
     {
-	    System::boot();
+        System::boot();
 
-	    $container->addCompilerPass(new AddContaoConfigurationPass());
+        $container->addCompilerPass(new AddContaoConfigurationPass());
     }
 }

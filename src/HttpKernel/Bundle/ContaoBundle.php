@@ -22,11 +22,30 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class ContaoBundle extends Bundle implements ContaoBundleInterface
 {
     /**
+     * @var string
+     */
+    protected $relpath;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRelativePath()
+    {
+        if (null === $this->relpath) {
+            $this->relpath = str_replace(
+                realpath(__DIR__ . '/../../../../../../') . '/', '', $this->getPath()
+            );
+        }
+
+        return $this->relpath;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAssetsPath()
     {
-        return $this->getPath() . '/Resources/assets';
+        return $this->getRelativePath() . '/Resources/assets';
     }
 
     /**
@@ -34,7 +53,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getConfigPath()
     {
-        return $this->getPath() . '/Resources/config';
+        return $this->getRelativePath() . '/Resources/config';
     }
 
     /**
@@ -42,7 +61,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getDcaPath()
     {
-        return $this->getPath() . '/Resources/dca';
+        return $this->getRelativePath() . '/Resources/dca';
     }
 
     /**
@@ -50,7 +69,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getLanguagesPath()
     {
-        return $this->getPath() . '/Resources/languages';
+        return $this->getRelativePath() . '/Resources/languages';
     }
 
     /**
@@ -58,6 +77,6 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getTemplatesPath()
     {
-        return $this->getPath() . '/Resources/templates';
+        return $this->getRelativePath() . '/Resources/templates';
     }
 }

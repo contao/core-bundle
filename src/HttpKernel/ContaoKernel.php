@@ -12,10 +12,13 @@
 
 namespace Contao\Bundle\CoreBundle\HttpKernel;
 
+use Contao\System;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableDependenciesException;
+use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -23,7 +26,7 @@ use Symfony\Component\HttpKernel\Kernel;
  *
  * @author Leo Feyer <https://contao.org>
  */
-abstract class ContaoKernel extends Kernel
+abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
 {
     /**
      * @var array
@@ -39,6 +42,21 @@ abstract class ContaoKernel extends Kernel
      * @var array
      */
     protected $replace = [];
+
+    /**
+     * @var array
+     */
+    protected $contaoBundles = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function boot()
+    {
+        System::setKernel($this);
+
+        parent::boot();
+    }
 
     /**
      * {@inheritdoc}
@@ -62,6 +80,43 @@ abstract class ContaoKernel extends Kernel
         }
 
         return $bundles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function writeBundleCache()
+    {
+        file_put_contents(
+            $this->getCacheDir() . '/bundles.map',
+            sprintf('<?php return %s;', var_export($this->resolved, true))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadBundleCache()
+    {
+        if (empty($this->resolved) && is_file($this->getCacheDir() . '/bundles.map')) {
+            $this->resolved = include $this->getCacheDir() . '/bundles.map';
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContaoBundles()
+    {
+        if (empty($this->contaoBundles)) {
+            foreach ($this->getBundles() as $bundle) {
+                if ($bundle instanceof ContaoBundleInterface) {
+                    $this->contaoBundles[] = $bundle;
+                }
+            }
+        }
+
+        return $this->contaoBundles;
     }
 
     /**
@@ -89,7 +144,7 @@ abstract class ContaoKernel extends Kernel
         $vendor = realpath(__DIR__ . '/../../../../');
         $files  = Finder::create()->files()->name('autoload.json')->in($vendor);
 
-        /** @var \SplFileInfo $file */
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $json = json_decode(file_get_contents($file->getPathname()), true);
 
@@ -143,12 +198,12 @@ abstract class ContaoKernel extends Kernel
     protected function findLegacyBundles(array &$bundles)
     {
         $dir     = realpath(__DIR__ . '/../../../../../system/modules');
-        $modules = Finder::create()->directories()->in($dir)->ignoreDotFiles(true)->sortByName();
+        $modules = Finder::create()->directories()->depth('== 0')->in($dir)->ignoreDotFiles(true)->sortByName();
 
         /** @var \SplFileInfo $module */
         foreach ($modules as $module) {
             $name   = $module->getBasename();
-	        $legacy = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
+            $legacy = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
 
             // Ignore legacy modules
             if (in_array($name, $legacy)) {
@@ -267,32 +322,12 @@ abstract class ContaoKernel extends Kernel
     }
 
     /**
-     * Writes the bundle cache
-     */
-    public function writeBundleCache()
-    {
-        file_put_contents(
-            $this->getCacheDir() . '/bundles.map',
-            sprintf('<?php return %s;', var_export($this->resolved, true))
-        );
-    }
-
-    /**
-     * Loads the bundle cache
-     */
-    public function loadBundleCache()
-    {
-        if (empty($this->resolved) && is_file($this->getCacheDir() . '/bundles.map')) {
-            $this->resolved = include $this->getCacheDir() . '/bundles.map';
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function buildContainer()
     {
         $container = parent::buildContainer();
+
         $container->addCompilerPass(new AddBundlesToCachePass($this));
 
         return $container;

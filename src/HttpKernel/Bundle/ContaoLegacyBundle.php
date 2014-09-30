@@ -22,6 +22,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
 {
     /**
+     * @var string
+     */
+    protected $relpath;
+
+    /**
      * Set the name
      *
      * @param string $name The module name
@@ -34,11 +39,22 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
     /**
      * {@inheritdoc}
      */
+    public function getRelativePath()
+    {
+        if (null === $this->relpath) {
+            $this->relpath = 'system/modules/' . $this->name;
+        }
+
+        return $this->relpath;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPath()
     {
         if (null === $this->path) {
-            $root = realpath(__DIR__ . '/../../../../../../');
-            $this->path = $root . '/system/modules/' . $this->name;
+            $this->path = realpath(__DIR__ . '/../../../../../../') . '/system/modules/' . $this->name;
         }
 
         return $this->path;
@@ -49,7 +65,7 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
      */
     public function getAssetsPath()
     {
-        return $this->getPath() . '/assets';
+        return $this->getRelativePath() . '/assets';
     }
 
     /**
@@ -57,7 +73,7 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
      */
     public function getConfigPath()
     {
-        return $this->getPath() . '/config';
+        return $this->getRelativePath() . '/config';
     }
 
     /**
@@ -65,7 +81,7 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
      */
     public function getDcaPath()
     {
-        return $this->getPath() . '/dca';
+        return $this->getRelativePath() . '/dca';
     }
 
     /**
@@ -73,7 +89,7 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
      */
     public function getLanguagesPath()
     {
-        return $this->getPath() . '/languages';
+        return $this->getRelativePath() . '/languages';
     }
 
     /**
@@ -81,6 +97,6 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
      */
     public function getTemplatesPath()
     {
-        return $this->getPath() . '/templates';
+        return $this->getRelativePath() . '/templates';
     }
 }
