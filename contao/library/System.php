@@ -358,7 +358,26 @@ abstract class System
 	{
 		if (!isset(static::$arrLanguages[$strLanguage]))
 		{
-			static::$arrLanguages[$strLanguage] = (is_dir(TL_ROOT . '/system/modules/core/languages/' . $strLanguage) || is_dir(TL_ROOT . '/system/cache/language/' . $strLanguage) || in_array($strLanguage, array_unique(array_map('basename', glob(TL_ROOT . '/system/modules/*/languages/*')))));
+			$blnIsInstalled = is_dir(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages/' . $strLanguage);
+
+			if (!$blnIsInstalled)
+			{
+				$blnIsInstalled = is_dir(TL_ROOT . '/system/cache/language/' . $strLanguage);
+			}
+
+			if (!$blnIsInstalled)
+			{
+				foreach (static::getKernel()->getContaoBundles() as $bundle)
+				{
+					if (is_dir(TL_ROOT . '/' . $bundle->getLanguagesPath() . '/' . $strLanguage))
+					{
+						$blnIsInstalled = true;
+						break;
+					}
+				}
+			}
+
+			static::$arrLanguages[$strLanguage] = $blnIsInstalled;
 		}
 
 		return static::$arrLanguages[$strLanguage];
