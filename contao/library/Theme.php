@@ -257,6 +257,15 @@ class Theme extends Backend
 				$return .= "\n  " . '<p class="tl_green" style="margin:0">'. $GLOBALS['TL_LANG']['tl_theme']['templates_ok'] .'</p>';
 			}
 
+			// HOOK: add custom logic
+			if (isset($GLOBALS['TL_HOOKS']['compareThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['compareThemeFiles']))
+			{
+				foreach ($GLOBALS['TL_HOOKS']['compareThemeFiles'] as $callback)
+				{
+					$return .= \System::importStatic($callback[0])->$callback[1]($xml, $objArchive);
+				}
+			}
+
 			$return .= '
 </div>';
 		}
@@ -623,6 +632,17 @@ class Theme extends Backend
 
 			// Notify the user
 			Message::addConfirmation(sprintf($GLOBALS['TL_LANG']['tl_theme']['theme_imported'], basename($strZipFile)));
+
+			// HOOK: add custom logic
+			if (isset($GLOBALS['TL_HOOKS']['extractThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['extractThemeFiles']))
+			{
+				$intThemeId = empty($arrMapper['tl_theme']) ? null : reset($arrMapper['tl_theme']);
+
+				foreach ($GLOBALS['TL_HOOKS']['extractThemeFiles'] as $callback)
+				{
+					\System::importStatic($callback[0])->$callback[1]($xml, $objArchive, $intThemeId, $arrMapper);
+				}
+			}
 		}
 
 		System::setCookie('BE_PAGE_OFFSET', 0, 0);
@@ -695,6 +715,15 @@ class Theme extends Backend
 
 		// Add the template files
 		$this->addTemplatesToArchive($objArchive, $objTheme->templates);
+
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['exportTheme']) && is_array($GLOBALS['TL_HOOKS']['exportTheme']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['exportTheme'] as $callback)
+			{
+				\System::importStatic($callback[0])->$callback[1]($xml, $objArchive, $objTheme->id);
+			}
+		}
 
 		// Close the archive
 		$objArchive->close();
