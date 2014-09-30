@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
-
 
 /**
  * Loads modules based on their autoload.ini configuration
@@ -55,15 +53,9 @@ class ModuleLoader
 	{
 		if (empty(static::$active))
 		{
-			global $kernel;
-
-			foreach ($kernel->getBundles() as $k=>$v)
+			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				// Only add the legacy bundles
-				if ($v instanceof ContaoLegacyBundle)
-				{
-					static::$active[] = $v->getName();
-				}
+				static::$active[] = $bundle->getName();
 			}
 		}
 
@@ -78,6 +70,6 @@ class ModuleLoader
 	 */
 	public static function getDisabled()
 	{
-		return static::$disabled; # FIXME
+		return static::$disabled; // FIXME: disabled modules
 	}
 }

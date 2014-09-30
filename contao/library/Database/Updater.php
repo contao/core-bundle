@@ -17,6 +17,7 @@ use Contao\Controller;
 use Contao\Database;
 use Contao\File;
 use Contao\Folder;
+use Contao\System;
 
 
 /**
@@ -733,9 +734,9 @@ class Updater extends Controller
 		$arrFiles = [];
 
 		// Parse all modules (see #6058)
-		foreach (scan(TL_ROOT . '/system/modules') as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = 'system/modules/' . $strModule . '/dca';
+			$strDir = $bundle->getDcaPath();
 
 			if (!is_dir(TL_ROOT . '/' . $strDir))
 			{

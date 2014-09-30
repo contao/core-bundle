@@ -12,8 +12,6 @@
 
 namespace Contao;
 
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
-
 
 /**
  * Loads and writes the local configuration file
@@ -137,18 +135,13 @@ class Config
 		}
 		else
 		{
-			global $kernel;
-
-			foreach ($kernel->getBundles() as $bundle)
+			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				if ($bundle instanceof ContaoBundleInterface)
-				{
-					$strFile = $bundle->getConfigPath() . '/config.php';
+				$strFile = $bundle->getConfigPath() . '/config.php';
 
-					if (file_exists($strFile))
-					{
-						include $strFile;
-					}
+				if (file_exists(TL_ROOT . '/' . $strFile))
+				{
+					include TL_ROOT . '/' . $strFile;
 				}
 			}
 		}

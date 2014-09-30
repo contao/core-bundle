@@ -253,14 +253,9 @@ abstract class Backend extends Controller
 		$arrFiles = ['system/runonce.php'];
 
 		// Always scan all folders and not just the active modules (see #4200)
-		foreach (scan(TL_ROOT . '/system/modules') as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			if (substr($strModule, 0, 1) == '.' || !is_dir(TL_ROOT . '/system/modules/' . $strModule))
-			{
-				continue;
-			}
-
-			$arrFiles[] = 'system/modules/' . $strModule . '/config/runonce.php';
+			$arrFiles[] = $bundle->getConfigPath() . '/runonce.php';
 		}
 
 		// Check whether a runonce file exists

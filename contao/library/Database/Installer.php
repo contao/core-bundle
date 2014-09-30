@@ -16,6 +16,7 @@ use Contao\Config;
 use Contao\Controller;
 use Contao\DcaExtractor;
 use Contao\ModuleLoader;
+use Contao\System;
 
 
 /**
@@ -285,16 +286,16 @@ class Installer extends Controller
 		Config::set('bypassCache', true);
 
 		// Only check the active modules (see #4541)
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = 'system/modules/' . $strModule . '/dca';
+			$strDir = $bundle->getDcaPath();
 
-			if (!is_dir(TL_ROOT . '/' . $strDir))
+			if (!is_dir($strDir))
 			{
 				continue;
 			}
 
-			foreach (scan(TL_ROOT . '/' . $strDir) as $strFile)
+			foreach (scan($strDir) as $strFile)
 			{
 				// Ignore non PHP files and files which have been included before
 				if (substr($strFile, -4) != '.php' || in_array($strFile, $included))
@@ -342,20 +343,15 @@ class Installer extends Controller
 		$return = [];
 
 		// Only check the active modules (see #4541)
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			if (strncmp($strModule, '.', 1) === 0 || strncmp($strModule, '__', 2) === 0)
-			{
-				continue;
-			}
-
 			// Ignore the database.sql of the not renamed core modules
-			if (in_array($strModule, ['calendar', 'comments', 'faq', 'listing', 'news', 'newsletter']))
+			if (in_array($bundle->getName(), ['calendar', 'comments', 'faq', 'listing', 'news', 'newsletter']))
 			{
 				continue;
 			}
 
-			$strFile = TL_ROOT . '/system/modules/' . $strModule . '/config/database.sql';
+			$strFile = $bundle->getConfigPath() . '/database.sql';
 
 			if (!file_exists($strFile))
 			{

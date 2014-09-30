@@ -549,7 +549,6 @@ class Automator extends System
 	}
 
 
-
 	/**
 	 * Return all public module folders as array
 	 *
@@ -559,9 +558,9 @@ class Automator extends System
 	{
 		$arrPublic = [];
 
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strAutoload = 'system/modules/' . $strModule . '/config/autoload.ini';
+			$strAutoload = $bundle->getConfigPath() . '/autoload.ini';
 
 			// Read the autoload.ini if any
 			if (file_exists(TL_ROOT . '/' . $strAutoload))
@@ -572,7 +571,7 @@ class Automator extends System
 				{
 					foreach ($config['public'] as $strFolder)
 					{
-						$arrPublic[] = 'system/modules/' . $strModule . '/' . $strFolder;
+						$arrPublic[] = $bundle->getRelativePath() . '/' . $strFolder;
 					}
 				}
 			}
@@ -608,9 +607,9 @@ class Automator extends System
 		$objCacheFile = new File('system/cache/config/autoload.php');
 		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strFile = 'system/modules/' . $strModule . '/config/autoload.php';
+			$strFile = $bundle->getConfigPath() . '/autoload.php';
 
 			if (file_exists(TL_ROOT . '/' . $strFile))
 			{
@@ -621,41 +620,13 @@ class Automator extends System
 		// Close the file (moves it to its final destination)
 		$objCacheFile->close();
 
-		// Generate the module loader cache file
-		$objCacheFile = new File('system/cache/config/modules.php');
-		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
-
-		$strContent = "\n\n";
-		$strContent .= "/**\n * Active modules\n */\n";
-		$strContent .= "static::\$active = [\n";
-
-		foreach (ModuleLoader::getActive() as $strModule)
-		{
-			$strContent .= "\t'$strModule',\n";
-		}
-
-		$strContent .= "];\n\n";
-		$strContent .= "/**\n * Disabled modules\n */\n";
-		$strContent .= "static::\$disabled = [\n";
-
-		foreach (ModuleLoader::getDisabled() as $strModule)
-		{
-			$strContent .= "\t'$strModule',\n";
-		}
-
-		$strContent .= "];";
-		$objCacheFile->append($strContent);
-
-		// Close the file (moves it to its final destination)
-		$objCacheFile->close();
-
 		// Generate the config cache file
 		$objCacheFile = new File('system/cache/config/config.php');
 		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strFile = 'system/modules/' . $strModule . '/config/config.php';
+			$strFile = $bundle->getConfigPath() . '/config.php';
 
 			if (file_exists(TL_ROOT . '/' . $strFile))
 			{
@@ -679,9 +650,9 @@ class Automator extends System
 		$arrFiles = [];
 
 		// Parse all active modules
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = 'system/modules/' . $strModule . '/dca';
+			$strDir = $bundle->getDcaPath();
 
 			if (!is_dir(TL_ROOT . '/' . $strDir))
 			{
@@ -708,9 +679,9 @@ class Automator extends System
 			$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
 
 			// Parse all active modules
-			foreach (ModuleLoader::getActive() as $strModule)
+			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strFile = 'system/modules/' . $strModule . '/dca/' . $strName . '.php';
+				$strFile = $bundle->getDcaPath() . '/' . $strName . '.php';
 
 				if (file_exists(TL_ROOT . '/' . $strFile))
 				{
@@ -759,9 +730,9 @@ class Automator extends System
 			$arrFiles = [];
 
 			// Parse all active modules
-			foreach (ModuleLoader::getActive() as $strModule)
+			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strDir = 'system/modules/' . $strModule . '/languages/' . $strLanguage;
+				$strDir = $bundle->getLanguagesPath() . '/' . $strLanguage;
 
 				if (!is_dir(TL_ROOT . '/' . $strDir))
 				{
@@ -805,9 +776,9 @@ class Automator extends System
 				$objCacheFile->write(sprintf($strHeader, $strLanguage));
 
 				// Parse all active modules and append to the cache file
-				foreach (ModuleLoader::getActive() as $strModule)
+				foreach (System::getKernel()->getContaoBundles() as $bundle)
 				{
-					$strFile = 'system/modules/' . $strModule . '/languages/' . $strLanguage . '/' . $strName;
+					$strFile = $bundle->getLanguagesPath() . '/' . $strLanguage . '/' . $strName;
 
 					if (file_exists(TL_ROOT . '/' . $strFile . '.xlf'))
 					{
@@ -838,9 +809,9 @@ class Automator extends System
 		$arrExtracts = [];
 
 		// Only check the active modules (see #4541)
-		foreach (ModuleLoader::getActive() as $strModule)
+		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = 'system/modules/' . $strModule . '/dca';
+			$strDir = $bundle->getDcaPath();
 
 			if (!is_dir(TL_ROOT . '/' . $strDir))
 			{

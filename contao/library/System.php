@@ -13,6 +13,8 @@
 namespace Contao;
 
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
+use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
+
 
 
 /**
@@ -68,6 +70,12 @@ abstract class System
 	 * @var array
 	 */
 	protected static $arrLanguageFiles = [];
+
+	/**
+	 * The Symfony kernel
+	 * @var KernelInterface
+	 */
+	protected static $objKernel;
 
 
 	/**
@@ -300,22 +308,17 @@ abstract class System
 			}
 			else
 			{
-				global $kernel;
-
-				foreach ($kernel->getBundles() as $bundle)
+				foreach (System::getKernel()->getContaoBundles() as $bundle)
 				{
-					if ($bundle instanceof ContaoBundleInterface)
-					{
-						$strFile = $bundle->getLanguagesPath() . '/' . $strCreateLang . '/' . $strName;
+					$strFile = $bundle->getLanguagesPath() . '/' . $strCreateLang . '/' . $strName;
 
-						if (file_exists($strFile . '.xlf'))
-						{
-							static::convertXlfToPhp(str_replace(TL_ROOT . '/', '', $strFile) . '.xlf', $strCreateLang, true);
-						}
-						elseif (file_exists($strFile . '.php'))
-						{
-							include $strFile . '.php';
-						}
+					if (file_exists(TL_ROOT . '/' . $strFile . '.xlf'))
+					{
+						static::convertXlfToPhp($strFile . '.xlf', $strCreateLang, true);
+					}
+					elseif (file_exists(TL_ROOT . '/' . $strFile . '.php'))
+					{
+						include TL_ROOT . '/' . $strFile . '.php';
 					}
 				}
 			}
@@ -751,6 +754,8 @@ abstract class System
 	 * @param string $strName The module name
 	 *
 	 * @return bool True if the module was enabled
+	 *
+	 * @todo Handle Symfony bundles?
 	 */
 	public static function enableModule($strName)
 	{
@@ -772,6 +777,8 @@ abstract class System
 	 * @param string $strName The module name
 	 *
 	 * @return bool True if the module was disabled
+	 *
+	 * @todo Handle Symfony bundles?
 	 */
 	public static function disableModule($strName)
 	{
@@ -926,7 +933,7 @@ abstract class System
 
 			foreach ($langs as $lang)
 			{
-				if (is_dir(TL_ROOT . '/system/modules/core/languages/' . str_replace('-', '_', $lang)))
+				if (is_dir(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages/' . str_replace('-', '_', $lang)))
 				{
 					$_SESSION['TL_LANGUAGE'] = $lang;
 					break;
@@ -1008,6 +1015,35 @@ abstract class System
 
 			exit;
 		}
+	}
+
+
+	/**
+	 * Set the Symfony kernel
+	 *
+	 * @param ContaoKernelInterface $kernel The kernel object
+	 *
+	 * @throws \RuntimeException If the kernel is already set
+	 */
+	public static function setKernel(ContaoKernelInterface $kernel)
+	{
+		if (static::$objKernel !== null)
+		{
+			throw new \RuntimeException('The kernel is already set and cannot be changed');
+		}
+
+		static::$objKernel = $kernel;
+	}
+
+
+	/**
+	 * Return the Symfony kernel
+	 *
+	 * @return ContaoKernelInterface
+	 */
+	public static function getKernel()
+	{
+		return static::$objKernel;
 	}
 
 
