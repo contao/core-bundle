@@ -768,7 +768,7 @@ class BackendInstall extends Backend
 				$modules[] = $bundle->getName();
 			}
 
-			if (count(array_diff($modules, ['CoreBundle', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'])) > 0)
+			if (count(array_diff($modules, ['ContaoCoreBundle', 'calendar', 'comments', 'devtools', 'faq', 'listing', 'news', 'newsletter', 'repository'])) > 0)
 			{
 				Config::set('coreOnlyMode', true);
 				Config::persist('coreOnlyMode', true);

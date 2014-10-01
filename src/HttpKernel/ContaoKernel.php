@@ -19,6 +19,7 @@ use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -70,10 +71,8 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         $bundles = [];
 
         foreach ($this->resolved as $package) {
-            if (is_array($package)) {
-                foreach ($package as $class) {
-                    $bundles[] = new $class();
-                }
+            if ('Bundle' === substr($package, -6)) {
+                $bundles[] = new $package();
             } else {
                 $bundles[] = new ContaoLegacyBundle($package);
             }
@@ -152,9 +151,28 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
                 continue;
             }
 
-            // Get the package name
-            $chunks = explode('/', $file->getRelativePathname());
-            $name   = $chunks[0] . '/' . $chunks[1];
+            if (empty($json['bundles'])) {
+                throw new \RuntimeException('No bundles defined in ' . $file->getRelativePathname() . '.');
+            }
+
+            $classes = array_keys($json['bundles']);
+            $bundle  = new $classes[0]();
+
+            if (!$bundle instanceof Bundle) {
+                throw new \RuntimeException($classes[0] . ' is not a bundle.');
+            }
+
+            if ($bundle->getPath() !== dirname(dirname($file->getPath()))) {
+                throw new \RuntimeException('The first registered bundle should be the bundle itself.');
+            }
+
+            $name = $bundle->getName();
+
+            if (!empty($json['replace'])) {
+                foreach ($json['replace'] as $package) {
+                    $this->replace[$package] = $name;
+                }
+            }
 
             $this->dependencies[$name] = [];
 
@@ -170,21 +188,25 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
                 }
             }
 
-            if (!empty($json['replace'])) {
-                foreach ($json['replace'] as $package) {
-                    $this->replace[$package] = $name;
-                }
-            }
+            foreach ($json['bundles'] as $class => $options) {
+                if (
+                    !isset($options['environment'])
+                    || in_array($this->getEnvironment(), $options['environment'])
+                    || in_array('all', $options['environment'])
+                ) {
+                    $bundle = new $class();
 
-            if (!empty($json['bundles'])) {
-                foreach ($json['bundles'] as $class => $options) {
-                    if (
-                        !isset($options['environment'])
-                        || in_array($this->getEnvironment(), $options['environment'])
-                        || in_array('all', $options['environment'])
-                    ) {
-                        $bundles[$name][] = $class;
+                    if (!$bundle instanceof Bundle) {
+                        throw new \RuntimeException($class . ' is not a bundle.');
                     }
+
+                    $bundleName = $bundle->getName();
+
+                    if (!isset($this->dependencies[$bundleName])) {
+                        $this->dependencies[$bundleName] = [];
+                    }
+
+                    $bundles[$bundleName] = $class;
                 }
             }
         }

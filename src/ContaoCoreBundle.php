@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @author Leo Feyer <https://contao.org>
  */
-class CoreBundle extends ContaoBundle
+class ContaoCoreBundle extends ContaoBundle
 {
     /**
      * {@inheritdoc}

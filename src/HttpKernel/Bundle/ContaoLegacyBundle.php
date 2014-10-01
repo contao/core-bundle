@@ -39,13 +39,41 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
     /**
      * {@inheritdoc}
      */
-    public function getRelativePath()
+    public function getAssetsPath()
     {
-        if (null === $this->relpath) {
-            $this->relpath = 'system/modules/' . $this->name;
-        }
+        return $this->getPath() . '/assets';
+    }
 
-        return $this->relpath;
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigPath()
+    {
+        return $this->getPath() . '/config';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDcaPath()
+    {
+        return $this->getPath() . '/dca';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLanguagesPath()
+    {
+        return $this->getPath() . '/languages';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplatesPath()
+    {
+        return $this->getPath() . '/templates';
     }
 
     /**
@@ -58,45 +86,5 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
         }
 
         return $this->path;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAssetsPath()
-    {
-        return $this->getRelativePath() . '/assets';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigPath()
-    {
-        return $this->getRelativePath() . '/config';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDcaPath()
-    {
-        return $this->getRelativePath() . '/dca';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLanguagesPath()
-    {
-        return $this->getRelativePath() . '/languages';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTemplatesPath()
-    {
-        return $this->getRelativePath() . '/templates';
     }
 }

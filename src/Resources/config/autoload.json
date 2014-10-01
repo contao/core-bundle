@@ -1,9 +1,12 @@
 {
+    "require": [
+        "FrameworkBundle"
+    ],
     "replace": [
         "core"
     ],
     "bundles": {
-        "Contao\\Bundle\\CoreBundle\\CoreBundle": {
+        "Contao\\Bundle\\CoreBundle\\ContaoCoreBundle": {
             "environments": ["all"]
         },
         "Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle": {
