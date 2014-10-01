@@ -250,7 +250,7 @@ abstract class Backend extends Controller
 	protected function handleRunOnce()
 	{
 		$this->import('Files');
-		$arrFiles = ['system/runonce.php'];
+		$arrFiles = [TL_ROOT . '/system/runonce.php'];
 
 		// Always scan all folders and not just the active modules (see #4200)
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
@@ -261,20 +261,22 @@ abstract class Backend extends Controller
 		// Check whether a runonce file exists
 		foreach ($arrFiles as $strFile)
 		{
-			if (file_exists(TL_ROOT . '/' . $strFile))
+			if (file_exists($strFile))
 			{
 				try
 				{
-					include TL_ROOT . '/' . $strFile;
+					include $strFile;
 				}
 				catch (\Exception $e) {}
 
-				if (!$this->Files->delete($strFile))
+				$strRelpath = str_replace(TL_ROOT . '/', '', $strFile);
+
+				if (!$this->Files->delete($strRelpath))
 				{
-					throw new \Exception("The $strFile file cannot be deleted. Please remove the file manually and correct the file permission settings on your server.");
+					throw new \Exception("The file $strRelpath cannot be deleted. Please remove the file manually and correct the file permission settings on your server.");
 				}
 
-				$this->log("File $strFile ran once and has then been removed successfully", __METHOD__, TL_GENERAL);
+				$this->log("File $strRelpath ran once and has then been removed successfully", __METHOD__, TL_GENERAL);
 			}
 		}
 	}

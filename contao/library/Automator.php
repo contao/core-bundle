@@ -563,15 +563,15 @@ class Automator extends System
 			$strAutoload = $bundle->getConfigPath() . '/autoload.ini';
 
 			// Read the autoload.ini if any
-			if (file_exists(TL_ROOT . '/' . $strAutoload))
+			if (file_exists($strAutoload))
 			{
-				$config = parse_ini_file(TL_ROOT . '/' . $strAutoload, true);
+				$config = parse_ini_file($strAutoload, true);
 
 				if (!empty($config['public']))
 				{
 					foreach ($config['public'] as $strFolder)
 					{
-						$arrPublic[] = $bundle->getRelativePath() . '/' . $strFolder;
+						$arrPublic[] = str_replace(TL_ROOT . '/', '', $bundle->getPath()) . '/' . $strFolder;
 					}
 				}
 			}
@@ -611,7 +611,7 @@ class Automator extends System
 		{
 			$strFile = $bundle->getConfigPath() . '/autoload.php';
 
-			if (file_exists(TL_ROOT . '/' . $strFile))
+			if (file_exists($strFile))
 			{
 				$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
 			}
@@ -628,7 +628,7 @@ class Automator extends System
 		{
 			$strFile = $bundle->getConfigPath() . '/config.php';
 
-			if (file_exists(TL_ROOT . '/' . $strFile))
+			if (file_exists($strFile))
 			{
 				$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
 			}
@@ -654,12 +654,12 @@ class Automator extends System
 		{
 			$strDir = $bundle->getDcaPath();
 
-			if (!is_dir(TL_ROOT . '/' . $strDir))
+			if (!is_dir($strDir))
 			{
 				continue;
 			}
 
-			foreach (scan(TL_ROOT . '/' . $strDir) as $strFile)
+			foreach (scan($strDir) as $strFile)
 			{
 				// Ignore non PHP files and files which have been included before
 				if (strncmp($strFile, '.', 1) === 0 || substr($strFile, -4) != '.php' || in_array($strFile, $arrFiles))
@@ -683,7 +683,7 @@ class Automator extends System
 			{
 				$strFile = $bundle->getDcaPath() . '/' . $strName . '.php';
 
-				if (file_exists(TL_ROOT . '/' . $strFile))
+				if (file_exists($strFile))
 				{
 					$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
 				}
@@ -734,12 +734,12 @@ class Automator extends System
 			{
 				$strDir = $bundle->getLanguagesPath() . '/' . $strLanguage;
 
-				if (!is_dir(TL_ROOT . '/' . $strDir))
+				if (!is_dir($strDir))
 				{
 					continue;
 				}
 
-				foreach (scan(TL_ROOT . '/' . $strDir) as $strFile)
+				foreach (scan($strDir) as $strFile)
 				{
 					if (strncmp($strFile, '.', 1) === 0 || (substr($strFile, -4) != '.php' && substr($strFile, -4) != '.xlf') || in_array($strFile, $arrFiles))
 					{
@@ -780,11 +780,11 @@ class Automator extends System
 				{
 					$strFile = $bundle->getLanguagesPath() . '/' . $strLanguage . '/' . $strName;
 
-					if (file_exists(TL_ROOT . '/' . $strFile . '.xlf'))
+					if (file_exists($strFile . '.xlf'))
 					{
 						$objCacheFile->append(static::convertXlfToPhp($strFile . '.xlf', $strLanguage));
 					}
-					elseif (file_exists(TL_ROOT . '/' . $strFile . '.php'))
+					elseif (file_exists($strFile . '.php'))
 					{
 						$objCacheFile->append(static::readPhpFileWithoutTags($strFile . '.php'));
 					}
@@ -813,12 +813,12 @@ class Automator extends System
 		{
 			$strDir = $bundle->getDcaPath();
 
-			if (!is_dir(TL_ROOT . '/' . $strDir))
+			if (!is_dir($strDir))
 			{
 				continue;
 			}
 
-			foreach (scan(TL_ROOT . '/' . $strDir) as $strFile)
+			foreach (scan($strDir) as $strFile)
 			{
 				// Ignore non PHP files and files which have been included before
 				if (strncmp($strFile, '.', 1) === 0 || substr($strFile, -4) != '.php' || in_array($strFile, $included))

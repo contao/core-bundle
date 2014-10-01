@@ -85,9 +85,9 @@ class DcaLoader extends Controller
 			{
 				$strFile = $bundle->getDcaPath() . '/' . $this->strTable . '.php';
 
-				if (file_exists(TL_ROOT . '/' . $strFile))
+				if (file_exists($strFile))
 				{
-					include TL_ROOT . '/' . $strFile;
+					include $strFile;
 				}
 			}
 		}

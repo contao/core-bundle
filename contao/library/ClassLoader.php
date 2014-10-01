@@ -234,9 +234,9 @@ class ClassLoader
 			{
 				$strFile = $bundle->getConfigPath() . '/autoload.php';
 
-				if (file_exists(TL_ROOT . '/' . $strFile))
+				if (file_exists($strFile))
 				{
-					include TL_ROOT . '/' . $strFile;
+					include $strFile;
 				}
 			}
 		}

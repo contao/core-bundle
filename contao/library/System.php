@@ -312,13 +312,13 @@ abstract class System
 				{
 					$strFile = $bundle->getLanguagesPath() . '/' . $strCreateLang . '/' . $strName;
 
-					if (file_exists(TL_ROOT . '/' . $strFile . '.xlf'))
+					if (file_exists($strFile . '.xlf'))
 					{
 						static::convertXlfToPhp($strFile . '.xlf', $strCreateLang, true);
 					}
-					elseif (file_exists(TL_ROOT . '/' . $strFile . '.php'))
+					elseif (file_exists($strFile . '.php'))
 					{
-						include TL_ROOT . '/' . $strFile . '.php';
+						include $strFile . '.php';
 					}
 				}
 			}
@@ -630,7 +630,13 @@ abstract class System
 	 */
 	protected static function readPhpFileWithoutTags($strName)
 	{
-		$strCode = rtrim(file_get_contents(TL_ROOT . '/' . $strName));
+		// Convert to absolute path
+		if (strpos($strName, TL_ROOT . '/') === false)
+		{
+			$strName = TL_ROOT . '/' . $strName;
+		}
+
+		$strCode = rtrim(file_get_contents($strName));
 
 		// Opening tag
 		if (strncmp($strCode, '<?php', 5) === 0)
@@ -669,10 +675,16 @@ abstract class System
 		$xml = new \DOMDocument();
 		$xml->preserveWhiteSpace = false;
 
-		// Use loadXML() instead of load() (see 7192)
-		$xml->loadXML(file_get_contents(TL_ROOT . '/' . $strName));
+		// Convert to absolute path
+		if (strpos($strName, TL_ROOT . '/') === false)
+		{
+			$strName = TL_ROOT . '/' . $strName;
+		}
 
-		$return = "\n// $strName\n";
+		// Use loadXML() instead of load() (see 7192)
+		$xml->loadXML(file_get_contents($strName));
+
+		$return = "\n// " . str_replace(TL_ROOT . '/', '', $strName) . "\n";
 		$units = $xml->getElementsByTagName('trans-unit');
 
 		// Set up the quotekey function
@@ -1041,16 +1053,9 @@ abstract class System
 	 * Set the Symfony kernel
 	 *
 	 * @param ContaoKernelInterface $kernel The kernel object
-	 *
-	 * @throws \RuntimeException If the kernel is already set
 	 */
 	public static function setKernel(ContaoKernelInterface $kernel)
 	{
-		if (static::$objKernel !== null)
-		{
-			throw new \RuntimeException('The kernel is already set and cannot be changed');
-		}
-
 		static::$objKernel = $kernel;
 	}
 

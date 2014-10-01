@@ -738,12 +738,12 @@ class Updater extends Controller
 		{
 			$strDir = $bundle->getDcaPath();
 
-			if (!is_dir(TL_ROOT . '/' . $strDir))
+			if (!is_dir($strDir))
 			{
 				continue;
 			}
 
-			foreach (scan(TL_ROOT . '/' . $strDir) as $strFile)
+			foreach (scan($strDir) as $strFile)
 			{
 				// Ignore non PHP files and files which have been included before
 				if (substr($strFile, -4) != '.php' || in_array($strFile, $arrFiles))
