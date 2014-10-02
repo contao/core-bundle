@@ -493,16 +493,21 @@ class Automator extends System
 			$this->Files->rrdir('web/system/modules');
 		}
 
+		// Remove the vendor directory in the document root
+		if (is_dir(TL_ROOT . '/web/vendor'))
+		{
+			$this->Files->rrdir('web/vendor');
+		}
+
 		$arrPublic = $this->getPublicModuleFolders();
 
 		// Symlink the public extension subfolders
 		if (!empty($arrPublic))
 		{
-			$this->Files->mkdir('web/system/modules');
-
 			foreach ($arrPublic as $strFolder)
 			{
-				$this->Files->symlink('../../../../' . $strFolder, 'web/' . $strFolder);
+				$target = str_repeat('../', substr_count($strFolder, '/') + 1);
+				$this->Files->symlink($target . $strFolder, 'web/' . $strFolder);
 			}
 		}
 
