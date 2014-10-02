@@ -70,6 +70,6 @@ class ModuleLoader
 	 */
 	public static function getDisabled()
 	{
-		return static::$disabled; // FIXME: disabled modules
+		return [];
 	}
 }

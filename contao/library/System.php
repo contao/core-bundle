@@ -785,20 +785,10 @@ abstract class System
 	 * @param string $strName The module name
 	 *
 	 * @return bool True if the module was enabled
-	 *
-	 * @todo Handle Symfony bundles?
 	 */
 	public static function enableModule($strName)
 	{
-		$objFile = new File('system/modules/' . $strName . '/.skip');
-
-		if (!$objFile->exists())
-		{
-			return false;
-		}
-
-		$objFile->delete();
-		return true;
+		// FIXME: discuss a new mechanism
 	}
 
 
@@ -808,22 +798,10 @@ abstract class System
 	 * @param string $strName The module name
 	 *
 	 * @return bool True if the module was disabled
-	 *
-	 * @todo Handle Symfony bundles?
 	 */
 	public static function disableModule($strName)
 	{
-		$objFile = new File('system/modules/' . $strName . '/.skip');
-
-		if ($objFile->exists())
-		{
-			return false;
-		}
-
-		$objFile->write('Remove this file to enable the module');
-		$objFile->close();
-
-		return true;
+		// FIXME: discuss a new mechanism
 	}
 
 
