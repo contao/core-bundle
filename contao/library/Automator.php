@@ -498,8 +498,6 @@ class Automator extends System
 		// Symlink the public extension subfolders
 		if (!empty($arrPublic))
 		{
-			$this->Files->mkdir('web/system/modules');
-
 			foreach ($arrPublic as $strFolder)
 			{
 				$this->Files->symlink('../../../../' . $strFolder, 'web/' . $strFolder);
