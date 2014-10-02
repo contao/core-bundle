@@ -356,12 +356,6 @@
       <trans-unit id="tl_settings.smtpPort.1">
         <source>Please enter the port number of the SMTP server.</source>
       </trans-unit>
-      <trans-unit id="tl_settings.inactiveModules.0">
-        <source>Inactive extensions</source>
-      </trans-unit>
-      <trans-unit id="tl_settings.inactiveModules.1">
-        <source>Here you can deactivate unneeded extensions.</source>
-      </trans-unit>
       <trans-unit id="tl_settings.undoPeriod.0">
         <source>Storage time for undo steps</source>
       </trans-unit>
