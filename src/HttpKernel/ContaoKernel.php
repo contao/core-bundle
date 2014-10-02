@@ -143,6 +143,9 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         $vendor = realpath(__DIR__ . '/../../../../');
         $files  = Finder::create()->files()->depth('== 2')->name('autoload.json')->in($vendor);
 
+        // Make sure the core bundle comes first
+        $this->dependencies['ContaoCoreBundle'] = [];
+
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $json = json_decode(file_get_contents($file->getPathname()), true);
