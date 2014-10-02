@@ -141,7 +141,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     protected function findContaoBundles(array &$bundles)
     {
         $vendor = realpath(__DIR__ . '/../../../../');
-        $files  = Finder::create()->files()->name('autoload.json')->in($vendor);
+        $files  = Finder::create()->files()->depth('== 2')->name('autoload.json')->in($vendor);
 
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
@@ -162,7 +162,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
                 throw new \RuntimeException($classes[0] . ' is not a bundle.');
             }
 
-            if ($bundle->getPath() !== dirname(dirname($file->getPath()))) {
+            if (false === strpos($bundle->getPath(), $file->getPath())) {
                 throw new \RuntimeException('The first registered bundle should be the bundle itself.');
             }
 
