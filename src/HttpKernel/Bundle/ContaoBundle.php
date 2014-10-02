@@ -22,11 +22,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class ContaoBundle extends Bundle implements ContaoBundleInterface
 {
     /**
-     * @var string
-     */
-    protected $relpath;
-
-    /**
      * {@inheritdoc}
      */
     public function getAssetsPath()

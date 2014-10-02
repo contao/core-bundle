@@ -235,11 +235,6 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
                 continue;
             }
 
-            // Ignore disabled module
-            if (file_exists($module->getPathname() . '/.skip')) {
-                continue;
-            }
-
             $this->dependencies[$name] = [];
 
             // Read the autoload.ini if any

@@ -22,11 +22,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
 {
     /**
-     * @var string
-     */
-    protected $relpath;
-
-    /**
      * Set the name
      *
      * @param string $name The module name
