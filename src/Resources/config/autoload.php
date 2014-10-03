@@ -135,6 +135,7 @@ TemplateLoader::addFiles(
 	'moo_tablesort'       => 'vendor/contao/module-core/src/Resources/templates/mootools',
 	'nav_default'         => 'vendor/contao/module-core/src/Resources/templates/navigation',
 	'pagination'          => 'vendor/contao/module-core/src/Resources/templates/pagination',
+	'picture_default'     => 'vendor/contao/module-core/src/Resources/templates/picture',
 	'rss_default'         => 'vendor/contao/module-core/src/Resources/templates/rss',
 	'rss_items_only'      => 'vendor/contao/module-core/src/Resources/templates/rss',
 	'search_default'      => 'vendor/contao/module-core/src/Resources/templates/search',

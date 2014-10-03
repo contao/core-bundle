@@ -5,7 +5,7 @@
   <figure class="image_container">
 
     <?= $this->embed_pre ?>
-    <a href="<?= $this->href ?>" class="hyperlink_img" title="<?= $this->linkTitle ?>"<?= $this->attribute ?><?= $this->target ?>><img src="<?= $this->src ?>"<?= $this->imgSize ?> alt="<?= $this->alt ?>"<?php if ($this->title): ?> title="<?= $this->title ?>"<?php endif; ?>></a>
+    <a href="<?= $this->href ?>" class="hyperlink_img" title="<?= $this->linkTitle ?>"<?= $this->attribute ?><?= $this->target ?>><?php $this->insert('picture_default', $this->picture); ?></a>
     <?= $this->embed_post ?>
 
     <?php if ($this->caption): ?>

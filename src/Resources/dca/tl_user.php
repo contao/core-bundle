@@ -305,7 +305,7 @@ $GLOBALS['TL_DCA']['tl_user'] =
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['themes'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options'                 => ['css', 'modules', 'layout', 'theme_import', 'theme_export'],
+			'options'                 => ['css', 'modules', 'layout', 'image_sizes', 'theme_import', 'theme_export'],
 			'reference'               => &$GLOBALS['TL_LANG']['MOD'],
 			'eval'                    => ['multiple'=>true],
 			'sql'                     => "blob NULL"

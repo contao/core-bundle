@@ -6,9 +6,9 @@
         <li class="<?= $class ?> <?= $col->class ?>">
           <figure class="image_container"<?php if ($col->margin): ?> style="<?= $col->margin ?>"<?php endif; ?>>
             <?php if ($col->href): ?>
-              <a href="<?= $col->href ?>"<?= $col->attributes ?> title="<?= $col->alt ?>"><img src="<?= $col->src ?>"<?= $col->imgSize ?> alt="<?= $col->alt ?>"></a>
+              <a href="<?= $col->href ?>"<?= $col->attributes ?> title="<?= $col->alt ?>"><?php $this->insert('picture_default', $col->picture); ?></a>
             <?php else: ?>
-              <img src="<?= $col->src ?>"<?= $col->imgSize ?> alt="<?= $col->alt ?>">
+              <?php $this->insert('picture_default', $col->picture); ?>
             <?php endif; ?>
             <?php if ($col->caption): ?>
               <figcaption class="caption" style="width:<?= $col->arrSize[0] ?>px"><?= $col->caption ?></figcaption>
