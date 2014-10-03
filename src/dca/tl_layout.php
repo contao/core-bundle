@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 	'palettes' =>
 	[
 		'__selector__'                => ['rows', 'cols', 'addJQuery', 'addMooTools', 'static'],
-		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{jquery_legend:hide},addJQuery;{mootools_legend:hide},addMooTools;{script_legend},analytics,scripts,script;{static_legend:hide},static;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head'
+		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{jquery_legend:hide},addJQuery;{mootools_legend:hide},addMooTools;{script_legend},addPicturefill,scripts,analytics,script;{static_legend:hide},static;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head'
 	],
 
 	// Subpalettes
@@ -434,6 +434,13 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 			'options_callback'        => ['tl_layout', 'getMooToolsTemplates'],
 			'eval'                    => ['multiple'=>true],
 			'sql'                     => "text NULL"
+		],
+		'addPicturefill' =>
+		[
+			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['addPicturefill'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'sql'                     => "char(1) NOT NULL default ''"
 		],
 		'analytics' =>
 		[

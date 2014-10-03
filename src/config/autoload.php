@@ -135,6 +135,7 @@ TemplateLoader::addFiles(
 	'moo_tablesort'       => 'system/modules/core/templates/mootools',
 	'nav_default'         => 'system/modules/core/templates/navigation',
 	'pagination'          => 'system/modules/core/templates/pagination',
+	'picture_default'     => 'system/modules/core/templates/picture',
 	'rss_default'         => 'system/modules/core/templates/rss',
 	'rss_items_only'      => 'system/modules/core/templates/rss',
 	'search_default'      => 'system/modules/core/templates/search',

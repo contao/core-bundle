@@ -36,7 +36,7 @@ $GLOBALS['BE_MOD'] =
 	[
 		'themes' =>
 		[
-			'tables'      => ['tl_theme', 'tl_module', 'tl_style_sheet', 'tl_style', 'tl_layout'],
+			'tables'      => ['tl_theme', 'tl_module', 'tl_style_sheet', 'tl_style', 'tl_layout', 'tl_image_size', 'tl_image_size_item'],
 			'importTheme' => ['Theme', 'importTheme'],
 			'exportTheme' => ['Theme', 'exportTheme'],
 			'import'      => ['StyleSheets', 'importStyleSheet'],

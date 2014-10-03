@@ -8,7 +8,7 @@
       <a href="<?= $this->href ?>"<?php if ($this->linkTitle): ?> title="<?= $this->linkTitle ?>"<?php endif; ?><?= $this->attributes ?>>
     <?php endif; ?>
 
-    <img src="<?= $this->src ?>"<?= $this->imgSize ?> alt="<?= $this->alt ?>"<?php if ($this->title): ?> title="<?= $this->title ?>"<?php endif; ?>>
+    <?php $this->insert('picture_default', $this->picture); ?>
 
     <?php if ($this->href): ?>
       </a>

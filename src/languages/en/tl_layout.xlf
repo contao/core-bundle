@@ -284,6 +284,12 @@
       <trans-unit id="tl_layout.mootools.1">
         <source>Here you can select one or more MooTools templates.</source>
       </trans-unit>
+      <trans-unit id="tl_layout.addPicturefill.0">
+        <source>Include picturefill.js</source>
+      </trans-unit>
+      <trans-unit id="tl_layout.addPicturefill.1">
+        <source>Include the picturefill.js script (responsive images).</source>
+      </trans-unit>
       <trans-unit id="tl_layout.scripts.0">
         <source>JavaScript templates</source>
       </trans-unit>

@@ -423,6 +423,12 @@ class PageRegular extends Frontend
 			$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-core.min.js|static';
 		}
 
+		// Picturefill
+		if ($objLayout->addPicturefill)
+		{
+			$GLOBALS['TL_JAVASCRIPT'][] = 'components/picturefill/js/picturefill.min.js|static';
+		}
+
 		// Check whether TL_APPEND_JS exists (see #4890)
 		if (!empty($arrAppendJs))
 		{

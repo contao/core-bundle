@@ -25,6 +25,7 @@
         "contao-components/mediabox": "~1.4",
         "contao-components/mediaelement": "~2.15",
         "contao-components/mootools": "~1.5",
+        "contao-components/picturefill": "~2.1",
         "contao-components/simplemodal": "~1.2",
         "contao-components/swipe": "~2.0",
         "contao-components/tablesorter": "~2.0",
