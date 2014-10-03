@@ -12,7 +12,6 @@
 
 namespace Contao;
 
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
 
 
@@ -76,6 +75,12 @@ abstract class System
 	 * @var KernelInterface
 	 */
 	protected static $objKernel;
+
+	/**
+	 * Available image sizes
+	 * @var array
+	 */
+	protected static $arrImageSizes = [];
 
 
 	/**
@@ -497,6 +502,40 @@ abstract class System
 		}
 
 		return $arrReturn;
+	}
+
+
+	/**
+	 * Return all image sizes as array
+	 *
+	 * @return array The available image sizes
+	 */
+	public static function getImageSizes()
+	{
+		if (empty(static::$arrImageSizes))
+		{
+			$sizes = [];
+
+			try
+			{
+				$imageSize = Database::getInstance()->query("SELECT id, name, width, height FROM tl_image_size ORDER BY pid, name");
+
+				while ($imageSize->next())
+				{
+					$sizes[$imageSize->id] = $imageSize->name;
+					$sizes[$imageSize->id] .= ' (' . $imageSize->width . 'x' . $imageSize->height . ')';
+				}
+
+				static::$arrImageSizes = array_merge(['image_sizes' => $sizes], $GLOBALS['TL_CROP']);
+			}
+			catch (\Exception $e)
+			{
+				static::$arrImageSizes = $GLOBALS['TL_CROP'];
+			}
+
+		}
+
+		return static::$arrImageSizes;
 	}
 
 
