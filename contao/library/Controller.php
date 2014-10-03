@@ -1412,7 +1412,13 @@ abstract class Controller extends System
 			}
 		}
 
-		$src = Image::get($arrItem['singleSRC'], $size[0], $size[1], $size[2]);
+		$imageObj = new Image(new File($arrItem['singleSRC']));
+
+		$src = $imageObj->setTargetWidth($size[0])
+						->setTargetHeight($size[1])
+						->setResizeMode($size[2])
+						->executeResize()
+						->getResizedPath();
 
 		if ($src !== $arrItem['singleSRC'])
 		{
@@ -1425,6 +1431,34 @@ abstract class Controller extends System
 			$objTemplate->arrSize = $imgSize;
 			$objTemplate->imgSize = ' width="' . $imgSize[0] . '" height="' . $imgSize[1] . '"';
 		}
+
+		if (is_numeric($size[2]))
+		{
+			$picture = $imageObj->getPicture($size[2]);
+		}
+		else
+		{
+			$picture =
+			[
+				'img' =>
+				[
+					'src' => $src,
+					'srcset' => $src
+				],
+				'sources' => []
+			];
+
+			if (!empty($objTemplate->arrSize))
+			{
+				$picture['img']['width'] = $objTemplate->arrSize[0];
+				$picture['img']['height'] = $objTemplate->arrSize[1];
+			}
+		}
+
+		$picture['alt'] = specialchars($arrItem['alt']);
+		$picture['title'] = specialchars($arrItem['title']);
+
+		$objTemplate->picture = $picture;
 
 		// Provide an ID for single lightbox images in HTML5 (see #3742)
 		if ($strLightboxId === null && $arrItem['fullsize'])
