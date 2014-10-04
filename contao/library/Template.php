@@ -13,6 +13,7 @@
 namespace Contao;
 
 use Contao\Model\Registry;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -52,6 +53,12 @@ abstract class Template extends View
 	 * @var array
 	 */
 	protected $arrData = [];
+
+	/**
+	 * Compile status
+	 * @var bool
+	 */
+	protected $blnCompiled = false;
 
 
 	/**
@@ -246,10 +253,15 @@ abstract class Template extends View
 
 
 	/**
-	 * Parse the template file and print it to the screen
+	 * Compile the template (used internally)
 	 */
-	public function output()
+	protected function compile()
 	{
+		if ($this->blnCompiled)
+		{
+			return;
+		}
+
 		if (!$this->strBuffer)
 		{
 			$this->strBuffer = $this->parse();
@@ -258,14 +270,25 @@ abstract class Template extends View
 		// Minify the markup
 		$this->strBuffer = $this->minifyHtml($this->strBuffer);
 
-		header('Vary: User-Agent', false);
-		header('Content-Type: ' . $this->strContentType . '; charset=' . Config::get('characterSet'));
-
 		// Add the debug bar
 		if (Config::get('debugMode') && !isset($_GET['popup']))
 		{
 			$this->strBuffer = str_replace('</body>', $this->getDebugBar() . '</body>', $this->strBuffer);
 		}
+
+		$this->blnCompiled = true;
+	}
+
+
+	/**
+	 * Send the response to the client
+	 */
+	public function output()
+	{
+		$this->compile();
+
+		header('Vary: User-Agent', false);
+		header('Content-Type: ' . $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		echo $this->strBuffer;
 
@@ -281,6 +304,24 @@ abstract class Template extends View
 				$this->$callback[0]->$callback[1]($this->strBuffer, $this);
 			}
 		}
+	}
+
+
+	/**
+	 * Return a response object
+	 *
+	 * @return Response The response object
+	 */
+	public function getResponse()
+	{
+		$this->compile();
+
+		$response = new Response($this->strBuffer);
+
+        $response->headers->set('Vary', 'User-Agent', false);
+		$response->headers->set('Content-Type', $this->strContentType . '; charset=' . Config::get('characterSet'));
+
+		return $response;
 	}
 
 

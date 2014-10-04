@@ -47,10 +47,15 @@ class BackendTemplate extends Template
 
 
 	/**
-	 * Parse the template file and print it to the screen
+	 * Compile the template (used internally)
 	 */
-	public function output()
+	protected function compile()
 	{
+		if ($this->blnCompiled)
+		{
+			return;
+		}
+
 		// User agent class (see #3074 and #6277)
 		$this->ua = Environment::get('agent')->class;
 
@@ -101,7 +106,7 @@ class BackendTemplate extends Template
 			$this->mootools = $strMootools;
 		}
 
-		$strBuffer = $this->parse();
+		$this->strBuffer = $this->parse();
 
 		// HOOK: add custom output filter
 		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
@@ -109,12 +114,11 @@ class BackendTemplate extends Template
 			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
 			{
 				$this->import($callback[0]);
-				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
+				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
 			}
 		}
 
-		$this->strBuffer = $strBuffer;
-		parent::output();
+		parent::compile();
 	}
 
 

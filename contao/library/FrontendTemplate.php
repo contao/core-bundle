@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\Response;
+
 
 /**
  * Parses and outputs front end template files
@@ -55,14 +57,19 @@ class FrontendTemplate extends Template
 
 
 	/**
-	 * Parse the template file, replace insert tags and print it to the screen
+	 * Compile the template (used internally)
 	 *
 	 * @param bool $blnCheckRequest If true, check for unsued $_GET parameters
 	 *
 	 * @throws \UnusedArgumentsException If there are unused $_GET parameters
 	 */
-	public function output($blnCheckRequest=false)
+	protected function compile($blnCheckRequest=false)
 	{
+		if ($this->blnCompiled)
+		{
+			return;
+		}
+
 		$this->keywords = '';
 		$arrKeywords = array_map('trim', explode(',', $GLOBALS['TL_KEYWORDS']));
 
@@ -109,11 +116,35 @@ class FrontendTemplate extends Template
 			throw new \UnusedArgumentsException();
 		}
 
-		// Send the response to the client
-		parent::output();
+		parent::compile();
+	}
 
-		// Add the output to the search index
-		$this->addToSearchIndex();
+
+	/**
+	 * Send the response to the client
+	 *
+	 * @param bool $blnCheckRequest If true, check for unsued $_GET parameters
+	 */
+	public function output($blnCheckRequest=false)
+	{
+		$this->compile($blnCheckRequest);
+
+		parent::output();
+	}
+
+
+	/**
+	 * Return a response object
+	 *
+	 * @param bool $blnCheckRequest If true, check for unsued $_GET parameters
+	 *
+	 * @return Response The response object
+	 */
+	public function getResponse($blnCheckRequest=false)
+	{
+		$this->compile($blnCheckRequest);
+
+		return parent::getResponse();
 	}
 
 
@@ -263,7 +294,7 @@ class FrontendTemplate extends Template
 	/**
 	 * Add the template output to the search index
 	 */
-	protected function addToSearchIndex()
+	protected function addToSearchIndex() # FIXME: move to kernel.terminate
 	{
 		global $objPage;
 
