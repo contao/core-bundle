@@ -13,6 +13,7 @@
 namespace Contao;
 
 use Contao\Model\Collection;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -31,9 +32,6 @@ class FrontendIndex extends Frontend
 	 */
 	public function __construct()
 	{
-		// Try to read from cache
-		$this->outputFromCache();
-
 		// Load the user object before calling the parent constructor
 		$this->import('FrontendUser', 'User');
 		parent::__construct();
@@ -60,6 +58,10 @@ class FrontendIndex extends Frontend
 
 	/**
 	 * Run the controller
+	 *
+	 * @return Response The response object
+	 *
+	 * @throws \RuntimeException If no page handler is found
 	 */
 	public function run()
 	{
@@ -74,19 +76,23 @@ class FrontendIndex extends Frontend
 			$objHandler = new $GLOBALS['TL_PTY']['root']();
 			$pageId = $objHandler->generate($objRootPage->id, true);
 		}
+
 		// Throw a 404 error if the request is not a Contao request (see #2864)
 		elseif ($pageId === false)
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($pageId);
+
+			return $objHandler->getResponse($pageId);
 		}
+
 		// Throw a 404 error if URL rewriting is active and the URL contains the index.php fragment
 		elseif (Config::get('rewriteURL') && strncmp(Environment::get('request'), 'index.php/', 10) === 0)
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($pageId);
+
+			return $objHandler->getResponse($pageId);
 		}
 
 		// Get the current page object(s)
@@ -149,7 +155,8 @@ class FrontendIndex extends Frontend
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($pageId);
+
+			return $objHandler->getResponse($pageId);
 		}
 
 		// Make sure $objPage is a Model
@@ -194,7 +201,8 @@ class FrontendIndex extends Frontend
 		{
 			$this->User->authenticate();
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($pageId);
+
+			return $objHandler->getResponse($pageId);
 		}
 
 		// Check whether there are domain name restrictions
@@ -205,7 +213,8 @@ class FrontendIndex extends Frontend
 			{
 				$this->User->authenticate();
 				$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-				$objHandler->generate($objPage->id, $objPage->domain, Environment::get('host'));
+
+				return $objHandler->getReponse($objPage->id, $objPage->domain, Environment::get('host'));
 			}
 		}
 
@@ -213,7 +222,8 @@ class FrontendIndex extends Frontend
 		if (!$this->User->authenticate() && $objPage->protected && !BE_USER_LOGGED_IN)
 		{
 			$objHandler = new $GLOBALS['TL_PTY']['error_403']();
-			$objHandler->generate($pageId, $objRootPage);
+
+			return $objHandler->getResponse($pageId, $objRootPage);
 		}
 
 		// Check the user groups if the page is protected
@@ -224,9 +234,9 @@ class FrontendIndex extends Frontend
 			if (!is_array($arrGroups) || empty($arrGroups) || !count(array_intersect($arrGroups, $this->User->groups)))
 			{
 				$this->log('Page "' . $pageId . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')', __METHOD__, TL_ERROR);
-
 				$objHandler = new $GLOBALS['TL_PTY']['error_403']();
-				$objHandler->generate($pageId, $objRootPage);
+
+				return $objHandler->getResponse($pageId, $objRootPage);
 			}
 		}
 
@@ -239,16 +249,19 @@ class FrontendIndex extends Frontend
 			switch ($objPage->type)
 			{
 				case 'root':
-				case 'error_404':
 					$objHandler->generate($pageId);
 					break;
 
+				case 'error_404':
+					return $objHandler->getResponse($pageId);
+					break;
+
 				case 'error_403':
-					$objHandler->generate($pageId, $objRootPage);
+					return $objHandler->getResponse($pageId, $objRootPage);
 					break;
 
 				default:
-					$objHandler->generate($objPage, true);
+					return $objHandler->getResponse($objPage, true);
 					break;
 			}
 		}
@@ -256,168 +269,10 @@ class FrontendIndex extends Frontend
 		{
 			// Render the error page (see #5570)
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();
-			$objHandler->generate($pageId, null, null, true);
+
+			return $objHandler->getResponse($pageId, null, null, true);
 		}
 
-		// Stop the script (see #4565)
-		exit;
-	}
-
-
-	/**
-	 * Try to load the page from the cache
-	 */
-	protected function outputFromCache()
-	{
-		// Build the page if a user is (potentially) logged in or there is POST data
-		if (!empty($_POST) || Input::cookie('FE_USER_AUTH') || Input::cookie('FE_AUTO_LOGIN') || $_SESSION['DISABLE_CACHE'] || isset($_SESSION['LOGIN_ERROR']) || Config::get('debugMode'))
-		{
-			return;
-		}
-
-		// If the request string is empty, look for a cached page matching the
-		// primary browser language. This is a compromise between not caching
-		// empty requests at all and considering all browser languages, which
-		// is not possible for various reasons.
-		if (Environment::get('request') == '' || Environment::get('request') == 'index.php')
-		{
-			// Return if the language is added to the URL and the empty domain will be redirected
-			if (Config::get('addLanguageToUrl') && !Config::get('doNotRedirectEmpty'))
-			{
-				return;
-			}
-
-			$arrLanguage = Environment::get('httpAcceptLanguage');
-			$strCacheKey = Environment::get('base') .'empty.'. $arrLanguage[0];
-		}
-		else
-		{
-			$strCacheKey = Environment::get('base') . Environment::get('request');
-		}
-
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
-			{
-				$strCacheKey = System::importStatic($callback[0])->$callback[1]($strCacheKey);
-			}
-		}
-
-		$blnFound = false;
-		$strCacheFile = null;
-
-		// Check for a mobile layout
-		if (Input::cookie('TL_VIEW') == 'mobile' || (Environment::get('agent')->mobile && Input::cookie('TL_VIEW') != 'desktop'))
-		{
-			$strCacheKey = md5($strCacheKey . '.mobile');
-			$strCacheFile = TL_ROOT . '/system/cache/html/' . substr($strCacheKey, 0, 1) . '/' . $strCacheKey . '.html';
-
-			if (file_exists($strCacheFile))
-			{
-				$blnFound = true;
-			}
-		}
-
-		// Check for a regular layout
-		if (!$blnFound)
-		{
-			$strCacheKey = md5($strCacheKey);
-			$strCacheFile = TL_ROOT . '/system/cache/html/' . substr($strCacheKey, 0, 1) . '/' . $strCacheKey . '.html';
-
-			if (file_exists($strCacheFile))
-			{
-				$blnFound = true;
-			}
-		}
-
-		// Return if the file does not exist
-		if (!$blnFound)
-		{
-			return;
-		}
-
-		$expire = null;
-		$content = null;
-		$type = null;
-
-		// Include the file
-		ob_start();
-		require_once $strCacheFile;
-
-		// The file has expired
-		if ($expire < time())
-		{
-			ob_end_clean();
-			return;
-		}
-
-		// Read the buffer
-		$strBuffer = ob_get_clean();
-
-		// Session required to determine the referer
-		$objSession = Session::getInstance();
-		$arrData = $objSession->getData();
-
-		// Set the new referer
-		if (!isset($_GET['pdf']) && !isset($_GET['file']) && !isset($_GET['id']) && $arrData['referer']['current'] != Environment::get('requestUri'))
-		{
-			$arrData['referer']['last'] = $arrData['referer']['current'];
-			$arrData['referer']['current'] = substr(Environment::get('requestUri'), strlen(Environment::get('path')) + 1);
-		}
-
-		// Store the session data
-		$objSession->setData($arrData);
-
-		// Load the default language file (see #2644)
-		System::loadLanguageFile('default');
-
-		// Replace the insert tags and then re-replace the request_token
-		// tag in case a form element has been loaded via insert tag
-		$strBuffer = Controller::replaceInsertTags($strBuffer, false);
-		$strBuffer = str_replace(['{{request_token}}', '[{]', '[}]'], [REQUEST_TOKEN, '{{', '}}'], $strBuffer);
-
-		// Content type
-		if (!$content)
-		{
-			$content = 'text/html';
-		}
-
-		// Send the status header (see #6585)
-		if ($type == 'error_403')
-		{
-			header('HTTP/1.1 403 Forbidden');
-		}
-		elseif ($type == 'error_404')
-		{
-			header('HTTP/1.1 404 Not Found');
-		}
-		else
-		{
-			header('HTTP/1.1 200 Ok');
-		}
-
-		header('Vary: User-Agent', false);
-		header('Content-Type: ' . $content . '; charset=' . Config::get('characterSet'));
-
-		// Send the cache headers
-		if ($expire !== null && (Config::get('cacheMode') == 'both' || Config::get('cacheMode') == 'browser'))
-		{
-			header('Cache-Control: public, max-age=' . ($expire - time()));
-			header('Expires: ' . gmdate('D, d M Y H:i:s', $expire) . ' GMT');
-			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
-			header('Pragma: public');
-		}
-		else
-		{
-			header('Cache-Control: no-cache');
-			header('Cache-Control: pre-check=0, post-check=0', false);
-			header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-			header('Expires: Fri, 06 Jun 1975 15:10:00 GMT');
-			header('Pragma: no-cache');
-		}
-
-		echo $strBuffer;
-		exit;
+		throw new \RuntimeException('No page handler found');
 	}
 }

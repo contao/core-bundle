@@ -12,6 +12,8 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\Response;
+
 
 /**
  * Class PageError404
@@ -25,13 +27,14 @@ class PageError404 extends Frontend
 {
 
 	/**
-	 * Generate an error 404 page
+	 * Prepare the output (used internally)
 	 * @param int
 	 * @param string
 	 * @param string
 	 * @param bool
+	 * @return object
 	 */
-	public function generate($pageId, $strDomain=null, $strHost=null, $blnUnusedGet=false)
+	protected function prepare($pageId, $strDomain=null, $strHost=null, $blnUnusedGet=false)
 	{
 		// Add a log entry
 		if ($blnUnusedGet)
@@ -83,30 +86,63 @@ class PageError404 extends Frontend
 			die_nicely('be_no_page', 'Page not found');
 		}
 
-		// Generate the error page
-		if (!$obj404->autoforward || !$obj404->jumpTo)
-		{
-			global $objPage;
-
-			$objPage = $obj404->loadDetails();
-			$objHandler = new $GLOBALS['TL_PTY']['regular']();
-
-			header('HTTP/1.1 404 Not Found');
-			$objHandler->generate($objPage);
-
-			exit;
-		}
-
 		// Forward to another page
-		$objNextPage = PageModel::findPublishedById($obj404->jumpTo);
-
-		if ($objNextPage === null)
+		if ($obj404->autoforward && $obj404->jumpTo)
 		{
-			header('HTTP/1.1 404 Not Found');
-			$this->log('Forward page ID "' . $obj404->jumpTo . '" does not exist', __METHOD__, TL_ERROR);
-			die_nicely('be_no_forward', 'Forward page not found');
+			$objNextPage = PageModel::findPublishedById($obj404->jumpTo);
+
+			if ($objNextPage === null)
+			{
+				header('HTTP/1.1 404 Not Found');
+				$this->log('Forward page ID "' . $obj404->jumpTo . '" does not exist', __METHOD__, TL_ERROR);
+				die_nicely('be_no_forward', 'Forward page not found');
+			}
+
+			$this->redirect($this->generateFrontendUrl($objNextPage->row(), null, $objRootPage->language), (($obj404->redirect == 'temporary') ? 302 : 301));
 		}
 
-		$this->redirect($this->generateFrontendUrl($objNextPage->row(), null, $objRootPage->language), (($obj404->redirect == 'temporary') ? 302 : 301));
+		return $obj404;
+	}
+
+
+	/**
+	 * Generate an error 404 page
+	 * @param int
+	 * @param string
+	 * @param string
+	 * @param bool
+	 */
+	public function generate($pageId, $strDomain=null, $strHost=null, $blnUnusedGet=false)
+	{
+		$obj404 = $this->prepare($pageId, $strDomain, $strHost, $blnUnusedGet);
+
+		global $objPage;
+
+		$objPage = $obj404->loadDetails();
+		$objHandler = new $GLOBALS['TL_PTY']['regular']();
+
+		header('HTTP/1.1 404 Not Found');
+		$objHandler->generate($objPage);
+	}
+
+
+	/**
+	 * Return a response object
+	 * @param int
+	 * @param string
+	 * @param string
+	 * @param bool
+	 * @return Response
+	 */
+	public function getResponse($pageId, $strDomain=null, $strHost=null, $blnUnusedGet=false)
+	{
+		$obj404 = $this->prepare($pageId, $strDomain, $strHost, $blnUnusedGet);
+
+		global $objPage;
+
+		$objPage = $obj404->loadDetails();
+		$objHandler = new $GLOBALS['TL_PTY']['regular']();
+
+		return $objHandler->getResponse($objPage)->setStatusCode(404);
 	}
 }

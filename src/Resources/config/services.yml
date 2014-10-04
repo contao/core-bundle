@@ -1,0 +1,17 @@
+services:
+    contao.config:
+        class: Contao\Config
+        factory_class: Contao\Config
+        factory_method: getInstance
+
+    contao.loader:
+        class: Contao\Bundle\CoreBundle\Config\Loader\ContaoLoader
+        tags:
+            - { name: routing.loader }
+        arguments: ['@contao.config']
+
+    contao.listener.output_from_cache:
+        class: Contao\Bundle\CoreBundle\EventListener\OutputFromCacheListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
+        arguments: ['@contao.config']
