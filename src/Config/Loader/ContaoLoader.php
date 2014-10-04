@@ -57,7 +57,7 @@ class ContaoLoader extends Loader
         $require = ['alias' => '.*'];
 
         // URL suffix
-        if ('' !== $suffix) {
+        if ($suffix) {
             $pattern .= '.{_format}';
 
             $require['_format']  = $suffix;
