@@ -15,3 +15,9 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
         arguments: ['@contao.config']
+
+    contao.listener.add_to_search_index:
+        class: Contao\Bundle\CoreBundle\EventListener\AddToSearchIndexListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
+        arguments: ['@contao.config']
