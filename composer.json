@@ -57,5 +57,7 @@
 			"src/Resources/uploader/",
 			"src/Resources/widgets/"
 		]
-	}
+	},
+    "prefer-stable": true,
+    "minimum-stability": "dev"
 }
