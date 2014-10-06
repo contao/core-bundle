@@ -13,7 +13,7 @@
 namespace Contao;
 
 use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
-
+use Symfony\Component\DependencyInjection\Container;
 
 
 /**
@@ -72,7 +72,7 @@ abstract class System
 
 	/**
 	 * The Symfony kernel
-	 * @var KernelInterface
+	 * @var ContaoKernelInterface
 	 */
 	protected static $objKernel;
 
@@ -1085,6 +1085,17 @@ abstract class System
 	public static function getKernel()
 	{
 		return static::$objKernel;
+	}
+
+
+	/**
+	 * Return the Symfony dependency injection container
+	 *
+	 * @return Container
+	 */
+	public static function getContainer()
+	{
+		return static::$objKernel->getContainer();
 	}
 
 
