@@ -74,7 +74,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             if ('Bundle' === substr($package, -6)) {
                 $bundles[] = new $package();
             } else {
-                $bundles[] = new ContaoLegacyBundle($package);
+                $bundles[] = new ContaoLegacyBundle($package, $this->getRootDir());
             }
         }
 
@@ -140,7 +140,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     protected function findContaoBundles(array &$bundles)
     {
-        $vendor = realpath(__DIR__ . '/../../../../');
+        $vendor = dirname($this->getRootDir()) . '/vendor';
         $files  = Finder::create()->files()->depth('== 2')->name('autoload.json')->in($vendor);
 
         // Make sure the core bundle comes first
@@ -222,7 +222,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     protected function findLegacyBundles(array &$bundles)
     {
-        $dir     = realpath(__DIR__ . '/../../../../../system/modules');
+        $dir     = dirname($this->getRootDir()) . '/system/modules';
         $modules = Finder::create()->directories()->depth('== 0')->in($dir)->ignoreDotFiles(true)->sortByName();
 
         /** @var \SplFileInfo $module */

@@ -21,14 +21,21 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
 {
+	/**
+	 * @var string
+	 */
+	protected $rootDir;
+
     /**
      * Set the name
      *
-     * @param string $name The module name
+     * @param string $name    The module name
+     * @param string $rootDir The application root directory
      */
-    public function __construct($name)
+    public function __construct($name, $rootDir)
     {
-        $this->name = $name;
+        $this->name    = $name;
+        $this->rootDir = $rootDir;
     }
 
     /**
@@ -77,7 +84,7 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
     public function getPath()
     {
         if (null === $this->path) {
-            $this->path = realpath(__DIR__ . '/../../../../../../') . '/system/modules/' . $this->name;
+            $this->path = dirname($this->rootDir) . '/system/modules/' . $this->name;
         }
 
         return $this->path;
