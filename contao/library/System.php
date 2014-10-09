@@ -902,7 +902,7 @@ abstract class System
 
 		define('TL_START', microtime(true));
 		define('TL_REFERER_ID', substr(md5(TL_START), 0, 8));
-		define('TL_ROOT', realpath(__DIR__ . '/../../../../'));
+		define('TL_ROOT', dirname(static::getKernel()->getRootDir()));
 
 		// Define the TL_SCRIPT constant (backwards compatibility)
 		if (!defined('TL_SCRIPT'))
