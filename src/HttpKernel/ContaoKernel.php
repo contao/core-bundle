@@ -5,7 +5,6 @@
  *
  * Copyright (c) 2005-2014 Leo Feyer
  *
- * @package Core
  * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
@@ -13,13 +12,13 @@
 namespace Contao\Bundle\CoreBundle\HttpKernel;
 
 use Contao\System;
+use Contao\Bundle\CoreBundle\Autoload\Collection;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
-use Contao\Bundle\CoreBundle\Exception\UnresolvableDependenciesException;
+use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -32,12 +31,12 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * @var array
      */
-    protected $resolved = [];
+    protected $ordered = [];
 
     /**
      * @var array
      */
-    protected $dependencies = [];
+    protected $loadingOrder = [];
 
     /**
      * @var array
@@ -62,43 +61,18 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * {@inheritdoc}
      */
-    public function registerBundles()
+    public function addAutoloadBundles(&$bundles)
     {
-        if (empty($this->resolved)) {
+        if (empty($this->ordered)) {
             $this->findBundles();
         }
 
-        $bundles = [];
-
-        foreach ($this->resolved as $package) {
-            if ('Bundle' === substr($package, -6)) {
-                $bundles[] = new $package();
+        foreach ($this->ordered as $package => $class) {
+            if (null !== $class) {
+                $bundles[] = new $class();
             } else {
                 $bundles[] = new ContaoLegacyBundle($package, $this->getRootDir());
             }
-        }
-
-        return $bundles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writeBundleCache()
-    {
-        file_put_contents(
-            $this->getCacheDir() . '/bundles.map',
-            sprintf('<?php return %s;', var_export($this->resolved, true))
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadBundleCache()
-    {
-        if (empty($this->resolved) && is_file($this->getCacheDir() . '/bundles.map')) {
-            $this->resolved = include $this->getCacheDir() . '/bundles.map';
         }
     }
 
@@ -119,213 +93,170 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function writeBundleCache()
+    {
+        file_put_contents(
+            $this->getCacheDir() . '/bundles.map',
+            sprintf('<?php return %s;', var_export($this->ordered, true))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadBundleCache()
+    {
+        if (empty($this->ordered) && is_file($this->getCacheDir() . '/bundles.map')) {
+            $this->ordered = include $this->getCacheDir() . '/bundles.map';
+        }
+    }
+
+    /**
      * Finds all bundles to be registered
      *
      * @return array The found bundles
      */
     protected function findBundles()
     {
-        $bundles = [];
+        $bundles    = [];
+        $collection = $this->getCollection();
 
-        $this->findContaoBundles($bundles);
-        $this->findLegacyBundles($bundles);
+        // Make sure the core bundle comes first
+        $this->loadingOrder['ContaoCoreBundle'] = [];
 
-        $this->resolved = $this->resolveDependencies($bundles);
+        foreach ($collection->getBundles() as $bundle) {
+            $name = $bundle->getName();
+
+            foreach ($bundle->getReplace() as $package) {
+                $this->replace[$package] = $name;
+            }
+
+            $this->loadingOrder[$name] = [];
+
+            foreach ($bundle->getLoadAfter() as $package) {
+                $this->loadingOrder[$name][] = $package;
+            }
+
+            $environments = $bundle->getEnvironments();
+
+            if (in_array($this->getEnvironment(), $environments) || in_array('all', $environments)) {
+                $bundleName = $bundle->getName();
+
+                if (!isset($this->loadingOrder[$bundleName])) {
+                    $this->loadingOrder[$bundleName] = [];
+                }
+
+                $bundles[$bundleName] = $bundle->getClass();
+            }
+        }
+
+        $this->ordered = $this->order($bundles);
     }
 
     /**
-     * Finds all Contao bundles
+     * Finds the autoload bundles
      *
-     * @param array $bundles The bundles array
+     * @return Collection The autoload bundles collection
      */
-    protected function findContaoBundles(array &$bundles)
+    protected function getCollection()
     {
-        $vendor = dirname($this->getRootDir()) . '/vendor';
-        $files  = Finder::create()->files()->depth('== 2')->name('autoload.json')->in($vendor);
+        $collection = new Collection();
 
-        // Make sure the core bundle comes first
-        $this->dependencies['ContaoCoreBundle'] = [];
+        // Contao bundles
+        $files  = Finder::create()
+            ->files()
+            ->depth('== 2')
+            ->name('autoload.json')
+            ->in(dirname($this->getRootDir()) . '/vendor')
+        ;
 
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $json = json_decode(file_get_contents($file->getPathname()), true);
-
-            if (null === $json) {
-                continue;
-            }
-
-            if (empty($json['bundles'])) {
-                throw new \RuntimeException('No bundles defined in ' . $file->getRelativePathname() . '.');
-            }
-
-            $classes = array_keys($json['bundles']);
-            $bundle  = new $classes[0]();
-
-            if (!$bundle instanceof Bundle) {
-                throw new \RuntimeException($classes[0] . ' is not a bundle.');
-            }
-
-            if (false === strpos($bundle->getPath(), $file->getPath())) {
-                throw new \RuntimeException('The first registered bundle should be the bundle itself.');
-            }
-
-            $name = $bundle->getName();
-
-            if (!empty($json['replace'])) {
-                foreach ($json['replace'] as $package) {
-                    $this->replace[$package] = $name;
-                }
-            }
-
-            $this->dependencies[$name] = [];
-
-            if (!empty($json['require'])) {
-                foreach ($json['require'] as $package) {
-                    $this->dependencies[$name][] = $package;
-                }
-            }
-
-            if (!empty($json['require-if-exists'])) {
-                foreach ($json['require-if-exists'] as $package) {
-                    $this->dependencies[$name][] = '*' . $package;
-                }
-            }
-
-            foreach ($json['bundles'] as $class => $options) {
-                if (
-                    !isset($options['environment'])
-                    || in_array($this->getEnvironment(), $options['environment'])
-                    || in_array('all', $options['environment'])
-                ) {
-                    $bundle = new $class();
-
-                    if (!$bundle instanceof Bundle) {
-                        throw new \RuntimeException($class . ' is not a bundle.');
-                    }
-
-                    $bundleName = $bundle->getName();
-
-                    if (!isset($this->dependencies[$bundleName])) {
-                        $this->dependencies[$bundleName] = [];
-                    }
-
-                    $bundles[$bundleName] = $class;
-                }
-            }
+            $collection->addBundlesFromFile($file->getPathname());
         }
-    }
 
-    /**
-     * Finds all legacy bundles
-     *
-     * @param array $bundles The bundles array
-     */
-    protected function findLegacyBundles(array &$bundles)
-    {
-        $dir     = dirname($this->getRootDir()) . '/system/modules';
-        $modules = Finder::create()->directories()->depth('== 0')->in($dir)->ignoreDotFiles(true)->sortByName();
+        // Legacy modules
+        $modules = Finder::create()
+            ->directories()
+            ->depth('== 0')
+            ->ignoreDotFiles(true)
+            ->sortByName()
+            ->in(dirname($this->getRootDir()) . '/system/modules')
+        ;
 
-        /** @var \SplFileInfo $module */
+        /** @var SplFileInfo $module */
         foreach ($modules as $module) {
             $name   = $module->getBasename();
-            $legacy = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
+            $ignore = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
 
-            // Ignore legacy modules
-            if (in_array($name, $legacy)) {
+            if (in_array($name, $ignore)) {
                 continue;
             }
 
-            $this->dependencies[$name] = [];
-
-            // Read the autoload.ini if any
-            if (file_exists($module->getPathname() . '/config/autoload.ini')) {
-                $config = parse_ini_file($module->getPathname() . '/config/autoload.ini', true);
-
-                if (isset($config['requires'])) {
-                    $this->dependencies[$name] = $config['requires'];
-                }
-            }
-
-            $bundles[$name] = $name;
+            $collection->addLegacyBundle($name, $module->getPathname());
         }
+
+        return $collection;
     }
 
     /**
-     * Resolves the dependencies
+     * Order the bundles
      *
      * @param array $bundles The bundles array
      *
      * @return array The resolved bundles array
+     *
+     * @throws UnresolvableLoadingOrderException If the loading order cannot be resolved
      */
-    protected function resolveDependencies(array $bundles)
+    protected function order(array $bundles)
     {
-        $dependencies = $this->dependencies;
+        $loadingOrder = $this->loadingOrder;
 
         // Handle the replaces
-        foreach ($dependencies as $k => $v) {
+        foreach ($loadingOrder as $k => $v) {
             if (isset($this->replace[$k])) {
-                unset($dependencies[$k]);
+                unset($loadingOrder[$k]);
             } else {
                 foreach ($v as $kk => $vv) {
-                    if (0 === strncmp($vv, '*', 1)) {
-                        $key = substr($vv, 1);
-
-                        if (isset($this->replace[$key])) {
-                            $dependencies[$k][$kk] = '*' . $this->replace[$key];
-                        }
-                    } else {
-                        if (isset($this->replace[$vv])) {
-                            $dependencies[$k][$kk] = $this->replace[$vv];
-                        }
+                    if (isset($this->replace[$vv])) {
+                        $loadingOrder[$k][$kk] = $this->replace[$vv];
                     }
                 }
             }
         }
 
-        $available = array_keys($dependencies);
+        $ordered   = [];
+        $available = array_keys($loadingOrder);
 
-        // Handle the optional requirements
-        foreach ($dependencies as $k => $v) {
-            foreach ($v as $kk => $vv) {
-                if (0 === strncmp($vv, '*', 1)) {
-                    $key = substr($vv, 1);
-
-                    if (!in_array($key, $available)) {
-                        unset($dependencies[$k][$kk]);
-                    } else {
-                        $dependencies[$k][$kk] = $key;
-                    }
-                }
-            }
-        }
-
-        $ordered = [];
-
-        // Resolve the dependencies
-        while (!empty($dependencies)) {
+        // Try to resolve the loading order
+        while (!empty($loadingOrder)) {
             $failed = true;
 
-            foreach ($dependencies as $name => $requires) {
+            foreach ($loadingOrder as $name => $requires) {
                 if (empty($requires)) {
                     $resolved = true;
                 } else {
-                    $resolved = count(array_diff($requires, $ordered)) === 0;
+                    $requires = array_intersect($requires, $available);
+                    $resolved = (0 === count(array_diff($requires, $ordered)));
                 }
 
                 if (true === $resolved) {
                     $ordered[] = $name;
-                    unset($dependencies[$name]);
+                    unset($loadingOrder[$name]);
                     $failed = false;
                 }
             }
 
-            // The dependencies cannot be resolved
             if (true === $failed) {
                 ob_start();
-                print_r($dependencies);
+                print_r($loadingOrder);
                 $buffer = ob_get_clean();
 
-                throw new UnresolvableDependenciesException("The module dependencies could not be resolved.\n$buffer");
+                throw new UnresolvableLoadingOrderException(
+                    "The bundle loading order could not be resolved.\n$buffer"
+                );
             }
         }
 
@@ -333,8 +264,8 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
 
         // Sort the bundles
         foreach ($ordered as $package) {
-            if (isset($bundles[$package])) {
-                $return[] = $bundles[$package];
+            if (array_key_exists($package, $bundles)) {
+                $return[$package] = $bundles[$package];
             }
         }
 

@@ -5,7 +5,6 @@
  *
  * Copyright (c) 2005-2014 Leo Feyer
  *
- * @package Core
  * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
@@ -23,6 +22,20 @@ use Symfony\Component\HttpKernel\KernelInterface;
 interface ContaoKernelInterface extends KernelInterface
 {
     /**
+     * Adds the autoload bundles
+     *
+     * @param array $bundles The bundles array
+     */
+    public function addAutoloadBundles(&$bundles);
+
+    /**
+     * Return all Contao bundles as array
+     *
+     * @return ContaoBundleInterface[] The Contao bundles
+     */
+    public function getContaoBundles();
+
+    /**
      * Writes the bundle cache
      */
     public function writeBundleCache();
@@ -31,11 +44,4 @@ interface ContaoKernelInterface extends KernelInterface
      * Loads the bundle cache
      */
     public function loadBundleCache();
-
-    /**
-     * Return all Contao bundles as array
-     *
-     * @return ContaoBundleInterface[] The Contao bundles
-     */
-    public function getContaoBundles();
 }
