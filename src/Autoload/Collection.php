@@ -54,7 +54,7 @@ class Collection
      *
      * @throws \RuntimeException If the json file does not exists or cannot be decoded
      */
-    public function addBundlesFromFile($file)
+    public function addBundlesFromJsonFile($file)
     {
         if (!file_exists($file)) {
             throw new \RuntimeException("File $file does not exists");

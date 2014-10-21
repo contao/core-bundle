@@ -165,7 +165,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         $collection = new Collection();
 
         // Contao bundles
-        $files  = Finder::create()
+        $files = Finder::create()
             ->files()
             ->depth('== 2')
             ->name('autoload.json')
@@ -174,7 +174,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
 
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $collection->addBundlesFromFile($file->getPathname());
+            $collection->addBundlesFromJsonFile($file->getPathname());
         }
 
         // Legacy modules
