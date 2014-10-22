@@ -451,7 +451,7 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 			'options_callback'        => ['tl_layout', 'getAnalyticsTemplates'],
 			'reference'               => &$GLOBALS['TL_LANG']['tl_layout'],
 			'eval'                    => ['multiple'=>true],
-			'sql'                     => "varchar(64) NOT NULL default ''"
+			'sql'                     => "text NULL"
 		],
 		'scripts' =>
 		[
