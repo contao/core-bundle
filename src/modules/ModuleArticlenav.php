@@ -74,7 +74,7 @@ class ModuleArticlenav extends Module
 			}
 
 			$strAlias = ($this->objArticles->alias != '' && !Config::get('disableAlias')) ? $this->objArticles->alias : $this->objArticles->id;
-			$this->redirect($this->addToUrl('articles=' . $strAlias));
+			$this->redirect($this->generateFrontendUrl($objPage->row(), '/articles/' . $strAlias));
 		}
 
 		return parent::generate();
@@ -86,6 +86,8 @@ class ModuleArticlenav extends Module
 	 */
 	protected function compile()
 	{
+		global $objPage;
+
 		$intActive = null;
 		$articles = [];
 		$intCount = 1;
@@ -100,7 +102,7 @@ class ModuleArticlenav extends Module
 				$articles[] =
 				[
 					'isActive' => true,
-					'href' => $this->addToUrl('articles=' . $strAlias),
+					'href' => $this->generateFrontendUrl($objPage->row(), '/articles/' . $strAlias),
 					'title' => specialchars($this->objArticles->title, true),
 					'link' => $intCount
 				];
@@ -114,7 +116,7 @@ class ModuleArticlenav extends Module
 				$articles[] =
 				[
 					'isActive' => false,
-					'href' => $this->addToUrl('articles=' . $strAlias),
+					'href' => $this->generateFrontendUrl($objPage->row(), '/articles/' . $strAlias),
 					'title' => specialchars($this->objArticles->title, true),
 					'link' => $intCount
 				];
