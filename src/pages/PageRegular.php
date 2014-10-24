@@ -424,13 +424,9 @@ class PageRegular extends Frontend
 		}
 
 		// Picturefill
-		if ($objLayout->picturefill == 'respimage.js')
+		if ($objLayout->picturefill)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'components/respimage/js/respimage.min.js|static|async';
-		}
-		elseif ($objLayout->picturefill == 'picturefill.js')
-		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'components/picturefill/js/picturefill.min.js|static|async';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'components/respimage/js/respimage.min.js|static';
 		}
 
 		// Check whether TL_APPEND_JS exists (see #4890)

@@ -439,10 +439,8 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 		[
 			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['picturefill'],
 			'exclude'                 => true,
-			'inputType'               => 'select',
-            'options'                 => ['picturefill.js', 'respimage.js'],
-            'eval'                    => ['includeBlankOption'=>true],
-			'sql'                     => "varchar(16) NOT NULL default ''"
+			'inputType'               => 'checkbox',
+			'sql'                     => "char(1) NOT NULL default ''"
 		],
 		'analytics' =>
 		[
