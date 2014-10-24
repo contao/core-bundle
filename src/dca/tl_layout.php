@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 	'palettes' =>
 	[
 		'__selector__'                => ['rows', 'cols', 'addJQuery', 'addMooTools', 'static'],
-		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{jquery_legend:hide},addJQuery;{mootools_legend:hide},addMooTools;{script_legend},addPicturefill,scripts,analytics,script;{static_legend:hide},static;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head'
+		'default'                     => '{title_legend},name;{header_legend},rows;{column_legend},cols;{sections_legend:hide},sections,sPosition;{webfonts_legend:hide},webfonts;{style_legend},framework,stylesheet,external,loadingOrder;{picturefill_legend:hide},picturefill;{feed_legend:hide},newsfeeds,calendarfeeds;{modules_legend},modules;{jquery_legend:hide},addJQuery;{mootools_legend:hide},addMooTools;{script_legend},scripts,analytics,script;{static_legend:hide},static;{expert_legend:hide},template,doctype,viewport,titleTag,cssClass,onload,head'
 	],
 
 	// Subpalettes
@@ -435,12 +435,14 @@ $GLOBALS['TL_DCA']['tl_layout'] =
 			'eval'                    => ['multiple'=>true],
 			'sql'                     => "text NULL"
 		],
-		'addPicturefill' =>
+		'picturefill' =>
 		[
-			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['addPicturefill'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['picturefill'],
 			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'sql'                     => "char(1) NOT NULL default ''"
+			'inputType'               => 'select',
+            'options'                 => ['picturefill.js', 'respimage.js'],
+            'eval'                    => ['includeBlankOption'=>true],
+			'sql'                     => "varchar(16) NOT NULL default ''"
 		],
 		'analytics' =>
 		[
