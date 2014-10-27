@@ -31,6 +31,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * @var array
      */
+	// FIXME: $bundlesMap
     protected $ordered = [];
 
     /**
@@ -120,6 +121,8 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     protected function findBundles()
     {
+	    // FIXME: UnitTests
+	    // FIXME: https://github.com/tristanlins/contao-module-core/commit/41e04f5fb269dba1460e3c0222fdea16f1002774
         $bundles    = [];
         $collection = $this->getCollection();
 
@@ -167,7 +170,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         // Contao bundles
         $files = Finder::create()
             ->files()
-            ->depth('== 2')
+            ->depth('== 2') // FIXME: alle Ebenen erlauben?
             ->name('autoload.json')
             ->in(dirname($this->getRootDir()) . '/vendor')
         ;
@@ -189,6 +192,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         /** @var SplFileInfo $module */
         foreach ($modules as $module) {
             $name   = $module->getBasename();
+	        // FIXME: keine Bundles hardcoded ignorieren
             $ignore = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
 
             if (in_array($name, $ignore)) {
@@ -250,6 +254,9 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             }
 
             if (true === $failed) {
+	            // FIXME: $loadingOrder als Exception-Parameter
+	            // FIXME: Listener, um die Info optisch aufzubereiten
+	            // FIXME: print_r('...', true)
                 ob_start();
                 print_r($loadingOrder);
                 $buffer = ob_get_clean();

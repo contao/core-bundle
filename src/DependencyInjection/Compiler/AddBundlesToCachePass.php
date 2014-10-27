@@ -12,7 +12,7 @@
 
 namespace Contao\Bundle\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernel;
+use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -24,16 +24,16 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 class AddBundlesToCachePass implements CompilerPassInterface
 {
     /**
-     * @var ContaoKernel
+     * @var ContaoKernelInterface
      */
     private $kernel;
 
     /**
      * Store the kernel
      *
-     * @param ContaoKernel $kernel The kernel object
+     * @param ContaoKernelInterface $kernel The kernel object
      */
-    public function __construct(ContaoKernel $kernel)
+    public function __construct(ContaoKernelInterface $kernel)
     {
         $this->kernel = $kernel;
     }

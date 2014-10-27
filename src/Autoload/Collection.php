@@ -63,6 +63,7 @@ class Collection
         $json = json_decode(file_get_contents($file), true);
 
         if (null === $json) {
+	        // FIXME: https://github.com/tristanlins/contao-module-core/commit/9e9ef212b509c9bcd6a2b08411e6ce15261261be
             throw new \RuntimeException("File $file cannot be decoded");
         }
 
@@ -90,6 +91,7 @@ class Collection
         }
 
         $options = [];
+	    // FIXME: https://github.com/tristanlins/contao-module-core/commit/f223f223697a5290f8e7a15d49cb69f28dad445f
 
         // Read the autoload.ini if any
         if (file_exists($path . '/config/autoload.ini')) {
