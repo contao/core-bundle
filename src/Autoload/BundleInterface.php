@@ -26,29 +26,11 @@ interface BundleInterface
     public function getClass();
 
     /**
-     * Sets the class
-     *
-     * @param string $class The class
-     *
-     * @return $this The object instance
-     */
-    public function setClass($class);
-
-    /**
      * Returns the name
      *
      * @return string The name
      */
     public function getName();
-
-    /**
-     * Sets the name
-     *
-     * @param string $name The name
-     *
-     * @return $this The object instance
-     */
-    public function setName($name);
 
     /**
      * Returns the replaces

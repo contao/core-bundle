@@ -12,7 +12,6 @@
 namespace Contao\Bundle\CoreBundle;
 
 use Contao\System;
-use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddContaoConfigurationPass;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -37,7 +36,5 @@ class ContaoCoreBundle extends ContaoBundle
     public function build(ContainerBuilder $container)
     {
         System::boot();
-
-        $container->addCompilerPass(new AddContaoConfigurationPass());
     }
 }

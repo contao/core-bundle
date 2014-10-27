@@ -38,26 +38,13 @@ class BundleFactory implements BundleFactoryInterface
         }
 
         foreach ($json['bundles'] as $class => $options) {
-            $bundle = new Bundle($this->getClassBasename($class), $class);
+            $ref    = new \ReflectionClass($class);
+            $bundle = new Bundle($ref->getShortName(), $class);
 
             $this->configureBundle($bundle, $options);
 
             $collection->add($bundle);
         }
-    }
-
-    /**
-     * Get the bundle name from its class name
-     *
-     * @param string $class The class name
-     *
-     * @return string The bundle name
-     */
-    protected function getClassBasename($class) # FIXME: move
-    {
-        $chunks = explode('\\', $class);
-
-        return array_pop($chunks);
     }
 
     /**

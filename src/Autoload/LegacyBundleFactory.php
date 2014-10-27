@@ -52,8 +52,6 @@ class LegacyBundleFactory implements BundleFactoryInterface
      */
     protected function configureBundle(BundleInterface $bundle, array $options)
     {
-        $bundle->setClass(null);
-
         if (!isset($options['requires']) || !is_array($options['requires'])) {
             return;
         }
