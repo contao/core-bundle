@@ -469,6 +469,11 @@ class Config
 	{
 		$container = System::getKernel()->getContainer();
 
+		if ($container === null)
+		{
+			return;
+		}
+
 		$arrMap = [
 			'dbHost'     => 'database_host',
 			'dbPort'     => 'database_port',
