@@ -26,18 +26,18 @@
             "Contao\\Bundle\\CoreBundle\\": "src/"
         },
 		"classmap": [
-			"src/Resources/classes/",
-			"src/Resources/controllers/",
-			"src/Resources/drivers/",
-			"src/Resources/elements/",
-			"src/Resources/forms/",
-			"src/Resources/hybrids/",
-			"src/Resources/maintenance/",
-			"src/Resources/models/",
-			"src/Resources/modules/",
-			"src/Resources/pages/",
-			"src/Resources/uploader/",
-			"src/Resources/widgets/"
+			"legacy/classes/",
+			"legacy/controllers/",
+			"legacy/drivers/",
+			"legacy/elements/",
+			"legacy/forms/",
+			"legacy/hybrids/",
+			"legacy/maintenance/",
+			"legacy/models/",
+			"legacy/modules/",
+			"legacy/pages/",
+			"legacy/uploader/",
+			"legacy/widgets/"
 		]
 	},
     "prefer-stable": true,

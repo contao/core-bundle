@@ -25,7 +25,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getAssetsPath()
     {
-        return $this->getPath() . '/Resources/assets';
+        return $this->getPath() . '/../legacy/assets';
     }
 
     /**
@@ -33,7 +33,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getConfigPath()
     {
-        return $this->getPath() . '/Resources/config';
+        return $this->getPath() . '/../legacy/config';
     }
 
     /**
@@ -41,7 +41,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getDcaPath()
     {
-        return $this->getPath() . '/Resources/dca';
+        return $this->getPath() . '/../legacy/dca';
     }
 
     /**
@@ -49,7 +49,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getLanguagesPath()
     {
-        return $this->getPath() . '/Resources/languages';
+        return $this->getPath() . '/../legacy/languages';
     }
 
     /**
@@ -57,6 +57,6 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getTemplatesPath()
     {
-        return $this->getPath() . '/Resources/templates';
+        return $this->getPath() . '/../legacy/templates';
     }
 }
