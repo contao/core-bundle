@@ -12,17 +12,16 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Bundle factory interface
+ * Configuration factory interface
  *
  * @author Leo Feyer <https://contao.org>
  */
-interface BundleFactoryInterface
+interface ConfigFactoryInterface
 {
     /**
      * Adds the bundle to the collection
      *
-     * @param array               $config     The configuration array
-     * @param CollectionInterface $collection The collection array
+     * @param array $config The configuration array
      */
-    public function create(array $config, CollectionInterface $collection);
+    public function create(array $config);
 }

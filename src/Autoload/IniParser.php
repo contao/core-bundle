@@ -11,6 +11,8 @@
 
 namespace Contao\Bundle\CoreBundle\Autoload;
 
+use Symfony\Component\Finder\SplFileInfo;
+
 /**
  * Converts an INI configuration file into a configuration array
  *
@@ -21,7 +23,7 @@ class IniParser implements ParserInterface
     /**
      * {@inheritdoc}
      */
-    public function parse(\SplFileInfo $file)
+    public function parse(SplFileInfo $file)
     {
         return [
             'bundles' => [$this->doParse($file)]
@@ -31,25 +33,30 @@ class IniParser implements ParserInterface
     /**
      * Parses the file and returns the options array
      *
-     * @param \SplFileInfo $file The file object
+     * @param SplFileInfo $file The file object
      *
      * @return array The configuration array
      */
-    protected function doParse(\SplFileInfo $file)
+    protected function doParse(SplFileInfo $file)
     {
         $options = [
-            'class' => null,
-            'name'  => basename(dirname(dirname($file)))
+            'class'        => null,
+            'name'         => $file->getBasename(),
+            'replace'      => [],
+            'environments' => [],
+            'load-after'   => []
         ];
 
+        $path = $file . '/config/autoload.ini';
+
         // The autoload.ini file is optional
-        if (!$file->isFile()) {
+        if (!file_exists($path)) {
             return $options;
         }
 
-        $ini = $this->parseIniFile($file);
+        $ini = $this->parseIniFile($path);
 
-        $options['load-after'] = $this->getLoadAfter($ini);
+        $options['load-after'] = $this->normalizeLoadAfter($ini);
 
         return $options;
     }
@@ -57,13 +64,13 @@ class IniParser implements ParserInterface
     /**
      * Parses the file and returns the configuration array
      *
-     * @param \SplFileInfo $file The file object
+     * @param string $file The file path
      *
      * @return array The configuration array
      *
      * @throws \RuntimeException If the file cannot be decoded
      */
-    protected function parseIniFile(\SplFileInfo $file)
+    protected function parseIniFile($file)
     {
         $ini = parse_ini_file($file, true);
 
@@ -81,7 +88,7 @@ class IniParser implements ParserInterface
      *
      * @return array The load-after array
      */
-    protected function getLoadAfter(array $ini)
+    protected function normalizeLoadAfter(array $ini)
     {
         if (!$this->hasRequires($ini)) {
             return [];

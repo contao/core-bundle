@@ -12,12 +12,12 @@
 namespace Contao\Bundle\CoreBundle\HttpKernel;
 
 use Contao\System;
-use Contao\Bundle\CoreBundle\Autoload\BundleFactory;
-use Contao\Bundle\CoreBundle\Autoload\BundleFactoryInterface;
-use Contao\Bundle\CoreBundle\Autoload\Collection;
-use Contao\Bundle\CoreBundle\Autoload\CollectionInterface;
+use Contao\Bundle\CoreBundle\Autoload\ConfigFactory;
+use Contao\Bundle\CoreBundle\Autoload\ConfigCollection;
+use Contao\Bundle\CoreBundle\Autoload\ConfigCollectionInterface;
 use Contao\Bundle\CoreBundle\Autoload\IniParser;
 use Contao\Bundle\CoreBundle\Autoload\JsonParser;
+use Contao\Bundle\CoreBundle\Autoload\ParserInterface;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
@@ -165,63 +165,75 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * Finds the autoload bundles
      *
-     * @return Collection The autoload bundles collection
+     * @return ConfigCollection The autoload bundles collection
      */
     protected function getCollection()
     {
-        $collection = new Collection();
-        $factory    = new BundleFactory();
+        $collection = new ConfigCollection();
 
-        $this->addBundlesToCollection($collection, $factory);
-        $this->addLegacyBundlesToCollection($collection, $factory);
+        $this->addBundlesToCollection(
+            $collection,
+            $this->findJsonConfigs(),
+            new JsonParser()
+        );
+
+        $this->addBundlesToCollection(
+            $collection,
+            $this->findIniConfigs(),
+            new IniParser()
+        );
 
         return $collection;
     }
 
     /**
-     * Adds Contao bundles to the collection
+     * Finds Contao autoload bundles
      *
-     * @param CollectionInterface    $collection The collection object
-     * @param BundleFactoryInterface $factory    The factory object
+     * @return Finder The finder object
      */
-    protected function addBundlesToCollection(CollectionInterface $collection, BundleFactoryInterface $factory)
+    protected function findJsonConfigs()
     {
-        $files = Finder::create()
+        return Finder::create()
             ->files()
             ->name('autoload.json')
             ->in(dirname($this->getRootDir()) . '/vendor')
         ;
-
-        $parser = new JsonParser();
-
-        /** @var SplFileInfo $file */
-        foreach ($files as $file) {
-            $factory->create($parser->parse($file), $collection);
-        }
     }
 
     /**
-     * Adds legacy bundles to the collection
+     * Finds Contao legacy bundles
      *
-     * @param CollectionInterface    $collection The collection object
-     * @param BundleFactoryInterface $factory    The factory object
+     * @return Finder The finder object
      */
-    protected function addLegacyBundlesToCollection(CollectionInterface $collection, BundleFactoryInterface $factory)
+    protected function findIniConfigs()
     {
-        $modules = Finder::create()
+        return Finder::create()
             ->directories()
             ->depth('== 0')
             ->ignoreDotFiles(true)
             ->sortByName()
             ->in(dirname($this->getRootDir()) . '/system/modules')
         ;
+    }
 
-        $parser = new IniParser();
+    /**
+     * Adds bundles to the collection
+     *
+     * @param ConfigCollectionInterface $collection The collection object
+     * @param Finder                    $files      The finder object
+     * @param ParserInterface           $parser     The parser object
+     */
+    protected function addBundlesToCollection(ConfigCollectionInterface $collection, Finder $files, ParserInterface $parser)
+    {
+        $factory = new ConfigFactory();
 
-        /** @var SplFileInfo $module */
-        foreach ($modules as $module) {
-            $file = new \SplFileInfo($module . '/config/autoload.ini');
-            $factory->create($parser->parse($file), $collection);
+        /** @var SplFileInfo $file */
+        foreach ($files as $file) {
+            $configs = $parser->parse($file);
+
+            foreach ($configs['bundles'] as $config) {
+                $collection->add($factory->create($config));
+            }
         }
     }
 

@@ -12,31 +12,31 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Handles a collection of autoload bundles
+ * Handles a collection of configuration objects
  *
  * @author Leo Feyer <https://contao.org>
  */
-class Collection implements CollectionInterface
+class ConfigCollection implements ConfigCollectionInterface
 {
     /**
-     * @var BundleInterface[]
+     * @var ConfigInterface[]
      */
-    protected $bundles = [];
+    protected $configs = [];
 
     /**
      * {@inheritdoc}
      */
     public function all()
     {
-        return $this->bundles;
+        return $this->configs;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add(BundleInterface $bundle)
+    public function add(ConfigInterface $config)
     {
-        $this->bundles[] = $bundle;
+        $this->configs[] = $config;
 
         return $this;
     }
@@ -46,6 +46,6 @@ class Collection implements CollectionInterface
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->bundles);
+        return new \ArrayIterator($this->configs);
     }
 }

@@ -11,6 +11,8 @@
 
 namespace Contao\Bundle\CoreBundle\Autoload;
 
+use Symfony\Component\Finder\SplFileInfo;
+
 /**
  * Converts a JSON configuration file into a configuration array
  *
@@ -23,7 +25,7 @@ class JsonParser implements ParserInterface
      *
      * @throws \InvalidArgumentException If $file is not a file
      */
-    public function parse(\SplFileInfo $file)
+    public function parse(SplFileInfo $file)
     {
         if (!$file->isFile()) {
             throw new \InvalidArgumentException("$file is not a file");
@@ -32,10 +34,22 @@ class JsonParser implements ParserInterface
         $json = $this->parseJsonFile($file);
 
         foreach ($json['bundles'] as $class => &$options) {
-            $ref = new \ReflectionClass($class);
-
             $options['class'] = $class;
-            $options['name']  = $ref->getShortName();
+
+            $ref = new \ReflectionClass($class);
+            $options['name'] = $ref->getShortName();
+
+            if (!$this->hasReplace($options)) {
+                $options['replace'] = [];
+            }
+
+            if (!$this->hasEnvironments($options)) {
+                $options['environments'] = [];
+            }
+
+            if (!$this->hasLoadAfter($options)) {
+                $options['load-after'] = [];
+            }
         }
 
         return $json;
@@ -44,13 +58,13 @@ class JsonParser implements ParserInterface
     /**
      * Parses the file and returns the configuration array
      *
-     * @param \SplFileInfo $file The file object
+     * @param SplFileInfo $file The file object
      *
      * @return array The configuration array
      *
      * @throws \RuntimeException If the file cannot be decoded or there are no bundles
      */
-    protected function parseJsonFile(\SplFileInfo $file)
+    protected function parseJsonFile(SplFileInfo $file)
     {
         $json = json_decode(file_get_contents($file), true);
 
@@ -63,5 +77,41 @@ class JsonParser implements ParserInterface
         }
 
         return $json;
+    }
+
+    /**
+     * Checks whether there is a "replace" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is a "replace" section
+     */
+    protected function hasReplace(array $options)
+    {
+        return isset($options['replace']) && is_array($options['replace']);
+    }
+
+    /**
+     * Checks whether there is an "environments" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is an "environments" section
+     */
+    protected function hasEnvironments(array $options)
+    {
+        return isset($options['environments']) && is_array($options['environments']);
+    }
+
+    /**
+     * Checks whether there is a "load-after" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is a "load-after" section
+     */
+    protected function hasLoadAfter(array $options)
+    {
+        return isset($options['load-after']) && is_array($options['load-after']);
     }
 }

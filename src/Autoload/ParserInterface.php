@@ -11,19 +11,21 @@
 
 namespace Contao\Bundle\CoreBundle\Autoload;
 
+use Symfony\Component\Finder\SplFileInfo;
+
 /**
- * Converts a configuration file into a configuration array
+ * Autoload parser interface
  *
  * @author Leo Feyer <https://contao.org>
  */
 interface ParserInterface
 {
     /**
-     * Parses a file
+     * Parses a configuration file
      *
-     * @param \SplFileInfo $file The file object
+     * @param SplFileInfo $file The file object
      *
      * @return array The configuration array
      */
-    public function parse(\SplFileInfo $file);
+    public function parse(SplFileInfo $file);
 }

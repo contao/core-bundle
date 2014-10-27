@@ -12,11 +12,11 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Autoload bundle interface
+ * Autoload configuration interface
  *
  * @author Leo Feyer <https://contao.org>
  */
-interface BundleInterface
+interface ConfigInterface
 {
     /**
      * Returns the class
@@ -26,11 +26,29 @@ interface BundleInterface
     public function getClass();
 
     /**
+     * Sets the class name
+     *
+     * @param array $class The class name
+     *
+     * @return $this The object instance
+     */
+    public function setClass($class);
+
+    /**
      * Returns the name
      *
      * @return string The name
      */
     public function getName();
+
+    /**
+     * Sets the bundle name
+     *
+     * @param array $name The bundle name
+     *
+     * @return $this The object instance
+     */
+    public function setName($name);
 
     /**
      * Returns the replaces

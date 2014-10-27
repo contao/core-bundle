@@ -12,11 +12,11 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Handles a Contao autoload bundle
+ * Handles the autoload configuration
  *
  * @author Leo Feyer <https://contao.org>
  */
-class Bundle implements BundleInterface
+class Config implements ConfigInterface
 {
     /**
      * @var string
@@ -44,17 +44,6 @@ class Bundle implements BundleInterface
     protected $loadAfter = [];
 
     /**
-     * Constructor
-     *
-     * @param string $class The class name
-     */
-    public function __construct($name, $class)
-    {
-        $this->name  = $name;
-        $this->class = $class;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getClass()
@@ -65,9 +54,29 @@ class Bundle implements BundleInterface
     /**
      * {@inheritdoc}
      */
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**

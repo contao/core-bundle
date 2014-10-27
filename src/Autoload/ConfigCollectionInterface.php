@@ -16,21 +16,21 @@ namespace Contao\Bundle\CoreBundle\Autoload;
  *
  * @author Leo Feyer <https://contao.org>
  */
-interface CollectionInterface extends \IteratorAggregate
+interface ConfigCollectionInterface extends \IteratorAggregate
 {
     /**
-     * Returns an array of bundles
+     * Returns an array of configurations
      *
-     * @return BundleInterface[] The bundles array
+     * @return ConfigInterface[] The configuration array
      */
     public function all();
 
     /**
-     * Adds a bundle to the collection
+     * Adds a configuration object to the collection
      *
-     * @param BundleInterface $bundle
+     * @param ConfigInterface $config
      *
      * @return $this The collection object
      */
-    public function add(BundleInterface $bundle);
+    public function add(ConfigInterface $config);
 }
