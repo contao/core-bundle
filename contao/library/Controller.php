@@ -545,7 +545,7 @@ abstract class Controller extends System
 		System::loadLanguageFile('languages');
 
 		$return = [];
-		$langs = scan(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages');
+		$langs = scan(TL_ROOT . '/vendor/contao/module-core/legacy/languages');
 		array_unshift($langs, $GLOBALS['TL_LANGUAGE']);
 
 		foreach ($langs as $lang)
