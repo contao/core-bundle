@@ -21,7 +21,7 @@ class JsonParser implements ParserInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \RuntimeException If the file cannot be decoded
+     * @throws \InvalidArgumentException If $file is not a file
      */
     public function parse(\SplFileInfo $file)
     {
@@ -29,6 +29,29 @@ class JsonParser implements ParserInterface
             throw new \InvalidArgumentException("$file is not a file");
         }
 
+        $json = $this->parseJsonFile($file);
+
+        foreach ($json['bundles'] as $class => &$options) {
+            $ref = new \ReflectionClass($class);
+
+            $options['class'] = $class;
+            $options['name']  = $ref->getShortName();
+        }
+
+        return $json;
+    }
+
+    /**
+     * Parses the file and returns the configuration array
+     *
+     * @param \SplFileInfo $file The file object
+     *
+     * @return array The configuration array
+     *
+     * @throws \RuntimeException If the file cannot be decoded or there are no bundles
+     */
+    protected function parseJsonFile(\SplFileInfo $file)
+    {
         $json = json_decode(file_get_contents($file), true);
 
         if (null === $json) {
@@ -37,13 +60,6 @@ class JsonParser implements ParserInterface
 
         if (empty($json['bundles'])) {
             throw new \RuntimeException("No bundles defined in $file");
-        }
-
-        foreach ($json['bundles'] as $class => &$options) {
-            $ref = new \ReflectionClass($class);
-
-            $options['class'] = $class;
-            $options['name']  = $ref->getShortName();
         }
 
         return $json;

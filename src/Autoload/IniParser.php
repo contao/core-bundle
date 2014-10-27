@@ -34,8 +34,6 @@ class IniParser implements ParserInterface
      * @param \SplFileInfo $file The file object
      *
      * @return array The configuration array
-     *
-     * @throws \RuntimeException If the file cannot be decoded
      */
     protected function doParse(\SplFileInfo $file)
     {
@@ -49,28 +47,55 @@ class IniParser implements ParserInterface
             return $options;
         }
 
+        $ini = $this->parseIniFile($file);
+
+        $options['load-after'] = $this->getLoadAfter($ini);
+
+        return $options;
+    }
+
+    /**
+     * Parses the file and returns the configuration array
+     *
+     * @param \SplFileInfo $file The file object
+     *
+     * @return array The configuration array
+     *
+     * @throws \RuntimeException If the file cannot be decoded
+     */
+    protected function parseIniFile(\SplFileInfo $file)
+    {
         $ini = parse_ini_file($file, true);
 
         if (false === $ini) {
-            $error = error_get_last();
-
-            throw new \RuntimeException("File $file cannot be decoded: " . $error['message']);
+            throw new \RuntimeException("File $file cannot be decoded");
         }
 
-        // The requires are optional, too
+        return $ini;
+    }
+
+    /**
+     * Creates the load-after array from the ini configuration
+     *
+     * @param array $ini The autoload.ini array
+     *
+     * @return array The load-after array
+     */
+    protected function getLoadAfter($ini)
+    {
         if (!isset($ini['requires']) || !is_array($ini['requires'])) {
-            return $options;
+            return [];
         }
 
-        $options['load-after'] = $ini['requires'];
+        $requires = $ini['requires'];
 
         // Convert optional requirements
-        foreach ($options['load-after'] as $k => $v) {
+        foreach ($requires as &$v) {
             if (0 === strncmp($v, '*', 1)) {
-                $options['load-after'][$k] = substr($v, 1);
+                $v = substr($v, 1);
             }
         }
 
-        return $options;
+        return $requires;
     }
 }
