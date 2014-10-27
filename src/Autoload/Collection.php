@@ -63,8 +63,7 @@ class Collection
         $json = json_decode(file_get_contents($file), true);
 
         if (null === $json) {
-	        // FIXME: https://github.com/tristanlins/contao-module-core/commit/9e9ef212b509c9bcd6a2b08411e6ce15261261be
-            throw new \RuntimeException("File $file cannot be decoded");
+            throw new \RuntimeException("File $file cannot be decoded: " . json_last_error_msg());
         }
 
         if (empty($json['bundles'])) {
@@ -102,9 +101,11 @@ class Collection
             }
 
             // Convert optional requirements
-            foreach ($options['load-after'] as $k => $v) {
-                if (0 === strncmp($v, '*', 1)) {
-                    $options['load-after'][$k] = substr($v, 1);
+            if (isset($config['load-after'])) {
+                foreach ($options['load-after'] as $k => $v) {
+                    if (0 === strncmp($v, '*', 1)) {
+                        $options['load-after'][$k] = substr($v, 1);
+                    }
                 }
             }
         }
