@@ -31,8 +31,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * @var array
      */
-	// FIXME: $bundlesMap
-    protected $ordered = [];
+    protected $bundlesMap = [];
 
     /**
      * @var array
@@ -64,11 +63,11 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     public function addAutoloadBundles(&$bundles)
     {
-        if (empty($this->ordered)) {
+        if (empty($this->bundlesMap)) {
             $this->findBundles();
         }
 
-        foreach ($this->ordered as $package => $class) {
+        foreach ($this->bundlesMap as $package => $class) {
             if (null !== $class) {
                 $bundles[] = new $class();
             } else {
@@ -100,7 +99,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     {
         file_put_contents(
             $this->getCacheDir() . '/bundles.map',
-            sprintf('<?php return %s;', var_export($this->ordered, true))
+            sprintf('<?php return %s;', var_export($this->bundlesMap, true))
         );
     }
 
@@ -109,8 +108,8 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     public function loadBundleCache()
     {
-        if (empty($this->ordered) && is_file($this->getCacheDir() . '/bundles.map')) {
-            $this->ordered = include $this->getCacheDir() . '/bundles.map';
+        if (empty($this->bundlesMap) && is_file($this->getCacheDir() . '/bundles.map')) {
+            $this->bundlesMap = include $this->getCacheDir() . '/bundles.map';
         }
     }
 
@@ -155,7 +154,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             }
         }
 
-        $this->ordered = $this->order($bundles);
+        $this->bundlesMap = $this->order($bundles);
     }
 
     /**
@@ -191,15 +190,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
 
         /** @var SplFileInfo $module */
         foreach ($modules as $module) {
-            $name   = $module->getBasename();
-	        // FIXME: keine Bundles hardcoded ignorieren
-            $ignore = ['backend', 'frontend', 'rep_base', 'rep_client', 'registration', 'rss_reader', 'tpl_editor'];
-
-            if (in_array($name, $ignore)) {
-                continue;
-            }
-
-            $collection->addLegacyBundle($name, $module->getPathname());
+            $collection->addLegacyBundle($module->getBasename(), $module->getPathname());
         }
 
         return $collection;
