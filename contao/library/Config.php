@@ -151,6 +151,8 @@ class Config
 		{
 			include TL_ROOT . '/system/config/localconfig.php';
 		}
+
+		static::loadParameters();
 	}
 
 
@@ -454,7 +456,37 @@ class Config
 			include TL_ROOT . '/system/config/localconfig.php';
 		}
 
+		static::loadParameters();
+
 		static::$blnHasLcf = $blnHasLcf;
+	}
+
+
+	/**
+	 * Override the database and SMTP parameters
+	 */
+	protected static function loadParameters()
+	{
+		$container = System::getKernel()->getContainer();
+
+		$arrMap = [
+			'dbHost'     => 'database_host',
+			'dbPort'     => 'database_port',
+			'dbDatabase' => 'database_name',
+			'dbUser'     => 'database_user',
+			'dbPass'     => 'database_password',
+			'smtpHost'   => 'mailer_host',
+			'smtpUser'   => 'mailer_user',
+			'smtpPass'   => 'mailer_password'
+		];
+
+		foreach ($arrMap as $strKey=>$strParam)
+		{
+			if ($container->hasParameter($strParam))
+			{
+				$GLOBALS['TL_CONFIG'][$strKey] = $container->getParameter($strParam);
+			}
+		}
 	}
 
 
