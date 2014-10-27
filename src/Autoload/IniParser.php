@@ -81,9 +81,9 @@ class IniParser implements ParserInterface
      *
      * @return array The load-after array
      */
-    protected function getLoadAfter($ini)
+    protected function getLoadAfter(array $ini)
     {
-        if (!isset($ini['requires']) || !is_array($ini['requires'])) {
+        if (!$this->hasRequires($ini)) {
             return [];
         }
 
@@ -97,5 +97,17 @@ class IniParser implements ParserInterface
         }
 
         return $requires;
+    }
+
+    /**
+     * Check whether there is a "requires" section
+     *
+     * @param array $ini The autoload.ini configuration
+     *
+     * @return bool True if there is a "requires" section
+     */
+    protected function hasRequires(array $ini)
+    {
+        return !isset($ini['requires']) || !is_array($ini['requires']);
     }
 }
