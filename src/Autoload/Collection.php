@@ -89,26 +89,41 @@ class Collection
             throw new \RuntimeException("Invalid path $path");
         }
 
-        $options = [];
+        $this->addBundle(new LegacyBundle($name, $this->readAutoloadIni($path)));
+    }
 
-        // Read the autoload.ini if any
-        if (file_exists($path . '/config/autoload.ini')) {
-            $config = parse_ini_file($path . '/config/autoload.ini', true);
+    /**
+     * Read the autoload.ini if any
+     *
+     * @param string $path The bundle path
+     *
+     * @return array The autoload.ini options
+     */
+	protected function readAutoloadIni($path)
+	{
+		$options = [];
 
-            if (isset($config['requires'])) {
-                $options['load-after'] = $config['requires'];
-            }
+        if (!file_exists($path . '/config/autoload.ini')) {
+	        return $options;
+        }
 
-            // Convert optional requirements
-            if (isset($config['load-after'])) {
-                foreach ($options['load-after'] as $k => $v) {
-                    if (0 === strncmp($v, '*', 1)) {
-                        $options['load-after'][$k] = substr($v, 1);
-                    }
-                }
+        $config = parse_ini_file($path . '/config/autoload.ini', true);
+
+        if (isset($config['requires'])) {
+            $options['load-after'] = $config['requires'];
+        }
+
+		if (!isset($config['load-after'])) {
+			return $options;
+		}
+
+        // Convert optional requirements
+        foreach ($options['load-after'] as $k => $v) {
+            if (0 === strncmp($v, '*', 1)) {
+	            $options['load-after'][$k] = substr($v, 1);
             }
         }
 
-        $this->addBundle(new LegacyBundle($name, $options));
-    }
+		return $options;
+	}
 }
