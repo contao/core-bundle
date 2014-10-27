@@ -20,10 +20,10 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
 {
-	/**
-	 * @var string
-	 */
-	protected $rootDir;
+    /**
+     * @var string
+     */
+    protected $rootDir;
 
     /**
      * Set the name

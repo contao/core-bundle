@@ -12,7 +12,7 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * FIXME
+ * Autoload collection interface
  *
  * @author Leo Feyer <https://contao.org>
  */

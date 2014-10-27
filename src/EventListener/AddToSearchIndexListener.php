@@ -47,9 +47,9 @@ class AddToSearchIndexListener
     {
         global $objPage;
 
-	    if (null === $objPage) {
-		    return;
-	    }
+        if (null === $objPage) {
+            return;
+        }
 
         // Index page if searching is allowed and there is no back end user
         if ($this->config->get('enableSearch') && 'regular' === $objPage->type && !BE_USER_LOGGED_IN && !$objPage->noSearch) {

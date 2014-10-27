@@ -19,10 +19,10 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 interface BundleFactoryInterface
 {
     /**
-     * Returns the bundle
+     * Adds the bundle to the collection
      *
-     * @param \SplFileInfo        $file       The file object
+     * @param array               $config     The configuration array
      * @param CollectionInterface $collection The collection array
      */
-    public function create(\SplFileInfo $file, CollectionInterface $collection);
+    public function create(array $config, CollectionInterface $collection);
 }

@@ -12,7 +12,7 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Bundle factory
+ * Creates bundles and adds them to a collection
  *
  * @author Leo Feyer <https://contao.org>
  */
@@ -21,25 +21,10 @@ class BundleFactory implements BundleFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(\SplFileInfo $file, CollectionInterface $collection)
+    public function create(array $config, CollectionInterface $collection)
     {
-        if (!$file->isFile()) {
-            throw new \InvalidArgumentException("$file is not a file");
-        }
-
-        $json = json_decode(file_get_contents($file), true);
-
-        if (null === $json) {
-            throw new \RuntimeException("File $file cannot be decoded: " . json_last_error_msg());
-        }
-
-        if (empty($json['bundles'])) {
-            throw new \RuntimeException("No bundles defined in $file");
-        }
-
-        foreach ($json['bundles'] as $class => $options) {
-            $ref    = new \ReflectionClass($class);
-            $bundle = new Bundle($ref->getShortName(), $class);
+        foreach ($config['bundles'] as $options) {
+            $bundle = new Bundle($options['name'], $options['class']);
 
             $this->configureBundle($bundle, $options);
 

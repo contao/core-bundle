@@ -13,9 +13,11 @@ namespace Contao\Bundle\CoreBundle\HttpKernel;
 
 use Contao\System;
 use Contao\Bundle\CoreBundle\Autoload\BundleFactory;
+use Contao\Bundle\CoreBundle\Autoload\BundleFactoryInterface;
 use Contao\Bundle\CoreBundle\Autoload\Collection;
 use Contao\Bundle\CoreBundle\Autoload\CollectionInterface;
-use Contao\Bundle\CoreBundle\Autoload\LegacyBundleFactory;
+use Contao\Bundle\CoreBundle\Autoload\IniParser;
+use Contao\Bundle\CoreBundle\Autoload\JsonParser;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
@@ -123,8 +125,8 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     protected function findBundles()
     {
-	    // FIXME: UnitTests
-	    // FIXME: https://github.com/tristanlins/contao-module-core/commit/41e04f5fb269dba1460e3c0222fdea16f1002774
+        // FIXME: UnitTests
+        // FIXME: https://github.com/tristanlins/contao-module-core/commit/41e04f5fb269dba1460e3c0222fdea16f1002774
         $bundles    = [];
         $collection = $this->getCollection();
 
@@ -168,9 +170,10 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     protected function getCollection()
     {
         $collection = new Collection();
+        $factory    = new BundleFactory();
 
-        $this->addBundles($collection);
-        $this->addLegacyBundles($collection);
+        $this->addBundlesToCollection($collection, $factory);
+        $this->addLegacyBundlesToCollection($collection, $factory);
 
         return $collection;
     }
@@ -178,9 +181,10 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     /**
      * Adds Contao bundles to the collection
      *
-     * @param CollectionInterface $collection The collection object
+     * @param CollectionInterface    $collection The collection object
+     * @param BundleFactoryInterface $factory    The factory object
      */
-    protected function addBundles(CollectionInterface $collection)
+    protected function addBundlesToCollection(CollectionInterface $collection, BundleFactoryInterface $factory)
     {
         $files = Finder::create()
             ->files()
@@ -188,20 +192,21 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             ->in(dirname($this->getRootDir()) . '/vendor')
         ;
 
-        $bundleFactory = new BundleFactory();
+        $parser = new JsonParser();
 
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $bundleFactory->create($file, $collection);
+            $factory->create($parser->parse($file), $collection);
         }
     }
 
     /**
      * Adds legacy bundles to the collection
      *
-     * @param CollectionInterface $collection The collection object
+     * @param CollectionInterface    $collection The collection object
+     * @param BundleFactoryInterface $factory    The factory object
      */
-    protected function addLegacyBundles(CollectionInterface $collection)
+    protected function addLegacyBundlesToCollection(CollectionInterface $collection, BundleFactoryInterface $factory)
     {
         $modules = Finder::create()
             ->directories()
@@ -211,11 +216,12 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             ->in(dirname($this->getRootDir()) . '/system/modules')
         ;
 
-        $bundleFactory = new LegacyBundleFactory();
+        $parser = new IniParser();
 
         /** @var SplFileInfo $module */
         foreach ($modules as $module) {
-            $bundleFactory->create($module, $collection);
+            $file = new \SplFileInfo($module . '/config/autoload.ini');
+            $factory->create($parser->parse($file), $collection);
         }
     }
 
@@ -268,9 +274,9 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             }
 
             if (true === $failed) {
-	            // FIXME: $loadingOrder als Exception-Parameter
-	            // FIXME: Listener, um die Info optisch aufzubereiten
-	            // FIXME: print_r('...', true)
+                // FIXME: $loadingOrder als Exception-Parameter
+                // FIXME: Listener, um die Info optisch aufzubereiten
+                // FIXME: print_r('...', true)
                 ob_start();
                 print_r($loadingOrder);
                 $buffer = ob_get_clean();
