@@ -169,7 +169,6 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         // Contao bundles
         $files = Finder::create()
             ->files()
-            ->depth('== 2') // FIXME: alle Ebenen erlauben?
             ->name('autoload.json')
             ->in(dirname($this->getRootDir()) . '/vendor')
         ;
