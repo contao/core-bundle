@@ -46,25 +46,12 @@ class Bundle implements BundleInterface
     /**
      * Constructor
      *
-     * @param string $class   The class name
-     * @param array  $options The bundle options
+     * @param string $class The class name
      */
-    public function __construct($class, array $options)
+    public function __construct($name, $class)
     {
+        $this->name  = $name;
         $this->class = $class;
-        $this->name  = $this->getBundleName($class);
-
-        if (!empty($options['replace'])) {
-            $this->setReplace($options['replace']);
-        }
-
-        if (!empty($options['environments'])) {
-            $this->setEnvironments($options['environments']);
-        }
-
-        if (!empty($options['load-after'])) {
-            $this->setLoadAfter($options['load-after']);
-        }
     }
 
     /**
@@ -155,19 +142,5 @@ class Bundle implements BundleInterface
         $this->loadAfter = $loadAfter;
 
         return $this;
-    }
-
-    /**
-     * Get the bundle name from its class name
-     *
-     * @param string $class The class name
-     *
-     * @return string The bundle name
-     */
-    protected function getBundleName($class)
-    {
-        $chunks = explode('\\', $class);
-
-        return array_pop($chunks);
     }
 }

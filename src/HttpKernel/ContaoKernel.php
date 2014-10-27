@@ -12,7 +12,10 @@
 namespace Contao\Bundle\CoreBundle\HttpKernel;
 
 use Contao\System;
+use Contao\Bundle\CoreBundle\Autoload\BundleFactory;
 use Contao\Bundle\CoreBundle\Autoload\Collection;
+use Contao\Bundle\CoreBundle\Autoload\CollectionInterface;
+use Contao\Bundle\CoreBundle\Autoload\LegacyBundleFactory;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
@@ -128,7 +131,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         // Make sure the core bundle comes first
         $this->loadingOrder['ContaoCoreBundle'] = [];
 
-        foreach ($collection->getBundles() as $bundle) {
+        foreach ($collection->all() as $bundle) {
             $name = $bundle->getName();
 
             foreach ($bundle->getReplace() as $package) {
@@ -166,19 +169,40 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     {
         $collection = new Collection();
 
-        // Contao bundles
+        $this->addBundles($collection);
+        $this->addLegacyBundles($collection);
+
+        return $collection;
+    }
+
+    /**
+     * Adds Contao bundles to the collection
+     *
+     * @param CollectionInterface $collection The collection object
+     */
+    protected function addBundles(CollectionInterface $collection)
+    {
         $files = Finder::create()
             ->files()
             ->name('autoload.json')
             ->in(dirname($this->getRootDir()) . '/vendor')
         ;
 
+        $bundleFactory = new BundleFactory();
+
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $collection->addBundlesFromJsonFile($file->getPathname());
+            $bundleFactory->create($file, $collection);
         }
+    }
 
-        // Legacy modules
+    /**
+     * Adds legacy bundles to the collection
+     *
+     * @param CollectionInterface $collection The collection object
+     */
+    protected function addLegacyBundles(CollectionInterface $collection)
+    {
         $modules = Finder::create()
             ->directories()
             ->depth('== 0')
@@ -187,12 +211,12 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             ->in(dirname($this->getRootDir()) . '/system/modules')
         ;
 
+        $bundleFactory = new LegacyBundleFactory();
+
         /** @var SplFileInfo $module */
         foreach ($modules as $module) {
-            $collection->addLegacyBundle($module->getBasename(), $module->getPathname());
+            $bundleFactory->create($module, $collection);
         }
-
-        return $collection;
     }
 
     /**
