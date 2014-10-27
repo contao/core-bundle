@@ -11,9 +11,6 @@
 
 namespace Contao\Bundle\CoreBundle\Autoload;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
-
 /**
  * Converts an INI configuration file into a configuration array
  *
@@ -21,19 +18,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class IniParser implements ParserInterface
 {
-    /**
-     * @var PropertyAccessor
-     */
-    protected $accessor;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->accessor = PropertyAccess::createPropertyAccessor();
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -99,7 +83,11 @@ class IniParser implements ParserInterface
      */
     protected function getLoadAfter(array $ini)
     {
-        $requires = $this->accessor->getValue($ini, '[requires]') ?: [];
+        if (!$this->hasRequires($ini)) {
+            return [];
+        }
+
+        $requires = $ini['requires'];
 
         // Convert optional requirements
         foreach ($requires as &$v) {
@@ -109,5 +97,17 @@ class IniParser implements ParserInterface
         }
 
         return $requires;
+    }
+
+    /**
+     * Check whether there is a "requires" section
+     *
+     * @param array $ini The autoload.ini configuration
+     *
+     * @return bool True if there is a "requires" section
+     */
+    protected function hasRequires(array $ini)
+    {
+        return !isset($ini['requires']) || !is_array($ini['requires']);
     }
 }

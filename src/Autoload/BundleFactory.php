@@ -11,9 +11,6 @@
 
 namespace Contao\Bundle\CoreBundle\Autoload;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
-
 /**
  * Creates bundles and adds them to a collection
  *
@@ -21,19 +18,6 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class BundleFactory implements BundleFactoryInterface
 {
-    /**
-     * @var PropertyAccessor
-     */
-    protected $accessor;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->accessor = PropertyAccess::createPropertyAccessor();
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -56,8 +40,52 @@ class BundleFactory implements BundleFactoryInterface
      */
     protected function configureBundle(BundleInterface $bundle, array $options)
     {
-        $bundle->setReplace($this->accessor->getValue($options, '[replace]') ?: []);
-        $bundle->setEnvironments($this->accessor->getValue($options, '[environments]') ?: []);
-        $bundle->setLoadAfter($this->accessor->getValue($options, '[load-after]') ?: []);
+        if ($this->hasReplace($options)) {
+            $bundle->setReplace($options['replace']);
+        }
+
+        if ($this->hasEnvironments($options)) {
+            $bundle->setEnvironments($options['environments']);
+        }
+
+        if ($this->hasLoadAfter($options)) {
+            $bundle->setLoadAfter($options['load-after']);
+        }
+    }
+
+    /**
+     * Checks whether there is a "replace" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is a "replace" section
+     */
+    protected function hasReplace(array $options)
+    {
+        return isset($options['replace']) && is_array($options['replace']);
+    }
+
+    /**
+     * Checks whether there is an "environments" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is an "environments" section
+     */
+    protected function hasEnvironments(array $options)
+    {
+        return isset($options['environments']) && is_array($options['environments']);
+    }
+
+    /**
+     * Checks whether there is a "load-after" section
+     *
+     * @param array $options The options array
+     *
+     * @return bool True if there is a "load-after" section
+     */
+    protected function hasLoadAfter(array $options)
+    {
+        return isset($options['load-after']) && is_array($options['load-after']);
     }
 }
