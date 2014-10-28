@@ -32,6 +32,7 @@ class JsonParser implements ParserInterface
 
             $options['class'] = $class;
 
+            // @todo this might throw a ReflectionException if the class does not exist!
             $ref = new \ReflectionClass($class);
             $options['name'] = $ref->getShortName();
         }
@@ -55,7 +56,7 @@ class JsonParser implements ParserInterface
             throw new \InvalidArgumentException("$file is not a file");
         }
 
-        $json = json_decode(file_get_contents($file), true);
+        $json = json_decode($file->getContents(), true);
 
         if (null === $json) {
             throw new \RuntimeException("File $file cannot be decoded: " . json_last_error_msg());
