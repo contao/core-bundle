@@ -23,13 +23,12 @@ class ConfigFactory implements ConfigFactoryInterface
      */
     public function create(array $config)
     {
-        $configObject = new Config();
-        $configObject->setName($config['name']);
-        $configObject->setClass($config['class']);
-        $configObject->setReplace($config['replace']);
-        $configObject->setEnvironments($config['environments']);
-        $configObject->setLoadAfter($config['load-after']);
-
-        return $configObject;
+        return Config::create()
+            ->setName($config['name'])
+            ->setClass($config['class'])
+            ->setReplace($config['replace'])
+            ->setEnvironments($config['environments'])
+            ->setLoadAfter($config['load-after'])
+        ;
     }
 }

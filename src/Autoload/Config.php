@@ -46,6 +46,14 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
+    public static function create()
+    {
+        return new static();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getClass()
     {
         return $this->class;

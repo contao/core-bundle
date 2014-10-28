@@ -19,6 +19,13 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 interface ConfigInterface
 {
     /**
+     * Returns a new configuration object
+     *
+     * @return static The configuration object
+     */
+    public static function create();
+
+    /**
      * Returns the class
      *
      * @return string The class

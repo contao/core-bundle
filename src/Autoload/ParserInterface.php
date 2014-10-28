@@ -25,7 +25,7 @@ interface ParserInterface
      *
      * @param SplFileInfo $file The file object
      *
-     * @return array The configuration array
+     * @return array A normalized configuration array
      */
     public function parse(SplFileInfo $file);
 }
