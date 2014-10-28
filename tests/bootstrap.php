@@ -26,6 +26,6 @@ if (
     exit(1);
 }
 
-$loader->addPsr4('Contao\\Bundle\\CoreBundle\\Test\\', __DIR__);
+$loader->addPsr4('Contao\\Bundle\\CoreBundle\\', __DIR__);
 
 return $loader;
