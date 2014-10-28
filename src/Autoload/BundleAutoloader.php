@@ -253,19 +253,30 @@ class BundleAutoloader
      */
     protected function normalizeLoadingOrder(array $loadingOrder, array $replace)
     {
-        foreach ($loadingOrder as $k => $v) {
-            if (isset($replace[$k])) {
-                unset($loadingOrder[$k]);
+        foreach ($loadingOrder as $bundleName => &$loadAfter) {
+            if (isset($replace[$bundleName])) {
+                unset($loadingOrder[$bundleName]);
             } else {
-                foreach ($v as $kk => $vv) {
-                    if (isset($replace[$vv])) {
-                        $loadingOrder[$k][$kk] = $replace[$vv];
-                    }
-                }
+                $this->replaceBundleNames($loadAfter, $replace);
             }
         }
 
         return $loadingOrder;
+    }
+
+    /**
+     * Replaces the legacy bundle names with their new name
+     *
+     * @param array $loadAfter The load-after array
+     * @param array $replace   The replaces array
+     */
+    protected function replaceBundleNames(array &$loadAfter, array $replace)
+    {
+        foreach ($loadAfter as &$bundleName) {
+            if (isset($replace[$bundleName])) {
+                $bundleName = $replace[$bundleName];
+            }
+        }
     }
 
     /**
@@ -286,17 +297,11 @@ class BundleAutoloader
             $failed = true;
 
             foreach ($loadingOrder as $name => $requires) {
-                if (empty($requires)) {
-                    $resolved = true;
-                } else {
-                    $requires = array_intersect($requires, $available);
-                    $resolved = (0 === count(array_diff($requires, $ordered)));
-                }
-
-                if (true === $resolved) {
+                if (true === $this->canBeResolved($requires, $available, $ordered)) {
+                    $failed    = false;
                     $ordered[] = $name;
+
                     unset($loadingOrder[$name]);
-                    $failed = false;
                 }
             }
 
@@ -308,5 +313,23 @@ class BundleAutoloader
         }
 
         return $ordered;
+    }
+
+    /**
+     * Checks whether the requirements of a bundle can be resolved
+     *
+     * @param array $requires  The requirements array
+     * @param array $available The installed bundle names
+     * @param array $ordered   The normalized order array
+     *
+     * @return bool True if the requirements can be resolved
+     */
+    protected function canBeResolved(array $requires, array $available, array $ordered)
+    {
+        if (empty($requires)) {
+            return true;
+        }
+
+        return (0 === count(array_diff(array_intersect($requires, $available), $ordered)));
     }
 }
