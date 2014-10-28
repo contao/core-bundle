@@ -49,23 +49,86 @@ class ConfigResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedResult, $actualResult);
     }
 
+    /**
+     * @expectedException \Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException
+     */
+    public function testCannotBeResolved()
+    {
+        $resolver = new ConfigResolver();
+
+        $config1 = $this->getConfig('name1', 'class1')
+            ->setLoadAfter(['name2']);
+        $config2 = $this->getConfig('name2', 'class2')
+            ->setLoadAfter(['name1']);
+
+        $resolver->add($config1)->add($config2);
+
+        $resolver->getBundlesMapForEnvironment('all');
+    }
+
     public function getBundlesMapForEnvironmentProvider()
     {
-        $dummyConfig = new Config();
-        $dummyConfig->setName('dummyName');
-        $dummyConfig->setClass('dummyClass');
+        $config1 = $this->getConfig('name1', 'class1');
+        $config2 = $this->getConfig('name2', 'class2')
+            ->setLoadAfter(['name1']);
+        $config3 = $this->getConfig('name3', 'class3')
+            ->setReplace(['name1', 'name2']);
+        $config4 = $this->getConfig('name4', 'class4')
+            ->setLoadAfter(['core']);
+        $config5 = $this->getConfig('name5', 'class5')
+            ->setReplace(['core']);
 
         return [
-            'Test dev environment with regular configs' => [
+            'Test default configs' => [
                 'dev',
                 [
-                    $dummyConfig
+                    $config1,
                 ],
                 [
-                    'dummyName' => 'dummyClass'
+                    'name1' => 'class1',
+                ]
+            ],
+            'Test load after order' => [
+                'dev',
+                [
+                    $config1,
+                    $config2
+                ],
+                [
+                    'name1' => 'class1',
+                    'name2' => 'class2'
+                ]
+            ],
+            'Test replaces' => [
+                'dev',
+                [
+                    $config1,
+                    $config2,
+                    $config3
+                ],
+                [
+                    'name3' => 'class3'
+                ]
+            ],
+            'Test load after a module that does not exist but is replaced by new one' => [
+                'dev',
+                [
+                    $config4,
+                    $config5
+                ],
+                [
+                    'name5' => 'class5',
+                    'name4' => 'class4'
                 ]
             ]
         ];
+    }
+
+    private function getConfig($name, $class)
+    {
+        return Config::create()
+            ->setName($name)
+            ->setClass($class);
     }
 }
  
