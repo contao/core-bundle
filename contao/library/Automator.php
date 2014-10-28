@@ -565,7 +565,7 @@ class Automator extends System
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strAutoload = $bundle->getConfigPath() . '/autoload.ini';
+			$strAutoload = $bundle->getConfigPath() . '/autoload.ini'; # FIXME: ohne autoload.ini keine public-Verzeichnisse
 
 			// Read the autoload.ini if any
 			if (file_exists($strAutoload))
@@ -576,7 +576,7 @@ class Automator extends System
 				{
 					foreach ($config['public'] as $strFolder)
 					{
-						$arrPublic[] = str_replace(TL_ROOT . '/', '', realpath($bundle->getPath() . '/' . $strFolder));
+						$arrPublic[] = str_replace(TL_ROOT . '/', '', $bundle->getPath()) . '/' . $strFolder;
 					}
 				}
 			}

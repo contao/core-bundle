@@ -363,7 +363,7 @@ abstract class System
 	{
 		if (!isset(static::$arrLanguages[$strLanguage]))
 		{
-			$blnIsInstalled = is_dir(TL_ROOT . '/vendor/contao/module-core/legacy/languages/' . $strLanguage);
+			$blnIsInstalled = is_dir(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages/' . $strLanguage);
 
 			if (!$blnIsInstalled)
 			{
@@ -451,7 +451,7 @@ abstract class System
 		}
 
 		asort($arrAux);
-		$arrBackendLanguages = scan(TL_ROOT . '/vendor/contao/module-core/legacy/languages');
+		$arrBackendLanguages = scan(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages');
 
 		foreach (array_keys($arrAux) as $strKey)
 		{
@@ -981,7 +981,7 @@ abstract class System
 
 			foreach ($langs as $lang)
 			{
-				if (is_dir(TL_ROOT . '/vendor/contao/module-core/legacy/languages/' . str_replace('-', '_', $lang)))
+				if (is_dir(TL_ROOT . '/vendor/contao/module-core/src/Resources/languages/' . str_replace('-', '_', $lang)))
 				{
 					$_SESSION['TL_LANGUAGE'] = $lang;
 					break;
