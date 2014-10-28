@@ -12,9 +12,10 @@
 namespace Contao\Bundle\CoreBundle\Test\Autoload;
 
 use Contao\Bundle\CoreBundle\Autoload\IniParser;
+use Contao\Bundle\CoreBundle\Test\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
 
-class IniParserTest extends \PHPUnit_Framework_TestCase
+class IniParserTest extends TestCase
 {
     public function testInstanceOf()
     {
@@ -82,6 +83,21 @@ class IniParserTest extends \PHPUnit_Framework_TestCase
                 'load-after'    => []
             ]]
         ], $parser->parse($file));
+    }
+
+    public function testDummyModuleWithHorribleBrokenIni()
+    {
+        $this->disableErrorReporting();
+        $parser = new IniParser();
+        $file   = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/IniParser/dummy-module-with-invalid-autoload'
+            , 'relativePath',
+            'relativePathName'
+        );
+
+        $this->disableErrorReporting();
+        $this->setExpectedException('RuntimeException', "File $file/config/autoload.ini cannot be decoded");
+        $parser->parse($file);
     }
 }
  
