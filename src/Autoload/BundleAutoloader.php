@@ -152,7 +152,7 @@ class BundleAutoloader
     /**
      * Adds bundles to the collection
      *
-     * @param ConfigCollection $collection The config collection
+     * @param ConfigCollection $collection The configuration collection
      * @param Finder           $files      The finder object
      * @param ParserInterface  $parser     The parser object
      */
@@ -172,6 +172,8 @@ class BundleAutoloader
 
     /**
      * Sets the replaces from the collection
+     *
+     * @param ConfigCollection $collection The configuration collection
      */
     protected function setReplacesFromCollection(ConfigCollection $collection)
     {
@@ -188,6 +190,8 @@ class BundleAutoloader
 
     /**
      * Sets the loading order from the collection
+     *
+     * @param ConfigCollection $collection The configuration collection
      */
     protected function setLoadingOrderFromCollection(ConfigCollection $collection)
     {
