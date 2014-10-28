@@ -54,7 +54,7 @@ class ConfigCollection implements \IteratorAggregate
      */
     public function isEmpty()
     {
-        return count($this->configs) < 1;
+        return empty($this->configs);
     }
 
     /**
