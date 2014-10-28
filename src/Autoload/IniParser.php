@@ -70,7 +70,10 @@ class IniParser implements ParserInterface
         $ini = parse_ini_file($file, true);
 
         if (false === $ini) {
+            // @codeCoverageIgnoreStart
+            // TODO: Add a unit test for an invalid ini file
             throw new \RuntimeException("File $file cannot be decoded");
+            // @codeCoverageIgnoreEnd
         }
 
         return $ini;

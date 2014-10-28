@@ -21,19 +21,5 @@ class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\BundleAutoloader', $bundleLoader);
     }
-
-    public function testGetRootDir()
-    {
-        $bundleLoader = new BundleAutoloader('rootDir', 'env');
-
-        $this->assertSame('rootDir', $bundleLoader->getRootDir());
-    }
-
-    public function testGetEnvironment()
-    {
-        $bundleLoader = new BundleAutoloader('rootDir', 'env');
-
-        $this->assertSame('env', $bundleLoader->getEnvironment());
-    }
 }
  
