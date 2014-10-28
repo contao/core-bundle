@@ -89,9 +89,9 @@ class BundleAutoloader
     }
 
     /**
-     * Adds bundles to the collection
+     * Adds bundles to the resolver
      *
-     * @param ConfigResolver  $resolver The configuration resolver
+     * @param ConfigResolver  $resolver The resolver object
      * @param Finder          $files    The finder object
      * @param ParserInterface $parser   The parser object
      */

@@ -16,10 +16,14 @@ namespace Contao\Bundle\CoreBundle\Autoload;
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ConfigFactory implements ConfigFactoryInterface
+class ConfigFactory
 {
     /**
-     * {@inheritdoc}
+     * Creates a configuration object and returns it
+     *
+     * @param array $config The configuration array
+     *
+     * @return Config The configuration object
      */
     public function create(array $config)
     {

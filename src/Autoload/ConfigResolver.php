@@ -14,7 +14,7 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 
 /**
- * Resolves the bundles map from the configurations object
+ * Resolves the bundles map from the configuration objects
  *
  * @author Leo Feyer <https://contao.org>
  */
@@ -26,11 +26,11 @@ class ConfigResolver
     protected $configs = [];
 
     /**
-     * Adds a configuration object to the collection
+     * Adds a configuration object
      *
-     * @param ConfigInterface $config
+     * @param ConfigInterface $config The configuration object
      *
-     * @return $this The collection object
+     * @return $this The resolver object
      */
     public function add(ConfigInterface $config)
     {
@@ -48,22 +48,17 @@ class ConfigResolver
      */
     public function getBundlesMapForEnvironment($environment)
     {
-        $bundles      = [];
-        $replaces     = $this->getReplaces();
-        $loadingOrder = $this->getLoadingOrder();
+        $bundles = [];
 
+        // Only add bundles which match the environment
         foreach ($this->configs as $config) {
             if ($this->matchesEnvironment($config->getEnvironments(), $environment)) {
-                $bundleName = $config->getName();
-
-                if (!isset($loadingOrder[$bundleName])) {
-                    $loadingOrder[$bundleName] = [];
-                }
-
-                $bundles[$bundleName] = $config->getClass();
+                $bundles[$config->getName()] = $config->getClass();
             }
         }
 
+        $loadingOrder    = $this->buildLoadingOrder();
+        $replaces        = $this->buildReplaceMap();
         $normalizedOrder = $this->normalizeLoadingOrder($loadingOrder, $replaces);
         $resolvedOrder   = $this->resolveLoadingOrder($normalizedOrder);
 
@@ -71,11 +66,11 @@ class ConfigResolver
     }
 
     /**
-     * Gets the replaces from the configuration objects
+     * Builds the replaces from the configuration objects
      *
      * @return array The replaces array
      */
-    protected function getReplaces()
+    protected function buildReplaceMap()
     {
         $replace = [];
 
@@ -91,11 +86,11 @@ class ConfigResolver
     }
 
     /**
-     * Gets the loading order from the configuration objects
+     * Builds the loading order from the configuration objects
      *
      * @return array The loading order array
      */
-    protected function getLoadingOrder()
+    protected function buildLoadingOrder()
     {
         // Make sure the core bundle comes first
         $loadingOrder = [
@@ -129,12 +124,12 @@ class ConfigResolver
     }
 
     /**
-     * Orders the bundles in the resolved loading order
+     * Orders the bundles in a given order
      *
      * @param array $bundles The bundles array
-     * @param array $ordered The resolved loading order array
+     * @param array $ordered The given order
      *
-     * @return array The ordered bundles array
+     * @return array The ordered bundles
      */
     protected function order(array $bundles, array $ordered)
     {
@@ -150,10 +145,10 @@ class ConfigResolver
     }
 
     /**
-     * Normalizes the replaces
+     * Normalizes the loading order array
      *
      * @param array $loadingOrder The loading order array
-     * @param array $replace      The replaces array
+     * @param array $replace      The replaces map
      *
      * @return array The normalized loading order array
      */
@@ -200,18 +195,9 @@ class ConfigResolver
         $available = array_keys($loadingOrder);
 
         while (!empty($loadingOrder)) {
-            $failed = true;
+            $success = $this->doResolveLoadingOrder($loadingOrder, $ordered, $available);
 
-            foreach ($loadingOrder as $name => $requires) {
-                if (true === $this->canBeResolved($requires, $available, $ordered)) {
-                    $failed    = false;
-                    $ordered[] = $name;
-
-                    unset($loadingOrder[$name]);
-                }
-            }
-
-            if (true === $failed) {
+            if (false === $success) {
                 throw new UnresolvableLoadingOrderException(
                     "The bundle loading order could not be resolved.\n" . print_r($loadingOrder, true)
                 );
@@ -219,6 +205,31 @@ class ConfigResolver
         }
 
         return $ordered;
+    }
+
+    /**
+     * Tries to resolve the loading order
+     *
+     * @param array $loadingOrder The normalized loading order array
+     * @param array $ordered      An array of already ordered bundles
+     * @param array $available    An array of available bundles
+     *
+     * @return bool True if the order could be resolved
+     */
+    protected function doResolveLoadingOrder(array &$loadingOrder, array &$ordered, array $available)
+    {
+        $failed = true;
+
+        foreach ($loadingOrder as $name => $requires) {
+            if (true === $this->canBeResolved($requires, $available, $ordered)) {
+                $failed    = false;
+                $ordered[] = $name;
+
+                unset($loadingOrder[$name]);
+            }
+        }
+
+        return !$failed;
     }
 
     /**
