@@ -15,7 +15,7 @@ use Contao\System;
 use Contao\Bundle\CoreBundle\Autoload\BundleAutoloader;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
+use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -58,7 +58,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
             if (null !== $class) {
                 $bundles[] = new $class();
             } else {
-                $bundles[] = new ContaoLegacyBundle($package, $this->getRootDir());
+                $bundles[] = new ContaoModuleBundle($package, $this->getRootDir());
             }
         }
     }

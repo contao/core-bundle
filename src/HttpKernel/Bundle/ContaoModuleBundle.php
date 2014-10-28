@@ -14,11 +14,11 @@ namespace Contao\Bundle\CoreBundle\HttpKernel\Bundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Configures a Contao legacy bundle
+ * Configures a Contao module bundle
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
+class ContaoModuleBundle extends Bundle implements ContaoBundleInterface
 {
     /**
      * @var string
@@ -35,14 +35,6 @@ class ContaoLegacyBundle extends Bundle implements ContaoBundleInterface
     {
         $this->name    = $name;
         $this->rootDir = $rootDir;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAssetsPath()
-    {
-        return $this->getPath() . '/assets';
     }
 
     /**

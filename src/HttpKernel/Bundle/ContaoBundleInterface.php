@@ -21,13 +21,6 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 interface ContaoBundleInterface extends BundleInterface
 {
     /**
-     * Return the path to the assets directory
-     *
-     * @return string The assets path
-     */
-    public function getAssetsPath();
-
-    /**
      * Return the path to the config directory
      *
      * @return string The config path

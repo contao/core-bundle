@@ -6,3 +6,4 @@ tools:
 
 filter:
     paths: [src/*]
+    excluded_paths: [src/Resources/*]

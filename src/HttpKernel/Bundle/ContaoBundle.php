@@ -18,22 +18,14 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ContaoBundle extends Bundle implements ContaoBundleInterface
+abstract class ContaoBundle extends Bundle implements ContaoBundleInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAssetsPath()
-    {
-        return $this->getPath() . '/../legacy/assets';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getConfigPath()
     {
-        return $this->getPath() . '/../legacy/config';
+        return $this->getPath() . '/Resources/config';
     }
 
     /**
@@ -41,7 +33,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getDcaPath()
     {
-        return $this->getPath() . '/../legacy/dca';
+        return $this->getPath() . '/Resources/dca';
     }
 
     /**
@@ -49,7 +41,7 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getLanguagesPath()
     {
-        return $this->getPath() . '/../legacy/languages';
+        return $this->getPath() . '/Resources/languages';
     }
 
     /**
@@ -57,6 +49,6 @@ class ContaoBundle extends Bundle implements ContaoBundleInterface
      */
     public function getTemplatesPath()
     {
-        return $this->getPath() . '/../legacy/templates';
+        return $this->getPath() . '/Resources/templates';
     }
 }
