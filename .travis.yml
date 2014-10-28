@@ -7,7 +7,7 @@ php:
 
 install:
     - composer self-update
-    - composer install --prefer-dist --dev
+    - composer install --prefer-source --dev
 
 script:
     - ./vendor/bin/phpunit --coverage-clover=coverage.clover

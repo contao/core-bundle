@@ -87,17 +87,17 @@ class BundleAutoloader
         $this->setReplacesFromCollection($collection);
         $this->setLoadingOrderFromCollection($collection);
 
-        foreach ($collection as $bundle) {
-            $environments = $bundle->getEnvironments();
+        foreach ($collection as $config) {
+            $environments = $config->getEnvironments();
 
             if (in_array($this->getEnvironment(), $environments) || in_array('all', $environments)) {
-                $bundleName = $bundle->getName();
+                $bundleName = $config->getName();
 
                 if (!isset($this->loadingOrder[$bundleName])) {
                     $this->loadingOrder[$bundleName] = [];
                 }
 
-                $bundles[$bundleName] = $bundle->getClass();
+                $bundles[$bundleName] = $config->getClass();
             }
         }
 
@@ -107,7 +107,7 @@ class BundleAutoloader
     /**
      * Creates a configuration collection using autoload.json and legacy autoload.ini files
      *
-     * @return ConfigCollection The configuration collection
+     * @return ConfigCollection|ConfigInterface[] The configuration collection
      */
     protected function createCollection()
     {
@@ -173,7 +173,7 @@ class BundleAutoloader
     /**
      * Sets the replaces from the collection
      *
-     * @param ConfigCollection $collection The configuration collection
+     * @param ConfigCollection|ConfigInterface[] $collection The configuration collection
      */
     protected function setReplacesFromCollection(ConfigCollection $collection)
     {
@@ -191,7 +191,7 @@ class BundleAutoloader
     /**
      * Sets the loading order from the collection
      *
-     * @param ConfigCollection $collection The configuration collection
+     * @param ConfigCollection|ConfigInterface[] $collection The configuration collection
      */
     protected function setLoadingOrderFromCollection(ConfigCollection $collection)
     {
@@ -200,7 +200,7 @@ class BundleAutoloader
         // Make sure the core bundle comes first
         $this->loadingOrder['ContaoCoreBundle'] = [];
 
-        foreach ($collection->all() as $bundle) {
+        foreach ($collection as $bundle) {
             $name = $bundle->getName();
 
             $this->loadingOrder[$name] = [];

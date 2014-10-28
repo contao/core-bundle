@@ -32,7 +32,6 @@ class JsonParser implements ParserInterface
 
             $options['class'] = $class;
 
-            // @todo this might throw a ReflectionException if the class does not exist!
             $ref = new \ReflectionClass($class);
             $options['name'] = $ref->getShortName();
         }
