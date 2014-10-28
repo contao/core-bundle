@@ -16,6 +16,7 @@ use Contao\CoreBundle\Autoload\BundleAutoloader;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -55,12 +56,26 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
         }
 
         foreach ($this->bundlesMap as $package => $class) {
-            if (null !== $class) {
-                $bundles[] = new $class();
-            } else {
-                $bundles[] = new ContaoModuleBundle($package, $this->getRootDir());
-            }
+            $bundles[] = $this->createBundleInstance($package, $class);
         }
+    }
+
+    /**
+     * Create a bundle from the class information provided.
+     *
+     * @param string      $package The package name.
+     *
+     * @param string|null $class   The class name.
+     *
+     * @return ContaoModuleBundle|BundleInterface
+     */
+    protected function createBundleInstance($package, $class)
+    {
+        if (null === $class) {
+            return new ContaoModuleBundle($package, $this->getRootDir());
+        }
+
+        return new $class();
     }
 
     /**
