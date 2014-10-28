@@ -24,15 +24,59 @@ class IniParserTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ParserInterface', $parser);
     }
 
-    public function testParse()
+    public function testDummyModuleWithRequires()
     {
         $parser = new IniParser();
-        $file = new SplFileInfo('dummy', 'relativePath', 'relativePathName');
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/IniParser/dummy-module-with-requires'
+            , 'relativePath',
+            'relativePathName'
+        );
 
         $this->assertSame([
             'bundles' => [[
                 'class'         => null,
-                'name'          => 'dummy',
+                'name'          => 'dummy-module-with-requires',
+                'replace'       => [],
+                'environments'  => ['all'],
+                'load-after'    => ['core', 'news', 'calendar']
+            ]]
+        ], $parser->parse($file));
+    }
+
+    public function testDummyModuleWithoutAutoload()
+    {
+        $parser = new IniParser();
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/IniParser/dummy-module-without-autoload'
+            , 'relativePath',
+            'relativePathName'
+        );
+
+        $this->assertSame([
+            'bundles' => [[
+                'class'         => null,
+                'name'          => 'dummy-module-without-autoload',
+                'replace'       => [],
+                'environments'  => ['all'],
+                'load-after'    => []
+            ]]
+        ], $parser->parse($file));
+    }
+
+    public function testDummyModuleWithoutRequires()
+    {
+        $parser = new IniParser();
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/IniParser/dummy-module-without-requires'
+            , 'relativePath',
+            'relativePathName'
+        );
+
+        $this->assertSame([
+            'bundles' => [[
+                'class'         => null,
+                'name'          => 'dummy-module-without-requires',
                 'replace'       => [],
                 'environments'  => ['all'],
                 'load-after'    => []
