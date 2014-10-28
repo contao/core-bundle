@@ -12,7 +12,7 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Autoload collection interface
+ * Configuration collection interface
  *
  * @author Leo Feyer <https://contao.org>
  */

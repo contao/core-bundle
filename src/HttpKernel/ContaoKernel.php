@@ -11,7 +11,6 @@
 
 namespace Contao\Bundle\CoreBundle\HttpKernel;
 
-use Contao\System;
 use Contao\Bundle\CoreBundle\Autoload\ConfigFactory;
 use Contao\Bundle\CoreBundle\Autoload\ConfigCollection;
 use Contao\Bundle\CoreBundle\Autoload\ConfigCollectionInterface;
@@ -22,6 +21,7 @@ use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
+use Contao\System;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\Kernel;
@@ -163,35 +163,26 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     }
 
     /**
-     * Finds the autoload bundles
+     * Creates the collection object and returns it
      *
-     * @return ConfigCollection The autoload bundles collection
+     * @return ConfigCollection The collection object
      */
     protected function getCollection()
     {
         $collection = new ConfigCollection();
 
-        $this->addBundlesToCollection(
-            $collection,
-            $this->findJsonConfigs(),
-            new JsonParser()
-        );
-
-        $this->addBundlesToCollection(
-            $collection,
-            $this->findIniConfigs(),
-            new IniParser()
-        );
+        $this->addBundlesToCollection($collection, $this->findAutoloadFiles(), new JsonParser());
+        $this->addBundlesToCollection($collection, $this->findLegacyModules(), new IniParser());
 
         return $collection;
     }
 
     /**
-     * Finds Contao autoload bundles
+     * Finds the autoload.json files
      *
      * @return Finder The finder object
      */
-    protected function findJsonConfigs()
+    protected function findAutoloadFiles()
     {
         return Finder::create()
             ->files()
@@ -201,11 +192,11 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     }
 
     /**
-     * Finds Contao legacy bundles
+     * Finds the Contao legacy modules
      *
      * @return Finder The finder object
      */
-    protected function findIniConfigs()
+    protected function findLegacyModules()
     {
         return Finder::create()
             ->directories()
@@ -225,6 +216,7 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
      */
     protected function addBundlesToCollection(ConfigCollectionInterface $collection, Finder $files, ParserInterface $parser)
     {
+        // FIXME: $this->collection nach Auslagerung in eigene Datei
         $factory = new ConfigFactory();
 
         /** @var SplFileInfo $file */
@@ -317,7 +309,6 @@ abstract class ContaoKernel extends Kernel implements ContaoKernelInterface
     protected function buildContainer()
     {
         $container = parent::buildContainer();
-
         $container->addCompilerPass(new AddBundlesToCachePass($this));
 
         return $container;

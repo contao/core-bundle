@@ -22,17 +22,12 @@ class JsonParser implements ParserInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @throws \InvalidArgumentException If $file is not a file
      */
     public function parse(SplFileInfo $file)
     {
-        if (!$file->isFile()) {
-            throw new \InvalidArgumentException("$file is not a file");
-        }
-
         $json = $this->parseJsonFile($file);
 
+        # FIXME: zu viele if-Bedingungen
         foreach ($json['bundles'] as $class => &$options) {
             $options['class'] = $class;
 
@@ -62,10 +57,15 @@ class JsonParser implements ParserInterface
      *
      * @return array The configuration array
      *
-     * @throws \RuntimeException If the file cannot be decoded or there are no bundles
+     * @throws \InvalidArgumentException If $file is not a file
+     * @throws \RuntimeException         If the file cannot be decoded or there are no bundles
      */
     protected function parseJsonFile(SplFileInfo $file)
     {
+        if (!$file->isFile()) {
+            throw new \InvalidArgumentException("$file is not a file");
+        }
+
         $json = json_decode(file_get_contents($file), true);
 
         if (null === $json) {

@@ -12,7 +12,7 @@
 namespace Contao\Bundle\CoreBundle\Autoload;
 
 /**
- * Handles the autoload configuration
+ * Provides methods to access the configuration
  *
  * @author Leo Feyer <https://contao.org>
  */

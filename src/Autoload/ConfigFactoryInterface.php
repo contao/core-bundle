@@ -19,9 +19,11 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 interface ConfigFactoryInterface
 {
     /**
-     * Adds the bundle to the collection
+     * Creates a configuration object and returns it
      *
      * @param array $config The configuration array
+     *
+     * @return Config The configuration object
      */
     public function create(array $config);
 }

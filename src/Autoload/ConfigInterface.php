@@ -28,7 +28,7 @@ interface ConfigInterface
     /**
      * Sets the class name
      *
-     * @param array $class The class name
+     * @param string $class The class name
      *
      * @return $this The object instance
      */
@@ -44,7 +44,7 @@ interface ConfigInterface
     /**
      * Sets the bundle name
      *
-     * @param array $name The bundle name
+     * @param string $name The bundle name
      *
      * @return $this The object instance
      */

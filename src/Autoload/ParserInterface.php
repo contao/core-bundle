@@ -14,7 +14,7 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Autoload parser interface
+ * Configuration parser interface
  *
  * @author Leo Feyer <https://contao.org>
  */
