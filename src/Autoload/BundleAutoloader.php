@@ -87,9 +87,7 @@ class BundleAutoloader
      */
     public function load()
     {
-        // FIXME: UnitTests
-        // FIXME: https://github.com/tristanlins/contao-module-core/commit/41e04f5fb269dba1460e3c0222fdea16f1002774
-        $bundles    = [];
+        $bundles = [];
 
         $this->addBundlesToCollection($this->findAutoloadFiles(), new JsonParser());
         $this->addBundlesToCollection($this->findLegacyModules(), new IniParser());
@@ -187,9 +185,28 @@ class BundleAutoloader
      */
     protected function order(array $bundles)
     {
-        $loadingOrder = $this->loadingOrder;
+        $return       = [];
+        $loadingOrder = $this->normalizeReplaces($this->loadingOrder);
+        $ordered      = $this->resolveLoadingOrder($loadingOrder);
 
-        // Handle the replaces
+        foreach ($ordered as $package) {
+            if (array_key_exists($package, $bundles)) {
+                $return[$package] = $bundles[$package];
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Normalizes the replaces
+     *
+     * @param array $loadingOrder The loading order array
+     *
+     * @return array The normalized loading order array
+     */
+    protected function normalizeReplaces(array $loadingOrder)
+    {
         foreach ($loadingOrder as $k => $v) {
             if (isset($this->replace[$k])) {
                 unset($loadingOrder[$k]);
@@ -202,10 +219,21 @@ class BundleAutoloader
             }
         }
 
+        return $loadingOrder;
+    }
+
+    /**
+     * Tries to resolve the loading order
+     *
+     * @param array $loadingOrder
+     *
+     * @return array
+     */
+    protected function resolveLoadingOrder(array $loadingOrder)
+    {
         $ordered   = [];
         $available = array_keys($loadingOrder);
 
-        // Try to resolve the loading order
         while (!empty($loadingOrder)) {
             $failed = true;
 
@@ -225,28 +253,12 @@ class BundleAutoloader
             }
 
             if (true === $failed) {
-                // FIXME: $loadingOrder als Exception-Parameter
-                // FIXME: Listener, um die Info optisch aufzubereiten
-                // FIXME: print_r('...', true)
-                ob_start();
-                print_r($loadingOrder);
-                $buffer = ob_get_clean();
-
                 throw new UnresolvableLoadingOrderException(
-                    "The bundle loading order could not be resolved.\n$buffer"
+                    "The bundle loading order could not be resolved.\n" . print_r($loadingOrder, true)
                 );
             }
         }
 
-        $return = [];
-
-        // Sort the bundles
-        foreach ($ordered as $package) {
-            if (array_key_exists($package, $bundles)) {
-                $return[$package] = $bundles[$package];
-            }
-        }
-
-        return $return;
+        return $ordered;
     }
 }

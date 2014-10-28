@@ -43,7 +43,7 @@ class IniParser implements ParserInterface
             'class'        => null,
             'name'         => $file->getBasename(),
             'replace'      => [],
-            'environments' => [],
+            'environments' => ['all'],
             'load-after'   => []
         ];
 
@@ -110,6 +110,6 @@ class IniParser implements ParserInterface
      */
     protected function hasRequires(array $ini)
     {
-        return !isset($ini['requires']) || !is_array($ini['requires']);
+        return isset($ini['requires']) && is_array($ini['requires']);
     }
 }

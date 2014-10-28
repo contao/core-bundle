@@ -82,7 +82,7 @@ class JsonParser implements ParserInterface
         }
 
         if (!$this->hasEnvironments($options)) {
-            $options['environments'] = [];
+            $options['environments'] = ['all'];
         }
 
         if (!$this->hasLoadAfter($options)) {

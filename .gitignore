@@ -9,3 +9,6 @@ Thumbs.db
 .build/
 .idea/
 nbproject/
+
+# Vendor
+/vendor/
