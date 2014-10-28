@@ -44,18 +44,18 @@ class BundleAutoloader
     }
 
     /**
-     * Returns an ordered bundle collection
+     * Returns an ordered bundle map
      *
-     * @return ConfigCollection|ConfigCollection[] The ordered bundles
+     * @return array The bundles map
      */
     public function load()
     {
-        $collection = new ConfigCollection($this->environment);
+        $resolver = new ConfigResolver();
 
-        $this->addBundlesToCollection($collection, $this->findAutoloadFiles(), new JsonParser());
-        $this->addBundlesToCollection($collection, $this->findLegacyModules(), new IniParser());
+        $this->addBundlesToResolver($resolver, $this->findAutoloadFiles(), new JsonParser());
+        $this->addBundlesToResolver($resolver, $this->findLegacyModules(), new IniParser());
 
-        return $collection->all();
+        return $resolver->getBundlesMapForEnvironment($this->environment);
     }
 
     /**
@@ -91,11 +91,11 @@ class BundleAutoloader
     /**
      * Adds bundles to the collection
      *
-     * @param ConfigCollection $collection The configuration collection
-     * @param Finder           $files      The finder object
-     * @param ParserInterface  $parser     The parser object
+     * @param ConfigResolver  $resolver The configuration resolver
+     * @param Finder          $files    The finder object
+     * @param ParserInterface $parser   The parser object
      */
-    protected function addBundlesToCollection(ConfigCollection $collection, Finder $files, ParserInterface $parser)
+    protected function addBundlesToResolver(ConfigResolver $resolver, Finder $files, ParserInterface $parser)
     {
         $factory = new ConfigFactory();
 
@@ -104,7 +104,7 @@ class BundleAutoloader
             $configs = $parser->parse($file);
 
             foreach ($configs['bundles'] as $config) {
-                $collection->add($factory->create($config));
+                $resolver->add($factory->create($config));
             }
         }
     }

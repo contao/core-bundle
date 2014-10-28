@@ -14,50 +14,16 @@ namespace Contao\Bundle\CoreBundle\Autoload;
 use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
 
 /**
- * Handles a collection of configuration objects
+ * Resolves the bundles map from the configurations object
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ConfigCollection implements \IteratorAggregate
+class ConfigResolver
 {
     /**
      * @var ConfigInterface[]
      */
     protected $configs = [];
-
-    /**
-     * @var array
-     */
-    protected $ordered;
-
-    /**
-     * @var string
-     */
-    protected $environment;
-
-    /**
-     * Constructor
-     *
-     * @param string $environment The current environment
-     */
-    public function __construct($environment)
-    {
-        $this->environment = $environment;
-    }
-
-    /**
-     * Returns an array of configurations
-     *
-     * @return ConfigInterface[] The configuration array
-     */
-    public function all()
-    {
-        if (null === $this->ordered) {
-            $this->ordered = $this->getOrderedList();
-        }
-
-        return $this->ordered;
-    }
 
     /**
      * Adds a configuration object to the collection
@@ -74,18 +40,20 @@ class ConfigCollection implements \IteratorAggregate
     }
 
     /**
-     * Returns an ordered list of bundles
+     * Returns a bundles map for an environment
      *
-     * @return array The ordered bundles
+     * @param string $environment The environment
+     *
+     * @return array The bundles map
      */
-    protected function getOrderedList()
+    public function getBundlesMapForEnvironment($environment)
     {
         $bundles      = [];
         $replaces     = $this->getReplaces();
         $loadingOrder = $this->getLoadingOrder();
 
         foreach ($this->configs as $config) {
-            if ($this->matchesEnvironment($config->getEnvironments())) {
+            if ($this->matchesEnvironment($config->getEnvironments(), $environment)) {
                 $bundleName = $config->getName();
 
                 if (!isset($loadingOrder[$bundleName])) {
@@ -103,7 +71,7 @@ class ConfigCollection implements \IteratorAggregate
     }
 
     /**
-     * Gets the replaces from the collection
+     * Gets the replaces from the configuration objects
      *
      * @return array The replaces array
      */
@@ -123,7 +91,7 @@ class ConfigCollection implements \IteratorAggregate
     }
 
     /**
-     * Gets the loading order from the collection
+     * Gets the loading order from the configuration objects
      *
      * @return array The loading order array
      */
@@ -150,13 +118,14 @@ class ConfigCollection implements \IteratorAggregate
     /**
      * Checks whether a bundle should be loaded in an environment
      *
-     * @param array $environments The bundle environments
+     * @param array  $environments The bundle environments
+     * @param string $environment  The current environment
      *
      * @return bool True if the environment matches the bundle environments
      */
-    protected function matchesEnvironment(array $environments)
+    protected function matchesEnvironment(array $environments, $environment)
     {
-        return in_array($this->environment, $environments) || in_array('all', $environments);
+        return in_array($environment, $environments) || in_array('all', $environments);
     }
 
     /**
@@ -268,13 +237,5 @@ class ConfigCollection implements \IteratorAggregate
         }
 
         return (0 === count(array_diff(array_intersect($requires, $available), $ordered)));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->all());
     }
 }
