@@ -33,16 +33,6 @@ class BundleAutoloader
     protected $environment;
 
     /**
-     * @var array
-     */
-    protected $loadingOrder = [];
-
-    /**
-     * @var array
-     */
-    protected $replace = [];
-
-    /**
      * Constructor
      *
      * @param string $rootDir     The kernel root directory
@@ -75,37 +65,38 @@ class BundleAutoloader
     }
 
     /**
-     * Finds all bundles to be registered
+     * Returns an ordered array of bundles to register
      *
      * @return array The ordered bundles
      */
     public function load()
     {
-        $bundles    = [];
-        $collection = $this->createCollection();
-
-        $this->setReplacesFromCollection($collection);
-        $this->setLoadingOrderFromCollection($collection);
+        $bundles      = [];
+        $collection   = $this->createCollection();
+        $replaces     = $this->getReplacesFromCollection($collection);
+        $loadingOrder = $this->getLoadingOrderFromCollection($collection);
 
         foreach ($collection as $config) {
-            $environments = $config->getEnvironments();
-
-            if (in_array($this->getEnvironment(), $environments) || in_array('all', $environments)) {
+            if ($this->matchesEnvironment($config->getEnvironments())) {
                 $bundleName = $config->getName();
 
-                if (!isset($this->loadingOrder[$bundleName])) {
-                    $this->loadingOrder[$bundleName] = [];
+                if (!isset($loadingOrder[$bundleName])) {
+                    $loadingOrder[$bundleName] = [];
                 }
 
                 $bundles[$bundleName] = $config->getClass();
             }
         }
 
-        return $this->order($bundles);
+        $normalizedOrder = $this->normalizeLoadingOrder($loadingOrder, $replaces);
+        $resolvedOrder   = $this->resolveLoadingOrder($normalizedOrder);
+
+        return $this->order($bundles, $resolvedOrder);
+
     }
 
     /**
-     * Creates a configuration collection using autoload.json and legacy autoload.ini files
+     * Creates a configuration collection
      *
      * @return ConfigCollection|ConfigInterface[] The configuration collection
      */
@@ -171,60 +162,77 @@ class BundleAutoloader
     }
 
     /**
-     * Sets the replaces from the collection
+     * Gets the replaces from the collection
      *
      * @param ConfigCollection|ConfigInterface[] $collection The configuration collection
+     *
+     * @return array The replaces array
      */
-    protected function setReplacesFromCollection(ConfigCollection $collection)
+    protected function getReplacesFromCollection(ConfigCollection $collection)
     {
-        $this->replace = [];
+        $replace = [];
 
         foreach ($collection as $bundle) {
             $name = $bundle->getName();
 
             foreach ($bundle->getReplace() as $package) {
-                $this->replace[$package] = $name;
+                $replace[$package] = $name;
             }
         }
+
+        return $replace;
     }
 
     /**
-     * Sets the loading order from the collection
+     * Gets the loading order from the collection
      *
      * @param ConfigCollection|ConfigInterface[] $collection The configuration collection
+     *
+     * @return array The loading order array
      */
-    protected function setLoadingOrderFromCollection(ConfigCollection $collection)
+    protected function getLoadingOrderFromCollection(ConfigCollection $collection)
     {
-        $this->loadingOrder = [];
-
         // Make sure the core bundle comes first
-        $this->loadingOrder['ContaoCoreBundle'] = [];
+        $loadingOrder = [
+            'ContaoCoreBundle' => []
+        ];
 
         foreach ($collection as $bundle) {
             $name = $bundle->getName();
 
-            $this->loadingOrder[$name] = [];
+            $loadingOrder[$name] = [];
 
             foreach ($bundle->getLoadAfter() as $package) {
-                $this->loadingOrder[$name][] = $package;
+                $loadingOrder[$name][] = $package;
             }
         }
+
+        return $loadingOrder;
     }
 
     /**
-     * Order the bundles
+     * Checks whether a bundle should be loaded in an environment
+     *
+     * @param array $environments The bundle environments
+     *
+     * @return bool True if the environment matches the bundle environments
+     */
+    protected function matchesEnvironment(array $environments)
+    {
+        return in_array($this->getEnvironment(), $environments) || in_array('all', $environments);
+    }
+
+    /**
+     * Orders the bundles in the resolved loading order
      *
      * @param array $bundles The bundles array
+     * @param array $ordered The resolved loading order array
      *
-     * @return array The resolved bundles array
-     *
-     * @throws UnresolvableLoadingOrderException If the loading order cannot be resolved
+     * @return array The ordered bundles array
      */
-    protected function order(array $bundles)
+    protected function order(array $bundles, array $ordered)
     {
-        $return       = [];
-        $loadingOrder = $this->normalizeReplaces($this->loadingOrder);
-        $ordered      = $this->resolveLoadingOrder($loadingOrder);
+        $return  = [];
 
         foreach ($ordered as $package) {
             if (array_key_exists($package, $bundles)) {
@@ -239,18 +247,19 @@ class BundleAutoloader
      * Normalizes the replaces
      *
      * @param array $loadingOrder The loading order array
+     * @param array $replace      The replaces array
      *
      * @return array The normalized loading order array
      */
-    protected function normalizeReplaces(array $loadingOrder)
+    protected function normalizeLoadingOrder(array $loadingOrder, array $replace)
     {
         foreach ($loadingOrder as $k => $v) {
-            if (isset($this->replace[$k])) {
+            if (isset($replace[$k])) {
                 unset($loadingOrder[$k]);
             } else {
                 foreach ($v as $kk => $vv) {
-                    if (isset($this->replace[$vv])) {
-                        $loadingOrder[$k][$kk] = $this->replace[$vv];
+                    if (isset($replace[$vv])) {
+                        $loadingOrder[$k][$kk] = $replace[$vv];
                     }
                 }
             }
@@ -262,9 +271,11 @@ class BundleAutoloader
     /**
      * Tries to resolve the loading order
      *
-     * @param array $loadingOrder
+     * @param array $loadingOrder The normalized loading order array
      *
-     * @return array
+     * @return array The resolved loading order array
+     *
+     * @throws UnresolvableLoadingOrderException If the loading order cannot be resolved
      */
     protected function resolveLoadingOrder(array $loadingOrder)
     {
