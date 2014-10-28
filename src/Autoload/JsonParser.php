@@ -27,24 +27,13 @@ class JsonParser implements ParserInterface
     {
         $json = $this->parseJsonFile($file);
 
-        # FIXME: zu viele if-Bedingungen
         foreach ($json['bundles'] as $class => &$options) {
+            $options = $this->normalize($options);
+
             $options['class'] = $class;
 
             $ref = new \ReflectionClass($class);
             $options['name'] = $ref->getShortName();
-
-            if (!$this->hasReplace($options)) {
-                $options['replace'] = [];
-            }
-
-            if (!$this->hasEnvironments($options)) {
-                $options['environments'] = [];
-            }
-
-            if (!$this->hasLoadAfter($options)) {
-                $options['load-after'] = [];
-            }
         }
 
         return $json;
@@ -77,6 +66,30 @@ class JsonParser implements ParserInterface
         }
 
         return $json;
+    }
+
+    /**
+     * Normalize the configuration array
+     *
+     * @param array $options The configuration array
+     *
+     * @return array The normalized array
+     */
+    protected function normalize(array $options)
+    {
+        if (!$this->hasReplace($options)) {
+            $options['replace'] = [];
+        }
+
+        if (!$this->hasEnvironments($options)) {
+            $options['environments'] = [];
+        }
+
+        if (!$this->hasLoadAfter($options)) {
+            $options['load-after'] = [];
+        }
+
+        return $options;
     }
 
     /**

@@ -49,14 +49,9 @@ class IniParser implements ParserInterface
 
         $path = $file . '/config/autoload.ini';
 
-        // The autoload.ini file is optional
-        if (!file_exists($path)) {
-            return $options;
+        if (file_exists($path)) {
+            $options['load-after'] = $this->normalize($this->parseIniFile($path));
         }
-
-        $ini = $this->parseIniFile($path);
-
-        $options['load-after'] = $this->normalizeLoadAfter($ini);
 
         return $options;
     }
@@ -82,13 +77,13 @@ class IniParser implements ParserInterface
     }
 
     /**
-     * Creates the load-after array from the ini configuration
+     * Normalize the configuration array
      *
-     * @param array $ini The autoload.ini array
+     * @param array $ini The configuration array
      *
-     * @return array The load-after array
+     * @return array The normalized array
      */
-    protected function normalizeLoadAfter(array $ini)
+    protected function normalize(array $ini)
     {
         if (!$this->hasRequires($ini)) {
             return [];
