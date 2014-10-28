@@ -1,45 +1,46 @@
 {
-	"name": "contao/module-core",
-	"type": "library",
-	"description": "Contao 4 core module",
-	"license": "LGPL-3.0+",
-	"authors": [
-		{
-			"name": "Leo Feyer",
-			"homepage": "https://github.com/leofeyer"
-		}
-	],
-	"require": {
-		"php": ">=5.4.0",
-		"contao/contao-library": "dev-feature/symfony2",
+    "name": "contao/module-core",
+    "type": "library",
+    "description": "Contao 4 core module",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Leo Feyer",
+            "homepage": "https://github.com/leofeyer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "contao/contao-library": "dev-feature/symfony2",
         "michelf/php-markdown": "~1.4",
         "phpspec/php-diff": "~1.0",
         "simplepie/simplepie": "~1.3",
+        "symfony/finder": "~2.5",
         "symfony/framework-bundle": "~2.5",
         "tecnick.com/tcpdf": "~6.0"
-	},
+    },
     "require-dev": {
         "phpunit/phpunit": "~3.7"
     },
-	"autoload": {
+    "autoload": {
         "psr-4": {
             "Contao\\Bundle\\CoreBundle\\": "src/"
         },
-		"classmap": [
-			"legacy/classes/",
-			"legacy/controllers/",
-			"legacy/drivers/",
-			"legacy/elements/",
-			"legacy/forms/",
-			"legacy/hybrids/",
-			"legacy/maintenance/",
-			"legacy/models/",
-			"legacy/modules/",
-			"legacy/pages/",
-			"legacy/uploader/",
-			"legacy/widgets/"
-		]
-	},
+        "classmap": [
+            "legacy/classes/",
+            "legacy/controllers/",
+            "legacy/drivers/",
+            "legacy/elements/",
+            "legacy/forms/",
+            "legacy/hybrids/",
+            "legacy/maintenance/",
+            "legacy/models/",
+            "legacy/modules/",
+            "legacy/pages/",
+            "legacy/uploader/",
+            "legacy/widgets/"
+        ]
+    },
     "prefer-stable": true,
     "minimum-stability": "dev"
 }

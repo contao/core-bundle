@@ -16,7 +16,7 @@ namespace Contao\Bundle\CoreBundle\Autoload;
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ConfigCollection implements ConfigCollectionInterface
+class ConfigCollection implements \IteratorAggregate
 {
     /**
      * @var ConfigInterface[]
@@ -24,7 +24,9 @@ class ConfigCollection implements ConfigCollectionInterface
     protected $configs = [];
 
     /**
-     * {@inheritdoc}
+     * Returns an array of configurations
+     *
+     * @return ConfigInterface[] The configuration array
      */
     public function all()
     {
@@ -32,13 +34,27 @@ class ConfigCollection implements ConfigCollectionInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds a configuration object to the collection
+     *
+     * @param ConfigInterface $config
+     *
+     * @return $this The collection object
      */
     public function add(ConfigInterface $config)
     {
         $this->configs[] = $config;
 
         return $this;
+    }
+
+    /**
+     * Checks whether the collection is empty
+     *
+     * @return bool True if the collection is empty
+     */
+    public function isEmpty()
+    {
+        return count($this->configs) < 1;
     }
 
     /**

@@ -16,7 +16,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * FIXME
+ * Finds the autoload bundles and orders them
  *
  * @author Leo Feyer <https://contao.org>
  */
@@ -89,25 +89,15 @@ class BundleAutoloader
     {
         $bundles = [];
 
-        $this->addBundlesToCollection($this->findAutoloadFiles(), new JsonParser());
-        $this->addBundlesToCollection($this->findLegacyModules(), new IniParser());
+        if ($this->collection->isEmpty()) {
+            $this->addBundlesToCollection($this->findAutoloadFiles(), new JsonParser());
+            $this->addBundlesToCollection($this->findLegacyModules(), new IniParser());
+        }
 
-        // Make sure the core bundle comes first
-        $this->loadingOrder['ContaoCoreBundle'] = [];
+        $this->setReplacesFromCollection();
+        $this->setLoadingOrderFromCollection();
 
         foreach ($this->collection->all() as $bundle) {
-            $name = $bundle->getName();
-
-            foreach ($bundle->getReplace() as $package) {
-                $this->replace[$package] = $name;
-            }
-
-            $this->loadingOrder[$name] = [];
-
-            foreach ($bundle->getLoadAfter() as $package) {
-                $this->loadingOrder[$name][] = $package;
-            }
-
             $environments = $bundle->getEnvironments();
 
             if (in_array($this->getEnvironment(), $environments) || in_array('all', $environments)) {
@@ -170,6 +160,43 @@ class BundleAutoloader
 
             foreach ($configs['bundles'] as $config) {
                 $this->collection->add($factory->create($config));
+            }
+        }
+    }
+
+    /**
+     * Sets the replaces from the collection
+     */
+    protected function setReplacesFromCollection()
+    {
+        $this->replace = [];
+
+        foreach ($this->collection->all() as $bundle) {
+            $name = $bundle->getName();
+
+            foreach ($bundle->getReplace() as $package) {
+                $this->replace[$package] = $name;
+            }
+        }
+    }
+
+    /**
+     * Sets the loading order from the collection
+     */
+    protected function setLoadingOrderFromCollection()
+    {
+        $this->loadingOrder = [];
+
+        // Make sure the core bundle comes first
+        $this->loadingOrder['ContaoCoreBundle'] = [];
+
+        foreach ($this->collection->all() as $bundle) {
+            $name = $bundle->getName();
+
+            $this->loadingOrder[$name] = [];
+
+            foreach ($bundle->getLoadAfter() as $package) {
+                $this->loadingOrder[$name][] = $package;
             }
         }
     }
