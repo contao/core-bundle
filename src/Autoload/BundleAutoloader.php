@@ -107,7 +107,7 @@ class BundleAutoloader
     /**
      * Creates a configuration collection using autoload.json and legacy autoload.ini files
      *
-     * @return ConfigCollection
+     * @return ConfigCollection The configuration collection
      */
     protected function createCollection()
     {
