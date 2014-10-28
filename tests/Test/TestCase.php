@@ -24,8 +24,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     final protected function tearDown()
     {
-        if ( static::$isDisabledErrorReporting === true )
-        {
+        if (true === static::$isDisabledErrorReporting) {
             $this->enableErrorReporting();
         }
     }
