@@ -16,8 +16,6 @@ use Contao\Bundle\CoreBundle\Autoload\BundleAutoloader;
 use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoLegacyBundle;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**

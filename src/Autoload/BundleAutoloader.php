@@ -33,7 +33,7 @@ class BundleAutoloader
     protected $environment;
 
     /**
-     * @var ConfigCollectionInterface
+     * @var ConfigCollection
      */
     protected $collection;
 
