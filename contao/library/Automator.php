@@ -576,7 +576,7 @@ class Automator extends System
 				{
 					foreach ($config['public'] as $strFolder)
 					{
-						$arrPublic[] = str_replace(TL_ROOT . '/', '', $bundle->getPath()) . '/' . $strFolder;
+						$arrPublic[] = str_replace(TL_ROOT . '/', '', realpath($bundle->getPath() . '/' . $strFolder));
 					}
 				}
 			}
