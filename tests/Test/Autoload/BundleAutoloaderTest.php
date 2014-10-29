@@ -21,5 +21,21 @@ class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\BundleAutoloader', $bundleLoader);
     }
+
+    public function testLoad()
+    {
+        $bundleLoader = new BundleAutoloader(
+            __DIR__ . '/../../fixtures/Autoload/BundleAutoLoader/dummyRootDirName',
+            'all'
+        );
+
+        $this->assertSame(
+            [
+                'ContaoCoreBundle'  => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                'legacy-module'     => null
+            ],
+            $bundleLoader->load()
+        );
+    }
 }
  

@@ -24,36 +24,75 @@ class JsonParserTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ParserInterface', $parser);
     }
 
-    public function testParse()
+    public function testDefaultAutoload()
     {
         $parser = new JsonParser();
-        $normalized = [
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/JsonParser/regular/autoload.json'
+            , 'relativePath',
+            'relativePathName'
+        );
+
+        $this->assertSame([
             'bundles' => [
                 'Contao\Bundle\CoreBundle\ContaoCoreBundle' => [
-                  'class'         => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
-                  'name'          => 'ContaoCoreBundle',
-                  'replace'       => [],
-                  'environments'  => ['all'],
-                  'load-after'    => []
-              ]]
-        ];
+                    'class'         => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                    'name'          => 'ContaoCoreBundle',
+                    'replace'       => [],
+                    'environments'  => ['all'],
+                    'load-after'    => []
+                ]]
+        ], $parser->parse($file));
+    }
+    public function testNoKeysDefinedAutoload()
+    {
+        $parser = new JsonParser();
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/JsonParser/no-keys-defined/autoload.json'
+            , 'relativePath',
+            'relativePathName'
+        );
 
-        $fileMock = $this->getMockBuilder('\Symfony\Component\Finder\SplFileInfo')
-            ->setConstructorArgs([
-                'dummy', 'relativePath', 'relativePathName'
-            ])
-            ->getMock();
+        $this->assertSame([
+            'bundles' => [
+                'Contao\Bundle\CoreBundle\ContaoCoreBundle' => [
+                    'class'         => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                    'name'          => 'ContaoCoreBundle',
+                    'replace'       => [],
+                    'environments'  => ['all'],
+                    'load-after'    => []
+                ]]
+        ], $parser->parse($file));
+    }
 
-        $fileMock->expects($this->once())
-            ->method('isFile')
-            ->will($this->returnValue(true));
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testInvalidJsonWillThrowException()
+    {
+        $parser = new JsonParser();
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/JsonParser/invalid/autoload.json'
+            , 'relativePath',
+            'relativePathName'
+        );
 
-        $fileMock->expects($this->once())
-            ->method('getContents')
-            ->will($this->returnValue(json_encode($normalized, true)));
+        $parser->parse($file);
+    }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNoBundlesKeyInJsonWillThrowException()
+    {
+        $parser = new JsonParser();
+        $file = new SplFileInfo(
+            __DIR__ . '/../../fixtures/Autoload/JsonParser/no-bundles-key/autoload.json'
+            , 'relativePath',
+            'relativePathName'
+        );
 
-        $this->assertSame($normalized, $parser->parse($fileMock));
+        $parser->parse($file);
     }
 
     /**
