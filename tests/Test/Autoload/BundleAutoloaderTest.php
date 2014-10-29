@@ -25,7 +25,7 @@ class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
     public function testLoad()
     {
         $bundleLoader = new BundleAutoloader(
-            __DIR__ . '/../../fixtures/Autoload/BundleAutoLoader/dummyRootDirName',
+            __DIR__ . '/../../fixtures/Autoload/BundleAutoloader/dummyRootDirName',
             'all'
         );
 
