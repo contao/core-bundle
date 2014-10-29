@@ -12,7 +12,7 @@
 
 namespace Contao;
 
-use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
+use Contao\CoreBundle\HttpKernel\ContaoKernelInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 
