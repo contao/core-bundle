@@ -68,6 +68,7 @@ class BundleAutoloader
         return Finder::create()
             ->files()
             ->name('autoload.json')
+            ->notPath('tests/')
             ->in(dirname($this->rootDir) . '/vendor')
         ;
     }

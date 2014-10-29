@@ -213,7 +213,7 @@ class tl_templates extends Backend
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
 			$strModule = $bundle->getName();
-			$strFolder = $bundle->getTemplatesPath();
+			$strFolder = $bundle->getContaoResourcesPath() . '/templates';
 
 			// Continue if there is no templates folder
 			if ($strModule == 'repository' || !is_dir($strFolder))

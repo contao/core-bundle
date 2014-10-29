@@ -21,30 +21,9 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 interface ContaoBundleInterface extends BundleInterface
 {
     /**
-     * Return the path to the config directory
+     * Returns the path to the Contao resources directory
      *
      * @return string The config path
      */
-    public function getConfigPath();
-
-    /**
-     * Return the path to the DCA directory
-     *
-     * @return string The DCA path
-     */
-    public function getDcaPath();
-
-    /**
-     * Return the path to the languages directory
-     *
-     * @return string The languages path
-     */
-    public function getLanguagesPath();
-
-    /**
-     * Return the path to the templates directory
-     *
-     * @return string The templates path
-     */
-    public function getTemplatesPath();
+    public function getContaoResourcesPath();
 }

@@ -310,7 +310,7 @@ class tl_user_group extends Backend
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = $bundle->getDcaPath();
+			$strDir = $bundle->getContaoResourcesPath() . '/dca';
 
 			if (!is_dir($strDir))
 			{

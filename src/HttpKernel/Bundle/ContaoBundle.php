@@ -23,32 +23,8 @@ abstract class ContaoBundle extends Bundle implements ContaoBundleInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigPath()
+    public function getContaoResourcesPath()
     {
-        return $this->getPath() . '/Resources/config';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDcaPath()
-    {
-        return $this->getPath() . '/Resources/dca';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLanguagesPath()
-    {
-        return $this->getPath() . '/Resources/languages';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTemplatesPath()
-    {
-        return $this->getPath() . '/Resources/templates';
+        return $this->getPath() . '/../contao';
     }
 }

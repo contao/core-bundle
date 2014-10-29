@@ -40,33 +40,9 @@ class ContaoModuleBundle extends Bundle implements ContaoBundleInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigPath()
+    public function getContaoResourcesPath()
     {
-        return $this->getPath() . '/config';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDcaPath()
-    {
-        return $this->getPath() . '/dca';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLanguagesPath()
-    {
-        return $this->getPath() . '/languages';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTemplatesPath()
-    {
-        return $this->getPath() . '/templates';
+        return $this->getPath();
     }
 
     /**
