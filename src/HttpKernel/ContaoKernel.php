@@ -9,13 +9,13 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\HttpKernel;
+namespace Contao\CoreBundle\HttpKernel;
 
 use Contao\System;
-use Contao\Bundle\CoreBundle\Autoload\BundleAutoloader;
-use Contao\Bundle\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
+use Contao\CoreBundle\Autoload\BundleAutoloader;
+use Contao\CoreBundle\DependencyInjection\Compiler\AddBundlesToCachePass;
+use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
+use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**

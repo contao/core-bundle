@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Autoload;
+namespace Contao\CoreBundle\Autoload;
 
 /**
  * Provides methods to access the configuration

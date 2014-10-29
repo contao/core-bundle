@@ -24,21 +24,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Contao\\Bundle\\CoreBundle\\": "src/"
+            "Contao\\CoreBundle\\": "src/"
         },
         "classmap": [
-            "legacy/classes/",
-            "legacy/controllers/",
-            "legacy/drivers/",
-            "legacy/elements/",
-            "legacy/forms/",
-            "legacy/hybrids/",
-            "legacy/maintenance/",
-            "legacy/models/",
-            "legacy/modules/",
-            "legacy/pages/",
-            "legacy/uploader/",
-            "legacy/widgets/"
+            "contao/classes/",
+            "contao/controllers/",
+            "contao/drivers/",
+            "contao/elements/",
+            "contao/forms/",
+            "contao/hybrids/",
+            "contao/maintenance/",
+            "contao/models/",
+            "contao/modules/",
+            "contao/pages/",
+            "contao/uploader/",
+            "contao/widgets/"
         ]
     },
     "prefer-stable": true,

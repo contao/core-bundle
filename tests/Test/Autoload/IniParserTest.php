@@ -9,10 +9,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Autoload;
+namespace Contao\CoreBundle\Test\Autoload;
 
-use Contao\Bundle\CoreBundle\Autoload\IniParser;
-use Contao\Bundle\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Autoload\IniParser;
+use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
 
 class IniParserTest extends TestCase
@@ -21,8 +21,8 @@ class IniParserTest extends TestCase
     {
         $parser = new IniParser();
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\IniParser', $parser);
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ParserInterface', $parser);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\IniParser', $parser);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\ParserInterface', $parser);
     }
 
     public function testDummyModuleWithRequires()
@@ -100,4 +100,3 @@ class IniParserTest extends TestCase
         $parser->parse($file);
     }
 }
- 

@@ -1,7 +1,7 @@
 {
     "bundles": {
-        "Contao\\Bundle\\CoreBundle\\ContaoCoreBundle": {
-            "class": "Contao\\Bundle\\CoreBundle\\ContaoCoreBundle",
+        "Contao\\CoreBundle\\ContaoCoreBundle": {
+            "class": "Contao\\CoreBundle\\ContaoCoreBundle",
             "name": "ContaoCoreBundle",
             "replace": [],
             "environments": ["all"],

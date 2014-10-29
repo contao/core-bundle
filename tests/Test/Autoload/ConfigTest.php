@@ -9,9 +9,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Autoload;
+namespace Contao\CoreBundle\Test\Autoload;
 
-use Contao\Bundle\CoreBundle\Autoload\Config;
+use Contao\CoreBundle\Autoload\Config;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $config = new Config();
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\Config', $config);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\Config', $config);
     }
 
     public function testSetAndGetClass()
@@ -62,4 +62,3 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['foobar'], $config->getLoadAfter());
     }
 }
- 

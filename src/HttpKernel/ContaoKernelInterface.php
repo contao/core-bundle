@@ -9,9 +9,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\HttpKernel;
+namespace Contao\CoreBundle\HttpKernel;
 
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
+use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**

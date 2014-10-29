@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\EventListener;
+namespace Contao\CoreBundle\EventListener;
 
 use Contao\Frontend;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;

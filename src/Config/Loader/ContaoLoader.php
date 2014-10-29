@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Config\Loader;
+namespace Contao\CoreBundle\Config\Loader;
 
 use Contao\Config;
 use Symfony\Component\Config\Loader\Loader;

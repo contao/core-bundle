@@ -9,9 +9,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Autoload;
+namespace Contao\CoreBundle\Test\Autoload;
 
-use Contao\Bundle\CoreBundle\Autoload\BundleAutoloader;
+use Contao\CoreBundle\Autoload\BundleAutoloader;
 
 class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
     {
         $bundleLoader = new BundleAutoloader('rootDir', 'env');
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\BundleAutoloader', $bundleLoader);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\BundleAutoloader', $bundleLoader);
     }
 
     public function testLoad()
@@ -31,11 +31,10 @@ class BundleAutoloaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [
-                'ContaoCoreBundle'  => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                'ContaoCoreBundle'  => 'Contao\CoreBundle\ContaoCoreBundle',
                 'legacy-module'     => null
             ],
             $bundleLoader->load()
         );
     }
 }
- 

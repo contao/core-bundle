@@ -9,10 +9,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Config\Loader;
+namespace Contao\CoreBundle\Test\Config\Loader;
 
 use Contao\Config;
-use Contao\Bundle\CoreBundle\Config\Loader\ContaoLoader;
+use Contao\CoreBundle\Config\Loader\ContaoLoader;
 
 /**
  * Tests the Contao loader

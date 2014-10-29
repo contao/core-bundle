@@ -5,18 +5,18 @@ services:
         factory_method: getInstance
 
     contao.routing_loader:
-        class:     Contao\Bundle\CoreBundle\Config\Loader\ContaoLoader
+        class:     Contao\CoreBundle\Config\Loader\ContaoLoader
         arguments: ['@contao.config'] # FIXME: remove
         tags:
             - { name: routing.loader }
 
     contao.listener.output_from_cache:
-        class:     Contao\Bundle\CoreBundle\EventListener\OutputFromCacheListener
+        class:     Contao\CoreBundle\EventListener\OutputFromCacheListener
         arguments: ['@contao.config'] # FIXME: remove
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
 
     contao.listener.add_to_search_index:
-        class: Contao\Bundle\CoreBundle\EventListener\AddToSearchIndexListener
+        class: Contao\CoreBundle\EventListener\AddToSearchIndexListener
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }

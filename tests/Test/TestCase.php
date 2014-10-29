@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test;
+namespace Contao\CoreBundle\Test;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {

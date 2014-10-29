@@ -9,9 +9,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Autoload;
+namespace Contao\CoreBundle\Test\Autoload;
 
-use Contao\Bundle\CoreBundle\Autoload\JsonParser;
+use Contao\CoreBundle\Autoload\JsonParser;
 use Symfony\Component\Finder\SplFileInfo;
 
 class JsonParserTest extends \PHPUnit_Framework_TestCase
@@ -20,8 +20,8 @@ class JsonParserTest extends \PHPUnit_Framework_TestCase
     {
         $parser = new JsonParser();
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\JsonParser', $parser);
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ParserInterface', $parser);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\JsonParser', $parser);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\ParserInterface', $parser);
     }
 
     public function testDefaultAutoload()
@@ -35,8 +35,8 @@ class JsonParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame([
             'bundles' => [
-                'Contao\Bundle\CoreBundle\ContaoCoreBundle' => [
-                    'class'         => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                'Contao\CoreBundle\ContaoCoreBundle' => [
+                    'class'         => 'Contao\CoreBundle\ContaoCoreBundle',
                     'name'          => 'ContaoCoreBundle',
                     'replace'       => [],
                     'environments'  => ['all'],
@@ -55,8 +55,8 @@ class JsonParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame([
             'bundles' => [
-                'Contao\Bundle\CoreBundle\ContaoCoreBundle' => [
-                    'class'         => 'Contao\Bundle\CoreBundle\ContaoCoreBundle',
+                'Contao\CoreBundle\ContaoCoreBundle' => [
+                    'class'         => 'Contao\CoreBundle\ContaoCoreBundle',
                     'name'          => 'ContaoCoreBundle',
                     'replace'       => [],
                     'environments'  => ['all'],
@@ -106,4 +106,3 @@ class JsonParserTest extends \PHPUnit_Framework_TestCase
         $parser->parse($file);
     }
 }
- 

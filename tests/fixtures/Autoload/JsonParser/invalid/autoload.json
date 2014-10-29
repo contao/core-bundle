@@ -1,4 +1,4 @@
 {
     "bundles": {
-        "Contao\\Bundle\\CoreBundle\\ContaoCoreBundle": {
+        "Contao\\CoreBundle\\ContaoCoreBundle": {
             "I am invalid JSON

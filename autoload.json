@@ -1,6 +1,6 @@
 {
     "bundles": {
-        "Contao\\Bundle\\CoreBundle\\ContaoCoreBundle": {
+        "Contao\\CoreBundle\\ContaoCoreBundle": {
             "replace": ["core"],
             "environments": ["all"]
         }

@@ -9,10 +9,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle;
+namespace Contao\CoreBundle;
 
 use Contao\System;
-use Contao\Bundle\CoreBundle\HttpKernel\Bundle\ContaoBundle;
+use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**

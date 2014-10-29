@@ -10,9 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\DependencyInjection\Compiler;
+namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\Bundle\CoreBundle\HttpKernel\ContaoKernelInterface;
+use Contao\CoreBundle\HttpKernel\ContaoKernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 

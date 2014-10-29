@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Controller;
+namespace Contao\CoreBundle\Controller;
 
 use Contao\FrontendIndex;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

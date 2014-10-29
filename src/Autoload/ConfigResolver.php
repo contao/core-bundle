@@ -9,9 +9,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Autoload;
+namespace Contao\CoreBundle\Autoload;
 
-use Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException;
+use Contao\CoreBundle\Exception\UnresolvableLoadingOrderException;
 
 /**
  * Resolves the bundles map from the configuration objects

@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Exception;
+namespace Contao\CoreBundle\Exception;
 
 class UnresolvableLoadingOrderException extends \RuntimeException
 {

@@ -9,7 +9,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Autoload;
+namespace Contao\CoreBundle\Autoload;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -69,6 +69,7 @@ class BundleAutoloader
             ->files()
             ->name('autoload.json')
             ->notPath('tests/')
+            ->notPath('Tests/')
             ->in(dirname($this->rootDir) . '/vendor')
         ;
     }

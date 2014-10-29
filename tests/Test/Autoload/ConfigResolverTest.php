@@ -9,10 +9,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\CoreBundle\Test\Autoload;
+namespace Contao\CoreBundle\Test\Autoload;
 
-use Contao\Bundle\CoreBundle\Autoload\Config;
-use Contao\Bundle\CoreBundle\Autoload\ConfigResolver;
+use Contao\CoreBundle\Autoload\Config;
+use Contao\CoreBundle\Autoload\ConfigResolver;
 
 class ConfigResolverTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class ConfigResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new ConfigResolver();
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ConfigResolver', $resolver);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\ConfigResolver', $resolver);
     }
 
     public function testAdd()
@@ -30,7 +30,7 @@ class ConfigResolverTest extends \PHPUnit_Framework_TestCase
 
         $result = $resolver->add($config);
 
-        $this->assertInstanceOf('Contao\Bundle\CoreBundle\Autoload\ConfigResolver', $result);
+        $this->assertInstanceOf('Contao\CoreBundle\Autoload\ConfigResolver', $result);
     }
 
     /**
@@ -50,7 +50,7 @@ class ConfigResolverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Contao\Bundle\CoreBundle\Exception\UnresolvableLoadingOrderException
+     * @expectedException \Contao\CoreBundle\Exception\UnresolvableLoadingOrderException
      */
     public function testCannotBeResolved()
     {
@@ -131,4 +131,3 @@ class ConfigResolverTest extends \PHPUnit_Framework_TestCase
             ->setClass($class);
     }
 }
- 
