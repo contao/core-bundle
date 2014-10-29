@@ -502,13 +502,10 @@ class Automator extends System
 		$arrPublic = $this->getPublicModuleFolders();
 
 		// Symlink the public extension subfolders
-		if (!empty($arrPublic))
+		foreach ($arrPublic as $strPath)
 		{
-			foreach ($arrPublic as $strFolder)
-			{
-				$target = str_repeat('../', substr_count($strFolder, '/') + 1);
-				$this->Files->symlink($target . $strFolder, 'web/' . $strFolder);
-			}
+			$target = str_repeat('../', substr_count($strPath, '/') + 1);
+			$this->Files->symlink($target . $strPath, 'web/' . $strPath);
 		}
 
 		// Symlink the components directory
@@ -565,21 +562,15 @@ class Automator extends System
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strAutoload = $bundle->getContaoResourcesPath() . '/config/autoload.ini'; # FIXME: ohne autoload.ini keine public-Verzeichnisse
-
-			// Read the autoload.ini if any
-			if (file_exists($strAutoload))
+			foreach ($bundle->getPublicFolders() as $strPath)
 			{
-				$config = parse_ini_file($strAutoload, true);
-
-				if (!empty($config['public']))
+				if (strpos($strPath, '../') !== false)
 				{
-					foreach ($config['public'] as $strFolder)
-					{
-						$arrPublic[] = str_replace(TL_ROOT . '/', '', $bundle->getPath()) . '/' . $strFolder;
-					}
+					$strPath = realpath($strPath);
 				}
-			}
+
+				$arrPublic[] = str_replace(TL_ROOT . '/', '', $strPath);
+            }
 		}
 
 		return $arrPublic;

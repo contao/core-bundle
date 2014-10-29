@@ -5,8 +5,7 @@
  *
  * Copyright (c) 2005-2014 Leo Feyer
  *
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace Contao\CoreBundle\HttpKernel\Bundle;
@@ -14,16 +13,23 @@ namespace Contao\CoreBundle\HttpKernel\Bundle;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 /**
- * Configures a Contao bundle
+ * Adds specific methods to the bundle interface.
  *
  * @author Leo Feyer <https://contao.org>
  */
 interface ContaoBundleInterface extends BundleInterface
 {
     /**
-     * Returns the path to the Contao resources directory
+     * Returns the folders which shall be made public.
      *
-     * @return string The config path
+     * @return array The folders which shall be symlinked
+     */
+    public function getPublicFolders();
+
+    /**
+     * Returns the path to the Contao resources directory.
+     *
+     * @return string The path to the resources directory
      */
     public function getContaoResourcesPath();
 }

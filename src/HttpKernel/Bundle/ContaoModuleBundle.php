@@ -5,8 +5,7 @@
  *
  * Copyright (c) 2005-2014 Leo Feyer
  *
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace Contao\CoreBundle\HttpKernel\Bundle;
@@ -14,7 +13,7 @@ namespace Contao\CoreBundle\HttpKernel\Bundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Configures a Contao module bundle
+ * Configures a Contao module bundle.
  *
  * @author Leo Feyer <https://contao.org>
  */
@@ -26,7 +25,7 @@ class ContaoModuleBundle extends Bundle implements ContaoBundleInterface
     protected $rootDir;
 
     /**
-     * Set the name
+     * Sets the module name and application root directory.
      *
      * @param string $name    The module name
      * @param string $rootDir The application root directory
@@ -35,6 +34,16 @@ class ContaoModuleBundle extends Bundle implements ContaoBundleInterface
     {
         $this->name    = $name;
         $this->rootDir = $rootDir;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPublicFolders()
+    {
+        return [
+            $this->getContaoResourcesPath() . '/assets'
+        ];
     }
 
     /**
