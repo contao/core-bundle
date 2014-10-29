@@ -736,7 +736,7 @@ class Updater extends Controller
 		// Parse all modules (see #6058)
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = $bundle->getDcaPath();
+			$strDir = $bundle->getContaoResourcesPath() . '/dca';
 
 			if (!is_dir($strDir))
 			{

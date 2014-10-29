@@ -232,7 +232,7 @@ class ClassLoader
 		{
 			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strFile = $bundle->getConfigPath() . '/autoload.php';
+				$strFile = $bundle->getContaoResourcesPath() . '/config/autoload.php';
 
 				if (file_exists($strFile))
 				{

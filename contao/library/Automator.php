@@ -565,7 +565,7 @@ class Automator extends System
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strAutoload = $bundle->getConfigPath() . '/autoload.ini'; # FIXME: ohne autoload.ini keine public-Verzeichnisse
+			$strAutoload = $bundle->getContaoResourcesPath() . '/config/autoload.ini'; # FIXME: ohne autoload.ini keine public-Verzeichnisse
 
 			// Read the autoload.ini if any
 			if (file_exists($strAutoload))
@@ -614,7 +614,7 @@ class Automator extends System
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strFile = $bundle->getConfigPath() . '/autoload.php';
+			$strFile = $bundle->getContaoResourcesPath() . '/config/autoload.php';
 
 			if (file_exists($strFile))
 			{
@@ -631,7 +631,7 @@ class Automator extends System
 
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strFile = $bundle->getConfigPath() . '/config.php';
+			$strFile = $bundle->getContaoResourcesPath() . '/config/config.php';
 
 			if (file_exists($strFile))
 			{
@@ -657,7 +657,7 @@ class Automator extends System
 		// Parse all active modules
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = $bundle->getDcaPath();
+			$strDir = $bundle->getContaoResourcesPath() . '/dca';
 
 			if (!is_dir($strDir))
 			{
@@ -686,7 +686,7 @@ class Automator extends System
 			// Parse all active modules
 			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strFile = $bundle->getDcaPath() . '/' . $strName . '.php';
+				$strFile = $bundle->getContaoResourcesPath() . '/dca/' . $strName . '.php';
 
 				if (file_exists($strFile))
 				{
@@ -737,7 +737,7 @@ class Automator extends System
 			// Parse all active modules
 			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strDir = $bundle->getLanguagesPath() . '/' . $strLanguage;
+				$strDir = $bundle->getContaoResourcesPath() . '/languages/' . $strLanguage;
 
 				if (!is_dir($strDir))
 				{
@@ -783,7 +783,7 @@ class Automator extends System
 				// Parse all active modules and append to the cache file
 				foreach (System::getKernel()->getContaoBundles() as $bundle)
 				{
-					$strFile = $bundle->getLanguagesPath() . '/' . $strLanguage . '/' . $strName;
+					$strFile = $bundle->getContaoResourcesPath() . '/languages/' . $strLanguage . '/' . $strName;
 
 					if (file_exists($strFile . '.xlf'))
 					{
@@ -816,7 +816,7 @@ class Automator extends System
 		// Only check the active modules (see #4541)
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = $bundle->getDcaPath();
+			$strDir = $bundle->getContaoResourcesPath() . '/dca';
 
 			if (!is_dir($strDir))
 			{

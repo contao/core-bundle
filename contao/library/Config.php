@@ -137,7 +137,7 @@ class Config
 		{
 			foreach (System::getKernel()->getContaoBundles() as $bundle)
 			{
-				$strFile = $bundle->getConfigPath() . '/config.php';
+				$strFile = $bundle->getContaoResourcesPath() . '/config/config.php';
 
 				if (file_exists($strFile))
 				{

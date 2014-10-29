@@ -288,7 +288,7 @@ class Installer extends Controller
 		// Only check the active modules (see #4541)
 		foreach (System::getKernel()->getContaoBundles() as $bundle)
 		{
-			$strDir = $bundle->getDcaPath();
+			$strDir = $bundle->getContaoResourcesPath() . '/dca';
 
 			if (!is_dir($strDir))
 			{
@@ -351,7 +351,7 @@ class Installer extends Controller
 				continue;
 			}
 
-			$strFile = $bundle->getConfigPath() . '/database.sql';
+			$strFile = $bundle->getContaoResourcesPath() . '/config/database.sql';
 
 			if (!file_exists($strFile))
 			{
