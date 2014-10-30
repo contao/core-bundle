@@ -292,7 +292,7 @@ class tl_image_size_item extends Backend
 		}
 
 		System::loadLanguageFile('tl_layout');
-		Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_image_size']['picturefill'], $GLOBALS['TL_LANG']['tl_layout']['addPicturefill'][0]));
+		Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_image_size']['picturefill'], $GLOBALS['TL_LANG']['tl_layout']['picturefill'][0]));
 	}
 
 
@@ -310,7 +310,7 @@ class tl_image_size_item extends Backend
 	{
 		if (strlen(Input::get('tid')))
 		{
-			$this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1));
+			$this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
 			$this->redirect($this->getReferer());
 		}
 
@@ -329,8 +329,9 @@ class tl_image_size_item extends Backend
 	 * Toggle the visibility of a format definition
 	 * @param integer
 	 * @param boolean
+	 * @param Contao\DataContainer
 	 */
-	public function toggleVisibility($intId, $blnVisible)
+	public function toggleVisibility($intId, $blnVisible, Contao\DataContainer $dc=null)
 	{
 		$objVersions = new Versions('tl_image_size_item', $intId);
 		$objVersions->initialize();
@@ -343,11 +344,11 @@ class tl_image_size_item extends Backend
 				if (is_array($callback))
 				{
 					$this->import($callback[0]);
-					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
+					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, ($dc ?: $this));
 				}
 				elseif (is_callable($callback))
 				{
-					$blnVisible = $callback($blnVisible, $this);
+					$blnVisible = $callback($blnVisible, ($dc ?: $this));
 				}
 			}
 		}

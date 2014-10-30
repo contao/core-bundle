@@ -147,7 +147,7 @@ class PageRegular extends Frontend
 		// Mark RTL languages (see #7171)
 		if ($GLOBALS['TL_LANG']['MSC']['textDirection'] == 'rtl')
 		{
-			$this->Template->direction = ' dir="rtl"';
+			$this->Template->isRTL = true;
 		}
 
 		// HOOK: modify the page or layout object
@@ -178,7 +178,7 @@ class PageRegular extends Frontend
 		}
 
 		// Assign the title and description
-		$this->Template->title = $this->replaceInsertTags($objLayout->titleTag); // see #7097
+		$this->Template->title = strip_insert_tags($this->replaceInsertTags($objLayout->titleTag)); // see #7097
 		$this->Template->description = str_replace(["\n", "\r", '"'], [' ' , '', ''], $objPage->description);
 
 		// Body onload and body classes
@@ -398,7 +398,7 @@ class PageRegular extends Frontend
 			{
 				if (($strVersion = System::getComponentVersion('contao-components/jquery')) !== null)
 				{
-					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
+					$this->Template->mooScripts .= Template::generateScriptTag('//code.jquery.com/jquery-' . $strVersion . '.min.js') . "\n";
 
 					// Local fallback (thanks to DyaGa)
 					if ($objLayout->jSource == 'j_fallback')
@@ -424,7 +424,7 @@ class PageRegular extends Frontend
 			{
 				if (($strVersion = System::getComponentVersion('contao-components/mootools')) !== null)
 				{
-					$this->Template->mooScripts .= Template::generateScriptTag((Environment::get('ssl') ? 'https://' : 'http://') . 'ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
+					$this->Template->mooScripts .= Template::generateScriptTag('//ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
 
 					// Local fallback (thanks to DyaGa)
 					if ($objLayout->mooSource == 'moo_fallback')
@@ -453,9 +453,9 @@ class PageRegular extends Frontend
 		}
 
 		// Picturefill
-		if ($objLayout->addPicturefill)
+		if ($objLayout->picturefill)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'components/picturefill/js/picturefill.min.js|static';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'components/respimage/js/respimage.min.js|static';
 		}
 
 		// Check whether TL_APPEND_JS exists (see #4890)
@@ -482,7 +482,7 @@ class PageRegular extends Frontend
 		$this->Template->base = Environment::get('base');
 		$this->Template->disableCron = Config::get('disableCron');
 		$this->Template->cronTimeout = $this->getCronTimeout();
-		$this->Template->direction = '';
+		$this->Template->isRTL = false;
 	}
 
 
@@ -501,7 +501,7 @@ class PageRegular extends Frontend
 		// Google web fonts
 		if ($objLayout->webfonts != '')
 		{
-			$strStyleSheets .= Template::generateStyleTag((Environment::get('ssl') ? 'https://' : 'http://') . 'fonts.googleapis.com/css?family=' . str_replace('|', '%7C',$objLayout->webfonts), 'all') . "\n";
+			$strStyleSheets .= Template::generateStyleTag('//fonts.googleapis.com/css?family=' . str_replace('|', '%7C',$objLayout->webfonts), 'all') . "\n";
 		}
 
 		// Add the Contao CSS framework style sheets
