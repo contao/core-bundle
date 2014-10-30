@@ -14,7 +14,7 @@ $lang = (object) $GLOBALS['TL_LANG']['XPT'];
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
   <style>
-    <?php include TL_ROOT . '/assets/framework/reset.min.css'; ?>
+    <?php include TL_ROOT . '/components/contao/css/reset.min.css'; ?>
     body {
       background:#e3e3e3;
     }

@@ -511,7 +511,7 @@ class PageRegular extends Frontend
 			{
 				if ($strFile != 'tinymce.css')
 				{
-					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'assets/framework/' . basename($strFile, '.css') . '.min.css';
+					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'components/contao/css/' . basename($strFile, '.css') . '.min.css';
 				}
 			}
 		}
@@ -661,7 +661,7 @@ class PageRegular extends Frontend
 		// Add the debug style sheet
 		if (Config::get('debugMode'))
 		{
-			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('assets/framework/debug.min.css'), 'all') . "\n";
+			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('components/contao/css/debug.min.css'), 'all') . "\n";
 		}
 
 		// Always add conditional style sheets at the end

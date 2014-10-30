@@ -17,8 +17,8 @@
   <script><?= $this->getLocaleString() ?></script>
   <script src="<?= TL_ASSETS_URL ?>components/mootools/js/mootools.min.js"></script>
   <script src="<?= TL_ASSETS_URL ?>assets/stylect/js/stylect.min.js"></script>
-  <script src="<?= TL_ASSETS_URL ?>assets/mootao/mootao.min.js"></script>
-  <script src="<?= TL_ASSETS_URL ?>assets/core/core.min.js"></script>
+  <script src="<?= TL_ASSETS_URL ?>components/contao/js/mootao.min.js"></script>
+  <script src="<?= TL_ASSETS_URL ?>components/contao/js/core.min.js"></script>
   <script src="<?= TL_ASSETS_URL ?>system/themes/<?= $this->theme ?>/hover.js"></script>
   <script><?= $this->getDateString() ?></script>
   <?= $this->javascripts ?>

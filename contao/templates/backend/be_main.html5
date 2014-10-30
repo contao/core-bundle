@@ -34,8 +34,8 @@
     $objCombiner->add('assets/stylect/js/stylect.min.js');
     $objCombiner->add('components/simplemodal/js/simplemodal.min.js');
     $objCombiner->add('components/datepicker/js/datepicker.min.js');
-    $objCombiner->add('assets/mootao/mootao.min.js');
-    $objCombiner->add('assets/core/core.min.js');
+    $objCombiner->add('components/contao/js/mootao.min.js');
+    $objCombiner->add('components/contao/js/core.min.js');
     $objCombiner->add('system/themes/'. $this->theme .'/hover.js');
     echo $objCombiner->getCombinedFile();
   ?>"></script>

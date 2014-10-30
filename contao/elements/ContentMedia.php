@@ -70,7 +70,7 @@ class ContentMedia extends ContentElement
 			while ($objFiles->next())
 			{
 				$objFile = new File($objFiles->path);
-				$return .= '<li><img src="' . TL_ASSETS_URL . 'assets/icons/' . $objFile->icon . '" width="18" height="18" alt="" class="mime_icon"> <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
+				$return .= '<li><img src="' . TL_ASSETS_URL . 'components/contao/images/' . $objFile->icon . '" width="18" height="18" alt="" class="mime_icon"> <span>' . $objFile->name . '</span> <span class="size">(' . $this->getReadableSize($objFile->size) . ')</span></li>';
 			}
 
 			return $return . '</ul>';
