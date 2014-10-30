@@ -58,7 +58,7 @@ class JsonParser implements ParserInterface
         $json = json_decode($file->getContents(), true);
 
         if (null === $json) {
-            throw new \RuntimeException("File $file cannot be decoded: " . json_last_error_msg());
+            throw new \RuntimeException("File $file cannot be decoded");
         }
 
         if (empty($json['bundles'])) {
