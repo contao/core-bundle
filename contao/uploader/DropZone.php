@@ -37,8 +37,8 @@ class DropZone extends FileUpload
 		$strAccepted = implode(',', array_map(function($a) { return '.' . $a; }, trimsplit(',', strtolower(Config::get('uploadTypes')))));
 
 		// Add the scripts
-		$GLOBALS['TL_CSS'][] = 'components/dropzone/css/dropzone.min.css';
-		$GLOBALS['TL_JAVASCRIPT'][] = 'components/dropzone/js/dropzone.min.js';
+		$GLOBALS['TL_CSS'][] = 'assets/dropzone/css/dropzone.min.css';
+		$GLOBALS['TL_JAVASCRIPT'][] = 'assets/dropzone/js/dropzone.min.js';
 
 		// Generate the markup
 		return '

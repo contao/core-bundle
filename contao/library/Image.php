@@ -1189,7 +1189,7 @@ class Image
 			if (strncmp($src, 'icon', 4) === 0)
 			{
 				$static = TL_ASSETS_URL;
-				$src = 'components/contao/images/' . $src;
+				$src = 'assets/contao/images/' . $src;
 			}
 			else
 			{

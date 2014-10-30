@@ -1,13 +1,13 @@
 <?php
 
 // CSS files
-$GLOBALS['TL_CSS'][] = 'components/chosen/css/chosen.min.css|static';
-$GLOBALS['TL_CSS'][] = 'components/stylect/css/stylect.min.css|static';
+$GLOBALS['TL_CSS'][] = 'assets/chosen/css/chosen.min.css|static';
+$GLOBALS['TL_CSS'][] = 'assets/stylect/css/stylect.min.css|static';
 
 // JavaScript files
 $objCombiner = new Combiner();
-$objCombiner->add('components/chosen/js/chosen.min.js');
-$objCombiner->add('components/stylect/js/stylect.min.js');
+$objCombiner->add('assets/chosen/js/chosen.min.js');
+$objCombiner->add('assets/stylect/js/stylect.min.js');
 
 ?>
 

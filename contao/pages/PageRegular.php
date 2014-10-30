@@ -403,17 +403,17 @@ class PageRegular extends Frontend
 					// Local fallback (thanks to DyaGa)
 					if ($objLayout->jSource == 'j_fallback')
 					{
-						$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'components/jquery/js/jquery.min.js">\x3C/script>\')') . "\n";
+						$this->Template->mooScripts .= Template::generateInlineScript('window.jQuery || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/jquery/js/jquery.min.js">\x3C/script>\')') . "\n";
 					}
 				}
 				else
 				{
-					$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
+					$GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.min.js|static';
 				}
 			}
 			else
 			{
-				$GLOBALS['TL_JAVASCRIPT'][] = 'components/jquery/js/jquery.min.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.min.js|static';
 			}
 		}
 
@@ -429,33 +429,33 @@ class PageRegular extends Frontend
 					// Local fallback (thanks to DyaGa)
 					if ($objLayout->mooSource == 'moo_fallback')
 					{
-						$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'components/mootools/js/mootools-core.min.js">\x3C/script>\')') . "\n";
+						$this->Template->mooScripts .= Template::generateInlineScript('window.MooTools || document.write(\'<script src="' . TL_ASSETS_URL . 'assets/mootools/js/mootools-core.min.js">\x3C/script>\')') . "\n";
 					}
 
-					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-more.min.js|static';
-					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-mobile.min.js|static';
+					$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/js/mootools-more.min.js|static';
+					$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/js/mootools-mobile.min.js|static';
 				}
 				else
 				{
-					$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
+					$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/js/mootools.min.js|static';
 				}
 			}
 			else
 			{
-				$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools.min.js|static';
+				$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/js/mootools.min.js|static';
 			}
 		}
 
 		// Load MooTools core for the debug bar (see #5195)
 		if (Config::get('debugMode') && !$objLayout->addMooTools)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'components/mootools/js/mootools-core.min.js|static';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'assets/mootools/js/mootools-core.min.js|static';
 		}
 
 		// Picturefill
 		if ($objLayout->picturefill)
 		{
-			$GLOBALS['TL_JAVASCRIPT'][] = 'components/respimage/js/respimage.min.js|static';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'assets/respimage/js/respimage.min.js|static';
 		}
 
 		// Check whether TL_APPEND_JS exists (see #4890)
@@ -511,7 +511,7 @@ class PageRegular extends Frontend
 			{
 				if ($strFile != 'tinymce.css')
 				{
-					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'components/contao/css/' . basename($strFile, '.css') . '.min.css';
+					$GLOBALS['TL_FRAMEWORK_CSS'][] = 'assets/contao/css/' . basename($strFile, '.css') . '.min.css';
 				}
 			}
 		}
@@ -661,7 +661,7 @@ class PageRegular extends Frontend
 		// Add the debug style sheet
 		if (Config::get('debugMode'))
 		{
-			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('components/contao/css/debug.min.css'), 'all') . "\n";
+			$strStyleSheets .= Template::generateStyleTag($this->addStaticUrlTo('assets/contao/css/debug.min.css'), 'all') . "\n";
 		}
 
 		// Always add conditional style sheets at the end

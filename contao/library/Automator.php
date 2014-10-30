@@ -508,12 +508,6 @@ class Automator extends System
 			$this->Files->symlink($target . $strPath, 'web/' . $strPath);
 		}
 
-		// Symlink the components directory
-		if (is_dir(TL_ROOT . '/components'))
-		{
-			$this->Files->symlink('../components', 'web/components');
-		}
-
 		// Symlink the tinymce.css file
 		if (file_exists(TL_ROOT . '/' . $strUploadPath . '/tinymce.css'))
 		{

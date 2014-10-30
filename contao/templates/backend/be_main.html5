@@ -13,11 +13,11 @@
   <?php endif; ?>
   <link rel="stylesheet" href="<?php
     $objCombiner = new Combiner();
-    $objCombiner->add('components/colorpicker/css/mooRainbow.min.css');
-    $objCombiner->add('components/chosen/css/chosen.min.css');
-    $objCombiner->add('components/stylect/css/stylect.min.css');
-    $objCombiner->add('components/simplemodal/css/simplemodal.min.css');
-    $objCombiner->add('components/datepicker/css/datepicker.min.css');
+    $objCombiner->add('assets/colorpicker/css/mooRainbow.min.css');
+    $objCombiner->add('assets/chosen/css/chosen.min.css');
+    $objCombiner->add('assets/stylect/css/stylect.min.css');
+    $objCombiner->add('assets/simplemodal/css/simplemodal.min.css');
+    $objCombiner->add('assets/datepicker/css/datepicker.min.css');
     $objCombiner->add('system/themes/'. $this->theme .'/basic.css');
     $objCombiner->add('system/themes/'. $this->theme .'/main.css');
     echo $objCombiner->getCombinedFile();
@@ -28,20 +28,20 @@
   <script><?= $this->getLocaleString() ?></script>
   <script src="<?php
     $objCombiner = new Combiner();
-    $objCombiner->add('components/mootools/js/mootools.min.js');
-    $objCombiner->add('components/colorpicker/js/mooRainbow.min.js');
-    $objCombiner->add('components/chosen/js/chosen.min.js');
-    $objCombiner->add('components/stylect/js/stylect.min.js');
-    $objCombiner->add('components/simplemodal/js/simplemodal.min.js');
-    $objCombiner->add('components/datepicker/js/datepicker.min.js');
-    $objCombiner->add('components/contao/js/mootao.min.js');
-    $objCombiner->add('components/contao/js/core.min.js');
+    $objCombiner->add('assets/mootools/js/mootools.min.js');
+    $objCombiner->add('assets/colorpicker/js/mooRainbow.min.js');
+    $objCombiner->add('assets/chosen/js/chosen.min.js');
+    $objCombiner->add('assets/stylect/js/stylect.min.js');
+    $objCombiner->add('assets/simplemodal/js/simplemodal.min.js');
+    $objCombiner->add('assets/datepicker/js/datepicker.min.js');
+    $objCombiner->add('assets/contao/js/mootao.min.js');
+    $objCombiner->add('assets/contao/js/core.min.js');
     $objCombiner->add('system/themes/'. $this->theme .'/hover.js');
     echo $objCombiner->getCombinedFile();
   ?>"></script>
   <script><?= $this->getDateString() ?></script>
   <?= $this->javascripts ?>
-  <!--[if lt IE 9]><script src="<?= TL_ASSETS_URL ?>components/html5shiv/js/html5shiv.min.js"></script><![endif]-->
+  <!--[if lt IE 9]><script src="<?= TL_ASSETS_URL ?>assets/html5shiv/js/html5shiv.min.js"></script><![endif]-->
 
 </head>
 <body id="top" class="<?= $this->ua ?><?php if ($this->isPopup) echo ' popup'; ?>">
