@@ -6,7 +6,7 @@ services:
 
     # The template engine for contao templates
     templating.engine.contao:
-        class: Contao\Bundle\CoreBundle\Templating\ContaoEngine
+        class: Contao\CoreBundle\Templating\ContaoEngine
 
     contao.routing_loader:
         class:     Contao\CoreBundle\Config\Loader\ContaoLoader
