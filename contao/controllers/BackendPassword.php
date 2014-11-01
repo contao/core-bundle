@@ -126,6 +126,6 @@ class BackendPassword extends \Backend
 		$objTemplate->password = $GLOBALS['TL_LANG']['MSC']['password'][0];
 		$objTemplate->confirm = $GLOBALS['TL_LANG']['MSC']['confirm'][0];
 
-		$objTemplate->output();
+		return $objTemplate->getResponse();
 	}
 }
