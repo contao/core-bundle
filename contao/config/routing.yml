@@ -1,0 +1,86 @@
+contao_backend:
+    path:      /contao{_trailing_slash}
+    defaults:
+        _controller:     ContaoCoreBundle:BackendMain:run
+        _tl_script:      contao/main.php
+        _trailing_slash: /
+    requirements:
+        _trailing_slash: /?
+
+contao_backend_changelog:
+    path:      /contao/changelog
+    defaults:
+        _controller: ContaoCoreBundle:BackendChangelog:run
+        _tl_script:  contao/changelog.php
+
+contao_backend_confirm:
+    path:      /contao/confirm
+    defaults:
+        _controller: ContaoCoreBundle:BackendConfirm:run
+        _tl_script:  contao/confirm.php
+
+contao_backend_file:
+    path:      /contao/file
+    defaults:
+        _controller: ContaoCoreBundle:BackendFile:run
+        _tl_script:  contao/file.php
+
+contao_backend_help:
+    path:      /contao/help
+    defaults:
+        _controller: ContaoCoreBundle:BackendHelp:run
+        _tl_script:  contao/help.php
+
+contao_backend_install:
+    path:      /contao/install
+    defaults:
+        _controller: ContaoCoreBundle:BackendInstall:run
+        _tl_script:  contao/install.php
+
+contao_backend_login:
+    path:      /contao/login
+    defaults:
+        _controller: ContaoCoreBundle:BackendLogin:run
+        _tl_script:  contao/index.php
+
+contao_backend_page:
+    path:      /contao/page
+    defaults:
+        _controller: ContaoCoreBundle:BackendPage:run
+        _tl_script:  contao/page.php
+
+contao_backend_password:
+    path:      /contao/password
+    defaults:
+        _controller: ContaoCoreBundle:BackendPassword:run
+        _tl_script:  contao/password.php
+
+contao_backend_popup:
+    path:      /contao/popup
+    defaults:
+        _controller: ContaoCoreBundle:BackendPopup:run
+        _tl_script:  contao/popup.php
+
+contao_backend_preview:
+    path:      /contao/preview
+    defaults:
+        _controller: ContaoCoreBundle:BackendPreview:run
+        _tl_script:  contao/preview.php
+
+contao_backend_switch:
+    path:      /contao/switch
+    defaults:
+        _controller: ContaoCoreBundle:BackendSwitch:run
+        _tl_script:  contao/switch.php
+
+contao_backend_cron:
+    path:      /contao/cron
+    defaults:
+        _controller: ContaoCoreBundle:BackendCron:run
+        _tl_script:  contao/cron.php
+
+contao_backend_share:
+    path:      /contao/share
+    defaults:
+        _controller: ContaoCoreBundle:BackendShare:run
+        _tl_script:  contao/share.php
