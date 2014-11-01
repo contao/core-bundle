@@ -1,4 +1,12 @@
 services:
+    # Static bundle routing
+    contao.routing.bundles:
+        class:     Contao\CoreBundle\Routing\BundlesLoader
+        arguments: ['@service_container']
+        tags:
+            - { name: routing.loader }
+
+    # Event listener
     contao.listener.parameter_filter:
         class: Contao\CoreBundle\EventListener\ParameterFilterListener
         tags:
