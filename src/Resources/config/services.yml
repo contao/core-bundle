@@ -4,6 +4,11 @@ services:
         factory_class: Contao\Config
         factory_method: getInstance
 
+    # The template engine for contao templates
+    templating.engine.contao:
+        class:     Contao\Bundle\CoreBundle\Templating\ContaoEngine
+        arguments: ['@contao.config'] # FIXME: remove
+
     contao.routing_loader:
         class:     Contao\CoreBundle\Config\Loader\ContaoLoader
         arguments: ['@contao.config'] # FIXME: remove
