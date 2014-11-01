@@ -12,13 +12,14 @@ namespace Contao\CoreBundle\HttpKernel;
 
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpKernel\TerminableInterface;
 
 /**
  * Contao kernel interface.
  *
  * @author Leo Feyer <https://contao.org>
  */
-interface ContaoKernelInterface extends KernelInterface
+interface ContaoKernelInterface extends KernelInterface, TerminableInterface
 {
     /**
      * Adds the autoload bundles to the bundles array.
