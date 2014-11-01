@@ -4,9 +4,10 @@ services:
         factory_class: Contao\Config
         factory_method: getInstance
 
-    contao.routing_loader:
-        class:     Contao\CoreBundle\Config\Loader\ContaoLoader
-        arguments: ['@contao.config'] # FIXME: remove
+    # Static Bundle Routing
+    contao.routing.bundles:
+        class:     Contao\CoreBundle\Routing\BundlesLoader
+        arguments: ['@service_container']
         tags:
             - { name: routing.loader }
 
