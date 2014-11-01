@@ -36,6 +36,7 @@ class ContaoEngine implements EngineInterface
             $template = new FrontendTemplate($name);
         }
         $template->setData($parameters);
+
         return $template->parse();
     }
 
@@ -46,6 +47,7 @@ class ContaoEngine implements EngineInterface
     {
         try {
             TemplateLoader::getPath($name, 'html5'); // FIXME static format
+
             return true;
         } catch (\Exception $exception) {
             return false;
