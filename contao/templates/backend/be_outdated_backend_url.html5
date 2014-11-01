@@ -1,0 +1,47 @@
+<?php
+
+/** @var \Symfony\Component\HttpFoundation\Request $request */
+$request = $this->request;
+
+$theme = Backend::getTheme();
+
+System::loadLanguageFile('exception');
+$lang = (object) $GLOBALS['TL_LANG']['XPT'];
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <title><?= $lang->error ?></title>
+  <meta name="generator" content="Contao Open Source CMS">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <style><?php
+    include TL_ROOT . '/system/themes/' . $theme . '/basic.css';
+    include TL_ROOT . '/system/themes/' . $theme . '/error.css';
+  ?></style>
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Contao Open Source CMS</h1>
+  </div>
+
+  <div id="container">
+
+    <div id="main">
+
+      <h2><?= $lang->error ?></h2>
+
+      <p><?php printf($lang->outdatedBackendUrl, $this->script, $request->getMethod()) ?></p>
+
+      <p><a href="http://docs.contao.org" class="tl_submit"><?= $lang->outdatedBackendUrlReadMore ?></a></p>
+    </div>
+
+  </div>
+
+</body>
+</html>
