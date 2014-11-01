@@ -184,6 +184,6 @@ class BackendHelp extends \Backend
 		$objTemplate->helpWizard = $GLOBALS['TL_LANG']['MSC']['helpWizard'];
 
 		\Config::set('debugMode', false);
-		$objTemplate->output();
+		return $objTemplate->getResponse();
 	}
 }

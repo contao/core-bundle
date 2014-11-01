@@ -139,6 +139,6 @@ class BackendPage extends \Backend
 		}
 
 		\Config::set('debugMode', false);
-		$objTemplate->output();
+		return $objTemplate->getResponse();
 	}
 }
