@@ -305,6 +305,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
+        $route->setPermanent($objPage->redirect != 'temporary');
         $route->setRouteName($targetRouteName);
 
         if ($targetRoute) {
@@ -334,6 +335,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
+        $route->setPermanent($objPage->redirect != 'temporary');
         $route->setUri($targetUri);
 
         return $route;
