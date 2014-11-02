@@ -3,6 +3,9 @@
         "Contao\\CoreBundle\\ContaoCoreBundle": {
             "replace": ["core"],
             "environments": ["all"]
+        },
+        "Symfony\\Cmf\\Bundle\\RoutingBundle\\CmfRoutingBundle": {
+            "environments": ["all"]
         }
     }
 }

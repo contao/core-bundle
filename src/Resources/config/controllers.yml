@@ -1,0 +1,8 @@
+services:
+    contao.controllers.redirect:
+        class: Symfony\Cmf\Bundle\RoutingBundle\Controller\RedirectController
+        arguments:
+            - @router
+
+    contao.controllers.frontend:
+        class: Contao\CoreBundle\Controller\FrontendController
