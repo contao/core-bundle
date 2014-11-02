@@ -12,7 +12,7 @@
 namespace Contao\CoreBundle\Routing;
 
 use Contao\Config;
-use Contao\CoreBundle\Event\CoreModuleEvents;
+use Contao\CoreBundle\Event\CoreBundleEvents;
 use Contao\CoreBundle\Event\CreatePageRouteEvent;
 use Contao\PageModel;
 use Symfony\Cmf\Component\Routing\Candidates\CandidatesInterface;
@@ -195,7 +195,7 @@ class PageRouteProvider implements RouteProviderInterface
     private function createRoutesFromPage(PageModel $page, array &$routes)
     {
         $event = new CreatePageRouteEvent($page);
-        $this->eventDispatcher->dispatch(CoreModuleEvents::CREATE_PAGE_ROUTES, $event);
+        $this->eventDispatcher->dispatch(CoreBundleEvents::CREATE_PAGE_ROUTES, $event);
 
         foreach ($event->getRoutes() as $name => $route) {
             $routes[$name] = $route;
