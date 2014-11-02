@@ -77,6 +77,12 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
             case 'root':
                 $this->createRootPageRoute($event);
                 break;
+
+            default:
+                if (!$event->getRoutes()) {
+                    // Fallback for custom types
+                    $this->createCustomPageRoute($event);
+                }
         }
     }
 
@@ -214,6 +220,22 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
             $redirectName = $name . '_no_locale';
             $event->addRoute($redirectName, $redirectRoute);
         }
+    }
+
+    /**
+     * Create route for custom page type.
+     *
+     * @param CreatePageRouteEvent $event The event object.
+     */
+    private function createCustomPageRoute(CreatePageRouteEvent $event)
+    {
+        $page    = $event->getPage();
+        $pattern = '/' . $page->alias . '{_auto_item}{_path_parameters}';
+
+        $name  = 'contao_page_' . $page->id;
+        $route = $this->createRouteModel($page, $pattern);
+        $route->setDefaults($route->getDefaults() + ['_controller' => 'contao.controllers.frontend:customPageAction']);
+        $event->addRoute($name, $route);
     }
 
     /**

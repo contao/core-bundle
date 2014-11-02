@@ -80,4 +80,26 @@ class FrontendController extends Controller
 
         return $controller->getResponse($page);
     }
+
+    /**
+     * Handle custom page types.
+     *
+     * @param Request $request The request object.
+     *
+     * @return Response The response object.
+     */
+    public function customPageAction(Request $request)
+    {
+        /** @var PageModel $page */
+        $page = $request->attributes->get('contentDocument');
+
+        /** @var PageRegular $controller */
+        $controller = new $GLOBALS['TL_PTY'][$page->type]();
+
+        if (method_exists($controller, 'getResponse')) {
+            return $controller->getResponse($page);
+        }
+
+        $controller->generate($page, true);
+    }
 }
