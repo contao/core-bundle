@@ -234,7 +234,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
 
         $name  = 'contao_page_' . $page->id;
         $route = $this->createRouteModel($page, $pattern);
-        $route->setDefaults($route->getDefaults() + ['_controller' => 'contao.controllers.frontend:customPageAction']);
+        $route->setDefaults(['_controller' => 'contao.controllers.frontend:customPageAction'] + $route->getDefaults());
         $event->addRoute($name, $route);
     }
 
@@ -254,7 +254,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route = new RouteModel();
         $route->setOption('add_format_pattern', $this->hasFormatPattern());
         $route->setOption('add_locale_pattern', $this->hasLocalePattern());
-        $route->setDefaults($defaults + ['type' => $page->type]);
+        $route->setDefaults(['type' => $page->type] + $defaults);
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
