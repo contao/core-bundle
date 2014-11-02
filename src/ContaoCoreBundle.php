@@ -11,6 +11,7 @@
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\DependencyInjection\Compiler\AddRouteProvidersPass;
 use Contao\System;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,5 +37,7 @@ class ContaoCoreBundle extends ContaoBundle
     public function build(ContainerBuilder $container)
     {
         System::boot();
+
+        $container->addCompilerPass(new AddRouteProvidersPass());
     }
 }

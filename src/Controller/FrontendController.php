@@ -11,26 +11,73 @@
 
 namespace Contao\CoreBundle\Controller;
 
-use Contao\FrontendIndex;
+use Contao\PageError403;
+use Contao\PageError404;
+use Contao\PageModel;
+use Contao\PageRegular;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Maps the Symfony front end controller to the Contao front end controller
+ * Handle the page types and render the response.
  *
  * @author Leo Feyer <https://contao.org>
+ * @author Tristan Lins <https://github.com/tristanlins>
  */
 class FrontendController extends Controller
 {
     /**
-     * Runs the Contao front end controller
+     * Handle regular page type.
      *
-     * @return Response The response object
+     * @param Request $request The request object.
+     *
+     * @return Response The response object.
      */
-    public function indexAction()
+    public function regularPageAction(Request $request)
     {
-        $controller = new FrontendIndex();
+        /** @var PageModel $page */
+        $page = $request->attributes->get('contentDocument');
 
-        return $controller->run();
+        /** @var PageRegular $controller */
+        $controller = new $GLOBALS['TL_PTY']['regular']();
+
+        return $controller->getResponse($page);
+    }
+
+    /**
+     * Handle error_403 page type.
+     *
+     * @param Request $request The request object.
+     *
+     * @return Response The response object.
+     */
+    public function accessDeniedAction(Request $request)
+    {
+        /** @var PageModel $page */
+        $page = $request->attributes->get('contentDocument');
+
+        /** @var PageError403 $controller */
+        $controller = new $GLOBALS['TL_PTY']['error_403']();
+
+        return $controller->getResponse($page);
+    }
+
+    /**
+     * Handle error_404 page type.
+     *
+     * @param Request $request The request object.
+     *
+     * @return Response The response object.
+     */
+    public function notFoundAction(Request $request)
+    {
+        /** @var PageModel $page */
+        $page = $request->attributes->get('contentDocument');
+
+        /** @var PageError404 $controller */
+        $controller = new $GLOBALS['TL_PTY']['error_404']();
+
+        return $controller->getResponse($page);
     }
 }

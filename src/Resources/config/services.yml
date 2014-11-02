@@ -12,6 +12,35 @@ services:
         tags:
             - { name: routing.loader }
 
+    # CMF Routing
+    contao.routing.candidates_strategy:
+        class: Symfony\Cmf\Component\Routing\Candidates\Candidates
+        arguments:
+            - ['de', 'en'] # FIXME: static locales
+
+    contao.routing.provider:
+        alias: contao.routing.chain_provider
+
+    contao.routing.chain_provider:
+        class: Contao\CoreBundle\Routing\ChainedRouteProvider
+
+    contao.routing.page_provider:
+        class: Contao\CoreBundle\Routing\PageRouteProvider
+        arguments:
+            - '@contao.config' # FIXME: remove config object
+            - '@contao.routing.candidates_strategy'
+            - '@event_dispatcher'
+        tags:
+            - { name: cmf_routing.provider, priority: 100 }
+
+    # Subscribers
+    contao.subscriber.create_page_routes:
+        class: Contao\CoreBundle\Routing\CreatePageRoutesSubscriber
+        arguments:
+            - '@contao.config' # FIXME: remove config object
+        tags:
+            - { name: kernel.event_subscriber }
+
     # Listener
     contao.listener.parameter_filter:
         class: Contao\CoreBundle\EventListener\ParameterFilterListener
