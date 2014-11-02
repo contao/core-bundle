@@ -143,7 +143,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $targetRoute   = $this->createRouteModel($targetPage, $targetPattern);
 
         $name  = 'contao_page_' . $page->id;
-        $route = $this->$this->createInternalRedirectRoute(
+        $route = $this->createInternalRedirectRoute(
             $page,
             $pattern,
             'contao_page_' . $page->id,
