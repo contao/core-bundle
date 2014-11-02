@@ -11,7 +11,7 @@
 
 namespace Contao\CoreBundle\Event;
 
-class CoreModuleEvents
+class CoreBundleEvents
 {
     /**
      * The REQUEST event occurs at the very beginning of request

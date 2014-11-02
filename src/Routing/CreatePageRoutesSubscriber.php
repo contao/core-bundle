@@ -12,7 +12,7 @@
 namespace Contao\CoreBundle\Routing;
 
 use Contao\Config;
-use Contao\CoreBundle\Event\CoreModuleEvents;
+use Contao\CoreBundle\Event\CoreBundleEvents;
 use Contao\CoreBundle\Event\CreatePageRouteEvent;
 use Contao\PageModel;
 use Symfony\Cmf\Bundle\RoutingBundle\Model\RedirectRoute;
@@ -43,7 +43,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return [CoreModuleEvents::CREATE_PAGE_ROUTES => 'createPageRoutes'];
+        return [CoreBundleEvents::CREATE_PAGE_ROUTES => 'createPageRoutes'];
     }
 
     /**
