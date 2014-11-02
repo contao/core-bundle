@@ -14,13 +14,10 @@ namespace Contao\CoreBundle\Event;
 class CoreBundleEvents
 {
     /**
-     * The REQUEST event occurs at the very beginning of request
-     * dispatching
+     * The CREATE_PAGE_ROUTES event occurs when CMF provider generate the page routes.
      *
-     * This event allows you to create a response for a request before any
-     * other code in the framework is executed. The event listener method
-     * receives a Symfony\Component\HttpKernel\Event\GetResponseEvent
-     * instance.
+     * This event allows you to create routes for specific page types.
+     * The event listener method receives a Contao\CoreBundle\Event\CreatePageRouteEvent instance.
      *
      * @var string
      *
