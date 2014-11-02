@@ -16,6 +16,7 @@ use Symfony\Component\Config\Loader\Loader as BaseLoader;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -35,6 +36,8 @@ class BundlesLoader extends BaseLoader
      */
     private $container;
 
+    private $loaded = false;
+
     /**
      * Create new bundles loader.
      *
@@ -50,6 +53,10 @@ class BundlesLoader extends BaseLoader
      */
     public function load($resource, $type = null)
     {
+        if (true === $this->loaded) {
+            throw new \RuntimeException('You must not load the routing resource "bundles" twice');
+        }
+
         /** @var ContaoKernelInterface $kernel */
         $kernel = $this->container->get('kernel');
 
@@ -73,6 +80,8 @@ class BundlesLoader extends BaseLoader
                 }
             }
         }
+
+        $this->loaded = true;
 
         return $collection;
     }
