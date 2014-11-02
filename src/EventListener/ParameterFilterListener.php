@@ -23,7 +23,7 @@ class ParameterFilterListener
         $request         = $event->getRequest();
         $contentDocument = $request->attributes->get('contentDocument');
         $tlScript        = $request->attributes->get('_tl_script');
-        $autoItemValue   = $request->attributes->get('_auto_item');
+        $autoItemValue   = substr($request->attributes->get('_auto_item'), 1);
         $parameterString = substr($request->attributes->get('_path_parameters'), 1);
 
         // Set the globals $objPage object
