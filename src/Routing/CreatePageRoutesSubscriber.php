@@ -93,10 +93,24 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
      */
     private function createRegularPageRoute(CreatePageRouteEvent $event)
     {
-        // TODO handle alias "index" ???
-
         $page    = $event->getPage();
         $pattern = '/' . $page->alias . '{_auto_item}{_path_parameters}';
+
+        if ('index' === $page->alias) {
+            /** @var PageModel $parent */
+            $parent = PageModel::findByPk($page->pid);
+
+            if ('root' === $parent->type) {
+                $parent->loadDetails();
+                $parent->preventSaving();
+
+                $name  = 'contao_page_' . $page->id;
+                $route = $this->createInternalRedirectRoute($page, $pattern, 'contao_page_' . $parent->id);
+                $route->setDefaults(['type' => 'forward'] + $route->getDefaults());
+                $event->addRoute($name, $route);
+                return;
+            }
+        }
 
         $name  = 'contao_page_' . $page->id;
         $route = $this->createRouteModel($page, $pattern);
@@ -211,11 +225,13 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         if ($this->hasLocalePattern()) {
             // add redirect when requested without trailing slash
             $redirectRoute = $this->createInternalRedirectRoute($page, '', $name, $route);
+            $redirectRoute->setOption('add_format_pattern', false);
             $redirectName  = $name . '_no_trailing_slash';
             $event->addRoute($redirectName, $redirectRoute);
 
             // add redirect when requested without locale pattern
             $redirectRoute = $this->createInternalRedirectRoute($page, '/', $name, $route);
+            $redirectRoute->setOption('add_format_pattern', false);
             $redirectRoute->setOption('add_locale_pattern', false);
             $redirectName = $name . '_no_locale';
             $event->addRoute($redirectName, $redirectRoute);
@@ -283,6 +299,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $requirements = $this->getRequirements();
 
         $route = new RedirectRoute();
+        $route->setOption('add_format_pattern', $this->hasFormatPattern());
         $route->setOption('add_locale_pattern', $this->hasLocalePattern());
         $route->setDefaults($defaults);
         $route->setRequirements($requirements);
