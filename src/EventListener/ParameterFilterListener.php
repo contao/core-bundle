@@ -12,6 +12,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\Input;
+use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -20,9 +21,15 @@ class ParameterFilterListener
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request         = $event->getRequest();
+        $contentDocument = $request->attributes->get('contentDocument');
         $tlScript        = $request->attributes->get('_tl_script');
         $autoItemValue   = $request->attributes->get('_auto_item');
         $parameterString = substr($request->attributes->get('_path_parameters'), 1);
+
+        // Set the globals $objPage object
+        if ($contentDocument instanceof PageModel) {
+            $GLOBALS['objPage'] = $contentDocument;
+        }
 
         // Define constant TL_SCRIPT for backwards compatibility
         if ($tlScript) {
