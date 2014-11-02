@@ -10,8 +10,10 @@
 
 namespace Contao\CoreBundle\DependencyInjection;
 
+use Contao\CoreBundle\Config\PrependsLoader\YamlFilePrependsLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -20,8 +22,21 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  *
  * @author Leo Feyer <https://contao.org>
  */
-class ContaoCoreExtension extends Extension
+class ContaoCoreExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $loader = new YamlFilePrependsLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
+
+        $loader->load('prepends.yml');
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -33,5 +48,6 @@ class ContaoCoreExtension extends Extension
         );
 
         $loader->load('services.yml');
+        $loader->load('controllers.yml');
     }
 }
