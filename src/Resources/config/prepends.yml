@@ -1,0 +1,16 @@
+cmf_routing:
+    chain:
+        # FIXME: make a PR so support routers_by_tag: { name: routing.chained_router, priority: 200 }
+        routers_by_id:
+            router.default: 200
+            cmf_routing.dynamic_router: 100
+    dynamic:
+        enabled: true
+        route_provider_service_id: contao.routing.provider
+        controllers_by_type:
+            regular:   contao.controllers.frontend:regularPageAction
+            forward:   contao.controllers.redirect:redirectAction
+            redirect:  contao.controllers.redirect:redirectAction
+            error_403: contao.controllers.frontend:accessDeniedAction
+            error_404: contao.controllers.frontend:notFoundAction
+            root:      contao.controllers.redirect:redirectAction

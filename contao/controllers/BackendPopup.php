@@ -150,6 +150,6 @@ class BackendPopup extends Backend
 		$objTemplate->download = specialchars($GLOBALS['TL_LANG']['MSC']['fileDownload']);
 
 		Config::set('debugMode', false);
-		$objTemplate->output();
+		return $objTemplate->getResponse();
 	}
 }

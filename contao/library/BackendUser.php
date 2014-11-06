@@ -12,6 +12,10 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
+
 
 /**
  * Provides methods to manage back end users
@@ -215,15 +219,25 @@ class BackendUser extends User
 			return;
 		}
 
-		$strRedirect = 'contao/';
+		$parameters = [];
 
 		// Redirect to the last page visited upon login
 		if (TL_SCRIPT == 'contao/main.php' || TL_SCRIPT == 'contao/preview.php')
 		{
-			$strRedirect .= '?referer=' . base64_encode(Environment::get('request'));
+			$parameters['referer'] = base64_encode(Environment::get('request'));
 		}
 
-		Controller::redirect($strRedirect);
+		/** @var RouterInterface $router */
+		$router = System::getContainer()->get('router');
+		/** @var RequestStack $requestStack */
+		$requestStack = System::getContainer()->get('request_stack');
+
+		$redirect = $router->generate('contao_backend_login', $parameters);
+		$response = new RedirectResponse($redirect);
+		$response->send();
+
+		System::getKernel()->terminate($requestStack->getCurrentRequest(), $response);
+		exit;
 	}
 
 
@@ -512,6 +526,9 @@ class BackendUser extends User
 			Controller::redirect(preg_replace('/(&(amp;)?|\?)mtg=[^& ]*/i', '', Environment::get('request')));
 		}
 
+		/** @var RouterInterface $router */
+		$router = System::getContainer()->get('router');
+
 		$arrInactiveModules = ModuleLoader::getDisabled();
 		$blnCheckInactiveModules = is_array($arrInactiveModules);
 
@@ -549,7 +566,7 @@ class BackendUser extends User
 							$arrModules[$strGroupName]['modules'][$strModuleName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strModuleName]) ? $GLOBALS['TL_LANG']['MOD'][$strModuleName][0] : $GLOBALS['TL_LANG']['MOD'][$strModuleName]) != false) ? $label : $strModuleName;
 							$arrModules[$strGroupName]['modules'][$strModuleName]['icon'] = !empty($arrModuleConfig['icon']) ? sprintf(' style="background-image:url(\'%s%s\')"', TL_ASSETS_URL, $arrModuleConfig['icon']) : '';
 							$arrModules[$strGroupName]['modules'][$strModuleName]['class'] = 'navigation ' . $strModuleName;
-							$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = TL_SCRIPT . '?do=' . $strModuleName . '&amp;ref=' . TL_REFERER_ID;
+							$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', ['do' => $strModuleName, 'ref' => TL_REFERER_ID]);
 
 							// Mark the active module and its group
 							if (Input::get('do') == $strModuleName)
