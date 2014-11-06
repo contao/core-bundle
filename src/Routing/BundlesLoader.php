@@ -91,6 +91,6 @@ class BundlesLoader extends BaseLoader
      */
     public function supports($resource, $type = null)
     {
-        return 'bundles';
+        return 'bundles' === $resource;
     }
 }
