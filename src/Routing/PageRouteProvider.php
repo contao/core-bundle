@@ -31,13 +31,6 @@ use Symfony\Component\Routing\RouteCollection;
 class PageRouteProvider implements RouteProviderInterface
 {
     /**
-     * The contao configuration.
-     *
-     * @var Config
-     */
-    private $config;
-
-    /**
      * The candidates strategy.
      *
      * @var CandidatesInterface
@@ -52,11 +45,9 @@ class PageRouteProvider implements RouteProviderInterface
     private $eventDispatcher;
 
     public function __construct(
-        Config $config,
         CandidatesInterface $candidatesStrategy,
         EventDispatcherInterface $eventDispatcher
     ) {
-        $this->config             = $config;
         $this->candidatesStrategy = $candidatesStrategy;
         $this->eventDispatcher    = $eventDispatcher;
     }
@@ -217,7 +208,7 @@ class PageRouteProvider implements RouteProviderInterface
             return true;
         }
 
-        if ($this->config->get('addLanguageToUrl')) {
+        if (Config::get('addLanguageToUrl')) {
             foreach ($candidates as $candidate) {
                 if (preg_match('~^/\w\w(-\w\w)?/?$~', $candidate)) {
                     return true;
