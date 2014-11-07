@@ -342,6 +342,7 @@ TemplateLoader::addFiles(array
 	'j_accordion'         => 'vendor/contao/core-bundle/contao/templates/jquery',
 	'j_colorbox'          => 'vendor/contao/core-bundle/contao/templates/jquery',
 	'j_mediaelement'      => 'vendor/contao/core-bundle/contao/templates/jquery',
+	'j_slider'            => 'vendor/contao/core-bundle/contao/templates/jquery',
 	'j_tablesort'         => 'vendor/contao/core-bundle/contao/templates/jquery',
 	'js_highlight'        => 'vendor/contao/core-bundle/contao/templates/js',
 	'js_slider'           => 'vendor/contao/core-bundle/contao/templates/js',
