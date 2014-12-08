@@ -64,6 +64,12 @@ class BackendPreview extends \Backend
 		{
 			$objTemplate->url = $this->redirectToFrontendPage(\Input::get('page'), \Input::get('article'), true);
 		}
+		elseif (\Input::get('news')) 
+		{
+			$objNews = \NewsModel::findByPk(\Input::get('news'));			
+			$moduleNews = new \ModuleNewsReader($objNews);
+			$objTemplate->url = \Environment::get('base') . $moduleNews->generateNewsUrl($objNews);
+		}
 		else
 		{
 			$objTemplate->url = \Environment::get('base');
