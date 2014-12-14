@@ -36,6 +36,18 @@ class BundlesLoader extends BaseLoader
      */
     private $container;
 
+    /**
+     * The service IDs of all contao.route.loader tagged services.
+     *
+     * @var array
+     */
+    private $serviceIds = [];
+
+    /**
+     * Flag to remember if this loader is already loaded.
+     *
+     * @var bool
+     */
     private $loaded = false;
 
     /**
@@ -49,36 +61,35 @@ class BundlesLoader extends BaseLoader
     }
 
     /**
+     * Set the service IDs of all contao.route.loader tagged services.
+     *
+     * @param array $serviceIds The service IDs.
+     *
+     * @return static
+     */
+    public function setServiceIds(array $serviceIds)
+    {
+        $this->serviceIds = $serviceIds;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function load($resource, $type = null)
     {
         if (true === $this->loaded) {
-            throw new \RuntimeException('You must not load the routing resource "bundles" twice');
+            throw new \RuntimeException('You must not load the routing resource "contao_bundles" twice');
         }
 
-        /** @var ContaoKernelInterface $kernel */
-        $kernel = $this->container->get('kernel');
-
-        /** @var LoaderInterface $loader */
-        $loader = $this->container->get('routing.loader');
-
-        $bundles    = $kernel->getContaoBundles();
-        $filesystem = new Filesystem();
         $collection = new RouteCollection();
 
-        foreach ($bundles as $bundle) {
-            foreach (['yml', 'yml', 'php'] as $extension) {
-                // TODO: Not sure if the contao resource path is a good idea here
-                $path = $bundle->getContaoResourcesPath() . '/config/routing.' . $extension;
-                if ($filesystem->exists($path)) {
-                    $routes = $loader->load($path);
+        foreach ($this->serviceIds as $serviceId) {
+            /** @var LoaderInterface $loader */
+            $loader = $this->container->get($serviceId);
+            $routes = $loader->load(null);
 
-                    foreach ($routes as $name => $route) {
-                        $collection->add($name, $route);
-                    }
-                }
-            }
+            $collection->addCollection($routes);
         }
 
         $this->loaded = true;

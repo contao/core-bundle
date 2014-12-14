@@ -29,16 +29,6 @@ use Symfony\Component\Routing\Route as SymfonyRoute;
 class CreatePageRoutesSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Config
-     */
-    private $config;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
@@ -305,7 +295,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
-        $route->setPermanent($objPage->redirect != 'temporary');
+        $route->setPermanent($page->redirect != 'temporary');
         $route->setRouteName($targetRouteName);
 
         if ($targetRoute) {
@@ -335,7 +325,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
-        $route->setPermanent($objPage->redirect != 'temporary');
+        $route->setPermanent($page->redirect != 'temporary');
         $route->setUri($targetUri);
 
         return $route;
@@ -396,7 +386,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
      */
     private function getFormatPattern()
     {
-        return substr($this->config->get('urlSuffix'), 1);
+        return substr(Config::get('urlSuffix'), 1); // FIXME: remove usage of class Config
     }
 
     /**
@@ -416,7 +406,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
      */
     private function hasLocalePattern()
     {
-        return (bool) $this->config->get('addLanguageToUrl');
+        return (bool) Config::get('addLanguageToUrl'); // FIXME: remove usage of class Config
     }
 
 }
