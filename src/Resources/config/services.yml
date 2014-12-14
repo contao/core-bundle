@@ -12,6 +12,15 @@ services:
         tags:
             - { name: routing.loader }
 
+    # Static routes
+    contao.routing.loader:
+        class:     Contao\CoreBundle\Routing\ResourceLoader
+        arguments:
+            - '@routing.loader'
+            - '@@ContaoCoreBundle/Resources/config/routing.yml'
+        tags:
+            - { name: contao.routing.loader }
+
     # CMF routing
     contao.routing.candidates_strategy:
         class: Symfony\Cmf\Component\Routing\Candidates\Candidates
