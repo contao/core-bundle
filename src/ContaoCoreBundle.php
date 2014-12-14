@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\DependencyInjection\Compiler\AddContaoRouteLoadersPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddRouteProvidersPass;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -36,6 +37,7 @@ class ContaoCoreBundle extends ContaoBundle
     {
         require_once __DIR__ . '/../contao/bootstrap.php';
 
+        $container->addCompilerPass(new AddContaoRouteLoadersPass());
         $container->addCompilerPass(new AddRouteProvidersPass());
     }
 }
