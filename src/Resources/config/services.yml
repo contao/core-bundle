@@ -1,8 +1,4 @@
 services:
-    contao.listener.toggle_view:
-        class: Contao\CoreBundle\EventListener\ToggleViewListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 150 }
 
     # Static bundle routing
     contao.routing.bundles:
@@ -47,6 +43,11 @@ services:
             - { name: kernel.event_subscriber }
 
     # Event listener
+    contao.listener.toggle_view:
+        class: Contao\CoreBundle\EventListener\ToggleViewListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 150 }
+
     contao.listener.parameter_filter:
         class: Contao\CoreBundle\EventListener\ParameterFilterListener
         tags:
