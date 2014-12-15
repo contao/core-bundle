@@ -87,6 +87,8 @@ class BundlesLoader extends BaseLoader
         foreach ($this->serviceIds as $serviceId) {
             /** @var LoaderInterface $loader */
             $loader = $this->container->get($serviceId);
+            $loader->setResolver($this->resolver);
+
             $routes = $loader->load(null);
 
             $collection->addCollection($routes);
