@@ -43,6 +43,11 @@ services:
             - { name: kernel.event_subscriber }
 
     # Event listener
+    contao.listener.output_from_cache:
+        class: Contao\CoreBundle\EventListener\OutputFromCacheListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
+
     contao.listener.toggle_view:
         class: Contao\CoreBundle\EventListener\ToggleViewListener
         tags:
@@ -52,11 +57,6 @@ services:
         class: Contao\CoreBundle\EventListener\ParameterFilterListener
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 31 }
-
-    contao.listener.output_from_cache:
-        class: Contao\CoreBundle\EventListener\OutputFromCacheListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
 
     contao.listener.add_to_search_index:
         class: Contao\CoreBundle\EventListener\AddToSearchIndexListener
