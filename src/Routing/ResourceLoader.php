@@ -12,7 +12,6 @@
 namespace Contao\CoreBundle\Routing;
 
 use Symfony\Component\Config\Loader\Loader as BaseLoader;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,13 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ResourceLoader extends BaseLoader
 {
-    /**
-     * The routing loader service, that can handle different resource formats.
-     *
-     * @var LoaderInterface
-     */
-    private $loader;
-
     /**
      * The resource to load.
      *
@@ -53,13 +45,11 @@ class ResourceLoader extends BaseLoader
     /**
      * Create new bundles loader.
      *
-     * @param ContainerInterface $container The service container.
-     * @param string             $resource  The resource to load.
-     * @param string             $type      Type key to respond to.
+     * @param string $resource The resource to load.
+     * @param string $type     Type key to respond to.
      */
-    public function __construct(LoaderInterface $loader, $resource, $type = null)
+    public function __construct($resource, $type = null)
     {
-        $this->loader   = $loader;
         $this->resource = $resource;
         $this->type     = $type;
     }
@@ -78,7 +68,7 @@ class ResourceLoader extends BaseLoader
             );
         }
 
-        $routes = $this->loader->load($this->resource);
+        $routes = $this->import($this->resource);
 
         $this->loaded = true;
 

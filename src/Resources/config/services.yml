@@ -16,7 +16,6 @@ services:
     contao.routing.loader:
         class:     Contao\CoreBundle\Routing\ResourceLoader
         arguments:
-            - '@routing.loader'
             - '@@ContaoCoreBundle/Resources/config/routing.yml'
         tags:
             - { name: contao.routing.loader }
