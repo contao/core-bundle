@@ -8,9 +8,9 @@ cmf_routing:
         enabled: true
         route_provider_service_id: contao.routing.provider
         controllers_by_type:
-            regular:   contao.controllers.frontend:regularPageAction
-            forward:   contao.controllers.redirect:redirectAction
-            redirect:  contao.controllers.redirect:redirectAction
-            error_403: contao.controllers.frontend:accessDeniedAction
-            error_404: contao.controllers.frontend:notFoundAction
-            root:      contao.controllers.redirect:redirectAction
+            page_regular:   contao.controllers.frontend:regularPageAction
+            page_forward:   contao.controllers.redirect:redirectAction
+            page_redirect:  contao.controllers.redirect:redirectAction
+            page_error_403: contao.controllers.frontend:accessDeniedAction
+            page_error_404: contao.controllers.frontend:notFoundAction
+            page_root:      contao.controllers.redirect:redirectAction

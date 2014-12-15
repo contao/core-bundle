@@ -260,7 +260,7 @@ class CreatePageRoutesSubscriber implements EventSubscriberInterface
         $route = new RouteModel();
         $route->setOption('add_format_pattern', $this->hasFormatPattern());
         $route->setOption('add_locale_pattern', $this->hasLocalePattern());
-        $route->setDefaults(['type' => $page->type] + $defaults);
+        $route->setDefaults(['type' => 'page_' . $page->type] + $defaults);
         $route->setRequirements($requirements);
         $route->setVariablePattern($pattern);
         $route->setHost($page->domain);
