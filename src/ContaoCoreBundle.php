@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\SetApplicationPass;
+use Contao\CoreBundle\Debug\Debug;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Scope;
@@ -30,6 +31,10 @@ class ContaoCoreBundle extends ContaoBundle
         // TODO: should the scopes be defined as constant like ContainerInterface::SCOPE_CONTAINER?
         $this->container->addScope(new Scope('frontend', 'request'));
         $this->container->addScope(new Scope('backend', 'request'));
+
+        if (Debug::isEnabled()) {
+            Debug::getErrorHandler()->setDefaultLogger($this->container->get('logger'));
+        }
     }
 
     /**

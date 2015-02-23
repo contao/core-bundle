@@ -23,6 +23,11 @@ services:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: 254 }
             - { name: kernel.event_listener, event: kernel.finish_request, method: onKernelFinishRequest, priority: -254 }
 
+    contao.listener.handle_exception:
+        class: Contao\CoreBundle\EventListener\ExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onGetResponseForException, priority: 200 }
+
     contao.listener.output_from_cache:
         class: Contao\CoreBundle\EventListener\OutputFromCacheListener
         tags:

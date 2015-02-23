@@ -26,10 +26,6 @@ require __DIR__ . '/helper/exception.php';
 @ini_set('session.use_trans_sid', 0);
 @ini_set('session.cookie_httponly', true);
 
-// Set the error and exception handler
-@set_error_handler('__error');
-@set_exception_handler('__exception');
-
 // Log PHP errors
 @ini_set('error_log', TL_ROOT . '/system/logs/error.log');
 

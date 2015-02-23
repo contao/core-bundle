@@ -8,126 +8,21 @@
  * @license LGPL-3.0+
  */
 
-
-/**
- * Error handler
- *
- * Handle errors like PHP does it natively but additionaly log them to the
- * application error log file.
- * @param int
- * @param string
- * @param string
- * @param int
- */
-function __error($intType, $strMessage, $strFile, $intLine)
-{
-	$arrErrors =
-	[
-		E_ERROR             => 'Fatal error',
-		E_WARNING           => 'Warning',
-		E_PARSE             => 'Parsing error',
-		E_NOTICE            => 'Notice',
-		E_CORE_ERROR        => 'Core error',
-		E_CORE_WARNING      => 'Core warning',
-		E_COMPILE_ERROR     => 'Compile error',
-		E_COMPILE_WARNING   => 'Compile warning',
-		E_USER_ERROR        => 'Fatal error',
-		E_USER_WARNING      => 'Warning',
-		E_USER_NOTICE       => 'Notice',
-		E_STRICT            => 'Runtime notice',
-		E_RECOVERABLE_ERROR => 'Recoverable error',
-		E_DEPRECATED        => 'Deprecated notice',
-		E_USER_DEPRECATED   => 'Deprecated notice'
-	];
-
-	// Ignore functions with an error control operator (@function_name)
-	if (ini_get('error_reporting') > 0)
-	{
-		if ($intType != E_NOTICE)
-		{
-			$e = new Exception();
-
-			// Log the error
-			error_log(sprintf("\nPHP %s: %s in %s on line %s\n%s\n",
-							$arrErrors[$intType],
-							$strMessage,
-							$strFile,
-							$intLine,
-							$e->getTraceAsString()));
-
-			// Display the error
-			if (ini_get('display_errors'))
-			{
-				$strMessage = sprintf('<strong>%s</strong>: %s in <strong>%s</strong> on line <strong>%s</strong>',
-									$arrErrors[$intType],
-									$strMessage,
-									str_replace(TL_ROOT . '/', '', $strFile), // see #4971
-									$intLine);
-
-				header('HTTP/1.1 500 Internal Server Error');
-				$strMessage .= "\n" . '<pre style="margin:11px 0 0">' . "\n" . str_replace(TL_ROOT . '/', '', $e->getTraceAsString()) . "\n" . '</pre>';
-				echo '<br>' . $strMessage;
-			}
-		}
-
-		// Exit on severe errors
-		if (in_array($intType, [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR]))
-		{
-			show_help_message();
-			exit;
-		}
-	}
-}
-
-
-/**
- * Exception handler
- *
- * Log exceptions in the application log file and print them to the screen
- * if "display_errors" is set. Callback to a custom exception handler defined
- * in the application file "config/error.php".
- * @param Exception
- */
-function __exception(Exception $e)
-{
-	error_log(sprintf("PHP Fatal error: Uncaught exception '%s' with message '%s' thrown in %s on line %s\n%s",
-					get_class($e),
-					$e->getMessage(),
-					$e->getFile(),
-					$e->getLine(),
-					$e->getTraceAsString()));
-
-	// Display the exception
-	if (ini_get('display_errors'))
-	{
-		$strMessage = sprintf('<strong>Fatal error</strong>: Uncaught exception <strong>%s</strong> with message <strong>%s</strong> thrown in <strong>%s</strong> on line <strong>%s</strong>',
-							get_class($e),
-							$e->getMessage(),
-							str_replace(TL_ROOT . '/', '', $e->getFile()),
-							$e->getLine());
-
-		header('HTTP/1.1 500 Internal Server Error');
-		$strMessage .= "\n" . '<pre style="margin:11px 0 0">' . "\n" . str_replace(TL_ROOT . '/', '', $e->getTraceAsString()) . "\n" . '</pre>';
-		echo '<br>' . $strMessage;
-	}
-
-	show_help_message();
-	exit;
-}
-
-
 /**
  * Show a special Contao "what to do in case of an error" message
+ *
+ * @throws \Contao\CoreBundle\Exception\DieNicelyException
+ *
+ * @deprecated Deprecated since Contao 4.0 to be removed in Contao 5.0 - throw a DieNicelyException instead.
+ *
+ * @see \Contao\CoreBundle\Exception\DieNicelyException
  */
 function show_help_message()
 {
-	if (ini_get('display_errors'))
-	{
-		return;
-	}
-
-	header('HTTP/1.1 500 Internal Server Error');
-	die_nicely('be_error', 'An error occurred while executing this script!');
+	throw new \Contao\CoreBundle\Exception\DieNicelyException(
+		'be_error',
+		'An error occurred while executing this script!'
+	);
 }
 
 
@@ -135,25 +30,16 @@ function show_help_message()
  * Try to die with a template instead of just a message
  * @param string
  * @param string
+ *
+ * @throws \Contao\CoreBundle\Exception\DieNicelyException
+ *
+ * @deprecated Deprecated since Contao 4.0 to be removed in Contao 5.0 - throw a DieNicelyException instead.
+ *
+ * @see \Contao\CoreBundle\Exception\DieNicelyException
  */
 function die_nicely($strTemplate, $strFallback)
 {
-	header('Content-type: text/html; charset=utf-8');
-
-	if (file_exists(TL_ROOT . "/templates/$strTemplate.html5"))
-	{
-		include TL_ROOT . "/templates/$strTemplate.html5";
-	}
-	elseif (file_exists(TL_ROOT . "/vendor/contao/core-bundle/contao/templates/backend/$strTemplate.html5"))
-	{
-		include TL_ROOT . "/vendor/contao/core-bundle/contao/templates/backend/$strTemplate.html5";
-	}
-	else
-	{
-		echo $strFallback;
-	}
-
-	exit;
+	throw new \Contao\CoreBundle\Exception\DieNicelyException($strTemplate, $strFallback);
 }
 
 
@@ -164,7 +50,15 @@ function die_nicely($strTemplate, $strFallback)
  */
 function log_message($strMessage, $strLog='error.log')
 {
+    /** @var \Contao\CoreBundle\HttpKernel\ContaoKernel $kernel */
+    global $kernel;
+    // FIXME: This needs to be rewritten.
 	@error_log(sprintf("[%s] %s\n", date('d-M-Y H:i:s'), $strMessage), 3, TL_ROOT . '/system/logs/' . $strLog);
+    if ($strLog !== 'error.log') {
+        $logFile = new \Monolog\Handler\RotatingFileHandler(sprintf('%1$s/logs/%2$s', $kernel->getRootDir(), $strLog), 4);
+        $logFile->handle()
+    }
+
 }
 
 
@@ -497,7 +391,7 @@ function natcaseksort($arrArray)
  */
 function length_sort_asc($a, $b)
 {
-   	return strlen($a) - strlen($b);
+	return strlen($a) - strlen($b);
 }
 
 
@@ -509,7 +403,7 @@ function length_sort_asc($a, $b)
  */
 function length_sort_desc($a, $b)
 {
-   	return strlen($b) - strlen($a);
+	return strlen($b) - strlen($a);
 }
 
 
