@@ -9,6 +9,8 @@
  */
 
 namespace Contao;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 /**
@@ -199,6 +201,48 @@ abstract class Template extends \Controller
 	public function getFormat()
 	{
 		return $this->strFormat;
+	}
+
+
+	/**
+	 * Return the absolute URL for a route
+	 *
+	 * @param string $strRoute The route name
+	 * @param array $arrParameters The route parameters
+	 *
+	 * @return string The absolute URL for the route
+	 */
+	public function url($strRoute, $arrParameters = array())
+	{
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		return $kernel->getContainer()->get('router')->generate(
+			$strRoute,
+			$arrParameters,
+			UrlGeneratorInterface::ABSOLUTE_URL
+		);
+	}
+
+
+	/**
+	 * Return the relative path for a route
+	 *
+	 * @param string $strRoute The route name
+	 * @param array $arrParameters The route parameters
+	 *
+	 * @return string The relative path for the route
+	 */
+	public function path($strRoute, $arrParameters = array())
+	{
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		return $kernel->getContainer()->get('router')->generate(
+			$strRoute,
+			$arrParameters,
+			UrlGeneratorInterface::RELATIVE_PATH
+		);
 	}
 
 
