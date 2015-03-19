@@ -42,14 +42,20 @@ class InitializeSystemListener
     private $rootDir;
 
     /**
+     * @var string
+     */
+    private $env;
+
+    /**
      * Constructor.
      *
-     * @param RouterInterface $router  The router object
-     * @param string          $rootDir The kernel root directory
+     * @param RouterInterface $router      The router object
+     * @param string          $rootDir     The kernel root directory
+     * @param string          $environment Current Environment
      */
-    public function __construct(RouterInterface $router, $rootDir)
+    public function __construct(RouterInterface $router, $rootDir, $environment)
     {
-        $this->router  = $router;
+        $this->router = $router;
         $this->rootDir = dirname($rootDir);
     }
 
@@ -300,7 +306,7 @@ class InitializeSystemListener
         }
 
         // Show the "insecure document root" message
-        if ('/web' === substr(Environment::get('path'), -4)) {
+        if ('/web' === substr(Environment::get('path'), -4) && $this->env == 'prod') {
             die_nicely('be_insecure', 'Your installation is not secure. Please set the document root to the <code>/web</code> subfolder.');
         }
 

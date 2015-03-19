@@ -17,6 +17,7 @@ services:
         arguments:
             - "@router"
             - "%kernel.root_dir%"
+            - "%kernel.environment%"
         tags:
             # Priority must be higher than any other listener that uses the Contao framework and lower than the
             # priority of the route_listener, which defaults to 32.
