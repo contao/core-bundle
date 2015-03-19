@@ -36,7 +36,8 @@ class InitializeSystemListenerTest extends TestCase
     {
         $listener = new InitializeSystemListener(
             $this->getMock('Symfony\Component\Routing\RouterInterface'),
-            $this->getRootDir()
+            $this->getRootDir(),
+            'test'
         );
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\InitializeSystemListener', $listener);
@@ -57,7 +58,8 @@ class InitializeSystemListenerTest extends TestCase
 
         $listener = new InitializeSystemListener(
             $this->mockRouter('/index.html'),
-            $this->getRootDir() . '/app'
+            $this->getRootDir() . '/app',
+            'test'
         );
 
         $request = new Request();
@@ -87,7 +89,8 @@ class InitializeSystemListenerTest extends TestCase
 
         $listener = new InitializeSystemListener(
             $this->mockRouter('/contao/install'),
-            $this->getRootDir() . '/app'
+            $this->getRootDir() . '/app',
+            'test'
         );
 
         $request = new Request();
@@ -118,7 +121,8 @@ class InitializeSystemListenerTest extends TestCase
 
         $listener = new InitializeSystemListener(
             $this->mockRouter('/index.html'),
-            $this->getRootDir() . '/app'
+            $this->getRootDir() . '/app',
+            'test'
         );
 
         $request = new Request();
@@ -142,7 +146,8 @@ class InitializeSystemListenerTest extends TestCase
 
         $listener = new InitializeSystemListener(
             $this->mockRouter('/index.html'),
-            $this->getRootDir() . '/app'
+            $this->getRootDir() . '/app',
+            'test'
         );
 
         $request = new Request();
@@ -171,7 +176,8 @@ class InitializeSystemListenerTest extends TestCase
 
         $listener = new InitializeSystemListener(
             $this->getMock('Symfony\Component\Routing\RouterInterface'),
-            $this->getRootDir() . '/app'
+            $this->getRootDir() . '/app',
+            'test'
         );
 
         $listener->onConsoleCommand();
