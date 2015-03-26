@@ -17,6 +17,7 @@ use Contao\Environment;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -85,11 +86,15 @@ class InitializeSystemListener
     /**
      * Initializes the system upon console.command.
      */
-    public function onConsoleCommand()
+    public function onConsoleCommand(ConsoleCommandEvent $event)
     {
         $this->setConstants('FE', 'console');
 
-        $this->boot(null, null);
+        $ref = new \ReflectionClass($event->getCommand());
+        if ($ref->implementsInterface('Contao\CoreBundle\Command\FrameworkDependentCommandInterface')) {
+
+            $this->boot(null, null);
+        }
     }
 
     /**
