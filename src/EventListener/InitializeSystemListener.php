@@ -13,6 +13,8 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\Automator;
 use Contao\ClassLoader;
 use Contao\Config;
+use Contao\CoreBundle\Command\ContaoFrameworkDependentInterface;
+use Contao\CoreBundle\Command\FrameworkDependentCommandInterface;
 use Contao\Environment;
 use Contao\Input;
 use Contao\RequestToken;
@@ -90,8 +92,7 @@ class InitializeSystemListener
     {
         $this->setConstants('FE', 'console');
 
-        $ref = new \ReflectionClass($event->getCommand());
-        if ($ref->implementsInterface('Contao\CoreBundle\Command\FrameworkDependentCommandInterface')) {
+        if ($event->getCommand() instanceof ContaoFrameworkDependentInterface) {
 
             $this->boot(null, null);
         }
