@@ -90,10 +90,10 @@ class InitializeSystemListener
      */
     public function onConsoleCommand(ConsoleCommandEvent $event)
     {
-        $this->setConstants('FE', 'console');
 
         if ($event->getCommand() instanceof ContaoFrameworkDependentInterface) {
 
+            $this->setConstants('FE', 'console');
             $this->boot(null, null);
         }
     }
