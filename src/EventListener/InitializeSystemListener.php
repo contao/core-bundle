@@ -13,10 +13,13 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\Automator;
 use Contao\ClassLoader;
 use Contao\Config;
+use Contao\CoreBundle\Command\ContaoFrameworkDependentInterface;
+use Contao\CoreBundle\Command\FrameworkDependentCommandInterface;
 use Contao\Environment;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -85,11 +88,14 @@ class InitializeSystemListener
     /**
      * Initializes the system upon console.command.
      */
-    public function onConsoleCommand()
+    public function onConsoleCommand(ConsoleCommandEvent $event)
     {
-        $this->setConstants('FE', 'console');
 
-        $this->boot(null, null);
+        if ($event->getCommand() instanceof ContaoFrameworkDependentInterface) {
+
+            $this->setConstants('FE', 'console');
+            $this->boot(null, null);
+        }
     }
 
     /**
