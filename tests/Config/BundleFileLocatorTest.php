@@ -10,22 +10,22 @@
 
 namespace Contao\CoreBundle\Test\Config;
 
-use Contao\CoreBundle\Config\FileLocator;
+use Contao\CoreBundle\Config\BundleFileLocator;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Contao\CoreBundle\Test\TestCase;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * Tests the FileLocator class.
+ * Tests the BundleFileLocator class.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
- *
- * TODO: add tests for currentDir parameter
+ * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileLocatorTest extends TestCase
+class BundleFileLocatorTest extends TestCase
 {
     /**
-     * @var FileLocator
+     * @var FileLocatorInterface
      */
     private $locator;
 
@@ -34,10 +34,7 @@ class FileLocatorTest extends TestCase
      */
     protected function setUp()
     {
-        $this->locator = new FileLocator([
-            'TestBundle' => $this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao',
-            'foobar'     => $this->getRootDir() . '/system/modules/foobar'
-        ]);
+        $this->locator = new BundleFileLocator($this->mockKernel());
     }
 
     /**
@@ -45,7 +42,7 @@ class FileLocatorTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Config\FileLocator', $this->locator);
+        $this->assertInstanceOf('Contao\CoreBundle\Config\BundleFileLocator', $this->locator);
     }
 
     /**
@@ -53,10 +50,10 @@ class FileLocatorTest extends TestCase
      */
     public function testLocateSingleFolder()
     {
-        $folders = $this->locator->locate('dca');
+        $folder = $this->locator->locate('dca');
 
-        $this->assertCount(1, $folders);
-        $this->assertContains($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/dca', $folders);
+        $this->assertInternalType('string', $folder);
+        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/dca', $folder);
     }
 
     /**
@@ -64,11 +61,11 @@ class FileLocatorTest extends TestCase
      */
     public function testLocateMultipleFolders()
     {
-        $folders = $this->locator->locate('config');
+        $folders = $this->locator->locate('dca', null, false);
 
-        $this->assertCount(2, $folders);
-        $this->assertContains($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config', $folders);
-        $this->assertContains($this->getRootDir() . '/system/modules/foobar/config', $folders);
+        $this->assertInternalType('array', $folders);
+        $this->assertCount(1, $folders);
+        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/dca', $folders[0]);
     }
 
     /**
@@ -76,10 +73,10 @@ class FileLocatorTest extends TestCase
      */
     public function testLocateSingleFile()
     {
-        $files = $this->locator->locate('dca/tl_test.php');
+        $file = $this->locator->locate('dca/tl_test.php');
 
-        $this->assertCount(1, $files);
-        $this->assertContains($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php', $files);
+        $this->assertInternalType('string', $file);
+        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php', $file);
     }
 
     /**
@@ -87,11 +84,12 @@ class FileLocatorTest extends TestCase
      */
     public function testLocateMultipleFiles()
     {
-        $files = $this->locator->locate('config/config.php');
+        $files = $this->locator->locate('config/config.php', null, false);
 
+        $this->assertInternalType('array', $files);
         $this->assertCount(2, $files);
-        $this->assertContains($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config/config.php', $files);
-        $this->assertContains($this->getRootDir() . '/system/modules/foobar/config/config.php', $files);
+        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config/config.php', $files[0]);
+        $this->assertEquals($this->getRootDir() . '/system/modules/foobar/config/config.php', $files[1]);
     }
 
     /**
@@ -105,46 +103,21 @@ class FileLocatorTest extends TestCase
     }
 
     /**
-     * Tests locating the first folder.
-     */
-    public function testFirstFolder()
-    {
-        $file = $this->locator->locate('config', null, true);
-
-        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config', $file);
-    }
-
-    /**
-     * Tests locating the first file.
-     */
-    public function testFirstFile()
-    {
-        $file = $this->locator->locate('config/config.php', null, true);
-
-        $this->assertEquals($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config/config.php', $file);
-    }
-
-    /**
      * Tests locating a non-existing file.
      *
      * @expectedException \InvalidArgumentException
      */
     public function testFirstFileNotFound()
     {
-        $this->locator->locate('config/test.php', null, true);
+        $this->locator->locate('config/test.php');
     }
 
-
-    public function testBundleNames()
-    {
-        $bundles = array_keys($this->locator->locate('config'));
-
-        $this->assertContains('TestBundle', $bundles);
-        $this->assertContains('foobar', $bundles);
-    }
-
-
-    public function testFactory()
+    /**
+     * Mocks a kernel object.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|KernelInterface
+     */
+    private function mockKernel()
     {
         $kernel = $this->getMock(
             'Symfony\Component\HttpKernel\Kernel',
@@ -199,11 +172,6 @@ class FileLocatorTest extends TestCase
             ->willReturn([$bundle, $module])
         ;
 
-        $locator = FileLocator::createFromKernelBundles($kernel);
-        $files   = $locator->locate('config/config.php');
-
-        $this->assertCount(2, $files);
-        $this->assertContains($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao/config/config.php', $files);
-        $this->assertContains($this->getRootDir() . '/system/modules/foobar/config/config.php', $files);
+        return $kernel;
     }
 }
