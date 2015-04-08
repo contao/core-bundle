@@ -17,6 +17,7 @@ use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -499,53 +500,7 @@ class Automator extends \System
 	 */
 	public function generateConfigCache()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
-		$objLocator = $kernel->getContainer()->get('contao.resource_locator');
-
-		$objDumper = new CombinedFileDumper
-		(
-			$kernel->getContainer()->get('filesystem'),
-			new PhpFileLoader(),
-			$kernel->getRootDir() . '/../system/cache'
-		);
-
-		$objDumper->dump($objLocator->locate('config/autoload.php'), 'config/autoload.php');
-		$objDumper->dump($objLocator->locate('config/config.php'), 'config/config.php');
-
-		// Generate the page mapping array
-		$arrMapper = array();
-		$objPages = \PageModel::findPublishedRootPages();
-
-		if ($objPages !== null)
-		{
-			while ($objPages->next())
-			{
-				if ($objPages->dns != '')
-				{
-					$strBase = $objPages->useSSL ? 'https://' : 'http://';
-					$strBase .= $objPages->dns . \Environment::get('path') . '/';
-				}
-				else
-				{
-					$strBase = \Environment::get('base');
-				}
-
-				if ($objPages->fallback)
-				{
-					$arrMapper[$strBase . 'empty.fallback'] = $strBase . 'empty.' . $objPages->language;
-				}
-
-				$arrMapper[$strBase . 'empty.' . $objPages->language] = $strBase . 'empty.' . $objPages->language;
-			}
-		}
-
-		// Generate the page mapper file
-		// FIXME: use the FileDumper
-		$objCacheFile = new \File('system/cache/config/mapping.php', true);
-		$objCacheFile->write(sprintf("<?php\n\nreturn %s;\n", var_export($arrMapper, true)));
-		$objCacheFile->close();
+		// FIXME
 
 		// Add a log entry
 		$this->log('Generated the config cache', __METHOD__, TL_CRON);
@@ -557,45 +512,7 @@ class Automator extends \System
 	 */
 	public function generateDcaCache()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
-		$arrFiles = array();
-		$objLocator = $kernel->getContainer()->get('contao.resource_locator');
-
-		// Parse all active modules
-		foreach ($objLocator->locate('dca') as $strDir)
-		{
-			if (!is_dir($strDir))
-			{
-				continue;
-			}
-
-			foreach (scan($strDir) as $strFile)
-			{
-				// Ignore non PHP files and files which have been included before
-				if (strncmp($strFile, '.', 1) !== 0 && substr($strFile, -4) == '.php')
-				{
-					$arrFiles[] = $strFile;
-				}
-			}
-		}
-
-		$arrFiles = array_values(array_unique($arrFiles));
-		$objLocator = $kernel->getContainer()->get('contao.resource_locator');
-
-		$objDumper = new CombinedFileDumper
-		(
-			$kernel->getContainer()->get('filesystem'),
-			new PhpFileLoader(),
-			$kernel->getRootDir() . '/../system/cache'
-		);
-
-		// Create one file per table
-		foreach ($arrFiles as $strFile)
-		{
-			$objDumper->dump($objLocator->locate('dca/' . $strFile), 'dca/' . $strFile);
-		}
+		// FIXME
 
 		// Add a log entry
 		$this->log('Generated the DCA cache', __METHOD__, TL_CRON);
@@ -607,96 +524,7 @@ class Automator extends \System
 	 */
 	public function generateLanguageCache()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
-		$arrLanguages = array();
-		$objLanguages = \Database::getInstance()->query("SELECT language FROM tl_member UNION SELECT language FROM tl_user UNION SELECT REPLACE(language, '-', '_') FROM tl_page WHERE type='root'");
-
-		// Only cache the languages which are in use (see #6013)
-		while ($objLanguages->next())
-		{
-			if ($objLanguages->language == '')
-			{
-				continue;
-			}
-
-			$arrLanguages[] = $objLanguages->language;
-
-			// Also cache "de" if "de-CH" is requested
-			if (strlen($objLanguages->language) > 2)
-			{
-				$arrLanguages[] = substr($objLanguages->language, 0, 2);
-			}
-		}
-
-		$arrLanguages = array_unique($arrLanguages);
-		$objLocator = $kernel->getContainer()->get('contao.resource_locator');
-
-		$objDumper = new CombinedFileDumper
-		(
-			$kernel->getContainer()->get('filesystem'),
-			new DelegatingLoader(new LoaderResolver(array(new PhpFileLoader(), new XliffFileLoader($kernel->getRootDir())))),
-			$kernel->getRootDir() . '/../system/cache'
-		);
-
-		// Add a short header with links to transifex.com
-		$strHeader = "<?php\n\n"
-			. "/**\n"
-			. " * Contao Open Source CMS\n"
-			. " * \n"
-			. " * Copyright (c) 2005-2015 Leo Feyer\n"
-			. " * \n"
-			. " * Core translations are managed using Transifex. To create a new translation\n"
-			. " * or to help to maintain an existing one, please register at transifex.com.\n"
-			. " * \n"
-			. " * @link http://help.transifex.com/intro/translating.html\n"
-			. " * @link https://www.transifex.com/projects/p/contao/language/%s/\n"
-			. " * \n"
-			. " * @license LGPL-3.0+\n"
-			. " */\n";
-
-		foreach ($arrLanguages as $strLanguage)
-		{
-			$arrFiles = array();
-
-			// Parse all active modules
-			foreach ($objLocator->locate('languages/' . $strLanguage) as $strDir)
-			{
-				if (!is_dir($strDir))
-				{
-					continue;
-				}
-
-				foreach (scan($strDir) as $strFile)
-				{
-					if (strncmp($strFile, '.', 1) !== 0 && (substr($strFile, -4) == '.php' || substr($strFile, -4) == '.xlf'))
-					{
-						$arrFiles[] = substr($strFile, 0, -4);
-					}
-				}
-			}
-
-			$arrFiles = array_values(array_unique($arrFiles));
-
-			// Create one file per table
-			foreach ($arrFiles as $strName)
-			{
-				$objDumper->setHeader(sprintf($strHeader, $strLanguage));
-
-				$objDumper->dump
-				(
-					// XLIFF files will overwrite PHP files if both exist in the same bundle
-					array_merge
-					(
-						$objLocator->locate('languages/' . $strLanguage . '/' . $strName . '.php'),
-						$objLocator->locate('languages/' . $strLanguage . '/' . $strName . '.xlf')
-					),
-					'languages/' . $strLanguage . '/' . $strName . '.php',
-					['type' => $strLanguage]
-				);
-			}
-		}
+		// FIXME
 
 		// Add a log entry
 		$this->log('Generated the language cache', __METHOD__, TL_CRON);
@@ -708,59 +536,7 @@ class Automator extends \System
 	 */
 	public function generateDcaExtracts()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
-		$included = array();
-		$arrExtracts = array();
-
-		// Only check the active modules (see #4541)
-		foreach ($kernel->getContainer()->get('contao.resource_locator')->locate('dca') as $strDir)
-		{
-			if (!is_dir($strDir))
-			{
-				continue;
-			}
-
-			foreach (scan($strDir) as $strFile)
-			{
-				// Ignore non PHP files and files which have been included before
-				if (strncmp($strFile, '.', 1) === 0 || substr($strFile, -4) != '.php' || in_array($strFile, $included))
-				{
-					continue;
-				}
-
-				$strTable = substr($strFile, 0, -4);
-				$objExtract = \DcaExtractor::getInstance($strTable);
-
-				if ($objExtract->isDbTable())
-				{
-					$arrExtracts[$strTable] = $objExtract;
-				}
-
-				$included[] = $strFile;
-			}
-		}
-
-		/** @var \DcaExtractor[] $arrExtracts */
-		foreach ($arrExtracts as $strTable=>$objExtract)
-		{
-			// Create the file
-			$objFile = new \File('system/cache/sql/' . $strTable . '.php');
-			$objFile->write("<?php\n\n");
-
-			$objFile->append(sprintf("\$this->arrMeta = %s;\n", var_export($objExtract->getMeta(), true)));
-			$objFile->append(sprintf("\$this->arrFields = %s;\n", var_export($objExtract->getFields(), true)));
-			$objFile->append(sprintf("\$this->arrOrderFields = %s;\n", var_export($objExtract->getOrderFields(), true)));
-			$objFile->append(sprintf("\$this->arrKeys = %s;\n", var_export($objExtract->getKeys(), true)));
-			$objFile->append(sprintf("\$this->arrRelations = %s;\n", var_export($objExtract->getRelations(), true)));
-
-			// Set the database table flag
-			$objFile->append("\$this->blnIsDbTable = true;", "\n");
-
-			// Close the file (moves it to its final destination)
-			$objFile->close();
-		}
+		// FIXME
 
 		// Add a log entry
 		$this->log('Generated the DCA extracts', __METHOD__, TL_CRON);
