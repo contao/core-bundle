@@ -40,7 +40,7 @@ class BackendController extends Controller
      *
      * @return Response
      *
-     * @Route("/", name="contao_backend")
+     * @Route("{optionalSlash}", requirements={"optionalSlash" = "[/]{0,1}"}, defaults={"optionalSlash" = "/"}, name="contao_backend")
      */
     public function mainAction()
     {
