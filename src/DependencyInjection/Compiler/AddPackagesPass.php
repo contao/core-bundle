@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
+use Contao\CoreBundle\Composer\VersionParser;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -27,13 +28,20 @@ class AddPackagesPass implements CompilerPassInterface
     private $jsonFile;
 
     /**
+     * @var VersionParser
+     */
+    private $parser;
+
+    /**
      * Constructor.
      *
-     * @param string $jsonFile Path to the composer installed.json file
+     * @param string        $jsonFile Path to the composer installed.json file
+     * @param VersionParser $parser   The Composer version parser.
      */
-    public function __construct($jsonFile)
+    public function __construct($jsonFile, VersionParser $parser)
     {
         $this->jsonFile = $jsonFile;
+        $this->parser   = $parser;
     }
 
     /**
@@ -52,6 +60,7 @@ class AddPackagesPass implements CompilerPassInterface
         }
 
         $container->setParameter('kernel.packages', $packages);
+        $container->setParameter('kernel.normalized_packages', $this->normalizeVersions($packages));
     }
 
     /**
@@ -80,68 +89,28 @@ class AddPackagesPass implements CompilerPassInterface
      */
     private function addVersion(array $package, array &$packages)
     {
-        if (true === $this->addNormalizedVersion($package, $packages)) {
-            return;
-        }
+        $version = $package['version'];
 
-        $this->addBranchAliasVersion($package, $packages);
-    }
-
-    /**
-     * Adds the normalized version.
-     *
-     * @param array $package  The package
-     * @param array $packages The packages array
-     *
-     * @return bool True if a version was found and added
-     */
-    private function addNormalizedVersion(array $package, array &$packages)
-    {
-        $version = substr($package['version_normalized'], 0, strrpos($package['version_normalized'], '.'));
-
-        if (!$this->isValidVersion($version)) {
-            return false;
+        if (isset($package['extra']['branch-alias'][$package['version']])) {
+            $version = $package['extra']['branch-alias'][$package['version']];
         }
 
         $packages[$package['name']] = $version;
-
-        return true;
     }
 
     /**
-     * Adds the branch alias version.
+     * Adds a normalized version to the packages array.
      *
-     * @param array $package  The package
      * @param array $packages The packages array
      *
-     * @return bool True if a version was found and added
+     * @return array The normalized packages array
      */
-    private function addBranchAliasVersion(array $package, array &$packages)
+    private function normalizeVersions(array $packages)
     {
-        if (!isset($package['extra']['branch-alias'][$package['version_normalized']])) {
-            return false;
+        foreach ($packages as $name => $version) {
+            $packages[$name] = $this->parser->normalize($version);
         }
 
-        $version = str_replace('x-dev', '9999999', $package['extra']['branch-alias'][$package['version_normalized']]);
-
-        if (!$this->isValidVersion($version)) {
-            return false;
-        }
-
-        $packages[$package['name']] = $version;
-
-        return true;
-    }
-
-    /**
-     * Validates a version number.
-     *
-     * @param string $version The version number
-     *
-     * @return bool True the version number is valid
-     */
-    private function isValidVersion($version)
-    {
-        return (bool) preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/', $version);
+        return $packages;
     }
 }

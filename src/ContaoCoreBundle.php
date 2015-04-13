@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\Composer\VersionParser;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\SetApplicationPass;
@@ -54,7 +55,10 @@ class ContaoCoreBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(
-            new AddPackagesPass($container->getParameter('kernel.root_dir') . '/../vendor/composer/installed.json')
+            new AddPackagesPass(
+                $container->getParameter('kernel.root_dir') . '/../vendor/composer/installed.json',
+                new VersionParser()
+            )
         );
 
         $container->addCompilerPass(new AddResourcesPathsPass());
