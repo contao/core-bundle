@@ -314,6 +314,10 @@ class ExceptionListener
      */
     protected function loadLanguageStrings()
     {
+        if (!class_exists('Contao\\System')) {
+            return null;
+        }
+
         System::loadLanguageFile('exception');
 
         if (!isset($GLOBALS['TL_LANG']['XPT'])) {
