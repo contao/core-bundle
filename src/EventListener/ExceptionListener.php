@@ -141,7 +141,7 @@ class ExceptionListener
      *
      * @return null|Response
      */
-    private function checkResponseException($exception)
+    private function checkResponseException(\Exception $exception)
     {
         do {
             if ($exception instanceof ResponseExceptionInterface) {
@@ -161,7 +161,7 @@ class ExceptionListener
      *
      * @return null|Response
      */
-    private function checkHttpExceptions(\Exception $exception, $request)
+    private function checkHttpExceptions(\Exception $exception, Request $request)
     {
         do {
             if ($response = $this->checkHttpException($exception, $request)) {
@@ -179,7 +179,7 @@ class ExceptionListener
      *
      * @return bool
      */
-    private function isRenderingOfContao404PossibleFor($exception)
+    private function isRenderingOfContao404PossibleFor(\Exception $exception)
     {
         // If not an 404 exception or the frontend has not been booted, we can not render.
         if (!($exception instanceof NotFoundHttpException && defined('BE_USER_LOGGED_IN'))) {
@@ -208,7 +208,7 @@ class ExceptionListener
      *
      * @throws \Exception When anything went really haywire during rendering of the page.
      */
-    private function tryToRenderContao404($exception)
+    private function tryToRenderContao404(\Exception $exception)
     {
         if (!$this->isRenderingOfContao404PossibleFor($exception)) {
             return null;
@@ -259,7 +259,7 @@ class ExceptionListener
      *
      * @return null|Response
      */
-    private function checkHttpException($exception, $request)
+    private function checkHttpException(\Exception $exception, Request $request)
     {
         if (!$exception instanceof HttpExceptionInterface) {
             return null;
@@ -295,7 +295,7 @@ class ExceptionListener
      *
      * @return Response
      */
-    private function createTemplateResponseFromException($template, HttpExceptionInterface $exception, $request)
+    private function createTemplateResponseFromException($template, HttpExceptionInterface $exception, Request $request)
     {
         $response = $this->renderErrorTemplate($template, $exception->getStatusCode(), $request);
         $response->headers->add($exception->getHeaders());
@@ -334,7 +334,7 @@ class ExceptionListener
      *
      * @return array|null
      */
-    private function getTemplateParameters($view, $statusCode, $request)
+    private function getTemplateParameters($view, $statusCode, Request $request)
     {
         $languageStrings = $this->loadLanguageStrings();
 
@@ -394,7 +394,7 @@ class ExceptionListener
      *
      * @return Response
      */
-    private function renderErrorTemplate($template, $statusCode, $request)
+    private function renderErrorTemplate($template, $statusCode, Request $request)
     {
         $view = '@ContaoCore/Error/' . $template . '.html.twig';
         if (!$this->twig->exists($view)) {
