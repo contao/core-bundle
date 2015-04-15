@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Events;
+namespace Contao\CoreBundle\Event;
 
 /**
  * Defines Constants for all Contao events.
