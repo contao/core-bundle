@@ -42,7 +42,7 @@ class ParseFrontendTemplateListener extends AbstractHookListener
         $key    = $event->getKey();
 
         foreach ($this->getCallbacks() as $callback) {
-            $buffer = System::importStatic($callback[0])->$callback[1]($buffer, $key);
+            $buffer = call_user_func($this->getCallable($callback), $buffer, $key);
         }
 
         $event->setBuffer($buffer);

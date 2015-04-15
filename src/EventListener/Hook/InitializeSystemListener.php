@@ -39,7 +39,7 @@ class InitializeSystemListener extends AbstractHookListener
     public function onInitializeSystem(InitializeSystemEvent $event)
     {
         foreach ($this->getCallbacks() as $callback) {
-            System::importStatic($callback[0])->$callback[1]();
+            call_user_func($this->getCallable($callback));
         }
 
         if (file_exists($event->getRootDir() . '/system/config/initconfig.php')) {

@@ -39,4 +39,41 @@ abstract class AbstractHookListener
 
         return $GLOBALS['TL_HOOKS'][$hookName];
     }
+
+    /**
+     * Converts a callback to a callable.
+     *
+     * @param array|callable $callback The callback
+     *
+     * @return array|callable The callable
+     *
+     * @throws \InvalidArgumentException If the callback has an invalid format
+     */
+    protected function getCallable($callback)
+    {
+        // Closure
+        if (is_object($callback) && is_callable($callback)) {
+            return $callback;
+        }
+
+        // Check for an array with two members
+        if (!is_array($callback) || count($callback) !== 2) {
+            throw new \InvalidArgumentException("$callback is not a valid callback.");
+        }
+
+        $class = new \ReflectionClass($callback[0]);
+
+        // Static method
+        if ($class->hasMethod($callback[1]) && $class->getMethod($callback[1])->isStatic()) {
+            return $callback;
+        }
+
+        // Singleton
+        if ($class->hasMethod('getInstance') && $class->getMethod('getInstance')->isStatic()) {
+            return [$callback[0]::getInstance(), $callback[1]];
+        }
+
+        // Regular object
+        return [new $callback[0](), $callback[1]];
+    }
 }

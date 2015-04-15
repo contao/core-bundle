@@ -41,7 +41,7 @@ class GetCacheKeyListener extends AbstractHookListener
         $cacheKey = $event->getCacheKey();
 
         foreach ($this->getCallbacks() as $callback) {
-            $cacheKey = System::importStatic($callback[0])->$callback[1]($cacheKey);
+            $cacheKey = call_user_func($this->getCallable($callback), $cacheKey);
         }
 
         $event->setCacheKey($cacheKey);
