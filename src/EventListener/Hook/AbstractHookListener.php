@@ -22,14 +22,14 @@ abstract class AbstractHookListener
      *
      * @return string The hook name
      */
-    abstract function getHookName();
+    abstract protected function getHookName();
 
     /**
      * Returns the registered callbacks of a hook.
      *
      * @return array The registered callbacks
      */
-    public function getCallbacks()
+    protected function getCallbacks()
     {
         $hookName = $this->getHookName();
 

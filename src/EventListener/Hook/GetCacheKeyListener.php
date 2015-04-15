@@ -26,7 +26,7 @@ class GetCacheKeyListener extends AbstractHookListener
     /**
      * {@inheritdoc}
      */
-    public function getHookName()
+    protected function getHookName()
     {
         return 'getCacheKey';
     }
