@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\EventListener\Hook;
 
 use Contao\CoreBundle\Event\GetCacheKeyEvent;
-use Contao\System;
 
 /**
  * Listens to the contao.get_cache_key event.

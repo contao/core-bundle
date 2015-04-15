@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\EventListener\Hook;
 
 use Contao\CoreBundle\Event\TemplateEvent;
-use Contao\System;
 
 /**
  * Listens to the contao.parse_frontend_template event.

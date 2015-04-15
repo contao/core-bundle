@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\EventListener\Hook;
 
 use Contao\CoreBundle\Event\InitializeSystemEvent;
-use Contao\System;
 
 /**
  * Listens to the contao.initialize_system event.
