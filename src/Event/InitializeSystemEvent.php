@@ -12,7 +12,6 @@ namespace Contao\CoreBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-
 /**
  * Allows to execute logic when the system is initialized.
  *

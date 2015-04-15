@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\EventListener\Hooks;
+namespace Contao\CoreBundle\EventListener\Hook;
 
 /**
  * Parent class for hook listeners.

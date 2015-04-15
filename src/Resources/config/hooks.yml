@@ -1,5 +1,10 @@
 services:
+    contao.hooks.get_cache_key:
+        class: Contao\CoreBundle\EventListener\Hook\GetCacheKeyListener
+        tags:
+            - { name: kernel.event_listener, event: contao.get_cache_key, method: onGetCacheKey }
+
     contao.hooks.initialize_system:
-        class: Contao\CoreBundle\EventListener\Hooks\InitializeSystemListener
+        class: Contao\CoreBundle\EventListener\Hook\InitializeSystemListener
         tags:
             - { name: kernel.event_listener, event: contao.initialize_system, method: onInitializeSystem }

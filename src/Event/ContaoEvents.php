@@ -18,11 +18,22 @@ namespace Contao\CoreBundle\Event;
 final class ContaoEvents
 {
     /**
+     * The contao.get_cache_key event is triggered when the name of a front
+     * end cache file is calculated.
+     *
+     * The event listener method receives a
+     * Contao\CoreBundle\Event\GetCacheKeyEvent instance.
+     *
+     * @var string
+     */
+    const GET_CACHE_KEY = 'contao.get_cache_key';
+
+    /**
      * The contao.initialize_system event is triggered when the Contao
      * framework is initialized.
      *
      * The event listener method receives a
-     * Symfony\Component\EventDispatcher\Event instance.
+     * Contao\CoreBundle\Event\InitializeSystemEvent instance.
      *
      * @var string
      */

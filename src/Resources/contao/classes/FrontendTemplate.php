@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetCacheKeyEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -261,15 +263,13 @@ class FrontendTemplate extends \Template
 				$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 			}
 
-			// HOOK: add custom logic
-			if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))
-			{
-				foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
-				{
-					$this->import($callback[0]);
-					$strCacheKey = $this->$callback[0]->$callback[1]($strCacheKey);
-				}
-			}
+			/** @var KernelInterface $kernel */
+			global $kernel;
+
+			// Trigger the getCacheKey hook
+			$event = new GetCacheKeyEvent($strCacheKey);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+			$strCacheKey = $event->getCacheKey();
 
 			// Store mobile pages separately
 			if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
@@ -280,9 +280,6 @@ class FrontendTemplate extends \Template
 			// Replace insert tags for caching
 			$strBuffer = $this->replaceInsertTags($this->strBuffer);
 			$strBuffer = $this->replaceDynamicScriptTags($strBuffer); // see #4203
-
-			/** @var KernelInterface $kernel */
-			global $kernel;
 
 			$strCachePath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $kernel->getCacheDir());
 

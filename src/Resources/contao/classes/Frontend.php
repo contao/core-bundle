@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetCacheKeyEvent;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -718,14 +720,10 @@ abstract class Frontend extends \Controller
 			$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 		}
 
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
-			{
-				$strCacheKey = \System::importStatic($callback[0])->$callback[1]($strCacheKey);
-			}
-		}
+		// Trigger the getCacheKey hook
+		$event = new GetCacheKeyEvent($strCacheKey);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+		$strCacheKey = $event->getCacheKey();
 
 		$blnFound = false;
 		$strCacheFile = null;
