@@ -22,26 +22,26 @@ class GetCacheKeyEvent extends Event
     /**
      * @var string
      */
-    private $key;
+    private $cacheKey;
 
     /**
      * Constructor.
      *
-     * @param string $key The cache key
+     * @param string $cacheKey The cache key
      */
-    public function __construct($key)
+    public function __construct($cacheKey)
     {
-        $this->key = $key;
+        $this->cacheKey = $cacheKey;
     }
 
     /**
      * Sets the cache key.
      *
-     * @param string $key The cache key
+     * @param string $cacheKey The cache key
      */
-    public function setCacheKey($key)
+    public function setCacheKey($cacheKey)
     {
-        $this->key = $key;
+        $this->cacheKey = $cacheKey;
     }
 
     /**
@@ -51,6 +51,6 @@ class GetCacheKeyEvent extends Event
      */
     public function getCacheKey()
     {
-        return $this->key;
+        return $this->cacheKey;
     }
 }

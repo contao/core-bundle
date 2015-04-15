@@ -24,22 +24,28 @@ use Contao\System;
 class ParseBackendTemplateListener extends AbstractHookListener
 {
     /**
+     * {@inheritdoc}
+     */
+    public function getHookName()
+    {
+        return 'parseBackendTemplate';
+    }
+
+    /**
      * Triggers the "parseBackendTemplate" hook.
      *
      * @param TemplateEvent $event The event object
      */
     public function onParseBackendTemplate(TemplateEvent $event)
     {
-        if (!$this->hookExists('parseBackendTemplate')) {
-            return;
+        $buffer = $event->getBuffer();
+        $key    = $event->getKey();
+
+        foreach ($this->getCallbacks() as $callback) {
+            $buffer = System::importStatic($callback[0])->$callback[1]($buffer, $key);
         }
 
-        foreach ($GLOBALS['TL_HOOKS']['parseBackendTemplate'] as $callback) {
-            $event->setBuffer(
-                System::importStatic($callback[0])->$callback[1](
-                    $event->getBuffer(), $event->getName(), $event->getTemplate()
-                )
-            );
-        }
+        $event->setBuffer($buffer);
+        $event->setKey($key);
     }
 }

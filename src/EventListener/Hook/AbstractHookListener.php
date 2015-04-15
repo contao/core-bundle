@@ -18,14 +18,25 @@ namespace Contao\CoreBundle\EventListener\Hook;
 abstract class AbstractHookListener
 {
     /**
-     * Checks whether a hook exists.
+     * Returns the hook name.
      *
-     * @param string $name The name
-     *
-     * @return bool True if the hook exists
+     * @return string The hook name
      */
-    public function hookExists($name)
+    abstract function getHookName();
+
+    /**
+     * Returns the registered callbacks of a hook.
+     *
+     * @return array The registered callbacks
+     */
+    public function getCallbacks()
     {
-        return isset($GLOBALS['TL_HOOKS'][$name]) && is_array($GLOBALS['TL_HOOKS'][$name]);
+        $hookName = $this->getHookName();
+
+        if (!isset($GLOBALS['TL_HOOKS'][$hookName]) || !is_array($GLOBALS['TL_HOOKS'][$hookName])) {
+            return [];
+        }
+
+        return $GLOBALS['TL_HOOKS'][$hookName];
     }
 }

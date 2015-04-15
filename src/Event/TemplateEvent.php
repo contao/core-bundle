@@ -28,7 +28,7 @@ class TemplateEvent extends Event
     /**
      * @var string
      */
-    private $name;
+    private $key;
 
     /**
      * @var Template
@@ -39,13 +39,13 @@ class TemplateEvent extends Event
      * Constructor.
      *
      * @param string   $buffer   The template content
-     * @param string   $name     The template name
+     * @param string   $key      The template key
      * @param Template $template The template object
      */
-    public function __construct($buffer, $name, Template $template = null)
+    public function __construct($buffer, $key, Template $template = null)
     {
         $this->buffer   = $buffer;
-        $this->name     = $name;
+        $this->key      = $key;
         $this->template = $template;
     }
 
@@ -60,13 +60,13 @@ class TemplateEvent extends Event
     }
 
     /**
-     * Sets the template name.
+     * Sets the template key.
      *
-     * @param string $name The template name
+     * @param string $key The template key
      */
-    public function setName($name)
+    public function setKey($key)
     {
-        $this->name = $name;
+        $this->key = $key;
     }
 
     /**
@@ -74,7 +74,7 @@ class TemplateEvent extends Event
      *
      * @param Template $template The template object
      */
-    public function setTemplate(Template $template)
+    public function setTemplate(Template $template = null)
     {
         $this->template = $template;
     }
@@ -90,13 +90,13 @@ class TemplateEvent extends Event
     }
 
     /**
-     * Returns the template name.
+     * Returns the template key.
      *
-     * @return string The template name
+     * @return string The template key
      */
-    public function getName()
+    public function getKey()
     {
-        return $this->name;
+        return $this->key;
     }
 
     /**

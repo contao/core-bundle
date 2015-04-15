@@ -24,30 +24,26 @@ use Contao\System;
 class InitializeSystemListener extends AbstractHookListener
 {
     /**
+     * {@inheritdoc}
+     */
+    public function getHookName()
+    {
+        return 'initializeSystem';
+    }
+
+    /**
      * Triggers the "initializeSystem" hook.
      *
      * @param InitializeSystemEvent $event The event object
      */
     public function onInitializeSystem(InitializeSystemEvent $event)
     {
-        $this->triggerHook();
+        foreach ($this->getCallbacks() as $callback) {
+            System::importStatic($callback[0])->$callback[1]();
+        }
 
         if (file_exists($event->getRootDir() . '/system/config/initconfig.php')) {
             include $event->getRootDir() . '/system/config/initconfig.php';
-        }
-    }
-
-    /**
-     * Triggers the hook.
-     */
-    private function triggerHook()
-    {
-        if (!$this->hookExists('initializeSystem')) {
-            return;
-        }
-
-        foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
-            System::importStatic($callback[0])->$callback[1]();
         }
     }
 }

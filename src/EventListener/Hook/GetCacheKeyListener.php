@@ -24,18 +24,26 @@ use Contao\System;
 class GetCacheKeyListener extends AbstractHookListener
 {
     /**
+     * {@inheritdoc}
+     */
+    public function getHookName()
+    {
+        return 'getCacheKey';
+    }
+
+    /**
      * Triggers the "getCacheKey" hook.
      *
      * @param GetCacheKeyEvent $event The event object
      */
     public function onGetCacheKey(GetCacheKeyEvent $event)
     {
-        if (!$this->hookExists('getCacheKey')) {
-            return;
+        $cacheKey = $event->getCacheKey();
+
+        foreach ($this->getCallbacks() as $callback) {
+            $cacheKey = System::importStatic($callback[0])->$callback[1]($cacheKey);
         }
 
-        foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback) {
-            $event->setCacheKey(System::importStatic($callback[0])->$callback[1]($event->getCacheKey()));
-        }
+        $event->setCacheKey($cacheKey);
     }
 }
