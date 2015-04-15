@@ -18,6 +18,7 @@ use Contao\CoreBundle\EventListener\InitializeSystemListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Scope;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
@@ -121,6 +122,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container = $this->mockContainerWithContaoScopes();
         $container->setParameter('contao.error_level', error_reporting());
+
+        $container->set(
+            'event_dispatcher',
+            new EventDispatcher()
+        );
 
         $container->set(
             'contao.resource_finder',
