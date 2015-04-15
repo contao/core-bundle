@@ -46,34 +46,95 @@ abstract class AbstractHookListener
      * @param array|callable $callback The callback
      *
      * @return array|callable The callable
-     *
-     * @throws \InvalidArgumentException If the callback has an invalid format
      */
     protected function getCallable($callback)
     {
-        // Closure
         if (is_object($callback) && is_callable($callback)) {
             return $callback;
         }
 
-        // Check for an array with two members
-        if (!is_array($callback) || count($callback) !== 2) {
+        return $this->getCallableFromArray($callback);
+    }
+
+    /**
+     * Converts a callback array to a callable.
+     *
+     * @param array|callable $callback The callback
+     *
+     * @return array The callable array
+     *
+     * @throws \InvalidArgumentException If the callback has an invalid format
+     */
+    private function getCallableFromArray(array $callback)
+    {
+        if (count($callback) !== 2) {
             throw new \InvalidArgumentException("$callback is not a valid callback.");
         }
 
+        if (null !== ($callable = $this->getCallableFromStaticMethod($callback))) {
+            return $callable;
+        }
+
+        if (null !== ($callable = $this->getCallableFromSingleton($callback))) {
+            return $callable;
+        }
+
+        if (null !== ($callable = $this->getCallableFromRegularObject($callback))) {
+            return $callable;
+        }
+
+        throw new \InvalidArgumentException("$callback cannot be converted to a callable.");
+    }
+
+    /**
+     * Returns a callable from a static method.
+     *
+     * @param array $callback The callback
+     *
+     * @return array The callable array
+     */
+    private function getCallableFromStaticMethod(array $callback)
+    {
         $class = new \ReflectionClass($callback[0]);
 
-        // Static method
-        if ($class->hasMethod($callback[1]) && $class->getMethod($callback[1])->isStatic()) {
-            return $callback;
+        if (!$class->hasMethod($callback[1]) || !$class->getMethod($callback[1])->isStatic()) {
+            return null;
         }
 
-        // Singleton
-        if ($class->hasMethod('getInstance') && $class->getMethod('getInstance')->isStatic()) {
-            return [$callback[0]::getInstance(), $callback[1]];
+        return $callback;
+    }
+
+    /**
+     * Returns a callable from a singleton object.
+     *
+     * @param array $callback The callback
+     *
+     * @return array The callable array
+     */
+    private function getCallableFromSingleton(array $callback)
+    {
+        if (null === ($callable = $this->getCallableFromStaticMethod([$callback[0], 'getInstance']))) {
+            return null;
         }
 
-        // Regular object
+        return [$callable[0]::getInstance(), $callable[1]];
+    }
+
+    /**
+     * Returns a callable from a regular object.
+     *
+     * @param array $callback The callback
+     *
+     * @return array The callable array
+     */
+    private function getCallableFromRegularObject(array $callback)
+    {
+        $class = new \ReflectionClass($callback[0]);
+
+        if (!$class->hasMethod('__construct') || !$class->getMethod('__construct')->isPublic()) {
+            return null;
+        }
+
         return [new $callback[0](), $callback[1]];
     }
 }
