@@ -14,7 +14,7 @@ use Contao\CoreBundle\Event\InitializeSystemEvent;
 use Contao\System;
 
 /**
- * Triggers the "initializeSystem" hook.
+ * Listens to the contao.initialize_system event.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  *

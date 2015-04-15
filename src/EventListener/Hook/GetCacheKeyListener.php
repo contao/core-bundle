@@ -14,7 +14,7 @@ use Contao\CoreBundle\Event\GetCacheKeyEvent;
 use Contao\System;
 
 /**
- * Triggers the "getCacheKey" hook.
+ * Listens to the contao.get_cache_key event.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  *

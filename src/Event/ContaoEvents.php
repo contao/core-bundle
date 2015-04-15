@@ -40,6 +40,17 @@ final class ContaoEvents
     const INITIALIZE_SYSTEM = 'contao.initialize_system';
 
     /**
+     * The contao.parse_backend_template event is triggered when a back end
+     * template is parsed.
+     *
+     * The event listener method receives a
+     * Contao\CoreBundle\Event\TemplateEvent instance.
+     *
+     * @var string
+     */
+    const PARSE_BACKEND_TEMPLATE = 'contao.parse_backend_template';
+
+    /**
      * The contao.parse_frontend_template event is triggered when a front end
      * template is parsed.
      *

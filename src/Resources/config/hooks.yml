@@ -9,6 +9,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: contao.initialize_system, method: onInitializeSystem }
 
+    contao.hooks.parse_backend_template:
+        class: Contao\CoreBundle\EventListener\Hook\ParseBackendTemplateListener
+        tags:
+            - { name: kernel.event_listener, event: contao.parse_backend_template, method: onParseBackendTemplate }
+
     contao.hooks.parse_frontend_template:
         class: Contao\CoreBundle\EventListener\Hook\ParseFrontendTemplateListener
         tags:
