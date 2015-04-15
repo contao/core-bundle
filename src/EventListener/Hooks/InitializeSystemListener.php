@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener\Hooks;
 
-use Contao\CoreBundle\Events\InitializeSystemEvent;
+use Contao\CoreBundle\Event\InitializeSystemEvent;
 use Contao\System;
 
 /**
@@ -21,7 +21,7 @@ use Contao\System;
  * @deprecated Deprecated in Contao 4.0, to be removed in Contao 5.0.
  *             Subscribe to the contao.initialize_system event instead.
  */
-class InitializeSystemListener
+class InitializeSystemListener extends AbstractHookListener
 {
     /**
      * Triggers the "initializeSystem" hook.
@@ -30,14 +30,24 @@ class InitializeSystemListener
      */
     public function onInitializeSystem(InitializeSystemEvent $event)
     {
-        if (isset($GLOBALS['TL_HOOKS']['initializeSystem']) && is_array($GLOBALS['TL_HOOKS']['initializeSystem'])) {
-            foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
-                System::importStatic($callback[0])->$callback[1]();
-            }
-        }
+        $this->triggerHook();
 
         if (file_exists($event->getRootDir() . '/system/config/initconfig.php')) {
             include $event->getRootDir() . '/system/config/initconfig.php';
+        }
+    }
+
+    /**
+     * Triggers the hook.
+     */
+    private function triggerHook()
+    {
+        if (!$this->hookExists('initializeSystem')) {
+            return;
+        }
+
+        foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
+            System::importStatic($callback[0])->$callback[1]();
         }
     }
 }
