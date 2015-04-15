@@ -8,3 +8,8 @@ services:
         class: Contao\CoreBundle\EventListener\Hook\InitializeSystemListener
         tags:
             - { name: kernel.event_listener, event: contao.initialize_system, method: onInitializeSystem }
+
+    contao.hooks.parse_frontend_template:
+        class: Contao\CoreBundle\EventListener\Hook\ParseFrontendTemplateListener
+        tags:
+            - { name: kernel.event_listener, event: contao.parse_frontend_template, method: onParseFrontendTemplate }

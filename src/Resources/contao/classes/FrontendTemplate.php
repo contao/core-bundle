@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
 use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\TemplateEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -49,15 +50,13 @@ class FrontendTemplate extends \Template
 
 		$strBuffer = parent::parse();
 
-		// HOOK: add custom parse filters
-		if (isset($GLOBALS['TL_HOOKS']['parseFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseFrontendTemplate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['parseFrontendTemplate'] as $callback)
-			{
-				$this->import($callback[0]);
-				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
-			}
-		}
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Trigger the parseFrontendTemplate hook
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_FRONTEND_TEMPLATE, $event);
+		$strBuffer = $event->getBuffer();
 
 		return $strBuffer;
 	}
