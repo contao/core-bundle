@@ -21,10 +21,9 @@ final class ContaoEvents
      * The contao.get_cache_key event is triggered when the name of a front
      * end cache file is calculated.
      *
-     * The event listener method receives a
-     * Contao\CoreBundle\Event\GetCacheKeyEvent instance.
-     *
      * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetCacheKeyEvent
      */
     const GET_CACHE_KEY = 'contao.get_cache_key';
 
@@ -32,10 +31,9 @@ final class ContaoEvents
      * The contao.initialize_system event is triggered when the Contao
      * framework is initialized.
      *
-     * The event listener method receives a
-     * Contao\CoreBundle\Event\InitializeSystemEvent instance.
-     *
      * @var string
+     *
+     * @see Contao\CoreBundle\Event\InitializeSystemEvent
      */
     const INITIALIZE_SYSTEM = 'contao.initialize_system';
 
@@ -43,10 +41,9 @@ final class ContaoEvents
      * The contao.parse_backend_template event is triggered when a back end
      * template is parsed.
      *
-     * The event listener method receives a
-     * Contao\CoreBundle\Event\TemplateEvent instance.
-     *
      * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
      */
     const PARSE_BACKEND_TEMPLATE = 'contao.parse_backend_template';
 
@@ -54,10 +51,9 @@ final class ContaoEvents
      * The contao.parse_frontend_template event is triggered when a front end
      * template is parsed.
      *
-     * The event listener method receives a
-     * Contao\CoreBundle\Event\TemplateEvent instance.
-     *
      * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
      */
     const PARSE_FRONTEND_TEMPLATE = 'contao.parse_frontend_template';
 }
