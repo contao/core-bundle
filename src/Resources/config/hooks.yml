@@ -1,0 +1,5 @@
+services:
+    contao.hooks.initialize_system:
+        class: Contao\CoreBundle\EventListener\Hooks\InitializeSystemListener
+        tags:
+            - { name: kernel.event_listener, event: contao.initialize_system, method: onInitializeSystem }
