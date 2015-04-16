@@ -59,15 +59,15 @@ abstract class AbstractHookListener
     /**
      * Converts a callback array to a callable.
      *
-     * @param array|callable $callback The callback
+     * @param array $callback The callback
      *
      * @return array The callable array
      *
      * @throws \InvalidArgumentException If the callback has an invalid format
      */
-    private function getCallableFromArray(array $callback)
+    private function getCallableFromArray($callback)
     {
-        if (count($callback) !== 2) {
+        if (!is_array($callback) || count($callback) !== 2) {
             throw new \InvalidArgumentException("$callback is not a valid callback.");
         }
 
