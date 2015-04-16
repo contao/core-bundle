@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\EventListener\Hook;
 
+use Contao\CoreBundle\Event\TemplateEvent;
+
 /**
  * Parent class for hook listeners.
  *
@@ -43,34 +45,56 @@ abstract class AbstractHookListener
     /**
      * Converts a callback to a callable.
      *
-     * @param array|callable $callback The callback
+     * @param mixed $callback The callback
      *
-     * @return array|callable The callable
+     * @return mixed The callable
+     *
+     * @throws \InvalidArgumentException If the callback has an invalid format
      */
     protected function getCallable($callback)
     {
+        if (is_array($callback) && count($callback) === 2) {
+            return $this->getCallableFromArray($callback);
+        }
+
         if (is_object($callback) && is_callable($callback)) {
             return $callback;
         }
 
-        return $this->getCallableFromArray($callback);
+        throw new \InvalidArgumentException("$callback is not a valid callback.");
     }
 
     /**
-     * Converts a callback array to a callable.
+     * Handles a template event.
+     *
+     * @param TemplateEvent $event The event object
+     */
+    protected function handleTemplateEvent(TemplateEvent $event)
+    {
+        $buffer   = $event->getBuffer();
+        $key      = $event->getKey();
+        $template = $event->getTemplate();
+
+        foreach ($this->getCallbacks() as $callback) {
+            $buffer = call_user_func($this->getCallable($callback), $buffer, $key, $template);
+        }
+
+        $event->setBuffer($buffer);
+        $event->setKey($key);
+        $event->setTemplate($template);
+    }
+
+    /**
+     * Converts an array to a callable.
      *
      * @param array $callback The callback
      *
      * @return array The callable array
      *
-     * @throws \InvalidArgumentException If the callback has an invalid format
+     * @throws \InvalidArgumentException If the callback cannot be converted
      */
-    private function getCallableFromArray($callback)
+    private function getCallableFromArray(array $callback)
     {
-        if (!is_array($callback) || count($callback) !== 2) {
-            throw new \InvalidArgumentException("$callback is not a valid callback.");
-        }
-
         if (null !== ($callable = $this->getCallableFromStaticMethod($callback))) {
             return $callable;
         }

@@ -37,14 +37,6 @@ class ParseBackendTemplateListener extends AbstractHookListener
      */
     public function onParseBackendTemplate(TemplateEvent $event)
     {
-        $buffer = $event->getBuffer();
-        $key    = $event->getKey();
-
-        foreach ($this->getCallbacks() as $callback) {
-            $buffer = call_user_func($this->getCallable($callback), $buffer, $key);
-        }
-
-        $event->setBuffer($buffer);
-        $event->setKey($key);
+        $this->handleTemplateEvent($event);
     }
 }
