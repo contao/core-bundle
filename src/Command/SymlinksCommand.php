@@ -159,7 +159,13 @@ class SymlinksCommand extends LockedCommand implements ContainerAwareInterface
     {
         /** @var SplFileInfo $file */
         foreach ($finder as $file) {
-            $path = $prepend . '/' . $file->getRelativePath();
+            $path = $prepend;
+
+            // Don't add a trailing slash, when relativePath is ''
+            if (strlen($file->getRelativePath())) {
+                $path .= '/' . $file->getRelativePath();
+            }
+
             $this->symlink(str_repeat('../', substr_count($path, '/') + 1) . $path, "web/$path", $rootDir, $output);
         }
     }
