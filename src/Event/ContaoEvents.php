@@ -58,6 +58,16 @@ final class ContaoEvents
     const INITIALIZE_SYSTEM = 'contao.initialize_system';
 
     /**
+     * The contao.modify_frontend_page event is triggered after a front end
+     * template has been compiled.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
+     */
+    const MODIFY_FRONTEND_PAGE = 'contao.modify_frontend_page';
+
+    /**
      * The contao.parse_backend_template event is triggered when a back end
      * template is parsed.
      *
