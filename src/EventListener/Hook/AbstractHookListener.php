@@ -77,7 +77,7 @@ abstract class AbstractHookListener
         $template = $event->getTemplate();
 
         foreach ($this->getCallbacks() as $callback) {
-            $buffer = call_user_func($this->getCallable($callback), $buffer, $key, $template);
+            $buffer = call_user_func_array($this->getCallable($callback), [$buffer, &$key, &$template]);
         }
 
         $event->setBuffer($buffer);
@@ -92,15 +92,17 @@ abstract class AbstractHookListener
      */
     public function handlePageEvent(PageEvent $event)
     {
-        $page   = $event->getPage();
-        $layout = $event->getLayout();
+        $page    = $event->getPage();
+        $layout  = $event->getLayout();
+        $handler = $event->getHandler();
 
         foreach ($this->getCallbacks() as $callback) {
-            call_user_func($this->getCallable($callback), $page, $layout, $event->getHandler());
+            call_user_func_array($this->getCallable($callback), [&$page, &$layout, &$handler]);
         }
 
         $event->setPage($page);
         $event->setLayout($layout);
+        $event->setHandler($handler);
     }
 
     /**
@@ -174,7 +176,7 @@ abstract class AbstractHookListener
     {
         $class = new \ReflectionClass($callback[0]);
 
-        if (!$class->hasMethod('__construct') || !$class->getMethod('__construct')->isPublic()) {
+        if ($class->hasMethod('__construct') && !$class->getMethod('__construct')->isPublic()) {
             return null;
         }
 

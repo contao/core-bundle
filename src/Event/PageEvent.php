@@ -44,11 +44,11 @@ class PageEvent extends Event
      * @param LayoutModel $layout  The layout model
      * @param PageRegular $handler The page handler
      */
-    public function __construct(PageModel $page, LayoutModel $layout, PageRegular $handler)
+    public function __construct(PageModel &$page, LayoutModel &$layout, PageRegular &$handler)
     {
-        $this->page    = $page;
-        $this->layout  = $layout;
-        $this->handler = $handler;
+        $this->page    = &$page;
+        $this->layout  = &$layout;
+        $this->handler = &$handler;
     }
 
     /**
@@ -99,5 +99,15 @@ class PageEvent extends Event
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    /**
+     * Sets the page handler.
+     *
+     * @param PageRegular $handler The page handler
+     */
+    public function setHandler(PageRegular $handler)
+    {
+        $this->handler = $handler;
     }
 }

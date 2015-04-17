@@ -42,11 +42,11 @@ class TemplateEvent extends Event
      * @param string   $key      The template key
      * @param Template $template The template object
      */
-    public function __construct($buffer, $key, Template $template = null)
+    public function __construct($buffer, &$key, Template &$template = null)
     {
         $this->buffer   = $buffer;
-        $this->key      = $key;
-        $this->template = $template;
+        $this->key      = &$key;
+        $this->template = &$template;
     }
 
     /**

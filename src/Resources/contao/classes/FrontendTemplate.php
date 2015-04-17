@@ -56,9 +56,8 @@ class FrontendTemplate extends \Template
 		// Trigger the parseFrontendTemplate hook
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_FRONTEND_TEMPLATE, $event);
-		$strBuffer = $event->getBuffer();
 
-		return $strBuffer;
+		return $event->getBuffer();
 	}
 
 
@@ -263,6 +262,7 @@ class FrontendTemplate extends \Template
 			// Trigger the getCacheKey hook
 			$event = new GetCacheKeyEvent($strCacheKey);
 			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+
 			$strCacheKey = $event->getCacheKey();
 
 			// Store mobile pages separately

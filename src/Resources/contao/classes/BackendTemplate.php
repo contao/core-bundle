@@ -43,9 +43,8 @@ class BackendTemplate extends \Template
 		// Trigger the parseBackendTemplate hook
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_BACKEND_TEMPLATE, $event);
-		$strBuffer = $event->getBuffer();
 
-		return $strBuffer;
+		return $event->getBuffer();
 	}
 
 

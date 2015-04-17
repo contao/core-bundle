@@ -723,6 +723,7 @@ abstract class Frontend extends \Controller
 		// Trigger the getCacheKey hook
 		$event = new GetCacheKeyEvent($strCacheKey);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+
 		$strCacheKey = $event->getCacheKey();
 
 		$blnFound = false;
