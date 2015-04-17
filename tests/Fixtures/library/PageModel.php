@@ -7,7 +7,7 @@ class PageModel
     private $data;
     private $index = -1;
 
-    protected function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
