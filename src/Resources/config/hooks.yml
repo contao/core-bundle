@@ -28,3 +28,13 @@ services:
         class: Contao\CoreBundle\EventListener\Hook\ParseFrontendTemplateListener
         tags:
             - { name: kernel.event_listener, event: contao.parse_frontend_template, method: onParseFrontendTemplate }
+
+    contao.hooks.output_backend_template:
+        class: Contao\CoreBundle\EventListener\Hook\OutputBackendTemplateListener
+        tags:
+            - { name: kernel.event_listener, event: contao.output_backend_template, method: onOutputBackendTemplate }
+
+    contao.hooks.output_frontend_template:
+        class: Contao\CoreBundle\EventListener\Hook\OutputFrontendTemplateListener
+        tags:
+            - { name: kernel.event_listener, event: contao.output_frontend_template, method: onOutputFrontendTemplate }

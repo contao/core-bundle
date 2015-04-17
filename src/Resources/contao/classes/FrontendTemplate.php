@@ -113,15 +113,14 @@ class FrontendTemplate extends \Template
 		// Parse the template
 		$this->strBuffer = $this->parse();
 
-		// HOOK: add custom output filters
-		if (isset($GLOBALS['TL_HOOKS']['outputFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputFrontendTemplate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['outputFrontendTemplate'] as $callback)
-			{
-				$this->import($callback[0]);
-				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
-			}
-		}
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Trigger the outputFrontendTemplate hook
+		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
+
+		$this->strBuffer = $event->getBuffer();
 
 		// Add the output to the cache
 		$this->addToCache();

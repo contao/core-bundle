@@ -18,7 +18,7 @@ use Contao\CoreBundle\Event\TemplateEvent;
  * @author Leo Feyer <https://github.com/leofeyer>
  *
  * @deprecated Deprecated in Contao 4.0, to be removed in Contao 5.0.
- *             Subscribe to the contao.get_cache_key event instead.
+ *             Subscribe to the contao.parse_frontend_template event instead.
  */
 class ParseFrontendTemplateListener extends AbstractHookListener
 {

@@ -76,4 +76,24 @@ final class ContaoEvents
      * @see Contao\CoreBundle\Event\TemplateEvent
      */
     const PARSE_FRONTEND_TEMPLATE = 'contao.parse_frontend_template';
+
+    /**
+     * The contao.output_backend_template event is triggered when a back end
+     * template is send to the client.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
+     */
+    const OUTPUT_BACKEND_TEMPLATE = 'contao.output_backend_template';
+
+    /**
+     * The contao.output_frontend_template event is triggered when a front end
+     * template is send to the client.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
+     */
+    const OUTPUT_FRONTEND_TEMPLATE = 'contao.output_frontend_template';
 }

@@ -40,7 +40,7 @@ class BackendTemplate extends \Template
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the parseFrontendTemplate hook
+		// Trigger the parseBackendTemplate hook
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_BACKEND_TEMPLATE, $event);
 		$strBuffer = $event->getBuffer();
@@ -103,17 +103,14 @@ class BackendTemplate extends \Template
 		$strBuffer = $this->parse();
 		$strBuffer = static::replaceOldBePaths($strBuffer);
 
-		// HOOK: add custom output filter
-		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
-			{
-				$this->import($callback[0]);
-				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
-			}
-		}
+		/** @var KernelInterface $kernel */
+		global $kernel;
 
-		$this->strBuffer = $strBuffer;
+		// Trigger the outputBackendTemplate hook
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_BACKEND_TEMPLATE, $event);
+
+		$this->strBuffer = $event->getBuffer();
 
 		parent::compile();
 	}
