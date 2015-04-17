@@ -40,4 +40,14 @@ class PageModel
 
         return true;
     }
+
+    public function row()
+    {
+        return $this->data;
+    }
+
+    public function setRow(array $data)
+    {
+        $this->data = $data;
+    }
 }

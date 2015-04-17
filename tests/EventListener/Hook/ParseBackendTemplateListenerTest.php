@@ -48,7 +48,7 @@ class ParseBackendTemplateListenerTest extends TestCase
     /**
      * Tests the onParseBackendTemplate() method.
      */
-    public function TestOnParseBackendTemplate()
+    public function testOnParseBackendTemplate()
     {
         $buffer   = 'foo';
         $key      = 'bar';
@@ -77,9 +77,14 @@ class ParseBackendTemplateListenerTest extends TestCase
         $key       = 'bar';
         $template  = new FrontendTemplate();
         $event     = new TemplateEvent($buffer, $key, $template);
+
         $template2 = new FrontendTemplate();
 
-        $GLOBALS['TL_HOOKS']['parseBackendTemplate'][] = function ($buffer, &$key, &$template) use ($template2) {
+        $GLOBALS['TL_HOOKS']['parseBackendTemplate'][] = function (
+            $buffer,
+            &$key,
+            FrontendTemplate &$template
+        ) use ($template2) {
             $key      = 'changed';
             $template = $template2;
         };

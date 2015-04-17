@@ -77,9 +77,14 @@ class ModifyFrontendPageListenerTest extends TestCase
         $key       = 'bar';
         $template  = new FrontendTemplate();
         $event     = new TemplateEvent($buffer, $key, $template);
+
         $template2 = new FrontendTemplate();
 
-        $GLOBALS['TL_HOOKS']['modifyFrontendPage'][] = function ($buffer, &$key, &$template) use ($template2) {
+        $GLOBALS['TL_HOOKS']['modifyFrontendPage'][] = function (
+            $buffer,
+            &$key,
+            FrontendTemplate &$template
+        ) use ($template2) {
             $key      = 'changed';
             $template = $template2;
         };

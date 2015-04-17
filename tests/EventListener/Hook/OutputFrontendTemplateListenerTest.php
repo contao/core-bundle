@@ -48,7 +48,7 @@ class OutputFrontendTemplateListenerTest extends TestCase
     /**
      * Tests the onOutputFrontendTemplate() method.
      */
-    public function TestOnOutputFrontendTemplate()
+    public function testOnOutputFrontendTemplate()
     {
         $buffer   = 'foo';
         $key      = 'bar';
@@ -77,9 +77,14 @@ class OutputFrontendTemplateListenerTest extends TestCase
         $key       = 'bar';
         $template  = new FrontendTemplate();
         $event     = new TemplateEvent($buffer, $key, $template);
+
         $template2 = new FrontendTemplate();
 
-        $GLOBALS['TL_HOOKS']['outputFrontendTemplate'][] = function ($buffer, &$key, &$template) use ($template2) {
+        $GLOBALS['TL_HOOKS']['outputFrontendTemplate'][] = function (
+            $buffer,
+            &$key,
+            FrontendTemplate &$template
+        ) use ($template2) {
             $key      = 'changed';
             $template = $template2;
         };
