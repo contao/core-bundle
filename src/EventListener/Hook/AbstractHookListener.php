@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener\Hook;
 
+use Contao\CoreBundle\Event\PageEvent;
 use Contao\CoreBundle\Event\TemplateEvent;
 
 /**
@@ -82,6 +83,24 @@ abstract class AbstractHookListener
         $event->setBuffer($buffer);
         $event->setKey($key);
         $event->setTemplate($template);
+    }
+
+    /**
+     * Handles a page event.
+     *
+     * @param PageEvent $event The event object
+     */
+    public function handlePageEvent(PageEvent $event)
+    {
+        $page   = $event->getPage();
+        $layout = $event->getLayout();
+
+        foreach ($this->getCallbacks() as $callback) {
+            call_user_func($this->getCallable($callback), $page, $layout, $event->getHandler());
+        }
+
+        $event->setPage($page);
+        $event->setLayout($layout);
     }
 
     /**

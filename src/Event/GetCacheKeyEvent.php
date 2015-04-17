@@ -35,16 +35,6 @@ class GetCacheKeyEvent extends Event
     }
 
     /**
-     * Sets the cache key.
-     *
-     * @param string $cacheKey The cache key
-     */
-    public function setCacheKey($cacheKey)
-    {
-        $this->cacheKey = $cacheKey;
-    }
-
-    /**
      * Returns the cache key.
      *
      * @return string The cache key
@@ -52,5 +42,15 @@ class GetCacheKeyEvent extends Event
     public function getCacheKey()
     {
         return $this->cacheKey;
+    }
+
+    /**
+     * Sets the cache key.
+     *
+     * @param string $cacheKey The cache key
+     */
+    public function setCacheKey($cacheKey)
+    {
+        $this->cacheKey = $cacheKey;
     }
 }

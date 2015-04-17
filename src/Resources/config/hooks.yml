@@ -1,8 +1,18 @@
 services:
+    contao.hooks.generate_page:
+        class: Contao\CoreBundle\EventListener\Hook\GeneratePageListener
+        tags:
+            - { name: kernel.event_listener, event: contao.generate_page, method: onGeneratePage }
+
     contao.hooks.get_cache_key:
         class: Contao\CoreBundle\EventListener\Hook\GetCacheKeyListener
         tags:
             - { name: kernel.event_listener, event: contao.get_cache_key, method: onGetCacheKey }
+
+    contao.hooks.get_page_layout:
+        class: Contao\CoreBundle\EventListener\Hook\GetPageLayoutListener
+        tags:
+            - { name: kernel.event_listener, event: contao.get_page_layout, method: onGetPageLayout }
 
     contao.hooks.initialize_system:
         class: Contao\CoreBundle\EventListener\Hook\InitializeSystemListener

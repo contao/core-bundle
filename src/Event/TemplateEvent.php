@@ -50,36 +50,6 @@ class TemplateEvent extends Event
     }
 
     /**
-     * Sets the template content.
-     *
-     * @param string $buffer The template content
-     */
-    public function setBuffer($buffer)
-    {
-        $this->buffer = $buffer;
-    }
-
-    /**
-     * Sets the template key.
-     *
-     * @param string $key The template key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * Sets the template object.
-     *
-     * @param Template $template The template object
-     */
-    public function setTemplate(Template $template = null)
-    {
-        $this->template = $template;
-    }
-
-    /**
      * Returns the template content.
      *
      * @return string The template content
@@ -87,6 +57,16 @@ class TemplateEvent extends Event
     public function getBuffer()
     {
         return $this->buffer;
+    }
+
+    /**
+     * Sets the template content.
+     *
+     * @param string $buffer The template content
+     */
+    public function setBuffer($buffer)
+    {
+        $this->buffer = $buffer;
     }
 
     /**
@@ -100,6 +80,16 @@ class TemplateEvent extends Event
     }
 
     /**
+     * Sets the template key.
+     *
+     * @param string $key The template key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
+
+    /**
      * Returns the template object.
      *
      * @return Template The template object
@@ -107,5 +97,15 @@ class TemplateEvent extends Event
     public function getTemplate()
     {
         return $this->template;
+    }
+
+    /**
+     * Sets the template object.
+     *
+     * @param Template $template The template object
+     */
+    public function setTemplate(Template $template = null)
+    {
+        $this->template = $template;
     }
 }

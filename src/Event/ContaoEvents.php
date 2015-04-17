@@ -18,6 +18,16 @@ namespace Contao\CoreBundle\Event;
 final class ContaoEvents
 {
     /**
+     * The contao.generate_page event is triggered when the page object
+     * is generated in the front end.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\PageEvent
+     */
+    const GENERATE_PAGE = 'contao.generate_page';
+
+    /**
      * The contao.get_cache_key event is triggered when the name of a front
      * end cache file is calculated.
      *
@@ -26,6 +36,16 @@ final class ContaoEvents
      * @see Contao\CoreBundle\Event\GetCacheKeyEvent
      */
     const GET_CACHE_KEY = 'contao.get_cache_key';
+
+    /**
+     * The contao.get_page_layout event is triggered after the front end
+     * layout object has been built.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\PageEvent
+     */
+    const GET_PAGE_LAYOUT = 'contao.get_page_layout';
 
     /**
      * The contao.initialize_system event is triggered when the Contao
