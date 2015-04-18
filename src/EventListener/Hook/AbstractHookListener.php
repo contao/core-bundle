@@ -62,7 +62,7 @@ abstract class AbstractHookListener
             return $callback;
         }
 
-        throw new \InvalidArgumentException("$callback is not a valid callback.");
+        throw new \InvalidArgumentException(gettype($callback) . ' is not a valid callback.');
     }
 
     /**
@@ -128,7 +128,7 @@ abstract class AbstractHookListener
             return $callable;
         }
 
-        throw new \InvalidArgumentException("$callback cannot be converted to a callable.");
+        throw new \InvalidArgumentException(gettype($callback) . ' cannot be converted to a callable.');
     }
 
     /**
