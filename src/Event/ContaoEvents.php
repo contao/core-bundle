@@ -33,7 +33,7 @@ final class ContaoEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\GetCacheKeyEvent
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
      */
     const GET_CACHE_KEY = 'contao.get_cache_key';
 

@@ -10,18 +10,18 @@
 
 namespace Contao\CoreBundle\Test\Event;
 
-use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Test\TestCase;
 
 /**
- * Tests the GetCacheKeyEvent class.
+ * Tests the ReturnValueEvent class.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class GetCacheKeyEventTest extends TestCase
+class ReturnValueEventTest extends TestCase
 {
     /**
-     * @var GetCacheKeyEvent
+     * @var ReturnValueEvent
      */
     private $event;
 
@@ -32,7 +32,7 @@ class GetCacheKeyEventTest extends TestCase
     {
         parent::setUp();
 
-        $this->event = new GetCacheKeyEvent('foo');
+        $this->event = new ReturnValueEvent('foo');
     }
 
     /**
@@ -40,7 +40,7 @@ class GetCacheKeyEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetCacheKeyEvent', $this->event);
+        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ReturnValueEvent', $this->event);
     }
 
     /**
@@ -48,10 +48,8 @@ class GetCacheKeyEventTest extends TestCase
      */
     public function testSetterGetter()
     {
-        $cacheKey = 'bar';
+        $this->event->setValue('bar');
 
-        $this->event->setCacheKey($cacheKey);
-
-        $this->assertEquals($cacheKey, $this->event->getCacheKey());
+        $this->assertEquals('bar', $this->event->getValue());
     }
 }

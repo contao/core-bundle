@@ -11,7 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
-use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -721,10 +721,10 @@ abstract class Frontend extends \Controller
 		}
 
 		// Trigger the getCacheKey hook
-		$event = new GetCacheKeyEvent($strCacheKey);
+		$event = new ReturnValueEvent($strCacheKey);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
 
-		$strCacheKey = $event->getCacheKey();
+		$strCacheKey = $event->getValue();
 
 		$blnFound = false;
 		$strCacheFile = null;

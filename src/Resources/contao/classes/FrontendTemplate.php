@@ -11,7 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
-use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Event\TemplateEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -260,10 +260,10 @@ class FrontendTemplate extends \Template
 			global $kernel;
 
 			// Trigger the getCacheKey hook
-			$event = new GetCacheKeyEvent($strCacheKey);
+			$event = new ReturnValueEvent($strCacheKey);
 			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
 
-			$strCacheKey = $event->getCacheKey();
+			$strCacheKey = $event->getValue();
 
 			// Store mobile pages separately
 			if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))

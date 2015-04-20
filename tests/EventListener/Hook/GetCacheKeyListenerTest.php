@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Test\EventListener\Hook;
 
-use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\EventListener\Hook\GetCacheKeyListener;
 use Contao\CoreBundle\Test\TestCase;
 
@@ -49,7 +49,7 @@ class GetCacheKeyListenerTest extends TestCase
      */
     public function testOnGetCacheKey()
     {
-        $event = new GetCacheKeyEvent('foo');
+        $event = new ReturnValueEvent('foo');
 
         $GLOBALS['TL_HOOKS']['getCacheKey'][] = function () {
             return 'bar';
@@ -57,7 +57,7 @@ class GetCacheKeyListenerTest extends TestCase
 
         $this->listener->onGetCacheKey($event);
 
-        $this->assertEquals('bar', $event->getCacheKey());
+        $this->assertEquals('bar', $event->getValue());
 
         unset($GLOBALS['TL_HOOKS']);
     }

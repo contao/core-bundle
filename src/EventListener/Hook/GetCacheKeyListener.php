@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener\Hook;
 
-use Contao\CoreBundle\Event\GetCacheKeyEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 
 /**
  * Listens to the contao.get_cache_key event.
@@ -33,16 +33,16 @@ class GetCacheKeyListener extends AbstractHookListener
     /**
      * Triggers the "getCacheKey" hook.
      *
-     * @param GetCacheKeyEvent $event The event object
+     * @param ReturnValueEvent $event The event object
      */
-    public function onGetCacheKey(GetCacheKeyEvent $event)
+    public function onGetCacheKey(ReturnValueEvent $event)
     {
-        $cacheKey = $event->getCacheKey();
+        $cacheKey = $event->getValue();
 
         foreach ($this->getCallbacks() as $callback) {
             $cacheKey = call_user_func($this->getCallable($callback), $cacheKey);
         }
 
-        $event->setCacheKey($cacheKey);
+        $event->setValue($cacheKey);
     }
 }
