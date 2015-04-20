@@ -38,6 +38,16 @@ final class ContaoEvents
     const GET_CACHE_KEY = 'contao.get_cache_key';
 
     /**
+     * The contao.get_page_id_from_url event is triggered when the page ID is
+     * read from the URL.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
+     */
+    const GET_PAGE_ID_FROM_URL = 'contao.get_page_id_from_url';
+
+    /**
      * The contao.get_page_layout event is triggered after the front end
      * layout object has been built.
      *

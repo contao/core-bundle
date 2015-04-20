@@ -9,6 +9,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: contao.get_cache_key, method: onGetCacheKey }
 
+    contao.hooks.get_page_id_from_url:
+        class: Contao\CoreBundle\EventListener\Hook\GetPageIdFromUrlListener
+        tags:
+            - { name: kernel.event_listener, event: contao.get_page_id_from_url, method: onGetPageIdFromUrl }
+
     contao.hooks.get_page_layout:
         class: Contao\CoreBundle\EventListener\Hook\GetPageLayoutListener
         tags:

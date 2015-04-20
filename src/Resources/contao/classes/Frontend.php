@@ -228,14 +228,14 @@ abstract class Frontend extends \Controller
 			array_insert($arrFragments, 1, array('auto_item'));
 		}
 
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['getPageIdFromUrl']) && is_array($GLOBALS['TL_HOOKS']['getPageIdFromUrl']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['getPageIdFromUrl'] as $callback)
-			{
-				$arrFragments = static::importStatic($callback[0])->$callback[1]($arrFragments);
-			}
-		}
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Trigger the getPageIdFromUrl hook
+		$event = new ReturnValueEvent($arrFragments);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+
+		$arrFragments = $event->getValue();
 
 		// Return if the alias is empty (see #4702 and #4972)
 		if ($arrFragments[0] == '' && count($arrFragments) > 1)
