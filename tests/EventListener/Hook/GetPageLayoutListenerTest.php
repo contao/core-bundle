@@ -77,7 +77,6 @@ class GetPageLayoutListenerTest extends TestCase
         unset($GLOBALS['TL_HOOKS']);
     }
 
-
     /**
      * Tests passing arguments by reference.
      */

@@ -16,7 +16,7 @@ use Contao\PageRegular;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Allows to execute logic when a page is generated
+ * Allows to execute logic when a page is generated.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
