@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\EventListener\Hook;
 
 use Contao\CoreBundle\Event\PageEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Event\TemplateEvent;
 
 /**
@@ -103,6 +104,22 @@ abstract class AbstractHookListener
         $event->setPage($page);
         $event->setLayout($layout);
         $event->setHandler($handler);
+    }
+
+    /**
+     * Handles a return value event.
+     *
+     * @param ReturnValueEvent $event The event object
+     */
+    public function handleReturnValueEvent(ReturnValueEvent $event)
+    {
+        $value = $event->getValue();
+
+        foreach ($this->getCallbacks() as $callback) {
+            $value = call_user_func($this->getCallable($callback), $value);
+        }
+
+        $event->setValue($value);
     }
 
     /**

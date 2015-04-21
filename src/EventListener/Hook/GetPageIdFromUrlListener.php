@@ -37,12 +37,6 @@ class GetPageIdFromUrlListener extends AbstractHookListener
      */
     public function onGetPageIdFromUrl(ReturnValueEvent $event)
     {
-        $fragments = $event->getValue();
-
-        foreach ($this->getCallbacks() as $callback) {
-            $fragments = call_user_func($this->getCallable($callback), $fragments);
-        }
-
-        $event->setValue($fragments);
+        $this->handleReturnValueEvent($event);
     }
 }

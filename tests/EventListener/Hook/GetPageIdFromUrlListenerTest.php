@@ -47,7 +47,7 @@ class GetPageIdFromUrlListenerTest extends TestCase
     /**
      * Tests the onGetPageIdFromUrl() method.
      */
-    public function onGetPageIdFromUrl()
+    public function testOnGetPageIdFromUrl()
     {
         $event = new ReturnValueEvent('foo');
 
