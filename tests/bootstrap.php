@@ -25,26 +25,6 @@ if (
     exit(1);
 }
 
-// Autoload the fixture classes
-spl_autoload_register(function ($class) {
-    if (class_exists($class, false)) {
-        return;
-    }
-
-    if (0 === strncmp($class, 'Contao\\', 7)) {
-        $class = substr($class, 7);
-    }
-
-    if (file_exists(__DIR__ . "/Fixtures/library/$class.php")) {
-        include_once __DIR__ . "/Fixtures/library/$class.php";
-        class_alias("Contao\\Fixtures\\$class", "Contao\\$class");
-        class_alias("Contao\\Fixtures\\$class", $class);
-    } elseif (file_exists(__DIR__ . "/../src/Resources/contao/library/Contao/$class.php")) {
-        include_once __DIR__ . "/../src/Resources/contao/library/Contao/$class.php";
-        class_alias("Contao\\$class", $class);
-    }
-});
-
 /** @var Composer\Autoload\ClassLoader $loader */
 $loader->addPsr4('Contao\\CoreBundle\\Test\\', __DIR__);
 $loader->addPsr4('Contao\\TestBundle\\', __DIR__ . '/Fixtures/vendor/contao/test-bundle');

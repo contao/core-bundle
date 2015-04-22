@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Adapter\ConfigAdapter;
+use Contao\CoreBundle\Adapter\ConfigAdapterInterface;
 use Contao\CoreBundle\Exception\InternalServerErrorHttpException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\String;
@@ -43,7 +43,7 @@ class PrettyErrorScreenListener
     private $twig;
 
     /**
-     * @var ConfigAdapter
+     * @var ConfigAdapterInterface
      */
     private $config;
 
@@ -66,12 +66,15 @@ class PrettyErrorScreenListener
     /**
      * Constructor.
      *
-     * @param bool          $prettyErrorScreens True to render the error screens
-     * @param TwigEngine    $twig               The twig rendering engine
-     * @param ConfigAdapter $config             The config adapter
+     * @param bool                   $prettyErrorScreens True to render the error screens
+     * @param TwigEngine             $twig               The twig rendering engine
+     * @param ConfigAdapterInterface $config             The config adapter
      */
-    public function __construct($prettyErrorScreens, TwigEngine $twig, ConfigAdapter $config)
-    {
+    public function __construct(
+        $prettyErrorScreens,
+        TwigEngine $twig,
+        ConfigAdapterInterface $config
+    ) {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig               = $twig;
         $this->config             = $config;

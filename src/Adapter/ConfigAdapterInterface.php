@@ -11,39 +11,30 @@
 namespace Contao\CoreBundle\Adapter;
 
 /**
- * Provides an adapter for the Contao Config class.
+ * Provides an adapter interface for the Contao Config class.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class ConfigAdapter implements ConfigAdapterInterface
+interface ConfigAdapterInterface
 {
     /**
      * Return the current object instance (Singleton)
      *
      * @return \Config The object instance
      */
-    public function instantiate()
-    {
-        return \Contao\Config::getInstance();
-    }
+    public function instantiate();
 
     /**
      * Save the local configuration file
      */
-    public function save()
-    {
-        $this->instantiate()->save();
-    }
+    public function save();
 
     /**
      * Return true if the installation is complete
      *
      * @return boolean True if the installation is complete
      */
-    public function isComplete()
-    {
-        return $this->instantiate()->isComplete();
-    }
+    public function isComplete();
 
     /**
      * Return all active modules as array
@@ -52,10 +43,7 @@ class ConfigAdapter implements ConfigAdapterInterface
      *
      * @deprecated Use ModuleLoader::getActive() instead
      */
-    public function getActiveModules()
-    {
-        return $this->instantiate()->getActiveModules();
-    }
+    public function getActiveModules();
 
     /**
      * Add a configuration variable to the local configuration file
@@ -63,10 +51,7 @@ class ConfigAdapter implements ConfigAdapterInterface
      * @param string $strKey   The full variable name
      * @param mixed  $varValue The configuration value
      */
-    public function add($strKey, $varValue)
-    {
-        $this->instantiate()->add($strKey, $varValue);
-    }
+    public function add($strKey, $varValue);
 
     /**
      * Alias for Config::add()
@@ -74,20 +59,14 @@ class ConfigAdapter implements ConfigAdapterInterface
      * @param string $strKey   The full variable name
      * @param mixed  $varValue The configuration value
      */
-    public function update($strKey, $varValue)
-    {
-        $this->instantiate()->update($strKey, $varValue);
-    }
+    public function update($strKey, $varValue);
 
     /**
      * Remove a configuration variable
      *
      * @param string $strKey The full variable name
      */
-    public function delete($strKey)
-    {
-        $this->instantiate()->delete($strKey);
-    }
+    public function delete($strKey);
 
     /**
      * Return a configuration value
@@ -96,10 +75,7 @@ class ConfigAdapter implements ConfigAdapterInterface
      *
      * @return mixed|null The configuration value
      */
-    public function get($strKey)
-    {
-        return \Contao\Config::get($strKey);
-    }
+    public function get($strKey);
 
     /**
      * Temporarily set a configuration value
@@ -107,10 +83,7 @@ class ConfigAdapter implements ConfigAdapterInterface
      * @param string $strKey   The short key (e.g. "displayErrors")
      * @param string $varValue The configuration value
      */
-    public function set($strKey, $varValue)
-    {
-        \Contao\Config::set($strKey, $varValue);
-    }
+    public function set($strKey, $varValue);
 
     /**
      * Permanently set a configuration value
@@ -118,26 +91,17 @@ class ConfigAdapter implements ConfigAdapterInterface
      * @param string $strKey   The short key or full variable name
      * @param mixed  $varValue The configuration value
      */
-    public function persist($strKey, $varValue)
-    {
-        \Contao\Config::persist($strKey, $varValue);
-    }
+    public function persist($strKey, $varValue);
 
     /**
      * Permanently remove a configuration value
      *
      * @param string $strKey The short key or full variable name
      */
-    public function remove($strKey)
-    {
-        \Contao\Config::remove($strKey);
-    }
+    public function remove($strKey);
 
     /**
      * Preload the default and local configuration
      */
-    public function preload()
-    {
-        \Contao\Config::preload();
-    }
+    public function preload();
 }

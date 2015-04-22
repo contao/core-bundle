@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\System;
+use Contao\CoreBundle\Adapter\SystemAdapterInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -24,6 +24,22 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class ToggleViewListener extends ScopeAwareListener
 {
     /**
+     * System
+     * @var SystemAdapterInterface
+     */
+    private $system;
+
+    /**
+     * Constructor.
+     *
+     * @param SystemAdapterInterface $system
+     */
+    public function __construct(SystemAdapterInterface $system)
+    {
+        $this->system = $system;
+    }
+
+    /**
      * Toggles the TL_VIEW cookie and redirects back to the referring page.
      *
      * @param GetResponseEvent $event The event object
@@ -36,7 +52,7 @@ class ToggleViewListener extends ScopeAwareListener
             return;
         }
 
-        $response = new RedirectResponse(System::getReferer(), 303);
+        $response = new RedirectResponse($this->system->getReferer(), 303);
         $response->headers->setCookie($this->getCookie($request->query->get('toggle_view'), $request->getBasePath()));
 
         $event->setResponse($response);

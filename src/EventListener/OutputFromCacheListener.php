@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\Frontend;
+use Contao\CoreBundle\Adapter\FrontendAdapterInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -22,6 +22,22 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class OutputFromCacheListener extends ScopeAwareListener
 {
     /**
+     * Front end
+     * @var FrontendAdapterInterface
+     */
+    private $frontend;
+
+    /**
+     * Constructor.
+     *
+     * @param FrontendAdapterInterface $frontend
+     */
+    public function __construct(FrontendAdapterInterface $frontend)
+    {
+        $this->frontend = $frontend;
+    }
+
+    /**
      * Forwards the request to the Frontend class and sets the response if any.
      *
      * @param GetResponseEvent $event The event object
@@ -32,7 +48,7 @@ class OutputFromCacheListener extends ScopeAwareListener
             return;
         }
 
-        if (null !== ($response = Frontend::getResponseFromCache())) {
+        if (null !== ($response = $this->frontend->getResponseFromCache())) {
             $event->setResponse($response);
         }
     }

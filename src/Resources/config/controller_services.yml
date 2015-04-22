@@ -1,0 +1,22 @@
+services:
+    contao.controller.backend:
+        class: Contao\CoreBundle\Controller\BackendController
+        arguments:
+            - "@contao.adapter.backend_main"
+            - "@contao.adapter.backend_index"
+            - "@contao.adapter.backend_install"
+            - "@contao.adapter.backend_password"
+            - "@contao.adapter.backend_preview"
+            - "@contao.adapter.backend_confirm"
+            - "@contao.adapter.backend_file"
+            - "@contao.adapter.backend_help"
+            - "@contao.adapter.backend_page"
+            - "@contao.adapter.backend_popup"
+            - "@contao.adapter.backend_switch"
+
+    contao.controller.frontend:
+        class: Contao\CoreBundle\Controller\FrontendController
+        arguments:
+          - "@contao.adapter.frontend_index"
+          - "@contao.adapter.frontend_cron"
+          - "@contao.adapter.frontend_share"

@@ -10,9 +10,9 @@
 
 namespace Contao\CoreBundle\Controller;
 
-use Contao\FrontendCron;
-use Contao\FrontendIndex;
-use Contao\FrontendShare;
+use Contao\CoreBundle\Adapter\FrontendCronAdapterInterface;
+use Contao\CoreBundle\Adapter\FrontendIndexAdapterInterface;
+use Contao\CoreBundle\Adapter\FrontendShareAdapterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +23,45 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
  *
- * @Route(defaults={"_scope" = "frontend"})
+ * @Route(defaults={"_scope" = "frontend"}, service="contao.controller.frontend")
  */
 class FrontendController extends Controller
 {
+    /**
+     * Front end index
+     * @var FrontendIndexAdapterInterface
+     */
+    private $frontendIndex;
+
+    /**
+     * Front end cron
+     * @var FrontendCronAdapterInterface
+     */
+    private $frontendCron;
+
+    /**
+     * Front end share
+     * @var FrontendShareAdapterInterface
+     */
+    private $frontendShare;
+
+    /**
+     * Constructor.
+     *
+     * @param FrontendIndexAdapterInterface $frontendIndex
+     * @param FrontendCronAdapterInterface  $frontendCron
+     * @param FrontendShareAdapterInterface $frontendShare
+     */
+    public function __construct(
+        FrontendIndexAdapterInterface $frontendIndex,
+        FrontendCronAdapterInterface $frontendCron,
+        FrontendShareAdapterInterface $frontendShare
+    ) {
+        $this->frontendIndex = $frontendIndex;
+        $this->frontendCron  = $frontendCron;
+        $this->frontendShare = $frontendShare;
+    }
+
     /**
      * Runs the main front end controller.
      *
@@ -34,9 +69,7 @@ class FrontendController extends Controller
      */
     public function indexAction()
     {
-        $controller = new FrontendIndex();
-
-        return $controller->run();
+        return $this->frontendIndex->run();
     }
 
     /**
@@ -48,9 +81,7 @@ class FrontendController extends Controller
      */
     public function cronAction()
     {
-        $controller = new FrontendCron();
-
-        return $controller->run();
+        return $this->frontendCron->run();
     }
 
     /**
@@ -62,8 +93,6 @@ class FrontendController extends Controller
      */
     public function shareAction()
     {
-        $controller = new FrontendShare();
-
-        return $controller->run();
+        return $this->frontendShare->run();
     }
 }

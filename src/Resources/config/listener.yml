@@ -64,6 +64,8 @@ services:
 
     contao.listener.output_from_cache:
         class: Contao\CoreBundle\EventListener\OutputFromCacheListener
+        arguments:
+            - "@contao.adapter.frontend"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
@@ -102,6 +104,8 @@ services:
 
     contao.listener.toggle_view:
         class: Contao\CoreBundle\EventListener\ToggleViewListener
+        arguments:
+            - "@contao.adapter.system"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
