@@ -68,7 +68,7 @@ class FilesyncCommandTest extends TestCase
     private function mockDbafs()
     {
         $dbafs = $this->getMock('Contao\\CoreBundle\\Adapter\\DbafsAdapter');
-        $dbafs->expects($this->any())->method('syncFiles');
+        $dbafs->expects($this->any())->method('syncFiles')->willReturn('sync.log');
 
         return $dbafs;
     }
