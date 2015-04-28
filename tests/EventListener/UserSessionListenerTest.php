@@ -219,12 +219,12 @@ class UserSessionListenerTest extends TestCase
         $session = $this->mockSession();
 
         $user = $this->getMockBuilder($userClass)
-            ->setMethods(['__get'])
+            ->setMethods(['getValue'])
             ->getMock()
         ;
 
         $user->expects($this->any())
-            ->method('__get')
+            ->method('getValue')
             ->with($this->equalTo('session'))
             ->willReturn($sessionValuesToBeSet)
         ;
@@ -298,13 +298,9 @@ class UserSessionListenerTest extends TestCase
             ->method('execute')
         ;
 
-        $user = $this->getMockBuilder($userClass)
-            ->setMethods(['__get'])
-            ->getMock()
-        ;
 
-        $user
-            ->expects($this->any())
+        $user = $this->getMock($userClass, ['getTable']);
+        $user->expects($this->any())
             ->method('getTable')
             ->willReturn($userTable)
         ;
@@ -363,7 +359,7 @@ class UserSessionListenerTest extends TestCase
             'Test current referer null returns correct new referer for back end scope' => [
                 ContaoCoreBundle::SCOPE_BACKEND,
                 'contao_backend',
-                'Contao\\BackendUser',
+                'Contao\\CoreBundle\\Adpater\\BackendUserAdapterInterface',
                 'tl_user',
                 $request,
                 'referer',
@@ -378,7 +374,7 @@ class UserSessionListenerTest extends TestCase
             'Test referer returns correct new referer for back end scope' => [
                 ContaoCoreBundle::SCOPE_BACKEND,
                 'contao_backend',
-                'Contao\\BackendUser',
+                'Contao\\CoreBundle\\Adpater\\BackendUserAdapterInterface',
                 'tl_user',
                 $requestWithRefInUrl,
                 'referer',
@@ -398,7 +394,7 @@ class UserSessionListenerTest extends TestCase
             'Test current referer null returns null for front end scope' => [
                 ContaoCoreBundle::SCOPE_FRONTEND,
                 'contao_frontend',
-                'Contao\\FrontendUser',
+                'Contao\\CoreBundle\\Adpater\\FrontendUserAdapterInterface',
                 'tl_member',
                 $request,
                 'referer',
@@ -408,7 +404,7 @@ class UserSessionListenerTest extends TestCase
             'Test referer returns correct new referer for front end scope' => [
                 ContaoCoreBundle::SCOPE_FRONTEND,
                 'contao_frontend',
-                'Contao\\FrontendUser',
+                'Contao\\CoreBundle\\Adpater\\FrontendUserAdapterInterface',
                 'tl_member',
                 $requestWithRefInUrl,
                 'referer',
@@ -424,7 +420,7 @@ class UserSessionListenerTest extends TestCase
             'Test referers are correctly added to the referers array (see #143)' => [
                 ContaoCoreBundle::SCOPE_BACKEND,
                 'contao_backend',
-                'Contao\\BackendUser',
+                'Contao\\CoreBundle\\Adpater\\BackendUserAdapterInterface',
                 'tl_url',
                 $requestWithRefInUrl,
                 'referer',
@@ -475,8 +471,8 @@ class UserSessionListenerTest extends TestCase
     public function scopeProvider()
     {
         return [
-            [ContaoCoreBundle::SCOPE_BACKEND, 'Contao\\BackendUser', 'contao_backend'],
-            [ContaoCoreBundle::SCOPE_FRONTEND, 'Contao\\FrontendUser', 'contao_frontend'],
+            [ContaoCoreBundle::SCOPE_BACKEND, 'Contao\\CoreBundle\\Adpater\\BackendUserAdapterInterface', 'contao_backend'],
+            [ContaoCoreBundle::SCOPE_FRONTEND, 'Contao\\CoreBundle\\Adpater\\FrontendUserAdapterInterface', 'contao_frontend'],
         ];
     }
 
