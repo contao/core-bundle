@@ -14,7 +14,6 @@ use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Contao\CoreBundle\Security\ContaoAuthenticator;
 use Contao\CoreBundle\Security\User\ContaoUserProvider;
 use Contao\CoreBundle\Test\TestCase;
-use Contao\FrontendUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
@@ -31,7 +30,7 @@ class ContaoAuthenticatorTest extends TestCase
      */
     public function testInstantiation()
     {
-        $authenticator = new ContaoAuthenticator(new ContaoUserProvider());
+        $authenticator = new ContaoAuthenticator($this->getUserProvider());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Security\\ContaoAuthenticator', $authenticator);
     }
@@ -41,7 +40,7 @@ class ContaoAuthenticatorTest extends TestCase
      */
     public function testCreateToken()
     {
-        $authenticator = new ContaoAuthenticator(new ContaoUserProvider());
+        $authenticator = new ContaoAuthenticator($this->getUserProvider());
         $token         = $authenticator->createToken(new Request(), 'frontend');
 
         $this->assertInstanceOf('Symfony\\Component\\Security\\Core\\Authentication\\Token\\AnonymousToken', $token);
@@ -54,21 +53,21 @@ class ContaoAuthenticatorTest extends TestCase
      */
     public function testAuthenticateToken()
     {
-        $authenticator = new ContaoAuthenticator(new ContaoUserProvider());
+        $authenticator = new ContaoAuthenticator($this->getUserProvider());
 
         $this->assertInstanceOf(
             'Contao\\CoreBundle\\Security\\Authentication\\ContaoToken',
-            $authenticator->authenticateToken(new ContaoToken(FrontendUser::getInstance()), new ContaoUserProvider(), 'frontend')
+            $authenticator->authenticateToken(new ContaoToken($this->mockFrontendUser()), $this->getUserProvider(), 'frontend')
         );
 
         $this->assertInstanceOf(
             'Contao\\CoreBundle\\Security\\Authentication\\ContaoToken',
-            $authenticator->authenticateToken(new AnonymousToken('frontend', 'anon.'), new ContaoUserProvider(), 'frontend')
+            $authenticator->authenticateToken(new AnonymousToken('frontend', 'anon.'), $this->getUserProvider(), 'frontend')
         );
 
         $this->assertEquals(
             new AnonymousToken('console', 'anon.'),
-            $authenticator->authenticateToken(new AnonymousToken('console', 'anon.'), new ContaoUserProvider(), 'console')
+            $authenticator->authenticateToken(new AnonymousToken('console', 'anon.'), $this->getUserProvider(), 'console')
         );
     }
 
@@ -79,8 +78,8 @@ class ContaoAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidToken()
     {
-        $authenticator = new ContaoAuthenticator(new ContaoUserProvider());
-        $authenticator->authenticateToken(new PreAuthenticatedToken('foo', 'bar', 'console'), new ContaoUserProvider(), 'console');
+        $authenticator = new ContaoAuthenticator($this->getUserProvider());
+        $authenticator->authenticateToken(new PreAuthenticatedToken('foo', 'bar', 'console'), $this->getUserProvider(), 'console');
     }
 
     /**
@@ -88,10 +87,47 @@ class ContaoAuthenticatorTest extends TestCase
      */
     public function testSupportsToken()
     {
-        $authenticator = new ContaoAuthenticator(new ContaoUserProvider());
+        $authenticator = new ContaoAuthenticator($this->getUserProvider());
 
-        $this->assertTrue($authenticator->supportsToken(new ContaoToken(FrontendUser::getInstance()), 'frontend'));
+        $this->assertTrue($authenticator->supportsToken(new ContaoToken($this->mockFrontendUser()), 'frontend'));
         $this->assertTrue($authenticator->supportsToken(new AnonymousToken('anon.', 'foo'), 'frontend'));
         $this->assertFalse($authenticator->supportsToken(new PreAuthenticatedToken('foo', 'bar', 'console'), 'console'));
+    }
+
+    /**
+     * Mock front end user adapter
+     */
+    private function mockFrontendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Mock back end user adapter
+     */
+    private function mockBackendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Get user provider
+     *
+     * @return ContaoUserProvider
+     */
+    private function getUserProvider()
+    {
+        return new ContaoUserProvider(
+            $this->mockFrontendUser(),
+            $this->mockBackendUser()
+        );
     }
 }

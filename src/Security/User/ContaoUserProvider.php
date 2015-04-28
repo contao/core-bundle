@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Adapter\BackendUserAdapterInterface;
+use Contao\CoreBundle\Adapter\FrontendUserAdapterInterface;
 use Contao\FrontendUser;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,6 +27,34 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 class ContaoUserProvider implements UserProviderInterface
 {
     /**
+     * Front end user
+     * @var FrontendUserAdapterInterface
+     */
+    private $frontendUser;
+
+    /**
+     * Back end user
+     * @var BackendUserAdapterInterface
+     */
+    private $backendUser;
+
+
+    /**
+     * Constructor.
+     *
+     * @param FrontendUserAdapterInterface $frontendUser
+     * @param BackendUserAdapterInterface  $backendUser
+     */
+    public function __construct(
+        FrontendUserAdapterInterface $frontendUser,
+        BackendUserAdapterInterface $backendUser
+    ) {
+        $this->frontendUser = $frontendUser;
+        $this->backendUser  = $backendUser;
+    }
+
+
+    /**
      * {@inheritdoc}
      *
      * @return BackendUser|FrontendUser The user object
@@ -32,11 +62,11 @@ class ContaoUserProvider implements UserProviderInterface
     public function loadUserByUsername($username)
     {
         if ('backend' === $username) {
-            return BackendUser::getInstance();
+            return $this->backendUser->instantiate();
         }
 
         if ('frontend' === $username) {
-            return FrontendUser::getInstance();
+            return $this->frontendUser->instantiate();
         }
 
         throw new UsernameNotFoundException('Can only load user "frontend" or "backend".');
@@ -55,6 +85,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return is_subclass_of($class, 'Contao\\User');
+        return $class instanceof FrontendUserAdapterInterface
+            || $class instanceof BackendUserAdapterInterface;
     }
 }
