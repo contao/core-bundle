@@ -72,7 +72,7 @@ class ContaoToken extends AbstractToken
         } elseif ($user instanceof BackendUserAdapterInterface) {
             $roles[] = 'ROLE_USER';
 
-            if ($user->isAdmin) {
+            if ($user->getValue('isAdmin')) {
                 $roles[] = 'ROLE_ADMIN';
             }
         }

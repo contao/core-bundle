@@ -10,8 +10,6 @@
 
 namespace Contao\CoreBundle\Test\Security\Authentication;
 
-use Contao\BackendUser;
-use Contao\FrontendUser;
 use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\Security\Core\Role\Role;
@@ -25,26 +23,20 @@ class ContaoTokenTest extends TestCase
 {
     /**
      * Tests the object instantiation.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testInstantiation()
     {
-        $token = new ContaoToken(FrontendUser::getInstance());
+        $token = new ContaoToken($this->mockFrontendUser());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Security\\Authentication\\ContaoToken', $token);
     }
 
     /**
      * Tests a front end user.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testFrontendUser()
     {
-        $token = new ContaoToken(FrontendUser::getInstance());
+        $token = new ContaoToken($this->mockFrontendUser());
 
         $this->assertTrue($token->isAuthenticated());
         $this->assertEquals('', $token->getCredentials());
@@ -59,13 +51,10 @@ class ContaoTokenTest extends TestCase
 
     /**
      * Tests a back end user.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testBackendUser()
     {
-        $token = new ContaoToken(BackendUser::getInstance());
+        $token = new ContaoToken($this->mockBackendUser());
 
         $this->assertTrue($token->isAuthenticated());
         $this->assertEquals('', $token->getCredentials());
@@ -82,16 +71,51 @@ class ContaoTokenTest extends TestCase
     /**
      * Tests an unauthenticated user.
      *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
      */
     public function testUnauthenticatedUser()
     {
-        /** @var FrontendUser|object $user */
-        $user = FrontendUser::getInstance();
-        $user->authenticated = false;
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user->expects($this->once())->method('authenticate')->willReturn(false);
 
         new ContaoToken($user);
+    }
+
+    /**
+     * Mock front end user adapter
+     */
+    private function mockFrontendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Mock back end user adapter
+     */
+    private function mockBackendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+        $user->expects($this->any())->method('getValue')->with($this->equalTo('isAdmin'))->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Get user provider
+     *
+     * @return ContaoUserProvider
+     */
+    private function getUserProvider()
+    {
+        return new ContaoUserProvider(
+            $this->mockFrontendUser(),
+            $this->mockBackendUser()
+        );
     }
 }
