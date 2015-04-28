@@ -11,50 +11,32 @@
 namespace Contao\CoreBundle\Adapter;
 
 /**
- * Provides an adapter for the Contao BackendInstall class.
+ * Provides an adapter interface for the Contao Backend class.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class BackendInstallAdapter implements BackendInstallAdapterInterface
+interface BackendAdapterInterface
 {
-    /**
-     * Run the controller and parse the login template
-     */
-    public function run()
-    {
-        $instance = new \Contao\BackendInstall();
-        $instance->run();
-    }
-
     /**
      * Return the current theme as string
      *
      * @return string The name of the theme
      */
-    public function getTheme()
-    {
-        return \Contao\BackendInstall::getTheme();
-    }
+    public function getTheme();
 
     /**
      * Return the back end themes as array
      *
      * @return array An array of available back end themes
      */
-    public function getThemes()
-    {
-        return \Contao\BackendInstall::getThemes();
-    }
+    public function getThemes();
 
     /**
      * Return the TinyMCE language
      *
      * @return string
      */
-    public function getTinyMceLanguage()
-    {
-        return \Contao\BackendInstall::getTinyMceLanguage();
-    }
+    public function getTinyMceLanguage();
 
     /**
      * Validate an ACE type
@@ -63,20 +45,14 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string
      */
-    public function getAceType($type)
-    {
-        return \Contao\BackendInstall::getAceType($type);
-    }
+    public function getAceType($type);
 
     /**
      * Return a list of TinyMCE templates as JSON string
      *
      * @return string
      */
-    public function getTinyTemplates()
-    {
-        return \Contao\BackendInstall::getTinyTemplates();
-    }
+    public function getTinyTemplates();
 
     /**
      * Add the request token to the URL
@@ -87,10 +63,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string
      */
-    public function addToUrl($strRequest, $blnAddRef = true, $arrUnset = array())
-    {
-        return \Contao\BackendInstall::addToUrl($strRequest, $blnAddRef, $arrUnset);
-    }
+    public function addToUrl($strRequest, $blnAddRef = true, $arrUnset = array());
 
     /**
      * Get all searchable pages and return them as array
@@ -102,10 +75,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return array
      */
-    public function findSearchablePages($pid = 0, $domain = '', $blnIsSitemap = false, $strLanguage = '')
-    {
-        return \Contao\BackendInstall::findSearchablePages($pid, $domain, $blnIsSitemap, $strLanguage);
-    }
+    public function findSearchablePages($pid = 0, $domain = '', $blnIsSitemap = false, $strLanguage = '');
 
     /**
      * Add a breadcrumb menu to the page tree
@@ -114,10 +84,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @throws \RuntimeException
      */
-    public function addPagesBreadcrumb($strKey = 'tl_page_node')
-    {
-        \Contao\BackendInstall::addPagesBreadcrumb($strKey);
-    }
+    public function addPagesBreadcrumb($strKey = 'tl_page_node');
 
     /**
      * Add an image to each page in the tree
@@ -131,10 +98,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string
      */
-    public function addPageIcon($row, $label, $dc = null, $imageAttribute = '', $blnReturnImage = false, $blnProtected = false)
-    {
-        return \Contao\BackendInstall::addPageIcon($row, $label, $dc, $imageAttribute, $blnReturnImage, $blnProtected);
-    }
+    public function addPageIcon($row, $label, $dc = null, $imageAttribute = '', $blnReturnImage = false, $blnProtected = false);
 
     /**
      * Add a breadcrumb menu to the file tree
@@ -143,35 +107,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @throws \RuntimeException
      */
-    public function addFilesBreadcrumb($strKey = 'tl_files_node')
-    {
-        \Contao\BackendInstall::addFilesBreadcrumb($strKey);
-    }
-
-    /**
-     * Get all allowed pages and return them as string
-     *
-     * @return string
-     */
-    public function createPageList()
-    {
-        $instance = new \Contao\BackendInstall();
-        return $instance->createPageList();
-    }
-
-    /**
-     * Get all allowed files and return them as string
-     *
-     * @param string  $strFilter
-     * @param boolean $filemount
-     *
-     * @return string
-     */
-    public function createFileList($strFilter = '', $filemount = false)
-    {
-        $instance = new \Contao\BackendInstall();
-        return $instance->createFileList($strFilter, $filemount);
-    }
+    public function addFilesBreadcrumb($strKey = 'tl_files_node');
 
     /**
      * Find a particular template file and return its path
@@ -184,10 +120,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @throws \InvalidArgumentException If $strFormat is unknown
      * @throws \RuntimeException         If the template group folder is insecure
      */
-    public function getTemplate($strTemplate, $strFormat = 'html5')
-    {
-        return \Contao\BackendInstall::getTemplate($strTemplate, $strFormat);
-    }
+    public function getTemplate($strTemplate, $strFormat = 'html5');
 
     /**
      * Return all template files of a particular group as array
@@ -196,10 +129,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return array An array of template names
      */
-    public function getTemplateGroup($strPrefix)
-    {
-        return \Contao\BackendInstall::getTemplateGroup($strPrefix);
-    }
+    public function getTemplateGroup($strPrefix);
 
     /**
      * Generate a front end module and return it as string
@@ -209,10 +139,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The module HTML markup
      */
-    public function getFrontendModule($intId, $strColumn = 'main')
-    {
-        return \Contao\BackendInstall::getFrontendModule($intId, $strColumn);
-    }
+    public function getFrontendModule($intId, $strColumn = 'main');
 
     /**
      * Generate an article and return it as string
@@ -224,10 +151,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string|boolean The article HTML markup or false
      */
-    public function getArticle($varId, $blnMultiMode = false, $blnIsInsertTag = false, $strColumn = 'main')
-    {
-        return \Contao\BackendInstall::getArticle($varId, $blnMultiMode, $blnIsInsertTag, $strColumn);
-    }
+    public function getArticle($varId, $blnMultiMode = false, $blnIsInsertTag = false, $strColumn = 'main');
 
     /**
      * Generate a content element and return it as string
@@ -237,10 +161,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The content element HTML markup
      */
-    public function getContentElement($intId, $strColumn = 'main')
-    {
-        return \Contao\BackendInstall::getContentElement($intId, $strColumn);
-    }
+    public function getContentElement($intId, $strColumn = 'main');
 
     /**
      * Generate a form and return it as string
@@ -250,10 +171,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The form HTML markup
      */
-    public function getForm($varId, $strColumn = 'main')
-    {
-        return \Contao\BackendInstall::getForm($varId, $strColumn);
-    }
+    public function getForm($varId, $strColumn = 'main');
 
     /**
      * Calculate the page status icon name based on the page parameters
@@ -262,10 +180,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The status icon name
      */
-    public function getPageStatusIcon($objPage)
-    {
-        return \Contao\BackendInstall::getPageStatusIcon($objPage);
-    }
+    public function getPageStatusIcon($objPage);
 
     /**
      * Check whether an element is visible in the front end
@@ -274,10 +189,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return boolean True if the element is visible
      */
-    public function isVisibleElement($objElement)
-    {
-        return \Contao\BackendInstall::isVisibleElement($objElement);
-    }
+    public function isVisibleElement($objElement);
 
     /**
      * Replace insert tags with their values
@@ -287,10 +199,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The text with the replaced tags
      */
-    public function replaceInsertTags($strBuffer, $blnCache = true)
-    {
-        return \Contao\BackendInstall::replaceInsertTags($strBuffer, $blnCache);
-    }
+    public function replaceInsertTags($strBuffer, $blnCache = true);
 
     /**
      * Replace the dynamic script tags (see #4203)
@@ -299,10 +208,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The string with the replaced tags
      */
-    public function replaceDynamicScriptTags($strBuffer)
-    {
-        return \Contao\BackendInstall::replaceDynamicScriptTags($strBuffer);
-    }
+    public function replaceDynamicScriptTags($strBuffer);
 
     /**
      * Compile the margin format definition based on an array of values
@@ -312,18 +218,12 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The CSS markup
      */
-    public function generateMargin($arrValues, $strType = 'margin')
-    {
-        return \Contao\BackendInstall::generateMargin($arrValues, $strType);
-    }
+    public function generateMargin($arrValues, $strType = 'margin');
 
     /**
      * Reload the current page
      */
-    public function reload()
-    {
-        \Contao\BackendInstall::reload();
-    }
+    public function reload();
 
     /**
      * Redirect to another page
@@ -331,10 +231,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param string  $strLocation The target URL
      * @param integer $intStatus   The HTTP status code (defaults to 303)
      */
-    public function redirect($strLocation, $intStatus = 303)
-    {
-        \Contao\BackendInstall::redirect($strLocation, $intStatus);
-    }
+    public function redirect($strLocation, $intStatus = 303);
 
     /**
      * Generate a front end URL
@@ -346,10 +243,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string An URL that can be used in the front end
      */
-    public function generateFrontendUrl($arrRow, $strParams = null, $strForceLang = null, $blnFixDomain = false)
-    {
-        return \Contao\BackendInstall::generateFrontendUrl($arrRow, $strParams, $strForceLang, $blnFixDomain);
-    }
+    public function generateFrontendUrl($arrRow, $strParams = null, $strForceLang = null, $blnFixDomain = false);
 
     /**
      * Convert relative URLs in href and src attributes to absolute URLs
@@ -360,20 +254,14 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The text with the replaced URLs
      */
-    public function convertRelativeUrls($strContent, $strBase = '', $blnHrefOnly = false)
-    {
-        return \Contao\BackendInstall::convertRelativeUrls($strContent, $strBase, $blnHrefOnly);
-    }
+    public function convertRelativeUrls($strContent, $strBase = '', $blnHrefOnly = false);
 
     /**
      * Send a file to the browser so the "save as …" dialogue opens
      *
      * @param string $strFile The file path
      */
-    public function sendFileToBrowser($strFile)
-    {
-        \Contao\BackendInstall::sendFileToBrowser($strFile);
-    }
+    public function sendFileToBrowser($strFile);
 
     /**
      * Load a set of DCA files
@@ -381,10 +269,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param string  $strTable   The table name
      * @param boolean $blnNoCache If true, the cache will be bypassed
      */
-    public function loadDataContainer($strTable, $blnNoCache = false)
-    {
-        \Contao\BackendInstall::loadDataContainer($strTable, $blnNoCache);
-    }
+    public function loadDataContainer($strTable, $blnNoCache = false);
 
     /**
      * Add an image to a template
@@ -394,10 +279,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param integer $intMaxWidth   An optional maximum width of the image
      * @param string  $strLightboxId An optional lightbox ID
      */
-    public function addImageToTemplate($objTemplate, $arrItem, $intMaxWidth = null, $strLightboxId = null)
-    {
-        \Contao\BackendInstall::addImageToTemplate($objTemplate, $arrItem, $intMaxWidth, $strLightboxId);
-    }
+    public function addImageToTemplate($objTemplate, $arrItem, $intMaxWidth = null, $strLightboxId = null);
 
     /**
      * Add enclosures to a template
@@ -406,20 +288,14 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param array  $arrItem     The element or module as array
      * @param string $strKey      The name of the enclosures field in $arrItem
      */
-    public function addEnclosuresToTemplate($objTemplate, $arrItem, $strKey = 'enclosure')
-    {
-        \Contao\BackendInstall::addEnclosuresToTemplate($objTemplate, $arrItem, $strKey);
-    }
+    public function addEnclosuresToTemplate($objTemplate, $arrItem, $strKey = 'enclosure');
 
     /**
      * Set the static URL constants
      *
      * @param \PageModel $objPage An optional page object
      */
-    public function setStaticUrls($objPage = null)
-    {
-        \Contao\BackendInstall::setStaticUrls($objPage);
-    }
+    public function setStaticUrls($objPage = null);
 
     /**
      * Add a static URL to a script
@@ -428,10 +304,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The script path with the static URL
      */
-    public function addStaticUrlTo($script)
-    {
-        return \Contao\BackendInstall::addStaticUrlTo($script);
-    }
+    public function addStaticUrlTo($script);
 
     /**
      * Return the back end themes as array
@@ -440,10 +313,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Backend::getThemes() instead
      */
-    public function getBackendThemes()
-    {
-        return \Contao\BackendInstall::getBackendThemes();
-    }
+    public function getBackendThemes();
 
     /**
      * Get the details of a page including inherited parameters
@@ -454,10 +324,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use PageModel::findWithDetails() or PageModel->loadDetails() instead
      */
-    public function getPageDetails($intId)
-    {
-        return \Contao\BackendInstall::getPageDetails($intId);
-    }
+    public function getPageDetails($intId);
 
     /**
      * Restore basic entities
@@ -468,10 +335,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use String::restoreBasicEntities() instead
      */
-    public function restoreBasicEntities($strBuffer)
-    {
-        return \Contao\BackendInstall::restoreBasicEntities($strBuffer);
-    }
+    public function restoreBasicEntities($strBuffer);
 
     /**
      * Generate an image tag and return it as string
@@ -484,10 +348,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Image::getHtml() instead
      */
-    public function generateImage($src, $alt = '', $attributes = '')
-    {
-        return \Contao\BackendInstall::generateImage($src, $alt, $attributes);
-    }
+    public function generateImage($src, $alt = '', $attributes = '');
 
     /**
      * Return all page sections as array
@@ -496,10 +357,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated See #4693
      */
-    public function getPageSections()
-    {
-        return \Contao\BackendInstall::getPageSections();
-    }
+    public function getPageSections();
 
     /**
      * Return a "selected" attribute if the option is selected
@@ -511,10 +369,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Widget::optionSelected() instead
      */
-    public function optionSelected($strOption, $varValues)
-    {
-        return \Contao\BackendInstall::optionSelected($strOption, $varValues);
-    }
+    public function optionSelected($strOption, $varValues);
 
     /**
      * Return a "checked" attribute if the option is checked
@@ -526,10 +381,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Widget::optionChecked() instead
      */
-    public function optionChecked($strOption, $varValues)
-    {
-        return \Contao\BackendInstall::optionChecked($strOption, $varValues);
-    }
+    public function optionChecked($strOption, $varValues);
 
     /**
      * Find a content element in the TL_CTE array and return the class name
@@ -540,10 +392,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use ContentElement::findClass() instead
      */
-    public function findContentElement($strName)
-    {
-        return \Contao\BackendInstall::findContentElement($strName);
-    }
+    public function findContentElement($strName);
 
     /**
      * Find a front end module in the FE_MOD array and return the class name
@@ -554,26 +403,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Module::findClass() instead
      */
-    public function findFrontendModule($strName)
-    {
-        return \Contao\BackendInstall::findFrontendModule($strName);
-    }
-
-    /**
-     * Get an object property
-     *
-     * Lazy load the Input and Environment libraries (which are now static) and
-     * only include them as object property if an old module requires it
-     *
-     * @param string $strKey The property name
-     *
-     * @return mixed|null The property value or null
-     */
-    public function getValue($strKey)
-    {
-        $instance = new \Contao\BackendInstall();
-        return $instance->{$strKey};
-    }
+    public function findFrontendModule($strName);
 
     /**
      * Import a library in non-object context
@@ -584,10 +414,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return object The imported object
      */
-    public function importStatic($strClass, $strKey = null, $blnForce = false)
-    {
-        return \Contao\BackendInstall::importStatic($strClass, $strKey, $blnForce);
-    }
+    public function importStatic($strClass, $strKey = null, $blnForce = false);
 
     /**
      * Add a log entry to the database
@@ -596,10 +423,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param string $strFunction The function name
      * @param string $strCategory The category name
      */
-    public function log($strText, $strFunction, $strCategory)
-    {
-        \Contao\BackendInstall::log($strText, $strFunction, $strCategory);
-    }
+    public function log($strText, $strFunction, $strCategory);
 
     /**
      * Return the referer URL and optionally encode ampersands
@@ -609,10 +433,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The referer URL
      */
-    public function getReferer($blnEncodeAmpersands = false, $strTable = null)
-    {
-        return \Contao\BackendInstall::getReferer($blnEncodeAmpersands, $strTable);
-    }
+    public function getReferer($blnEncodeAmpersands = false, $strTable = null);
 
     /**
      * Load a set of language files
@@ -621,10 +442,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param boolean $strLanguage An optional language code
      * @param boolean $blnNoCache  If true, the cache will be bypassed
      */
-    public function loadLanguageFile($strName, $strLanguage = null, $blnNoCache = false)
-    {
-        \Contao\BackendInstall::loadLanguageFile($strName, $strLanguage, $blnNoCache);
-    }
+    public function loadLanguageFile($strName, $strLanguage = null, $blnNoCache = false);
 
     /**
      * Check whether a language is installed
@@ -633,20 +451,14 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return boolean True if the language is installed
      */
-    public function isInstalledLanguage($strLanguage)
-    {
-        return \Contao\BackendInstall::isInstalledLanguage($strLanguage);
-    }
+    public function isInstalledLanguage($strLanguage);
 
     /**
      * Return the countries as array
      *
      * @return array An array of country names
      */
-    public function getCountries()
-    {
-        return \Contao\BackendInstall::getCountries();
-    }
+    public function getCountries();
 
     /**
      * Return the available languages as array
@@ -655,30 +467,21 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return array An array of languages
      */
-    public function getLanguages($blnInstalledOnly = false)
-    {
-        return \Contao\BackendInstall::getLanguages($blnInstalledOnly);
-    }
+    public function getLanguages($blnInstalledOnly = false);
 
     /**
      * Return the timezones as array
      *
      * @return array An array of timezones
      */
-    public function getTimeZones()
-    {
-        return \Contao\BackendInstall::getTimeZones();
-    }
+    public function getTimeZones();
 
     /**
      * Return all image sizes as array
      *
      * @return array The available image sizes
      */
-    public function getImageSizes()
-    {
-        return \Contao\BackendInstall::getImageSizes();
-    }
+    public function getImageSizes();
 
     /**
      * Urlencode a file path preserving slashes
@@ -687,10 +490,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The encoded file path
      */
-    public function urlEncode($strPath)
-    {
-        return \Contao\BackendInstall::urlEncode($strPath);
-    }
+    public function urlEncode($strPath);
 
     /**
      * Set a cookie
@@ -703,10 +503,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      * @param boolean $blnSecure   If true, the secure flag will be set
      * @param boolean $blnHttpOnly If true, the http-only flag will be set
      */
-    public function setCookie($strName, $varValue, $intExpires, $strPath = null, $strDomain = null, $blnSecure = false, $blnHttpOnly = false)
-    {
-        \Contao\BackendInstall::setCookie($strName, $varValue, $intExpires, $strPath, $strDomain, $blnSecure, $blnHttpOnly);
-    }
+    public function setCookie($strName, $varValue, $intExpires, $strPath = null, $strDomain = null, $blnSecure = false, $blnHttpOnly = false);
 
     /**
      * Convert a byte value into a human readable format
@@ -716,10 +513,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The human readable size
      */
-    public function getReadableSize($intSize, $intDecimals = 1)
-    {
-        return \Contao\BackendInstall::getReadableSize($intSize, $intDecimals);
-    }
+    public function getReadableSize($intSize, $intDecimals = 1);
 
     /**
      * Format a number
@@ -729,10 +523,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return mixed The formatted number
      */
-    public function getFormattedNumber($varNumber, $intDecimals = 2)
-    {
-        return \Contao\BackendInstall::getFormattedNumber($varNumber, $intDecimals);
-    }
+    public function getFormattedNumber($varNumber, $intDecimals = 2);
 
     /**
      * Return the session hash
@@ -741,10 +532,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The session hash
      */
-    public function getSessionHash($strCookie)
-    {
-        return \Contao\BackendInstall::getSessionHash($strCookie);
-    }
+    public function getSessionHash($strCookie);
 
     /**
      * Anonymize an IP address by overriding the last chunk
@@ -753,10 +541,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @return string The encoded IP address
      */
-    public function anonymizeIp($strIp)
-    {
-        return \Contao\BackendInstall::anonymizeIp($strIp);
-    }
+    public function anonymizeIp($strIp);
 
     /**
      * Convert an .xlf file into a PHP language file
@@ -769,10 +554,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Deprecated since version 4.0, to be removed in 5.0. Use the Contao\CoreBundle\Config\Loader\XliffFileLoader instead.
      */
-    public function convertXlfToPhp($strName, $strLanguage, $blnLoad = false)
-    {
-        return \Contao\BackendInstall::convertXlfToPhp($strName, $strLanguage, $blnLoad);
-    }
+    public function convertXlfToPhp($strName, $strLanguage, $blnLoad = false);
 
     /**
      * Parse a date format string and translate textual representations
@@ -784,10 +566,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Date::parse() instead
      */
-    public function parseDate($strFormat, $intTstamp = null)
-    {
-        return \Contao\BackendInstall::parseDate($strFormat, $intTstamp);
-    }
+    public function parseDate($strFormat, $intTstamp = null);
 
     /**
      * Split a friendly-name e-address and return name and e-mail as array
@@ -798,10 +577,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use String::splitFriendlyEmail() instead
      */
-    public function splitFriendlyName($strEmail)
-    {
-        return \Contao\BackendInstall::splitFriendlyName($strEmail);
-    }
+    public function splitFriendlyName($strEmail);
 
     /**
      * Return the request string without the script name
@@ -812,10 +588,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Environment::get('indexFreeRequest') instead
      */
-    public function getIndexFreeRequest($blnAmpersand = true)
-    {
-        return \Contao\BackendInstall::getIndexFreeRequest($blnAmpersand);
-    }
+    public function getIndexFreeRequest($blnAmpersand = true);
 
     /**
      * Compile a Model class name from a table name (e.g. tl_form_field becomes FormFieldModel)
@@ -826,10 +599,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Model::getClassFromTable() instead
      */
-    public function getModelClassFromTable($strTable)
-    {
-        return \Contao\BackendInstall::getModelClassFromTable($strTable);
-    }
+    public function getModelClassFromTable($strTable);
 
     /**
      * Enable a back end module
@@ -840,10 +610,7 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Composer to add or remove modules
      */
-    public function enableModule($strName)
-    {
-        \Contao\BackendInstall::enableModule($strName);
-    }
+    public function enableModule($strName);
 
     /**
      * Disable a back end module
@@ -854,8 +621,5 @@ class BackendInstallAdapter implements BackendInstallAdapterInterface
      *
      * @deprecated Use Composer to add or remove modules
      */
-    public function disableModule($strName)
-    {
-        \Contao\BackendInstall::disableModule($strName);
-    }
+    public function disableModule($strName);
 }
