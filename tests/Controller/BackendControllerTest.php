@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Test\Controller;
 
 use Contao\CoreBundle\Controller\BackendController;
 use Contao\CoreBundle\Test\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Tests the BackendControllerTest class.
@@ -25,7 +26,7 @@ class BackendControllerTest extends TestCase
      */
     public function testInstantiation()
     {
-        $controller = new BackendController();
+        $controller = $this->mockBackendController();
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Controller\\BackendController', $controller);
     }
@@ -35,7 +36,7 @@ class BackendControllerTest extends TestCase
      */
     public function testActions()
     {
-        $controller = new BackendController();
+        $controller = $this->mockBackendController();
 
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->mainAction());
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->loginAction());
@@ -48,5 +49,28 @@ class BackendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->pageAction());
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->popupAction());
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->switchAction());
+    }
+
+    /**
+     * Mocks the back end controller
+     *
+     * @return BackendController
+     */
+    private function mockBackendController()
+    {
+        $response = new Response();
+        $controller = $this->getMock('Contao\\CoreBundle\\Controller\\BackendController');
+        $controller->expects($this->any())->method('mainAction')->willReturn($response);
+        $controller->expects($this->any())->method('loginAction')->willReturn($response);
+        $controller->expects($this->any())->method('installAction')->willReturn($response);
+        $controller->expects($this->any())->method('passwordAction')->willReturn($response);
+        $controller->expects($this->any())->method('previewAction')->willReturn($response);
+        $controller->expects($this->any())->method('confirmAction')->willReturn($response);
+        $controller->expects($this->any())->method('fileAction')->willReturn($response);
+        $controller->expects($this->any())->method('helpAction')->willReturn($response);
+        $controller->expects($this->any())->method('pageAction')->willReturn($response);
+        $controller->expects($this->any())->method('switchAction')->willReturn($response);
+
+        return $controller;
     }
 }

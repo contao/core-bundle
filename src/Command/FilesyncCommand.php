@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Command;
 
-use Contao\Dbafs;
+use Contao\CoreBundle\Adapter\DbafsAdapterInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -18,9 +18,30 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Synchronizes the file system with the database.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Yanick Witschi <https://github.com/toflar>
  */
 class FilesyncCommand extends LockedCommand
 {
+    /**
+     * @var DbafsAdapterInterface
+     */
+    private $dbafs;
+
+    /**
+     * Constructor.
+     *
+     * @param string|null $name The name of the command; passing null means it must be set in configure()
+     * @param DbafsAdapterInterface $dbafs
+     *
+     * @throws \LogicException When the command name is empty
+     *
+     */
+    public function __construct($name = null, DbafsAdapterInterface $dbafs)
+    {
+        $this->dbafs = $dbafs;
+        parent::__construct($name);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +58,7 @@ class FilesyncCommand extends LockedCommand
      */
     protected function executeLocked(InputInterface $input, OutputInterface $output)
     {
-        $strLog = Dbafs::syncFiles();
+        $strLog = $this->dbafs->syncFiles();
         $output->writeln("Synchronization complete (see <info>$strLog</info>).");
 
         return 0;

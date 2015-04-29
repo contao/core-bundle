@@ -27,7 +27,7 @@ class FilesyncCommandTest extends TestCase
      */
     public function testInstantiation()
     {
-        $command = new FilesyncCommand('contao:filesync');
+        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Command\\FilesyncCommand', $command);
     }
@@ -37,7 +37,7 @@ class FilesyncCommandTest extends TestCase
      */
     public function testOutput()
     {
-        $command = new FilesyncCommand('contao:filesync');
+        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
         $tester  = new CommandTester($command);
 
         $code = $tester->execute([]);
@@ -51,10 +51,10 @@ class FilesyncCommandTest extends TestCase
      */
     public function testLock()
     {
-        $lock = new LockHandler('contao:filesync');
+        $lock = new LockHandler('contao:filesync', $this->mockDbafs());
         $lock->lock();
 
-        $command = new FilesyncCommand('contao:filesync');
+        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
         $tester  = new CommandTester($command);
 
         $code = $tester->execute([]);
@@ -63,5 +63,13 @@ class FilesyncCommandTest extends TestCase
         $this->assertContains('The command is already running in another process.', $tester->getDisplay());
 
         $lock->release();
+    }
+
+    private function mockDbafs()
+    {
+        $dbafs = $this->getMock('Contao\\CoreBundle\\Adapter\\DbafsAdapter');
+        $dbafs->expects($this->any())->method('syncFiles')->willReturn('sync.log');
+
+        return $dbafs;
     }
 }

@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Test\Security\Authentication;
 
+use Contao\CoreBundle\Adapter\FrontendUserAdapter;
 use Contao\CoreBundle\Security\User\ContaoUserProvider;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\Security\Core\User\User;
@@ -26,7 +27,7 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testInstantiation()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Security\\User\\ContaoUserProvider', $provider);
     }
@@ -39,9 +40,9 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testLoadUserBackend()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
 
-        $this->assertInstanceOf('Contao\\BackendUser', $provider->loadUserByUsername('backend'));
+        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface', $provider->loadUserByUsername('backend'));
     }
 
     /**
@@ -52,9 +53,9 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testLoadUserFrontend()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
 
-        $this->assertInstanceOf('Contao\\FrontendUser', $provider->loadUserByUsername('frontend'));
+        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface', $provider->loadUserByUsername('frontend'));
     }
 
     /**
@@ -64,7 +65,7 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testLoadUnsupportedUsername()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
         $provider->loadUserByUsername('foo');
     }
 
@@ -75,7 +76,8 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testRefreshUser()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
+
         $provider->refreshUser(new User('foo', 'bar'));
     }
 
@@ -84,8 +86,47 @@ class ContaoUserProviderTest extends TestCase
      */
     public function testSupportsClass()
     {
-        $provider = new ContaoUserProvider();
+        $provider = $this->getUserProvider();
+        $frontendUserAdapter = new FrontendUserAdapter();
 
-        $this->assertTrue($provider->supportsClass('Contao\\FrontendUser'));
+        $this->assertTrue($provider->supportsClass($frontendUserAdapter));
+    }
+
+
+    /**
+     * Mock front end user adapter
+     */
+    private function mockFrontendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Mock back end user adapter
+     */
+    private function mockBackendUser()
+    {
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user->expects($this->any())->method('instantiate')->willReturnSelf();
+        $user->expects($this->any())->method('authenticate')->willReturn(true);
+
+        return $user;
+    }
+
+    /**
+     * Get user provider
+     *
+     * @return ContaoUserProvider
+     */
+    private function getUserProvider()
+    {
+        return new ContaoUserProvider(
+            $this->mockFrontendUser(),
+            $this->mockBackendUser()
+        );
     }
 }

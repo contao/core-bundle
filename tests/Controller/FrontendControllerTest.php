@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Test\Controller;
 
 use Contao\CoreBundle\Controller\FrontendController;
 use Contao\CoreBundle\Test\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Tests the FrontendController class.
@@ -25,7 +26,7 @@ class FrontendControllerTest extends TestCase
      */
     public function testInstantiation()
     {
-        $controller = new FrontendController();
+        $controller = $this->mockFrontendController();
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Controller\\FrontendController', $controller);
     }
@@ -35,10 +36,26 @@ class FrontendControllerTest extends TestCase
      */
     public function testActions()
     {
-        $controller = new FrontendController();
+        $controller = $this->mockFrontendController();
 
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->indexAction());
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->cronAction());
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $controller->shareAction());
+    }
+
+    /**
+     * Mocks the front end controller
+     *
+     * @return FrontendController
+     */
+    private function mockFrontendController()
+    {
+        $response = new Response();
+        $controller = $this->getMock('Contao\\CoreBundle\\Controller\\FrontendController');
+        $controller->expects($this->any())->method('indexAction')->willReturn($response);
+        $controller->expects($this->any())->method('cronAction')->willReturn($response);
+        $controller->expects($this->any())->method('shareAction')->willReturn($response);
+
+        return $controller;
     }
 }

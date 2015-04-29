@@ -10,11 +10,11 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Adapter\ConfigAdapter;
+use Contao\CoreBundle\Adapter\ConfigAdapterInterface;
+use Contao\CoreBundle\Adapter\StringAdapterInterface;
+use Contao\CoreBundle\Adapter\SystemAdapterInterface;
 use Contao\CoreBundle\Exception\InternalServerErrorHttpException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
-use Contao\String;
-use Contao\System;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -43,9 +43,19 @@ class PrettyErrorScreenListener
     private $twig;
 
     /**
-     * @var ConfigAdapter
+     * @var ConfigAdapterInterface
      */
     private $config;
+
+    /**
+     * @var StringAdapterInterface
+     */
+    private $string;
+
+    /**
+     * @var SystemAdapterInterface
+     */
+    private $system;
 
     /**
      * @var array
@@ -66,15 +76,24 @@ class PrettyErrorScreenListener
     /**
      * Constructor.
      *
-     * @param bool          $prettyErrorScreens True to render the error screens
-     * @param TwigEngine    $twig               The twig rendering engine
-     * @param ConfigAdapter $config             The config adapter
+     * @param bool                   $prettyErrorScreens True to render the error screens
+     * @param TwigEngine             $twig The twig rendering engine
+     * @param ConfigAdapterInterface $config The config adapter
+     * @param StringAdapterInterface $string
+     * @param SystemAdapterInterface $system
      */
-    public function __construct($prettyErrorScreens, TwigEngine $twig, ConfigAdapter $config)
-    {
+    public function __construct(
+        $prettyErrorScreens,
+        TwigEngine $twig,
+        ConfigAdapterInterface $config,
+        StringAdapterInterface $string,
+        SystemAdapterInterface $system
+    ) {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig               = $twig;
         $this->config             = $config;
+        $this->string             = $string;
+        $this->system             = $system;
     }
 
     /**
@@ -294,7 +313,7 @@ class PrettyErrorScreenListener
             return null;
         }
 
-        $encoded = String::encodeEmail($this->config->get('adminEmail'));
+        $encoded = $this->string->encodeEmail($this->config->get('adminEmail'));
 
         return [
             'statusCode' => $statusCode,
@@ -312,11 +331,12 @@ class PrettyErrorScreenListener
      */
     private function loadLanguageStrings()
     {
+        // FIXME: Shouldn't this check if the Contao system is booted?
         if (!class_exists('Contao\\System')) {
             return null;
         }
 
-        System::loadLanguageFile('exception');
+        $this->system->loadLanguageFile('exception');
 
         if (!isset($GLOBALS['TL_LANG']['XPT'])) {
             return null;

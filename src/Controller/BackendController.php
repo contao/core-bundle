@@ -10,17 +10,17 @@
 
 namespace Contao\CoreBundle\Controller;
 
-use Contao\BackendConfirm;
-use Contao\BackendFile;
-use Contao\BackendHelp;
-use Contao\BackendIndex;
-use Contao\BackendInstall;
-use Contao\BackendMain;
-use Contao\BackendPage;
-use Contao\BackendPassword;
-use Contao\BackendPopup;
-use Contao\BackendPreview;
-use Contao\BackendSwitch;
+use Contao\CoreBundle\Adapter\BackendConfirmAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendFileAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendHelpAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendIndexAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendInstallAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendMainAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendPageAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendPasswordAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendPopupAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendPreviewAdapterInterface;
+use Contao\CoreBundle\Adapter\BackendSwitchAdapterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,10 +31,117 @@ use Symfony\Component\HttpFoundation\Response;
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
  *
- * @Route("/contao", defaults={"_scope" = "backend"})
+ * @Route("/contao", defaults={"_scope" = "backend"}, service="contao.controller.backend")
  */
 class BackendController extends Controller
 {
+    /**
+     * Back end main
+     * @var BackendMainAdapterInterface
+     */
+    private $backendMain;
+    /**
+     * Back end index
+     * @var BackendIndexAdapterInterface
+     */
+    private $backendIndex;
+
+    /**
+     * Back end install
+     * @var BackendInstallAdapterInterface
+     */
+    private $backendInstall;
+
+    /**
+     * Back end password
+     * @var BackendPasswordAdapterInterface
+     */
+    private $backendPassword;
+
+    /**
+     * Back end preview
+     * @var BackendPreviewAdapterInterface
+     */
+    private $backendPreview;
+
+    /**
+     * Back end confirm
+     * @var BackendConfirmAdapterInterface
+     */
+    private $backendConfirm;
+
+    /**
+     * Back end file
+     * @var BackendFileAdapterInterface
+     */
+    private $backendFile;
+
+    /**
+     * Back end help
+     * @var BackendHelpAdapterInterface
+     */
+    private $backendHelp;
+
+    /**
+     * Back end page
+     * @var BackendPageAdapterInterface
+     */
+    private $backendPage;
+
+    /**
+     * Back end popup
+     * @var BackendPopupAdapterInterface
+     */
+    private $backendPopup;
+
+    /**
+     * Back end switch
+     * @var BackendSwitchAdapterInterface
+     */
+    private $backendSwitch;
+
+    /**
+     * Constructor.
+     *
+     * @param BackendMainAdapterInterface     $backendMain
+     * @param BackendIndexAdapterInterface    $backendIndex
+     * @param BackendInstallAdapterInterface  $backendInstall
+     * @param BackendPasswordAdapterInterface $backendPassword
+     * @param BackendPreviewAdapterInterface  $backendPreview
+     * @param BackendConfirmAdapterInterface  $backendConfirm
+     * @param BackendFileAdapterInterface     $backendFile
+     * @param BackendHelpAdapterInterface     $backendHelp
+     * @param BackendPageAdapterInterface     $backendPage
+     * @param BackendPopupAdapterInterface    $backendPopup
+     * @param BackendSwitchAdapterInterface   $backendSwitch
+     */
+    public function __construct(
+        BackendMainAdapterInterface $backendMain,
+        BackendIndexAdapterInterface $backendIndex,
+        BackendInstallAdapterInterface $backendInstall,
+        BackendPasswordAdapterInterface $backendPassword,
+        BackendPreviewAdapterInterface $backendPreview,
+        BackendConfirmAdapterInterface $backendConfirm,
+        BackendFileAdapterInterface $backendFile,
+        BackendHelpAdapterInterface $backendHelp,
+        BackendPageAdapterInterface $backendPage,
+        BackendPopupAdapterInterface $backendPopup,
+        BackendSwitchAdapterInterface $backendSwitch
+    ) {
+        $this->backendMain      = $backendMain;
+        $this->backendIndex     = $backendIndex;
+        $this->backendInstall   = $backendInstall;
+        $this->backendPassword  = $backendPassword;
+        $this->backendPassword  = $backendPassword;
+        $this->backendPreview   = $backendPreview;
+        $this->backendConfirm   = $backendConfirm;
+        $this->backendFile      = $backendFile;
+        $this->backendHelp      = $backendHelp;
+        $this->backendPage      = $backendPage;
+        $this->backendPopup     = $backendPopup;
+        $this->backendSwitch    = $backendSwitch;
+    }
+
     /**
      * Runs the main back end controller.
      *
@@ -44,9 +151,7 @@ class BackendController extends Controller
      */
     public function mainAction()
     {
-        $controller = new BackendMain();
-
-        return $controller->run();
+        return $this->backendMain->run();
     }
 
     /**
@@ -58,9 +163,7 @@ class BackendController extends Controller
      */
     public function loginAction()
     {
-        $controller = new BackendIndex();
-
-        return $controller->run();
+        return $this->backendIndex->run();
     }
 
     /**
@@ -76,8 +179,7 @@ class BackendController extends Controller
     {
         ob_start();
 
-        $controller = new BackendInstall();
-        $controller->run();
+        $this->backendInstall->run();
 
         return new Response(ob_get_clean());
     }
@@ -91,9 +193,7 @@ class BackendController extends Controller
      */
     public function passwordAction()
     {
-        $controller = new BackendPassword();
-
-        return $controller->run();
+        return $this->backendPassword->run();
     }
 
     /**
@@ -105,9 +205,7 @@ class BackendController extends Controller
      */
     public function previewAction()
     {
-        $controller = new BackendPreview();
-
-        return $controller->run();
+        return $this->backendPreview->run();
     }
 
     /**
@@ -119,9 +217,7 @@ class BackendController extends Controller
      */
     public function confirmAction()
     {
-        $controller = new BackendConfirm();
-
-        return $controller->run();
+        return $this->backendConfirm->run();
     }
 
     /**
@@ -133,9 +229,7 @@ class BackendController extends Controller
      */
     public function fileAction()
     {
-        $controller = new BackendFile();
-
-        return $controller->run();
+        return $this->backendFile->run();
     }
 
     /**
@@ -147,9 +241,7 @@ class BackendController extends Controller
      */
     public function helpAction()
     {
-        $controller = new BackendHelp();
-
-        return $controller->run();
+        return $this->backendHelp->run();
     }
 
     /**
@@ -161,9 +253,7 @@ class BackendController extends Controller
      */
     public function pageAction()
     {
-        $controller = new BackendPage();
-
-        return $controller->run();
+        return $this->backendPage->run();
     }
 
     /**
@@ -175,9 +265,7 @@ class BackendController extends Controller
      */
     public function popupAction()
     {
-        $controller = new BackendPopup();
-
-        return $controller->run();
+        return $this->backendPopup->run();
     }
 
     /**
@@ -189,8 +277,6 @@ class BackendController extends Controller
      */
     public function switchAction()
     {
-        $controller = new BackendSwitch();
-
-        return $controller->run();
+        return $this->backendSwitch->run();
     }
 }

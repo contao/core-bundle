@@ -58,7 +58,13 @@ class PrettyErrorScreenListenerTest extends TestCase
             ->willReturn(new Response())
         ;
 
-        $this->listener = new PrettyErrorScreenListener(true, $engine, $this->mockConfig());
+        $this->listener = new PrettyErrorScreenListener(
+            true,
+            $engine,
+            new ConfigAdapter(),
+            $this->mockString(),
+            $this->mockSystem()
+        );
     }
 
     /**
@@ -251,7 +257,13 @@ class PrettyErrorScreenListenerTest extends TestCase
             ->willReturn(new Response())
         ;
 
-        $listener = new PrettyErrorScreenListener(true, $engine, new ConfigAdapter());
+        $listener = new PrettyErrorScreenListener(
+            true,
+            $engine,
+            new ConfigAdapter(),
+            $this->mockString(),
+            $this->mockSystem()
+        );
         $listener->onKernelException($event);
 
         $this->assertTrue($event->hasResponse());
@@ -260,5 +272,21 @@ class PrettyErrorScreenListenerTest extends TestCase
 
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $response);
         $this->assertEquals(500, $response->getStatusCode());
+    }
+
+    private function mockString()
+    {
+        $string = $this->getMock('Contao\\CoreBundle\\Adapter\\StringAdapterInterface');
+        $string->expects($this->any())->method('encodeEmail')->willReturn('foobar');
+
+        return $string;
+    }
+
+    private function mockSystem()
+    {
+        $system = $this->getMock('Contao\\CoreBundle\\Adapter\\SystemAdapterInterface');
+        $system->expects($this->any())->method('loadLanguageFile')->willReturn(null);
+
+        return $system;
     }
 }

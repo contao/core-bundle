@@ -47,4 +47,7 @@ services:
 
     contao.security.user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
+        arguments:
+            - "@contao.adapter.frontend_user"
+            - "@contao.adapter.backend_user"
         public: false
