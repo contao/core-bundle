@@ -63,4 +63,26 @@ class PageEventTest extends TestCase
         $this->assertEquals($layout, $this->event->getLayout());
         $this->assertEquals($handler, $this->event->getHandler());
     }
+
+    /**
+     * Tests passing arguments by reference.
+     */
+    public function testPassingArgumentsByReference()
+    {
+        $page     = new PageModel();
+        $page2    = new PageModel();
+        $layout   = new LayoutModel();
+        $layout2  = new LayoutModel();
+        $handler  = new PageRegular();
+        $handler2 = new PageRegular();
+        $event    = new PageEvent($page, $layout, $handler);
+
+        // Change the original variables
+        $layout  = $layout2;
+        $handler = $handler2;
+
+        $this->assertEquals($page, $event->getPage());
+        $this->assertEquals($layout2, $event->getLayout());
+        $this->assertEquals($handler2, $event->getHandler());
+    }
 }

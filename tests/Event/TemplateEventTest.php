@@ -61,8 +61,28 @@ class TemplateEventTest extends TestCase
         $this->event->setKey($key);
         $this->event->setTemplate($template);
 
-        $this->assertEquals($buffer, $this->event->getBuffer());
-        $this->assertEquals($key, $this->event->getKey());
+        $this->assertEquals('buffer', $this->event->getBuffer());
+        $this->assertEquals('key', $this->event->getKey());
         $this->assertEquals($template, $this->event->getTemplate());
+    }
+
+    /**
+     * Tests passing arguments by reference.
+     */
+    public function testPassingArgumentsByReference()
+    {
+        $buffer    = 'buffer';
+        $key       = 'key';
+        $template  = new FrontendTemplate();
+        $template2 = new FrontendTemplate();
+        $event     = new TemplateEvent($buffer, $key, $template);
+
+        // Change the original variables
+        $key      = 'moo';
+        $template = $template2;
+
+        $this->assertEquals('buffer', $event->getBuffer());
+        $this->assertEquals('moo', $event->getKey());
+        $this->assertEquals($template2, $event->getTemplate());
     }
 }

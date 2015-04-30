@@ -58,16 +58,6 @@ final class ContaoEvents
     const GET_PAGE_LAYOUT = 'contao.get_page_layout';
 
     /**
-     * The contao.initialize_system event is triggered when the Contao
-     * framework is initialized.
-     *
-     * @var string
-     *
-     * @see Contao\CoreBundle\Event\InitializeSystemEvent
-     */
-    const INITIALIZE_SYSTEM = 'contao.initialize_system';
-
-    /**
      * The contao.modify_frontend_page event is triggered after a front end
      * template has been compiled.
      *
