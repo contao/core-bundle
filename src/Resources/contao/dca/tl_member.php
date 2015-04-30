@@ -550,6 +550,8 @@ class tl_member extends Backend
 		// HOOK: set new password callback
 		if ($objUser->numRows)
 		{
+			// FIXME: trigger an event
+
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['setNewPassword'] as $callback)

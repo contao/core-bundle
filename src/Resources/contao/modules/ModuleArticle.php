@@ -236,6 +236,8 @@ class ModuleArticle extends \Module
 			$this->Template->gplusTitle = specialchars($GLOBALS['TL_LANG']['MSC']['gplusShare']);
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['compileArticle']) && is_array($GLOBALS['TL_HOOKS']['compileArticle']))
 		{
@@ -269,6 +271,8 @@ class ModuleArticle extends \Module
 		);
 
 		$strArticle = preg_replace($arrSearch, '', $strArticle);
+
+		// FIXME: trigger an event
 
 		// HOOK: allow individual PDF routines
 		if (isset($GLOBALS['TL_HOOKS']['printArticleAsPdf']) && is_array($GLOBALS['TL_HOOKS']['printArticleAsPdf']))

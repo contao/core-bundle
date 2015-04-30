@@ -178,6 +178,8 @@ class tl_log extends Backend
 				break;
 
 			default:
+				// FIXME: trigger an event
+
 				if (isset($GLOBALS['TL_HOOKS']['colorizeLogEntries']) && is_array($GLOBALS['TL_HOOKS']['colorizeLogEntries']))
 				{
 					foreach ($GLOBALS['TL_HOOKS']['colorizeLogEntries'] as $callback)

@@ -397,6 +397,8 @@ class Image
 	 */
 	public function executeResize()
 	{
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['executeResize']) && is_array($GLOBALS['TL_HOOKS']['executeResize']))
 		{
@@ -472,6 +474,8 @@ class Image
 				return $this;
 			}
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getImage']) && is_array($GLOBALS['TL_HOOKS']['getImage']))

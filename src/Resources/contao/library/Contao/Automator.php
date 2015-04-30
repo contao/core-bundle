@@ -268,6 +268,8 @@ class Automator extends \System
 			$arrFeeds[] = $objFeeds->sitemapName;
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: preserve third party feeds
 		if (isset($GLOBALS['TL_HOOKS']['removeOldFeeds']) && is_array($GLOBALS['TL_HOOKS']['removeOldFeeds']))
 		{
@@ -376,6 +378,8 @@ class Automator extends \System
 			// Find the searchable pages
 			$arrPages = \Backend::findSearchablePages($objRoot->id, $strDomain, true, $objRoot->language);
 
+			// FIXME: trigger an event
+
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
 			{
@@ -412,6 +416,8 @@ class Automator extends \System
 	{
 		// Sitemaps
 		$this->generateSitemap();
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom jobs
 		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))

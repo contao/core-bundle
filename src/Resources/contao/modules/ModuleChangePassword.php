@@ -175,6 +175,8 @@ class ModuleChangePassword extends \Module
 			$objMember->password = $objNewPassword->value;
 			$objMember->save();
 
+			// FIXME: trigger an event
+
 			// HOOK: set new password callback
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
 			{

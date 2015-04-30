@@ -193,6 +193,8 @@ abstract class System
 		\Database::getInstance()->prepare("INSERT INTO tl_log (tstamp, source, action, username, text, func, ip, browser) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
 							   ->execute(time(), (TL_MODE == 'FE' ? 'FE' : 'BE'), $strCategory, ($GLOBALS['TL_USERNAME'] ? $GLOBALS['TL_USERNAME'] : ''), specialchars($strText), $strFunction, $strIp, $strUa);
 
+		// FIXME: trigger an event
+
 		// HOOK: allow to add custom loggers
 		if (isset($GLOBALS['TL_HOOKS']['addLogEntry']) && is_array($GLOBALS['TL_HOOKS']['addLogEntry']))
 		{
@@ -357,6 +359,8 @@ abstract class System
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: allow to load custom labels
 		if (isset($GLOBALS['TL_HOOKS']['loadLanguageFile']) && is_array($GLOBALS['TL_HOOKS']['loadLanguageFile']))
 		{
@@ -440,6 +444,8 @@ abstract class System
 			$return[$strKey] = isset($GLOBALS['TL_LANG']['CNT'][$strKey]) ? $GLOBALS['TL_LANG']['CNT'][$strKey] : $countries[$strKey];
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getCountries']) && is_array($GLOBALS['TL_HOOKS']['getCountries']))
 		{
@@ -492,6 +498,8 @@ abstract class System
 				$return[$strKey] .= ' - ' . $langsNative[$strKey];
 			}
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getLanguages']) && is_array($GLOBALS['TL_HOOKS']['getLanguages']))
@@ -602,6 +610,8 @@ abstract class System
 		$objCookie->strDomain   = $strDomain;
 		$objCookie->blnSecure   = $blnSecure;
 		$objCookie->blnHttpOnly = $blnHttpOnly;
+
+		// FIXME: trigger an event
 
 		// HOOK: allow to add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['setCookie']) && is_array($GLOBALS['TL_HOOKS']['setCookie']))

@@ -3122,6 +3122,8 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$new_records = $this->Session->get('new_records');
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['reviseTable']) && is_array($GLOBALS['TL_HOOKS']['reviseTable']))
 		{

@@ -628,6 +628,8 @@ abstract class Widget extends \Controller
 
 		$strBuffer = $this->inherit();
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom parse filters (see #5553)
 		if (isset($GLOBALS['TL_HOOKS']['parseWidget']) && is_array($GLOBALS['TL_HOOKS']['parseWidget']))
 		{
@@ -1083,6 +1085,8 @@ abstract class Widget extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
+					// FIXME: trigger an event
+
 					if (isset($GLOBALS['TL_HOOKS']['addCustomRegexp']) && is_array($GLOBALS['TL_HOOKS']['addCustomRegexp']))
 					{
 						foreach ($GLOBALS['TL_HOOKS']['addCustomRegexp'] as $callback)
@@ -1403,6 +1407,8 @@ abstract class Widget extends \Controller
 		{
 			$arrAttributes['rootNodes'] = $arrData['rootNodes'];
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getAttributesFromDca']) && is_array($GLOBALS['TL_HOOKS']['getAttributesFromDca']))

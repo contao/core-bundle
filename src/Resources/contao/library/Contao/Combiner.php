@@ -263,6 +263,8 @@ class Combiner extends \System
 		{
 			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
 
+			// FIXME: trigger an event
+
 			// HOOK: modify the file content
 			if (isset($GLOBALS['TL_HOOKS']['getCombinedFile']) && is_array($GLOBALS['TL_HOOKS']['getCombinedFile']))
 			{

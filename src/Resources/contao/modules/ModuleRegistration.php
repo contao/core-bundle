@@ -438,6 +438,8 @@ class ModuleRegistration extends \Module
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: send insert ID and user data
 		if (isset($GLOBALS['TL_HOOKS']['createNewUser']) && is_array($GLOBALS['TL_HOOKS']['createNewUser']))
 		{
@@ -490,6 +492,8 @@ class ModuleRegistration extends \Module
 		$objMember->disable = '';
 		$objMember->activation = '';
 		$objMember->save();
+
+		// FIXME: trigger an event
 
 		// HOOK: post activation callback
 		if (isset($GLOBALS['TL_HOOKS']['activateAccount']) && is_array($GLOBALS['TL_HOOKS']['activateAccount']))

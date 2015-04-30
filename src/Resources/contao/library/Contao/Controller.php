@@ -316,6 +316,8 @@ abstract class Controller extends \System
 			$objModule = new $strClass($objRow, $strColumn);
 			$strBuffer = $objModule->generate();
 
+			// FIXME: trigger an event
+
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['getFrontendModule']) && is_array($GLOBALS['TL_HOOKS']['getFrontendModule']))
 			{
@@ -400,6 +402,8 @@ abstract class Controller extends \System
 		$objRow->headline = $objRow->title;
 		$objRow->multiMode = $blnMultiMode;
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getArticle']) && is_array($GLOBALS['TL_HOOKS']['getArticle']))
 		{
@@ -479,6 +483,8 @@ abstract class Controller extends \System
 		$objElement = new $strClass($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getContentElement']) && is_array($GLOBALS['TL_HOOKS']['getContentElement']))
 		{
@@ -531,6 +537,8 @@ abstract class Controller extends \System
 		$objRow->form = $objRow->id;
 		$objElement = new \Form($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getForm']) && is_array($GLOBALS['TL_HOOKS']['getForm']))
@@ -608,6 +616,8 @@ abstract class Controller extends \System
 			$image = $objPage->type.'_'.$sub.'.gif';
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getPageStatusIcon']) && is_array($GLOBALS['TL_HOOKS']['getPageStatusIcon']))
 		{
@@ -662,6 +672,8 @@ abstract class Controller extends \System
 			$blnReturn = false;
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))
 		{
@@ -700,6 +712,8 @@ abstract class Controller extends \System
 	 */
 	public static function replaceDynamicScriptTags($strBuffer)
 	{
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']) && is_array($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']))
 		{
@@ -1112,6 +1126,8 @@ abstract class Controller extends \System
 			$strUrl = ($arrRow['rootUseSSL'] ? 'https://' : 'http://') . $arrRow['domain'] . \Environment::get('path') . '/' . $strUrl;
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))
 		{
@@ -1202,6 +1218,8 @@ abstract class Controller extends \System
 		{
 			throw new AccessDeniedException(sprintf('File type "%s" is not allowed', $objFile->extension));
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: post download callback
 		if (isset($GLOBALS['TL_HOOKS']['postDownload']) && is_array($GLOBALS['TL_HOOKS']['postDownload']))

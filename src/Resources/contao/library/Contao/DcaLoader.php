@@ -91,6 +91,8 @@ class DcaLoader extends \Controller
 			catch (\InvalidArgumentException $e) {}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: allow to load custom settings
 		if (isset($GLOBALS['TL_HOOKS']['loadDataContainer']) && is_array($GLOBALS['TL_HOOKS']['loadDataContainer']))
 		{

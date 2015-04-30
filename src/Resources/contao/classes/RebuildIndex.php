@@ -71,6 +71,8 @@ class RebuildIndex extends \Backend implements \executable
 
 			$arrPages = $this->findSearchablePages();
 
+			// FIXME: trigger an event
+
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
 			{

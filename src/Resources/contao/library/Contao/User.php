@@ -316,6 +316,8 @@ abstract class User extends \System
 
 		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
 
+		// FIXME: trigger an event
+
 		// HOOK: post authenticate callback
 		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
 		{
@@ -349,6 +351,8 @@ abstract class User extends \System
 		if ($this->findBy('username', \Input::post('username', true)) == false)
 		{
 			$blnLoaded = false;
+
+			// FIXME: trigger an event
 
 			// HOOK: pass credentials to callback functions
 			if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
@@ -430,6 +434,8 @@ abstract class User extends \System
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: pass credentials to callback functions
 		if (!$blnAuthenticated && isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials']))
 		{
@@ -469,6 +475,8 @@ abstract class User extends \System
 		// Generate the session
 		$this->generateSession();
 		$this->log('User "' . $this->username . '" has logged in', __METHOD__, TL_ACCESS);
+
+		// FIXME: trigger an event
 
 		// HOOK: post login callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin']))
@@ -655,6 +663,8 @@ abstract class User extends \System
 			$GLOBALS['TL_USERNAME'] = $this->username;
 			$this->log('User "' . $this->username . '" has logged out', __METHOD__, TL_ACCESS);
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: post logout callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout']))

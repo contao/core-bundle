@@ -661,6 +661,8 @@ class Date
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic (see #4260)
 		if (isset($GLOBALS['TL_HOOKS']['parseDate']) && is_array($GLOBALS['TL_HOOKS']['parseDate']))
 		{
