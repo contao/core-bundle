@@ -19,6 +19,7 @@ use Contao\CoreBundle\Session\Attribute\AttributeBagAdapter;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\IncompleteInstallationException;
 use Contao\Input;
+use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -227,12 +228,7 @@ class InitializeSystemListener extends AbstractScopeAwareListener
             mb_regex_encoding($this->config->get('characterSet'));
         }
 
-        // Trigger the initializeSystem hook (see #5665)
-        $this->container
-            ->get('event_dispatcher')
-            ->dispatch(ContaoEvents::INITIALIZE_SYSTEM, new InitializeSystemEvent($this->rootDir))
-        ;
-
+        $this->triggerInitializeSystemHook();
         $this->handleRequestToken($request);
     }
 
@@ -337,6 +333,22 @@ class InitializeSystemListener extends AbstractScopeAwareListener
     {
         $this->iniSet('date.timezone', $this->config->get('timeZone'));
         date_default_timezone_set($this->config->get('timeZone'));
+    }
+
+    /**
+     * Triggers the initializeSystem hook (see #5665).
+     */
+    private function triggerInitializeSystemHook()
+    {
+        if (isset($GLOBALS['TL_HOOKS']['initializeSystem']) && is_array($GLOBALS['TL_HOOKS']['initializeSystem'])) {
+            foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
+                System::importStatic($callback[0])->$callback[1]();
+            }
+        }
+
+        if (file_exists($this->rootDir . '/system/config/initconfig.php')) {
+            include $this->rootDir . '/system/config/initconfig.php';
+        }
     }
 
     /**

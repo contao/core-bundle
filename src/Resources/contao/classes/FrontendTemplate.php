@@ -53,11 +53,23 @@ class FrontendTemplate extends \Template
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the parseFrontendTemplate hook
+		// Dispatch the contao.parse_frontend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_FRONTEND_TEMPLATE, $event);
 
-		return $event->getBuffer();
+		$strBuffer = $event->getBuffer();
+
+		// HOOK: add custom parse filters
+		if (isset($GLOBALS['TL_HOOKS']['parseFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseFrontendTemplate']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['parseFrontendTemplate'] as $callback)
+			{
+				$this->import($callback[0]);
+				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
+			}
+		}
+
+		return $strBuffer;
 	}
 
 
@@ -115,11 +127,21 @@ class FrontendTemplate extends \Template
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the outputFrontendTemplate hook
+		// Dispatch the contao.output_frontend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
 
 		$this->strBuffer = $event->getBuffer();
+
+		// HOOK: add custom output filters
+		if (isset($GLOBALS['TL_HOOKS']['outputFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputFrontendTemplate']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['outputFrontendTemplate'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
+			}
+		}
 
 		// Add the output to the cache
 		$this->addToCache();
@@ -129,11 +151,21 @@ class FrontendTemplate extends \Template
 		$this->strBuffer = str_replace(array('{{request_token}}', '[{]', '[}]'), array(REQUEST_TOKEN, '{{', '}}'), $this->strBuffer);
 		$this->strBuffer = $this->replaceDynamicScriptTags($this->strBuffer); // see #4203
 
-		// Trigger the modifyFrontendPage hook
+		// Dispatch the contao.modify_frontend_page event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::MODIFY_FRONTEND_PAGE, $event);
 
 		$this->strBuffer = $event->getBuffer();
+
+		// HOOK: allow to modify the compiled markup (see #4291)
+		if (isset($GLOBALS['TL_HOOKS']['modifyFrontendPage']) && is_array($GLOBALS['TL_HOOKS']['modifyFrontendPage']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['modifyFrontendPage'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
+			}
+		}
 
 		// Check whether all $_GET parameters have been used (see #4277)
 		if ($blnCheckRequest && \Input::hasUnusedGet())
@@ -259,11 +291,21 @@ class FrontendTemplate extends \Template
 			/** @var KernelInterface $kernel */
 			global $kernel;
 
-			// Trigger the getCacheKey hook
+			// Dispatch the contao.get_cache_key event
 			$event = new ReturnValueEvent($strCacheKey);
 			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
 
 			$strCacheKey = $event->getValue();
+
+			// HOOK: add custom logic
+			if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))
+			{
+				foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
+				{
+					$this->import($callback[0]);
+					$strCacheKey = $this->$callback[0]->$callback[1]($strCacheKey);
+				}
+			}
 
 			// Store mobile pages separately
 			if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))

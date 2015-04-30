@@ -85,9 +85,19 @@ class PageRegular extends \Frontend
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the getPageLayout hook (see #4736)
+		// Dispatch the contao.get_page_id_from_url event (see #4736)
 		$event = new PageEvent($objPage, $objLayout, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_PAGE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_PAGE_LAYOUT, $event);
+
+		// HOOK: modify the page or layout object (see #4736)
+		if (isset($GLOBALS['TL_HOOKS']['getPageLayout']) && is_array($GLOBALS['TL_HOOKS']['getPageLayout']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['getPageLayout'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->$callback[0]->$callback[1]($objPage, $objLayout, $this);
+			}
+		}
 
 		/** @var \ThemeModel $objTheme */
 		$objTheme = $objLayout->getRelated('pid');
@@ -188,9 +198,19 @@ class PageRegular extends \Frontend
 			$this->Template->isRTL = true;
 		}
 
-		// Trigger the generatePage hook
+		// Dispatch the contao.generate_page event
 		$event = new PageEvent($objPage, $objLayout, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_PAGE, $event);
+
+		// HOOK: modify the page or layout object
+		if (isset($GLOBALS['TL_HOOKS']['generatePage']) && is_array($GLOBALS['TL_HOOKS']['generatePage']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['generatePage'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->$callback[0]->$callback[1]($objPage, $objLayout, $this);
+			}
+		}
 
 		// Set the page title and description AFTER the modules have been generated
 		$this->Template->mainTitle = $objPage->rootPageTitle;

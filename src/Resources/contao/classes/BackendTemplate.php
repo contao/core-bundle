@@ -40,11 +40,23 @@ class BackendTemplate extends \Template
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the parseBackendTemplate hook
+		// Dispatch the contao.parse_backend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_BACKEND_TEMPLATE, $event);
 
-		return $event->getBuffer();
+		$strBuffer = $event->getBuffer();
+
+		// HOOK: add custom parse filters
+		if (isset($GLOBALS['TL_HOOKS']['parseBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseBackendTemplate']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['parseBackendTemplate'] as $callback)
+			{
+				$this->import($callback[0]);
+				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
+			}
+		}
+
+		return $strBuffer;
 	}
 
 
@@ -99,17 +111,27 @@ class BackendTemplate extends \Template
 			$this->mootools = $strMootools;
 		}
 
-		$strBuffer = $this->parse();
-		$strBuffer = static::replaceOldBePaths($strBuffer);
+		$this->strBuffer = $this->parse();
+		$this->strBuffer = static::replaceOldBePaths($this->strBuffer);
 
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the outputBackendTemplate hook
-		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		// Dispatch the contao.output_backend_template event
+		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_BACKEND_TEMPLATE, $event);
 
 		$this->strBuffer = $event->getBuffer();
+
+		// HOOK: add custom output filter
+		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
+			}
+		}
 
 		parent::compile();
 	}

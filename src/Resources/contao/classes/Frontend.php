@@ -231,11 +231,20 @@ abstract class Frontend extends \Controller
 		/** @var KernelInterface $kernel */
 		global $kernel;
 
-		// Trigger the getPageIdFromUrl hook
+		// Dispatch the contao.get_page_id_from_url event
 		$event = new ReturnValueEvent($arrFragments);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_PAGE_ID_FROM_URL, $event);
 
 		$arrFragments = $event->getValue();
+
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['getPageIdFromUrl']) && is_array($GLOBALS['TL_HOOKS']['getPageIdFromUrl']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['getPageIdFromUrl'] as $callback)
+			{
+				$arrFragments = static::importStatic($callback[0])->$callback[1]($arrFragments);
+			}
+		}
 
 		// Return if the alias is empty (see #4702 and #4972)
 		if ($arrFragments[0] == '' && count($arrFragments) > 1)
@@ -720,11 +729,20 @@ abstract class Frontend extends \Controller
 			$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 		}
 
-		// Trigger the getCacheKey hook
+		// Dispatch the contao.get_cache_key event
 		$event = new ReturnValueEvent($strCacheKey);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
 
 		$strCacheKey = $event->getValue();
+
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
+			{
+				$strCacheKey = \System::importStatic($callback[0])->$callback[1]($strCacheKey);
+			}
+		}
 
 		$blnFound = false;
 		$strCacheFile = null;
