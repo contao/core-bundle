@@ -156,10 +156,20 @@ class SymlinksCommand extends LockedCommand implements ContainerAwareInterface
      */
     private function createSymlinksFromFinder(Finder $finder, $prepend, $rootDir, OutputInterface $output)
     {
+        $processed = [];
+
+        $finder->sortByName();
+
         /** @var SplFileInfo $file */
         foreach ($finder as $file) {
+            if (!empty($processed) && preg_match('{^' . implode('|^', $processed) . '}', $file->getRelativePath())) {
+                continue;
+            }
+
             $path = rtrim($prepend . '/' . $file->getRelativePath(), '/');
             $this->symlink($path, "web/$path", $rootDir, $output);
+
+            $processed[] = $file->getRelativePath();
         }
     }
 
