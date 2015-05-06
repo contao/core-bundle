@@ -86,6 +86,16 @@ final class ContaoEvents
     const GET_COMBINED_FILE = 'contao.get_combined_file';
 
     /**
+     * The contao.get_content_element event is triggered when a content element
+     * is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetContentElementEvent
+     */
+    const GET_CONTENT_ELEMENT = 'contao.get_content_element';
+
+    /**
      * The contao.get_countries event is triggered when the country list is
      * compiled.
      *

@@ -498,7 +498,14 @@ abstract class Controller extends \System
 		$objElement = new $strClass($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_content_element event
+		$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objElement);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CONTENT_ELEMENT, $event);
+
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getContentElement']) && is_array($GLOBALS['TL_HOOKS']['getContentElement']))
