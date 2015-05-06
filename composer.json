@@ -25,6 +25,7 @@
         "tecnick.com/tcpdf": "~6.0",
         "true/punycode": "~1.0",
         "twig/twig": "~1.12,>=1.12.3",
+        "terminal42/contao-adapter-bundle": "dev-develop",
         "contao-components/ace": "~1.1",
         "contao-components/chosen": "~1.0",
         "contao-components/colorbox": "~1.5",
