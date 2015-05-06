@@ -13,7 +13,10 @@ namespace Contao;
 use Contao\CoreBundle\Cache\ContaoCacheClearer;
 use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Command\SymlinksCommand;
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -268,7 +271,14 @@ class Automator extends \System
 			$arrFeeds[] = $objFeeds->sitemapName;
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.remove_old_feeds event
+		$event = new ReturnValueEvent();
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REMOVE_OLD_FEEDS, $event);
+
+		$arrFeeds = array_merge($arrFeeds, $event->getValue());
 
 		// HOOK: preserve third party feeds
 		if (isset($GLOBALS['TL_HOOKS']['removeOldFeeds']) && is_array($GLOBALS['TL_HOOKS']['removeOldFeeds']))
@@ -417,7 +427,12 @@ class Automator extends \System
 		// Sitemaps
 		$this->generateSitemap();
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.generate_xml_files event
+		$event = new Event();
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_XML_FILES, $event);
 
 		// HOOK: add custom jobs
 		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))

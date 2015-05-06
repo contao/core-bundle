@@ -28,6 +28,16 @@ final class ContaoEvents
     const GENERATE_PAGE = 'contao.generate_page';
 
     /**
+     * The contao.generate_xml_files event is triggered when the automator
+     * regenerates the XML files.
+     *
+     * @var string
+     *
+     * @see Symfony\Component\EventDispatcher\Event
+     */
+    const GENERATE_XML_FILES = 'contao.generate_xml_files';
+
+    /**
      * The contao.get_cache_key event is triggered when the name of a front
      * end cache file is calculated.
      *
@@ -116,4 +126,14 @@ final class ContaoEvents
      * @see Contao\CoreBundle\Event\TemplateEvent
      */
     const OUTPUT_FRONTEND_TEMPLATE = 'contao.output_frontend_template';
+
+    /**
+     * The contao.remove_old_feeds event is triggered when the automator
+     * removes old XML feed files from the /share directory.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
+     */
+    const REMOVE_OLD_FEEDS = 'contao.remove_old_feeds';
 }
