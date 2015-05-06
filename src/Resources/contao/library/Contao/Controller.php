@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GenerateFrontendUrlEvent;
 use Contao\CoreBundle\Event\GetContentElementEvent;
 use Contao\CoreBundle\Event\GetFormEvent;
 use Contao\CoreBundle\Event\GetFrontendModuleEvent;
@@ -1180,7 +1181,14 @@ abstract class Controller extends \System
 			$strUrl = ($arrRow['rootUseSSL'] ? 'https://' : 'http://') . $arrRow['domain'] . \Environment::get('path') . '/' . $strUrl;
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.generate_frontend_url event
+		$event = new GenerateFrontendUrlEvent($strUrl, $arrRow, $strParams);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_FRONTEND_URL, $event);
+
+		$strUrl = $event->getUrl();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))

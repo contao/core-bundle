@@ -36,6 +36,16 @@ final class ContaoEvents
     const ADD_LOG_ENTRY = 'contao.add_log_entry';
 
     /**
+     * The contao.generate_frontend_url event is triggered when a front end URL
+     * is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GenerateFrontendUrlEvent
+     */
+    const GENERATE_FRONTEND_URL = 'contao.generate_frontend_url';
+
+    /**
      * The contao.generate_page event is triggered when the page object
      * is generated in the front end.
      *
