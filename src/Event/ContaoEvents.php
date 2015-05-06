@@ -86,6 +86,16 @@ final class ContaoEvents
     const GET_COMBINED_FILE = 'contao.get_combined_file';
 
     /**
+     * The contao.get_countries event is triggered when the country list is
+     * compiled.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetCountriesEvent
+     */
+    const GET_COUNTRIES = 'contao.get_countries';
+
+    /**
      * The contao.get_page_id_from_url event is triggered when the page ID is
      * read from the URL.
      *
