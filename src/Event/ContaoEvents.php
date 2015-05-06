@@ -146,6 +146,16 @@ final class ContaoEvents
     const LOAD_DATA_CONTAINER = 'contao.load_data_container';
 
     /**
+     * The contao.load_language_file event is triggered when a language file is
+     * loaded.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\LoadLanguageFileEvent
+     */
+    const LOAD_LANGUAGE_FILE = 'contao.load_language_file';
+
+    /**
      * The contao.modify_frontend_page event is triggered after a front end
      * template has been compiled.
      *

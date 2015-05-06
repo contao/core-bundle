@@ -14,6 +14,7 @@ use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Contao\CoreBundle\Event\AddLogEntryEvent;
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\LoadLanguageFileEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -367,7 +368,9 @@ abstract class System
 			}
 		}
 
-		// FIXME: trigger an event
+		// Dispatch the contao.load_language_file event
+		$event = new LoadLanguageFileEvent($strName, $strLanguage, $strCacheKey);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::LOAD_LANGUAGE_FILE, $event);
 
 		// HOOK: allow to load custom labels
 		if (isset($GLOBALS['TL_HOOKS']['loadLanguageFile']) && is_array($GLOBALS['TL_HOOKS']['loadLanguageFile']))
