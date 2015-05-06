@@ -97,6 +97,16 @@ final class ContaoEvents
     const GET_ROOT_PAGE_FROM_URL = 'contao.get_root_page_from_url';
 
     /**
+     * The contao.get_searchable_pages event is triggered when the searchable
+     * pages are compiled.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
+     */
+    const GET_SEARCHABLE_PAGES = 'contao.get_searchable_pages';
+
+    /**
      * The contao.load_data_container event is triggered when a data container
      * is loaded.
      *

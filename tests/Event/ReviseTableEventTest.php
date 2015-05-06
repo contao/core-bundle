@@ -78,7 +78,7 @@ class ReviseTableEventTest extends TestCase
 
         $event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
 
-        // Change the original variables
+        // Try to change the original variables
         $table        = 'bar';
         $newRecordIds = [4];
         $parentTable  = 'parent';

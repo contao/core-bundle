@@ -14,6 +14,7 @@ use Contao\CoreBundle\Cache\ContaoCacheClearer;
 use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Command\SymlinksCommand;
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetSearchablePagesEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\EventDispatcher\Event;
@@ -373,6 +374,9 @@ class Automator extends \System
 			return;
 		}
 
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
 		// Create the XML file
 		while ($objRoot->next())
 		{
@@ -388,7 +392,11 @@ class Automator extends \System
 			// Find the searchable pages
 			$arrPages = \Backend::findSearchablePages($objRoot->id, $strDomain, true, $objRoot->language);
 
-			// FIXME: trigger an event
+			// Dispatch the contao.get_searchable_pages event
+			$event = new GetSearchablePagesEvent($arrPages, $objRoot->id, $objRoot->language);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_SEARCHABLE_PAGES, $event);
+
+			$arrPages = $event->getPages();
 
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))

@@ -35,7 +35,11 @@ class PageEventTest extends TestCase
     {
         parent::setUp();
 
-        $this->event = new PageEvent(new PageModel(), new LayoutModel(), new PageRegular());
+        $page    = new PageModel();
+        $layout  = new LayoutModel();
+        $handler = new PageRegular();
+
+        $this->event = new PageEvent($page, $layout, $handler);
     }
 
     /**
@@ -77,11 +81,12 @@ class PageEventTest extends TestCase
         $handler2 = new PageRegular();
         $event    = new PageEvent($page, $layout, $handler);
 
-        // Change the original variables
+        // Try to change the original variables
+        $page    = $page2;
         $layout  = $layout2;
         $handler = $handler2;
 
-        $this->assertEquals($page, $event->getPage());
+        $this->assertEquals($page2, $event->getPage());
         $this->assertEquals($layout2, $event->getLayout());
         $this->assertEquals($handler2, $event->getHandler());
     }
