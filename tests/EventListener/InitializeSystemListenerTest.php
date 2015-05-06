@@ -52,9 +52,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests a front end request.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testFrontendRequest()
     {
@@ -96,9 +93,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests a back end request.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testBackendRequest()
     {
@@ -141,9 +135,6 @@ class InitializeSystemListenerTest extends TestCase
     /**
      * Tests that the Contao framework is initialized upon a sub request
      * if the master request is not within the scope.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testFrontendSubRequest()
     {
@@ -188,9 +179,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests a request without a scope.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testWithoutScope()
     {
@@ -225,9 +213,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests that the Contao framework is not initialized without a container.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testWithoutContainer()
     {
@@ -257,9 +242,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests that the Contao framework is not booted twice upon kernel.request.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testNotBootedTwiceUponKernelRequest()
     {
@@ -307,9 +289,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests the validateInstallation() method.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      *
      * @expectedException \Contao\CoreBundle\Exception\InsecureInstallationException
      */
@@ -370,9 +349,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests a console command.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testConsoleCommand()
     {
@@ -402,9 +378,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests that the Contao framework is not booted twice upon console.command.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testNotBootedTwiceUponConsoleCommand()
     {
@@ -449,9 +422,6 @@ class InitializeSystemListenerTest extends TestCase
 
     /**
      * Tests that the error level will get updated when configured.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testErrorLevelOverride()
     {

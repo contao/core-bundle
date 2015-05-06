@@ -93,9 +93,6 @@ TXT;
 
     /**
      * Tests loading a file into the global variables.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testLoadIntoGlobal()
     {

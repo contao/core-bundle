@@ -52,9 +52,6 @@ class AddToSearchIndexListenerTest extends TestCase
 
     /**
      * Tests that the listener does use the response if the Contao framework is booted.
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testWithContaoFramework()
     {

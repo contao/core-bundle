@@ -34,9 +34,6 @@ class ContaoUserProviderTest extends TestCase
 
     /**
      * Tests loading the user "backend".
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testLoadUserBackend()
     {
@@ -47,9 +44,6 @@ class ContaoUserProviderTest extends TestCase
 
     /**
      * Tests loading the user "frontend".
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
      */
     public function testLoadUserFrontend()
     {
