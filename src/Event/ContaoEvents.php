@@ -225,6 +225,15 @@ final class ContaoEvents
     const REPLACE_DYNAMIC_SCRIPT_TAGS = 'contao.replace_dynamic_script_tags';
 
     /**
+     * The contao.revise_table event is triggered when a table is revised.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReviseTableEvent
+     */
+    const REVISE_TABLE = 'contao.revise_table';
+
+    /**
      * The contao.set_cookie event is triggered when a cookie is set.
      *
      * @var string

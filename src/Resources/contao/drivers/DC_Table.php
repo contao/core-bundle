@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReviseTableEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -3122,7 +3124,17 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$new_records = $this->Session->get('new_records');
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.revise_table event
+		$event = new ReviseTableEvent($this->strTable, $new_records[$this->strTable], $ptable, $ctable);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REVISE_TABLE, $event);
+
+		if (($status = $event->getStatus()) === true)
+		{
+			$reload = true;
+		}
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['reviseTable']) && is_array($GLOBALS['TL_HOOKS']['reviseTable']))
