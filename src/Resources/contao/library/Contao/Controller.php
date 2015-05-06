@@ -15,6 +15,7 @@ use Contao\CoreBundle\Event\GetContentElementEvent;
 use Contao\CoreBundle\Event\GetFormEvent;
 use Contao\CoreBundle\Event\GetFrontendModuleEvent;
 use Contao\CoreBundle\Event\GetPageStatusIconEvent;
+use Contao\CoreBundle\Event\IsVisibleElementEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
@@ -711,7 +712,14 @@ abstract class Controller extends \System
 			$blnReturn = false;
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.is_visible_element event
+		$event = new IsVisibleElementEvent($blnReturn, $objElement);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::IS_VISIBLE_ELEMENT, $event);
+
+		$blnReturn = $event->getReturn();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))

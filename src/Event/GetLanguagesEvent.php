@@ -118,7 +118,7 @@ class GetLanguagesEvent extends Event
     /**
      * Returns the installedOnly flag.
      *
-     * @return boolean The installedOnly flag
+     * @return bool The installedOnly flag
      */
     public function getInstalledOnly()
     {
@@ -128,7 +128,7 @@ class GetLanguagesEvent extends Event
     /**
      * Sets the installedOnly flag.
      *
-     * @param boolean $installedOnly The installedOnly flag
+     * @param bool $installedOnly The installedOnly flag
      */
     public function setInstalledOnly($installedOnly)
     {

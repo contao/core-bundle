@@ -195,6 +195,16 @@ final class ContaoEvents
     const INDEX_PAGE = 'contao.index_page';
 
     /**
+     * The contao.is_visible_element event is triggered when checking an
+     * element for visibility.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\IsVisibleElementEvent
+     */
+    const IS_VISIBLE_ELEMENT = 'contao.is_visible_element';
+
+    /**
      * The contao.load_data_container event is triggered when a data container
      * is loaded.
      *
