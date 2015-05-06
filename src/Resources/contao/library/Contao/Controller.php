@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -402,7 +404,12 @@ abstract class Controller extends \System
 		$objRow->headline = $objRow->title;
 		$objRow->multiMode = $blnMultiMode;
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_article event
+		$event = new ReturnValueEvent($objRow);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_ARTICLE, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getArticle']) && is_array($GLOBALS['TL_HOOKS']['getArticle']))
@@ -712,7 +719,14 @@ abstract class Controller extends \System
 	 */
 	public static function replaceDynamicScriptTags($strBuffer)
 	{
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.replace_dynamic_script_tags event
+		$event = new ReturnValueEvent($strBuffer);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REPLACE_DYNAMIC_SCRIPT_TAGS, $event);
+
+		$strBuffer = $event->getValue();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']) && is_array($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']))
@@ -1219,7 +1233,12 @@ abstract class Controller extends \System
 			throw new AccessDeniedException(sprintf('File type "%s" is not allowed', $objFile->extension));
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.post_download event
+		$event = new ReturnValueEvent($strFile);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::POST_DOWNLOAD, $event);
 
 		// HOOK: post download callback
 		if (isset($GLOBALS['TL_HOOKS']['postDownload']) && is_array($GLOBALS['TL_HOOKS']['postDownload']))

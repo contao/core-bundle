@@ -12,6 +12,8 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -611,7 +613,14 @@ abstract class System
 		$objCookie->blnSecure   = $blnSecure;
 		$objCookie->blnHttpOnly = $blnHttpOnly;
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.set_cookie event
+		$event = new ReturnValueEvent($objCookie);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::SET_COOKIE, $event);
+
+		$objCookie = $event->getValue();
 
 		// HOOK: allow to add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['setCookie']) && is_array($GLOBALS['TL_HOOKS']['setCookie']))

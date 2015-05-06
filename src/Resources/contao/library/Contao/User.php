@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -316,7 +318,9 @@ abstract class User extends \System
 
 		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
 
-		// FIXME: trigger an event
+		// Dispatch the contao.post_authenticate event
+		$event = new ReturnValueEvent($this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::POST_AUTHENTICATE, $event);
 
 		// HOOK: post authenticate callback
 		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
@@ -346,6 +350,9 @@ abstract class User extends \System
 		{
 			return false;
 		}
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
 
 		// Load the user object
 		if ($this->findBy('username', \Input::post('username', true)) == false)
@@ -476,7 +483,9 @@ abstract class User extends \System
 		$this->generateSession();
 		$this->log('User "' . $this->username . '" has logged in', __METHOD__, TL_ACCESS);
 
-		// FIXME: trigger an event
+		// Dispatch the contao.post_login event
+		$event = new ReturnValueEvent($this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::POST_LOGIN, $event);
 
 		// HOOK: post login callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin']))
@@ -664,7 +673,9 @@ abstract class User extends \System
 			$this->log('User "' . $this->username . '" has logged out', __METHOD__, TL_ACCESS);
 		}
 
-		// FIXME: trigger an event
+		// Dispatch the contao.post_logout event
+		$event = new ReturnValueEvent($this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::POST_LOGOUT, $event);
 
 		// HOOK: post logout callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout']))

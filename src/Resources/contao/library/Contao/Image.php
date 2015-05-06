@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
+
 
 /**
  * Resizes images
@@ -397,7 +401,19 @@ class Image
 	 */
 	public function executeResize()
 	{
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.execute_resize event
+		$event = new ReturnValueEvent($this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::EXECUTE_RESIZE, $event);
+
+		if (is_string(($return = $event->getValue())))
+		{
+			$this->resizedPath = \System::urlEncode($return);
+
+			return $this;
+		}
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['executeResize']) && is_array($GLOBALS['TL_HOOKS']['executeResize']))
