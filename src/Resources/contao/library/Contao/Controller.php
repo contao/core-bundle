@@ -14,6 +14,7 @@ use Contao\CoreBundle\Event\ContaoEvents;
 use Contao\CoreBundle\Event\GetContentElementEvent;
 use Contao\CoreBundle\Event\GetFormEvent;
 use Contao\CoreBundle\Event\GetFrontendModuleEvent;
+use Contao\CoreBundle\Event\GetPageStatusIconEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
@@ -614,7 +615,7 @@ abstract class Controller extends \System
 	/**
 	 * Calculate the page status icon name based on the page parameters
 	 *
-	 * @param object $objPage The page object
+	 * @param \PageModel $objPage The page object
 	 *
 	 * @return string The status icon name
 	 */
@@ -647,7 +648,14 @@ abstract class Controller extends \System
 			$image = $objPage->type.'_'.$sub.'.gif';
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_page_status_icon event
+		$event = new GetPageStatusIconEvent($image, $objPage);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_PAGE_STATUS_ICON, $event);
+
+		$image = $event->getImage();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getPageStatusIcon']) && is_array($GLOBALS['TL_HOOKS']['getPageStatusIcon']))

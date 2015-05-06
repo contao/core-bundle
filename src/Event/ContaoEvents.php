@@ -155,6 +155,16 @@ final class ContaoEvents
     const GET_PAGE_LAYOUT = 'contao.get_page_layout';
 
     /**
+     * The contao.get_page_status_icon event is triggered when a page status
+     * icon is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetPageStatusIconEvent
+     */
+    const GET_PAGE_STATUS_ICON = 'contao.get_page_status_icon';
+
+    /**
      * The contao.get_root_page_from_url event is triggered when the root page
      * is read from the URL.
      *
