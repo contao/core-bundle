@@ -27,6 +27,15 @@ final class ContaoEvents
     const EXECUTE_RESIZE = 'contao.execute_resize';
 
     /**
+     * The contao.add_log_entry event is triggered when a log entry is added.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\AddLogEntryEvent
+     */
+    const ADD_LOG_ENTRY = 'contao.add_log_entry';
+
+    /**
      * The contao.generate_page event is triggered when the page object
      * is generated in the front end.
      *

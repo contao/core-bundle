@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Event\AddLogEntryEvent;
 use Contao\CoreBundle\Event\ContaoEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Finder\SplFileInfo;
@@ -195,7 +196,12 @@ abstract class System
 		\Database::getInstance()->prepare("INSERT INTO tl_log (tstamp, source, action, username, text, func, ip, browser) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
 							   ->execute(time(), (TL_MODE == 'FE' ? 'FE' : 'BE'), $strCategory, ($GLOBALS['TL_USERNAME'] ? $GLOBALS['TL_USERNAME'] : ''), specialchars($strText), $strFunction, $strIp, $strUa);
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.add_log_entry event
+		$event = new AddLogEntryEvent($strText, $strFunction, $strCategory);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::ADD_LOG_ENTRY, $event);
 
 		// HOOK: allow to add custom loggers
 		if (isset($GLOBALS['TL_HOOKS']['addLogEntry']) && is_array($GLOBALS['TL_HOOKS']['addLogEntry']))

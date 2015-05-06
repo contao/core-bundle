@@ -36,6 +36,10 @@ class IndexPageEvent extends Event
 
     /**
      * Constructor.
+     *
+     * @param string $content The content
+     * @param array  $data    The data array
+     * @param array  $set     The set array
      */
     public function __construct(&$content, array &$data, array &$set)
     {
@@ -47,7 +51,7 @@ class IndexPageEvent extends Event
     /**
      * Returns the content.
      *
-     * @return string The content.
+     * @return string The content
      */
     public function getContent()
     {
@@ -67,7 +71,7 @@ class IndexPageEvent extends Event
     /**
      * Returns the data.
      *
-     * @return array The data.
+     * @return array The data
      */
     public function getData()
     {
@@ -85,9 +89,9 @@ class IndexPageEvent extends Event
     }
 
     /**
-     * Returns the set.
+     * Returns the set array.
      *
-     * @return array The set.
+     * @return array The set array
      */
     public function getSet()
     {
@@ -95,9 +99,9 @@ class IndexPageEvent extends Event
     }
 
     /**
-     * Sets the set.
+     * Sets the set array.
      *
-     * @param array $set The set
+     * @param array $set The set array
      */
     public function setSet(array $set)
     {
