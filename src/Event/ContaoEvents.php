@@ -58,6 +58,16 @@ final class ContaoEvents
     const GET_PAGE_LAYOUT = 'contao.get_page_layout';
 
     /**
+     * The contao.get_root_page_from_url event is triggered when the root page
+     * is read from the URL.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
+     */
+    const GET_ROOT_PAGE_FROM_URL = 'contao.get_root_page_from_url';
+
+    /**
      * The contao.modify_frontend_page event is triggered after a front end
      * template has been compiled.
      *

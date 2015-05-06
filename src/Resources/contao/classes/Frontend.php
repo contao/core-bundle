@@ -298,14 +298,24 @@ abstract class Frontend extends \Controller
 	 */
 	public static function getRootPageFromUrl()
 	{
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_root_page_from_url event
+		$event = new ReturnValueEvent();
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_ROOT_PAGE_FROM_URL, $event);
+
+		/** @var \PageModel $objRootPage */
+		if (is_object(($objRootPage = $event->getValue())))
+		{
+			return $objRootPage;
+		}
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getRootPageFromUrl']) && is_array($GLOBALS['TL_HOOKS']['getRootPageFromUrl']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getRootPageFromUrl'] as $callback)
 			{
-				/** @var \PageModel $objRootPage */
 				if (is_object(($objRootPage = static::importStatic($callback[0])->$callback[1]())))
 				{
 					return $objRootPage;

@@ -29,7 +29,7 @@ class ReturnValueEvent extends Event
      *
      * @param mixed $value The value
      */
-    public function __construct($value)
+    public function __construct($value = null)
     {
         $this->value = $value;
     }
