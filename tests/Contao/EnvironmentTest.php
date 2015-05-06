@@ -26,10 +26,15 @@ class EnvironmentTest extends TestCase
      */
     public static function setupBeforeClass()
     {
-        Environment::set('path', '/core');
+        //Environment::set('path', '/core');
 
         require __DIR__ . '/../../src/Resources/contao/config/default.php';
         require __DIR__ . '/../../src/Resources/contao/config/agents.php';
+    }
+
+    protected function setUp()
+    {
+        $this->markTestSkipped('Cannot test legacy classes.');
     }
 
     /**

@@ -61,6 +61,7 @@ class ImageTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
+        $this->markTestSkipped('Cannot test legacy classes.');
 
         copy(__DIR__ . '/../Fixtures/images/dummy.jpg', self::$rootDir . '/dummy.jpg');
 
