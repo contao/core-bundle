@@ -75,7 +75,7 @@ class ContaoTokenTest extends TestCase
      */
     public function testUnauthenticatedUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapter');
         $user->expects($this->once())->method('authenticate')->willReturn(false);
 
         new ContaoToken($user);
@@ -86,7 +86,7 @@ class ContaoTokenTest extends TestCase
      */
     private function mockFrontendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
 
@@ -98,7 +98,7 @@ class ContaoTokenTest extends TestCase
      */
     private function mockBackendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
         $user->expects($this->any())->method('getValue')->with($this->equalTo('isAdmin'))->willReturn(true);

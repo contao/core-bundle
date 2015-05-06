@@ -10,8 +10,8 @@
 
 namespace Contao\CoreBundle\Security\Authentication;
 
-use Contao\CoreBundle\Adapter\BackendUserAdapterInterface;
-use Contao\CoreBundle\Adapter\FrontendUserAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendUserAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendUserAdapter;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\RoleInterface;
@@ -31,8 +31,8 @@ class ContaoToken extends AbstractToken
      */
     public function __construct($user)
     {
-        if (!$user instanceof BackendUserAdapterInterface
-        && !$user instanceof FrontendUserAdapterInterface
+        if (!$user instanceof BackendUserAdapter
+        && !$user instanceof FrontendUserAdapter
         ) {
             throw new UsernameNotFoundException('Invalid Contao user given.');
         }
@@ -67,9 +67,9 @@ class ContaoToken extends AbstractToken
     {
         $roles = [];
 
-        if ($user instanceof FrontendUserAdapterInterface) {
+        if ($user instanceof FrontendUserAdapter) {
             $roles[] = 'ROLE_MEMBER';
-        } elseif ($user instanceof BackendUserAdapterInterface) {
+        } elseif ($user instanceof BackendUserAdapter) {
             $roles[] = 'ROLE_USER';
 
             if ($user->getValue('isAdmin')) {

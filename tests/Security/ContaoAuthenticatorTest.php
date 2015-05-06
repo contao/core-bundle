@@ -99,7 +99,7 @@ class ContaoAuthenticatorTest extends TestCase
      */
     private function mockFrontendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
 
@@ -111,7 +111,7 @@ class ContaoAuthenticatorTest extends TestCase
      */
     private function mockBackendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
 

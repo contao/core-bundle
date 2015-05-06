@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Test;
 
 use Contao\Config;
-use Contao\CoreBundle\Adapter\ConfigAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\ConfigAdapter;
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\EventListener\InitializeSystemListener;

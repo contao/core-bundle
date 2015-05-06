@@ -10,17 +10,17 @@
 
 namespace Contao\CoreBundle\Controller;
 
-use Contao\CoreBundle\Adapter\BackendConfirmAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendFileAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendHelpAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendIndexAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendInstallAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendMainAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendPageAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendPasswordAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendPopupAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendPreviewAdapterInterface;
-use Contao\CoreBundle\Adapter\BackendSwitchAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendConfirmAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendFileAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendHelpAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendIndexAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendInstallAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendMainAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendPageAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendPasswordAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendPopupAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendPreviewAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendSwitchAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,96 +37,96 @@ class BackendController extends Controller
 {
     /**
      * Back end main
-     * @var BackendMainAdapterInterface
+     * @var BackendMainAdapter
      */
     private $backendMain;
     /**
      * Back end index
-     * @var BackendIndexAdapterInterface
+     * @var BackendIndexAdapter
      */
     private $backendIndex;
 
     /**
      * Back end install
-     * @var BackendInstallAdapterInterface
+     * @var BackendInstallAdapter
      */
     private $backendInstall;
 
     /**
      * Back end password
-     * @var BackendPasswordAdapterInterface
+     * @var BackendPasswordAdapter
      */
     private $backendPassword;
 
     /**
      * Back end preview
-     * @var BackendPreviewAdapterInterface
+     * @var BackendPreviewAdapter
      */
     private $backendPreview;
 
     /**
      * Back end confirm
-     * @var BackendConfirmAdapterInterface
+     * @var BackendConfirmAdapter
      */
     private $backendConfirm;
 
     /**
      * Back end file
-     * @var BackendFileAdapterInterface
+     * @var BackendFileAdapter
      */
     private $backendFile;
 
     /**
      * Back end help
-     * @var BackendHelpAdapterInterface
+     * @var BackendHelpAdapter
      */
     private $backendHelp;
 
     /**
      * Back end page
-     * @var BackendPageAdapterInterface
+     * @var BackendPageAdapter
      */
     private $backendPage;
 
     /**
      * Back end popup
-     * @var BackendPopupAdapterInterface
+     * @var BackendPopupAdapter
      */
     private $backendPopup;
 
     /**
      * Back end switch
-     * @var BackendSwitchAdapterInterface
+     * @var BackendSwitchAdapter
      */
     private $backendSwitch;
 
     /**
      * Constructor.
      *
-     * @param BackendMainAdapterInterface     $backendMain
-     * @param BackendIndexAdapterInterface    $backendIndex
-     * @param BackendInstallAdapterInterface  $backendInstall
-     * @param BackendPasswordAdapterInterface $backendPassword
-     * @param BackendPreviewAdapterInterface  $backendPreview
-     * @param BackendConfirmAdapterInterface  $backendConfirm
-     * @param BackendFileAdapterInterface     $backendFile
-     * @param BackendHelpAdapterInterface     $backendHelp
-     * @param BackendPageAdapterInterface     $backendPage
-     * @param BackendPopupAdapterInterface    $backendPopup
-     * @param BackendSwitchAdapterInterface   $backendSwitch
+     * @param BackendMainAdapter     $backendMain
+     * @param BackendIndexAdapter    $backendIndex
+     * @param BackendInstallAdapter  $backendInstall
+     * @param BackendPasswordAdapter $backendPassword
+     * @param BackendPreviewAdapter  $backendPreview
+     * @param BackendConfirmAdapter  $backendConfirm
+     * @param BackendFileAdapter     $backendFile
+     * @param BackendHelpAdapter     $backendHelp
+     * @param BackendPageAdapter     $backendPage
+     * @param BackendPopupAdapter    $backendPopup
+     * @param BackendSwitchAdapter   $backendSwitch
      */
     public function __construct(
-        BackendMainAdapterInterface $backendMain,
-        BackendIndexAdapterInterface $backendIndex,
-        BackendInstallAdapterInterface $backendInstall,
-        BackendPasswordAdapterInterface $backendPassword,
-        BackendPreviewAdapterInterface $backendPreview,
-        BackendConfirmAdapterInterface $backendConfirm,
-        BackendFileAdapterInterface $backendFile,
-        BackendHelpAdapterInterface $backendHelp,
-        BackendPageAdapterInterface $backendPage,
-        BackendPopupAdapterInterface $backendPopup,
-        BackendSwitchAdapterInterface $backendSwitch
+        BackendMainAdapter $backendMain,
+        BackendIndexAdapter $backendIndex,
+        BackendInstallAdapter $backendInstall,
+        BackendPasswordAdapter $backendPassword,
+        BackendPreviewAdapter $backendPreview,
+        BackendConfirmAdapter $backendConfirm,
+        BackendFileAdapter $backendFile,
+        BackendHelpAdapter $backendHelp,
+        BackendPageAdapter $backendPage,
+        BackendPopupAdapter $backendPopup,
+        BackendSwitchAdapter $backendSwitch
     ) {
         $this->backendMain      = $backendMain;
         $this->backendIndex     = $backendIndex;

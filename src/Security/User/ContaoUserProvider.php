@@ -11,8 +11,8 @@
 namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Adapter\BackendUserAdapterInterface;
-use Contao\CoreBundle\Adapter\FrontendUserAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\BackendUserAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendUserAdapter;
 use Contao\FrontendUser;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,13 +28,13 @@ class ContaoUserProvider implements UserProviderInterface
 {
     /**
      * Front end user
-     * @var FrontendUserAdapterInterface
+     * @var FrontendUserAdapter
      */
     private $frontendUser;
 
     /**
      * Back end user
-     * @var BackendUserAdapterInterface
+     * @var BackendUserAdapter
      */
     private $backendUser;
 
@@ -42,12 +42,12 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * Constructor.
      *
-     * @param FrontendUserAdapterInterface $frontendUser
-     * @param BackendUserAdapterInterface  $backendUser
+     * @param FrontendUserAdapter $frontendUser
+     * @param BackendUserAdapter  $backendUser
      */
     public function __construct(
-        FrontendUserAdapterInterface $frontendUser,
-        BackendUserAdapterInterface $backendUser
+        FrontendUserAdapter $frontendUser,
+        BackendUserAdapter $backendUser
     ) {
         $this->frontendUser = $frontendUser;
         $this->backendUser  = $backendUser;
@@ -85,7 +85,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class instanceof FrontendUserAdapterInterface
-            || $class instanceof BackendUserAdapterInterface;
+        return $class instanceof FrontendUserAdapter
+            || $class instanceof BackendUserAdapter;
     }
 }

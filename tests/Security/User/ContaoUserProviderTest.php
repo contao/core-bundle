@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Test\Security\Authentication;
 
-use Contao\CoreBundle\Adapter\FrontendUserAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendUserAdapter;
 use Contao\CoreBundle\Security\User\ContaoUserProvider;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\Security\Core\User\User;
@@ -42,7 +42,7 @@ class ContaoUserProviderTest extends TestCase
     {
         $provider = $this->getUserProvider();
 
-        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface', $provider->loadUserByUsername('backend'));
+        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\BackendUserAdapter', $provider->loadUserByUsername('backend'));
     }
 
     /**
@@ -55,7 +55,7 @@ class ContaoUserProviderTest extends TestCase
     {
         $provider = $this->getUserProvider();
 
-        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface', $provider->loadUserByUsername('frontend'));
+        $this->assertInstanceOf('Contao\\CoreBundle\\Adapter\\FrontendUserAdapter', $provider->loadUserByUsername('frontend'));
     }
 
     /**
@@ -98,7 +98,7 @@ class ContaoUserProviderTest extends TestCase
      */
     private function mockFrontendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\FrontendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
 
@@ -110,7 +110,7 @@ class ContaoUserProviderTest extends TestCase
      */
     private function mockBackendUser()
     {
-        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapterInterface');
+        $user = $this->getMock('Contao\\CoreBundle\\Adapter\\BackendUserAdapter');
         $user->expects($this->any())->method('instantiate')->willReturnSelf();
         $user->expects($this->any())->method('authenticate')->willReturn(true);
 

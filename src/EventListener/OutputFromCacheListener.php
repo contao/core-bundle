@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Adapter\FrontendAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendAdapter;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -23,16 +23,16 @@ class OutputFromCacheListener extends ScopeAwareListener
 {
     /**
      * Front end
-     * @var FrontendAdapterInterface
+     * @var FrontendAdapter
      */
     private $frontend;
 
     /**
      * Constructor.
      *
-     * @param FrontendAdapterInterface $frontend
+     * @param FrontendAdapter $frontend
      */
-    public function __construct(FrontendAdapterInterface $frontend)
+    public function __construct(FrontendAdapter $frontend)
     {
         $this->frontend = $frontend;
     }

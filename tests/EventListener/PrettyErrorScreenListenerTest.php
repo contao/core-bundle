@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Test\EventListener;
 
-use Contao\CoreBundle\Adapter\ConfigAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\ConfigAdapter;
 use Contao\CoreBundle\EventListener\PrettyErrorScreenListener;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InsecureInstallationException;
@@ -276,7 +276,7 @@ class PrettyErrorScreenListenerTest extends TestCase
 
     private function mockString()
     {
-        $string = $this->getMock('Contao\\CoreBundle\\Adapter\\StringAdapterInterface');
+        $string = $this->getMock('Contao\\CoreBundle\\Adapter\\StringAdapter');
         $string->expects($this->any())->method('encodeEmail')->willReturn('foobar');
 
         return $string;
@@ -284,7 +284,7 @@ class PrettyErrorScreenListenerTest extends TestCase
 
     private function mockSystem()
     {
-        $system = $this->getMock('Contao\\CoreBundle\\Adapter\\SystemAdapterInterface');
+        $system = $this->getMock('Contao\\CoreBundle\\Adapter\\SystemAdapter');
         $system->expects($this->any())->method('loadLanguageFile')->willReturn(null);
 
         return $system;

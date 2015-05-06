@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\ClassLoader;
-use Contao\CoreBundle\Adapter\ConfigAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\ConfigAdapter;
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
 use Contao\CoreBundle\Session\Attribute\AttributeBagAdapter;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
@@ -57,7 +57,7 @@ class InitializeSystemListener extends ScopeAwareListener
     private $rootDir;
 
     /**
-     * @var ConfigAdapterInterface
+     * @var ConfigAdapter
      */
     private $config;
 
@@ -89,7 +89,7 @@ class InitializeSystemListener extends ScopeAwareListener
      * @param string                    $rootDir       The kernel root directory
      * @param CsrfTokenManagerInterface $tokenManager  The token manager service
      * @param string                    $csrfTokenName The name of the token
-     * @param ConfigAdapterInterface    $config        The config adapter object
+     * @param ConfigAdapter    $config        The config adapter object
      */
     public function __construct(
         RouterInterface $router,
@@ -97,7 +97,7 @@ class InitializeSystemListener extends ScopeAwareListener
         $rootDir,
         CsrfTokenManagerInterface $tokenManager,
         $csrfTokenName,
-        ConfigAdapterInterface $config
+        ConfigAdapter $config
     ) {
         $this->router        = $router;
         $this->session       = $session;

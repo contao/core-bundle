@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Adapter\SystemAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\SystemAdapter;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -25,16 +25,16 @@ class ToggleViewListener extends ScopeAwareListener
 {
     /**
      * System
-     * @var SystemAdapterInterface
+     * @var SystemAdapter
      */
     private $system;
 
     /**
      * Constructor.
      *
-     * @param SystemAdapterInterface $system
+     * @param SystemAdapter $system
      */
-    public function __construct(SystemAdapterInterface $system)
+    public function __construct(SystemAdapter $system)
     {
         $this->system = $system;
     }

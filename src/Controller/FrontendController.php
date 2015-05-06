@@ -10,9 +10,9 @@
 
 namespace Contao\CoreBundle\Controller;
 
-use Contao\CoreBundle\Adapter\FrontendCronAdapterInterface;
-use Contao\CoreBundle\Adapter\FrontendIndexAdapterInterface;
-use Contao\CoreBundle\Adapter\FrontendShareAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendCronAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendIndexAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendShareAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,33 +29,33 @@ class FrontendController extends Controller
 {
     /**
      * Front end index
-     * @var FrontendIndexAdapterInterface
+     * @var FrontendIndexAdapter
      */
     private $frontendIndex;
 
     /**
      * Front end cron
-     * @var FrontendCronAdapterInterface
+     * @var FrontendCronAdapter
      */
     private $frontendCron;
 
     /**
      * Front end share
-     * @var FrontendShareAdapterInterface
+     * @var FrontendShareAdapter
      */
     private $frontendShare;
 
     /**
      * Constructor.
      *
-     * @param FrontendIndexAdapterInterface $frontendIndex
-     * @param FrontendCronAdapterInterface  $frontendCron
-     * @param FrontendShareAdapterInterface $frontendShare
+     * @param FrontendIndexAdapter $frontendIndex
+     * @param FrontendCronAdapter  $frontendCron
+     * @param FrontendShareAdapter $frontendShare
      */
     public function __construct(
-        FrontendIndexAdapterInterface $frontendIndex,
-        FrontendCronAdapterInterface $frontendCron,
-        FrontendShareAdapterInterface $frontendShare
+        FrontendIndexAdapter $frontendIndex,
+        FrontendCronAdapter $frontendCron,
+        FrontendShareAdapter $frontendShare
     ) {
         $this->frontendIndex = $frontendIndex;
         $this->frontendCron  = $frontendCron;

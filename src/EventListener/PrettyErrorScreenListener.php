@@ -10,9 +10,9 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Adapter\ConfigAdapterInterface;
-use Contao\CoreBundle\Adapter\StringAdapterInterface;
-use Contao\CoreBundle\Adapter\SystemAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\ConfigAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\StringAdapter;
+use Terminal42\ContaoAdapterBundle\Adapter\SystemAdapter;
 use Contao\CoreBundle\Exception\InternalServerErrorHttpException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -43,17 +43,17 @@ class PrettyErrorScreenListener
     private $twig;
 
     /**
-     * @var ConfigAdapterInterface
+     * @var ConfigAdapter
      */
     private $config;
 
     /**
-     * @var StringAdapterInterface
+     * @var StringAdapter
      */
     private $string;
 
     /**
-     * @var SystemAdapterInterface
+     * @var SystemAdapter
      */
     private $system;
 
@@ -78,16 +78,16 @@ class PrettyErrorScreenListener
      *
      * @param bool                   $prettyErrorScreens True to render the error screens
      * @param TwigEngine             $twig The twig rendering engine
-     * @param ConfigAdapterInterface $config The config adapter
-     * @param StringAdapterInterface $string
-     * @param SystemAdapterInterface $system
+     * @param ConfigAdapter $config The config adapter
+     * @param StringAdapter $string
+     * @param SystemAdapter $system
      */
     public function __construct(
         $prettyErrorScreens,
         TwigEngine $twig,
-        ConfigAdapterInterface $config,
-        StringAdapterInterface $string,
-        SystemAdapterInterface $system
+        ConfigAdapter $config,
+        StringAdapter $string,
+        SystemAdapter $system
     ) {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig               = $twig;

@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Command;
 
-use Contao\CoreBundle\Adapter\DbafsAdapterInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\DbafsAdapter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FilesyncCommand extends LockedCommand
 {
     /**
-     * @var DbafsAdapterInterface
+     * @var DbafsAdapter
      */
     private $dbafs;
 
@@ -31,12 +31,12 @@ class FilesyncCommand extends LockedCommand
      * Constructor.
      *
      * @param string|null $name The name of the command; passing null means it must be set in configure()
-     * @param DbafsAdapterInterface $dbafs
+     * @param DbafsAdapter $dbafs
      *
      * @throws \LogicException When the command name is empty
      *
      */
-    public function __construct($name = null, DbafsAdapterInterface $dbafs)
+    public function __construct($name = null, DbafsAdapter $dbafs)
     {
         $this->dbafs = $dbafs;
         parent::__construct($name);
