@@ -96,6 +96,16 @@ final class ContaoEvents
     const GET_COUNTRIES = 'contao.get_countries';
 
     /**
+     * The contao.get_languages event is triggered when the language list is
+     * compiled.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetLanguagesEvent
+     */
+    const GET_LANGUAGES = 'contao.get_languages';
+
+    /**
      * The contao.get_page_id_from_url event is triggered when the page ID is
      * read from the URL.
      *

@@ -15,6 +15,7 @@ use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Contao\CoreBundle\Event\AddLogEntryEvent;
 use Contao\CoreBundle\Event\ContaoEvents;
 use Contao\CoreBundle\Event\GetCountriesEvent;
+use Contao\CoreBundle\Event\GetLanguagesEvent;
 use Contao\CoreBundle\Event\LoadLanguageFileEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Finder\SplFileInfo;
@@ -516,7 +517,12 @@ abstract class System
 			}
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_languages event
+		$event = new GetLanguagesEvent($return, $languages, $langsNative, $blnInstalledOnly);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_LANGUAGES, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getLanguages']) && is_array($GLOBALS['TL_HOOKS']['getLanguages']))
