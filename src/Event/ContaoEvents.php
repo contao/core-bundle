@@ -116,6 +116,15 @@ final class ContaoEvents
     const GET_FRONTEND_MODULE = 'contao.get_frontend_module';
 
     /**
+     * The contao.get_form event is triggered when a form is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetFormEvent
+     */
+    const GET_FORM = 'contao.get_form';
+
+    /**
      * The contao.get_languages event is triggered when the language list is
      * compiled.
      *

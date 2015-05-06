@@ -11,6 +11,8 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetContentElementEvent;
+use Contao\CoreBundle\Event\GetFormEvent;
 use Contao\CoreBundle\Event\GetFrontendModuleEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -560,7 +562,14 @@ abstract class Controller extends \System
 		$objElement = new \Form($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_form event
+		$event = new GetFormEvent($strBuffer, $objRow, $objElement);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_FORM, $event);
+
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getForm']) && is_array($GLOBALS['TL_HOOKS']['getForm']))
