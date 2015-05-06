@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\IndexPageEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -132,7 +132,7 @@ class Search
 
 		// Dispatch the contao.index_page event
 		$event = new IndexPageEvent($strContent, $arrData, $arrSet);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::INDEX_PAGE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::INDEX_PAGE, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['indexPage']) && is_array($GLOBALS['TL_HOOKS']['indexPage']))

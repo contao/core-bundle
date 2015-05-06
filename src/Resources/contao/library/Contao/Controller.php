@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GenerateFrontendUrlEvent;
 use Contao\CoreBundle\Event\GetContentElementEvent;
 use Contao\CoreBundle\Event\GetFormEvent;
@@ -329,7 +329,7 @@ abstract class Controller extends \System
 
 			// Dispatch the contao.get_frontend_module event
 			$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objModule);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_FRONTEND_MODULE, $event);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FRONTEND_MODULE, $event);
 
 			$strBuffer = $event->getBuffer();
 
@@ -422,7 +422,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.get_article event
 		$event = new ReturnValueEvent($objRow);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_ARTICLE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ARTICLE, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getArticle']) && is_array($GLOBALS['TL_HOOKS']['getArticle']))
@@ -508,7 +508,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.get_content_element event
 		$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objElement);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CONTENT_ELEMENT, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CONTENT_ELEMENT, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -570,7 +570,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.get_form event
 		$event = new GetFormEvent($strBuffer, $objRow, $objElement);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_FORM, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FORM, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -655,7 +655,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.get_page_status_icon event
 		$event = new GetPageStatusIconEvent($image, $objPage);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_PAGE_STATUS_ICON, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_STATUS_ICON, $event);
 
 		$image = $event->getImage();
 
@@ -718,7 +718,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.is_visible_element event
 		$event = new IsVisibleElementEvent($blnReturn, $objElement);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::IS_VISIBLE_ELEMENT, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IS_VISIBLE_ELEMENT, $event);
 
 		$blnReturn = $event->getReturn();
 
@@ -765,7 +765,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.replace_dynamic_script_tags event
 		$event = new ReturnValueEvent($strBuffer);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REPLACE_DYNAMIC_SCRIPT_TAGS, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REPLACE_DYNAMIC_SCRIPT_TAGS, $event);
 
 		$strBuffer = $event->getValue();
 
@@ -1186,7 +1186,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.generate_frontend_url event
 		$event = new GenerateFrontendUrlEvent($strUrl, $arrRow, $strParams);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_FRONTEND_URL, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_FRONTEND_URL, $event);
 
 		$strUrl = $event->getUrl();
 
@@ -1286,7 +1286,7 @@ abstract class Controller extends \System
 
 		// Dispatch the contao.post_download event
 		$event = new ReturnValueEvent($strFile);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::POST_DOWNLOAD, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_DOWNLOAD, $event);
 
 		// HOOK: post download callback
 		if (isset($GLOBALS['TL_HOOKS']['postDownload']) && is_array($GLOBALS['TL_HOOKS']['postDownload']))

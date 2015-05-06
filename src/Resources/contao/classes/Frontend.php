@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
@@ -233,7 +233,7 @@ abstract class Frontend extends \Controller
 
 		// Dispatch the contao.get_page_id_from_url event
 		$event = new ReturnValueEvent($arrFragments);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_PAGE_ID_FROM_URL, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_ID_FROM_URL, $event);
 
 		$arrFragments = $event->getValue();
 
@@ -303,7 +303,7 @@ abstract class Frontend extends \Controller
 
 		// Dispatch the contao.get_root_page_from_url event
 		$event = new ReturnValueEvent();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_ROOT_PAGE_FROM_URL, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ROOT_PAGE_FROM_URL, $event);
 
 		/** @var \PageModel $objRootPage */
 		if (is_object(($objRootPage = $event->getValue())))
@@ -743,7 +743,7 @@ abstract class Frontend extends \Controller
 
 		// Dispatch the contao.get_cache_key event
 		$event = new ReturnValueEvent($strCacheKey);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
 
 		$strCacheKey = $event->getValue();
 

@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReviseTableEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -3128,7 +3128,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		// Dispatch the contao.revise_table event
 		$event = new ReviseTableEvent($this->strTable, $new_records[$this->strTable], $ptable, $ctable);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REVISE_TABLE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REVISE_TABLE, $event);
 
 		$reload = $event->getReload();
 

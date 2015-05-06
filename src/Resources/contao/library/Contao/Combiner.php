@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GetCombinedFileEvent;
 use Leafo\ScssPhp\Compiler;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -271,7 +271,7 @@ class Combiner extends \System
 
 			// Dispatch the contao.get_combined_file event
 			$event = new GetCombinedFileEvent($content, $strKey, $this->strMode, $arrFile);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_COMBINED_FILE, $event);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_COMBINED_FILE, $event);
 
 			$content = $event->getContent();
 

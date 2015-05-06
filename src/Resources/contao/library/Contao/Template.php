@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -249,7 +249,7 @@ abstract class Template extends \Controller
 
 		// Dispatch the contao.parse_template event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_TEMPLATE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_TEMPLATE, $event);
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseTemplate']))

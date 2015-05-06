@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\TemplateEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -42,7 +42,7 @@ class BackendTemplate extends \Template
 
 		// Dispatch the contao.parse_backend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_BACKEND_TEMPLATE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_BACKEND_TEMPLATE, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -119,7 +119,7 @@ class BackendTemplate extends \Template
 
 		// Dispatch the contao.output_backend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_BACKEND_TEMPLATE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_BACKEND_TEMPLATE, $event);
 
 		$this->strBuffer = $event->getBuffer();
 

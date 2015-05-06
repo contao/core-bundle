@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Event;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-final class ContaoEvents
+final class ContaoCoreEvents
 {
     /**
      * The contao.add_log_entry event is triggered when a log entry is added.

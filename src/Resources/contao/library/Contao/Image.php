@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -406,7 +406,7 @@ class Image
 
 		// Dispatch the contao.execute_resize event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::EXECUTE_RESIZE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::EXECUTE_RESIZE, $event);
 
 		if (is_string(($return = $event->getValue())))
 		{

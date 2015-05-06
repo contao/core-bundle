@@ -13,7 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Contao\CoreBundle\Event\AddLogEntryEvent;
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GetCountriesEvent;
 use Contao\CoreBundle\Event\GetLanguagesEvent;
 use Contao\CoreBundle\Event\LoadLanguageFileEvent;
@@ -204,7 +204,7 @@ abstract class System
 
 		// Dispatch the contao.add_log_entry event
 		$event = new AddLogEntryEvent($strText, $strFunction, $strCategory);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::ADD_LOG_ENTRY, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_LOG_ENTRY, $event);
 
 		// HOOK: allow to add custom loggers
 		if (isset($GLOBALS['TL_HOOKS']['addLogEntry']) && is_array($GLOBALS['TL_HOOKS']['addLogEntry']))
@@ -372,7 +372,7 @@ abstract class System
 
 		// Dispatch the contao.load_language_file event
 		$event = new LoadLanguageFileEvent($strName, $strLanguage, $strCacheKey);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::LOAD_LANGUAGE_FILE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_LANGUAGE_FILE, $event);
 
 		// HOOK: allow to load custom labels
 		if (isset($GLOBALS['TL_HOOKS']['loadLanguageFile']) && is_array($GLOBALS['TL_HOOKS']['loadLanguageFile']))
@@ -462,7 +462,7 @@ abstract class System
 
 		// Dispatch the contao.get_countries event
 		$event = new GetCountriesEvent($return, $countries);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_COUNTRIES, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_COUNTRIES, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getCountries']) && is_array($GLOBALS['TL_HOOKS']['getCountries']))
@@ -522,7 +522,7 @@ abstract class System
 
 		// Dispatch the contao.get_languages event
 		$event = new GetLanguagesEvent($return, $languages, $langsNative, $blnInstalledOnly);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_LANGUAGES, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_LANGUAGES, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getLanguages']) && is_array($GLOBALS['TL_HOOKS']['getLanguages']))
@@ -639,7 +639,7 @@ abstract class System
 
 		// Dispatch the contao.set_cookie event
 		$event = new ReturnValueEvent($objCookie);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::SET_COOKIE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_COOKIE, $event);
 
 		$objCookie = $event->getValue();
 

@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Event\TemplateEvent;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,7 +55,7 @@ class FrontendTemplate extends \Template
 
 		// Dispatch the contao.parse_frontend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::PARSE_FRONTEND_TEMPLATE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_FRONTEND_TEMPLATE, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -129,7 +129,7 @@ class FrontendTemplate extends \Template
 
 		// Dispatch the contao.output_frontend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
 
 		$this->strBuffer = $event->getBuffer();
 
@@ -153,7 +153,7 @@ class FrontendTemplate extends \Template
 
 		// Dispatch the contao.modify_frontend_page event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::MODIFY_FRONTEND_PAGE, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::MODIFY_FRONTEND_PAGE, $event);
 
 		$this->strBuffer = $event->getBuffer();
 
@@ -293,7 +293,7 @@ class FrontendTemplate extends \Template
 
 			// Dispatch the contao.get_cache_key event
 			$event = new ReturnValueEvent($strCacheKey);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_CACHE_KEY, $event);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
 
 			$strCacheKey = $event->getValue();
 

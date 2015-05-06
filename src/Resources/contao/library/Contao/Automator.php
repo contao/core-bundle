@@ -13,7 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Cache\ContaoCacheClearer;
 use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Command\SymlinksCommand;
-use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GetSearchablePagesEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Console\Output\NullOutput;
@@ -277,7 +277,7 @@ class Automator extends \System
 
 		// Dispatch the contao.remove_old_feeds event
 		$event = new ReturnValueEvent();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::REMOVE_OLD_FEEDS, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REMOVE_OLD_FEEDS, $event);
 
 		$arrFeeds = array_merge($arrFeeds, $event->getValue());
 
@@ -394,7 +394,7 @@ class Automator extends \System
 
 			// Dispatch the contao.get_searchable_pages event
 			$event = new GetSearchablePagesEvent($arrPages, $objRoot->id, $objRoot->language);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_SEARCHABLE_PAGES, $event);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
 
 			$arrPages = $event->getPages();
 
@@ -440,7 +440,7 @@ class Automator extends \System
 
 		// Dispatch the contao.generate_xml_files event
 		$event = new Event();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GENERATE_XML_FILES, $event);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_XML_FILES, $event);
 
 		// HOOK: add custom jobs
 		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))
