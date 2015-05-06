@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetFrontendModuleEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
@@ -318,7 +319,14 @@ abstract class Controller extends \System
 			$objModule = new $strClass($objRow, $strColumn);
 			$strBuffer = $objModule->generate();
 
-			// FIXME: trigger an event
+			/** @var KernelInterface $kernel */
+			global $kernel;
+
+			// Dispatch the contao.get_frontend_module event
+			$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objModule);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_FRONTEND_MODULE, $event);
+
+			$strBuffer = $event->getBuffer();
 
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['getFrontendModule']) && is_array($GLOBALS['TL_HOOKS']['getFrontendModule']))

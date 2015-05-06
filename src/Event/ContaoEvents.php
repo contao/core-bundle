@@ -96,6 +96,16 @@ final class ContaoEvents
     const GET_COUNTRIES = 'contao.get_countries';
 
     /**
+     * The contao.get_frontend_module event is triggered when a front end
+     * module is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetFrontendModuleEvent
+     */
+    const GET_FRONTEND_MODULE = 'contao.get_frontend_module';
+
+    /**
      * The contao.get_languages event is triggered when the language list is
      * compiled.
      *
