@@ -117,6 +117,16 @@ final class ContaoEvents
     const GET_SEARCHABLE_PAGES = 'contao.get_searchable_pages';
 
     /**
+     * The contao.index_page event is triggered when a front end page is
+     * indexed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\IndexPageEvent
+     */
+    const INDEX_PAGE = 'contao.index_page';
+
+    /**
      * The contao.load_data_container event is triggered when a data container
      * is loaded.
      *

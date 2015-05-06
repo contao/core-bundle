@@ -262,12 +262,12 @@ class Combiner extends \System
 		$objFile = new \File('assets/' . $strTarget . '/' . $strKey . $this->strMode);
 		$objFile->truncate();
 
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
 		foreach ($this->arrFiles as $arrFile)
 		{
 			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
-
-			/** @var KernelInterface $kernel */
-			global $kernel;
 
 			// Dispatch the contao.get_combined_file event
 			$event = new GetCombinedFileEvent($content, $strKey, $this->strMode, $arrFile);

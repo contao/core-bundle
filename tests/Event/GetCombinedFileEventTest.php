@@ -53,6 +53,11 @@ class GetCombinedFileEventTest extends TestCase
      */
     public function testSetterGetter()
     {
+        $this->assertEquals('foo', $this->event->getContent());
+        $this->assertEquals('bar', $this->event->getKey());
+        $this->assertEquals('.css', $this->event->getMode());
+        $this->assertEquals(['name' => 'test.css'], $this->event->getFile());
+
         $this->event->setContent('foobar');
         $this->event->setKey('foo');
         $this->event->setMode('.js');
