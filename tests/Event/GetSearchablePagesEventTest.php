@@ -33,7 +33,7 @@ class GetSearchablePagesEventTest extends TestCase
         parent::setUp();
 
         $pages    = [];
-        $rootId   = 2;
+        $rootId   = 1;
         $language = 'en';
 
         $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
@@ -52,6 +52,10 @@ class GetSearchablePagesEventTest extends TestCase
      */
     public function testSetterGetter()
     {
+        $this->assertEquals([], $this->event->getPages());
+        $this->assertEquals(1, $this->event->getRootId());
+        $this->assertEquals('en', $this->event->getLanguage());
+
         $this->event->setPages([2]);
         $this->event->setRootId(2);
         $this->event->setLanguage('de');
@@ -70,15 +74,15 @@ class GetSearchablePagesEventTest extends TestCase
         $rootId   = 2;
         $language = 'en';
 
-        $event = new GetSearchablePagesEvent($pages, $rootId, $language);
+        $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
 
         // Try to change the original variables
         $pages    = [2, 3];
         $rootId   = 3;
         $language = 'fr';
 
-        $this->assertEquals([], $event->getPages());
-        $this->assertEquals(3, $event->getRootId());
-        $this->assertEquals('fr', $event->getLanguage());
+        $this->assertEquals([], $this->event->getPages());
+        $this->assertEquals(3, $this->event->getRootId());
+        $this->assertEquals('fr', $this->event->getLanguage());
     }
 }

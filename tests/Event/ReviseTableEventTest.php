@@ -53,6 +53,12 @@ class ReviseTableEventTest extends TestCase
      */
     public function testSetterGetter()
     {
+        $this->assertNull($this->event->getStatus());
+        $this->assertEquals('foo', $this->event->getTable());
+        $this->assertEquals([], $this->event->getNewRecordIds());
+        $this->assertEquals('bar', $this->event->getParentTable());
+        $this->assertEquals([], $this->event->getChildTables());
+
         $this->event->setStatus(true);
         $this->event->setTable('test');
         $this->event->setNewRecordIds([2, 3]);
@@ -76,7 +82,7 @@ class ReviseTableEventTest extends TestCase
         $parentTable  = 'bar';
         $childTables  = [];
 
-        $event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
+        $this->event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
 
         // Try to change the original variables
         $table        = 'bar';
@@ -84,9 +90,9 @@ class ReviseTableEventTest extends TestCase
         $parentTable  = 'parent';
         $childTables  = ['child'];
 
-        $this->assertEquals('bar', $event->getTable());
-        $this->assertEquals([4], $event->getNewRecordIds());
-        $this->assertEquals('parent', $event->getParentTable());
-        $this->assertEquals(['child'], $event->getChildTables());
+        $this->assertEquals('bar', $this->event->getTable());
+        $this->assertEquals([4], $this->event->getNewRecordIds());
+        $this->assertEquals('parent', $this->event->getParentTable());
+        $this->assertEquals(['child'], $this->event->getChildTables());
     }
 }

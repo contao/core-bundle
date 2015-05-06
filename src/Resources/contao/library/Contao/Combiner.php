@@ -10,7 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\GetCombinedFileEvent;
 use Leafo\ScssPhp\Compiler;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -263,7 +266,14 @@ class Combiner extends \System
 		{
 			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
 
-			// FIXME: trigger an event
+			/** @var KernelInterface $kernel */
+			global $kernel;
+
+			// Dispatch the contao.get_combined_file event
+			$event = new GetCombinedFileEvent($content, $strKey, $this->strMode, $arrFile);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::GET_COMBINED_FILE, $event);
+
+			$content = $event->getContent();
 
 			// HOOK: modify the file content
 			if (isset($GLOBALS['TL_HOOKS']['getCombinedFile']) && is_array($GLOBALS['TL_HOOKS']['getCombinedFile']))

@@ -67,6 +67,16 @@ final class ContaoEvents
     const GET_CACHE_KEY = 'contao.get_cache_key';
 
     /**
+     * The contao.get_combined_file event is triggered when a combined .css or
+     * .js file is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
+     */
+    const GET_COMBINED_FILE = 'contao.get_combined_file';
+
+    /**
      * The contao.get_page_id_from_url event is triggered when the page ID is
      * read from the URL.
      *

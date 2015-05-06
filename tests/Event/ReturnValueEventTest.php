@@ -48,6 +48,8 @@ class ReturnValueEventTest extends TestCase
      */
     public function testSetterGetter()
     {
+        $this->assertEquals('foo', $this->event->getValue());
+
         $this->event->setValue('bar');
 
         $this->assertEquals('bar', $this->event->getValue());

@@ -53,6 +53,10 @@ class TemplateEventTest extends TestCase
      */
     public function testSetterGetter()
     {
+        $this->assertEquals('foo', $this->event->getBuffer());
+        $this->assertEquals('bar', $this->event->getKey());
+        $this->assertInstanceOf('Contao\\FrontendTemplate', $this->event->getTemplate());
+
         $template = new FrontendTemplate();
 
         $this->event->setBuffer('buffer');
@@ -73,15 +77,16 @@ class TemplateEventTest extends TestCase
         $key       = 'key';
         $template  = new FrontendTemplate();
         $template2 = new FrontendTemplate();
-        $event     = new TemplateEvent($buffer, $key, $template);
+
+        $this->event = new TemplateEvent($buffer, $key, $template);
 
         // Try to change the original variables
         $buffer   = 'foo';
         $key      = 'moo';
         $template = $template2;
 
-        $this->assertEquals('buffer', $event->getBuffer());
-        $this->assertEquals('moo', $event->getKey());
-        $this->assertEquals($template2, $event->getTemplate());
+        $this->assertEquals('buffer', $this->event->getBuffer());
+        $this->assertEquals('moo', $this->event->getKey());
+        $this->assertEquals($template2, $this->event->getTemplate());
     }
 }
