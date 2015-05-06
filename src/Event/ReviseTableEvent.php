@@ -20,11 +20,6 @@ use Symfony\Component\EventDispatcher\Event;
 class ReviseTableEvent extends Event
 {
     /**
-     * @var bool
-     */
-    private $status;
-
-    /**
      * @var string
      */
     private $table;
@@ -45,6 +40,11 @@ class ReviseTableEvent extends Event
     private $childTables;
 
     /**
+     * @var bool
+     */
+    private $reload = false;
+
+    /**
      * Constructor.
      *
      * @param string $table        The table name
@@ -58,26 +58,6 @@ class ReviseTableEvent extends Event
         $this->newRecordIds = &$newRecordIds;
         $this->parentTable  = &$parentTable;
         $this->childTables  = &$childTables;
-    }
-
-    /**
-     * Returns the status.
-     *
-     * @return bool The status
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Sets the status.
-     *
-     * @param bool $status The status
-     */
-    public function setStatus($status)
-    {
-        $this->status = (bool) $status;
     }
 
     /**
@@ -158,5 +138,25 @@ class ReviseTableEvent extends Event
     public function setChildTables(array $childTables)
     {
         $this->childTables = $childTables;
+    }
+
+    /**
+     * Returns the reload status.
+     *
+     * @return bool The reload status
+     */
+    public function getReload()
+    {
+        return $this->reload;
+    }
+
+    /**
+     * Sets the reload status.
+     *
+     * @param bool $reload The reload status
+     */
+    public function setReload($reload)
+    {
+        $this->reload = (bool) $reload;
     }
 }

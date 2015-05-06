@@ -11,7 +11,9 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoEvents;
+use Contao\CoreBundle\Event\ImportUserEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
+use Contao\CoreBundle\Event\CheckCredentialsEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -357,9 +359,11 @@ abstract class User extends \System
 		// Load the user object
 		if ($this->findBy('username', \Input::post('username', true)) == false)
 		{
-			$blnLoaded = false;
+			// Dispatch the contao.import_user event
+			$event = new ImportUserEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this->strTable);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::IMPORT_USER, $event);
 
-			// FIXME: trigger an event
+			$blnLoaded = $event->getLoaded();
 
 			// HOOK: pass credentials to callback functions
 			if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
@@ -441,7 +445,14 @@ abstract class User extends \System
 			}
 		}
 
-		// FIXME: trigger an event
+		if (!$blnAuthenticated)
+		{
+			// Dispatch the contao.check_credentials event
+			$event = new CheckCredentialsEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoEvents::CHECK_CREDENTIALS, $event);
+
+			$blnAuthenticated = $event->getAuthenticated();
+		}
 
 		// HOOK: pass credentials to callback functions
 		if (!$blnAuthenticated && isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials']))

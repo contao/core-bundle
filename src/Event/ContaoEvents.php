@@ -18,15 +18,6 @@ namespace Contao\CoreBundle\Event;
 final class ContaoEvents
 {
     /**
-     * The contao.execute_resize event is triggered when an image is resized.
-     *
-     * @var string
-     *
-     * @see Contao\CoreBundle\Event\PageEvent
-     */
-    const EXECUTE_RESIZE = 'contao.execute_resize';
-
-    /**
      * The contao.add_log_entry event is triggered when a log entry is added.
      *
      * @var string
@@ -34,6 +25,25 @@ final class ContaoEvents
      * @see Contao\CoreBundle\Event\AddLogEntryEvent
      */
     const ADD_LOG_ENTRY = 'contao.add_log_entry';
+
+    /**
+     * The contao.check_credentials event is triggered when the login
+     * credentials are checked.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\CheckCredentialsEvent
+     */
+    const CHECK_CREDENTIALS = 'contao.check_credentials';
+
+    /**
+     * The contao.execute_resize event is triggered when an image is resized.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\PageEvent
+     */
+    const EXECUTE_RESIZE = 'contao.execute_resize';
 
     /**
      * The contao.generate_frontend_url event is triggered when a front end URL
@@ -193,6 +203,15 @@ final class ContaoEvents
      * @see Contao\CoreBundle\Event\ReturnValueEvent
      */
     const GET_SEARCHABLE_PAGES = 'contao.get_searchable_pages';
+
+    /**
+     * The contao.import_user event is triggered to import a user.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ImportUserEvent
+     */
+    const IMPORT_USER = 'contao.import_user';
 
     /**
      * The contao.index_page event is triggered when a front end page is

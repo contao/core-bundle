@@ -53,19 +53,19 @@ class ReviseTableEventTest extends TestCase
      */
     public function testSetterGetter()
     {
-        $this->assertNull($this->event->getStatus());
+        $this->assertFalse($this->event->getReload());
         $this->assertEquals('foo', $this->event->getTable());
         $this->assertEquals([], $this->event->getNewRecordIds());
         $this->assertEquals('bar', $this->event->getParentTable());
         $this->assertEquals([], $this->event->getChildTables());
 
-        $this->event->setStatus(true);
+        $this->event->setReload(true);
         $this->event->setTable('test');
         $this->event->setNewRecordIds([2, 3]);
         $this->event->setParentTable('parent');
         $this->event->setChildTables(['child']);
 
-        $this->assertTrue($this->event->getStatus());
+        $this->assertTrue($this->event->getReload());
         $this->assertEquals('test', $this->event->getTable());
         $this->assertEquals([2, 3], $this->event->getNewRecordIds());
         $this->assertEquals('parent', $this->event->getParentTable());
