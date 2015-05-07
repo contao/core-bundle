@@ -3130,7 +3130,10 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$event = new ReviseTableEvent($this->strTable, $new_records[$this->strTable], $ptable, $ctable);
 		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REVISE_TABLE, $event);
 
-		$reload = $event->getReload();
+		if ($event->getReload() === true)
+		{
+			$reload = true;
+		}
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['reviseTable']) && is_array($GLOBALS['TL_HOOKS']['reviseTable']))

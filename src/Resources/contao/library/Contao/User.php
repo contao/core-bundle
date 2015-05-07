@@ -359,14 +359,19 @@ abstract class User extends \System
 		// Load the user object
 		if ($this->findBy('username', \Input::post('username', true)) == false)
 		{
+			$blnLoaded = false;
+
 			// Dispatch the contao.import_user event
 			$event = new ImportUserEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this->strTable);
 			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IMPORT_USER, $event);
 
-			$blnLoaded = $event->getLoaded();
+			if ($event->getLoaded() === true)
+			{
+				$blnLoaded = true;
+			}
 
 			// HOOK: pass credentials to callback functions
-			if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
+			if (!$blnLoaded && isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
 				{
@@ -451,7 +456,10 @@ abstract class User extends \System
 			$event = new CheckCredentialsEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this);
 			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::CHECK_CREDENTIALS, $event);
 
-			$blnAuthenticated = $event->getAuthenticated();
+			if ($event->getAuthenticated() === true)
+			{
+				$blnAuthenticated = true;
+			}
 		}
 
 		// HOOK: pass credentials to callback functions
