@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetRowTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -19,15 +20,12 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ColorizeLogEntriesEvent extends Event
 {
+    use GetRowTrait;
+
     /**
      * @var string
      */
     private $label;
-
-    /**
-     * @var array
-     */
-    private $row;
 
     /**
      * Constructor.
@@ -59,25 +57,5 @@ class ColorizeLogEntriesEvent extends Event
     public function setLabel($label)
     {
         $this->label = $label;
-    }
-
-    /**
-     * Returns the row.
-     *
-     * @return array The row
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-
-    /**
-     * Sets the row.
-     *
-     * @param array $row The row
-     */
-    public function setRow(array $row)
-    {
-        $this->row = $row;
     }
 }

@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetBufferTrait;
 use Contao\Widget;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -20,10 +21,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ParseWidgetEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $buffer;
+    use GetBufferTrait;
 
     /**
      * @var Widget
@@ -40,26 +38,6 @@ class ParseWidgetEvent extends Event
     {
         $this->buffer = $buffer;
         $this->widget = &$widget;
-    }
-
-    /**
-     * Returns the widget content.
-     *
-     * @return string The widget content
-     */
-    public function getBuffer()
-    {
-        return $this->buffer;
-    }
-
-    /**
-     * Sets the widget content.
-     *
-     * @param string $buffer The widget content
-     */
-    public function setBuffer($buffer)
-    {
-        $this->buffer = $buffer;
     }
 
     /**

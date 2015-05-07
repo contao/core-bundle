@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetBufferTrait;
 use Contao\Template;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -20,10 +21,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class TemplateEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $buffer;
+    use GetBufferTrait;
 
     /**
      * @var string
@@ -47,26 +45,6 @@ class TemplateEvent extends Event
         $this->buffer   = $buffer;
         $this->key      = &$key;
         $this->template = &$template;
-    }
-
-    /**
-     * Returns the template content.
-     *
-     * @return string The template content
-     */
-    public function getBuffer()
-    {
-        return $this->buffer;
-    }
-
-    /**
-     * Sets the template content.
-     *
-     * @param string $buffer The template content
-     */
-    public function setBuffer($buffer)
-    {
-        $this->buffer = $buffer;
     }
 
     /**

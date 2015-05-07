@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetBufferTrait;
+use Contao\CoreBundle\Traits\GetRowTrait;
 use Contao\Form;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -20,15 +22,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetFormEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $buffer;
-
-    /**
-     * @var array
-     */
-    private $row;
+    use GetBufferTrait;
+    use GetRowTrait;
 
     /**
      * @var Form
@@ -47,46 +42,6 @@ class GetFormEvent extends Event
         $this->buffer = $buffer;
         $this->row    = &$row;
         $this->form   = &$form;
-    }
-
-    /**
-     * Returns the buffer.
-     *
-     * @return string The buffer
-     */
-    public function getBuffer()
-    {
-        return $this->buffer;
-    }
-
-    /**
-     * Sets the buffer.
-     *
-     * @param string $buffer The buffer
-     */
-    public function setBuffer($buffer)
-    {
-        $this->buffer = $buffer;
-    }
-
-    /**
-     * Returns the row.
-     *
-     * @return array The row
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-
-    /**
-     * Sets the row.
-     *
-     * @param array $row The row
-     */
-    public function setRow($row)
-    {
-        $this->row = $row;
     }
 
     /**

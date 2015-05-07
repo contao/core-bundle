@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetRowTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -19,15 +20,12 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GenerateFrontendUrlEvent extends Event
 {
+    use GetRowTrait;
+
     /**
      * @var string
      */
     private $url;
-
-    /**
-     * @var array
-     */
-    private $row;
 
     /**
      * @var string
@@ -66,26 +64,6 @@ class GenerateFrontendUrlEvent extends Event
     public function setUrl($url)
     {
         $this->url = $url;
-    }
-
-    /**
-     * Returns the row.
-     *
-     * @return array The row
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-
-    /**
-     * Sets the row.
-     *
-     * @param array $row The row
-     */
-    public function setRow(array $row)
-    {
-        $this->row = $row;
     }
 
     /**
