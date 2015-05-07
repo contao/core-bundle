@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ParseDateEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
+
 
 /**
  * Converts dates and date format string
@@ -661,7 +665,14 @@ class Date
 			}
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.parse_date event
+		$event = new ParseDateEvent($strReturn, $strFormat, $intTstamp);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_DATE, $event);
+
+		$strReturn = $event->getReturn();
 
 		// HOOK: add custom logic (see #4260)
 		if (isset($GLOBALS['TL_HOOKS']['parseDate']) && is_array($GLOBALS['TL_HOOKS']['parseDate']))

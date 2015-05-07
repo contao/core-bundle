@@ -274,26 +274,6 @@ final class ContaoCoreEvents
     const MODIFY_FRONTEND_PAGE = 'contao.modify_frontend_page';
 
     /**
-     * The contao.parse_backend_template event is triggered when a back end
-     * template is parsed.
-     *
-     * @var string
-     *
-     * @see Contao\CoreBundle\Event\TemplateEvent
-     */
-    const PARSE_BACKEND_TEMPLATE = 'contao.parse_backend_template';
-
-    /**
-     * The contao.parse_frontend_template event is triggered when a front end
-     * template is parsed.
-     *
-     * @var string
-     *
-     * @see Contao\CoreBundle\Event\TemplateEvent
-     */
-    const PARSE_FRONTEND_TEMPLATE = 'contao.parse_frontend_template';
-
-    /**
      * The contao.output_backend_template event is triggered when a back end
      * template is send to the client.
      *
@@ -312,6 +292,35 @@ final class ContaoCoreEvents
      * @see Contao\CoreBundle\Event\TemplateEvent
      */
     const OUTPUT_FRONTEND_TEMPLATE = 'contao.output_frontend_template';
+
+    /**
+     * The contao.parse_backend_template event is triggered when a back end
+     * template is parsed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
+     */
+    const PARSE_BACKEND_TEMPLATE = 'contao.parse_backend_template';
+
+    /**
+     * The contao.parse_date event is triggered when a date is parsed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ParseDateEvent
+     */
+    const PARSE_DATE = 'contao.parse_date';
+
+    /**
+     * The contao.parse_frontend_template event is triggered when a front end
+     * template is parsed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\TemplateEvent
+     */
+    const PARSE_FRONTEND_TEMPLATE = 'contao.parse_frontend_template';
 
     /**
      * The contao.parse_template event is triggered right before a template is
