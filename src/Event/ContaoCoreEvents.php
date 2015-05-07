@@ -342,6 +342,15 @@ final class ContaoCoreEvents
     const PARSE_TEMPLATE = 'contao.parse_template';
 
     /**
+     * The contao.parse_widget event is triggered when a widget is parsed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ParseWidgetEvent
+     */
+    const PARSE_WIDGET = 'contao.parse_widget';
+
+    /**
      * The contao.post_authenticate event is triggered after a user has been
      * authenticated.
      *

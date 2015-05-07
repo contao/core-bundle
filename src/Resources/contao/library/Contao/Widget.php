@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ParseWidgetEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
+
 
 /**
  * Generates and validates form fields
@@ -628,7 +632,14 @@ abstract class Widget extends \Controller
 
 		$strBuffer = $this->inherit();
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.parse_widget event
+		$event = new ParseWidgetEvent($strBuffer, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_WIDGET, $event);
+
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters (see #5553)
 		if (isset($GLOBALS['TL_HOOKS']['parseWidget']) && is_array($GLOBALS['TL_HOOKS']['parseWidget']))
