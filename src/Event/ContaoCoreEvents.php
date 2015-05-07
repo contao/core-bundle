@@ -145,6 +145,15 @@ final class ContaoCoreEvents
     const GET_FORM = 'contao.get_form';
 
     /**
+     * The contao.get_image event is triggered when an image is resized.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetImageEvent
+     */
+    const GET_IMAGE = 'contao.get_image';
+
+    /**
      * The contao.get_languages event is triggered when the language list is
      * compiled.
      *
