@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\AddCustomRegexpEvent;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetAttributesFromDcaEvent;
 use Contao\CoreBundle\Event\ParseWidgetEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -1430,7 +1431,14 @@ abstract class Widget extends \Controller
 			$arrAttributes['rootNodes'] = $arrData['rootNodes'];
 		}
 
-		// FIXME: trigger an event
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_attributes_from_dca event
+		$event = new GetAttributesFromDcaEvent($arrAttributes, $objDca);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ATTRIBUTES_FROM_DCA, $event);
+
+		$arrAttributes = $event->getAttributes();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getAttributesFromDca']) && is_array($GLOBALS['TL_HOOKS']['getAttributesFromDca']))

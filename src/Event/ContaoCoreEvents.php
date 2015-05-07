@@ -96,6 +96,16 @@ final class ContaoCoreEvents
     const GET_ARTICLE = 'contao.get_article';
 
     /**
+     * The contao.get_article get_attributes_from_dca is triggered when a data
+     * container is evaluated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetAttributesFromDcaEvent
+     */
+    const GET_ATTRIBUTES_FROM_DCA = 'contao.get_attributes_from_dca';
+
+    /**
      * The contao.get_cache_key event is triggered when the name of a front
      * end cache file is calculated.
      *

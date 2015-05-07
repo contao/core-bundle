@@ -12,7 +12,6 @@ namespace Contao\CoreBundle\Test\Event;
 
 use Contao\CoreBundle\Event\ParseWidgetEvent;
 use Contao\CoreBundle\Test\TestCase;
-use Contao\FrontendTemplate;
 use Contao\TextField;
 
 /**
