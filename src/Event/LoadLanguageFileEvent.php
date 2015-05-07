@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetLanguageTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -19,15 +20,12 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class LoadLanguageFileEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $name;
+    use GetLanguageTrait;
 
     /**
      * @var string
      */
-    private $language;
+    private $name;
 
     /**
      * @var string
@@ -66,26 +64,6 @@ class LoadLanguageFileEvent extends Event
     public function setName($name)
     {
         $this->name = $name;
-    }
-
-    /**
-     * Returns the language.
-     *
-     * @return string The language
-     */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    /**
-     * Sets the language.
-     *
-     * @param string $language The language
-     */
-    public function setLanguage($language)
-    {
-        $this->language = $language;
     }
 
     /**

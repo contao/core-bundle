@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetPasswordTrait;
+use Contao\CoreBundle\Traits\GetUsernameTrait;
 use Contao\User;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -20,15 +22,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class CheckCredentialsEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $username;
-
-    /**
-     * @var string
-     */
-    private $password;
+    use GetUsernameTrait;
+    use GetPasswordTrait;
 
     /**
      * @var User
@@ -52,46 +47,6 @@ class CheckCredentialsEvent extends Event
         $this->username = &$username;
         $this->password = &$password;
         $this->user     = &$user;
-    }
-
-    /**
-     * Returns the username.
-     *
-     * @return string The username
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * Sets the username.
-     *
-     * @param string $username The username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * Returns the password.
-     *
-     * @return string The password
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Sets the password.
-     *
-     * @param string $password The password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
     }
 
     /**

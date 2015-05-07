@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
+use Contao\CoreBundle\Traits\GetLanguageTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -19,6 +20,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetSearchablePagesEvent extends Event
 {
+    use GetLanguageTrait;
+
     /**
      * @var array
      */
@@ -28,11 +31,6 @@ class GetSearchablePagesEvent extends Event
      * @var int
      */
     private $rootId;
-
-    /**
-     * @var string
-     */
-    private $language;
 
     /**
      * Constructor.
@@ -86,25 +84,5 @@ class GetSearchablePagesEvent extends Event
     public function setRootId($rootId)
     {
         $this->rootId = (int) $rootId;
-    }
-
-    /**
-     * Returns the language.
-     *
-     * @return string The language
-     */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    /**
-     * Sets the language.
-     *
-     * @param string $language The language
-     */
-    public function setLanguage($language)
-    {
-        $this->language = $language;
     }
 }
