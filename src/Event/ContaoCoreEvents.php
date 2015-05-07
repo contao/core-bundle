@@ -455,4 +455,14 @@ final class ContaoCoreEvents
      * @see Contao\CoreBundle\Event\ReturnValueEvent
      */
     const SET_COOKIE = 'contao.set_cookie';
+
+    /**
+     * The contao.set_new_password event is triggered when a front end user
+     * sets a new password.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\SetNewPasswordEvent
+     */
+    const SET_NEW_PASSWORD = 'contao.set_new_password';
 }
