@@ -205,6 +205,16 @@ final class ContaoCoreEvents
     const GET_SEARCHABLE_PAGES = 'contao.get_searchable_pages';
 
     /**
+     * The contao.get_user_navigation event is triggered when the back end
+     * navigation is generated.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\GetUserNavigationEvent
+     */
+    const GET_USER_NAVIGATION = 'contao.get_user_navigation';
+
+    /**
      * The contao.import_user event is triggered to import a user.
      *
      * @var string
