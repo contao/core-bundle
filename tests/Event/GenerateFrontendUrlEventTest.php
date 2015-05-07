@@ -12,8 +12,6 @@ namespace Contao\CoreBundle\Test\Event;
 
 use Contao\CoreBundle\Event\GenerateFrontendUrlEvent;
 use Contao\CoreBundle\Test\TestCase;
-use Contao\Form;
-use Contao\FormModel;
 
 /**
  * Tests the GenerateFrontendUrlEvent class.

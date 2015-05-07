@@ -81,7 +81,7 @@ class ReviseTableEvent extends Event
     }
 
     /**
-     * Returns the IDs of the new records
+     * Returns the IDs of the new records.
      *
      * @return array The IDs of the new records
      */

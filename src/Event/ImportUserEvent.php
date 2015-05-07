@@ -116,7 +116,7 @@ class ImportUserEvent extends Event
     /**
      * Returns the loading status.
      *
-     * @return boolean The loading status
+     * @return bool The loading status
      */
     public function getLoaded()
     {

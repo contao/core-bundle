@@ -66,7 +66,6 @@ class GetImageEvent extends Event
      */
     private $imageObj;
 
-
     /**
      * Constructor.
      *

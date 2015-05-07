@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Test\Event;
 
-use Contao\BackendUser;
 use Contao\CoreBundle\Event\ImportUserEvent;
 use Contao\CoreBundle\Test\TestCase;
 

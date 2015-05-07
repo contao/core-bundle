@@ -57,7 +57,7 @@ class AddCustomRegexpEvent extends Event
     /**
      * Returns the "break" flag.
      *
-     * @return boolean The "break" flag
+     * @return bool The "break" flag
      */
     public function getBreak()
     {
