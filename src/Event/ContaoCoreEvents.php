@@ -47,6 +47,16 @@ final class ContaoCoreEvents
     const CHECK_CREDENTIALS = 'contao.check_credentials';
 
     /**
+     * The contao.colorize_log_entries event is triggered when log entries are
+     * colorized.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\ColorizeLogEntriesEvent
+     */
+    const COLORIZE_LOG_ENTRIES = 'contao.colorize_log_entries';
+
+    /**
      * The contao.execute_resize event is triggered when an image is resized.
      *
      * @var string
