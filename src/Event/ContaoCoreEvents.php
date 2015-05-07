@@ -18,6 +18,16 @@ namespace Contao\CoreBundle\Event;
 final class ContaoCoreEvents
 {
     /**
+     * The contao.add_custom_regexp event is triggered when a custom regular
+     * expression is found.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\AddCustomRegexpEvent
+     */
+    const ADD_CUSTOM_REGEXP = 'contao.add_custom_regexp';
+
+    /**
      * The contao.add_log_entry event is triggered when a log entry is added.
      *
      * @var string

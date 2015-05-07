@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\AddCustomRegexpEvent;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ParseWidgetEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -1096,7 +1097,17 @@ abstract class Widget extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
-					// FIXME: trigger an event
+					/** @var KernelInterface $kernel */
+					global $kernel;
+
+					// Dispatch the contao.add_custom_regexp event
+					$event = new AddCustomRegexpEvent($this->rgxp, $varInput, $this);
+					$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_CUSTOM_REGEXP, $event);
+
+					if ($event->getBreak() === true)
+					{
+						break;
+					}
 
 					if (isset($GLOBALS['TL_HOOKS']['addCustomRegexp']) && is_array($GLOBALS['TL_HOOKS']['addCustomRegexp']))
 					{
