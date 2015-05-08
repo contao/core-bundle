@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\EventListener;
 
 use Contao\Frontend;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendAdapter;
 
 /**
  * Adds a page to the search index after the response has been sent.
@@ -20,6 +21,22 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
  */
 class AddToSearchIndexListener
 {
+    /**
+     * @var FrontendAdapter
+     */
+    private $frontend;
+
+    /**
+     * Constructor.
+     *
+     * @param FrontendAdapter $frontend
+     */
+    public function __construct(FrontendAdapter $frontend)
+    {
+        $this->frontend = $frontend;
+    }
+
+
     /**
      * Forwards the request to the Frontend class if there is a page object.
      *
@@ -32,6 +49,6 @@ class AddToSearchIndexListener
             return;
         }
 
-        Frontend::indexPageIfApplicable($event->getResponse());
+        $this->frontend->indexPageIfApplicable($event->getResponse());
     }
 }

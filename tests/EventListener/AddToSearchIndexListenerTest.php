@@ -16,6 +16,7 @@ use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Terminal42\ContaoAdapterBundle\Adapter\FrontendAdapter;
 
 /**
  * Tests the AddToSearchIndexListener class.
@@ -29,7 +30,7 @@ class AddToSearchIndexListenerTest extends TestCase
      */
     public function testInstantiation()
     {
-        $listener = new AddToSearchIndexListener();
+        $listener = new AddToSearchIndexListener($this->mockFrontend());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\EventListener\\AddToSearchIndexListener', $listener);
     }
@@ -68,7 +69,7 @@ class AddToSearchIndexListenerTest extends TestCase
 
         $this->bootContaoFramework($listener);
 
-        $listener = new AddToSearchIndexListener();
+        $listener = new AddToSearchIndexListener($this->mockFrontend());
         $event    = $this->mockPostResponseEvent();
 
         $event
@@ -98,5 +99,18 @@ class AddToSearchIndexListenerTest extends TestCase
         );
 
         return $event;
+    }
+
+    /**
+     * Mocks the Frontend
+     *
+     * @return FrontendAdapter
+     */
+    private function mockFrontend()
+    {
+        $frontend = $this->getMock('Terminal42\\ContaoAdapterBundle\\Adapter\\FrontendAdapter');
+        $frontend->expects($this->any())->method('indexPageIfApplicable');
+
+        return $frontend;
     }
 }
