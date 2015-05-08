@@ -10,12 +10,12 @@
 
 namespace Contao\CoreBundle\Command;
 
-use Contao\Automator;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Terminal42\ContaoAdapterBundle\Adapter\AutomatorAdapter;
 
 /**
  * Runs Automator tasks on the command line.
@@ -26,9 +26,25 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 class AutomatorCommand extends LockedCommand
 {
     /**
+     * @var AutomatorAdapter
+     */
+    private $automator;
+
+    /**
      * @var array
      */
     private $commands = [];
+
+    /**
+     * Constructor.
+     *
+     * @param AutomatorAdapter $automator
+     */
+    public function __construct(AutomatorAdapter $automator)
+    {
+        $this->automator = $automator;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -83,8 +99,7 @@ class AutomatorCommand extends LockedCommand
     {
         $task = $this->getTaskFromInput($input, $output);
 
-        $automator = new Automator();
-        $automator->$task();
+        $this->automator->$task();
     }
 
     /**
@@ -111,7 +126,7 @@ class AutomatorCommand extends LockedCommand
         $commands = [];
 
         // Find all public methods
-        $class   = new \ReflectionClass('Contao\\Automator');
+        $class   = new \ReflectionClass($this->automator);
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {

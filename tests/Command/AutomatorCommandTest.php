@@ -29,7 +29,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testInstantiation()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Command\\AutomatorCommand', $command);
     }
@@ -39,7 +39,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testOutput()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
         $command->setApplication($this->getApplication());
 
         $tester = new CommandTester($command);
@@ -60,7 +60,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testToString()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
 
         $this->assertContains('The name of the task:', $command->__toString());
     }
@@ -73,8 +73,8 @@ class AutomatorCommandTest extends TestCase
         $lock = new LockHandler('contao:automator');
         $lock->lock();
 
-        $command = new AutomatorCommand('contao:automator');
-        $command->setApplication($this->getApplication());
+        $command = new AutomatorCommand($this->mockAutomator());
+        $command->setApplication($this->getApplication(), $this->mockAutomator());
 
         $tester = new CommandTester($command);
 
@@ -95,7 +95,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testArgument()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
         $command->setApplication($this->getApplication());
 
         $tester = new CommandTester($command);
@@ -113,7 +113,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testInvalidTask()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
         $command->setApplication($this->getApplication());
 
         $tester = new CommandTester($command);
@@ -133,7 +133,7 @@ class AutomatorCommandTest extends TestCase
      */
     public function testInvalidArgument()
     {
-        $command = new AutomatorCommand('contao:automator');
+        $command = new AutomatorCommand($this->mockAutomator());
         $command->setApplication($this->getApplication());
 
         $tester = new CommandTester($command);
@@ -174,5 +174,12 @@ class AutomatorCommandTest extends TestCase
         $application->setCatchExceptions(true);
 
         return $application;
+    }
+
+    private function mockAutomator()
+    {
+        $automator = $this->getMock('Terminal42\\ContaoAdapterBundle\\Adapter\\AutomatorAdapter');
+
+        return $automator;
     }
 }
