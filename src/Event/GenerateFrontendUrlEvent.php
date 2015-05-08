@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\CoreBundle\Traits\GetRowTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -20,7 +19,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GenerateFrontendUrlEvent extends Event
 {
-    use GetRowTrait;
+    use RowAwareTrait;
 
     /**
      * @var string

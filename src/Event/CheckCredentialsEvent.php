@@ -10,8 +10,6 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\CoreBundle\Traits\GetPasswordTrait;
-use Contao\CoreBundle\Traits\GetUsernameTrait;
 use Contao\User;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -22,8 +20,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class CheckCredentialsEvent extends Event
 {
-    use GetUsernameTrait;
-    use GetPasswordTrait;
+    use UsernameAwareTrait;
+    use PasswordAwareTrait;
 
     /**
      * @var User

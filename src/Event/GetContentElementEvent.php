@@ -11,8 +11,6 @@
 namespace Contao\CoreBundle\Event;
 
 use Contao\ContentElement;
-use Contao\CoreBundle\Traits\GetBufferTrait;
-use Contao\CoreBundle\Traits\GetRowTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -22,8 +20,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetContentElementEvent extends Event
 {
-    use GetBufferTrait;
-    use GetRowTrait;
+    use BufferAwareTrait;
+    use RowAwareTrait;
 
     /**
      * @var ContentElement

@@ -8,14 +8,14 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Traits;
+namespace Contao\CoreBundle\Event;
 
 /**
  * Adds a $language property with getters and setters.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-trait GetLanguageTrait
+trait LanguageAwareTrait
 {
     /**
      * @var string

@@ -10,8 +10,6 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\CoreBundle\Traits\GetBufferTrait;
-use Contao\CoreBundle\Traits\GetRowTrait;
 use Contao\Form;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -22,8 +20,8 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetFormEvent extends Event
 {
-    use GetBufferTrait;
-    use GetRowTrait;
+    use BufferAwareTrait;
+    use RowAwareTrait;
 
     /**
      * @var Form

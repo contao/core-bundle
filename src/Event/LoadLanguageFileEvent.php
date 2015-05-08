@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\CoreBundle\Traits\GetLanguageTrait;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -20,7 +19,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class LoadLanguageFileEvent extends Event
 {
-    use GetLanguageTrait;
+    use LanguageAwareTrait;
 
     /**
      * @var string
