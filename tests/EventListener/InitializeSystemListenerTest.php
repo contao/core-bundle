@@ -32,6 +32,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class InitializeSystemListenerTest extends TestCase
 {
+    protected function setUp()
+    {
+        $this->markTestSkipped('This is going to change anyway!');
+    }
+
     /**
      * Tests the object instantiation.
      */
