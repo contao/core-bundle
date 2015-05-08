@@ -2,21 +2,21 @@ services:
     contao.controller.backend:
         class: Contao\CoreBundle\Controller\BackendController
         arguments:
-            - "@contao.adapter.backend_main"
-            - "@contao.adapter.backend_index"
-            - "@contao.adapter.backend_install"
-            - "@contao.adapter.backend_password"
-            - "@contao.adapter.backend_preview"
-            - "@contao.adapter.backend_confirm"
-            - "@contao.adapter.backend_file"
-            - "@contao.adapter.backend_help"
-            - "@contao.adapter.backend_page"
-            - "@contao.adapter.backend_popup"
-            - "@contao.adapter.backend_switch"
+            - "@terminal42.contao.adapter.backend_main"
+            - "@terminal42.contao.adapter.backend_index"
+            - "@terminal42.contao.adapter.backend_install"
+            - "@terminal42.contao.adapter.backend_password"
+            - "@terminal42.contao.adapter.backend_preview"
+            - "@terminal42.contao.adapter.backend_confirm"
+            - "@terminal42.contao.adapter.backend_file"
+            - "@terminal42.contao.adapter.backend_help"
+            - "@terminal42.contao.adapter.backend_page"
+            - "@terminal42.contao.adapter.backend_popup"
+            - "@terminal42.contao.adapter.backend_switch"
 
     contao.controller.frontend:
         class: Contao\CoreBundle\Controller\FrontendController
         arguments:
-          - "@contao.adapter.frontend_index"
-          - "@contao.adapter.frontend_cron"
-          - "@contao.adapter.frontend_share"
+          - "@terminal42.contao.adapter.frontend_index"
+          - "@terminal42.contao.adapter.frontend_cron"
+          - "@terminal42.contao.adapter.frontend_share"

@@ -55,7 +55,7 @@ services:
             - "%kernel.root_dir%"
             - "@security.csrf.token_manager"
             - "%contao.csrf_token_name%"
-            - "@contao.adapter.config"
+            - "@terminal42.contao.adapter.config"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
@@ -65,7 +65,7 @@ services:
     contao.listener.output_from_cache:
         class: Contao\CoreBundle\EventListener\OutputFromCacheListener
         arguments:
-            - "@contao.adapter.frontend"
+            - "@terminal42.contao.adapter.frontend"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
@@ -76,7 +76,7 @@ services:
         arguments:
             - "%contao.pretty_error_screens%"
             - "@templating"
-            - "@contao.adapter.config"
+            - "@terminal42.contao.adapter.config"
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 32 }
 
@@ -105,7 +105,7 @@ services:
     contao.listener.toggle_view:
         class: Contao\CoreBundle\EventListener\ToggleViewListener
         arguments:
-            - "@contao.adapter.system"
+            - "@terminal42.contao.adapter.system"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
