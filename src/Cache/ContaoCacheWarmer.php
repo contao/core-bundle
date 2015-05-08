@@ -14,8 +14,6 @@ use Contao\CoreBundle\Config\Dumper\CombinedFileDumper;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Contao\CoreBundle\Config\ResourceFinder;
-use Contao\DcaExtractor;
-use Contao\PageModel;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
@@ -23,6 +21,8 @@ use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
+use Terminal42\ContaoAdapterBundle\Adapter\DcaExtractorAdapterProvider;
+use Terminal42\ContaoAdapterBundle\Adapter\PageModelAdapter;
 
 /**
  * Generates the Contao cache during cache warmup.
@@ -57,26 +57,42 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     private $connection;
 
     /**
+     * @var PageModelAdapter
+     */
+    private $pageModel;
+
+    /**
+     * @var DcaExtractorAdapterProvider
+     */
+    private $extractorProvider;
+
+    /**
      * Constructor.
      *
-     * @param Filesystem     $filesystem The filesystem object
-     * @param ResourceFinder $finder     The resource finder object
-     * @param FileLocator    $locator    The file locator
-     * @param string         $rootDir    The root directory
-     * @param Connection     $connection The Doctrine connection
+     * @param Filesystem       $filesystem The filesystem object
+     * @param ResourceFinder   $finder The resource finder object
+     * @param FileLocator      $locator The file locator
+     * @param string           $rootDir The root directory
+     * @param Connection       $connection The Doctrine connection
+     * @param PageModelAdapter $pageModel
+     * @param PageModelAdapter $pageModel
      */
     public function __construct(
         Filesystem $filesystem,
         ResourceFinder $finder,
         FileLocator $locator,
         $rootDir,
-        Connection $connection
+        Connection $connection,
+        PageModelAdapter $pageModel,
+        DcaExtractorAdapterProvider $extractorProvider
     ) {
-        $this->filesystem = $filesystem;
-        $this->finder     = $finder;
-        $this->locator    = $locator;
-        $this->rootDir    = dirname($rootDir);
-        $this->connection = $connection;
+        $this->filesystem        = $filesystem;
+        $this->finder            = $finder;
+        $this->locator           = $locator;
+        $this->rootDir           = dirname($rootDir);
+        $this->connection        = $connection;
+        $this->pageModel         = $pageModel;
+        $this->extractorProvider = $extractorProvider;
     }
 
     /**
@@ -124,7 +140,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     private function generateCacheMapper($cacheDir)
     {
         $mapper = [];
-        $pages  = PageModel::findPublishedRootPages();
+        $pages  = $this->pageModel->findPublishedRootPages();
 
         if (null === $pages) {
             return;
@@ -243,7 +259,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
             $processed[] = $file->getBasename();
 
             $table   = $file->getBasename('.php');
-            $extract = DcaExtractor::getInstance($table);
+            $extract = $this->extractorProvider->getAdapterForTable($table);
 
             if (!$extract->isDbTable()) {
                 continue;
