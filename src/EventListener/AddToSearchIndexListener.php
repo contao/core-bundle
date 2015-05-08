@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\Frontend;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Terminal42\ContaoAdapterBundle\Adapter\FrontendAdapter;
 
