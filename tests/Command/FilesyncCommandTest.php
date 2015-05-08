@@ -27,7 +27,7 @@ class FilesyncCommandTest extends TestCase
      */
     public function testInstantiation()
     {
-        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
+        $command = new FilesyncCommand($this->mockDbafs());
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Command\\FilesyncCommand', $command);
     }
@@ -37,7 +37,7 @@ class FilesyncCommandTest extends TestCase
      */
     public function testOutput()
     {
-        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
+        $command = new FilesyncCommand($this->mockDbafs());
         $tester  = new CommandTester($command);
 
         $code = $tester->execute([]);
@@ -54,7 +54,7 @@ class FilesyncCommandTest extends TestCase
         $lock = new LockHandler('contao:filesync', $this->mockDbafs());
         $lock->lock();
 
-        $command = new FilesyncCommand('contao:filesync', $this->mockDbafs());
+        $command = new FilesyncCommand($this->mockDbafs());
         $tester  = new CommandTester($command);
 
         $code = $tester->execute([]);

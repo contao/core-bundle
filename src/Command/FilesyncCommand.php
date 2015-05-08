@@ -30,16 +30,13 @@ class FilesyncCommand extends LockedCommand
     /**
      * Constructor.
      *
-     * @param string|null $name The name of the command; passing null means it must be set in configure()
      * @param DbafsAdapter $dbafs
      *
-     * @throws \LogicException When the command name is empty
-     *
      */
-    public function __construct($name = null, DbafsAdapter $dbafs)
+    public function __construct(DbafsAdapter $dbafs)
     {
         $this->dbafs = $dbafs;
-        parent::__construct($name);
+        parent::__construct();
     }
 
     /**

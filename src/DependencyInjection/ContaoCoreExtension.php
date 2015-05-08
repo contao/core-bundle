@@ -28,6 +28,7 @@ class ContaoCoreExtension extends ConfigurableExtension
      */
     private $files = [
         'cache.yml',
+        'commands.yml',
         'controller_services.yml',
         'listener.yml',
         'services.yml',

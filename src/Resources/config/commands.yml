@@ -1,0 +1,13 @@
+services:
+    contao.command.automator:
+        class: Contao\CoreBundle\Command\AutomatorCommand
+        arguments:
+            - "@terminal42.contao.adapter.automator"
+        tags:
+            -  { name: console.command }
+    contao.command.filesync:
+        class: Contao\CoreBundle\Command\FilesyncCommand
+        arguments:
+            - "@terminal42.contao.adapter.dbafs"
+        tags:
+            -  { name: console.command }
