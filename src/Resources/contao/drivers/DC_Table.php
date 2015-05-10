@@ -3118,6 +3118,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	 */
 	protected function reviseTable()
 	{
+		$reload = false;
 		$ptable = $GLOBALS['TL_DCA'][$this->strTable]['config']['ptable'];
 		$ctable = $GLOBALS['TL_DCA'][$this->strTable]['config']['ctable'];
 
