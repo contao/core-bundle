@@ -42,7 +42,7 @@ class ParseWidgetEvent extends Event
     /**
      * Returns the widget object.
      *
-     * @return widget The widget object
+     * @return Widget The widget object
      */
     public function getWidget()
     {
@@ -52,7 +52,7 @@ class ParseWidgetEvent extends Event
     /**
      * Sets the widget object.
      *
-     * @param widget $widget The widget object
+     * @param Widget $widget The widget object
      */
     public function setWidget(Widget $widget)
     {

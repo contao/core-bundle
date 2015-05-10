@@ -35,9 +35,9 @@ class TemplateEvent extends Event
     /**
      * Constructor.
      *
-     * @param string   $buffer   The template content
-     * @param string   $key      The template key
-     * @param Template $template The template object
+     * @param string        $buffer   The template content
+     * @param string        $key      The template key
+     * @param Template|null $template The template object
      */
     public function __construct($buffer, &$key, Template &$template = null)
     {
@@ -79,7 +79,7 @@ class TemplateEvent extends Event
     /**
      * Sets the template object.
      *
-     * @param Template $template The template object
+     * @param Template|null $template The template object
      */
     public function setTemplate(Template $template = null)
     {

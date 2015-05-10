@@ -41,7 +41,7 @@ class SetNewPasswordEvent extends Event
      *
      * @param MemberModel $member   The member model
      * @param string      $password The password
-     * @param Module      $module   The module
+     * @param Module|null $module   The module
      */
     public function __construct(MemberModel &$member, &$password, Module &$module = null)
     {
@@ -103,9 +103,9 @@ class SetNewPasswordEvent extends Event
     /**
      * Sets the module.
      *
-     * @param Module $module The module
+     * @param Module|null $module The module
      */
-    public function setModule(Module $module)
+    public function setModule(Module $module = null)
     {
         $this->module = $module;
     }
