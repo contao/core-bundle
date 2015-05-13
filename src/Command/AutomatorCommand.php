@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Command;
 
 use Contao\Automator;
+use Contao\CoreBundle\ContaoFramework;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +32,21 @@ class AutomatorCommand extends AbstractLockedCommand
     private $commands = [];
 
     /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * Constructor.
+     *
+     * @param ContaoFramework $framework The Contao framework service
+     */
+    public function __construct(ContaoFramework $framework)
+    {
+        $this->framework = $framework;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -49,6 +65,8 @@ class AutomatorCommand extends AbstractLockedCommand
      */
     protected function executeLocked(InputInterface $input, OutputInterface $output)
     {
+        $this->framework->initialize();
+
         try {
             $this->runAutomator($input, $output);
         } catch (\InvalidArgumentException $e) {
