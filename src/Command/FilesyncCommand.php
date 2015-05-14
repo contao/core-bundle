@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Command;
 
 use Contao\Dbafs;
+use Contao\CoreBundle\ContaoFramework;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,6 +22,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class FilesyncCommand extends AbstractLockedCommand
 {
+    /**
+     * @var ContaoFramework
+    */
+    private $framework;
+
+    /**
+     * Constructor.
+     *
+     * @param ContaoFramework $framework The Contao framework service
+     */
+     public function __construct(ContaoFramework $framework)
+     {
+         $this->framework = $framework;
+     }
+
     /**
      * {@inheritdoc}
      */
@@ -37,6 +53,8 @@ class FilesyncCommand extends AbstractLockedCommand
      */
     protected function executeLocked(InputInterface $input, OutputInterface $output)
     {
+        $this->framework->initialize();
+
         $strLog = Dbafs::syncFiles();
         $output->writeln('Synchronization complete (see <info>' . $strLog . '</info>).');
 
