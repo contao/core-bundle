@@ -40,7 +40,7 @@ class FrontendIndex extends \Frontend
 		// No back end user logged in
 		if (!$_SESSION['DISABLE_CACHE'])
 		{
-            global $kernel;
+			global $kernel;
 
 			// Maintenance mode (see #4561 and #6353)
 			if (\Config::get('maintenanceMode') && !$kernel->isDebug())
