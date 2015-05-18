@@ -40,8 +40,10 @@ class FrontendIndex extends \Frontend
 		// No back end user logged in
 		if (!$_SESSION['DISABLE_CACHE'])
 		{
+			global $kernel;
+
 			// Maintenance mode (see #4561 and #6353)
-			if (\Config::get('maintenanceMode'))
+			if (\Config::get('maintenanceMode') && !$kernel->isDebug())
 			{
 				throw new ServiceUnavailableException('This site is currently down for maintenance. Please come back later.');
 			}
