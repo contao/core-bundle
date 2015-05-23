@@ -123,7 +123,7 @@ class ContaoFramework
         $this->csrfTokenName = $csrfTokenName;
         $this->config        = $config;
         $this->errorLevel    = $errorLevel;
-        $this->request       = $requestStack->getCurrentRequest();
+        $this->request       = $requestStack->getMasterRequest();
     }
 
     /**
