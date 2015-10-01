@@ -40,7 +40,6 @@ namespace {
 	class BackendFile extends \Contao\BackendFile {}
 	class BackendHelp extends \Contao\BackendHelp {}
 	class BackendIndex extends \Contao\BackendIndex {}
-	class BackendInstall extends \Contao\BackendInstall {}
 	class BackendMain extends \Contao\BackendMain {}
 	class BackendPage extends \Contao\BackendPage {}
 	class BackendPassword extends \Contao\BackendPassword {}
@@ -99,6 +98,8 @@ namespace {
 	class Config extends \Contao\Config {}
 	abstract class Controller extends \Contao\Controller {}
 	class Database extends \Contao\Database {}
+	class Database_Result extends \Contao\Database\Result {}
+	class Database_Statement extends \Contao\Database\Statement {}
 	class Date extends \Contao\Date {}
 	class Dbafs extends \Contao\Dbafs {}
 	class DcaExtractor extends \Contao\DcaExtractor {}
