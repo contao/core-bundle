@@ -1,0 +1,32 @@
+<table id="ctrl_{{ id }}" class="tl_modulewizard">
+    <thead>
+        <tr>
+            <th>{{ label_module }}</th>
+            <th>{{ label_section }}</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody class="sortable" data-tabindex="{{ tabindex }}">
+
+    {% for row in values %}
+        <tr>
+            <td>
+                <select name="{{ id }}[{{ loop.index0 }}][mod]" class="tl_select tl_chosen" tabindex="{{ loop.index * 2 - 1 + tabindex }}" onfocus="Backend.getScrollOffset()" onchange="Backend.updateModuleLink(this)">
+                    {% for module in modules %}
+                        <option value="{{ module.id }}"{% if row.mod == module.id %} selected{% endif %}>{{ module.name }} [{{ module.type }}]</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="{{ id }}[{{ loop.index0 }}][col]" class="tl_select_column" tabindex="{{ loop.index * 2 + tabindex }}" onfocus="Backend.getScrollOffset()">
+                    {% for option in sections %}
+                        <option value="{{ option.value }}"{% if row.col == option.value %} selected{% endif %}>{{ option.label }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td></td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
