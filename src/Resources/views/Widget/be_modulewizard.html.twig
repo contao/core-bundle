@@ -1,30 +1,51 @@
 <table id="ctrl_{{ id }}" class="tl_modulewizard">
     <thead>
         <tr>
-            <th>{{ label_module }}</th>
-            <th>{{ label_section }}</th>
+            <th>{{ tl_lang('MSC', 'mw_module') }}</th>
+            <th>{{ tl_lang('MSC', 'mw_column') }}</th>
             <th>&nbsp;</th>
         </tr>
     </thead>
-    <tbody class="sortable" data-tabindex="{{ tabindex }}">
+    <tbody class="sortable" data-tabindex="{{ tabindex() }}">
 
     {% for row in values %}
         <tr>
             <td>
-                <select name="{{ id }}[{{ loop.index0 }}][mod]" class="tl_select tl_chosen" tabindex="{{ loop.index * 2 - 1 + tabindex }}" onfocus="Backend.getScrollOffset()" onchange="Backend.updateModuleLink(this)">
+                <select name="{{ id }}[{{ loop.index0 }}][mod]" class="tl_select tl_chosen" tabindex="{{ tabindex() }}" onfocus="Backend.getScrollOffset()" onchange="Backend.updateModuleLink(this)">
                     {% for module in modules %}
                         <option value="{{ module.id }}"{% if row.mod == module.id %} selected{% endif %}>{{ module.name }} [{{ module.type }}]</option>
                     {% endfor %}
                 </select>
             </td>
             <td>
-                <select name="{{ id }}[{{ loop.index0 }}][col]" class="tl_select_column" tabindex="{{ loop.index * 2 + tabindex }}" onfocus="Backend.getScrollOffset()">
-                    {% for option in sections %}
-                        <option value="{{ option.value }}"{% if row.col == option.value %} selected{% endif %}>{{ option.label }}</option>
+                <select name="{{ id }}[{{ loop.index0 }}][col]" class="tl_select_column" tabindex="{{ tabindex() }}" onfocus="Backend.getScrollOffset()">
+                    {% for value, label in sections %}
+                        <option value="{{ value }}"{% if row.col == value %} selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
             </td>
-            <td></td>
+            <td>
+
+                {% for button in buttons %}
+                    {% if button == 'edit' %}
+                        <a href="{{ path('contao_backend', { 'do': 'themes', 'table': 'tl_module', 'act': 'edit', 'id': row.mod, 'popup': 1, 'rt': constant('REQUEST_TOKEN'), 'nb': 1}) }}" title="{{ tl_lang('tl_layout', 'edit_module')|escape('html_attr') }}" class="module_link"{% if row.mod == 0 %} style="display:none"{% endif %} onclick="Backend.openModalIframe({'width':768, 'title':'{{ tl_lang('tl_layout', 'edit_module')|escape('js') }}','url':this.href});return false">{{ image_html('edit.gif') }}</a>
+                        {{ image_html('edit_.gif', '', ('class="module_image"' ~ (row.mod > 0 ? ' style="display:none"' : ''))) }}
+
+                    {% elseif button == 'drag' %}
+                        {{ image_html('drag.gif', '', ('class="drag-handle" title="' ~ tl_lang('MSC', 'move')|escape('html_attr') ~ '"')) }}
+
+                    {% elseif button == 'enable' %}
+                        {{ image_html((row.enable ? 'visible.gif' : 'invisible.gif'), '', ('class="mw_enable" title="' ~ tl_lang('MSC', 'mw_enable')|escape('html_attr') ~ '"')) }}
+                        <input name="{{ id }}[{{ loop.parent.loop.index0 }}][enable]" type="checkbox" class="tl_checkbox mw_enable" value="1" tabindex="{{ tabindex() }}" onfocus="Backend.getScrollOffset()"{% if row.enable %} checked{% endif %}>
+                    {% else %}
+                        {% set query = app.request.query.all|merge({ (command): button, 'cid': loop.parent.loop.index0, 'id': currentRecord }) %}
+                        <a href="{{ path('contao_backend', query) }}"{% if button == 'up' or button == 'down' %} class="button-move"{% endif %} title="{{ tl_lang('MSC', ('mw_' ~ button))|escape('html_attr') }}" onclick="Backend.moduleWizard(this,'{{ button }}','ctrl_{{ id }}');return false">
+                            {{ image_html((button ~ '.gif'), '', 'class="tl_listwizard_img"') }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+            </td>
         </tr>
     {% endfor %}
 

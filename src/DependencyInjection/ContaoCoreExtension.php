@@ -32,6 +32,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         'commands.yml',
         'listener.yml',
         'services.yml',
+        'twig.yml',
     ];
 
     /**

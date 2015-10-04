@@ -1,14 +1,28 @@
 <?php
 
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2015 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Widget;
 
-use Contao\Cache;
+use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Provide methods to handle modules of a page layout.
+ *
+ * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Andreas Schempp <https://github.com/aschempp>
+ */
 class ModuleWizard extends Widget
 {
     /**
@@ -39,6 +53,11 @@ class ModuleWizard extends Widget
     private $twig;
 
     /**
+     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    private $router;
+
+    /**
      * Constructor.
      *
      * @param array|null $arrAttributes
@@ -50,6 +69,7 @@ class ModuleWizard extends Widget
         $this->db           = System::getContainer()->get('database_connection');
         $this->requestStack = System::getContainer()->get('request_stack');
         $this->twig         = System::getContainer()->get('twig');
+        $this->router       = System::getContainer()->get('router');
     }
 
     /**
@@ -59,23 +79,20 @@ class ModuleWizard extends Widget
      */
     public function generate()
     {
-        $value = $this->orderBySection($this->varValue);
+        $command  = 'cmd_' . $this->strField;
+        $value    = $this->orderBySection($this->varValue);
 
-        $this->handleCommand($value);
-
-        $tabindex = $this->getTabindex();
-
-        $this->setTabindex(count($value) * 2 + $tabindex);
+        $this->handleCommand($command, $value);
 
         return $this->twig->render(
             '@ContaoCore/Widget/be_modulewizard.html.twig',
             [
                 'id'            => $this->strId,
+                'command'       => $command,
+                'currentRecord' => $this->currentRecord,
+                'buttons'       => $this->getButtons(),
                 'modules'       => $this->getModules(),
                 'sections'      => $this->getSectionLabels($this->getSections()),
-                'tabindex'      => $tabindex,
-                'label_module'  => $GLOBALS['TL_LANG']['MSC']['mw_module'],
-                'label_section' => $GLOBALS['TL_LANG']['MSC']['mw_column'],
                 'values'        => $value,
             ]
         );
@@ -87,7 +104,9 @@ class ModuleWizard extends Widget
             "SELECT id, name, type
              FROM tl_module
              WHERE pid=(SELECT pid FROM {$this->strTable} WHERE id=?)
-             ORDER BY name"
+             ORDER BY name",
+            [$this->currentRecord],
+            [Type::INTEGER]
         );
 
         foreach ($modules as &$row) {
@@ -138,13 +157,11 @@ class ModuleWizard extends Widget
     {
         $labels = [];
 
-        System::loadLanguageFile('tl_article');
-
         foreach ($sections as $name) {
-            if (isset($GLOBALS['TL_LANG']['tl_article'][$name])
-                && !is_array($GLOBALS['TL_LANG']['tl_article'][$name])
+            if (isset($GLOBALS['TL_LANG']['COLS'][$name])
+                && !is_array($GLOBALS['TL_LANG']['COLS'][$name])
             ) {
-                $labels[$name] = ($GLOBALS['TL_LANG']['tl_article'][$name]);
+                $labels[$name] = $GLOBALS['TL_LANG']['COLS'][$name];
             } else {
                 $labels[$name] = $name;
             }
@@ -181,25 +198,9 @@ class ModuleWizard extends Widget
         return $result;
     }
 
-    private function getTabindex()
-    {
-        // Initialize the tab index
-        if (!Cache::has('tabindex')) {
-            Cache::set('tabindex', 1);
-        }
-
-        return Cache::get('tabindex');
-    }
-
-    private function setTabindex($index)
-    {
-        Cache::set('tabindex', $index);
-    }
-
-    private function handleCommand(array $value)
+    private function handleCommand($command, array $value)
     {
         $request  = $this->requestStack->getCurrentRequest();
-        $command  = 'cmd_' . $this->strField;
         $widgetId = $request->query->get('id');
         $rowIndex = $request->query->get('cid');
 
@@ -231,7 +232,16 @@ class ModuleWizard extends Widget
             ['id' => $this->currentRecord]
         );
 
-        // TODO: use router to replace parameters
-        $this->redirect(preg_replace('/&(amp;)?cid=[^&]*/i', '', preg_replace('/&(amp;)?' . preg_quote($command, '/') . '=[^&]*/i', '', \Environment::get('request'))));
+        throw new RedirectResponseException(
+            $this->router->generate(
+                $request->attributes->get('_route'),
+                array_diff_key($request->query->all(), ['cid' => '', $command => ''])
+            )
+        );
+    }
+
+    private function getButtons()
+    {
+        return ['edit', 'copy', 'delete', 'enable', 'drag', 'up', 'down'];
     }
 }

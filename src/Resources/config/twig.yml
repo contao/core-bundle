@@ -1,0 +1,12 @@
+services:
+    contao.twig.image:
+        class: Contao\CoreBundle\Twig\ImageExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    contao.twig.helper:
+        class: Contao\CoreBundle\Twig\HelperExtension
+        public: false
+        tags:
+            - { name: twig.extension }
