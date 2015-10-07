@@ -1,0 +1,5 @@
+services:
+    contao.insert_tag.legacy:
+        class: Contao\CoreBundle\InsertTag\Tag\LegacyInsertTag
+        tags:
+            - { name: contao.insert_tag, priority: -254 }

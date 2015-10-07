@@ -30,6 +30,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         'adapter.yml',
         'cache.yml',
         'commands.yml',
+        'insert_tags.yml',
         'listener.yml',
         'services.yml',
     ];

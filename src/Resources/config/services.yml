@@ -22,6 +22,22 @@ services:
         calls:
             - ["setContainer", ["@service_container"]]
 
+    contao.insert_tag_collection:
+        class: Contao\CoreBundle\InsertTag\InsertTagCollection
+
+    contao.insert_tag_flag_collection:
+        class: Contao\CoreBundle\InsertTag\InsertTagFlagCollection
+
+    contao.insert_tag_parser.string:
+        class: Contao\CoreBundle\InsertTag\Parser\StringParser
+        arguments:
+            - "@contao.insert_tag_collection"
+            - "@contao.insert_tag_flag_collection"
+
+    #contao.insert_tag_parser.esi:
+    #    class: Contao\CoreBundle\InsertTag\Parser\EsiParser
+
+
     contao.referer_id.manager:
          class: "%security.csrf.token_manager.class%"
          public: false

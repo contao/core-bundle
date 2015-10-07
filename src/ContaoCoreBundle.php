@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\DependencyInjection\Compiler\AddInsertTagParsersPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
@@ -60,5 +61,6 @@ class ContaoCoreBundle extends Bundle
         );
 
         $container->addCompilerPass(new AddResourcesPathsPass());
+        $container->addCompilerPass(new AddInsertTagParsersPass());
     }
 }
