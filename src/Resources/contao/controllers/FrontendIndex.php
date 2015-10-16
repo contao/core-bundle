@@ -66,7 +66,7 @@ class FrontendIndex extends \Frontend
 		elseif ($pageId === false)
 		{
 			$this->User->authenticate();
-			throw new PageNotFoundException('Page not found');
+			throw new PageNotFoundException('Page not found. (URL: "' . \Environment::get('base') . \Environment::get('request') . '", Referer: "' . \Environment::get('httpReferer') . '")');
 		}
 
 		// Get the current page object(s)
@@ -129,17 +129,21 @@ class FrontendIndex extends \Frontend
 		// Throw a 404 error if the page could not be found
 		if ($objPage === null)
 		{
-			$this->User->authenticate();
-			$this->log('No active page for page ID "' . $pageId . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+			$message = 'No active page for page ID "' . $pageId . '". (URL: "' . \Environment::get('base') . \Environment::get('request') . '", Referer: "' . \Environment::get('httpReferer') . '")';
 
-			throw new PageNotFoundException('Page not found');
+			$this->User->authenticate();
+			$this->log($message, __METHOD__, TL_ERROR);
+
+			throw new PageNotFoundException($message);
 		}
 
 		// Throw a 500 error if the result is still ambiguous
 		if ($objPage instanceof Model\Collection && $objPage->count() != 1)
 		{
-			$this->log('More than one page matches page ID "' . $pageId . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
-			throw new \LogicException('More than one page found');
+			$message = 'More than one page matches page ID "' . $pageId . '". (' . \Environment::get('base') . \Environment::get('request') . ')';
+
+			$this->log($message, __METHOD__, TL_ERROR);
+			throw new \LogicException($message);
 		}
 
 		// Make sure $objPage is a Model
@@ -151,8 +155,10 @@ class FrontendIndex extends \Frontend
 		// If the page has an alias, it can no longer be called via ID (see #7661)
 		if ($objPage->alias != '' && preg_match('#^' . $objPage->id . '[$/.]#', \Environment::get('relativeRequest')))
 		{
+			$message = 'Pages with alias must not be loaded by their ID. (URL: "' . \Environment::get('base') . \Environment::get('request') . '", Referer: "' . \Environment::get('httpReferer') . '")';
+
 			$this->User->authenticate();
-			throw new PageNotFoundException('Page not found');
+			throw new PageNotFoundException($message);
 		}
 
 		// Load a website root page object (will redirect to the first active regular page)
@@ -189,10 +195,12 @@ class FrontendIndex extends \Frontend
 		// Check wether the language matches the root page language
 		if (\Config::get('addLanguageToUrl') && \Input::get('language') != $objPage->rootLanguage)
 		{
-			$this->User->authenticate();
-			$this->log('No active page for page ID "' . $pageId . '" and language "' . \Input::get('language') . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+			$message = 'No active page for page ID "' . $pageId . '" and language "' . \Input::get('language') . '". (URL: "' . \Environment::get('base') . \Environment::get('request') . '", Referer: "' . \Environment::get('httpReferer') . '")';
 
-			throw new PageNotFoundException('Page not found');
+			$this->User->authenticate();
+			$this->log($message, __METHOD__, TL_ERROR);
+
+			throw new PageNotFoundException($message);
 		}
 
 		// Check whether there are domain name restrictions
@@ -201,18 +209,22 @@ class FrontendIndex extends \Frontend
 			// Load an error 404 page object
 			if ($objPage->domain != \Environment::get('host'))
 			{
-				$this->User->authenticate();
-				$this->log('Page ID "' . $pageId . '" was requested via "' . \Environment::get('host') . '" but can only be accessed via "' . $objPage->domain . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+				$message = 'Page ID "' . $pageId . '" was requested via "' . \Environment::get('host') . '" but can only be accessed via "' . $objPage->domain . '". (URL: "' . \Environment::get('base') . \Environment::get('request') . '", Referer: "' . \Environment::get('httpReferer') . '")';
 
-				throw new PageNotFoundException('Page not found');
+				$this->User->authenticate();
+				$this->log($message, __METHOD__, TL_ERROR);
+
+				throw new PageNotFoundException($message);
 			}
 		}
 
 		// Authenticate the user
 		if (!$this->User->authenticate() && $objPage->protected && !BE_USER_LOGGED_IN)
 		{
-			$this->log('Access to page ID "' . $pageId . '" denied (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
-			throw new AccessDeniedException('Access denied');
+			$message = 'Access to page ID "' . $pageId . '" denied (' . \Environment::get('base') . \Environment::get('request') . ')';
+
+			$this->log($message, __METHOD__, TL_ERROR);
+			throw new AccessDeniedException($message);
 		}
 
 		// Check the user groups if the page is protected
@@ -222,8 +234,10 @@ class FrontendIndex extends \Frontend
 
 			if (!is_array($arrGroups) || empty($arrGroups) || !count(array_intersect($arrGroups, $this->User->groups)))
 			{
-				$this->log('Page ID "' . $pageId . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')', __METHOD__, TL_ERROR);
-				throw new AccessDeniedException('Access denied');
+				$message = 'Page ID "' . $pageId . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')';
+
+				$this->log($message, __METHOD__, TL_ERROR);
+				throw new AccessDeniedException($message);
 			}
 		}
 

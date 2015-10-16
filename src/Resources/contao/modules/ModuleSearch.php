@@ -234,7 +234,7 @@ class ModuleSearch extends \Module
 				// Do not index or cache the page if the page number is outside the range
 				if ($page < 1 || $page > max(ceil($count/$per_page), 1))
 				{
-					throw new PageNotFoundException('Page not found');
+					throw new PageNotFoundException('Invalid page "' . $page . '" for search module ID ' . $this->id);
 				}
 
 				$from = (($page - 1) * $per_page) + 1;
