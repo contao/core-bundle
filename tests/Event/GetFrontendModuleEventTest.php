@@ -34,11 +34,7 @@ class GetFrontendModuleEventTest extends TestCase
     {
         parent::setUp();
 
-        $buffer = 'foo';
-        $row = [];
-        $module = new ModuleHtml(new ModuleModel());
-
-        $this->event = new GetFrontendModuleEvent($buffer, $row, $module);
+        $this->event = new GetFrontendModuleEvent('foo', [], new ModuleHtml(new ModuleModel()));
     }
 
     /**
@@ -50,44 +46,21 @@ class GetFrontendModuleEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals([], $this->event->getRow());
         $this->assertInstanceOf('Contao\Module', $this->event->getModule());
-
-        $module = new ModuleHtml(new ModuleModel());
-
-        $this->event->setBuffer('bar');
-        $this->event->setRow(['foo']);
-        $this->event->setModule($module);
-
-        $this->assertEquals('bar', $this->event->getBuffer());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals($module, $this->event->getModule());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setBuffer() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetBuffer()
     {
-        $buffer = 'foo';
-        $row = [];
-        $module = new ModuleHtml(new ModuleModel());
-        $module2 = new ModuleHtml(new ModuleModel());
-
-        $this->event = new GetFrontendModuleEvent($buffer, $row, $module);
-
-        // Try to change the original variables
-        $buffer = 'bar';
-        $row = ['foo'];
-        $module = $module2;
-
-        $this->assertEquals('foo', $this->event->getBuffer());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals($module2, $this->event->getModule());
+        $this->event->setBuffer('bar');
+        $this->assertEquals('bar', $this->event->getBuffer());
     }
 }

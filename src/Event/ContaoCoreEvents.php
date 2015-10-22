@@ -61,7 +61,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\PageEvent
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
      */
     const EXECUTE_RESIZE = 'contao.execute_resize';
 
@@ -209,7 +209,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\PageEvent
+     * @see Contao\CoreBundle\Event\ReturnValueEvent
      */
     const GET_PAGE_LAYOUT = 'contao.get_page_layout';
 

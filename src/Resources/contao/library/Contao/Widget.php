@@ -635,7 +635,6 @@ abstract class Widget extends \Controller
 		// Dispatch the contao.parse_widget event
 		$event = new ParseWidgetEvent($strBuffer, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_WIDGET, $event);
-
 		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters (see #5553)
@@ -1403,7 +1402,6 @@ abstract class Widget extends \Controller
 		// Dispatch the contao.get_attributes_from_dca event
 		$event = new GetAttributesFromDcaEvent($arrAttributes, $objDca);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ATTRIBUTES_FROM_DCA, $event);
-
 		$arrAttributes = $event->getAttributes();
 
 		// HOOK: add custom logic

@@ -47,12 +47,12 @@ class GetLanguagesEvent extends Event
      * @param array $langsNative   The native languages list
      * @param bool  $installedOnly True to return only installed languages
      */
-    public function __construct(array &$return, array &$languages, array &$langsNative, &$installedOnly)
+    public function __construct(array $return, array $languages, array $langsNative, $installedOnly)
     {
-        $this->return = &$return;
-        $this->languages = &$languages;
-        $this->langsNative = &$langsNative;
-        $this->installedOnly = &$installedOnly;
+        $this->return = $return;
+        $this->languages = $languages;
+        $this->langsNative = $langsNative;
+        $this->installedOnly = $installedOnly;
     }
 
     /**
@@ -60,7 +60,7 @@ class GetLanguagesEvent extends Event
      *
      * @return array The array to be returned
      */
-    public function getReturn()
+    public function getReturnValue()
     {
         return $this->return;
     }
@@ -70,7 +70,7 @@ class GetLanguagesEvent extends Event
      *
      * @param array $return The array to be returned
      */
-    public function setReturn(array $return)
+    public function setReturnValue(array $return)
     {
         $this->return = $return;
     }
@@ -120,18 +120,8 @@ class GetLanguagesEvent extends Event
      *
      * @return bool The installedOnly flag
      */
-    public function getInstalledOnly()
+    public function isInstalledOnly()
     {
         return $this->installedOnly;
-    }
-
-    /**
-     * Sets the installedOnly flag.
-     *
-     * @param bool $installedOnly The installedOnly flag
-     */
-    public function setInstalledOnly($installedOnly)
-    {
-        $this->installedOnly = (bool) $installedOnly;
     }
 }

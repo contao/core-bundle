@@ -32,11 +32,7 @@ class GenerateFrontendUrlEventTest extends TestCase
     {
         parent::setUp();
 
-        $url = 'http://localhost';
-        $row = [];
-        $params = '';
-
-        $this->event = new GenerateFrontendUrlEvent($url, $row, $params);
+        $this->event = new GenerateFrontendUrlEvent('http://localhost', [], '');
     }
 
     /**
@@ -48,41 +44,21 @@ class GenerateFrontendUrlEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('http://localhost', $this->event->getUrl());
         $this->assertEquals([], $this->event->getRow());
         $this->assertEquals('', $this->event->getParams());
-
-        $this->event->setUrl('http://127.0.0.1');
-        $this->event->setRow(['foo']);
-        $this->event->setParams('foo=bar');
-
-        $this->assertEquals('http://127.0.0.1', $this->event->getUrl());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals('foo=bar', $this->event->getParams());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setUrl() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetUrl()
     {
-        $url = 'http://localhost';
-        $row = [];
-        $params = [];
-
-        $this->event = new GenerateFrontendUrlEvent($url, $row, $params);
-
-        // Try to change the original variables
-        $url = 'http://127.0.0.1';
-        $row = ['foo'];
-        $params = 'foo=bar';
-
-        $this->assertEquals('http://localhost', $this->event->getUrl());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals('foo=bar', $this->event->getParams());
+        $this->event->setUrl('http://127.0.0.1');
+        $this->assertEquals('http://127.0.0.1', $this->event->getUrl());
     }
 }

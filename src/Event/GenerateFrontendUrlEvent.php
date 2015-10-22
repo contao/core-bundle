@@ -19,12 +19,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GenerateFrontendUrlEvent extends Event
 {
-    use RowAwareTrait;
-
     /**
      * @var string
      */
     private $url;
+
+    /**
+     * @var array
+     */
+    private $row;
 
     /**
      * @var string
@@ -38,11 +41,11 @@ class GenerateFrontendUrlEvent extends Event
      * @param array  $row    The row
      * @param string $params The parameters
      */
-    public function __construct($url, array &$row, &$params)
+    public function __construct($url, array $row, $params)
     {
         $this->url = $url;
-        $this->row = &$row;
-        $this->params = &$params;
+        $this->row = $row;
+        $this->params = $params;
     }
 
     /**
@@ -66,6 +69,16 @@ class GenerateFrontendUrlEvent extends Event
     }
 
     /**
+     * Returns the row.
+     *
+     * @return array The row
+     */
+    public function getRow()
+    {
+        return $this->row;
+    }
+
+    /**
      * Returns the params.
      *
      * @return string The params
@@ -73,15 +86,5 @@ class GenerateFrontendUrlEvent extends Event
     public function getParams()
     {
         return $this->params;
-    }
-
-    /**
-     * Sets the params.
-     *
-     * @param string $params The params
-     */
-    public function setParams($params)
-    {
-        $this->params = $params;
     }
 }

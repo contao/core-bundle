@@ -516,7 +516,6 @@ class BackendUser extends \User
 		// Dispatch the contao.get_user_navigation event
 		$event = new GetUserNavigationEvent($arrModules, $blnShowAll);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_USER_NAVIGATION, $event);
-
 		$arrModules = $event->getModules();
 
 		// HOOK: add custom logic

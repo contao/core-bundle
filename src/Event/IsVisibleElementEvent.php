@@ -23,7 +23,7 @@ class IsVisibleElementEvent extends Event
     /**
      * @var bool
      */
-    private $return;
+    private $visible;
 
     /**
      * @var Model
@@ -33,33 +33,33 @@ class IsVisibleElementEvent extends Event
     /**
      * Constructor.
      *
-     * @param bool  $return  The return value
+     * @param bool  $visible The visibility status
      * @param Model $element The element
      */
-    public function __construct($return, Model &$element)
+    public function __construct($visible, Model $element)
     {
-        $this->return = $return;
-        $this->element = &$element;
+        $this->visible = $visible;
+        $this->element = $element;
     }
 
     /**
-     * Returns the return value.
+     * Returns the visibility status.
      *
-     * @return bool The return value
+     * @return bool The visibility status
      */
-    public function getReturn()
+    public function isVisible()
     {
-        return $this->return;
+        return $this->visible;
     }
 
     /**
-     * Sets the return value.
+     * Sets the visibility status.
      *
-     * @param bool $return The return value
+     * @param bool $return The visibility status
      */
-    public function setReturn($return)
+    public function setVisible($return)
     {
-        $this->return = (bool) $return;
+        $this->visible = (bool) $return;
     }
 
     /**
@@ -70,15 +70,5 @@ class IsVisibleElementEvent extends Event
     public function getElement()
     {
         return $this->element;
-    }
-
-    /**
-     * Sets the element.
-     *
-     * @param Model $element The element
-     */
-    public function setElement(Model $element)
-    {
-        $this->element = $element;
     }
 }

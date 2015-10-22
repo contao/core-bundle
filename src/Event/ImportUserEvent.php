@@ -19,8 +19,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ImportUserEvent extends Event
 {
-    use UsernameAwareTrait;
-    use PasswordAwareTrait;
+    /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
 
     /**
      * @var string
@@ -39,11 +46,31 @@ class ImportUserEvent extends Event
      * @param string $password The password
      * @param string $table    The table name
      */
-    public function __construct(&$username, &$password, &$table)
+    public function __construct($username, $password, $table)
     {
-        $this->username = &$username;
-        $this->password = &$password;
-        $this->table = &$table;
+        $this->username = $username;
+        $this->password = $password;
+        $this->table = $table;
+    }
+
+    /**
+     * Returns the username.
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Returns the password.
+     *
+     * @return string The password
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**
@@ -57,21 +84,11 @@ class ImportUserEvent extends Event
     }
 
     /**
-     * Sets the table name.
-     *
-     * @param string $table The table name
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-    /**
      * Returns the loading status.
      *
      * @return bool The loading status
      */
-    public function getLoaded()
+    public function isLoaded()
     {
         return $this->loaded;
     }

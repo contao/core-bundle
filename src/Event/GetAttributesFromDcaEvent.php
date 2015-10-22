@@ -36,10 +36,10 @@ class GetAttributesFromDcaEvent extends Event
      * @param array         $attributes The attributes
      * @param DataContainer $dca        The data container object
      */
-    public function __construct(array $attributes, DataContainer &$dca)
+    public function __construct(array $attributes, DataContainer $dca)
     {
         $this->attributes = $attributes;
-        $this->dca = &$dca;
+        $this->dca = $dca;
     }
 
     /**
@@ -70,15 +70,5 @@ class GetAttributesFromDcaEvent extends Event
     public function getDataContainer()
     {
         return $this->dca;
-    }
-
-    /**
-     * Sets the data container object.
-     *
-     * @param DataContainer $dca The data container object
-     */
-    public function setDataContainer(DataContainer $dca)
-    {
-        $this->dca = $dca;
     }
 }

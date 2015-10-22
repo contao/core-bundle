@@ -20,8 +20,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetFrontendModuleEvent extends Event
 {
-    use BufferAwareTrait;
-    use RowAwareTrait;
+    /**
+     * @var string
+     */
+    private $buffer;
+
+    /**
+     * @var array
+     */
+    private $row;
 
     /**
      * @var Module
@@ -35,11 +42,41 @@ class GetFrontendModuleEvent extends Event
      * @param array  $row    The row
      * @param Module $module The module
      */
-    public function __construct($buffer, array &$row, Module &$module)
+    public function __construct($buffer, array $row, Module $module)
     {
         $this->buffer = $buffer;
-        $this->row = &$row;
-        $this->module = &$module;
+        $this->row = $row;
+        $this->module = $module;
+    }
+
+    /**
+     * Returns the buffer.
+     *
+     * @return string The buffer
+     */
+    public function getBuffer()
+    {
+        return $this->buffer;
+    }
+
+    /**
+     * Sets the buffer.
+     *
+     * @param string $buffer The buffer
+     */
+    public function setBuffer($buffer)
+    {
+        $this->buffer = $buffer;
+    }
+
+    /**
+     * Returns the row.
+     *
+     * @return array The row
+     */
+    public function getRow()
+    {
+        return $this->row;
     }
 
     /**
@@ -50,15 +87,5 @@ class GetFrontendModuleEvent extends Event
     public function getModule()
     {
         return $this->module;
-    }
-
-    /**
-     * Sets the module.
-     *
-     * @param Module $module The module
-     */
-    public function setModule(Module $module)
-    {
-        $this->module = $module;
     }
 }

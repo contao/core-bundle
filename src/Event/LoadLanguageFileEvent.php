@@ -19,12 +19,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class LoadLanguageFileEvent extends Event
 {
-    use LanguageAwareTrait;
-
     /**
      * @var string
      */
     private $name;
+
+    /**
+     * @var string
+     */
+    private $language;
 
     /**
      * @var string
@@ -38,11 +41,11 @@ class LoadLanguageFileEvent extends Event
      * @param string $language The language
      * @param string $cacheKey The cache key
      */
-    public function __construct(&$name, &$language, &$cacheKey)
+    public function __construct($name, $language, $cacheKey)
     {
-        $this->name = &$name;
-        $this->language = &$language;
-        $this->cacheKey = &$cacheKey;
+        $this->name = $name;
+        $this->language = $language;
+        $this->cacheKey = $cacheKey;
     }
 
     /**
@@ -56,13 +59,13 @@ class LoadLanguageFileEvent extends Event
     }
 
     /**
-     * Sets the name.
+     * Returns the language.
      *
-     * @param string $name The name
+     * @return string The language
      */
-    public function setName($name)
+    public function getLanguage()
     {
-        $this->name = $name;
+        return $this->language;
     }
 
     /**
@@ -73,15 +76,5 @@ class LoadLanguageFileEvent extends Event
     public function getCacheKey()
     {
         return $this->cacheKey;
-    }
-
-    /**
-     * Sets the cache key.
-     *
-     * @param string $cacheKey The cache key
-     */
-    public function setCacheKey($cacheKey)
-    {
-        $this->cacheKey = $cacheKey;
     }
 }

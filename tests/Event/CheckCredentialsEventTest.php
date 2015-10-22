@@ -33,11 +33,7 @@ class CheckCredentialsEventTest extends TestCase
     {
         parent::setUp();
 
-        $username = 'foo';
-        $password = 'bar';
-        $user = BackendUser::getInstance();
-
-        $this->event = new CheckCredentialsEvent($username, $password, $user);
+        $this->event = new CheckCredentialsEvent('foo', 'bar', BackendUser::getInstance());
     }
 
     /**
@@ -49,47 +45,25 @@ class CheckCredentialsEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertFalse($this->event->getAuthenticated());
         $this->assertEquals('foo', $this->event->getUsername());
         $this->assertEquals('bar', $this->event->getPassword());
         $this->assertInstanceOf('Contao\BackendUser', $this->event->getUser());
-
-        $user = BackendUser::getInstance();
-
-        $this->event->setAuthenticated(true);
-        $this->event->setUsername('bar');
-        $this->event->setPassword('foo');
-        $this->event->setUser($user);
-
-        $this->assertTrue($this->event->getAuthenticated());
-        $this->assertEquals('bar', $this->event->getUsername());
-        $this->assertEquals('foo', $this->event->getPassword());
-        $this->assertEquals($user, $this->event->getUser());
+        $this->assertFalse($this->event->isAuthenticated());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setAuthenticated() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetAuthenticated()
     {
-        $username = 'foo';
-        $password = 'bar';
-        $user = BackendUser::getInstance();
-        $user2 = BackendUser::getInstance();
+        $this->event->setAuthenticated(true);
+        $this->assertTrue($this->event->isAuthenticated());
 
-        $this->event = new CheckCredentialsEvent($username, $password, $user);
-
-        // Try to change the original variables
-        $username = 'bar';
-        $password = 'foo';
-        $user = $user2;
-
-        $this->assertEquals('bar', $this->event->getUsername());
-        $this->assertEquals('foo', $this->event->getPassword());
-        $this->assertEquals($user2, $this->event->getUser());
+        $this->event->setAuthenticated(null);
+        $this->assertFalse($this->event->isAuthenticated());
     }
 }

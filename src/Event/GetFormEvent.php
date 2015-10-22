@@ -20,8 +20,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetFormEvent extends Event
 {
-    use BufferAwareTrait;
-    use RowAwareTrait;
+    /**
+     * @var string
+     */
+    private $buffer;
+
+    /**
+     * @var array
+     */
+    private $row;
 
     /**
      * @var Form
@@ -35,11 +42,41 @@ class GetFormEvent extends Event
      * @param array  $row    The row
      * @param Form   $form   The form object
      */
-    public function __construct($buffer, array &$row, Form &$form)
+    public function __construct($buffer, array $row, Form $form)
     {
         $this->buffer = $buffer;
-        $this->row = &$row;
-        $this->form = &$form;
+        $this->row = $row;
+        $this->form = $form;
+    }
+
+    /**
+     * Returns the buffer.
+     *
+     * @return string The buffer
+     */
+    public function getBuffer()
+    {
+        return $this->buffer;
+    }
+
+    /**
+     * Sets the buffer.
+     *
+     * @param string $buffer The buffer
+     */
+    public function setBuffer($buffer)
+    {
+        $this->buffer = $buffer;
+    }
+
+    /**
+     * Returns the row.
+     *
+     * @return array The row
+     */
+    public function getRow()
+    {
+        return $this->row;
     }
 
     /**
@@ -50,15 +87,5 @@ class GetFormEvent extends Event
     public function getForm()
     {
         return $this->form;
-    }
-
-    /**
-     * Sets the form object.
-     *
-     * @param Form $form The form object
-     */
-    public function setForm(Form $form)
-    {
-        $this->form = $form;
     }
 }

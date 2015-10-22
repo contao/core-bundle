@@ -20,8 +20,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class CheckCredentialsEvent extends Event
 {
-    use UsernameAwareTrait;
-    use PasswordAwareTrait;
+    /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
 
     /**
      * @var User
@@ -40,11 +47,31 @@ class CheckCredentialsEvent extends Event
      * @param string $password The password
      * @param User   $user     The user object
      */
-    public function __construct(&$username, &$password, User &$user)
+    public function __construct($username, $password, User $user)
     {
-        $this->username = &$username;
-        $this->password = &$password;
-        $this->user = &$user;
+        $this->username = $username;
+        $this->password = $password;
+        $this->user = $user;
+    }
+
+    /**
+     * Returns the username.
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Returns the password.
+     *
+     * @return string The password
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**
@@ -58,21 +85,11 @@ class CheckCredentialsEvent extends Event
     }
 
     /**
-     * Sets the user object.
-     *
-     * @param User $user The user object
-     */
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-    }
-
-    /**
      * Returns the authentication status.
      *
      * @return bool The authentication status
      */
-    public function getAuthenticated()
+    public function isAuthenticated()
     {
         return $this->authenticated;
     }

@@ -36,10 +36,10 @@ class GetPageStatusIconEvent extends Event
      * @param string    $image The image path
      * @param PageModel $page  The page model
      */
-    public function __construct($image, PageModel &$page)
+    public function __construct($image, PageModel $page)
     {
         $this->image = $image;
-        $this->page = &$page;
+        $this->page = $page;
     }
 
     /**
@@ -70,15 +70,5 @@ class GetPageStatusIconEvent extends Event
     public function getPage()
     {
         return $this->page;
-    }
-
-    /**
-     * Sets the page model.
-     *
-     * @param PageModel $page The page model
-     */
-    public function setPage(PageModel $page)
-    {
-        $this->page = $page;
     }
 }

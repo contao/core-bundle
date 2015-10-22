@@ -19,12 +19,15 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ColorizeLogEntriesEvent extends Event
 {
-    use RowAwareTrait;
-
     /**
      * @var string
      */
     private $label;
+
+    /**
+     * @var array
+     */
+    private $row;
 
     /**
      * Constructor.
@@ -32,10 +35,10 @@ class ColorizeLogEntriesEvent extends Event
      * @param string $label The label
      * @param array  $row   The row
      */
-    public function __construct($label, array &$row)
+    public function __construct($label, array $row)
     {
         $this->label = $label;
-        $this->row = &$row;
+        $this->row = $row;
     }
 
     /**
@@ -56,5 +59,15 @@ class ColorizeLogEntriesEvent extends Event
     public function setLabel($label)
     {
         $this->label = $label;
+    }
+
+    /**
+     * Returns the row.
+     *
+     * @return array The row
+     */
+    public function getRow()
+    {
+        return $this->row;
     }
 }

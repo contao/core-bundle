@@ -35,11 +35,7 @@ class PageEventTest extends TestCase
     {
         parent::setUp();
 
-        $page = new PageModel();
-        $layout = new LayoutModel();
-        $handler = new PageRegular();
-
-        $this->event = new PageEvent($page, $layout, $handler);
+        $this->event = new PageEvent(new PageModel(), new LayoutModel(), new PageRegular());
     }
 
     /**
@@ -51,48 +47,12 @@ class PageEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertInstanceOf('Contao\PageModel', $this->event->getPage());
         $this->assertInstanceOf('Contao\LayoutModel', $this->event->getLayout());
         $this->assertInstanceOf('Contao\PageRegular', $this->event->getHandler());
-
-        $page = new PageModel();
-        $layout = new LayoutModel();
-        $handler = new PageRegular();
-
-        $this->event->setPage($page);
-        $this->event->setLayout($layout);
-        $this->event->setHandler($handler);
-
-        $this->assertEquals($page, $this->event->getPage());
-        $this->assertEquals($layout, $this->event->getLayout());
-        $this->assertEquals($handler, $this->event->getHandler());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $page = new PageModel();
-        $page2 = new PageModel();
-        $layout = new LayoutModel();
-        $layout2 = new LayoutModel();
-        $handler = new PageRegular();
-        $handler2 = new PageRegular();
-
-        $this->event = new PageEvent($page, $layout, $handler);
-
-        // Try to change the original variables
-        $page = $page2;
-        $layout = $layout2;
-        $handler = $handler2;
-
-        $this->assertEquals($page2, $this->event->getPage());
-        $this->assertEquals($layout2, $this->event->getLayout());
-        $this->assertEquals($handler2, $this->event->getHandler());
     }
 }

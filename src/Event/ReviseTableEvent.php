@@ -52,12 +52,12 @@ class ReviseTableEvent extends Event
      * @param string $parentTable  The parent tables
      * @param array  $childTables  The child tables
      */
-    public function __construct(&$table, &$newRecordIds, &$parentTable, &$childTables)
+    public function __construct($table, $newRecordIds, $parentTable, $childTables)
     {
-        $this->table = &$table;
-        $this->newRecordIds = &$newRecordIds;
-        $this->parentTable = &$parentTable;
-        $this->childTables = &$childTables;
+        $this->table = $table;
+        $this->newRecordIds = $newRecordIds;
+        $this->parentTable = $parentTable;
+        $this->childTables = $childTables;
     }
 
     /**
@@ -71,16 +71,6 @@ class ReviseTableEvent extends Event
     }
 
     /**
-     * Sets the table name.
-     *
-     * @param string $table The table name
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-    /**
      * Returns the IDs of the new records.
      *
      * @return array The IDs of the new records
@@ -88,16 +78,6 @@ class ReviseTableEvent extends Event
     public function getNewRecordIds()
     {
         return $this->newRecordIds;
-    }
-
-    /**
-     * Sets the IDs of the new records.
-     *
-     * @param array $newRecordIds The IDs of the new records
-     */
-    public function setNewRecordIds(array $newRecordIds)
-    {
-        $this->newRecordIds = $newRecordIds;
     }
 
     /**
@@ -111,16 +91,6 @@ class ReviseTableEvent extends Event
     }
 
     /**
-     * Sets the parent table name.
-     *
-     * @param string $parentTable The parent table name
-     */
-    public function setParentTable($parentTable)
-    {
-        $this->parentTable = $parentTable;
-    }
-
-    /**
      * Returns the child table names.
      *
      * @return array The child table names
@@ -131,21 +101,11 @@ class ReviseTableEvent extends Event
     }
 
     /**
-     * Sets the child table names.
-     *
-     * @param array $childTables The child table names
-     */
-    public function setChildTables(array $childTables)
-    {
-        $this->childTables = $childTables;
-    }
-
-    /**
      * Returns the reload status.
      *
      * @return bool The reload status
      */
-    public function getReload()
+    public function isReload()
     {
         return $this->reload;
     }

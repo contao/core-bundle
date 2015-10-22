@@ -41,13 +41,13 @@ class SetNewPasswordEvent extends Event
      *
      * @param MemberModel $member   The member model
      * @param string      $password The password
-     * @param Module|null $module   The module
+     * @param Module|null $module   An optional module
      */
-    public function __construct(MemberModel &$member, &$password, Module &$module = null)
+    public function __construct(MemberModel $member, $password, Module $module = null)
     {
-        $this->member = &$member;
-        $this->password = &$password;
-        $this->module = &$module;
+        $this->member = $member;
+        $this->password = $password;
+        $this->module = $module;
     }
 
     /**
@@ -61,16 +61,6 @@ class SetNewPasswordEvent extends Event
     }
 
     /**
-     * Sets the member model.
-     *
-     * @param MemberModel $member The member model
-     */
-    public function setMember(MemberModel $member)
-    {
-        $this->member = $member;
-    }
-
-    /**
      * Returns the password.
      *
      * @return string The password
@@ -81,16 +71,6 @@ class SetNewPasswordEvent extends Event
     }
 
     /**
-     * Sets the password.
-     *
-     * @param string $password The password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
      * Returns the module.
      *
      * @return Module The module
@@ -98,15 +78,5 @@ class SetNewPasswordEvent extends Event
     public function getModule()
     {
         return $this->module;
-    }
-
-    /**
-     * Sets the module.
-     *
-     * @param Module|null $module The module
-     */
-    public function setModule(Module $module = null)
-    {
-        $this->module = $module;
     }
 }

@@ -35,10 +35,10 @@ class GetUserNavigationEvent extends Event
      * @param array $modules The modules
      * @param bool  $showAll True to show all menu items
      */
-    public function __construct(array $modules, &$showAll)
+    public function __construct(array $modules, $showAll)
     {
         $this->modules = $modules;
-        $this->showAll = &$showAll;
+        $this->showAll = $showAll;
     }
 
     /**
@@ -66,18 +66,8 @@ class GetUserNavigationEvent extends Event
      *
      * @return bool The "show all" flag
      */
-    public function getShowAll()
+    public function isShowAll()
     {
         return $this->showAll;
-    }
-
-    /**
-     * Sets the "show all" flag.
-     *
-     * @param bool $showAll The "show all" flag
-     */
-    public function setShowAll($showAll)
-    {
-        $this->showAll = (bool) $showAll;
     }
 }

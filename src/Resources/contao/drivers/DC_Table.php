@@ -3214,7 +3214,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$event = new ReviseTableEvent($this->strTable, $new_records[$this->strTable], $ptable, $ctable);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REVISE_TABLE, $event);
 
-		if ($event->getReload() === true)
+		if ($event->isReload() === true)
 		{
 			$reload = true;
 		}

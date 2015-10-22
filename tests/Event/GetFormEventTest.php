@@ -34,11 +34,7 @@ class GetFormEventTest extends TestCase
     {
         parent::setUp();
 
-        $buffer = 'foo';
-        $row = [];
-        $form = new Form(new FormModel());
-
-        $this->event = new GetFormEvent($buffer, $row, $form);
+        $this->event = new GetFormEvent('foo', [], new Form(new FormModel()));
     }
 
     /**
@@ -50,44 +46,21 @@ class GetFormEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals([], $this->event->getRow());
         $this->assertInstanceOf('Contao\Form', $this->event->getForm());
-
-        $form = new Form(new FormModel());
-
-        $this->event->setBuffer('bar');
-        $this->event->setRow(['foo']);
-        $this->event->setForm($form);
-
-        $this->assertEquals('bar', $this->event->getBuffer());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals($form, $this->event->getForm());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setBuffer() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetBuffer()
     {
-        $buffer = 'foo';
-        $row = [];
-        $form = new Form(new FormModel());
-        $form2 = new Form(new FormModel());
-
-        $this->event = new GetFormEvent($buffer, $row, $form);
-
-        // Try to change the original variables
-        $buffer = 'bar';
-        $row = ['foo'];
-        $form = $form2;
-
-        $this->assertEquals('foo', $this->event->getBuffer());
-        $this->assertEquals(['foo'], $this->event->getRow());
-        $this->assertEquals($form2, $this->event->getForm());
+        $this->event->setBuffer('bar');
+        $this->assertEquals('bar', $this->event->getBuffer());
     }
 }

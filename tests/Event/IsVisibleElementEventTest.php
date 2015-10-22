@@ -33,10 +33,7 @@ class IsVisibleElementEventTest extends TestCase
     {
         parent::setUp();
 
-        $status = false;
-        $model = new LayoutModel();
-
-        $this->event = new IsVisibleElementEvent($status, $model);
+        $this->event = new IsVisibleElementEvent(false, new LayoutModel());
     }
 
     /**
@@ -48,38 +45,23 @@ class IsVisibleElementEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertFalse($this->event->getReturn());
+        $this->assertFalse($this->event->isVisible());
         $this->assertInstanceOf('Contao\LayoutModel', $this->event->getElement());
-
-        $model = new LayoutModel();
-
-        $this->event->setReturn(true);
-        $this->event->setElement($model);
-
-        $this->assertTrue($this->event->getReturn());
-        $this->assertEquals($model, $this->event->getElement());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setVisible() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetVisible()
     {
-        $return = false;
-        $model = new LayoutModel();
-        $model2 = new LayoutModel();
+        $this->event->setVisible(true);
+        $this->assertTrue($this->event->isVisible());
 
-        $this->event = new IsVisibleElementEvent($return, $model);
-
-        // Try to change the original variables
-        $return = true;
-        $model = $model2;
-
-        $this->assertFalse($this->event->getReturn());
-        $this->assertEquals($model2, $this->event->getElement());
+        $this->event->setVisible(null);
+        $this->assertFalse($this->event->isVisible());
     }
 }

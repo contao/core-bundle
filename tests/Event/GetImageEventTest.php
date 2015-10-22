@@ -34,24 +34,17 @@ class GetImageEventTest extends TestCase
     {
         parent::setUp();
 
-        $origPath = 'images/dummy.jpg';
-        $targetWidth = 200;
-        $targetHeight = 150;
-        $resizeMode = 'crop';
-        $cacheName = 'd/dummy-a235d.jpg';
-        $fileObj = new File('images/dummy.jpg');
-        $targetPath = 'assets/images/d/dummy-a235d.jpg';
-        $imageObj = new Image($fileObj);
+        $file = new File('images/dummy.jpg');
 
         $this->event = new GetImageEvent(
-            $origPath,
-            $targetWidth,
-            $targetHeight,
-            $resizeMode,
-            $cacheName,
-            $fileObj,
-            $targetPath,
-            $imageObj
+            'images/dummy.jpg',
+            200,
+            150,
+            'crop',
+            'd/dummy-a235d.jpg',
+            $file,
+            'assets/images/d/dummy-a235d.jpg',
+            new Image($file)
         );
     }
 
@@ -64,11 +57,11 @@ class GetImageEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertNull($this->event->getReturn());
+        $this->assertNull($this->event->getReturnValue());
         $this->assertEquals('images/dummy.jpg', $this->event->getOriginalPath());
         $this->assertEquals(200, $this->event->getTargetWidth());
         $this->assertEquals(150, $this->event->getTargetHeight());
@@ -77,28 +70,14 @@ class GetImageEventTest extends TestCase
         $this->assertInstanceOf('Contao\File', $this->event->getFileObject());
         $this->assertEquals('assets/images/d/dummy-a235d.jpg', $this->event->getTargetPath());
         $this->assertInstanceOf('Contao\Image', $this->event->getImageObject());
+    }
 
-        $fileObj = new File('images/dummy.jpg');
-        $imageObj = new Image($fileObj);
-
-        $this->event->setReturn('assets/images/b/dummy-f985b.jpg');
-        $this->event->setOriginalPath('images/dummy.jpg');
-        $this->event->setTargetWidth(400);
-        $this->event->setTargetHeight(300);
-        $this->event->setResizeMode('proportional');
-        $this->event->setCacheName('b/dummy-f985b.jpg');
-        $this->event->setFileObject($fileObj);
-        $this->event->setTargetPath('assets/images/b/dummy-f985b.jpg');
-        $this->event->setImageObject($imageObj);
-
-        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getReturn());
-        $this->assertEquals('images/dummy.jpg', $this->event->getOriginalPath());
-        $this->assertEquals(400, $this->event->getTargetWidth());
-        $this->assertEquals(300, $this->event->getTargetHeight());
-        $this->assertEquals('proportional', $this->event->getResizeMode());
-        $this->assertEquals('b/dummy-f985b.jpg', $this->event->getCacheName());
-        $this->assertEquals($fileObj, $this->event->getFileObject());
-        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getTargetPath());
-        $this->assertEquals($imageObj, $this->event->getImageObject());
+    /**
+     * Tests the setReturnValue() method.
+     */
+    public function testReturnValue()
+    {
+        $this->event->setReturnValue('assets/images/b/dummy-f985b.jpg');
+        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getReturnValue());
     }
 }

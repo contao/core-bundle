@@ -35,11 +35,7 @@ class SetNewPasswordEventTest extends TestCase
     {
         parent::setUp();
 
-        $member = new MemberModel();
-        $password = 'foo';
-        $module = new ModuleHtml(new ModuleModel());
-
-        $this->event = new SetNewPasswordEvent($member, $password, $module);
+        $this->event = new SetNewPasswordEvent(new MemberModel(), 'foo', new ModuleHtml(new ModuleModel()));
     }
 
     /**
@@ -51,46 +47,12 @@ class SetNewPasswordEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertInstanceOf('Contao\MemberModel', $this->event->getMember());
         $this->assertEquals('foo', $this->event->getPassword());
         $this->assertInstanceOf('Contao\ModuleHtml', $this->event->getModule());
-
-        $member = new MemberModel();
-        $module = new ModuleHtml(new ModuleModel());
-
-        $this->event->setMember($member);
-        $this->event->setPassword('bar');
-        $this->event->setModule($module);
-
-        $this->assertEquals($member, $this->event->getMember());
-        $this->assertEquals('bar', $this->event->getPassword());
-        $this->assertEquals($module, $this->event->getModule());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $member = new MemberModel();
-        $member2 = new MemberModel();
-        $password = 'foo';
-        $module = new ModuleHtml(new ModuleModel());
-        $module2 = new ModuleHtml(new ModuleModel());
-
-        $this->event = new SetNewPasswordEvent($member, $password, $module);
-
-        // Try to change the original variables
-        $member = $member2;
-        $password = 'bar';
-        $module = $module2;
-
-        $this->assertEquals($member2, $this->event->getMember());
-        $this->assertEquals('bar', $this->event->getPassword());
-        $this->assertEquals($module2, $this->event->getModule());
     }
 }

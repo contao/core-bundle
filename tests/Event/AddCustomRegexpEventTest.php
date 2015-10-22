@@ -45,9 +45,9 @@ class AddCustomRegexpEventTest extends TestCase
     }
 
     /**
-     * Tests the setters.
+     * Tests the getters.
      */
-    public function testSetters()
+    public function testGetters()
     {
         $this->assertEquals('email', $this->event->getName());
         $this->assertEquals('test@example.com', $this->event->getInput());

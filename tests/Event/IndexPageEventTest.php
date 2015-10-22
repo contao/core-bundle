@@ -32,11 +32,7 @@ class IndexPageEventTest extends TestCase
     {
         parent::setUp();
 
-        $content = 'foo';
-        $data = ['content' => 'foo'];
-        $set = ['url' => 'en/test.html'];
-
-        $this->event = new IndexPageEvent($content, $data, $set);
+        $this->event = new IndexPageEvent('foo', ['content' => 'foo'], ['url' => 'en/test.html']);
     }
 
     /**
@@ -48,41 +44,39 @@ class IndexPageEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getContent());
         $this->assertEquals(['content' => 'foo'], $this->event->getData());
         $this->assertEquals(['url' => 'en/test.html'], $this->event->getSet());
-
-        $this->event->setContent('foobar');
-        $this->event->setData(['content' => 'foobar']);
-        $this->event->setSet(['url' => 'de/test.html']);
-
-        $this->assertEquals('foobar', $this->event->getContent());
-        $this->assertEquals(['content' => 'foobar'], $this->event->getData());
-        $this->assertEquals(['url' => 'de/test.html'], $this->event->getSet());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setContent() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetContent()
     {
-        $content = 'foo';
-        $data = ['content' => 'foo'];
-        $set = ['url' => 'en/test.html'];
+        $this->event->setContent('foobar');
+        $this->assertEquals('foobar', $this->event->getContent());
+    }
 
-        $this->event = new IndexPageEvent($content, $data, $set);
+    /**
+     * Tests the setData() method.
+     */
+    public function testSetData()
+    {
+        $this->event->setData(['content' => 'foobar']);
+        $this->assertEquals(['content' => 'foobar'], $this->event->getData());
+    }
 
-        // Try to change the original variables
-        $content = 'bar';
-        $data = ['content' => 'bar'];
-        $set = ['url' => 'fr/test.html'];
-
-        $this->assertEquals('bar', $this->event->getContent());
-        $this->assertEquals(['content' => 'bar'], $this->event->getData());
-        $this->assertEquals(['url' => 'fr/test.html'], $this->event->getSet());
+    /**
+     * Tests the setSet() method.
+     */
+    public function testSetSet()
+    {
+        $this->event->setSet(['url' => 'de/test.html']);
+        $this->assertEquals(['url' => 'de/test.html'], $this->event->getSet());
     }
 }

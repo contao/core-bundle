@@ -379,7 +379,6 @@ class Automator extends \System
 			// Dispatch the contao.get_searchable_pages event
 			$event = new GetSearchablePagesEvent($arrPages, $objRoot->id, $objRoot->language);
 			$eventDispatcher->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
-
 			$arrPages = $event->getPages();
 
 			// HOOK: take additional pages

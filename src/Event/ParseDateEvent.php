@@ -41,11 +41,11 @@ class ParseDateEvent extends Event
      * @param string $format    The date format
      * @param int    $timestamp The timestamp
      */
-    public function __construct($return, &$format, &$timestamp)
+    public function __construct($return, $format, $timestamp)
     {
         $this->return = $return;
-        $this->format = &$format;
-        $this->timestamp = &$timestamp;
+        $this->format = $format;
+        $this->timestamp = $timestamp;
     }
 
     /**
@@ -53,7 +53,7 @@ class ParseDateEvent extends Event
      *
      * @return string The return value
      */
-    public function getReturn()
+    public function getReturnValue()
     {
         return $this->return;
     }
@@ -63,7 +63,7 @@ class ParseDateEvent extends Event
      *
      * @param string $return The return value
      */
-    public function setReturn($return)
+    public function setReturnValue($return)
     {
         $this->return = $return;
     }
@@ -79,16 +79,6 @@ class ParseDateEvent extends Event
     }
 
     /**
-     * Sets the date format.
-     *
-     * @param string $format The date format
-     */
-    public function setFormat($format)
-    {
-        $this->format = $format;
-    }
-
-    /**
      * Returns the timestamp.
      *
      * @return int The timestamp
@@ -96,15 +86,5 @@ class ParseDateEvent extends Event
     public function getTimestamp()
     {
         return $this->timestamp;
-    }
-
-    /**
-     * Sets the timestamp.
-     *
-     * @param int $timestamp The timestamp
-     */
-    public function setTimestamp($timestamp)
-    {
-        $this->timestamp = (int) $timestamp;
     }
 }

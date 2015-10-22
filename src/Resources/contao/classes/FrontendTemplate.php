@@ -52,7 +52,6 @@ class FrontendTemplate extends \Template
 		// Dispatch the contao.parse_frontend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_FRONTEND_TEMPLATE, $event);
-
 		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters
@@ -123,7 +122,6 @@ class FrontendTemplate extends \Template
 		// Dispatch the contao.output_frontend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
-
 		$this->strBuffer = $event->getBuffer();
 
 		// HOOK: add custom output filters
@@ -150,7 +148,6 @@ class FrontendTemplate extends \Template
 		// Dispatch the contao.modify_frontend_page event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::MODIFY_FRONTEND_PAGE, $event);
-
 		$this->strBuffer = $event->getBuffer();
 
 		// HOOK: allow to modify the compiled markup (see #4291)

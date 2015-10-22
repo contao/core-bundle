@@ -351,7 +351,7 @@ abstract class User extends \System
 			$event = new ImportUserEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this->strTable);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IMPORT_USER, $event);
 
-			if ($event->getLoaded() === true)
+			if ($event->isLoaded() === true)
 			{
 				$blnLoaded = true;
 			}
@@ -442,7 +442,7 @@ abstract class User extends \System
 			$event = new CheckCredentialsEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::CHECK_CREDENTIALS, $event);
 
-			if ($event->getAuthenticated() === true)
+			if ($event->isAuthenticated() === true)
 			{
 				$blnAuthenticated = true;
 			}

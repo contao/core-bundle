@@ -32,12 +32,7 @@ class ReviseTableEventTest extends TestCase
     {
         parent::setUp();
 
-        $table = 'foo';
-        $newRecordIds = [];
-        $parentTable = 'bar';
-        $childTables = [];
-
-        $this->event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
+        $this->event = new ReviseTableEvent('foo', [], 'bar', []);
     }
 
     /**
@@ -49,50 +44,26 @@ class ReviseTableEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertFalse($this->event->getReload());
         $this->assertEquals('foo', $this->event->getTable());
         $this->assertEquals([], $this->event->getNewRecordIds());
         $this->assertEquals('bar', $this->event->getParentTable());
         $this->assertEquals([], $this->event->getChildTables());
-
-        $this->event->setReload(true);
-        $this->event->setTable('test');
-        $this->event->setNewRecordIds([2, 3]);
-        $this->event->setParentTable('parent');
-        $this->event->setChildTables(['child']);
-
-        $this->assertTrue($this->event->getReload());
-        $this->assertEquals('test', $this->event->getTable());
-        $this->assertEquals([2, 3], $this->event->getNewRecordIds());
-        $this->assertEquals('parent', $this->event->getParentTable());
-        $this->assertEquals(['child'], $this->event->getChildTables());
+        $this->assertFalse($this->event->isReload());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setReload() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetReload()
     {
-        $table = 'foo';
-        $newRecordIds = [2, 3];
-        $parentTable = 'bar';
-        $childTables = [];
+        $this->event->setReload(true);
+        $this->assertTrue($this->event->isReload());
 
-        $this->event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
-
-        // Try to change the original variables
-        $table = 'bar';
-        $newRecordIds = [4];
-        $parentTable = 'parent';
-        $childTables = ['child'];
-
-        $this->assertEquals('bar', $this->event->getTable());
-        $this->assertEquals([4], $this->event->getNewRecordIds());
-        $this->assertEquals('parent', $this->event->getParentTable());
-        $this->assertEquals(['child'], $this->event->getChildTables());
+        $this->event->setReload(null);
+        $this->assertFalse($this->event->isReload());
     }
 }

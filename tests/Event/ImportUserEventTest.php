@@ -32,11 +32,7 @@ class ImportUserEventTest extends TestCase
     {
         parent::setUp();
 
-        $username = 'foo';
-        $password = 'bar';
-        $table = 'tl_user';
-
-        $this->event = new ImportUserEvent($username, $password, $table);
+        $this->event = new ImportUserEvent('foo', 'bar', 'tl_user');
     }
 
     /**
@@ -48,44 +44,25 @@ class ImportUserEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertFalse($this->event->getLoaded());
         $this->assertEquals('foo', $this->event->getUsername());
         $this->assertEquals('bar', $this->event->getPassword());
         $this->assertEquals('tl_user', $this->event->getTable());
-
-        $this->event->setLoaded(true);
-        $this->event->setUsername('bar');
-        $this->event->setPassword('foo');
-        $this->event->setTable('tl_member');
-
-        $this->assertTrue($this->event->getLoaded());
-        $this->assertEquals('bar', $this->event->getUsername());
-        $this->assertEquals('foo', $this->event->getPassword());
-        $this->assertEquals('tl_member', $this->event->getTable());
+        $this->assertFalse($this->event->isLoaded());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setLoaded() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetLoaded()
     {
-        $username = 'foo';
-        $password = 'bar';
-        $table = 'tl_user';
+        $this->event->setLoaded(true);
+        $this->assertTrue($this->event->isLoaded());
 
-        $this->event = new ImportUserEvent($username, $password, $table);
-
-        // Try to change the original variables
-        $username = 'bar';
-        $password = 'foo';
-        $table = 'tl_member';
-
-        $this->assertEquals('bar', $this->event->getUsername());
-        $this->assertEquals('foo', $this->event->getPassword());
-        $this->assertEquals('tl_member', $this->event->getTable());
+        $this->event->setLoaded(null);
+        $this->assertFalse($this->event->isLoaded());
     }
 }

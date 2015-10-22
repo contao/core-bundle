@@ -42,12 +42,12 @@ class GetCombinedFileEvent extends Event
     /**
      * Constructor.
      */
-    public function __construct($content, &$key, &$mode, array &$file)
+    public function __construct($content, $key, $mode, array $file)
     {
         $this->content = $content;
-        $this->key = &$key;
-        $this->mode = &$mode;
-        $this->file = &$file;
+        $this->key = $key;
+        $this->mode = $mode;
+        $this->file = $file;
     }
 
     /**
@@ -81,16 +81,6 @@ class GetCombinedFileEvent extends Event
     }
 
     /**
-     * Sets the key.
-     *
-     * @param string $key The key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
      * Returns the mode.
      *
      * @return string The mode
@@ -101,16 +91,6 @@ class GetCombinedFileEvent extends Event
     }
 
     /**
-     * Sets the mode.
-     *
-     * @param string $mode The mode
-     */
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-    }
-
-    /**
      * Returns the file array.
      *
      * @return array The file array
@@ -118,15 +98,5 @@ class GetCombinedFileEvent extends Event
     public function getFile()
     {
         return $this->file;
-    }
-
-    /**
-     * Sets the file array.
-     *
-     * @param array $file The file array
-     */
-    public function setFile(array $file)
-    {
-        $this->file = $file;
     }
 }

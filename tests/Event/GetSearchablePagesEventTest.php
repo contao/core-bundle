@@ -32,11 +32,7 @@ class GetSearchablePagesEventTest extends TestCase
     {
         parent::setUp();
 
-        $pages = [];
-        $rootId = 1;
-        $language = 'en';
-
-        $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
+        $this->event = new GetSearchablePagesEvent([], 1, 'en');
     }
 
     /**
@@ -48,41 +44,21 @@ class GetSearchablePagesEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals([], $this->event->getPages());
         $this->assertEquals(1, $this->event->getRootId());
         $this->assertEquals('en', $this->event->getLanguage());
-
-        $this->event->setPages([2]);
-        $this->event->setRootId(2);
-        $this->event->setLanguage('de');
-
-        $this->assertEquals([2], $this->event->getPages());
-        $this->assertEquals(2, $this->event->getRootId());
-        $this->assertEquals('de', $this->event->getLanguage());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setPages() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetPages()
     {
-        $pages = [];
-        $rootId = 2;
-        $language = 'en';
-
-        $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
-
-        // Try to change the original variables
-        $pages = [2, 3];
-        $rootId = 3;
-        $language = 'fr';
-
-        $this->assertEquals([], $this->event->getPages());
-        $this->assertEquals(3, $this->event->getRootId());
-        $this->assertEquals('fr', $this->event->getLanguage());
+        $this->event->setPages([2]);
+        $this->assertEquals([2], $this->event->getPages());
     }
 }

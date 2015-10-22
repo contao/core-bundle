@@ -19,8 +19,6 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class GetSearchablePagesEvent extends Event
 {
-    use LanguageAwareTrait;
-
     /**
      * @var array
      */
@@ -32,17 +30,22 @@ class GetSearchablePagesEvent extends Event
     private $rootId;
 
     /**
+     * @var string
+     */
+    private $language;
+
+    /**
      * Constructor.
      *
      * @param array  $pages    The pages
      * @param int    $rootId   The root page ID
      * @param string $language The language
      */
-    public function __construct(array $pages, &$rootId, &$language)
+    public function __construct(array $pages, $rootId, $language)
     {
         $this->pages = $pages;
-        $this->rootId = &$rootId;
-        $this->language = &$language;
+        $this->rootId = $rootId;
+        $this->language = $language;
     }
 
     /**
@@ -76,12 +79,12 @@ class GetSearchablePagesEvent extends Event
     }
 
     /**
-     * Sets the root page ID.
+     * Returns the language.
      *
-     * @param int $rootId The root page ID
+     * @return string The language
      */
-    public function setRootId($rootId)
+    public function getLanguage()
     {
-        $this->rootId = (int) $rootId;
+        return $this->language;
     }
 }

@@ -33,10 +33,7 @@ class GetAttributesFromDcaEventTest extends TestCase
     {
         parent::setUp();
 
-        $attributes = [];
-        $dca = new DC_Table('tl_user');
-
-        $this->event = new GetAttributesFromDcaEvent($attributes, $dca);
+        $this->event = new GetAttributesFromDcaEvent([], new DC_Table('tl_user'));
     }
 
     /**
@@ -48,38 +45,20 @@ class GetAttributesFromDcaEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals([], $this->event->getAttributes());
         $this->assertInstanceOf('Contao\DC_Table', $this->event->getDataContainer());
-
-        $dca = new DC_Table('tl_member');
-
-        $this->event->setAttributes(['class' => 'w50']);
-        $this->event->setDataContainer($dca);
-
-        $this->assertEquals(['class' => 'w50'], $this->event->getAttributes());
-        $this->assertEquals($dca, $this->event->getDataContainer());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setAttributes() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetAttributes()
     {
-        $attributes = [];
-        $dca = new DC_Table('tl_user');
-        $dca2 = new DC_Table('tl_member');
-
-        $this->event = new GetAttributesFromDcaEvent($attributes, $dca);
-
-        // Try to change the original variables
-        $attributes = ['class' => 'w50'];
-        $dca = $dca2;
-
-        $this->assertEquals([], $this->event->getAttributes());
-        $this->assertEquals($dca, $this->event->getDataContainer());
+        $this->event->setAttributes(['class' => 'w50']);
+        $this->assertEquals(['class' => 'w50'], $this->event->getAttributes());
     }
 }

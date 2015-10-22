@@ -20,7 +20,10 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class TemplateEvent extends Event
 {
-    use BufferAwareTrait;
+    /**
+     * @var string
+     */
+    private $buffer;
 
     /**
      * @var string
@@ -37,13 +40,33 @@ class TemplateEvent extends Event
      *
      * @param string        $buffer   The template content
      * @param string        $key      The template key
-     * @param Template|null $template The template object
+     * @param Template|null $template An optional template object
      */
-    public function __construct($buffer, &$key, Template &$template = null)
+    public function __construct($buffer, $key, Template $template = null)
     {
         $this->buffer = $buffer;
-        $this->key = &$key;
-        $this->template = &$template;
+        $this->key = $key;
+        $this->template = $template;
+    }
+
+    /**
+     * Returns the buffer.
+     *
+     * @return string The buffer
+     */
+    public function getBuffer()
+    {
+        return $this->buffer;
+    }
+
+    /**
+     * Sets the buffer.
+     *
+     * @param string $buffer The buffer
+     */
+    public function setBuffer($buffer)
+    {
+        $this->buffer = $buffer;
     }
 
     /**
@@ -57,16 +80,6 @@ class TemplateEvent extends Event
     }
 
     /**
-     * Sets the template key.
-     *
-     * @param string $key The template key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
      * Returns the template object.
      *
      * @return Template The template object
@@ -74,15 +87,5 @@ class TemplateEvent extends Event
     public function getTemplate()
     {
         return $this->template;
-    }
-
-    /**
-     * Sets the template object.
-     *
-     * @param Template|null $template The template object
-     */
-    public function setTemplate(Template $template = null)
-    {
-        $this->template = $template;
     }
 }

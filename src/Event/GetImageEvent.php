@@ -103,7 +103,7 @@ class GetImageEvent extends Event
      *
      * @return string The return value
      */
-    public function getReturn()
+    public function getReturnValue()
     {
         return $this->return;
     }
@@ -113,7 +113,7 @@ class GetImageEvent extends Event
      *
      * @param string $return The return value
      */
-    public function setReturn($return)
+    public function setReturnValue($return)
     {
         $this->return = $return;
     }
@@ -129,16 +129,6 @@ class GetImageEvent extends Event
     }
 
     /**
-     * Sets the original path.
-     *
-     * @param string $origPath The original path
-     */
-    public function setOriginalPath($origPath)
-    {
-        $this->origPath = $origPath;
-    }
-
-    /**
      * Returns the target width.
      *
      * @return int The target width
@@ -146,16 +136,6 @@ class GetImageEvent extends Event
     public function getTargetWidth()
     {
         return $this->targetWidth;
-    }
-
-    /**
-     * Sets the target width.
-     *
-     * @param int $targetWidth The target width
-     */
-    public function setTargetWidth($targetWidth)
-    {
-        $this->targetWidth = $targetWidth;
     }
 
     /**
@@ -169,16 +149,6 @@ class GetImageEvent extends Event
     }
 
     /**
-     * Sets the target height.
-     *
-     * @param int $targetHeight The target height
-     */
-    public function setTargetHeight($targetHeight)
-    {
-        $this->targetHeight = $targetHeight;
-    }
-
-    /**
      * Returns the resize mode.
      *
      * @return string The resize mode
@@ -186,16 +156,6 @@ class GetImageEvent extends Event
     public function getResizeMode()
     {
         return $this->resizeMode;
-    }
-
-    /**
-     * Sets the resize mode.
-     *
-     * @param string $resizeMode The resize mode
-     */
-    public function setResizeMode($resizeMode)
-    {
-        $this->resizeMode = $resizeMode;
     }
 
     /**
@@ -209,16 +169,6 @@ class GetImageEvent extends Event
     }
 
     /**
-     * Sets the cache name.
-     *
-     * @param string $cacheName The cache name
-     */
-    public function setCacheName($cacheName)
-    {
-        $this->cacheName = $cacheName;
-    }
-
-    /**
      * Returns the file object.
      *
      * @return File The file object
@@ -226,16 +176,6 @@ class GetImageEvent extends Event
     public function getFileObject()
     {
         return $this->fileObj;
-    }
-
-    /**
-     * Sets the file object.
-     *
-     * @param File $fileObj The file object
-     */
-    public function setFileObject(File $fileObj)
-    {
-        $this->fileObj = $fileObj;
     }
 
     /**
@@ -249,16 +189,6 @@ class GetImageEvent extends Event
     }
 
     /**
-     * Sets the target path.
-     *
-     * @param string $targetPath The target path
-     */
-    public function setTargetPath($targetPath)
-    {
-        $this->targetPath = $targetPath;
-    }
-
-    /**
      * Returns the image object.
      *
      * @return Image The image object
@@ -266,15 +196,5 @@ class GetImageEvent extends Event
     public function getImageObject()
     {
         return $this->imageObj;
-    }
-
-    /**
-     * Sets the image object.
-     *
-     * @param Image $imageObj The image object
-     */
-    public function setImageObject(Image $imageObj)
-    {
-        $this->imageObj = $imageObj;
     }
 }

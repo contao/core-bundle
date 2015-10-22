@@ -32,11 +32,7 @@ class LoadLanguageFileEventTest extends TestCase
     {
         parent::setUp();
 
-        $name = 'test';
-        $language = 'en';
-        $cacheKey = 'test-en';
-
-        $this->event = new LoadLanguageFileEvent($name, $language, $cacheKey);
+        $this->event = new LoadLanguageFileEvent('test', 'en', 'test-en');
     }
 
     /**
@@ -48,41 +44,12 @@ class LoadLanguageFileEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('test', $this->event->getName());
         $this->assertEquals('en', $this->event->getLanguage());
         $this->assertEquals('test-en', $this->event->getCacheKey());
-
-        $this->event->setName('foo');
-        $this->event->setLanguage('de');
-        $this->event->setCacheKey('foo-de');
-
-        $this->assertEquals('foo', $this->event->getName());
-        $this->assertEquals('de', $this->event->getLanguage());
-        $this->assertEquals('foo-de', $this->event->getCacheKey());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $name = 'test';
-        $language = 'en';
-        $cacheKey = 'test-en';
-
-        $this->event = new LoadLanguageFileEvent($name, $language, $cacheKey);
-
-        // Try to change the original variables
-        $name = 'foo';
-        $language = 'de';
-        $cacheKey = 'foo-de';
-
-        $this->assertEquals('foo', $this->event->getName());
-        $this->assertEquals('de', $this->event->getLanguage());
-        $this->assertEquals('foo-de', $this->event->getCacheKey());
     }
 }

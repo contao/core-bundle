@@ -33,10 +33,7 @@ class ParseWidgetEventTest extends TestCase
     {
         parent::setUp();
 
-        $buffer = 'foo';
-        $widget = new TextField();
-
-        $this->event = new ParseWidgetEvent($buffer, $widget);
+        $this->event = new ParseWidgetEvent('foo', new TextField());
     }
 
     /**
@@ -48,38 +45,20 @@ class ParseWidgetEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertInstanceOf('Contao\TextField', $this->event->getWidget());
-
-        $widget = new TextField();
-
-        $this->event->setBuffer('buffer');
-        $this->event->setWidget($widget);
-
-        $this->assertEquals('buffer', $this->event->getBuffer());
-        $this->assertEquals($widget, $this->event->getWidget());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setBuffer() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetBuffer()
     {
-        $buffer = 'foo';
-        $widget = new TextField();
-        $widget2 = new TextField();
-
-        $this->event = new ParseWidgetEvent($buffer, $widget);
-
-        // Try to change the original variables
-        $buffer = 'buffer';
-        $widget = $widget2;
-
-        $this->assertEquals('foo', $this->event->getBuffer());
-        $this->assertEquals($widget2, $this->event->getWidget());
+        $this->event->setBuffer('buffer');
+        $this->assertEquals('buffer', $this->event->getBuffer());
     }
 }

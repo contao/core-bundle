@@ -33,10 +33,7 @@ class GetPageStatusIconEventTest extends TestCase
     {
         parent::setUp();
 
-        $image = 'foo.jpg';
-        $page = new PageModel();
-
-        $this->event = new GetPageStatusIconEvent($image, $page);
+        $this->event = new GetPageStatusIconEvent('foo.jpg', new PageModel());
     }
 
     /**
@@ -48,38 +45,20 @@ class GetPageStatusIconEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo.jpg', $this->event->getImage());
         $this->assertInstanceOf('Contao\PageModel', $this->event->getPage());
-
-        $page = new PageModel();
-
-        $this->event->setImage('bar.jpg');
-        $this->event->setPage($page);
-
-        $this->assertEquals('bar.jpg', $this->event->getImage());
-        $this->assertEquals($page, $this->event->getPage());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setImage() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetImage()
     {
-        $image = 'foo.jpg';
-        $page = new PageModel();
-        $page2 = new PageModel();
-
-        $this->event = new GetPageStatusIconEvent($image, $page);
-
-        // Try to change the original variables
-        $image = 'bar.jpg';
-        $page = $page2;
-
-        $this->assertEquals('foo.jpg', $this->event->getImage());
-        $this->assertEquals($page2, $this->event->getPage());
+        $this->event->setImage('bar.jpg');
+        $this->assertEquals('bar.jpg', $this->event->getImage());
     }
 }

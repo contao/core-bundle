@@ -32,12 +32,12 @@ class GetLanguagesEventTest extends TestCase
     {
         parent::setUp();
 
-        $return = ['en' => 'English'];
-        $languages = ['en'];
-        $langsNative = ['en'];
-        $installedOnly = false;
-
-        $this->event = new GetLanguagesEvent($return, $languages, $langsNative, $installedOnly);
+        $this->event = new GetLanguagesEvent(
+            ['de' => 'German - Deutsch'],
+            ['de' => 'German'],
+            ['de' => 'Deutsch'],
+            false
+        );
     }
 
     /**
@@ -49,47 +49,40 @@ class GetLanguagesEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertEquals(['en' => 'English'], $this->event->getReturn());
-        $this->assertEquals(['en'], $this->event->getLanguages());
-        $this->assertEquals(['en'], $this->event->getLangsNative());
-        $this->assertFalse($this->event->getInstalledOnly());
-
-        $this->event->setReturn(['de' => 'Deutsch']);
-        $this->event->setLanguages(['de']);
-        $this->event->setLangsNative(['de']);
-        $this->event->setInstalledOnly(true);
-
-        $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());
-        $this->assertEquals(['de'], $this->event->getLanguages());
-        $this->assertEquals(['de'], $this->event->getLangsNative());
-        $this->assertTrue($this->event->getInstalledOnly());
+        $this->assertEquals(['de' => 'German - Deutsch'], $this->event->getReturnValue());
+        $this->assertEquals(['de' => 'German'], $this->event->getLanguages());
+        $this->assertEquals(['de' => 'Deutsch'], $this->event->getLangsNative());
+        $this->assertFalse($this->event->isInstalledOnly());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setReturnValue() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetReturnValue()
     {
-        $return = ['en' => 'English'];
-        $languages = ['en'];
-        $langsNative = ['en'];
-        $installedOnly = false;
+        $this->event->setReturnValue(['fr' => 'French - Français']);
+        $this->assertEquals(['fr' => 'French - Français'], $this->event->getReturnValue());
+    }
 
-        $this->event = new GetLanguagesEvent($return, $languages, $langsNative, $installedOnly);
+    /**
+     * Tests the setLanguages() method.
+     */
+    public function testSetLanguages()
+    {
+        $this->event->setLanguages(['fr' => 'French']);
+        $this->assertEquals(['fr' => 'French'], $this->event->getLanguages());
+    }
 
-        // Try to change the original variables
-        $return = ['de' => 'Deutsch'];
-        $languages = ['de'];
-        $langsNative = ['de'];
-        $installedOnly = true;
-
-        $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());
-        $this->assertEquals(['de'], $this->event->getLanguages());
-        $this->assertEquals(['de'], $this->event->getLangsNative());
-        $this->assertTrue($this->event->getInstalledOnly());
+    /**
+     * Tests the setLangsNative() method.
+     */
+    public function testSetLangsNative()
+    {
+        $this->event->setLangsNative(['fr' => 'Français']);
+        $this->assertEquals(['fr' => 'Français'], $this->event->getLangsNative());
     }
 }

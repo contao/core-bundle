@@ -270,7 +270,6 @@ class Combiner extends \System
 			// Dispatch the contao.get_combined_file event
 			$event = new GetCombinedFileEvent($content, $strKey, $this->strMode, $arrFile);
 			$eventDispatcher->dispatch(ContaoCoreEvents::GET_COMBINED_FILE, $event);
-
 			$content = $event->getContent();
 
 			// HOOK: modify the file content

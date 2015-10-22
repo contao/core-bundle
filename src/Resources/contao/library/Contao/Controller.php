@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GenerateFrontendUrlEvent;
+use Contao\CoreBundle\Event\GetContentElementEvent;
 use Contao\CoreBundle\Event\GetFormEvent;
 use Contao\CoreBundle\Event\GetFrontendModuleEvent;
 use Contao\CoreBundle\Event\GetPageStatusIconEvent;
@@ -334,7 +335,6 @@ abstract class Controller extends \System
 			// Dispatch the contao.get_frontend_module event
 			$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objModule);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FRONTEND_MODULE, $event);
-
 			$strBuffer = $event->getBuffer();
 
 			// HOOK: add custom logic
@@ -496,14 +496,13 @@ abstract class Controller extends \System
 
 		$objRow->typePrefix = 'ce_';
 
-		/** @var \Module $objElement */
+		/** @var \ContentElement $objElement */
 		$objElement = new $strClass($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
 		// Dispatch the contao.get_content_element event
-		$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objElement);
+		$event = new GetContentElementEvent($strBuffer, $objRow, $objElement);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CONTENT_ELEMENT, $event);
-
 		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom logic
@@ -562,7 +561,6 @@ abstract class Controller extends \System
 		// Dispatch the contao.get_form event
 		$event = new GetFormEvent($strBuffer, $objRow, $objElement);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FORM, $event);
-
 		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom logic
@@ -644,7 +642,6 @@ abstract class Controller extends \System
 		// Dispatch the contao.get_page_status_icon event
 		$event = new GetPageStatusIconEvent($image, $objPage);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_STATUS_ICON, $event);
-
 		$image = $event->getImage();
 
 		// HOOK: add custom logic
@@ -704,8 +701,7 @@ abstract class Controller extends \System
 		// Dispatch the contao.is_visible_element event
 		$event = new IsVisibleElementEvent($blnReturn, $objElement);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IS_VISIBLE_ELEMENT, $event);
-
-		$blnReturn = $event->getReturn();
+		$blnReturn = $event->isVisible();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))
@@ -1157,7 +1153,6 @@ abstract class Controller extends \System
 		// Dispatch the contao.generate_frontend_url event
 		$event = new GenerateFrontendUrlEvent($strUrl, $arrRow, $strParams);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_FRONTEND_URL, $event);
-
 		$strUrl = $event->getUrl();
 
 		// HOOK: add custom logic

@@ -32,12 +32,7 @@ class GetCombinedFileEventTest extends TestCase
     {
         parent::setUp();
 
-        $content = 'foo';
-        $key = 'bar';
-        $mode = '.css';
-        $file = ['name' => 'test.css'];
-
-        $this->event = new GetCombinedFileEvent($content, $key, $mode, $file);
+        $this->event = new GetCombinedFileEvent('foo', 'bar', '.css', ['name' => 'test.css']);
     }
 
     /**
@@ -49,47 +44,22 @@ class GetCombinedFileEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getContent());
         $this->assertEquals('bar', $this->event->getKey());
         $this->assertEquals('.css', $this->event->getMode());
         $this->assertEquals(['name' => 'test.css'], $this->event->getFile());
-
-        $this->event->setContent('foobar');
-        $this->event->setKey('foo');
-        $this->event->setMode('.js');
-        $this->event->setFile(['name' => 'test.js']);
-
-        $this->assertEquals('foobar', $this->event->getContent());
-        $this->assertEquals('foo', $this->event->getKey());
-        $this->assertEquals('.js', $this->event->getMode());
-        $this->assertEquals(['name' => 'test.js'], $this->event->getFile());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setContent() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetContent()
     {
-        $content = 'foo';
-        $key = 'bar';
-        $mode = '.css';
-        $file = ['name' => 'test.css'];
-
-        $this->event = new GetCombinedFileEvent($content, $key, $mode, $file);
-
-        // Try to change the original variables
-        $content = 'foobar';
-        $key = 'foo';
-        $mode = '.js';
-        $file = ['name' => 'test.js'];
-
-        $this->assertEquals('foo', $this->event->getContent());
-        $this->assertEquals('foo', $this->event->getKey());
-        $this->assertEquals('.js', $this->event->getMode());
-        $this->assertEquals(['name' => 'test.js'], $this->event->getFile());
+        $this->event->setContent('foobar');
+        $this->assertEquals('foobar', $this->event->getContent());
     }
 }

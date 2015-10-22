@@ -32,10 +32,7 @@ class ColorizeLogEntriesEventTest extends TestCase
     {
         parent::setUp();
 
-        $label = 'foo';
-        $row = ['ACTION' => 'CRON'];
-
-        $this->event = new ColorizeLogEntriesEvent($label, $row);
+        $this->event = new ColorizeLogEntriesEvent('foo', ['ACTION' => 'CRON']);
     }
 
     /**
@@ -47,35 +44,20 @@ class ColorizeLogEntriesEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foo', $this->event->getLabel());
         $this->assertEquals(['ACTION' => 'CRON'], $this->event->getRow());
-
-        $this->event->setLabel('bar');
-        $this->event->setRow(['ACTION' => 'ERROR']);
-
-        $this->assertEquals('bar', $this->event->getLabel());
-        $this->assertEquals(['ACTION' => 'ERROR'], $this->event->getRow());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setLabel() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetLabel()
     {
-        $label = 'foo';
-        $row = ['ACTION' => 'CRON'];
-
-        $this->event = new ColorizeLogEntriesEvent($label, $row);
-
-        // Try to change the original variables
-        $label = 'bar';
-        $row = ['ACTION' => 'ERROR'];
-
-        $this->assertEquals('foo', $this->event->getLabel());
-        $this->assertEquals(['ACTION' => 'ERROR'], $this->event->getRow());
+        $this->event->setLabel('bar');
+        $this->assertEquals('bar', $this->event->getLabel());
     }
 }

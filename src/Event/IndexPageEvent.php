@@ -41,11 +41,11 @@ class IndexPageEvent extends Event
      * @param array  $data    The data array
      * @param array  $set     The set array
      */
-    public function __construct(&$content, array &$data, array &$set)
+    public function __construct($content, array $data, array $set)
     {
-        $this->content = &$content;
-        $this->data = &$data;
-        $this->set = &$set;
+        $this->content = $content;
+        $this->data = $data;
+        $this->set = $set;
     }
 
     /**

@@ -35,10 +35,10 @@ class GetCountriesEvent extends Event
      * @param array $return    The array to be returned
      * @param array $countries The countries list
      */
-    public function __construct(array &$return, array &$countries)
+    public function __construct(array $return, array $countries)
     {
-        $this->return = &$return;
-        $this->countries = &$countries;
+        $this->return = $return;
+        $this->countries = $countries;
     }
 
     /**
@@ -46,7 +46,7 @@ class GetCountriesEvent extends Event
      *
      * @return array The array to be returned
      */
-    public function getReturn()
+    public function getReturnValue()
     {
         return $this->return;
     }
@@ -56,7 +56,7 @@ class GetCountriesEvent extends Event
      *
      * @param array $return The array to be returned
      */
-    public function setReturn(array $return)
+    public function setReturnValue(array $return)
     {
         $this->return = $return;
     }

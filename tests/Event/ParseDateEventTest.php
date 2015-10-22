@@ -32,11 +32,7 @@ class ParseDateEventTest extends TestCase
     {
         parent::setUp();
 
-        $return = '2015-05-07';
-        $format = 'Y-m-d';
-        $timestamp = 1430985610;
-
-        $this->event = new ParseDateEvent($return, $format, $timestamp);
+        $this->event = new ParseDateEvent('2015-05-07', 'Y-m-d', 1430985610);
     }
 
     /**
@@ -48,41 +44,21 @@ class ParseDateEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertEquals('2015-05-07', $this->event->getReturn());
+        $this->assertEquals('2015-05-07', $this->event->getReturnValue());
         $this->assertEquals('Y-m-d', $this->event->getFormat());
         $this->assertEquals(1430985610, $this->event->getTimestamp());
-
-        $this->event->setReturn('07.05.2015');
-        $this->event->setFormat('d.m.Y');
-        $this->event->setTimestamp(1399449692);
-
-        $this->assertEquals('07.05.2015', $this->event->getReturn());
-        $this->assertEquals('d.m.Y', $this->event->getFormat());
-        $this->assertEquals(1399449692, $this->event->getTimestamp());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setReturnValue() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetReturnVaue()
     {
-        $return = '2015-05-07';
-        $format = 'Y-m-d';
-        $timestamp = 1430985610;
-
-        $this->event = new ParseDateEvent($return, $format, $timestamp);
-
-        // Try to change the original variables
-        $return = '07.05.2015';
-        $format = 'd.m.Y';
-        $timestamp = 1399449692;
-
-        $this->assertEquals('2015-05-07', $this->event->getReturn());
-        $this->assertEquals('d.m.Y', $this->event->getFormat());
-        $this->assertEquals(1399449692, $this->event->getTimestamp());
+        $this->event->setReturnValue('07.05.2015');
+        $this->assertEquals('07.05.2015', $this->event->getReturnValue());
     }
 }

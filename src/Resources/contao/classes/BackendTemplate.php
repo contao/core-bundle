@@ -39,7 +39,6 @@ class BackendTemplate extends \Template
 		// Dispatch the contao.parse_backend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_BACKEND_TEMPLATE, $event);
-
 		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters
@@ -113,7 +112,6 @@ class BackendTemplate extends \Template
 		// Dispatch the contao.output_backend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_BACKEND_TEMPLATE, $event);
-
 		$this->strBuffer = $event->getBuffer();
 
 		// HOOK: add custom output filter

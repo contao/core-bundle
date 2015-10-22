@@ -32,11 +32,7 @@ class AddLogEntryEventTest extends TestCase
     {
         parent::setUp();
 
-        $text = 'foobar';
-        $function = 'Foo::bar()';
-        $category = 'test';
-
-        $this->event = new AddLogEntryEvent($text, $function, $category);
+        $this->event = new AddLogEntryEvent('foobar', 'Foo::bar()', 'test');
     }
 
     /**
@@ -48,41 +44,12 @@ class AddLogEntryEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals('foobar', $this->event->getText());
         $this->assertEquals('Foo::bar()', $this->event->getFunction());
         $this->assertEquals('test', $this->event->getCategory());
-
-        $this->event->setText('bar');
-        $this->event->setFunction('Bar::foo()');
-        $this->event->setCategory('dev');
-
-        $this->assertEquals('bar', $this->event->getText());
-        $this->assertEquals('Bar::foo()', $this->event->getFunction());
-        $this->assertEquals('dev', $this->event->getCategory());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $text = 'foobar';
-        $function = 'Foo::bar()';
-        $category = 'test';
-
-        $this->event = new AddLogEntryEvent($text, $function, $category);
-
-        // Try to change the original variables
-        $text = 'bar';
-        $function = 'Bar::foo()';
-        $category = 'dev';
-
-        $this->assertEquals('bar', $this->event->getText());
-        $this->assertEquals('Bar::foo()', $this->event->getFunction());
-        $this->assertEquals('dev', $this->event->getCategory());
     }
 }

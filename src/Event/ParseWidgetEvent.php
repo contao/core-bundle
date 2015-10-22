@@ -20,7 +20,10 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ParseWidgetEvent extends Event
 {
-    use BufferAwareTrait;
+    /**
+     * @var string
+     */
+    private $buffer;
 
     /**
      * @var Widget
@@ -33,10 +36,30 @@ class ParseWidgetEvent extends Event
      * @param string $buffer The widget content
      * @param Widget $widget The widget object
      */
-    public function __construct($buffer, Widget &$widget)
+    public function __construct($buffer, Widget $widget)
     {
         $this->buffer = $buffer;
-        $this->widget = &$widget;
+        $this->widget = $widget;
+    }
+
+    /**
+     * Returns the buffer.
+     *
+     * @return string The buffer
+     */
+    public function getBuffer()
+    {
+        return $this->buffer;
+    }
+
+    /**
+     * Sets the buffer.
+     *
+     * @param string $buffer The buffer
+     */
+    public function setBuffer($buffer)
+    {
+        $this->buffer = $buffer;
     }
 
     /**
@@ -47,15 +70,5 @@ class ParseWidgetEvent extends Event
     public function getWidget()
     {
         return $this->widget;
-    }
-
-    /**
-     * Sets the widget object.
-     *
-     * @param Widget $widget The widget object
-     */
-    public function setWidget(Widget $widget)
-    {
-        $this->widget = $widget;
     }
 }

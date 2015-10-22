@@ -32,10 +32,7 @@ class GetUserNavigationEventTest extends TestCase
     {
         parent::setUp();
 
-        $modules = [];
-        $showAll = false;
-
-        $this->event = new GetUserNavigationEvent($modules, $showAll);
+        $this->event = new GetUserNavigationEvent([], false);
     }
 
     /**
@@ -47,35 +44,20 @@ class GetUserNavigationEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
         $this->assertEquals([], $this->event->getModules());
-        $this->assertFalse($this->event->getShowAll());
-
-        $this->event->setModules(['foo']);
-        $this->event->setShowAll(true);
-
-        $this->assertEquals(['foo'], $this->event->getModules());
-        $this->assertTrue($this->event->getShowAll());
+        $this->assertFalse($this->event->isShowAll());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setModule() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetModules()
     {
-        $modules = [];
-        $showAll = false;
-
-        $this->event = new GetUserNavigationEvent($modules, $showAll);
-
-        // Try to change the original variables
-        $modules = ['foo'];
-        $showAll = true;
-
-        $this->assertEquals([], $this->event->getModules());
-        $this->assertTrue($this->event->getShowAll());
+        $this->event->setModules(['foo']);
+        $this->assertEquals(['foo'], $this->event->getModules());
     }
 }

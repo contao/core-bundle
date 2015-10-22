@@ -32,10 +32,7 @@ class GetCountriesEventTest extends TestCase
     {
         parent::setUp();
 
-        $return = ['en' => 'English'];
-        $countries = ['en'];
-
-        $this->event = new GetCountriesEvent($return, $countries);
+        $this->event = new GetCountriesEvent(['au' => 'Australien'], ['au' => 'Australia']);
     }
 
     /**
@@ -47,35 +44,29 @@ class GetCountriesEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the getters.
      */
-    public function testSetterGetter()
+    public function testGetters()
     {
-        $this->assertEquals(['en' => 'English'], $this->event->getReturn());
-        $this->assertEquals(['en'], $this->event->getCountries());
-
-        $this->event->setReturn(['de' => 'Deutsch']);
-        $this->event->setCountries(['de']);
-
-        $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());
-        $this->assertEquals(['de'], $this->event->getCountries());
+        $this->assertEquals(['au' => 'Australien'], $this->event->getReturnValue());
+        $this->assertEquals(['au' => 'Australia'], $this->event->getCountries());
     }
 
     /**
-     * Tests passing arguments by reference.
+     * Tests the setReturnValue() method.
      */
-    public function testPassingArgumentsByReference()
+    public function testSetReturnValue()
     {
-        $return = ['en' => 'English'];
-        $countries = ['en'];
+        $this->event->setReturnValue(['au' => 'Australie']);
+        $this->assertEquals(['au' => 'Australie'], $this->event->getReturnValue());
+    }
 
-        $this->event = new GetCountriesEvent($return, $countries);
-
-        // Try to change the original variables
-        $return = ['de' => 'Deutsch'];
-        $countries = ['de'];
-
-        $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());
-        $this->assertEquals(['de'], $this->event->getCountries());
+    /**
+     * Tests the setCountries() method.
+     */
+    public function testSetCountries()
+    {
+        $this->event->setCountries(['fr' => 'France']);
+        $this->assertEquals(['fr' => 'France'], $this->event->getCountries());
     }
 }

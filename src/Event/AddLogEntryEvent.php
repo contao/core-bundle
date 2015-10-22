@@ -41,11 +41,11 @@ class AddLogEntryEvent extends Event
      * @param string $function The function name
      * @param string $category The category
      */
-    public function __construct(&$text, &$function, &$category)
+    public function __construct($text, $function, $category)
     {
-        $this->text = &$text;
-        $this->function = &$function;
-        $this->category = &$category;
+        $this->text = $text;
+        $this->function = $function;
+        $this->category = $category;
     }
 
     /**
@@ -59,16 +59,6 @@ class AddLogEntryEvent extends Event
     }
 
     /**
-     * Sets the text.
-     *
-     * @param string $text The text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-    /**
      * Returns the function name.
      *
      * @return string The function name
@@ -79,16 +69,6 @@ class AddLogEntryEvent extends Event
     }
 
     /**
-     * Sets the function name.
-     *
-     * @param string $function The function name
-     */
-    public function setFunction($function)
-    {
-        $this->function = $function;
-    }
-
-    /**
      * Returns the category.
      *
      * @return string The category
@@ -96,15 +76,5 @@ class AddLogEntryEvent extends Event
     public function getCategory()
     {
         return $this->category;
-    }
-
-    /**
-     * Sets the category.
-     *
-     * @param string $category The category
-     */
-    public function setCategory($category)
-    {
-        $this->category = $category;
     }
 }
