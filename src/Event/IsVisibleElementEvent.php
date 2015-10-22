@@ -38,7 +38,7 @@ class IsVisibleElementEvent extends Event
      */
     public function __construct($return, Model &$element)
     {
-        $this->return  = $return;
+        $this->return = $return;
         $this->element = &$element;
     }
 

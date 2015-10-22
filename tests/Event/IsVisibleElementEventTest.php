@@ -34,7 +34,7 @@ class IsVisibleElementEventTest extends TestCase
         parent::setUp();
 
         $status = false;
-        $model  = new LayoutModel();
+        $model = new LayoutModel();
 
         $this->event = new IsVisibleElementEvent($status, $model);
     }
@@ -70,14 +70,14 @@ class IsVisibleElementEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $return = false;
-        $model  = new LayoutModel();
+        $model = new LayoutModel();
         $model2 = new LayoutModel();
 
         $this->event = new IsVisibleElementEvent($return, $model);
 
         // Try to change the original variables
         $return = true;
-        $model  = $model2;
+        $model = $model2;
 
         $this->assertFalse($this->event->getReturn());
         $this->assertEquals($model2, $this->event->getElement());

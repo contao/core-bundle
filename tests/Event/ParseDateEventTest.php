@@ -32,8 +32,8 @@ class ParseDateEventTest extends TestCase
     {
         parent::setUp();
 
-        $return    = '2015-05-07';
-        $format    = 'Y-m-d';
+        $return = '2015-05-07';
+        $format = 'Y-m-d';
         $timestamp = 1430985610;
 
         $this->event = new ParseDateEvent($return, $format, $timestamp);
@@ -70,15 +70,15 @@ class ParseDateEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $return    = '2015-05-07';
-        $format    = 'Y-m-d';
+        $return = '2015-05-07';
+        $format = 'Y-m-d';
         $timestamp = 1430985610;
 
         $this->event = new ParseDateEvent($return, $format, $timestamp);
 
         // Try to change the original variables
-        $return    = '07.05.2015';
-        $format    = 'd.m.Y';
+        $return = '07.05.2015';
+        $format = 'd.m.Y';
         $timestamp = 1399449692;
 
         $this->assertEquals('2015-05-07', $this->event->getReturn());

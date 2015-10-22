@@ -37,8 +37,8 @@ class GetContentElementEvent extends Event
      */
     public function __construct($buffer, array &$row, ContentElement &$element)
     {
-        $this->buffer  = $buffer;
-        $this->row     = &$row;
+        $this->buffer = $buffer;
+        $this->row = &$row;
         $this->element = &$element;
     }
 

@@ -32,9 +32,9 @@ class GetLanguagesEventTest extends TestCase
     {
         parent::setUp();
 
-        $return        = ['en' => 'English'];
-        $languages     = ['en'];
-        $langsNative   = ['en'];
+        $return = ['en' => 'English'];
+        $languages = ['en'];
+        $langsNative = ['en'];
         $installedOnly = false;
 
         $this->event = new GetLanguagesEvent($return, $languages, $langsNative, $installedOnly);
@@ -74,17 +74,17 @@ class GetLanguagesEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $return        = ['en' => 'English'];
-        $languages     = ['en'];
-        $langsNative   = ['en'];
+        $return = ['en' => 'English'];
+        $languages = ['en'];
+        $langsNative = ['en'];
         $installedOnly = false;
 
         $this->event = new GetLanguagesEvent($return, $languages, $langsNative, $installedOnly);
 
         // Try to change the original variables
-        $return        = ['de' => 'Deutsch'];
-        $languages     = ['de'];
-        $langsNative   = ['de'];
+        $return = ['de' => 'Deutsch'];
+        $languages = ['de'];
+        $langsNative = ['de'];
         $installedOnly = true;
 
         $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());

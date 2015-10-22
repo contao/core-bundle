@@ -33,8 +33,8 @@ class IndexPageEventTest extends TestCase
         parent::setUp();
 
         $content = 'foo';
-        $data    = ['content' => 'foo'];
-        $set     = ['url' => 'en/test.html'];
+        $data = ['content' => 'foo'];
+        $set = ['url' => 'en/test.html'];
 
         $this->event = new IndexPageEvent($content, $data, $set);
     }
@@ -71,15 +71,15 @@ class IndexPageEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $content = 'foo';
-        $data    = ['content' => 'foo'];
-        $set     = ['url' => 'en/test.html'];
+        $data = ['content' => 'foo'];
+        $set = ['url' => 'en/test.html'];
 
         $this->event = new IndexPageEvent($content, $data, $set);
 
         // Try to change the original variables
         $content = 'bar';
-        $data    = ['content' => 'bar'];
-        $set     = ['url' => 'fr/test.html'];
+        $data = ['content' => 'bar'];
+        $set = ['url' => 'fr/test.html'];
 
         $this->assertEquals('bar', $this->event->getContent());
         $this->assertEquals(['content' => 'bar'], $this->event->getData());

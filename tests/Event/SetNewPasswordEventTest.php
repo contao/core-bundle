@@ -35,9 +35,9 @@ class SetNewPasswordEventTest extends TestCase
     {
         parent::setUp();
 
-        $member   = new MemberModel();
+        $member = new MemberModel();
         $password = 'foo';
-        $module   = new ModuleHtml(new ModuleModel());
+        $module = new ModuleHtml(new ModuleModel());
 
         $this->event = new SetNewPasswordEvent($member, $password, $module);
     }
@@ -76,18 +76,18 @@ class SetNewPasswordEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $member   = new MemberModel();
-        $member2  = new MemberModel();
+        $member = new MemberModel();
+        $member2 = new MemberModel();
         $password = 'foo';
-        $module   = new ModuleHtml(new ModuleModel());
-        $module2  = new ModuleHtml(new ModuleModel());
+        $module = new ModuleHtml(new ModuleModel());
+        $module2 = new ModuleHtml(new ModuleModel());
 
         $this->event = new SetNewPasswordEvent($member, $password, $module);
 
         // Try to change the original variables
-        $member   = $member2;
+        $member = $member2;
         $password = 'bar';
-        $module   = $module2;
+        $module = $module2;
 
         $this->assertEquals($member2, $this->event->getMember());
         $this->assertEquals('bar', $this->event->getPassword());

@@ -33,9 +33,9 @@ class GetCombinedFileEventTest extends TestCase
         parent::setUp();
 
         $content = 'foo';
-        $key     = 'bar';
-        $mode    = '.css';
-        $file    = ['name' => 'test.css'];
+        $key = 'bar';
+        $mode = '.css';
+        $file = ['name' => 'test.css'];
 
         $this->event = new GetCombinedFileEvent($content, $key, $mode, $file);
     }
@@ -75,17 +75,17 @@ class GetCombinedFileEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $content = 'foo';
-        $key     = 'bar';
-        $mode    = '.css';
-        $file    = ['name' => 'test.css'];
+        $key = 'bar';
+        $mode = '.css';
+        $file = ['name' => 'test.css'];
 
         $this->event = new GetCombinedFileEvent($content, $key, $mode, $file);
 
         // Try to change the original variables
         $content = 'foobar';
-        $key     = 'foo';
-        $mode    = '.js';
-        $file    = ['name' => 'test.js'];
+        $key = 'foo';
+        $mode = '.js';
+        $file = ['name' => 'test.js'];
 
         $this->assertEquals('foo', $this->event->getContent());
         $this->assertEquals('foo', $this->event->getKey());

@@ -33,7 +33,7 @@ class ColorizeLogEntriesEventTest extends TestCase
         parent::setUp();
 
         $label = 'foo';
-        $row   = ['ACTION' => 'CRON'];
+        $row = ['ACTION' => 'CRON'];
 
         $this->event = new ColorizeLogEntriesEvent($label, $row);
     }
@@ -67,13 +67,13 @@ class ColorizeLogEntriesEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $label = 'foo';
-        $row   = ['ACTION' => 'CRON'];
+        $row = ['ACTION' => 'CRON'];
 
         $this->event = new ColorizeLogEntriesEvent($label, $row);
 
         // Try to change the original variables
         $label = 'bar';
-        $row   = ['ACTION' => 'ERROR'];
+        $row = ['ACTION' => 'ERROR'];
 
         $this->assertEquals('foo', $this->event->getLabel());
         $this->assertEquals(['ACTION' => 'ERROR'], $this->event->getRow());

@@ -35,7 +35,7 @@ class GetFrontendModuleEventTest extends TestCase
         parent::setUp();
 
         $buffer = 'foo';
-        $row    = [];
+        $row = [];
         $module = new ModuleHtml(new ModuleModel());
 
         $this->event = new GetFrontendModuleEvent($buffer, $row, $module);
@@ -74,16 +74,16 @@ class GetFrontendModuleEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $buffer  = 'foo';
-        $row     = [];
-        $module  = new ModuleHtml(new ModuleModel());
+        $buffer = 'foo';
+        $row = [];
+        $module = new ModuleHtml(new ModuleModel());
         $module2 = new ModuleHtml(new ModuleModel());
 
         $this->event = new GetFrontendModuleEvent($buffer, $row, $module);
 
         // Try to change the original variables
         $buffer = 'bar';
-        $row    = ['foo'];
+        $row = ['foo'];
         $module = $module2;
 
         $this->assertEquals('foo', $this->event->getBuffer());

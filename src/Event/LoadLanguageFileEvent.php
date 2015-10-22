@@ -40,7 +40,7 @@ class LoadLanguageFileEvent extends Event
      */
     public function __construct(&$name, &$language, &$cacheKey)
     {
-        $this->name     = &$name;
+        $this->name = &$name;
         $this->language = &$language;
         $this->cacheKey = &$cacheKey;
     }

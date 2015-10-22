@@ -69,8 +69,8 @@ class ParseWidgetEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $buffer  = 'foo';
-        $widget  = new TextField();
+        $buffer = 'foo';
+        $widget = new TextField();
         $widget2 = new TextField();
 
         $this->event = new ParseWidgetEvent($buffer, $widget);

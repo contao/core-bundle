@@ -54,10 +54,10 @@ class ReviseTableEvent extends Event
      */
     public function __construct(&$table, &$newRecordIds, &$parentTable, &$childTables)
     {
-        $this->table        = &$table;
+        $this->table = &$table;
         $this->newRecordIds = &$newRecordIds;
-        $this->parentTable  = &$parentTable;
-        $this->childTables  = &$childTables;
+        $this->parentTable = &$parentTable;
+        $this->childTables = &$childTables;
     }
 
     /**

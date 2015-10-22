@@ -32,10 +32,10 @@ class ReviseTableEventTest extends TestCase
     {
         parent::setUp();
 
-        $table        = 'foo';
+        $table = 'foo';
         $newRecordIds = [];
-        $parentTable  = 'bar';
-        $childTables  = [];
+        $parentTable = 'bar';
+        $childTables = [];
 
         $this->event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
     }
@@ -77,18 +77,18 @@ class ReviseTableEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $table        = 'foo';
+        $table = 'foo';
         $newRecordIds = [2, 3];
-        $parentTable  = 'bar';
-        $childTables  = [];
+        $parentTable = 'bar';
+        $childTables = [];
 
         $this->event = new ReviseTableEvent($table, $newRecordIds, $parentTable, $childTables);
 
         // Try to change the original variables
-        $table        = 'bar';
+        $table = 'bar';
         $newRecordIds = [4];
-        $parentTable  = 'parent';
-        $childTables  = ['child'];
+        $parentTable = 'parent';
+        $childTables = ['child'];
 
         $this->assertEquals('bar', $this->event->getTable());
         $this->assertEquals([4], $this->event->getNewRecordIds());

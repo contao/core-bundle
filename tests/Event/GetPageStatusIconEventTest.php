@@ -34,7 +34,7 @@ class GetPageStatusIconEventTest extends TestCase
         parent::setUp();
 
         $image = 'foo.jpg';
-        $page  = new PageModel();
+        $page = new PageModel();
 
         $this->event = new GetPageStatusIconEvent($image, $page);
     }
@@ -70,14 +70,14 @@ class GetPageStatusIconEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $image = 'foo.jpg';
-        $page  = new PageModel();
+        $page = new PageModel();
         $page2 = new PageModel();
 
         $this->event = new GetPageStatusIconEvent($image, $page);
 
         // Try to change the original variables
         $image = 'bar.jpg';
-        $page  = $page2;
+        $page = $page2;
 
         $this->assertEquals('foo.jpg', $this->event->getImage());
         $this->assertEquals($page2, $this->event->getPage());

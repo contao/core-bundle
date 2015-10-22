@@ -32,7 +32,7 @@ class LoadLanguageFileEventTest extends TestCase
     {
         parent::setUp();
 
-        $name     = 'test';
+        $name = 'test';
         $language = 'en';
         $cacheKey = 'test-en';
 
@@ -70,14 +70,14 @@ class LoadLanguageFileEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $name     = 'test';
+        $name = 'test';
         $language = 'en';
         $cacheKey = 'test-en';
 
         $this->event = new LoadLanguageFileEvent($name, $language, $cacheKey);
 
         // Try to change the original variables
-        $name     = 'foo';
+        $name = 'foo';
         $language = 'de';
         $cacheKey = 'foo-de';
 

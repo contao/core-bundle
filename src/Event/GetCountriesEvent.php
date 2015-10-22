@@ -37,7 +37,7 @@ class GetCountriesEvent extends Event
      */
     public function __construct(array &$return, array &$countries)
     {
-        $this->return    = &$return;
+        $this->return = &$return;
         $this->countries = &$countries;
     }
 

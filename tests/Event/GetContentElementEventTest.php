@@ -34,8 +34,8 @@ class GetContentElementEventTest extends TestCase
     {
         parent::setUp();
 
-        $buffer  = 'foo';
-        $row     = [];
+        $buffer = 'foo';
+        $row = [];
         $element = new ContentText(new ContentModel());
 
         $this->event = new GetContentElementEvent($buffer, $row, $element);
@@ -74,16 +74,16 @@ class GetContentElementEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $buffer   = 'foo';
-        $row      = [];
-        $element  = new ContentText(new ContentModel());
+        $buffer = 'foo';
+        $row = [];
+        $element = new ContentText(new ContentModel());
         $element2 = new ContentText(new ContentModel());
 
         $this->event = new GetContentElementEvent($buffer, $row, $element);
 
         // Try to change the original variables
         $buffer = 'bar';
-        $row    = ['foo'];
+        $row = ['foo'];
         $element = $element2;
 
         $this->assertEquals('foo', $this->event->getBuffer());

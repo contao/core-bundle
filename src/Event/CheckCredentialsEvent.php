@@ -44,7 +44,7 @@ class CheckCredentialsEvent extends Event
     {
         $this->username = &$username;
         $this->password = &$password;
-        $this->user     = &$user;
+        $this->user = &$user;
     }
 
     /**

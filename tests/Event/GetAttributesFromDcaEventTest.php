@@ -34,7 +34,7 @@ class GetAttributesFromDcaEventTest extends TestCase
         parent::setUp();
 
         $attributes = [];
-        $dca        = new DC_Table('tl_user');
+        $dca = new DC_Table('tl_user');
 
         $this->event = new GetAttributesFromDcaEvent($attributes, $dca);
     }
@@ -70,14 +70,14 @@ class GetAttributesFromDcaEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $attributes = [];
-        $dca        = new DC_Table('tl_user');
-        $dca2       = new DC_Table('tl_member');
+        $dca = new DC_Table('tl_user');
+        $dca2 = new DC_Table('tl_member');
 
         $this->event = new GetAttributesFromDcaEvent($attributes, $dca);
 
         // Try to change the original variables
         $attributes = ['class' => 'w50'];
-        $dca        = $dca2;
+        $dca = $dca2;
 
         $this->assertEquals([], $this->event->getAttributes());
         $this->assertEquals($dca, $this->event->getDataContainer());

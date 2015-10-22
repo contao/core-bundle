@@ -35,8 +35,8 @@ class PageEventTest extends TestCase
     {
         parent::setUp();
 
-        $page    = new PageModel();
-        $layout  = new LayoutModel();
+        $page = new PageModel();
+        $layout = new LayoutModel();
         $handler = new PageRegular();
 
         $this->event = new PageEvent($page, $layout, $handler);
@@ -59,8 +59,8 @@ class PageEventTest extends TestCase
         $this->assertInstanceOf('Contao\LayoutModel', $this->event->getLayout());
         $this->assertInstanceOf('Contao\PageRegular', $this->event->getHandler());
 
-        $page    = new PageModel();
-        $layout  = new LayoutModel();
+        $page = new PageModel();
+        $layout = new LayoutModel();
         $handler = new PageRegular();
 
         $this->event->setPage($page);
@@ -77,18 +77,18 @@ class PageEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $page     = new PageModel();
-        $page2    = new PageModel();
-        $layout   = new LayoutModel();
-        $layout2  = new LayoutModel();
-        $handler  = new PageRegular();
+        $page = new PageModel();
+        $page2 = new PageModel();
+        $layout = new LayoutModel();
+        $layout2 = new LayoutModel();
+        $handler = new PageRegular();
         $handler2 = new PageRegular();
 
         $this->event = new PageEvent($page, $layout, $handler);
 
         // Try to change the original variables
-        $page    = $page2;
-        $layout  = $layout2;
+        $page = $page2;
+        $layout = $layout2;
         $handler = $handler2;
 
         $this->assertEquals($page2, $this->event->getPage());

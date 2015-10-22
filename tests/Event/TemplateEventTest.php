@@ -33,8 +33,8 @@ class TemplateEventTest extends TestCase
     {
         parent::setUp();
 
-        $buffer   = 'foo';
-        $key      = 'bar';
+        $buffer = 'foo';
+        $key = 'bar';
         $template = new FrontendTemplate();
 
         $this->event = new TemplateEvent($buffer, $key, $template);
@@ -73,16 +73,16 @@ class TemplateEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $buffer    = 'buffer';
-        $key       = 'key';
-        $template  = new FrontendTemplate();
+        $buffer = 'buffer';
+        $key = 'key';
+        $template = new FrontendTemplate();
         $template2 = new FrontendTemplate();
 
         $this->event = new TemplateEvent($buffer, $key, $template);
 
         // Try to change the original variables
-        $buffer   = 'foo';
-        $key      = 'moo';
+        $buffer = 'foo';
+        $key = 'moo';
         $template = $template2;
 
         $this->assertEquals('buffer', $this->event->getBuffer());

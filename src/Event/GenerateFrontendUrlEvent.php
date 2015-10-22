@@ -40,8 +40,8 @@ class GenerateFrontendUrlEvent extends Event
      */
     public function __construct($url, array &$row, &$params)
     {
-        $this->url    = $url;
-        $this->row    = &$row;
+        $this->url = $url;
+        $this->row = &$row;
         $this->params = &$params;
     }
 

@@ -39,7 +39,7 @@ class GetPageStatusIconEvent extends Event
     public function __construct($image, PageModel &$page)
     {
         $this->image = $image;
-        $this->page  = &$page;
+        $this->page = &$page;
     }
 
     /**

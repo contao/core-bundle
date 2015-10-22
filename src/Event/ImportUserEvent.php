@@ -43,7 +43,7 @@ class ImportUserEvent extends Event
     {
         $this->username = &$username;
         $this->password = &$password;
-        $this->table    = &$table;
+        $this->table = &$table;
     }
 
     /**

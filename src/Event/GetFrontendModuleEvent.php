@@ -38,7 +38,7 @@ class GetFrontendModuleEvent extends Event
     public function __construct($buffer, array &$row, Module &$module)
     {
         $this->buffer = $buffer;
-        $this->row    = &$row;
+        $this->row = &$row;
         $this->module = &$module;
     }
 

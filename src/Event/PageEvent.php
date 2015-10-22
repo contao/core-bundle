@@ -46,8 +46,8 @@ class PageEvent extends Event
      */
     public function __construct(PageModel &$page, LayoutModel &$layout, PageRegular &$handler)
     {
-        $this->page    = &$page;
-        $this->layout  = &$layout;
+        $this->page = &$page;
+        $this->layout = &$layout;
         $this->handler = &$handler;
     }
 

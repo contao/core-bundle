@@ -43,7 +43,7 @@ class AddLogEntryEvent extends Event
      */
     public function __construct(&$text, &$function, &$category)
     {
-        $this->text     = &$text;
+        $this->text = &$text;
         $this->function = &$function;
         $this->category = &$category;
     }

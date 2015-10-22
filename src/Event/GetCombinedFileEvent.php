@@ -45,9 +45,9 @@ class GetCombinedFileEvent extends Event
     public function __construct($content, &$key, &$mode, array &$file)
     {
         $this->content = $content;
-        $this->key     = &$key;
-        $this->mode    = &$mode;
-        $this->file    = &$file;
+        $this->key = &$key;
+        $this->mode = &$mode;
+        $this->file = &$file;
     }
 
     /**

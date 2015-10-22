@@ -32,8 +32,8 @@ class GetSearchablePagesEventTest extends TestCase
     {
         parent::setUp();
 
-        $pages    = [];
-        $rootId   = 1;
+        $pages = [];
+        $rootId = 1;
         $language = 'en';
 
         $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
@@ -70,15 +70,15 @@ class GetSearchablePagesEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $pages    = [];
-        $rootId   = 2;
+        $pages = [];
+        $rootId = 2;
         $language = 'en';
 
         $this->event = new GetSearchablePagesEvent($pages, $rootId, $language);
 
         // Try to change the original variables
-        $pages    = [2, 3];
-        $rootId   = 3;
+        $pages = [2, 3];
+        $rootId = 3;
         $language = 'fr';
 
         $this->assertEquals([], $this->event->getPages());

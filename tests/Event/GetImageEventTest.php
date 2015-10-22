@@ -34,14 +34,14 @@ class GetImageEventTest extends TestCase
     {
         parent::setUp();
 
-        $origPath     = 'images/dummy.jpg';
-        $targetWidth  = 200;
+        $origPath = 'images/dummy.jpg';
+        $targetWidth = 200;
         $targetHeight = 150;
-        $resizeMode   = 'crop';
-        $cacheName    = 'd/dummy-a235d.jpg';
-        $fileObj      = new File('images/dummy.jpg');
-        $targetPath   = 'assets/images/d/dummy-a235d.jpg';
-        $imageObj     = new Image($fileObj);
+        $resizeMode = 'crop';
+        $cacheName = 'd/dummy-a235d.jpg';
+        $fileObj = new File('images/dummy.jpg');
+        $targetPath = 'assets/images/d/dummy-a235d.jpg';
+        $imageObj = new Image($fileObj);
 
         $this->event = new GetImageEvent(
             $origPath,
@@ -78,7 +78,7 @@ class GetImageEventTest extends TestCase
         $this->assertEquals('assets/images/d/dummy-a235d.jpg', $this->event->getTargetPath());
         $this->assertInstanceOf('Contao\Image', $this->event->getImageObject());
 
-        $fileObj  = new File('images/dummy.jpg');
+        $fileObj = new File('images/dummy.jpg');
         $imageObj = new Image($fileObj);
 
         $this->event->setReturn('assets/images/b/dummy-f985b.jpg');

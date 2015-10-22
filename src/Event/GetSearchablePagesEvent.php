@@ -40,8 +40,8 @@ class GetSearchablePagesEvent extends Event
      */
     public function __construct(array $pages, &$rootId, &$language)
     {
-        $this->pages    = $pages;
-        $this->rootId   = &$rootId;
+        $this->pages = $pages;
+        $this->rootId = &$rootId;
         $this->language = &$language;
     }
 

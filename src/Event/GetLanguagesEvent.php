@@ -49,9 +49,9 @@ class GetLanguagesEvent extends Event
      */
     public function __construct(array &$return, array &$languages, array &$langsNative, &$installedOnly)
     {
-        $this->return        = &$return;
-        $this->languages     = &$languages;
-        $this->langsNative   = &$langsNative;
+        $this->return = &$return;
+        $this->languages = &$languages;
+        $this->langsNative = &$langsNative;
         $this->installedOnly = &$installedOnly;
     }
 

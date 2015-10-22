@@ -32,7 +32,7 @@ class AddLogEntryEventTest extends TestCase
     {
         parent::setUp();
 
-        $text     = 'foobar';
+        $text = 'foobar';
         $function = 'Foo::bar()';
         $category = 'test';
 
@@ -70,14 +70,14 @@ class AddLogEntryEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $text     = 'foobar';
+        $text = 'foobar';
         $function = 'Foo::bar()';
         $category = 'test';
 
         $this->event = new AddLogEntryEvent($text, $function, $category);
 
         // Try to change the original variables
-        $text     = 'bar';
+        $text = 'bar';
         $function = 'Bar::foo()';
         $category = 'dev';
 

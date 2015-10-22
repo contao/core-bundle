@@ -45,9 +45,9 @@ class SetNewPasswordEvent extends Event
      */
     public function __construct(MemberModel &$member, &$password, Module &$module = null)
     {
-        $this->member   = &$member;
+        $this->member = &$member;
         $this->password = &$password;
-        $this->module   = &$module;
+        $this->module = &$module;
     }
 
     /**

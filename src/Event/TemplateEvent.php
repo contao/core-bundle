@@ -41,8 +41,8 @@ class TemplateEvent extends Event
      */
     public function __construct($buffer, &$key, Template &$template = null)
     {
-        $this->buffer   = $buffer;
-        $this->key      = &$key;
+        $this->buffer = $buffer;
+        $this->key = &$key;
         $this->template = &$template;
     }
 

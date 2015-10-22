@@ -35,7 +35,7 @@ class CheckCredentialsEventTest extends TestCase
 
         $username = 'foo';
         $password = 'bar';
-        $user     = BackendUser::getInstance();
+        $user = BackendUser::getInstance();
 
         $this->event = new CheckCredentialsEvent($username, $password, $user);
     }
@@ -78,15 +78,15 @@ class CheckCredentialsEventTest extends TestCase
     {
         $username = 'foo';
         $password = 'bar';
-        $user     = BackendUser::getInstance();
-        $user2    = BackendUser::getInstance();
+        $user = BackendUser::getInstance();
+        $user2 = BackendUser::getInstance();
 
         $this->event = new CheckCredentialsEvent($username, $password, $user);
 
         // Try to change the original variables
         $username = 'bar';
         $password = 'foo';
-        $user     = $user2;
+        $user = $user2;
 
         $this->assertEquals('bar', $this->event->getUsername());
         $this->assertEquals('foo', $this->event->getPassword());

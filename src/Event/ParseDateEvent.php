@@ -43,8 +43,8 @@ class ParseDateEvent extends Event
      */
     public function __construct($return, &$format, &$timestamp)
     {
-        $this->return    = $return;
-        $this->format    = &$format;
+        $this->return = $return;
+        $this->format = &$format;
         $this->timestamp = &$timestamp;
     }
 

@@ -35,7 +35,7 @@ class ColorizeLogEntriesEvent extends Event
     public function __construct($label, array &$row)
     {
         $this->label = $label;
-        $this->row   = &$row;
+        $this->row = &$row;
     }
 
     /**

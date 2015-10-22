@@ -39,7 +39,7 @@ class GetAttributesFromDcaEvent extends Event
     public function __construct(array $attributes, DataContainer &$dca)
     {
         $this->attributes = $attributes;
-        $this->dca        = &$dca;
+        $this->dca = &$dca;
     }
 
     /**

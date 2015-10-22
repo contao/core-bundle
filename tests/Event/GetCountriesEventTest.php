@@ -32,7 +32,7 @@ class GetCountriesEventTest extends TestCase
     {
         parent::setUp();
 
-        $return    = ['en' => 'English'];
+        $return = ['en' => 'English'];
         $countries = ['en'];
 
         $this->event = new GetCountriesEvent($return, $countries);
@@ -66,13 +66,13 @@ class GetCountriesEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $return    = ['en' => 'English'];
+        $return = ['en' => 'English'];
         $countries = ['en'];
 
         $this->event = new GetCountriesEvent($return, $countries);
 
         // Try to change the original variables
-        $return    = ['de' => 'Deutsch'];
+        $return = ['de' => 'Deutsch'];
         $countries = ['de'];
 
         $this->assertEquals(['de' => 'Deutsch'], $this->event->getReturn());

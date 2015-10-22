@@ -35,8 +35,8 @@ class GetFormEventTest extends TestCase
         parent::setUp();
 
         $buffer = 'foo';
-        $row    = [];
-        $form   = new Form(new FormModel());
+        $row = [];
+        $form = new Form(new FormModel());
 
         $this->event = new GetFormEvent($buffer, $row, $form);
     }
@@ -75,16 +75,16 @@ class GetFormEventTest extends TestCase
     public function testPassingArgumentsByReference()
     {
         $buffer = 'foo';
-        $row    = [];
-        $form   = new Form(new FormModel());
-        $form2  = new Form(new FormModel());
+        $row = [];
+        $form = new Form(new FormModel());
+        $form2 = new Form(new FormModel());
 
         $this->event = new GetFormEvent($buffer, $row, $form);
 
         // Try to change the original variables
         $buffer = 'bar';
-        $row    = ['foo'];
-        $form   = $form2;
+        $row = ['foo'];
+        $form = $form2;
 
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals(['foo'], $this->event->getRow());

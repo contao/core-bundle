@@ -88,14 +88,14 @@ class GetImageEvent extends Event
         $targetPath,
         Image $imageObj
     ) {
-        $this->origPath     = $origPath;
-        $this->targetWidth  = $targetWidth;
+        $this->origPath = $origPath;
+        $this->targetWidth = $targetWidth;
         $this->targetHeight = $targetHeight;
-        $this->resizeMode   = $resizeMode;
-        $this->cacheName    = $cacheName;
-        $this->fileObj      = $fileObj;
-        $this->targetPath   = $targetPath;
-        $this->imageObj     = $imageObj;
+        $this->resizeMode = $resizeMode;
+        $this->cacheName = $cacheName;
+        $this->fileObj = $fileObj;
+        $this->targetPath = $targetPath;
+        $this->imageObj = $imageObj;
     }
 
     /**

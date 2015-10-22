@@ -34,7 +34,7 @@ class ImportUserEventTest extends TestCase
 
         $username = 'foo';
         $password = 'bar';
-        $table    = 'tl_user';
+        $table = 'tl_user';
 
         $this->event = new ImportUserEvent($username, $password, $table);
     }
@@ -75,14 +75,14 @@ class ImportUserEventTest extends TestCase
     {
         $username = 'foo';
         $password = 'bar';
-        $table    = 'tl_user';
+        $table = 'tl_user';
 
         $this->event = new ImportUserEvent($username, $password, $table);
 
         // Try to change the original variables
         $username = 'bar';
         $password = 'foo';
-        $table    = 'tl_member';
+        $table = 'tl_member';
 
         $this->assertEquals('bar', $this->event->getUsername());
         $this->assertEquals('foo', $this->event->getPassword());

@@ -32,8 +32,8 @@ class GenerateFrontendUrlEventTest extends TestCase
     {
         parent::setUp();
 
-        $url    = 'http://localhost';
-        $row    = [];
+        $url = 'http://localhost';
+        $row = [];
         $params = '';
 
         $this->event = new GenerateFrontendUrlEvent($url, $row, $params);
@@ -70,15 +70,15 @@ class GenerateFrontendUrlEventTest extends TestCase
      */
     public function testPassingArgumentsByReference()
     {
-        $url    = 'http://localhost';
-        $row    = [];
+        $url = 'http://localhost';
+        $row = [];
         $params = [];
 
         $this->event = new GenerateFrontendUrlEvent($url, $row, $params);
 
         // Try to change the original variables
-        $url    = 'http://127.0.0.1';
-        $row    = ['foo'];
+        $url = 'http://127.0.0.1';
+        $row = ['foo'];
         $params = 'foo=bar';
 
         $this->assertEquals('http://localhost', $this->event->getUrl());

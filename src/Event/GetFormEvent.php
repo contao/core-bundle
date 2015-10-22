@@ -38,8 +38,8 @@ class GetFormEvent extends Event
     public function __construct($buffer, array &$row, Form &$form)
     {
         $this->buffer = $buffer;
-        $this->row    = &$row;
-        $this->form   = &$form;
+        $this->row = &$row;
+        $this->form = &$form;
     }
 
     /**
