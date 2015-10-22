@@ -10,8 +10,11 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\SetNewPasswordEvent;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -231,6 +234,13 @@ class ModulePassword extends \Module
 				$objMember->activation = '';
 				$objMember->password = $objWidget->value;
 				$objMember->save();
+
+				/** @var KernelInterface $kernel */
+				global $kernel;
+
+				// Dispatch the contao.set_new_password event
+				$event = new SetNewPasswordEvent($objMember, $objWidget->value, $this);
+				$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_NEW_PASSWORD, $event);
 
 				// HOOK: set new password callback
 				if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))

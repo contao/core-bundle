@@ -109,6 +109,8 @@ class ModuleCloseAccount extends \Module
 			// Close account
 			if (!$objWidget->hasErrors())
 			{
+				// FIXME: trigger an event
+
 				// HOOK: send account ID
 				if (isset($GLOBALS['TL_HOOKS']['closeAccount']) && is_array($GLOBALS['TL_HOOKS']['closeAccount']))
 				{

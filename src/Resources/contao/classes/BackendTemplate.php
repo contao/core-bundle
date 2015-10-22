@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\TemplateEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
+
 
 /**
  * Provide methods to handle back end templates.
@@ -32,6 +36,15 @@ class BackendTemplate extends \Template
 	public function parse()
 	{
 		$strBuffer = parent::parse();
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.parse_backend_template event
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_BACKEND_TEMPLATE, $event);
+
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseBackendTemplate']))
@@ -98,8 +111,17 @@ class BackendTemplate extends \Template
 			$this->mootools = $strMootools;
 		}
 
-		$strBuffer = $this->parse();
-		$strBuffer = static::replaceOldBePaths($strBuffer);
+		$this->strBuffer = $this->parse();
+		$this->strBuffer = static::replaceOldBePaths($this->strBuffer);
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.output_backend_template event
+		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_BACKEND_TEMPLATE, $event);
+
+		$this->strBuffer = $event->getBuffer();
 
 		// HOOK: add custom output filter
 		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
@@ -107,11 +129,9 @@ class BackendTemplate extends \Template
 			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
 			{
 				$this->import($callback[0]);
-				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
+				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
 			}
 		}
-
-		$this->strBuffer = $strBuffer;
 
 		parent::compile();
 	}

@@ -207,6 +207,8 @@ class ModuleBreadcrumb extends \Module
 		// Mark the first element (see #4833)
 		$items[0]['class'] = 'first';
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateBreadcrumb']) && is_array($GLOBALS['TL_HOOKS']['generateBreadcrumb']))
 		{

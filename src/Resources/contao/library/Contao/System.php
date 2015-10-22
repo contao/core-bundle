@@ -12,6 +12,12 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Event\AddLogEntryEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetCountriesEvent;
+use Contao\CoreBundle\Event\GetLanguagesEvent;
+use Contao\CoreBundle\Event\LoadLanguageFileEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use League\Uri\Components\Query;
 use Patchwork\Utf8;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -225,6 +231,13 @@ abstract class System
 		\Database::getInstance()->prepare("INSERT INTO tl_log (tstamp, source, action, username, text, func, ip, browser) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
 							   ->execute(time(), (TL_MODE == 'FE' ? 'FE' : 'BE'), $strCategory, ($GLOBALS['TL_USERNAME'] ? $GLOBALS['TL_USERNAME'] : ''), specialchars($strText), $strFunction, $strIp, $strUa);
 
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.add_log_entry event
+		$event = new AddLogEntryEvent($strText, $strFunction, $strCategory);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_LOG_ENTRY, $event);
+
 		// HOOK: allow to add custom loggers
 		if (isset($GLOBALS['TL_HOOKS']['addLogEntry']) && is_array($GLOBALS['TL_HOOKS']['addLogEntry']))
 		{
@@ -408,6 +421,10 @@ abstract class System
 			}
 		}
 
+		// Dispatch the contao.load_language_file event
+		$event = new LoadLanguageFileEvent($strName, $strLanguage, $strCacheKey);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_LANGUAGE_FILE, $event);
+
 		// HOOK: allow to load custom labels
 		if (isset($GLOBALS['TL_HOOKS']['loadLanguageFile']) && is_array($GLOBALS['TL_HOOKS']['loadLanguageFile']))
 		{
@@ -488,6 +505,13 @@ abstract class System
 			$return[$strKey] = isset($GLOBALS['TL_LANG']['CNT'][$strKey]) ? $GLOBALS['TL_LANG']['CNT'][$strKey] : $countries[$strKey];
 		}
 
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_countries event
+		$event = new GetCountriesEvent($return, $countries);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_COUNTRIES, $event);
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getCountries']) && is_array($GLOBALS['TL_HOOKS']['getCountries']))
 		{
@@ -540,6 +564,13 @@ abstract class System
 				$return[$strKey] .= ' - ' . $langsNative[$strKey];
 			}
 		}
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_languages event
+		$event = new GetLanguagesEvent($return, $languages, $langsNative, $blnInstalledOnly);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_LANGUAGES, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getLanguages']) && is_array($GLOBALS['TL_HOOKS']['getLanguages']))
@@ -650,6 +681,15 @@ abstract class System
 		$objCookie->strDomain   = $strDomain;
 		$objCookie->blnSecure   = $blnSecure;
 		$objCookie->blnHttpOnly = $blnHttpOnly;
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.set_cookie event
+		$event = new ReturnValueEvent($objCookie);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_COOKIE, $event);
+
+		$objCookie = $event->getValue();
 
 		// HOOK: allow to add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['setCookie']) && is_array($GLOBALS['TL_HOOKS']['setCookie']))

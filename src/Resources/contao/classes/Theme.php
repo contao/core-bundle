@@ -271,6 +271,8 @@ class Theme extends \Backend
 				$return .= "\n  " . '<p class="tl_green" style="margin:0">'. $GLOBALS['TL_LANG']['tl_theme']['templates_ok'] .'</p>';
 			}
 
+			// FIXME: trigger an event
+
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['compareThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['compareThemeFiles']))
 			{
@@ -644,6 +646,8 @@ class Theme extends \Backend
 			// Notify the user
 			\Message::addConfirmation(sprintf($GLOBALS['TL_LANG']['tl_theme']['theme_imported'], basename($strZipFile)));
 
+			// FIXME: trigger an event
+
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['extractThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['extractThemeFiles']))
 			{
@@ -717,6 +721,8 @@ class Theme extends \Backend
 
 		// Add the template files
 		$this->addTemplatesToArchive($objArchive, $objTheme->templates);
+
+		// FIXME: trigger an event
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['exportTheme']) && is_array($GLOBALS['TL_HOOKS']['exportTheme']))

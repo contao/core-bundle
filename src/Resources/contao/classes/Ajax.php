@@ -154,6 +154,8 @@ class Ajax extends \Backend
 
 			// HOOK: pass unknown actions to callback functions
 			default:
+				// FIXME: trigger an event
+
 				if (isset($GLOBALS['TL_HOOKS']['executePreActions']) && is_array($GLOBALS['TL_HOOKS']['executePreActions']))
 				{
 					foreach ($GLOBALS['TL_HOOKS']['executePreActions'] as $callback)
@@ -402,6 +404,8 @@ class Ajax extends \Backend
 	 */
 	protected function executePostActionsHook(\DataContainer $dc)
 	{
+		// FIXME: trigger an event
+
 		if (isset($GLOBALS['TL_HOOKS']['executePostActions']) && is_array($GLOBALS['TL_HOOKS']['executePostActions']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['executePostActions'] as $callback)

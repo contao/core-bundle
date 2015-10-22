@@ -326,6 +326,8 @@ class ModulePersonalData extends \Module
 		// Redirect or reload if there was no error
 		if (\Input::post('FORM_SUBMIT') == $strFormId && !$doNotSubmit)
 		{
+			// FIXME: trigger an event
+
 			// HOOK: updated personal data
 			if (isset($GLOBALS['TL_HOOKS']['updatePersonalData']) && is_array($GLOBALS['TL_HOOKS']['updatePersonalData']))
 			{

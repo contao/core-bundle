@@ -245,6 +245,8 @@ class Installer extends \Controller
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: allow third-party developers to modify the array (see #3281)
 		if (isset($GLOBALS['TL_HOOKS']['sqlCompileCommands']) && is_array($GLOBALS['TL_HOOKS']['sqlCompileCommands']))
 		{
@@ -289,6 +291,8 @@ class Installer extends \Controller
 				$return[$strTable] = $objExtract->getDbInstallerArray();
 			}
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: allow third-party developers to modify the array (see #6425)
 		if (isset($GLOBALS['TL_HOOKS']['sqlGetFromDca']) && is_array($GLOBALS['TL_HOOKS']['sqlGetFromDca']))
@@ -375,6 +379,8 @@ class Installer extends \Controller
 				}
 			}
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: allow third-party developers to modify the array (see #3281)
 		if (isset($GLOBALS['TL_HOOKS']['sqlGetFromFile']) && is_array($GLOBALS['TL_HOOKS']['sqlGetFromFile']))
@@ -505,6 +511,8 @@ class Installer extends \Controller
 				}
 			}
 		}
+
+		// FIXME: trigger an event
 
 		// HOOK: allow third-party developers to modify the array (see #3281)
 		if (isset($GLOBALS['TL_HOOKS']['sqlGetFromDB']) && is_array($GLOBALS['TL_HOOKS']['sqlGetFromDB']))

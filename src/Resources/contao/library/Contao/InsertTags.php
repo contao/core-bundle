@@ -1100,6 +1100,8 @@ class InsertTags extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
+					// FIXME: trigger an event
+
 					if (isset($GLOBALS['TL_HOOKS']['replaceInsertTags']) && is_array($GLOBALS['TL_HOOKS']['replaceInsertTags']))
 					{
 						foreach ($GLOBALS['TL_HOOKS']['replaceInsertTags'] as $callback)
@@ -1196,6 +1198,8 @@ class InsertTags extends \Controller
 
 						// HOOK: pass unknown flags to callback functions
 						default:
+							// FIXME: trigger an event
+
 							if (isset($GLOBALS['TL_HOOKS']['insertTagFlags']) && is_array($GLOBALS['TL_HOOKS']['insertTagFlags']))
 							{
 								foreach ($GLOBALS['TL_HOOKS']['insertTagFlags'] as $callback)

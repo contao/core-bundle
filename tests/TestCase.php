@@ -18,6 +18,7 @@ use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Scope;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -96,6 +97,33 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         );
 
         $container = $this->mockContainerWithContaoScopes();
+        $container->setParameter('contao.error_level', error_reporting());
+
+        $container->set(
+            'event_dispatcher',
+            new EventDispatcher()
+        );
+
+        $container->set(
+            'contao.resource_finder',
+            new ResourceFinder($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao')
+        );
+
+        $container->set(
+            'contao.resource_locator',
+            new FileLocator($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao')
+        );
+
+        $request = new Request();
+        $request->server->set('REMOTE_ADDR', '123.456.789.0');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $container->set(
+            'request_stack',
+            $requestStack
+        );
 
         $kernel
             ->expects($this->any())

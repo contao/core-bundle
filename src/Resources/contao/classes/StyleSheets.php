@@ -925,6 +925,8 @@ class StyleSheets extends \Backend
 			$return .= $lb . (!$blnWriteToFile ? specialchars($own) : $own);
 		}
 
+		// FIXME: trigger an event
+
 		// Allow custom definitions
 		if (isset($GLOBALS['TL_HOOKS']['compileDefinition']) && is_array($GLOBALS['TL_HOOKS']['compileDefinition']))
 		{
@@ -2212,6 +2214,8 @@ class StyleSheets extends \Backend
 
 				default:
 					$blnIsOwn = true;
+
+					// FIXME: trigger an event
 
 					// Allow custom definitions
 					if (isset($GLOBALS['TL_HOOKS']['createDefinition']) && is_array($GLOBALS['TL_HOOKS']['createDefinition']))

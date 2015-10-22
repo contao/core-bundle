@@ -10,7 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\IndexPageEvent;
 use Patchwork\Utf8;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -124,6 +127,13 @@ class Search
 				break; // see #5119
 			}
 		}
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.index_page event
+		$event = new IndexPageEvent($strContent, $arrData, $arrSet);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::INDEX_PAGE, $event);
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['indexPage']) && is_array($GLOBALS['TL_HOOKS']['indexPage']))

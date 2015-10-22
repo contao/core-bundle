@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
@@ -73,6 +76,15 @@ class RebuildIndex extends \Backend implements \executable
 			}
 
 			$arrPages = $this->findSearchablePages();
+
+			/** @var KernelInterface $kernel */
+			global $kernel;
+
+			// Dispatch the contao.get_searchable_pages event
+			$event = new ReturnValueEvent($arrPages);
+			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
+
+			$arrPages = $event->getValue();
 
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))

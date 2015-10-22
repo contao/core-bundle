@@ -7,7 +7,7 @@ class PageModel
     private $data;
     private $index = -1;
 
-    protected function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
@@ -39,5 +39,15 @@ class PageModel
         }
 
         return true;
+    }
+
+    public function row()
+    {
+        return $this->data;
+    }
+
+    public function setRow(array $data)
+    {
+        $this->data = $data;
     }
 }

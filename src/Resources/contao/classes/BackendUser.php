@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetUserNavigationEvent;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -510,6 +512,15 @@ class BackendUser extends \User
 				}
 			}
 		}
+
+		/** @var KernelInterface $kernel */
+		global $kernel;
+
+		// Dispatch the contao.get_user_navigation event
+		$event = new GetUserNavigationEvent($arrModules, $blnShowAll);
+		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_USER_NAVIGATION, $event);
+
+		$arrModules = $event->getModules();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getUserNavigation']) && is_array($GLOBALS['TL_HOOKS']['getUserNavigation']))
