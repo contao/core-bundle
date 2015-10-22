@@ -269,12 +269,9 @@ abstract class Template extends \Controller
 			return '';
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.parse_template event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_TEMPLATE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_TEMPLATE, $event);
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseTemplate']))

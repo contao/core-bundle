@@ -513,12 +513,9 @@ class BackendUser extends \User
 			}
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_user_navigation event
 		$event = new GetUserNavigationEvent($arrModules, $blnShowAll);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_USER_NAVIGATION, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_USER_NAVIGATION, $event);
 
 		$arrModules = $event->getModules();
 

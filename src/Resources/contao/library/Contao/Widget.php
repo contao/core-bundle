@@ -15,7 +15,6 @@ use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GetAttributesFromDcaEvent;
 use Contao\CoreBundle\Event\ParseWidgetEvent;
 use Patchwork\Utf8;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -633,12 +632,9 @@ abstract class Widget extends \Controller
 
 		$strBuffer = $this->inherit();
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.parse_widget event
 		$event = new ParseWidgetEvent($strBuffer, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_WIDGET, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_WIDGET, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -1079,12 +1075,9 @@ abstract class Widget extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
-					/** @var KernelInterface $kernel */
-					global $kernel;
-
 					// Dispatch the contao.add_custom_regexp event
 					$event = new AddCustomRegexpEvent($this->rgxp, $varInput, $this);
-					$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_CUSTOM_REGEXP, $event);
+					\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_CUSTOM_REGEXP, $event);
 
 					if ($event->getBreak() === true)
 					{
@@ -1412,12 +1405,9 @@ abstract class Widget extends \Controller
 			$arrAttributes['rootNodes'] = $arrData['rootNodes'];
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_attributes_from_dca event
 		$event = new GetAttributesFromDcaEvent($arrAttributes, $objDca);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ATTRIBUTES_FROM_DCA, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ATTRIBUTES_FROM_DCA, $event);
 
 		$arrAttributes = $event->getAttributes();
 

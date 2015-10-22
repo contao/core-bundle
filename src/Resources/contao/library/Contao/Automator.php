@@ -19,7 +19,6 @@ use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -261,12 +260,9 @@ class Automator extends \System
 			$arrFeeds[] = $objFeeds->sitemapName;
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.remove_old_feeds event
 		$event = new ReturnValueEvent();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REMOVE_OLD_FEEDS, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REMOVE_OLD_FEEDS, $event);
 
 		$arrFeeds = array_merge($arrFeeds, $event->getValue());
 
@@ -363,8 +359,7 @@ class Automator extends \System
 			return;
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
+		$eventDispatcher = \System::getContainer()->get('event_dispatcher');
 
 		// Create the XML file
 		while ($objRoot->next())
@@ -383,7 +378,7 @@ class Automator extends \System
 
 			// Dispatch the contao.get_searchable_pages event
 			$event = new GetSearchablePagesEvent($arrPages, $objRoot->id, $objRoot->language);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
+			$eventDispatcher->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
 
 			$arrPages = $event->getPages();
 
@@ -424,12 +419,9 @@ class Automator extends \System
 		// Sitemaps
 		$this->generateSitemap();
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.generate_xml_files event
 		$event = new Event();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_XML_FILES, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_XML_FILES, $event);
 
 		// HOOK: add custom jobs
 		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))

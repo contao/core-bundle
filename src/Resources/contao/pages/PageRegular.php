@@ -78,12 +78,9 @@ class PageRegular extends \Frontend
 		// Get the page layout
 		$objLayout = $this->getPageLayout($objPage);
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_page_id_from_url event (see #4736)
 		$event = new PageEvent($objPage, $objLayout, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_LAYOUT, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_LAYOUT, $event);
 
 		// HOOK: modify the page or layout object (see #4736)
 		if (isset($GLOBALS['TL_HOOKS']['getPageLayout']) && is_array($GLOBALS['TL_HOOKS']['getPageLayout']))
@@ -196,7 +193,7 @@ class PageRegular extends \Frontend
 
 		// Dispatch the contao.generate_page event
 		$event = new PageEvent($objPage, $objLayout, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_PAGE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_PAGE, $event);
 
 		// HOOK: modify the page or layout object
 		if (isset($GLOBALS['TL_HOOKS']['generatePage']) && is_array($GLOBALS['TL_HOOKS']['generatePage']))

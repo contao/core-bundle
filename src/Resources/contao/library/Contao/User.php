@@ -14,7 +14,6 @@ use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ImportUserEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -312,7 +311,7 @@ abstract class User extends \System
 
 		// Dispatch the contao.post_authenticate event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_AUTHENTICATE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_AUTHENTICATE, $event);
 
 		// HOOK: post authenticate callback
 		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
@@ -343,9 +342,6 @@ abstract class User extends \System
 			return false;
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Load the user object
 		if ($this->findBy('username', \Input::post('username', true)) == false)
 		{
@@ -353,7 +349,7 @@ abstract class User extends \System
 
 			// Dispatch the contao.import_user event
 			$event = new ImportUserEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this->strTable);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IMPORT_USER, $event);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IMPORT_USER, $event);
 
 			if ($event->getLoaded() === true)
 			{
@@ -444,7 +440,7 @@ abstract class User extends \System
 		{
 			// Dispatch the contao.check_credentials event
 			$event = new CheckCredentialsEvent(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::CHECK_CREDENTIALS, $event);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::CHECK_CREDENTIALS, $event);
 
 			if ($event->getAuthenticated() === true)
 			{
@@ -494,7 +490,7 @@ abstract class User extends \System
 
 		// Dispatch the contao.post_login event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGIN, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGIN, $event);
 
 		// HOOK: post login callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin']))
@@ -679,7 +675,7 @@ abstract class User extends \System
 
 		// Dispatch the contao.post_logout event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGOUT, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGOUT, $event);
 
 		// HOOK: post logout callback
 		if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout']))

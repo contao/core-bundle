@@ -178,12 +178,9 @@ class tl_log extends Backend
 				break;
 
 			default:
-				/** @var Symfony\Component\HttpKernel\KernelInterface $kernel */
-				global $kernel;
-
 				// Dispatch the contao.colorize_log_entries event
 				$event = new Contao\CoreBundle\Event\ColorizeLogEntriesEvent($label, $row);
-				$kernel->getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::COLORIZE_LOG_ENTRIES, $event);
+				System::getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::COLORIZE_LOG_ENTRIES, $event);
 
 				$label = $event->getLabel();
 

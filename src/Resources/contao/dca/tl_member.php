@@ -548,12 +548,9 @@ class tl_member extends Backend
 		// HOOK: set new password callback
 		if ($objMember !== null)
 		{
-			/** @var Symfony\Component\HttpKernel\KernelInterface $kernel */
-			global $kernel;
-
 			// Dispatch the contao.set_new_password event
 			$event = new Contao\CoreBundle\Event\SetNewPasswordEvent($objMember, $strPassword);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::SET_NEW_PASSWORD, $event);
+			System::getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::SET_NEW_PASSWORD, $event);
 
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
 			{

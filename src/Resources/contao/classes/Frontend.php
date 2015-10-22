@@ -228,12 +228,9 @@ abstract class Frontend extends \Controller
 			array_insert($arrFragments, 1, array('auto_item'));
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_page_id_from_url event
 		$event = new ReturnValueEvent($arrFragments);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_ID_FROM_URL, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_ID_FROM_URL, $event);
 
 		$arrFragments = $event->getValue();
 
@@ -303,12 +300,9 @@ abstract class Frontend extends \Controller
 	 */
 	public static function getRootPageFromUrl()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_root_page_from_url event
 		$event = new ReturnValueEvent();
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ROOT_PAGE_FROM_URL, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ROOT_PAGE_FROM_URL, $event);
 
 		/** @var \PageModel $objRootPage */
 		if (is_object(($objRootPage = $event->getValue())))
@@ -739,7 +733,7 @@ abstract class Frontend extends \Controller
 
 		// Dispatch the contao.get_cache_key event
 		$event = new ReturnValueEvent($strCacheKey);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
 
 		$strCacheKey = $event->getValue();
 

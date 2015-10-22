@@ -13,7 +13,6 @@ namespace Contao;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SetNewPasswordEvent;
 use Patchwork\Utf8;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -180,12 +179,9 @@ class ModuleChangePassword extends \Module
 			$objMember->password = $objNewPassword->value;
 			$objMember->save();
 
-			/** @var KernelInterface $kernel */
-			global $kernel;
-
 			// Dispatch the contao.set_new_password event
 			$event = new SetNewPasswordEvent($objMember, $objNewPassword->value, $this);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_NEW_PASSWORD, $event);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_NEW_PASSWORD, $event);
 
 			// HOOK: set new password callback
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
@@ -210,6 +206,6 @@ class ModuleChangePassword extends \Module
 		$this->Template->action = \Environment::get('indexFreeRequest');
 		$this->Template->slabel = specialchars($GLOBALS['TL_LANG']['MSC']['changePassword']);
 		$this->Template->rowLast = 'row_' . $row . ' row_last' . ((($row % 2) == 0) ? ' even' : ' odd');
-		$this->Template->message = \Message::generate(false, true);
+		$this->Template->message = \Message::generateUnwrapped();
 	}
 }

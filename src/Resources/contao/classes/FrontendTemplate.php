@@ -49,12 +49,9 @@ class FrontendTemplate extends \Template
 
 		$strBuffer = parent::parse();
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.parse_frontend_template event
 		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_FRONTEND_TEMPLATE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_FRONTEND_TEMPLATE, $event);
 
 		$strBuffer = $event->getBuffer();
 
@@ -123,12 +120,9 @@ class FrontendTemplate extends \Template
 		// Parse the template
 		$this->strBuffer = $this->parse();
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.output_frontend_template event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
 
 		$this->strBuffer = $event->getBuffer();
 
@@ -155,7 +149,7 @@ class FrontendTemplate extends \Template
 
 		// Dispatch the contao.modify_frontend_page event
 		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::MODIFY_FRONTEND_PAGE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::MODIFY_FRONTEND_PAGE, $event);
 
 		$this->strBuffer = $event->getBuffer();
 
@@ -292,12 +286,9 @@ class FrontendTemplate extends \Template
 				$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 			}
 
-			/** @var KernelInterface $kernel */
-			global $kernel;
-
 			// Dispatch the contao.get_cache_key event
 			$event = new ReturnValueEvent($strCacheKey);
-			$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
 
 			$strCacheKey = $event->getValue();
 

@@ -13,7 +13,6 @@ namespace Contao;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\GetImageEvent;
 use Contao\CoreBundle\Event\ReturnValueEvent;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -402,12 +401,9 @@ class Image
 	 */
 	public function executeResize()
 	{
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.execute_resize event
 		$event = new ReturnValueEvent($this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::EXECUTE_RESIZE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::EXECUTE_RESIZE, $event);
 
 		if (is_string(($return = $event->getValue())))
 		{
@@ -492,12 +488,9 @@ class Image
 			}
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.get_image event
 		$event = new GetImageEvent($this->getOriginalPath(), $this->getTargetWidth(), $this->getTargetHeight(), $this->getResizeMode(), $this->getCacheName(), $this->fileObj, $this->getTargetPath(), $this);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_IMAGE, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_IMAGE, $event);
 
 		if (is_string(($return = $event->getReturn())))
 		{

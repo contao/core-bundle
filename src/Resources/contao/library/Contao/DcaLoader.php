@@ -12,7 +12,6 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ReturnValueEvent;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 
 /**
@@ -92,12 +91,9 @@ class DcaLoader extends \Controller
 			catch (\InvalidArgumentException $e) {}
 		}
 
-		/** @var KernelInterface $kernel */
-		global $kernel;
-
 		// Dispatch the contao.load_data_container event
 		$event = new ReturnValueEvent($this->strTable);
-		$kernel->getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_DATA_CONTAINER, $event);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_DATA_CONTAINER, $event);
 
 		// HOOK: allow to load custom settings
 		if (isset($GLOBALS['TL_HOOKS']['loadDataContainer']) && is_array($GLOBALS['TL_HOOKS']['loadDataContainer']))
