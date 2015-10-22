@@ -104,7 +104,7 @@ class Image
 	/**
 	 * Create a new object to handle an image
 	 *
-	 * @param \File $file A file instance of the original image
+	 * @param File|\File $file A file instance of the original image
 	 *
 	 * @throws \InvalidArgumentException If the file does not exists or cannot be processed
 	 */

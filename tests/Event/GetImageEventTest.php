@@ -34,13 +34,13 @@ class GetImageEventTest extends TestCase
     {
         parent::setUp();
 
-        $origPath     = 'orig/test.jpg';
+        $origPath     = 'images/dummy.jpg';
         $targetWidth  = 200;
         $targetHeight = 150;
         $resizeMode   = 'crop';
-        $cacheName    = 'd/test-a235d.jpg';
-        $fileObj      = new File('orig/test.jpg');
-        $targetPath   = 'assets/images/d/test-a235d.jpg';
+        $cacheName    = 'd/dummy-a235d.jpg';
+        $fileObj      = new File('images/dummy.jpg');
+        $targetPath   = 'assets/images/d/dummy-a235d.jpg';
         $imageObj     = new Image($fileObj);
 
         $this->event = new GetImageEvent(
@@ -69,84 +69,36 @@ class GetImageEventTest extends TestCase
     public function testSetterGetter()
     {
         $this->assertNull($this->event->getReturn());
-        $this->assertEquals('orig/test.jpg', $this->event->getOriginalPath());
+        $this->assertEquals('images/dummy.jpg', $this->event->getOriginalPath());
         $this->assertEquals(200, $this->event->getTargetWidth());
         $this->assertEquals(150, $this->event->getTargetHeight());
         $this->assertEquals('crop', $this->event->getResizeMode());
-        $this->assertEquals('d/test-a235d.jpg', $this->event->getCacheName());
+        $this->assertEquals('d/dummy-a235d.jpg', $this->event->getCacheName());
         $this->assertInstanceOf('Contao\\File', $this->event->getFileObject());
-        $this->assertEquals('assets/images/d/test-a235d.jpg', $this->event->getTargetPath());
+        $this->assertEquals('assets/images/d/dummy-a235d.jpg', $this->event->getTargetPath());
         $this->assertInstanceOf('Contao\\Image', $this->event->getImageObject());
 
-        $fileObj  = new File('orig/test2.jpg');
+        $fileObj  = new File('images/dummy.jpg');
         $imageObj = new Image($fileObj);
 
-        $this->event->setReturn('assets/images/b/test2-f985b.jpg');
-        $this->event->setOriginalPath('orig/test2.jpg');
+        $this->event->setReturn('assets/images/b/dummy-f985b.jpg');
+        $this->event->setOriginalPath('images/dummy.jpg');
         $this->event->setTargetWidth(400);
         $this->event->setTargetHeight(300);
         $this->event->setResizeMode('proportional');
-        $this->event->setCacheName('b/test2-f985b.jpg');
+        $this->event->setCacheName('b/dummy-f985b.jpg');
         $this->event->setFileObject($fileObj);
-        $this->event->setTargetPath('assets/images/b/test2-f985b.jpg');
+        $this->event->setTargetPath('assets/images/b/dummy-f985b.jpg');
         $this->event->setImageObject($imageObj);
 
-        $this->assertEquals('assets/images/b/test2-f985b.jpg', $this->event->getReturn());
-        $this->assertEquals('orig/test2.jpg', $this->event->getOriginalPath());
+        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getReturn());
+        $this->assertEquals('images/dummy.jpg', $this->event->getOriginalPath());
         $this->assertEquals(400, $this->event->getTargetWidth());
         $this->assertEquals(300, $this->event->getTargetHeight());
         $this->assertEquals('proportional', $this->event->getResizeMode());
-        $this->assertEquals('b/test2-f985b.jpg', $this->event->getCacheName());
+        $this->assertEquals('b/dummy-f985b.jpg', $this->event->getCacheName());
         $this->assertEquals($fileObj, $this->event->getFileObject());
-        $this->assertEquals('assets/images/b/test2-f985b.jpg', $this->event->getTargetPath());
+        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getTargetPath());
         $this->assertEquals($imageObj, $this->event->getImageObject());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $origPath     = 'orig/test.jpg';
-        $targetWidth  = 200;
-        $targetHeight = 150;
-        $resizeMode   = 'crop';
-        $cacheName    = 'd/test-a235d.jpg';
-        $fileObj      = new File('orig/test.jpg');
-        $targetPath   = 'assets/images/d/test-a235d.jpg';
-        $imageObj     = new Image($fileObj);
-
-        $this->event = new GetImageEvent(
-            $origPath,
-            $targetWidth,
-            $targetHeight,
-            $resizeMode,
-            $cacheName,
-            $fileObj,
-            $targetPath,
-            $imageObj
-        );
-
-        $fileObj2  = new File('orig/test2.jpg');
-        $imageObj2 = new Image($fileObj);
-
-        // Try to change the original variables
-        $origPath     = 'orig/test2.jpg';
-        $targetWidth  = 400;
-        $targetHeight = 300;
-        $resizeMode   = 'proportional';
-        $cacheName    = 'b/test2-f985b.jpg';
-        $fileObj      = $fileObj2;
-        $targetPath   = 'assets/images/b/test2-f985b.jpg';
-        $imageObj     = $imageObj2;
-
-        $this->assertEquals('orig/test2.jpg', $this->event->getOriginalPath());
-        $this->assertEquals(400, $this->event->getTargetWidth());
-        $this->assertEquals(300, $this->event->getTargetHeight());
-        $this->assertEquals('proportional', $this->event->getResizeMode());
-        $this->assertEquals('b/test2-f985b.jpg', $this->event->getCacheName());
-        $this->assertEquals($fileObj2, $this->event->getFileObject());
-        $this->assertEquals('assets/images/b/test2-f985b.jpg', $this->event->getTargetPath());
-        $this->assertEquals($imageObj2, $this->event->getImageObject());
     }
 }

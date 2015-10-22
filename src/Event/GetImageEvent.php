@@ -79,23 +79,23 @@ class GetImageEvent extends Event
      * @param Image  $imageObj     The image object
      */
     public function __construct(
-        &$origPath,
-        &$targetWidth,
-        &$targetHeight,
-        &$resizeMode,
-        &$cacheName,
-        File &$fileObj,
-        &$targetPath,
-        Image &$imageObj
+        $origPath,
+        $targetWidth,
+        $targetHeight,
+        $resizeMode,
+        $cacheName,
+        File $fileObj,
+        $targetPath,
+        Image $imageObj
     ) {
-        $this->origPath     = &$origPath;
-        $this->targetWidth  = &$targetWidth;
-        $this->targetHeight = &$targetHeight;
-        $this->resizeMode   = &$resizeMode;
-        $this->cacheName    = &$cacheName;
-        $this->fileObj      = &$fileObj;
-        $this->targetPath   = &$targetPath;
-        $this->imageObj     = &$imageObj;
+        $this->origPath     = $origPath;
+        $this->targetWidth  = $targetWidth;
+        $this->targetHeight = $targetHeight;
+        $this->resizeMode   = $resizeMode;
+        $this->cacheName    = $cacheName;
+        $this->fileObj      = $fileObj;
+        $this->targetPath   = $targetPath;
+        $this->imageObj     = $imageObj;
     }
 
     /**
