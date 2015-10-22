@@ -1079,11 +1079,6 @@ abstract class Widget extends \Controller
 					$event = new AddCustomRegexpEvent($this->rgxp, $varInput, $this);
 					\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_CUSTOM_REGEXP, $event);
 
-					if ($event->getBreak() === true)
-					{
-						break;
-					}
-
 					if (isset($GLOBALS['TL_HOOKS']['addCustomRegexp']) && is_array($GLOBALS['TL_HOOKS']['addCustomRegexp']))
 					{
 						foreach ($GLOBALS['TL_HOOKS']['addCustomRegexp'] as $callback)

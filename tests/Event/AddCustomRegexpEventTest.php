@@ -33,11 +33,7 @@ class AddCustomRegexpEventTest extends TestCase
     {
         parent::setUp();
 
-        $rgxp   = 'email';
-        $input  = 'test@example.com';
-        $widget = new TextField();
-
-        $this->event = new AddCustomRegexpEvent($rgxp, $input, $widget);
+        $this->event = new AddCustomRegexpEvent('email', 'test@example.com', new TextField());
     }
 
     /**
@@ -49,46 +45,12 @@ class AddCustomRegexpEventTest extends TestCase
     }
 
     /**
-     * Tests the setters and getters.
+     * Tests the setters.
      */
-    public function testSetterGetter()
+    public function testSetters()
     {
-        $this->assertNull($this->event->getBreak());
-        $this->assertEquals('email', $this->event->getRgxp());
+        $this->assertEquals('email', $this->event->getName());
         $this->assertEquals('test@example.com', $this->event->getInput());
         $this->assertInstanceOf('Contao\TextField', $this->event->getWidget());
-
-        $widget = new TextField();
-
-        $this->event->setBreak(true);
-        $this->event->setRgxp('url');
-        $this->event->setInput('http://localhost');
-        $this->event->setWidget($widget);
-
-        $this->assertTrue($this->event->getBreak());
-        $this->assertEquals('url', $this->event->getRgxp());
-        $this->assertEquals('http://localhost', $this->event->getInput());
-        $this->assertEquals($widget, $this->event->getWidget());
-    }
-
-    /**
-     * Tests passing arguments by reference.
-     */
-    public function testPassingArgumentsByReference()
-    {
-        $rgxp    = 'email';
-        $input   = 'test@example.com';
-        $widget  = new TextField();
-        $widget2 = new TextField();
-
-        $this->event = new AddCustomRegexpEvent($rgxp, $input, $widget);
-
-        // Try to change the original variables
-        $rgxp    = 'url';
-        $input = 'http://localhost';
-
-        $this->assertEquals('url', $this->event->getRgxp());
-        $this->assertEquals('http://localhost', $this->event->getInput());
-        $this->assertEquals($widget2, $this->event->getWidget());
     }
 }

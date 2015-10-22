@@ -21,14 +21,9 @@ use Symfony\Component\EventDispatcher\Event;
 class AddCustomRegexpEvent extends Event
 {
     /**
-     * @var bool
-     */
-    private $break;
-
-    /**
      * @var string
      */
-    private $rgxp;
+    private $name;
 
     /**
      * @var mixed
@@ -43,35 +38,15 @@ class AddCustomRegexpEvent extends Event
     /**
      * Constructor.
      *
-     * @param string $rgxp   The regular expression name
+     * @param string $name   The regular expression name
      * @param mixed  $input  The user input
      * @param Widget $widget The widget object
      */
-    public function __construct(&$rgxp, &$input, Widget &$widget)
+    public function __construct($name, $input, Widget $widget)
     {
-        $this->rgxp   = &$rgxp;
-        $this->input  = &$input;
-        $this->widget = &$widget;
-    }
-
-    /**
-     * Returns the "break" flag.
-     *
-     * @return bool The "break" flag
-     */
-    public function getBreak()
-    {
-        return $this->break;
-    }
-
-    /**
-     * Sets the "break" flag.
-     *
-     * @param bool $break The "break" flag
-     */
-    public function setBreak($break)
-    {
-        $this->break = (bool) $break;
+        $this->name = $name;
+        $this->input = $input;
+        $this->widget = $widget;
     }
 
     /**
@@ -79,19 +54,9 @@ class AddCustomRegexpEvent extends Event
      *
      * @return string The regular expression name
      */
-    public function getRgxp()
+    public function getName()
     {
-        return $this->rgxp;
-    }
-
-    /**
-     * Sets the regular expression name.
-     *
-     * @param string $rgxp The regular expression name
-     */
-    public function setRgxp($rgxp)
-    {
-        $this->rgxp = $rgxp;
+        return $this->name;
     }
 
     /**
@@ -105,16 +70,6 @@ class AddCustomRegexpEvent extends Event
     }
 
     /**
-     * Sets the user input.
-     *
-     * @param mixed $input The user input
-     */
-    public function setInput($input)
-    {
-        $this->input = $input;
-    }
-
-    /**
      * Returns the widget object.
      *
      * @return Widget The widget object
@@ -122,15 +77,5 @@ class AddCustomRegexpEvent extends Event
     public function getWidget()
     {
         return $this->widget;
-    }
-
-    /**
-     * Sets the widget object.
-     *
-     * @param Widget $widget The widget object
-     */
-    public function setWidget(Widget $widget)
-    {
-        $this->widget = $widget;
     }
 }
