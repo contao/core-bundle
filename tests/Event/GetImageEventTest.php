@@ -60,7 +60,7 @@ class GetImageEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetImageEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetImageEvent', $this->event);
     }
 
     /**
@@ -74,9 +74,9 @@ class GetImageEventTest extends TestCase
         $this->assertEquals(150, $this->event->getTargetHeight());
         $this->assertEquals('crop', $this->event->getResizeMode());
         $this->assertEquals('d/dummy-a235d.jpg', $this->event->getCacheName());
-        $this->assertInstanceOf('Contao\\File', $this->event->getFileObject());
+        $this->assertInstanceOf('Contao\File', $this->event->getFileObject());
         $this->assertEquals('assets/images/d/dummy-a235d.jpg', $this->event->getTargetPath());
-        $this->assertInstanceOf('Contao\\Image', $this->event->getImageObject());
+        $this->assertInstanceOf('Contao\Image', $this->event->getImageObject());
 
         $fileObj  = new File('images/dummy.jpg');
         $imageObj = new Image($fileObj);

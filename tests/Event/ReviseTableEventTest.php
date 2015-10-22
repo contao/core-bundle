@@ -45,7 +45,7 @@ class ReviseTableEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ReviseTableEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ReviseTableEvent', $this->event);
     }
 
     /**

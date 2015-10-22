@@ -74,8 +74,8 @@ abstract class Hybrid extends \Frontend
 	/**
 	 * Initialize the object
 	 *
-	 * @param \ContentModel|\ModuleModel|\FormModel $objElement
-	 * @param string                                $strColumn
+	 * @param ContentModel|\ContentModel|ModuleModel|\ModuleModel|FormModel|\FormModel $objElement
+	 * @param string                                                                   $strColumn
 	 */
 	public function __construct($objElement, $strColumn='main')
 	{

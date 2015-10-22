@@ -45,7 +45,7 @@ class GetLanguagesEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetLanguagesEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetLanguagesEvent', $this->event);
     }
 
     /**

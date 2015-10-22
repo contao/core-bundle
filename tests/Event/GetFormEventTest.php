@@ -46,7 +46,7 @@ class GetFormEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetFormEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetFormEvent', $this->event);
     }
 
     /**
@@ -56,7 +56,7 @@ class GetFormEventTest extends TestCase
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals([], $this->event->getRow());
-        $this->assertInstanceOf('Contao\\Form', $this->event->getForm());
+        $this->assertInstanceOf('Contao\Form', $this->event->getForm());
 
         $form = new Form(new FormModel());
 

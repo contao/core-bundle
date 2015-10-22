@@ -44,7 +44,7 @@ class IndexPageEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\IndexPageEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\IndexPageEvent', $this->event);
     }
 
     /**

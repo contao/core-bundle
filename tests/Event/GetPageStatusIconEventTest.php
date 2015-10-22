@@ -44,7 +44,7 @@ class GetPageStatusIconEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetPageStatusIconEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetPageStatusIconEvent', $this->event);
     }
 
     /**
@@ -53,7 +53,7 @@ class GetPageStatusIconEventTest extends TestCase
     public function testSetterGetter()
     {
         $this->assertEquals('foo.jpg', $this->event->getImage());
-        $this->assertInstanceOf('Contao\\PageModel', $this->event->getPage());
+        $this->assertInstanceOf('Contao\PageModel', $this->event->getPage());
 
         $page = new PageModel();
 

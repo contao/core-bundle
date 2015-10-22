@@ -44,7 +44,7 @@ class IsVisibleElementEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\IsVisibleElementEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\IsVisibleElementEvent', $this->event);
     }
 
     /**
@@ -53,7 +53,7 @@ class IsVisibleElementEventTest extends TestCase
     public function testSetterGetter()
     {
         $this->assertFalse($this->event->getReturn());
-        $this->assertInstanceOf('Contao\\LayoutModel', $this->event->getElement());
+        $this->assertInstanceOf('Contao\LayoutModel', $this->event->getElement());
 
         $model = new LayoutModel();
 

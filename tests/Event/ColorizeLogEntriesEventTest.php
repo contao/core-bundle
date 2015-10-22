@@ -43,7 +43,7 @@ class ColorizeLogEntriesEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ColorizeLogEntriesEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ColorizeLogEntriesEvent', $this->event);
     }
 
     /**

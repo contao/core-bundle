@@ -46,7 +46,7 @@ class GetFrontendModuleEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetFrontendModuleEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetFrontendModuleEvent', $this->event);
     }
 
     /**
@@ -56,7 +56,7 @@ class GetFrontendModuleEventTest extends TestCase
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals([], $this->event->getRow());
-        $this->assertInstanceOf('Contao\\Module', $this->event->getModule());
+        $this->assertInstanceOf('Contao\Module', $this->event->getModule());
 
         $module = new ModuleHtml(new ModuleModel());
 

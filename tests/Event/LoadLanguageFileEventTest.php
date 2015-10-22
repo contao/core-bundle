@@ -44,7 +44,7 @@ class LoadLanguageFileEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\LoadLanguageFileEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\LoadLanguageFileEvent', $this->event);
     }
 
     /**

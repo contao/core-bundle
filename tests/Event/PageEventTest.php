@@ -47,7 +47,7 @@ class PageEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\PageEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\PageEvent', $this->event);
     }
 
     /**
@@ -55,9 +55,9 @@ class PageEventTest extends TestCase
      */
     public function testSetterGetter()
     {
-        $this->assertInstanceOf('Contao\\PageModel', $this->event->getPage());
-        $this->assertInstanceOf('Contao\\LayoutModel', $this->event->getLayout());
-        $this->assertInstanceOf('Contao\\PageRegular', $this->event->getHandler());
+        $this->assertInstanceOf('Contao\PageModel', $this->event->getPage());
+        $this->assertInstanceOf('Contao\LayoutModel', $this->event->getLayout());
+        $this->assertInstanceOf('Contao\PageRegular', $this->event->getHandler());
 
         $page    = new PageModel();
         $layout  = new LayoutModel();

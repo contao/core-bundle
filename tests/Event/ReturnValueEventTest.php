@@ -40,7 +40,7 @@ class ReturnValueEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ReturnValueEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ReturnValueEvent', $this->event);
     }
 
     /**

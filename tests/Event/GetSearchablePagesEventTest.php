@@ -44,7 +44,7 @@ class GetSearchablePagesEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetSearchablePagesEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetSearchablePagesEvent', $this->event);
     }
 
     /**

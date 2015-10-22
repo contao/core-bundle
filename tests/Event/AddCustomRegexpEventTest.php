@@ -45,7 +45,7 @@ class AddCustomRegexpEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\AddCustomRegexpEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\AddCustomRegexpEvent', $this->event);
     }
 
     /**
@@ -56,7 +56,7 @@ class AddCustomRegexpEventTest extends TestCase
         $this->assertNull($this->event->getBreak());
         $this->assertEquals('email', $this->event->getRgxp());
         $this->assertEquals('test@example.com', $this->event->getInput());
-        $this->assertInstanceOf('Contao\\TextField', $this->event->getWidget());
+        $this->assertInstanceOf('Contao\TextField', $this->event->getWidget());
 
         $widget = new TextField();
 

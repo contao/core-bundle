@@ -44,7 +44,7 @@ class AddLogEntryEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\AddLogEntryEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\AddLogEntryEvent', $this->event);
     }
 
     /**

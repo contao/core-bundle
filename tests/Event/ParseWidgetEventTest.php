@@ -44,7 +44,7 @@ class ParseWidgetEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ParseWidgetEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ParseWidgetEvent', $this->event);
     }
 
     /**
@@ -53,7 +53,7 @@ class ParseWidgetEventTest extends TestCase
     public function testSetterGetter()
     {
         $this->assertEquals('foo', $this->event->getBuffer());
-        $this->assertInstanceOf('Contao\\TextField', $this->event->getWidget());
+        $this->assertInstanceOf('Contao\TextField', $this->event->getWidget());
 
         $widget = new TextField();
 

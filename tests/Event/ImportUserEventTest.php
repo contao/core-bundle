@@ -44,7 +44,7 @@ class ImportUserEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ImportUserEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ImportUserEvent', $this->event);
     }
 
     /**

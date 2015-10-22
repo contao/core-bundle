@@ -45,7 +45,7 @@ class CheckCredentialsEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\CheckCredentialsEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\CheckCredentialsEvent', $this->event);
     }
 
     /**
@@ -56,7 +56,7 @@ class CheckCredentialsEventTest extends TestCase
         $this->assertFalse($this->event->getAuthenticated());
         $this->assertEquals('foo', $this->event->getUsername());
         $this->assertEquals('bar', $this->event->getPassword());
-        $this->assertInstanceOf('Contao\\BackendUser', $this->event->getUser());
+        $this->assertInstanceOf('Contao\BackendUser', $this->event->getUser());
 
         $user = BackendUser::getInstance();
 

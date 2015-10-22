@@ -46,7 +46,7 @@ class GetContentElementEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetContentElementEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetContentElementEvent', $this->event);
     }
 
     /**
@@ -56,7 +56,7 @@ class GetContentElementEventTest extends TestCase
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals([], $this->event->getRow());
-        $this->assertInstanceOf('Contao\\ContentElement', $this->event->getElement());
+        $this->assertInstanceOf('Contao\ContentElement', $this->event->getElement());
 
         $element = new ContentText(new ContentModel());
 

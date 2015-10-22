@@ -169,8 +169,8 @@ abstract class Module extends \Frontend
 	/**
 	 * Initialize the object
 	 *
-	 * @param \ModuleModel $objModule
-	 * @param string       $strColumn
+	 * @param ModuleModel|\ModuleModel $objModule
+	 * @param string                   $strColumn
 	 */
 	public function __construct($objModule, $strColumn='main')
 	{

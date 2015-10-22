@@ -14,7 +14,7 @@ use Contao\CoreBundle\Event\SetNewPasswordEvent;
 use Contao\CoreBundle\Test\TestCase;
 use Contao\MemberModel;
 use Contao\ModuleHtml;
-use Contao\DummyModel;
+use Contao\ModuleModel;
 
 /**
  * Tests the SetNewPasswordEvent class.
@@ -37,7 +37,7 @@ class SetNewPasswordEventTest extends TestCase
 
         $member   = new MemberModel();
         $password = 'foo';
-        $module   = new ModuleHtml(new DummyModel());
+        $module   = new ModuleHtml(new ModuleModel());
 
         $this->event = new SetNewPasswordEvent($member, $password, $module);
     }
@@ -47,7 +47,7 @@ class SetNewPasswordEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\SetNewPasswordEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\SetNewPasswordEvent', $this->event);
     }
 
     /**
@@ -55,12 +55,12 @@ class SetNewPasswordEventTest extends TestCase
      */
     public function testSetterGetter()
     {
-        $this->assertInstanceOf('Contao\\MemberModel', $this->event->getMember());
+        $this->assertInstanceOf('Contao\MemberModel', $this->event->getMember());
         $this->assertEquals('foo', $this->event->getPassword());
-        $this->assertInstanceOf('Contao\\ModuleHtml', $this->event->getModule());
+        $this->assertInstanceOf('Contao\ModuleHtml', $this->event->getModule());
 
         $member = new MemberModel();
-        $module = new ModuleHtml(new DummyModel());
+        $module = new ModuleHtml(new ModuleModel());
 
         $this->event->setMember($member);
         $this->event->setPassword('bar');
@@ -79,8 +79,8 @@ class SetNewPasswordEventTest extends TestCase
         $member   = new MemberModel();
         $member2  = new MemberModel();
         $password = 'foo';
-        $module   = new ModuleHtml(new DummyModel());
-        $module2  = new ModuleHtml(new DummyModel());
+        $module   = new ModuleHtml(new ModuleModel());
+        $module2  = new ModuleHtml(new ModuleModel());
 
         $this->event = new SetNewPasswordEvent($member, $password, $module);
 

@@ -44,7 +44,7 @@ class GenerateFrontendUrlEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GenerateFrontendUrlEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GenerateFrontendUrlEvent', $this->event);
     }
 
     /**

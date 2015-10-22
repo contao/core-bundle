@@ -43,7 +43,7 @@ class GetUserNavigationEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetUserNavigationEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetUserNavigationEvent', $this->event);
     }
 
     /**

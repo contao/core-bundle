@@ -143,8 +143,8 @@ abstract class ContentElement extends \Frontend
 	/**
 	 * Initialize the object
 	 *
-	 * @param \ContentModel $objElement
-	 * @param string        $strColumn
+	 * @param ContentModel|\ContentModel $objElement
+	 * @param string                     $strColumn
 	 */
 	public function __construct($objElement, $strColumn='main')
 	{

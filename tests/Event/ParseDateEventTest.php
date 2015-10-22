@@ -44,7 +44,7 @@ class ParseDateEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\ParseDateEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ParseDateEvent', $this->event);
     }
 
     /**

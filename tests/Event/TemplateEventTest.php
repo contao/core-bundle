@@ -45,7 +45,7 @@ class TemplateEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\TemplateEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\TemplateEvent', $this->event);
     }
 
     /**
@@ -55,7 +55,7 @@ class TemplateEventTest extends TestCase
     {
         $this->assertEquals('foo', $this->event->getBuffer());
         $this->assertEquals('bar', $this->event->getKey());
-        $this->assertInstanceOf('Contao\\FrontendTemplate', $this->event->getTemplate());
+        $this->assertInstanceOf('Contao\FrontendTemplate', $this->event->getTemplate());
 
         $template = new FrontendTemplate();
 

@@ -43,7 +43,7 @@ class GetCountriesEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetCountriesEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetCountriesEvent', $this->event);
     }
 
     /**

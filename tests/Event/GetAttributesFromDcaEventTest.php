@@ -44,7 +44,7 @@ class GetAttributesFromDcaEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetAttributesFromDcaEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetAttributesFromDcaEvent', $this->event);
     }
 
     /**
@@ -53,7 +53,7 @@ class GetAttributesFromDcaEventTest extends TestCase
     public function testSetterGetter()
     {
         $this->assertEquals([], $this->event->getAttributes());
-        $this->assertInstanceOf('Contao\\DC_Table', $this->event->getDataContainer());
+        $this->assertInstanceOf('Contao\DC_Table', $this->event->getDataContainer());
 
         $dca = new DC_Table('tl_member');
 

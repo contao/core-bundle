@@ -45,7 +45,7 @@ class GetCombinedFileEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Event\\GetCombinedFileEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\GetCombinedFileEvent', $this->event);
     }
 
     /**
