@@ -109,6 +109,17 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 64 }
 
+    contao.listener.request_token:
+        class: Contao\CoreBundle\EventListener\RequestTokenListener
+        arguments:
+            - "@contao.framework"
+            - "%contao.request_token.routes%"
+            - "@router"
+            - "@security.csrf.token_manager"
+            - "%contao.csrf_token_name%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     contao.listener.session:
         class: Contao\CoreBundle\EventListener\SessionListener
         arguments:
