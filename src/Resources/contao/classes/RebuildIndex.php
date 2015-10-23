@@ -79,7 +79,6 @@ class RebuildIndex extends \Backend implements \executable
 			// Dispatch the contao.get_searchable_pages event
 			$event = new ReturnValueEvent($arrPages);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
-
 			$arrPages = $event->getValue();
 
 			// HOOK: take additional pages

@@ -286,7 +286,6 @@ class FrontendTemplate extends \Template
 			// Dispatch the contao.get_cache_key event
 			$event = new ReturnValueEvent($strCacheKey);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
-
 			$strCacheKey = $event->getValue();
 
 			// HOOK: add custom logic

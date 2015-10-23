@@ -678,7 +678,6 @@ abstract class System
 		// Dispatch the contao.set_cookie event
 		$event = new ReturnValueEvent($objCookie);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_COOKIE, $event);
-
 		$objCookie = $event->getValue();
 
 		// HOOK: allow to add custom logic

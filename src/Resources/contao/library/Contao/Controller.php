@@ -426,6 +426,7 @@ abstract class Controller extends \System
 		// Dispatch the contao.get_article event
 		$event = new ReturnValueEvent($objRow);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ARTICLE, $event);
+		$objRow = $event->getValue();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getArticle']) && is_array($GLOBALS['TL_HOOKS']['getArticle']))
@@ -744,7 +745,6 @@ abstract class Controller extends \System
 		// Dispatch the contao.replace_dynamic_script_tags event
 		$event = new ReturnValueEvent($strBuffer);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REPLACE_DYNAMIC_SCRIPT_TAGS, $event);
-
 		$strBuffer = $event->getValue();
 
 		// HOOK: add custom logic
@@ -1249,6 +1249,7 @@ abstract class Controller extends \System
 		// Dispatch the contao.post_download event
 		$event = new ReturnValueEvent($strFile);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_DOWNLOAD, $event);
+		$strFile = $event->getValue();
 
 		// HOOK: post download callback
 		if (isset($GLOBALS['TL_HOOKS']['postDownload']) && is_array($GLOBALS['TL_HOOKS']['postDownload']))

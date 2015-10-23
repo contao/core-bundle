@@ -231,7 +231,6 @@ abstract class Frontend extends \Controller
 		// Dispatch the contao.get_page_id_from_url event
 		$event = new ReturnValueEvent($arrFragments);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_ID_FROM_URL, $event);
-
 		$arrFragments = $event->getValue();
 
 		// HOOK: add custom logic
@@ -734,7 +733,6 @@ abstract class Frontend extends \Controller
 		// Dispatch the contao.get_cache_key event
 		$event = new ReturnValueEvent($strCacheKey);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
-
 		$strCacheKey = $event->getValue();
 
 		// HOOK: add custom logic

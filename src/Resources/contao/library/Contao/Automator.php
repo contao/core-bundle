@@ -263,7 +263,6 @@ class Automator extends \System
 		// Dispatch the contao.remove_old_feeds event
 		$event = new ReturnValueEvent();
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REMOVE_OLD_FEEDS, $event);
-
 		$arrFeeds = array_merge($arrFeeds, $event->getValue());
 
 		// HOOK: preserve third party feeds
