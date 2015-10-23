@@ -10,18 +10,18 @@
 
 namespace Contao\CoreBundle\Test\Event;
 
-use Contao\CoreBundle\Event\ReturnValueEvent;
+use Contao\CoreBundle\Event\ReadValueEvent;
 use Contao\CoreBundle\Test\TestCase;
 
 /**
- * Tests the ReturnValueEvent class.
+ * Tests the ReadValueEvent class.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ReturnValueEventTest extends TestCase
+class ReadValueEventTest extends TestCase
 {
     /**
-     * @var ReturnValueEvent
+     * @var ReadValueEvent
      */
     private $event;
 
@@ -32,7 +32,7 @@ class ReturnValueEventTest extends TestCase
     {
         parent::setUp();
 
-        $this->event = new ReturnValueEvent('foo');
+        $this->event = new ReadValueEvent('foo');
     }
 
     /**
@@ -40,23 +40,14 @@ class ReturnValueEventTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Event\ReturnValueEvent', $this->event);
+        $this->assertInstanceOf('Contao\CoreBundle\Event\ReadValueEvent', $this->event);
     }
 
     /**
      * Tests the getters.
      */
-    public function testGetters()
+    public function testGetter()
     {
         $this->assertEquals('foo', $this->event->getValue());
-    }
-
-    /**
-     * Tests the setValue() method.
-     */
-    public function testSetValue()
-    {
-        $this->event->setValue('bar');
-        $this->assertEquals('bar', $this->event->getValue());
     }
 }

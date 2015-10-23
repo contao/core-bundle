@@ -12,7 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ImportUserEvent;
-use Contao\CoreBundle\Event\ReturnValueEvent;
+use Contao\CoreBundle\Event\ReadValueEvent;
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
 
 
@@ -310,7 +310,7 @@ abstract class User extends \System
 		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
 
 		// Dispatch the contao.post_authenticate event
-		$event = new ReturnValueEvent($this);
+		$event = new ReadValueEvent($this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_AUTHENTICATE, $event);
 
 		// HOOK: post authenticate callback
@@ -489,7 +489,7 @@ abstract class User extends \System
 		$this->log('User "' . $this->username . '" has logged in', __METHOD__, TL_ACCESS);
 
 		// Dispatch the contao.post_login event
-		$event = new ReturnValueEvent($this);
+		$event = new ReadValueEvent($this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGIN, $event);
 
 		// HOOK: post login callback
@@ -674,7 +674,7 @@ abstract class User extends \System
 		}
 
 		// Dispatch the contao.post_logout event
-		$event = new ReturnValueEvent($this);
+		$event = new ReadValueEvent($this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_LOGOUT, $event);
 
 		// HOOK: post logout callback

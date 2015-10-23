@@ -11,7 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
-use Contao\CoreBundle\Event\ReturnValueEvent;
+use Contao\CoreBundle\Event\ReadValueEvent;
 
 
 /**
@@ -92,7 +92,7 @@ class DcaLoader extends \Controller
 		}
 
 		// Dispatch the contao.load_data_container event
-		$event = new ReturnValueEvent($this->strTable);
+		$event = new ReadValueEvent($this->strTable);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_DATA_CONTAINER, $event);
 
 		// HOOK: allow to load custom settings
