@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ParseDateEvent;
+
 
 /**
  * Converts dates and date format string
@@ -616,6 +619,11 @@ class Date
 		}
 
 		$strReturn = static::resolveCustomModifiers($strDate);
+
+		// Dispatch the contao.parse_date event
+		$event = new ParseDateEvent($strReturn, $strFormat, $intTstamp);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_DATE, $event);
+		$strReturn = $event->getValue();
 
 		// HOOK: add custom logic (see #4260)
 		if (isset($GLOBALS['TL_HOOKS']['parseDate']) && is_array($GLOBALS['TL_HOOKS']['parseDate']))

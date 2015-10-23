@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\SetNewPasswordEvent;
 use Patchwork\Utf8;
 
 
@@ -176,6 +178,10 @@ class ModuleChangePassword extends \Module
 			$objMember->tstamp = time();
 			$objMember->password = $objNewPassword->value;
 			$objMember->save();
+
+			// Dispatch the contao.set_new_password event
+			$event = new SetNewPasswordEvent($objMember, $objNewPassword->value, $this);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::SET_NEW_PASSWORD, $event);
 
 			// HOOK: set new password callback
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))

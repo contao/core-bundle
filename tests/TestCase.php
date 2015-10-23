@@ -18,6 +18,7 @@ use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Scope;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -190,6 +191,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $container->setParameter('kernel.root_dir', $this->getRootDir());
         $container->setParameter('kernel.cache_dir', $this->getCacheDir());
         $container->setParameter('kernel.debug', false);
+
+        $container->set(
+            'event_dispatcher',
+            new EventDispatcher()
+        );
 
         $container->set(
             'contao.resource_finder',

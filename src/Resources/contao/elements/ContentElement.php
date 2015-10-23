@@ -100,32 +100,8 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class ContentElement extends \Frontend
+abstract class ContentElement extends \FrontendElement
 {
-
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate;
-
-	/**
-	 * Column
-	 * @var string
-	 */
-	protected $strColumn;
-
-	/**
-	 * Model
-	 * @var \ContentElement
-	 */
-	protected $objModel;
-
-	/**
-	 * Current record
-	 * @var array
-	 */
-	protected $arrData = array();
 
 	/**
 	 * Processed folders
@@ -133,18 +109,12 @@ abstract class ContentElement extends \Frontend
 	 */
 	protected $arrProcessed = array();
 
-	/**
-	 * Style array
-	 * @var array
-	 */
-	protected $arrStyle = array();
-
 
 	/**
 	 * Initialize the object
 	 *
-	 * @param \ContentModel $objElement
-	 * @param string        $strColumn
+	 * @param ContentModel|\ContentModel $objElement
+	 * @param string                     $strColumn
 	 */
 	public function __construct($objElement, $strColumn='main')
 	{
@@ -269,12 +239,6 @@ abstract class ContentElement extends \Frontend
 
 		return $this->Template->parse();
 	}
-
-
-	/**
-	 * Compile the content element
-	 */
-	abstract protected function compile();
 
 
 	/**

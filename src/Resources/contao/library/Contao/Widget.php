@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\AddCustomRegexpEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetAttributesFromDcaEvent;
+use Contao\CoreBundle\Event\ParseWidgetEvent;
 use Patchwork\Utf8;
 
 
@@ -628,6 +632,11 @@ abstract class Widget extends \Controller
 
 		$strBuffer = $this->inherit();
 
+		// Dispatch the contao.parse_widget event
+		$event = new ParseWidgetEvent($strBuffer, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_WIDGET, $event);
+		$strBuffer = $event->getBuffer();
+
 		// HOOK: add custom parse filters (see #5553)
 		if (isset($GLOBALS['TL_HOOKS']['parseWidget']) && is_array($GLOBALS['TL_HOOKS']['parseWidget']))
 		{
@@ -1065,6 +1074,10 @@ abstract class Widget extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
+					// Dispatch the contao.add_custom_regexp event
+					$event = new AddCustomRegexpEvent($this->rgxp, $varInput, $this);
+					\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::ADD_CUSTOM_REGEXP, $event);
+
 					if (isset($GLOBALS['TL_HOOKS']['addCustomRegexp']) && is_array($GLOBALS['TL_HOOKS']['addCustomRegexp']))
 					{
 						foreach ($GLOBALS['TL_HOOKS']['addCustomRegexp'] as $callback)
@@ -1255,12 +1268,12 @@ abstract class Widget extends \Controller
 	/**
 	 * Extract the Widget attributes from a Data Container array
 	 *
-	 * @param array  $arrData  The field configuration array
-	 * @param string $strName  The field name in the form
-	 * @param mixed  $varValue The field value
-	 * @param string $strField The field name in the database
-	 * @param string $strTable The table name in the database
-	 * @param object $objDca   An optional DataContainer object
+     * @param array         $arrData  The field configuration array
+     * @param string        $strName  The field name in the form
+     * @param mixed         $varValue The field value
+     * @param string        $strField The field name in the database
+     * @param string        $strTable The table name in the database
+     * @param DataContainer $objDca   An optional DataContainer object
 	 *
 	 * @return array An attributes array that can be passed to a widget
 	 */
@@ -1385,6 +1398,11 @@ abstract class Widget extends \Controller
 		{
 			$arrAttributes['rootNodes'] = $arrData['rootNodes'];
 		}
+
+		// Dispatch the contao.get_attributes_from_dca event
+		$event = new GetAttributesFromDcaEvent($arrAttributes, $objDca);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ATTRIBUTES_FROM_DCA, $event);
+		$arrAttributes = $event->getAttributes();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getAttributesFromDca']) && is_array($GLOBALS['TL_HOOKS']['getAttributesFromDca']))

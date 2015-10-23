@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
+use Contao\CoreBundle\Event\TemplateEvent;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -45,6 +48,11 @@ class FrontendTemplate extends \Template
 		}
 
 		$strBuffer = parent::parse();
+
+		// Dispatch the contao.parse_frontend_template event
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_FRONTEND_TEMPLATE, $event);
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseFrontendTemplate']))
@@ -111,6 +119,11 @@ class FrontendTemplate extends \Template
 		// Parse the template
 		$this->strBuffer = $this->parse();
 
+		// Dispatch the contao.output_frontend_template event
+		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_FRONTEND_TEMPLATE, $event);
+		$this->strBuffer = $event->getBuffer();
+
 		// HOOK: add custom output filters
 		if (isset($GLOBALS['TL_HOOKS']['outputFrontendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputFrontendTemplate']))
 		{
@@ -131,6 +144,11 @@ class FrontendTemplate extends \Template
 		$this->strBuffer = $this->replaceInsertTags($this->strBuffer, false);
 		$this->strBuffer = str_replace(array('{{request_token}}', '[{]', '[}]'), array(REQUEST_TOKEN, '{{', '}}'), $this->strBuffer);
 		$this->strBuffer = $this->replaceDynamicScriptTags($this->strBuffer); // see #4203
+
+		// Dispatch the contao.modify_frontend_page event
+		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::MODIFY_FRONTEND_PAGE, $event);
+		$this->strBuffer = $event->getBuffer();
 
 		// HOOK: allow to modify the compiled markup (see #4291)
 		if (isset($GLOBALS['TL_HOOKS']['modifyFrontendPage']) && is_array($GLOBALS['TL_HOOKS']['modifyFrontendPage']))
@@ -264,6 +282,11 @@ class FrontendTemplate extends \Template
 			{
 				$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 			}
+
+			// Dispatch the contao.get_cache_key event
+			$event = new ReturnValueEvent($strCacheKey);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
+			$strCacheKey = $event->getValue();
 
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))

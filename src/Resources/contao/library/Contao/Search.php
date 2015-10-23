@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\IndexPageEvent;
 use Patchwork\Utf8;
 
 
@@ -124,6 +126,13 @@ class Search
 				break; // see #5119
 			}
 		}
+
+		// Dispatch the contao.index_page event
+		$event = new IndexPageEvent($strContent, $arrData, $arrSet);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::INDEX_PAGE, $event);
+		$strContent = $event->getContent();
+		$arrData = $event->getData();
+		$arrSet = $event->getSet();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['indexPage']) && is_array($GLOBALS['TL_HOOKS']['indexPage']))

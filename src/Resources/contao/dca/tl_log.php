@@ -178,6 +178,11 @@ class tl_log extends Backend
 				break;
 
 			default:
+				// Dispatch the contao.colorize_log_entries event
+				$event = new Contao\CoreBundle\Event\ColorizeLogEntriesEvent($label, $row);
+				System::getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::COLORIZE_LOG_ENTRIES, $event);
+				$label = $event->getLabel();
+
 				if (isset($GLOBALS['TL_HOOKS']['colorizeLogEntries']) && is_array($GLOBALS['TL_HOOKS']['colorizeLogEntries']))
 				{
 					foreach ($GLOBALS['TL_HOOKS']['colorizeLogEntries'] as $callback)

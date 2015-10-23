@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
@@ -226,6 +228,11 @@ abstract class Frontend extends \Controller
 			array_insert($arrFragments, 1, array('auto_item'));
 		}
 
+		// Dispatch the contao.get_page_id_from_url event
+		$event = new ReturnValueEvent($arrFragments);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_ID_FROM_URL, $event);
+		$arrFragments = $event->getValue();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getPageIdFromUrl']) && is_array($GLOBALS['TL_HOOKS']['getPageIdFromUrl']))
 		{
@@ -292,12 +299,21 @@ abstract class Frontend extends \Controller
 	 */
 	public static function getRootPageFromUrl()
 	{
+		// Dispatch the contao.get_root_page_from_url event
+		$event = new ReturnValueEvent();
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ROOT_PAGE_FROM_URL, $event);
+
+		/** @var \PageModel $objRootPage */
+		if (is_object(($objRootPage = $event->getValue())))
+		{
+			return $objRootPage;
+		}
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getRootPageFromUrl']) && is_array($GLOBALS['TL_HOOKS']['getRootPageFromUrl']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getRootPageFromUrl'] as $callback)
 			{
-				/** @var \PageModel $objRootPage */
 				if (is_object(($objRootPage = static::importStatic($callback[0])->$callback[1]())))
 				{
 					return $objRootPage;
@@ -713,6 +729,11 @@ abstract class Frontend extends \Controller
 		{
 			$strCacheKey = \Environment::get('host') . '/' . \Environment::get('relativeRequest');
 		}
+
+		// Dispatch the contao.get_cache_key event
+		$event = new ReturnValueEvent($strCacheKey);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CACHE_KEY, $event);
+		$strCacheKey = $event->getValue();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getCacheKey']) && is_array($GLOBALS['TL_HOOKS']['getCacheKey']))

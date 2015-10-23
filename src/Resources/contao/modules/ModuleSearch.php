@@ -119,6 +119,8 @@ class ModuleSearch extends \Module
 				$arrPages = $this->Database->getChildRecords($objPage->rootId, 'tl_page');
 			}
 
+			// FIXME: trigger an event
+
 			// HOOK: add custom logic (see #5223)
 			if (isset($GLOBALS['TL_HOOKS']['customizeSearch']) && is_array($GLOBALS['TL_HOOKS']['customizeSearch']))
 			{

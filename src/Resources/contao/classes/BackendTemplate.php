@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\TemplateEvent;
+
 
 /**
  * Provide methods to handle back end templates.
@@ -32,6 +35,11 @@ class BackendTemplate extends \Template
 	public function parse()
 	{
 		$strBuffer = parent::parse();
+
+		// Dispatch the contao.parse_backend_template event
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_BACKEND_TEMPLATE, $event);
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseBackendTemplate']))
@@ -100,6 +108,11 @@ class BackendTemplate extends \Template
 
 		$strBuffer = $this->parse();
 		$strBuffer = static::replaceOldBePaths($strBuffer);
+
+		// Dispatch the contao.output_backend_template event
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_BACKEND_TEMPLATE, $event);
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom output filter
 		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))

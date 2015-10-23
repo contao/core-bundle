@@ -127,6 +127,8 @@ class Form extends \Hybrid
 			}
 		}
 
+		// FIXME: trigger an event
+
 		// HOOK: compile form fields
 		if (isset($GLOBALS['TL_HOOKS']['compileFormFields']) && is_array($GLOBALS['TL_HOOKS']['compileFormFields']))
 		{
@@ -188,6 +190,8 @@ class Form extends \Hybrid
 				$objWidget = new $strClass($arrData);
 				$objWidget->required = $objField->mandatory ? true : false;
 
+				// FIXME: trigger an event
+
 				// HOOK: load form field callback
 				if (isset($GLOBALS['TL_HOOKS']['loadFormField']) && is_array($GLOBALS['TL_HOOKS']['loadFormField']))
 				{
@@ -202,6 +206,8 @@ class Form extends \Hybrid
 				if (\Input::post('FORM_SUBMIT') == $formId)
 				{
 					$objWidget->validate();
+
+					// FIXME: trigger an event
 
 					// HOOK: validate form field callback
 					if (isset($GLOBALS['TL_HOOKS']['validateFormField']) && is_array($GLOBALS['TL_HOOKS']['validateFormField']))
@@ -301,6 +307,8 @@ class Form extends \Hybrid
 	 */
 	protected function processFormData($arrSubmitted, $arrLabels, $arrFields)
 	{
+		// FIXME: trigger an event
+
 		// HOOK: prepare form data callback
 		if (isset($GLOBALS['TL_HOOKS']['prepareFormData']) && is_array($GLOBALS['TL_HOOKS']['prepareFormData']))
 		{
@@ -492,6 +500,8 @@ class Form extends \Hybrid
 				}
 			}
 
+			// FIXME: trigger an event
+
 			// HOOK: store form data callback
 			if (isset($GLOBALS['TL_HOOKS']['storeFormData']) && is_array($GLOBALS['TL_HOOKS']['storeFormData']))
 			{
@@ -522,6 +532,8 @@ class Form extends \Hybrid
 		}
 
 		$arrFiles = $_SESSION['FILES'];
+
+		// FIXME: trigger an event
 
 		// HOOK: process form data callback
 		if (isset($GLOBALS['TL_HOOKS']['processFormData']) && is_array($GLOBALS['TL_HOOKS']['processFormData']))

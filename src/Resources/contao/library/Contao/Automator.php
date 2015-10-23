@@ -13,8 +13,12 @@ namespace Contao;
 use Contao\CoreBundle\Cache\ContaoCacheClearer;
 use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Command\SymlinksCommand;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetSearchablePagesEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\EventDispatcher\Event;
 
 
 /**
@@ -256,6 +260,11 @@ class Automator extends \System
 			$arrFeeds[] = $objFeeds->sitemapName;
 		}
 
+		// Dispatch the contao.remove_old_feeds event
+		$event = new ReturnValueEvent();
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REMOVE_OLD_FEEDS, $event);
+		$arrFeeds = array_merge($arrFeeds, $event->getValue());
+
 		// HOOK: preserve third party feeds
 		if (isset($GLOBALS['TL_HOOKS']['removeOldFeeds']) && is_array($GLOBALS['TL_HOOKS']['removeOldFeeds']))
 		{
@@ -349,6 +358,8 @@ class Automator extends \System
 			return;
 		}
 
+		$eventDispatcher = \System::getContainer()->get('event_dispatcher');
+
 		// Create the XML file
 		while ($objRoot->next())
 		{
@@ -363,6 +374,11 @@ class Automator extends \System
 
 			// Find the searchable pages
 			$arrPages = \Backend::findSearchablePages($objRoot->id, $strDomain, true, $objRoot->language);
+
+			// Dispatch the contao.get_searchable_pages event
+			$event = new GetSearchablePagesEvent($arrPages, $objRoot->id, $objRoot->language);
+			$eventDispatcher->dispatch(ContaoCoreEvents::GET_SEARCHABLE_PAGES, $event);
+			$arrPages = $event->getPages();
 
 			// HOOK: take additional pages
 			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
@@ -400,6 +416,10 @@ class Automator extends \System
 	{
 		// Sitemaps
 		$this->generateSitemap();
+
+		// Dispatch the contao.generate_xml_files event
+		$event = new Event();
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_XML_FILES, $event);
 
 		// HOOK: add custom jobs
 		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))

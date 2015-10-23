@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetImageEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
+
 
 /**
  * Resizes images
@@ -100,7 +104,7 @@ class Image
 	/**
 	 * Create a new object to handle an image
 	 *
-	 * @param \File $file A file instance of the original image
+	 * @param File|\File $file A file instance of the original image
 	 *
 	 * @throws \InvalidArgumentException If the file does not exists or cannot be processed
 	 */
@@ -397,6 +401,17 @@ class Image
 	 */
 	public function executeResize()
 	{
+		// Dispatch the contao.execute_resize event
+		$event = new ReturnValueEvent($this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::EXECUTE_RESIZE, $event);
+
+		if (is_string(($return = $event->getValue())))
+		{
+			$this->resizedPath = \System::urlEncode($return);
+
+			return $this;
+		}
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['executeResize']) && is_array($GLOBALS['TL_HOOKS']['executeResize']))
 		{
@@ -471,6 +486,17 @@ class Image
 
 				return $this;
 			}
+		}
+
+		// Dispatch the contao.get_image event
+		$event = new GetImageEvent($this->getOriginalPath(), $this->getTargetWidth(), $this->getTargetHeight(), $this->getResizeMode(), $this->getCacheName(), $this->fileObj, $this->getTargetPath(), $this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_IMAGE, $event);
+
+		if (is_string(($return = $event->getValue())))
+		{
+			$this->resizedPath = \System::urlEncode($return);
+
+			return $this;
 		}
 
 		// HOOK: add custom logic

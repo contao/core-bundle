@@ -132,45 +132,14 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Module extends \Frontend
+abstract class Module extends \FrontendElement
 {
-
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate;
-
-	/**
-	 * Column
-	 * @var string
-	 */
-	protected $strColumn;
-
-	/**
-	 * Model
-	 * @var \ModuleModel
-	 */
-	protected $objModel;
-
-	/**
-	 * Current record
-	 * @var array
-	 */
-	protected $arrData = array();
-
-	/**
-	 * Style array
-	 * @var array
-	 */
-	protected $arrStyle = array();
-
 
 	/**
 	 * Initialize the object
 	 *
-	 * @param \ModuleModel $objModule
-	 * @param string       $strColumn
+	 * @param ModuleModel|\ModuleModel $objModule
+	 * @param string                   $strColumn
 	 */
 	public function __construct($objModule, $strColumn='main')
 	{
@@ -290,12 +259,6 @@ abstract class Module extends \Frontend
 
 		return $this->Template->parse();
 	}
-
-
-	/**
-	 * Compile the current element
-	 */
-	abstract protected function compile();
 
 
 	/**

@@ -10,6 +10,14 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GenerateFrontendUrlEvent;
+use Contao\CoreBundle\Event\GetContentElementEvent;
+use Contao\CoreBundle\Event\GetFormEvent;
+use Contao\CoreBundle\Event\GetFrontendModuleEvent;
+use Contao\CoreBundle\Event\GetPageStatusIconEvent;
+use Contao\CoreBundle\Event\IsVisibleElementEvent;
+use Contao\CoreBundle\Event\ReturnValueEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -324,6 +332,11 @@ abstract class Controller extends \System
 			$objModule = new $strClass($objRow, $strColumn);
 			$strBuffer = $objModule->generate();
 
+			// Dispatch the contao.get_frontend_module event
+			$event = new GetFrontendModuleEvent($strBuffer, $objRow->row(), $objModule);
+			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FRONTEND_MODULE, $event);
+			$strBuffer = $event->getBuffer();
+
 			// HOOK: add custom logic
 			if (isset($GLOBALS['TL_HOOKS']['getFrontendModule']) && is_array($GLOBALS['TL_HOOKS']['getFrontendModule']))
 			{
@@ -410,6 +423,11 @@ abstract class Controller extends \System
 		$objRow->headline = $objRow->title;
 		$objRow->multiMode = $blnMultiMode;
 
+		// Dispatch the contao.get_article event
+		$event = new ReturnValueEvent($objRow);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_ARTICLE, $event);
+		$objRow = $event->getValue();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getArticle']) && is_array($GLOBALS['TL_HOOKS']['getArticle']))
 		{
@@ -483,6 +501,11 @@ abstract class Controller extends \System
 		$objElement = new $strClass($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
 
+		// Dispatch the contao.get_content_element event
+		$event = new GetContentElementEvent($strBuffer, $objRow->row(), $objElement);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CONTENT_ELEMENT, $event);
+		$strBuffer = $event->getBuffer();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getContentElement']) && is_array($GLOBALS['TL_HOOKS']['getContentElement']))
 		{
@@ -535,6 +558,11 @@ abstract class Controller extends \System
 		$objRow->form = $objRow->id;
 		$objElement = new \Form($objRow, $strColumn);
 		$strBuffer = $objElement->generate();
+
+		// Dispatch the contao.get_form event
+		$event = new GetFormEvent($strBuffer, $objRow->row(), $objElement);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FORM, $event);
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getForm']) && is_array($GLOBALS['TL_HOOKS']['getForm']))
@@ -612,6 +640,11 @@ abstract class Controller extends \System
 			$image = $objPage->type.'_'.$sub.'.gif';
 		}
 
+		// Dispatch the contao.get_page_status_icon event
+		$event = new GetPageStatusIconEvent($image, $objPage);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_PAGE_STATUS_ICON, $event);
+		$image = $event->getImage();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getPageStatusIcon']) && is_array($GLOBALS['TL_HOOKS']['getPageStatusIcon']))
 		{
@@ -666,6 +699,11 @@ abstract class Controller extends \System
 			$blnReturn = false;
 		}
 
+		// Dispatch the contao.is_visible_element event
+		$event = new IsVisibleElementEvent($blnReturn, $objElement);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::IS_VISIBLE_ELEMENT, $event);
+		$blnReturn = $event->isVisible();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))
 		{
@@ -704,6 +742,11 @@ abstract class Controller extends \System
 	 */
 	public static function replaceDynamicScriptTags($strBuffer)
 	{
+		// Dispatch the contao.replace_dynamic_script_tags event
+		$event = new ReturnValueEvent($strBuffer);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REPLACE_DYNAMIC_SCRIPT_TAGS, $event);
+		$strBuffer = $event->getValue();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']) && is_array($GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']))
 		{
@@ -1107,6 +1150,11 @@ abstract class Controller extends \System
 			$strUrl = ($arrRow['rootUseSSL'] ? 'https://' : 'http://') . $arrRow['domain'] . \Environment::get('path') . '/' . $strUrl;
 		}
 
+		// Dispatch the contao.generate_frontend_url event
+		$event = new GenerateFrontendUrlEvent($strUrl, $arrRow, $strParams);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GENERATE_FRONTEND_URL, $event);
+		$strUrl = $event->getUrl();
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))
 		{
@@ -1197,6 +1245,11 @@ abstract class Controller extends \System
 		{
 			throw new AccessDeniedException(sprintf('File type "%s" is not allowed', $objFile->extension));
 		}
+
+		// Dispatch the contao.post_download event
+		$event = new ReturnValueEvent($strFile);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::POST_DOWNLOAD, $event);
+		$strFile = $event->getValue();
 
 		// HOOK: post download callback
 		if (isset($GLOBALS['TL_HOOKS']['postDownload']) && is_array($GLOBALS['TL_HOOKS']['postDownload']))

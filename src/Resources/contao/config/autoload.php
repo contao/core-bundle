@@ -27,6 +27,7 @@ ClassLoader::addClasses(array
 	'Contao\DropZone'                  => 'vendor/contao/core-bundle/src/Resources/contao/classes/DropZone.php',
 	'Contao\FileUpload'                => 'vendor/contao/core-bundle/src/Resources/contao/classes/FileUpload.php',
 	'Contao\Frontend'                  => 'vendor/contao/core-bundle/src/Resources/contao/classes/Frontend.php',
+	'Contao\FrontendElement'           => 'vendor/contao/core-bundle/src/Resources/contao/classes/FrontendElement.php',
 	'Contao\FrontendTemplate'          => 'vendor/contao/core-bundle/src/Resources/contao/classes/FrontendTemplate.php',
 	'Contao\FrontendUser'              => 'vendor/contao/core-bundle/src/Resources/contao/classes/FrontendUser.php',
 	'Contao\Hybrid'                    => 'vendor/contao/core-bundle/src/Resources/contao/classes/Hybrid.php',

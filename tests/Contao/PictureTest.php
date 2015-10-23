@@ -14,6 +14,7 @@ use Contao\CoreBundle\Test\TestCase;
 use Contao\Picture;
 use Contao\System;
 use Symfony\Component\Filesystem\Filesystem;
+use Contao\System;
 
 /**
  * Tests the Picture class.

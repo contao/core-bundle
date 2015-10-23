@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\GetCombinedFileEvent;
 use Leafo\ScssPhp\Compiler;
 
 
@@ -259,9 +261,16 @@ class Combiner extends \System
 		$objFile = new \File('assets/' . $strTarget . '/' . $strKey . $this->strMode);
 		$objFile->truncate();
 
+		$eventDispatcher = \System::getContainer()->get('event_dispatcher');
+
 		foreach ($this->arrFiles as $arrFile)
 		{
 			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
+
+			// Dispatch the contao.get_combined_file event
+			$event = new GetCombinedFileEvent($content, $strKey, $this->strMode, $arrFile);
+			$eventDispatcher->dispatch(ContaoCoreEvents::GET_COMBINED_FILE, $event);
+			$content = $event->getContent();
 
 			// HOOK: modify the file content
 			if (isset($GLOBALS['TL_HOOKS']['getCombinedFile']) && is_array($GLOBALS['TL_HOOKS']['getCombinedFile']))

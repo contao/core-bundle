@@ -1038,6 +1038,8 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				$arrUploaded = $objUploader->uploadTo($strFolder);
 			}
 
+			// FIXME: trigger an event
+
 			// HOOK: post upload callback
 			if (isset($GLOBALS['TL_HOOKS']['postUpload']) && is_array($GLOBALS['TL_HOOKS']['postUpload']))
 			{

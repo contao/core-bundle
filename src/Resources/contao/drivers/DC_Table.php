@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReviseTableEvent;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -3207,6 +3209,15 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
 		$new_records = $objSessionBag->get('new_records');
+
+		// Dispatch the contao.revise_table event
+		$event = new ReviseTableEvent($this->strTable, $new_records[$this->strTable], $ptable, $ctable);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::REVISE_TABLE, $event);
+
+		if ($event->isReload() === true)
+		{
+			$reload = true;
+		}
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['reviseTable']) && is_array($GLOBALS['TL_HOOKS']['reviseTable']))

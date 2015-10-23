@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReadValueEvent;
+
 
 /**
  * Loads a set of DCA files
@@ -87,6 +90,10 @@ class DcaLoader extends \Controller
 			}
 			catch (\InvalidArgumentException $e) {}
 		}
+
+		// Dispatch the contao.load_data_container event
+		$event = new ReadValueEvent($this->strTable);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::LOAD_DATA_CONTAINER, $event);
 
 		// HOOK: allow to load custom settings
 		if (isset($GLOBALS['TL_HOOKS']['loadDataContainer']) && is_array($GLOBALS['TL_HOOKS']['loadDataContainer']))

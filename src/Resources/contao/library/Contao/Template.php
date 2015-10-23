@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ReadValueEvent;
 use MatthiasMullie\Minify;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -266,6 +268,10 @@ abstract class Template extends \Controller
 		{
 			return '';
 		}
+
+		// Dispatch the contao.parse_template event
+		$event = new ReadValueEvent($this);
+		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PARSE_TEMPLATE, $event);
 
 		// HOOK: add custom parse filters
 		if (isset($GLOBALS['TL_HOOKS']['parseTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseTemplate']))

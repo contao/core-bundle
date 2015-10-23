@@ -144,6 +144,8 @@ class BackendMain extends \Backend
 		$objTemplate = new \BackendTemplate('be_welcome');
 		$objTemplate->messages = \Message::generateUnwrapped();
 
+		// FIXME: trigger an event
+
 		// HOOK: add custom messages
 		if (isset($GLOBALS['TL_HOOKS']['getSystemMessages']) && is_array($GLOBALS['TL_HOOKS']['getSystemMessages']))
 		{

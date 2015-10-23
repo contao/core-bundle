@@ -543,19 +543,21 @@ class tl_member extends Backend
 			return $strPassword;
 		}
 
-		$objUser = $this->Database->prepare("SELECT * FROM tl_member WHERE id=?")
-								  ->limit(1)
-								  ->execute($user->id);
+		$objMember = MemberModel::findByPk($user->id);
 
 		// HOOK: set new password callback
-		if ($objUser->numRows)
+		if ($objMember !== null)
 		{
+			// Dispatch the contao.set_new_password event
+			$event = new Contao\CoreBundle\Event\SetNewPasswordEvent($objMember, $strPassword);
+			System::getContainer()->get('event_dispatcher')->dispatch(Contao\CoreBundle\Event\ContaoCoreEvents::SET_NEW_PASSWORD, $event);
+
 			if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['setNewPassword'] as $callback)
 				{
 					$this->import($callback[0]);
-					$this->$callback[0]->$callback[1]($objUser, $strPassword);
+					$this->$callback[0]->$callback[1]($objMember, $strPassword);
 				}
 			}
 		}
