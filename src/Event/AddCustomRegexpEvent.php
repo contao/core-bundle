@@ -23,7 +23,7 @@ class AddCustomRegexpEvent extends Event
     /**
      * @var string
      */
-    private $name;
+    private $regexName;
 
     /**
      * @var mixed
@@ -38,13 +38,13 @@ class AddCustomRegexpEvent extends Event
     /**
      * Constructor.
      *
-     * @param string $name   The regular expression name
-     * @param mixed  $input  The user input
-     * @param Widget $widget The widget object
+     * @param string $regexName The regular expression name
+     * @param mixed  $input     The user input
+     * @param Widget $widget    The widget object
      */
-    public function __construct($name, $input, Widget $widget)
+    public function __construct($regexName, $input, Widget $widget)
     {
-        $this->name = $name;
+        $this->regexName = $regexName;
         $this->input = $input;
         $this->widget = $widget;
     }
@@ -54,9 +54,9 @@ class AddCustomRegexpEvent extends Event
      *
      * @return string The regular expression name
      */
-    public function getName()
+    public function getRegexName()
     {
-        return $this->name;
+        return $this->regexName;
     }
 
     /**

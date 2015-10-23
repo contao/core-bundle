@@ -49,7 +49,7 @@ class AddCustomRegexpEventTest extends TestCase
      */
     public function testGetters()
     {
-        $this->assertEquals('email', $this->event->getName());
+        $this->assertEquals('email', $this->event->getRegexName());
         $this->assertEquals('test@example.com', $this->event->getInput());
         $this->assertInstanceOf('Contao\TextField', $this->event->getWidget());
     }
