@@ -106,13 +106,13 @@ class BackendTemplate extends \Template
 			$this->mootools = $strMootools;
 		}
 
-		$this->strBuffer = $this->parse();
-		$this->strBuffer = static::replaceOldBePaths($this->strBuffer);
+		$strBuffer = $this->parse();
+		$strBuffer = static::replaceOldBePaths($strBuffer);
 
 		// Dispatch the contao.output_backend_template event
-		$event = new TemplateEvent($this->strBuffer, $this->strTemplate, $this);
+		$event = new TemplateEvent($strBuffer, $this->strTemplate, $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::OUTPUT_BACKEND_TEMPLATE, $event);
-		$this->strBuffer = $event->getBuffer();
+		$strBuffer = $event->getBuffer();
 
 		// HOOK: add custom output filter
 		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
@@ -120,9 +120,11 @@ class BackendTemplate extends \Template
 			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->strBuffer = $this->$callback[0]->$callback[1]($this->strBuffer, $this->strTemplate);
+				$strBuffer = $this->$callback[0]->$callback[1]($strBuffer, $this->strTemplate);
 			}
 		}
+
+		$this->strBuffer = $strBuffer;
 
 		parent::compile();
 	}
