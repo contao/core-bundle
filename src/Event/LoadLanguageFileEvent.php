@@ -22,7 +22,7 @@ class LoadLanguageFileEvent extends Event
     /**
      * @var string
      */
-    private $name;
+    private $filename;
 
     /**
      * @var string
@@ -37,25 +37,25 @@ class LoadLanguageFileEvent extends Event
     /**
      * Constructor.
      *
-     * @param string $name     The file name
+     * @param string $filename The file name
      * @param string $language The language
      * @param string $cacheKey The cache key
      */
-    public function __construct($name, $language, $cacheKey)
+    public function __construct($filename, $language, $cacheKey)
     {
-        $this->name = $name;
+        $this->filename = $filename;
         $this->language = $language;
         $this->cacheKey = $cacheKey;
     }
 
     /**
-     * Returns the name.
+     * Returns the file name.
      *
      * @return string The name
      */
-    public function getName()
+    public function getFilename()
     {
-        return $this->name;
+        return $this->filename;
     }
 
     /**

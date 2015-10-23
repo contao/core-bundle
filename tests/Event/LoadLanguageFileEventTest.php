@@ -48,7 +48,7 @@ class LoadLanguageFileEventTest extends TestCase
      */
     public function testGetters()
     {
-        $this->assertEquals('test', $this->event->getName());
+        $this->assertEquals('test', $this->event->getFilename());
         $this->assertEquals('en', $this->event->getLanguage());
         $this->assertEquals('test-en', $this->event->getCacheKey());
     }
