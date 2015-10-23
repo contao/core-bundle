@@ -26,6 +26,7 @@ namespace {
 	class DropZone extends \Contao\DropZone {}
 	class FileUpload extends \Contao\FileUpload {}
 	abstract class Frontend extends \Contao\Frontend {}
+	abstract class FrontendElement extends \Contao\FrontendElement {}
 	class FrontendTemplate extends \Contao\FrontendTemplate {}
 	class FrontendUser extends \Contao\FrontendUser {}
 	abstract class Hybrid extends \Contao\Hybrid {}

@@ -19,14 +19,8 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Hybrid extends \Frontend
+abstract class Hybrid extends \FrontendElement
 {
-
-	/**
-	 * Key
-	 * @var string
-	 */
-	protected $strKey;
 
 	/**
 	 * Table
@@ -35,40 +29,16 @@ abstract class Hybrid extends \Frontend
 	protected $strTable;
 
 	/**
-	 * Template
+	 * Key
 	 * @var string
 	 */
-	protected $strTemplate;
-
-	/**
-	 * Column
-	 * @var string
-	 */
-	protected $strColumn;
-
-	/**
-	 * Model
-	 * @var \Model
-	 */
-	protected $objModel;
+	protected $strKey;
 
 	/**
 	 * Parent element
 	 * @var \Model|object
 	 */
 	protected $objParent;
-
-	/**
-	 * Current record
-	 * @var array
-	 */
-	protected $arrData = array();
-
-	/**
-	 * Style array
-	 * @var array
-	 */
-	protected $arrStyle = array();
 
 
 	/**
@@ -260,10 +230,4 @@ abstract class Hybrid extends \Frontend
 
 		return $this->Template->parse();
 	}
-
-
-	/**
-	 * Compile the current element
-	 */
-	abstract protected function compile();
 }

@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\ContentElement;
+use Contao\FrontendElement;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -31,18 +31,20 @@ class GetContentElementEvent extends Event
     private $row;
 
     /**
-     * @var ContentElement
+     * @var FrontendElement
      */
     private $element;
 
     /**
      * Constructor.
      *
-     * @param string         $buffer  The buffer
-     * @param array          $row     The row
-     * @param ContentElement $element The content element
+     * @param string          $buffer  The buffer
+     * @param array           $row     The row
+     * @param FrontendElement $element The content element
+     *
+     * @throws \InvalidArgumentException If $element is invalid
      */
-    public function __construct($buffer, array $row, ContentElement $element)
+    public function __construct($buffer, array $row, FrontendElement $element)
     {
         $this->buffer = $buffer;
         $this->row = $row;
@@ -82,7 +84,7 @@ class GetContentElementEvent extends Event
     /**
      * Returns the content element.
      *
-     * @return ContentElement The content element
+     * @return FrontendElement The content element
      */
     public function getElement()
     {

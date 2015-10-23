@@ -333,7 +333,7 @@ abstract class Controller extends \System
 			$strBuffer = $objModule->generate();
 
 			// Dispatch the contao.get_frontend_module event
-			$event = new GetFrontendModuleEvent($strBuffer, $objRow, $objModule);
+			$event = new GetFrontendModuleEvent($strBuffer, $objRow->row(), $objModule);
 			\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FRONTEND_MODULE, $event);
 			$strBuffer = $event->getBuffer();
 
@@ -502,7 +502,7 @@ abstract class Controller extends \System
 		$strBuffer = $objElement->generate();
 
 		// Dispatch the contao.get_content_element event
-		$event = new GetContentElementEvent($strBuffer, $objRow, $objElement);
+		$event = new GetContentElementEvent($strBuffer, $objRow->row(), $objElement);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_CONTENT_ELEMENT, $event);
 		$strBuffer = $event->getBuffer();
 
@@ -560,7 +560,7 @@ abstract class Controller extends \System
 		$strBuffer = $objElement->generate();
 
 		// Dispatch the contao.get_form event
-		$event = new GetFormEvent($strBuffer, $objRow, $objElement);
+		$event = new GetFormEvent($strBuffer, $objRow->row(), $objElement);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_FORM, $event);
 		$strBuffer = $event->getBuffer();
 

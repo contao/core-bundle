@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Contao\Module;
+use Contao\FrontendElement;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -31,18 +31,18 @@ class GetFrontendModuleEvent extends Event
     private $row;
 
     /**
-     * @var Module
+     * @var FrontendElement
      */
     private $module;
 
     /**
      * Constructor.
      *
-     * @param string $buffer The buffer
-     * @param array  $row    The row
-     * @param Module $module The module
+     * @param string          $buffer The buffer
+     * @param array           $row    The row
+     * @param FrontendElement $module The module
      */
-    public function __construct($buffer, array $row, Module $module)
+    public function __construct($buffer, array $row, FrontendElement $module)
     {
         $this->buffer = $buffer;
         $this->row = $row;
@@ -82,7 +82,7 @@ class GetFrontendModuleEvent extends Event
     /**
      * Returns the module.
      *
-     * @return Module The module
+     * @return FrontendElement The module
      */
     public function getModule()
     {
