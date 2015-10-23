@@ -492,7 +492,7 @@ class Image
 		$event = new GetImageEvent($this->getOriginalPath(), $this->getTargetWidth(), $this->getTargetHeight(), $this->getResizeMode(), $this->getCacheName(), $this->fileObj, $this->getTargetPath(), $this);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_IMAGE, $event);
 
-		if (is_string(($return = $event->getReturnValue())))
+		if (is_string(($return = $event->getValue())))
 		{
 			$this->resizedPath = \System::urlEncode($return);
 

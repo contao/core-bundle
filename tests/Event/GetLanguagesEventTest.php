@@ -53,7 +53,7 @@ class GetLanguagesEventTest extends TestCase
      */
     public function testGetters()
     {
-        $this->assertEquals(['de' => 'German - Deutsch'], $this->event->getReturnValue());
+        $this->assertEquals(['de' => 'German - Deutsch'], $this->event->getValue());
         $this->assertEquals(['de' => 'German'], $this->event->getLanguages());
         $this->assertEquals(['de' => 'Deutsch'], $this->event->getLangsNative());
         $this->assertFalse($this->event->isInstalledOnly());
@@ -64,25 +64,7 @@ class GetLanguagesEventTest extends TestCase
      */
     public function testSetReturnValue()
     {
-        $this->event->setReturnValue(['fr' => 'French - Français']);
-        $this->assertEquals(['fr' => 'French - Français'], $this->event->getReturnValue());
-    }
-
-    /**
-     * Tests the setLanguages() method.
-     */
-    public function testSetLanguages()
-    {
-        $this->event->setLanguages(['fr' => 'French']);
-        $this->assertEquals(['fr' => 'French'], $this->event->getLanguages());
-    }
-
-    /**
-     * Tests the setLangsNative() method.
-     */
-    public function testSetLangsNative()
-    {
-        $this->event->setLangsNative(['fr' => 'Français']);
-        $this->assertEquals(['fr' => 'Français'], $this->event->getLangsNative());
+        $this->event->setValue(['fr' => 'French - Français']);
+        $this->assertEquals(['fr' => 'French - Français'], $this->event->getValue());
     }
 }

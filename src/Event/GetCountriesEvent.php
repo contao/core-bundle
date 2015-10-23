@@ -10,20 +10,13 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Allows to execute logic when the country list is compiled.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class GetCountriesEvent extends Event
+class GetCountriesEvent extends ReturnValueEvent
 {
-    /**
-     * @var array
-     */
-    private $return;
-
     /**
      * @var array
      */
@@ -32,33 +25,14 @@ class GetCountriesEvent extends Event
     /**
      * Constructor.
      *
-     * @param array $return    The array to be returned
+     * @param array $value     The array to be returned
      * @param array $countries The countries list
      */
-    public function __construct(array $return, array $countries)
+    public function __construct(array $value, array $countries)
     {
-        $this->return = $return;
+        parent::__construct($value);
+
         $this->countries = $countries;
-    }
-
-    /**
-     * Returns the array to be returned.
-     *
-     * @return array The array to be returned
-     */
-    public function getReturnValue()
-    {
-        return $this->return;
-    }
-
-    /**
-     * Sets the array to be returned.
-     *
-     * @param array $return The array to be returned
-     */
-    public function setReturnValue(array $return)
-    {
-        $this->return = $return;
     }
 
     /**
@@ -69,15 +43,5 @@ class GetCountriesEvent extends Event
     public function getCountries()
     {
         return $this->countries;
-    }
-
-    /**
-     * Sets the countries list.
-     *
-     * @param array $countries The countries list
-     */
-    public function setCountries(array $countries)
-    {
-        $this->countries = $countries;
     }
 }

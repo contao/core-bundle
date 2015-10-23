@@ -48,17 +48,17 @@ class ParseDateEventTest extends TestCase
      */
     public function testGetters()
     {
-        $this->assertEquals('2015-05-07', $this->event->getReturnValue());
+        $this->assertEquals('2015-05-07', $this->event->getValue());
         $this->assertEquals('Y-m-d', $this->event->getFormat());
         $this->assertEquals(1430985610, $this->event->getTimestamp());
     }
 
     /**
-     * Tests the setReturnValue() method.
+     * Tests the setValue() method.
      */
-    public function testSetReturnVaue()
+    public function testSetValue()
     {
-        $this->event->setReturnValue('07.05.2015');
-        $this->assertEquals('07.05.2015', $this->event->getReturnValue());
+        $this->event->setValue('07.05.2015');
+        $this->assertEquals('07.05.2015', $this->event->getValue());
     }
 }

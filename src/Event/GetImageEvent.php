@@ -12,20 +12,14 @@ namespace Contao\CoreBundle\Event;
 
 use Contao\File;
 use Contao\Image;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Allows to execute logic when an image is resized.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class GetImageEvent extends Event
+class GetImageEvent extends ReturnValueEvent
 {
-    /**
-     * @var string
-     */
-    private $return;
-
     /**
      * @var string
      */
@@ -96,26 +90,6 @@ class GetImageEvent extends Event
         $this->fileObj = $fileObj;
         $this->targetPath = $targetPath;
         $this->imageObj = $imageObj;
-    }
-
-    /**
-     * Returns the return value.
-     *
-     * @return string The return value
-     */
-    public function getReturnValue()
-    {
-        return $this->return;
-    }
-
-    /**
-     * Sets the return value.
-     *
-     * @param string $return The return value
-     */
-    public function setReturnValue($return)
-    {
-        $this->return = $return;
     }
 
     /**

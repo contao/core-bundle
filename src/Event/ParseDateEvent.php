@@ -10,20 +10,13 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Allows to execute logic when a date is parsed.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ParseDateEvent extends Event
+class ParseDateEvent extends ReturnValueEvent
 {
-    /**
-     * @var string
-     */
-    private $return;
-
     /**
      * @var string
      */
@@ -37,35 +30,16 @@ class ParseDateEvent extends Event
     /**
      * Constructor.
      *
-     * @param string $return    The return value
+     * @param string $value     The return value
      * @param string $format    The date format
      * @param int    $timestamp The timestamp
      */
-    public function __construct($return, $format, $timestamp)
+    public function __construct($value, $format, $timestamp)
     {
-        $this->return = $return;
+        parent::__construct($value);
+
         $this->format = $format;
         $this->timestamp = $timestamp;
-    }
-
-    /**
-     * Returns the return value.
-     *
-     * @return string The return value
-     */
-    public function getReturnValue()
-    {
-        return $this->return;
-    }
-
-    /**
-     * Sets the return value.
-     *
-     * @param string $return The return value
-     */
-    public function setReturnValue($return)
-    {
-        $this->return = $return;
     }
 
     /**

@@ -505,8 +505,7 @@ abstract class System
 		// Dispatch the contao.get_countries event
 		$event = new GetCountriesEvent($return, $countries);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_COUNTRIES, $event);
-		$return = $event->getReturnValue();
-		$countries = $event->getCountries();
+		$return = $event->getValue();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getCountries']) && is_array($GLOBALS['TL_HOOKS']['getCountries']))
@@ -564,9 +563,7 @@ abstract class System
 		// Dispatch the contao.get_languages event
 		$event = new GetLanguagesEvent($return, $languages, $langsNative, $blnInstalledOnly);
 		\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::GET_LANGUAGES, $event);
-		$return = $event->getReturnValue();
-		$languages = $event->getLanguages();
-		$langsNative = $event->getLangsNative();
+		$return = $event->getValue();
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['getLanguages']) && is_array($GLOBALS['TL_HOOKS']['getLanguages']))

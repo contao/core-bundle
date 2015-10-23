@@ -61,7 +61,7 @@ class GetImageEventTest extends TestCase
      */
     public function testGetters()
     {
-        $this->assertNull($this->event->getReturnValue());
+        $this->assertNull($this->event->getValue());
         $this->assertEquals('images/dummy.jpg', $this->event->getOriginalPath());
         $this->assertEquals(200, $this->event->getTargetWidth());
         $this->assertEquals(150, $this->event->getTargetHeight());
@@ -77,7 +77,7 @@ class GetImageEventTest extends TestCase
      */
     public function testReturnValue()
     {
-        $this->event->setReturnValue('assets/images/b/dummy-f985b.jpg');
-        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getReturnValue());
+        $this->event->setValue('assets/images/b/dummy-f985b.jpg');
+        $this->assertEquals('assets/images/b/dummy-f985b.jpg', $this->event->getValue());
     }
 }

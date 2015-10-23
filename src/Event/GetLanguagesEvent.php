@@ -10,20 +10,13 @@
 
 namespace Contao\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Allows to execute logic when the language list is compiled.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class GetLanguagesEvent extends Event
+class GetLanguagesEvent extends ReturnValueEvent
 {
-    /**
-     * @var array
-     */
-    private $return;
-
     /**
      * @var array
      */
@@ -42,37 +35,18 @@ class GetLanguagesEvent extends Event
     /**
      * Constructor.
      *
-     * @param array $return        The array to be returned
+     * @param array $value         The array to be returned
      * @param array $languages     The languages list
      * @param array $langsNative   The native languages list
      * @param bool  $installedOnly True to return only installed languages
      */
-    public function __construct(array $return, array $languages, array $langsNative, $installedOnly)
+    public function __construct(array $value, array $languages, array $langsNative, $installedOnly)
     {
-        $this->return = $return;
+        parent::__construct($value);
+
         $this->languages = $languages;
         $this->langsNative = $langsNative;
         $this->installedOnly = $installedOnly;
-    }
-
-    /**
-     * Returns the array to be returned.
-     *
-     * @return array The array to be returned
-     */
-    public function getReturnValue()
-    {
-        return $this->return;
-    }
-
-    /**
-     * Sets the array to be returned.
-     *
-     * @param array $return The array to be returned
-     */
-    public function setReturnValue(array $return)
-    {
-        $this->return = $return;
     }
 
     /**
@@ -86,16 +60,6 @@ class GetLanguagesEvent extends Event
     }
 
     /**
-     * Sets the languages list.
-     *
-     * @param array $languages The languages list
-     */
-    public function setLanguages(array $languages)
-    {
-        $this->languages = $languages;
-    }
-
-    /**
      * Returns the native languages list.
      *
      * @return array The native languages list
@@ -103,16 +67,6 @@ class GetLanguagesEvent extends Event
     public function getLangsNative()
     {
         return $this->langsNative;
-    }
-
-    /**
-     * Sets the native languages list.
-     *
-     * @param array $langsNative The native languages list
-     */
-    public function setLangsNative(array $langsNative)
-    {
-        $this->langsNative = $langsNative;
     }
 
     /**
