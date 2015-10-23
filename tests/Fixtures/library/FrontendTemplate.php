@@ -2,9 +2,7 @@
 
 namespace Contao\Fixtures;
 
-use Contao\Template;
-
-class FrontendTemplate extends Template
+class FrontendTemplate extends \Contao\Template
 {
     public function __construct()
     {

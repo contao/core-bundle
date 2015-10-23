@@ -2,9 +2,7 @@
 
 namespace Contao\Fixtures;
 
-use Contao\Widget;
-
-class TextField extends Widget
+class TextField extends \Contao\Widget
 {
     public function generate()
     {

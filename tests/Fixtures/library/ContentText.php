@@ -2,9 +2,7 @@
 
 namespace Contao\Fixtures;
 
-use Contao\ContentElement;
-
-class ContentText extends ContentElement
+class ContentText extends \Contao\ContentElement
 {
     public function compile()
     {

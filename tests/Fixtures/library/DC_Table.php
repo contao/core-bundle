@@ -2,8 +2,15 @@
 
 namespace Contao\Fixtures;
 
-use Contao\DataContainer;
-
-class DC_Table extends DataContainer
+class DC_Table extends \Contao\DataContainer
 {
+    public function getPalette()
+    {
+        // ignore
+    }
+
+    protected function save($varValue)
+    {
+        // ignore
+    }
 }

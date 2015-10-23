@@ -2,9 +2,7 @@
 
 namespace Contao\Fixtures;
 
-use Contao\Model;
-
-class LayoutModel extends Model
+class LayoutModel extends \Contao\Model
 {
     private $data;
 

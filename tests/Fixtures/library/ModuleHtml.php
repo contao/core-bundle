@@ -2,9 +2,7 @@
 
 namespace Contao\Fixtures;
 
-use Contao\Module;
-
-class ModuleHtml extends Module
+class ModuleHtml extends \Contao\Module
 {
     public function compile()
     {

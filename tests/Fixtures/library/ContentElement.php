@@ -2,6 +2,10 @@
 
 namespace Contao\Fixtures;
 
-class ContentElement
+class ContentElement extends \Contao\FrontendElement
 {
+    public function compile()
+    {
+        // ignore
+    }
 }
