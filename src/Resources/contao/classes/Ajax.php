@@ -159,7 +159,7 @@ class Ajax extends \Backend
 					foreach ($GLOBALS['TL_HOOKS']['executePreActions'] as $callback)
 					{
 						$this->import($callback[0]);
-						$this->$callback[0]->$callback[1]($this->strAction);
+						$this->$callback[0]->$callback[1]($this->strAction); # FIXME: PHP7
 					}
 				}
 				break;
@@ -275,7 +275,7 @@ class Ajax extends \Backend
 						if (is_array($callback))
 						{
 							$this->import($callback[0]);
-							$varValue = $this->$callback[0]->$callback[1]($varValue, $dc);
+							$varValue = $this->$callback[0]->$callback[1]($varValue, $dc); # FIXME: PHP7
 						}
 						elseif (is_callable($callback))
 						{
@@ -407,7 +407,7 @@ class Ajax extends \Backend
 			foreach ($GLOBALS['TL_HOOKS']['executePostActions'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($this->strAction, $dc);
+				$this->$callback[0]->$callback[1]($this->strAction, $dc); # FIXME: PHP7
 			}
 		}
 	}

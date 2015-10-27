@@ -402,7 +402,7 @@ class Image
 		{
 			foreach ($GLOBALS['TL_HOOKS']['executeResize'] as $callback)
 			{
-				$return = \System::importStatic($callback[0])->$callback[1]($this);
+				$return = \System::importStatic($callback[0])->$callback[1]($this); # FIXME: PHP7
 
 				if (is_string($return))
 				{
@@ -478,7 +478,7 @@ class Image
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getImage'] as $callback)
 			{
-				$return = \System::importStatic($callback[0])->$callback[1]($this->getOriginalPath(), $this->getTargetWidth(), $this->getTargetHeight(), $this->getResizeMode(), $this->getCacheName(), $this->fileObj, $this->getTargetPath(), $this);
+				$return = \System::importStatic($callback[0])->$callback[1]($this->getOriginalPath(), $this->getTargetWidth(), $this->getTargetHeight(), $this->getResizeMode(), $this->getCacheName(), $this->fileObj, $this->getTargetPath(), $this); # FIXME: PHP7
 
 				if (is_string($return))
 				{

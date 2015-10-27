@@ -416,7 +416,7 @@ class ContaoFramework implements ContaoFrameworkInterface
     {
         if (isset($GLOBALS['TL_HOOKS']['initializeSystem']) && is_array($GLOBALS['TL_HOOKS']['initializeSystem'])) {
             foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
-                System::importStatic($callback[0])->$callback[1]();
+                System::importStatic($callback[0])->$callback[1](); # FIXME: PHP7
             }
         }
 

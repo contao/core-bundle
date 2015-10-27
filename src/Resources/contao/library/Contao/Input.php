@@ -68,7 +68,7 @@ class Input
 		$_COOKIE = static::cleanKey($_COOKIE);
 
 		// Only check magic quotes once (see #3438)
-		static::$blnMagicQuotes = function_exists('get_magic_quotes_gpc') && @get_magic_quotes_gpc();
+		static::$blnMagicQuotes = function_exists('get_magic_quotes_gpc') && @get_magic_quotes_gpc(); # FIXME: PHP7
 	}
 
 

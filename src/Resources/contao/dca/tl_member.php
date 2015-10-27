@@ -555,7 +555,7 @@ class tl_member extends Backend
 				foreach ($GLOBALS['TL_HOOKS']['setNewPassword'] as $callback)
 				{
 					$this->import($callback[0]);
-					$this->$callback[0]->$callback[1]($objUser, $strPassword);
+					$this->$callback[0]->$callback[1]($objUser, $strPassword); # FIXME: PHP7
 				}
 			}
 		}
@@ -694,7 +694,7 @@ class tl_member extends Backend
 				if (is_array($callback))
 				{
 					$this->import($callback[0]);
-					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, ($dc ?: $this));
+					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, ($dc ?: $this)); # FIXME: PHP7
 				}
 				elseif (is_callable($callback))
 				{

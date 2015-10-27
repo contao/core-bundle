@@ -231,7 +231,7 @@ abstract class Frontend extends \Controller
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getPageIdFromUrl'] as $callback)
 			{
-				$arrFragments = static::importStatic($callback[0])->$callback[1]($arrFragments);
+				$arrFragments = static::importStatic($callback[0])->$callback[1]($arrFragments); # FIXME: PHP7
 			}
 		}
 
@@ -298,7 +298,7 @@ abstract class Frontend extends \Controller
 			foreach ($GLOBALS['TL_HOOKS']['getRootPageFromUrl'] as $callback)
 			{
 				/** @var PageModel $objRootPage */
-				if (is_object(($objRootPage = static::importStatic($callback[0])->$callback[1]())))
+				if (is_object(($objRootPage = static::importStatic($callback[0])->$callback[1]()))) # FIXME: PHP7
 				{
 					return $objRootPage;
 				}
@@ -719,7 +719,7 @@ abstract class Frontend extends \Controller
 		{
 			foreach ($GLOBALS['TL_HOOKS']['getCacheKey'] as $callback)
 			{
-				$strCacheKey = \System::importStatic($callback[0])->$callback[1]($strCacheKey);
+				$strCacheKey = \System::importStatic($callback[0])->$callback[1]($strCacheKey); # FIXME: PHP7
 			}
 		}
 
@@ -821,7 +821,7 @@ abstract class Frontend extends \Controller
 		{
 			foreach ($GLOBALS['TL_HOOKS']['modifyFrontendPage'] as $callback)
 			{
-				$strBuffer = \System::importStatic($callback[0])->$callback[1]($strBuffer, null);
+				$strBuffer = \System::importStatic($callback[0])->$callback[1]($strBuffer, null); # FIXME: PHP7
 			}
 		}
 
