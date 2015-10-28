@@ -405,7 +405,7 @@ class FileSelector extends \Widget
 
 				if ($for != '')
 				{
-					if (!preg_match('/' . str_replace('/', '\\/', $for) . '/', $folders[$f] . '/' . $v))
+					if (!preg_match('/' . str_replace('/', '\\/', $for) . '/', $folders[$f] . '/i' . $v))
 					{
 						--$countFiles;
 					}
@@ -485,14 +485,15 @@ class FileSelector extends \Widget
 
 			for ($h=0, $c=count($files); $h<$c; $h++)
 			{
+				$currentFile = str_replace(TL_ROOT . '/', '', $files[$h]);
+
 				// Ignore files not matching the search criteria
-				if ($for != '' && !preg_match('/' . str_replace('/', '\\/', $for) . '/', $files[$h]))
+				if ($for != '' && !preg_match('/' . str_replace('/', '\\/', $for) . '/i', $currentFile))
 				{
 					continue;
 				}
 
 				$thumbnail = '';
-				$currentFile = str_replace(TL_ROOT . '/', '', $files[$h]);
 				$currentEncoded = $this->urlEncode($currentFile);
 
 				$objFile = new \File($currentFile);
