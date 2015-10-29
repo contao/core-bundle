@@ -332,7 +332,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     private function isCompleteInstallation()
     {
         try {
-            $this->connection->exec("SELECT COUNT(*) FROM tl_page");
+            $this->connection->prepare("SELECT COUNT(*) FROM tl_page")->fetchAll();
         } catch (TableNotFoundException $e) {
             return false;
         }
