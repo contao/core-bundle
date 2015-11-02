@@ -137,7 +137,6 @@ class ScriptHandler
 
         if (!empty($autoload['files'])) {
             foreach ($autoload['files'] as $file) {
-                /** @noinspection PhpIncludeInspection */
                 include_once $path . '/' . $file;
             }
         }
