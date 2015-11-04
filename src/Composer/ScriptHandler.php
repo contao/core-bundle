@@ -56,7 +56,9 @@ class ScriptHandler
             return;
         }
 
-        putenv(static::RANDOM_SECRET_NAME . '=' . bin2hex(random_bytes(32)));
+        if (static::loadRandomCompat($event)) {
+            putenv(static::RANDOM_SECRET_NAME . '=' . bin2hex(random_bytes(32)));
+        }
     }
 
     /**
@@ -108,5 +110,37 @@ class ScriptHandler
         }
 
         return !empty($config);
+    }
+
+    /**
+     * Makes sure the random_bytes method is available.
+     *
+     * @param Event $event
+     *
+     * @return bool
+     */
+    private static function loadRandomCompat(Event $event)
+    {
+        if (function_exists('random_bytes')) {
+            return true;
+        }
+
+        $composer = $event->getComposer();
+        $package  = $composer->getRepositoryManager()->getLocalRepository()->findPackage('paragonie/random_compat', '*');
+
+        if (null === $package) {
+            return false;
+        }
+
+        $path     = $composer->getInstallationManager()->getInstaller('library')->getInstallPath($package);
+        $autoload = $package->getAutoload();
+
+        if (!empty($autoload['files'])) {
+            foreach ($autoload['files'] as $file) {
+                include_once $path . '/' . $file;
+            }
+        }
+
+        return function_exists('random_bytes');
     }
 }
