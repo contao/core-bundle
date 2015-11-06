@@ -331,7 +331,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     {
         try {
             $this->connection->query('SELECT COUNT(*) FROM tl_page');
-        } catch (TableNotFoundException $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
