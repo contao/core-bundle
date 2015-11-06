@@ -64,6 +64,7 @@ class InstallCommandTest extends TestCase
         $container->setParameter('kernel.root_dir', $this->getRootDir() . '/app');
         $container->setParameter('contao.upload_path', 'files');
         $container->setParameter('contao.image.target_path', 'assets/images');
+        $container->setParameter('contao.upload_path', 'files');
 
         $command = new InstallCommand('contao:install');
         $command->setContainer($container);

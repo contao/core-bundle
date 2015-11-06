@@ -92,11 +92,24 @@ class InstallCommand extends AbstractLockedCommand
      */
     private function addEmptyDirs()
     {
-        foreach ($this->emptyDirs as $path) {
+        foreach ($this->getEmptyDirs() as $path) {
             $this->addEmptyDir($this->rootDir . '/' . $path);
         }
 
         $this->addEmptyDir($this->rootDir . '/' . $this->getContainer()->getParameter('contao.upload_path'));
+    }
+
+    /**
+     * Get static and config based empty dirs
+     *
+     * @return array $emptyDirs
+     */
+    private function getEmptyDirs()
+    {
+        $emptyDirs = $this->emptyDirs;
+        $emptyDirs[] = $this->getContainer()->getParameter('contao.upload_path');
+
+        return $emptyDirs;
     }
 
     /**
