@@ -35,6 +35,30 @@ class ContaoFrameworkTest extends TestCase
     }
 
     /**
+     * Tests initializing the framework.
+     *
+     * @runInSeparateProcess
+     */
+    public function testInitialize()
+    {
+        $initializer = $this
+            ->getMockBuilder('Contao\CoreBundle\Framework\FrameworkInitializer')
+            ->disableOriginalConstructor()
+            ->setMethods(['initialize'])
+            ->getMock()
+        ;
+
+        $initializer
+            ->expects($this->once())
+            ->method('initialize')
+        ;
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
+        $framework->initialize();
+    }
+
+    /**
      * Tests initializing the framework without an initializer.
      *
      * @runInSeparateProcess

@@ -259,10 +259,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @return FrameworkInitializer The object instance
      */
-    public function mockFrameworkInitializer(
-        RequestStack $requestStack = null,
-        RouterInterface $router = null
-    ) {
+    public function mockFrameworkInitializer(RequestStack $requestStack = null, RouterInterface $router = null)
+    {
         $container = $this->mockContainerWithContaoScopes();
 
         if (null === $requestStack) {

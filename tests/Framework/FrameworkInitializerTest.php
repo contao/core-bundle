@@ -10,12 +10,10 @@
 
 namespace Contao\CoreBundle\Test\Framework;
 
-use Contao\Config;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Csrf\CsrfTokenManager;
 
 /**
  * Tests the FrameworkInitializer class.
