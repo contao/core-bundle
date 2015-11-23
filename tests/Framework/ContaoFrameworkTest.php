@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Test\Framework;
 use Contao\Config;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\Adapter;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,10 +34,7 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testInstantiation()
     {
-        $framework = $this->mockContaoFramework(
-            new RequestStack(),
-            $this->mockRouter('/')
-        );
+        $framework = $this->mockContaoFramework();
 
         $this->assertInstanceOf('Contao\CoreBundle\Framework\ContaoFramework', $framework);
         $this->assertInstanceOf('Contao\CoreBundle\Framework\ContaoFrameworkInterface', $framework);
@@ -58,8 +54,15 @@ class ContaoFrameworkTest extends TestCase
         $container->enterScope(ContaoCoreBundle::SCOPE_FRONTEND);
         $container->get('request_stack')->push($request);
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/index.html'));
-        $framework->setContainer($container);
+        $initializer = $this->mockFrameworkInitializer(
+            $container->get('request_stack'),
+            $this->mockRouter('/index.html')
+        );
+
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
 
         $this->assertTrue(defined('TL_MODE'));
@@ -96,8 +99,15 @@ class ContaoFrameworkTest extends TestCase
         $container->enterScope(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/contao/install'));
-        $framework->setContainer($container);
+        $initializer = $this->mockFrameworkInitializer(
+            $container->get('request_stack'),
+            $this->mockRouter('/contao/install')
+        );
+
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
 
         $this->assertTrue(defined('TL_MODE'));
@@ -127,8 +137,15 @@ class ContaoFrameworkTest extends TestCase
         $container->enterScope(ContaoCoreBundle::SCOPE_BACKEND);
         $container->set('request_stack', new RequestStack());
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/contao/install'));
-        $framework->setContainer($container);
+        $initializer = $this->mockFrameworkInitializer(
+            $container->get('request_stack'),
+            $this->mockRouter('/contao/install')
+        );
+
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
 
         $this->assertTrue(defined('TL_MODE'));
@@ -160,8 +177,15 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes();
         $container->get('request_stack')->push($request);
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/contao/install'));
-        $framework->setContainer($container);
+        $initializer = $this->mockFrameworkInitializer(
+            $container->get('request_stack'),
+            $this->mockRouter('/contao/install')
+        );
+
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
 
         $this->assertTrue(defined('TL_MODE'));
@@ -198,19 +222,8 @@ class ContaoFrameworkTest extends TestCase
         // Ensure to use the fixtures class
         Config::preload();
 
-        /** @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject $framework */
-        $framework = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\ContaoFramework')
-            ->setConstructorArgs([
-                $container->get('request_stack'),
-                $this->mockRouter('/contao/install'),
-                $this->mockSession(),
-                $this->getRootDir() . '/app',
-                error_reporting(),
-            ])
-            ->setMethods(['isInitialized'])
-            ->getMock()
-        ;
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($this->mockFrameworkInitializer());
 
         $framework
             ->expects($this->any())
@@ -218,14 +231,6 @@ class ContaoFrameworkTest extends TestCase
             ->willReturnOnConsecutiveCalls(false, true)
         ;
 
-        $framework
-            ->expects($this->any())
-            ->method('getAdapter')
-            ->with($this->equalTo('Contao\Config'))
-            ->willReturn($this->mockConfigAdapter())
-        ;
-
-        $framework->setContainer($container);
         $framework->initialize();
         $framework->initialize();
     }
@@ -245,8 +250,12 @@ class ContaoFrameworkTest extends TestCase
         $container->enterScope(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/contao/install'));
-        $framework->setContainer($container);
+        $initializer = $this->mockFrameworkInitializer(
+            $container->get('request_stack'),
+            $this->mockRouter('/contao/install')
+        );
+
+        $initializer->setContainer($container);
 
         $errorReporting = error_reporting();
         error_reporting(E_ALL ^ E_USER_NOTICE);
@@ -257,6 +266,8 @@ class ContaoFrameworkTest extends TestCase
             'Test is invalid, error level has not changed.'
         );
 
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
 
         $this->assertEquals($errorReporting, error_reporting());
@@ -281,12 +292,15 @@ class ContaoFrameworkTest extends TestCase
         $container->enterScope(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $framework = $this->mockContaoFramework(
+        $initializer = $this->mockFrameworkInitializer(
             $container->get('request_stack'),
             $this->mockRouter('/contao/install')
         );
 
-        $framework->setContainer($container);
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
     }
 
@@ -327,13 +341,11 @@ class ContaoFrameworkTest extends TestCase
             ->willReturn(false)
         ;
 
-        $framework = $this->mockContaoFramework(
-            $container->get('request_stack'),
-            null,
-            ['Contao\RequestToken' => $rtAdapter]
-        );
+        $initializer = $this->mockFrameworkInitializer($container->get('request_stack'));
+        $initializer->setContainer($container);
 
-        $framework->setContainer($container);
+        $framework = $this->mockContaoFramework(['Contao\RequestToken' => $rtAdapter]);
+        $framework->setInitializer($initializer);
         $framework->initialize();
     }
 
@@ -372,13 +384,11 @@ class ContaoFrameworkTest extends TestCase
             ->method('validate')
         ;
 
-        $framework = $this->mockContaoFramework(
-            $container->get('request_stack'),
-            null,
-            ['Contao\RequestToken' => $rtAdapter]
-        );
+        $initializer = $this->mockFrameworkInitializer($container->get('request_stack'));
+        $initializer->setContainer($container);
 
-        $framework->setContainer($container);
+        $framework = $this->mockContaoFramework(['Contao\RequestToken' => $rtAdapter]);
+        $framework->setInitializer($initializer);
         $framework->initialize();
     }
 
@@ -427,30 +437,35 @@ class ContaoFrameworkTest extends TestCase
             })
         ;
 
-        $framework = $this->mockContaoFramework(
+        $initializer = $this->mockFrameworkInitializer(
             $container->get('request_stack'),
-            $this->mockRouter('/contao/install'),
-            ['Contao\Config' => $configAdapter]
+            $this->mockRouter('/contao/install')
         );
 
-        $framework->setContainer($container);
+        $initializer->setContainer($container);
+
+        $framework = $this->mockContaoFramework(['Contao\Config' => $configAdapter]);
+        $framework->setInitializer($initializer);
         $framework->initialize();
     }
 
     /**
-     * Tests initializing the framework with a valid request token.
+     * Tests initializing the framework without a container.
      *
      * @runInSeparateProcess
      * @expectedException \LogicException
      */
     public function testContainerNotSet()
     {
-        $framework = $this->mockContaoFramework(
+        $initializer = $this->mockFrameworkInitializer(
             new RequestStack(),
             $this->mockRouter('/contao/install')
         );
 
-        $framework->setContainer();
+        $initializer->setContainer(null);
+
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($initializer);
         $framework->initialize();
     }
 
@@ -483,11 +498,9 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testGetAdapter()
     {
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            ['LegacyClass' => new Adapter('Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass')]
-        );
+        $framework = $this->mockContaoFramework([
+            'LegacyClass' => new Adapter('Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass'),
+        ]);
 
         $this->assertInstanceOf('Contao\CoreBundle\Framework\Adapter', $framework->getAdapter('LegacyClass'));
     }

@@ -98,13 +98,16 @@ class ContaoCacheWarmerTest extends TestCase
             ->willReturnOnConsecutiveCalls($class1, $class2, false)
         ;
 
+        $framework = $this->mockContaoFramework();
+        $framework->setInitializer($this->mockFrameworkInitializer());
+
         $warmer = new ContaoCacheWarmer(
             new Filesystem(),
             new ResourceFinder($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao'),
             new FileLocator($this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao'),
             $this->getRootDir() . '/vendor/contao/test-bundle/Resources/contao',
             $connection,
-            $this->mockContaoFramework()
+            $framework
         );
 
         $warmer->warmUp($this->getCacheDir());

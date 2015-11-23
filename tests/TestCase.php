@@ -14,6 +14,7 @@ use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Framework\FrameworkInitializer;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
@@ -218,27 +219,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Returns a ContaoFramework instance.
      *
-     * @param RequestStack    $requestStack The request stack
-     * @param RouterInterface $router       The router object
-     * @param array           $adapters     An optional array of adapters
+     * @param array $adapters An optional array of adapters
      *
-     * @return ContaoFramework The object instance
+     * @return ContaoFramework|\PHPUnit_Framework_MockObject_MockObject The object instance
      */
-    public function mockContaoFramework(
-        RequestStack $requestStack = null,
-        RouterInterface $router = null,
-        array $adapters = []
-    ) {
-        $container = $this->mockContainerWithContaoScopes();
-
-        if (null === $requestStack) {
-            $requestStack = $container->get('request_stack');
-        }
-
-        if (null === $router) {
-            $router = $this->mockRouter('/index.html');
-        }
-
+    public function mockContaoFramework(array $adapters = [])
+    {
         if (!isset($adapters['Contao\Config'])) {
             $adapters['Contao\Config'] = $this->mockConfigAdapter();
         }
@@ -250,13 +236,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         /** @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject $framework */
         $framework = $this
             ->getMockBuilder('Contao\CoreBundle\Framework\ContaoFramework')
-            ->setConstructorArgs([
-                $requestStack,
-                $router,
-                $this->mockSession(),
-                $this->getRootDir() . '/app',
-                error_reporting(),
-            ])
             ->setMethods(['getAdapter'])
             ->getMock()
         ;
@@ -269,9 +248,43 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             })
         ;
 
-        $framework->setContainer($container);
-
         return $framework;
+    }
+
+    /**
+     * Returns a FrameworkInitializer instance.
+     *
+     * @param RequestStack    $requestStack The request stack
+     * @param RouterInterface $router       The router object
+     *
+     * @return FrameworkInitializer The object instance
+     */
+    public function mockFrameworkInitializer(
+        RequestStack $requestStack = null,
+        RouterInterface $router = null
+    ) {
+        $container = $this->mockContainerWithContaoScopes();
+
+        if (null === $requestStack) {
+            $requestStack = $container->get('request_stack');
+        }
+
+        if (null === $router) {
+            $router = $this->mockRouter('/index.html');
+        }
+
+        $initializer = new FrameworkInitializer(
+            $requestStack,
+            $router,
+            $this->mockSession(),
+            $this->getRootDir() . '/app',
+            error_reporting()
+        );
+
+        $initializer->setContainer($container);
+        $initializer->setFramework($this->mockContaoFramework());
+
+        return $initializer;
     }
 
     /**
