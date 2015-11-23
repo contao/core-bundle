@@ -112,7 +112,7 @@ class FrameworkInitializer
     /**
      * Sets the framework.
      *
-     * @param ContaoFrameworkInterface $framework The framework
+     * @param ContaoFrameworkInterface|null $framework The framework
      */
     public function setFramework(ContaoFrameworkInterface $framework = null)
     {

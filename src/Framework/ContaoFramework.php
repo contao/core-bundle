@@ -38,9 +38,9 @@ class ContaoFramework implements ContaoFrameworkInterface
     /**
      * Sets the framework initializer.
      *
-     * @param FrameworkInitializer $initializer The framework initializer
+     * @param FrameworkInitializer|null $initializer The framework initializer
      */
-    public function setInitializer(FrameworkInitializer $initializer)
+    public function setInitializer(FrameworkInitializer $initializer = null)
     {
         $this->initializer = $initializer;
     }
