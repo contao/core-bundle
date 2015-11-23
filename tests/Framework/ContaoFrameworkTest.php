@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Test\Framework;
 use Contao\Config;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -450,6 +451,25 @@ class ContaoFrameworkTest extends TestCase
     }
 
     /**
+     * Tests initializing the framework without an initializer.
+     *
+     * @runInSeparateProcess
+     * @expectedException \LogicException
+     */
+    public function testInitializerNotSet()
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'dummy');
+
+        $container = $this->mockContainerWithContaoScopes();
+        $container->enterScope(ContaoCoreBundle::SCOPE_BACKEND);
+        $container->get('request_stack')->push($request);
+
+        $framework = $this->mockContaoFramework();
+        $framework->initialize();
+    }
+
+    /**
      * Tests initializing the framework without a container.
      *
      * @runInSeparateProcess
@@ -463,10 +483,32 @@ class ContaoFrameworkTest extends TestCase
         );
 
         $initializer->setContainer(null);
+        $initializer->initialize();
+    }
 
-        $framework = $this->mockContaoFramework();
-        $framework->setInitializer($initializer);
-        $framework->initialize();
+    /**
+     * Tests initializing the framework without setting the framework in the initializer.
+     *
+     * @runInSeparateProcess
+     * @expectedException \LogicException
+     */
+    public function testFrameworkNotSet()
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'dummy');
+
+        $container = $this->mockContainerWithContaoScopes();
+        $container->enterScope(ContaoCoreBundle::SCOPE_FRONTEND);
+        $container->get('request_stack')->push($request);
+
+        $initializer = $this->mockFrameworkInitializer(
+            new RequestStack(),
+            $this->mockRouter('/contao/install')
+        );
+
+        $initializer->setContainer($container);
+        $initializer->setFramework(null);
+        $initializer->initialize();
     }
 
     /**
@@ -474,8 +516,10 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testCreateInstance()
     {
+        $framework = new ContaoFramework();
+
         $class = 'Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass';
-        $instance = $this->mockContaoFramework()->createInstance($class, [1, 2]);
+        $instance = $framework->createInstance($class, [1, 2]);
 
         $this->assertInstanceOf($class, $instance);
         $this->assertEquals([1, 2], $instance->constructorArgs);
@@ -486,8 +530,10 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testCreateInstanceSingelton()
     {
+        $framework = new ContaoFramework();
+
         $class = 'Contao\CoreBundle\Test\Fixtures\Adapter\LegacySingletonClass';
-        $instance = $this->mockContaoFramework()->createInstance($class, [1, 2]);
+        $instance = $framework->createInstance($class, [1, 2]);
 
         $this->assertInstanceOf($class, $instance);
         $this->assertEquals([1, 2], $instance->constructorArgs);
@@ -498,10 +544,8 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testGetAdapter()
     {
-        $framework = $this->mockContaoFramework([
-            'LegacyClass' => new Adapter('Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass'),
-        ]);
+        $framework = new ContaoFramework();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Framework\Adapter', $framework->getAdapter('LegacyClass'));
+        $this->assertInstanceOf('Contao\CoreBundle\Framework\Adapter', $framework->getAdapter('Contao\Config'));
     }
 }

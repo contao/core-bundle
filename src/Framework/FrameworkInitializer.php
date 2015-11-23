@@ -114,7 +114,7 @@ class FrameworkInitializer
      *
      * @param ContaoFrameworkInterface $framework The framework
      */
-    public function setFramework(ContaoFrameworkInterface $framework)
+    public function setFramework(ContaoFrameworkInterface $framework = null)
     {
         $this->framework = $framework;
     }
@@ -131,7 +131,7 @@ class FrameworkInitializer
         }
 
         if (null === $this->framework) {
-            throw new \LogicException('The Contao 3 framework has not been set.');
+            throw new \LogicException('The Contao framework has not been set.');
         }
 
         // Set the current request
