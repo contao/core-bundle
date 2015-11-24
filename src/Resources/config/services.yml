@@ -17,6 +17,12 @@ services:
 
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework
+        calls:
+            - ["setInitializer", ["@contao.framework_initializer"]]
+
+    contao.framework_initializer:
+        class: Contao\CoreBundle\Framework\FrameworkInitializer
+        public: false
         arguments:
             - "@request_stack"
             - "@router"
