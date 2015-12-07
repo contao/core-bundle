@@ -258,7 +258,12 @@ trait TemplateInheritance
 	 */
 	public function insert($name, array $data=null)
 	{
-		/** @var Template $tpl */
+		if (pathinfo($name, PATHINFO_EXTENSION) == 'twig')
+		{
+			echo \System::getContainer()->get('twig')->render($name, $data);
+			return;
+		}
+
 		if ($this instanceof Template)
 		{
 			$tpl = new static($name);
