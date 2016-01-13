@@ -44,6 +44,12 @@ trait TemplateInheritance
 	protected $strFormat = 'html5';
 
 	/**
+	 * Parse with Twig
+	 * @var bool
+	 */
+	protected $blnTwig = false;
+
+	/**
 	 * Tag ending
 	 * @var string
 	 */
@@ -69,6 +75,7 @@ trait TemplateInheritance
 	 */
 	public function inherit()
 	{
+		$this->blnTwig = false;
 		$strBuffer = '';
 
 		// Start with the template itself
@@ -79,6 +86,11 @@ trait TemplateInheritance
 		{
 			$strCurrent = $this->strParent;
 			$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
+
+			if (strpos($strParent, '.twig.' . $this->strFormat) !== false)
+			{
+				$this->blnTwig = true;
+			}
 
 			// Reset the flags
 			$this->strParent = null;

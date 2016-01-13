@@ -277,7 +277,14 @@ abstract class Template extends \Controller
 			}
 		}
 
-		return $this->inherit();
+		$strBuffer = $this->inherit();
+
+		if ($this->blnTwig)
+		{
+			$strBuffer = \System::getContainer()->get('twig')->createTemplate($strBuffer)->render($this->arrData);
+		}
+
+		return $strBuffer;
 	}
 
 

@@ -108,6 +108,12 @@ abstract class Controller extends \System
 			foreach ($arrCustomized as $strFile)
 			{
 				$strTemplate = basename($strFile, strrchr($strFile, '.'));
+
+				if (pathinfo($strTemplate, PATHINFO_EXTENSION) == '.twig')
+				{
+					$strTemplate = basename($strFile, strrchr($strFile, '.'));
+				}
+
 				$arrTemplates[$strTemplate][] = $GLOBALS['TL_LANG']['MSC']['global'];
 			}
 		}
@@ -140,14 +146,12 @@ abstract class Controller extends \System
 							{
 								$strTemplate = basename($strFile, strrchr($strFile, '.'));
 
-								if (!isset($arrTemplates[$strTemplate]))
+								if (pathinfo($strTemplate, PATHINFO_EXTENSION) == '.twig')
 								{
-									$arrTemplates[$strTemplate][] = $objTheme->name;
+									$strTemplate = basename($strFile, strrchr($strFile, '.'));
 								}
-								else
-								{
-									$arrTemplates[$strTemplate][] = $objTheme->name;
-								}
+
+								$arrTemplates[$strTemplate][] = $objTheme->name;
 							}
 						}
 					}

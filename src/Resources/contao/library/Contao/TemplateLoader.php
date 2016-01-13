@@ -98,8 +98,14 @@ class TemplateLoader
 	public static function getPath($template, $format, $custom='templates')
 	{
 		$file = $template .  '.' . $format;
+		$twigFile = $template .  '.twig.' . $format;
 
 		// Check the theme folder first
+		if (file_exists(TL_ROOT . '/' . $custom . '/' . $twigFile))
+		{
+			return TL_ROOT . '/' . $custom . '/' . $twigFile;
+		}
+
 		if (file_exists(TL_ROOT . '/' . $custom . '/' . $file))
 		{
 			return TL_ROOT . '/' . $custom . '/' . $file;
@@ -108,6 +114,11 @@ class TemplateLoader
 		// Then check the global templates directory (see #5547)
 		if ($custom != 'templates')
 		{
+			if (file_exists(TL_ROOT . '/templates/' . $twigFile))
+			{
+				return TL_ROOT . '/templates/' . $twigFile;
+			}
+
 			if (file_exists(TL_ROOT . '/templates/' . $file))
 			{
 				return TL_ROOT . '/templates/' . $file;
@@ -115,12 +126,7 @@ class TemplateLoader
 		}
 
 		// Load the default template
-		if (isset(self::$files[$template]))
-		{
-			return TL_ROOT . '/' . self::$files[$template] . '/' . $file;
-		}
-
-		throw new \Exception('Could not find template "' . $template . '"');
+		return self::getDefaultPath($template, $format);
 	}
 
 
@@ -137,6 +143,12 @@ class TemplateLoader
 	public static function getDefaultPath($template, $format)
 	{
 		$file = $template .  '.' . $format;
+		$twigFile = $template .  '.twig.' . $format;
+
+		if (isset(self::$files[$template]) && file_exists(TL_ROOT . '/' . self::$files[$template] . '/' . $twigFile))
+		{
+			return TL_ROOT . '/' . self::$files[$template] . '/' . $twigFile;
+		}
 
 		if (isset(self::$files[$template]))
 		{
