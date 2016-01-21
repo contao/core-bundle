@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Cache;
 use Contao\CoreBundle\Config\Dumper\CombinedFileDumper;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Config\Loader\YamlDcaFileLoader;
 use Contao\CoreBundle\Config\ResourceFinderInterface;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DcaExtractor;
@@ -170,25 +171,30 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     {
         $dumper = new CombinedFileDumper(
             $this->filesystem,
-            new PhpFileLoader(),
+            new DelegatingLoader(new LoaderResolver([new PhpFileLoader(), new YamlDcaFileLoader()])),
             $cacheDir . '/contao'
         );
 
         $processed = [];
 
         /** @var SplFileInfo[] $files */
-        $files = $this->finder->findIn('dca')->files()->name('*.php');
+        $files = $this->finder->findIn('dca')->files()->name('/\.(php|yml)$/');
 
         foreach ($files as $file) {
-            if (in_array($file->getBasename(), $processed)) {
+
+            $basenameWithoutExt = $file->getBasename('.' . $file->getExtension());
+
+            if (in_array($basenameWithoutExt, $processed)) {
                 continue;
             }
 
-            $processed[] = $file->getBasename();
+            $processed[] = $basenameWithoutExt;
+
+            $subfiles = $this->finder->findIn('dca')->files()->name('/^' . $basenameWithoutExt . '\.(php|yml)$/');
 
             $dumper->dump(
-                $this->locator->locate('dca/' . $file->getBasename(), null, false),
-                'dca/' . $file->getBasename()
+                iterator_to_array($subfiles),
+                'dca/' . $basenameWithoutExt . '.php'
             );
         }
     }
