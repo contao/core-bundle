@@ -374,10 +374,7 @@ $GLOBALS['TL_CROP'] = array
  */
 $GLOBALS['TL_CRON'] = array
 (
-	'monthly' => array
-	(
-		array('Automator', 'purgeImageCache')
-	),
+	'monthly' => array(),
 	'weekly' => array
 	(
 		array('Automator', 'generateSitemap'),
@@ -392,6 +389,11 @@ $GLOBALS['TL_CRON'] = array
 	'hourly' => array(),
 	'minutely' => array()
 );
+
+if (\Contao\System::getContainer()->getParameter('contao.image.purge_interval') !== false)
+{
+	$GLOBALS['TL_CRON'][\Contao\System::getContainer()->getParameter('contao.image.purge_interval')][] = array('Automator', 'purgeImageCache');
+}
 
 
 /**
