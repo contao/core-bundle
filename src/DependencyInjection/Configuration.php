@@ -91,7 +91,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('target_path')
                             ->defaultValue('assets/images')
                         ->end()
-                        ->scalarNode('purge_interval')
+                        ->scalarNode('purge_cache')
                             ->defaultValue('monthly')
                         ->end()
                     ->end()

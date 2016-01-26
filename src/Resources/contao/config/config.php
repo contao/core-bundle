@@ -390,9 +390,9 @@ $GLOBALS['TL_CRON'] = array
 	'minutely' => array()
 );
 
-if (\Contao\System::getContainer()->getParameter('contao.image.purge_interval') !== false)
+if (\Contao\System::getContainer()->getParameter('contao.image.purge_cache') !== false)
 {
-	$GLOBALS['TL_CRON'][\Contao\System::getContainer()->getParameter('contao.image.purge_interval')][] = array('Automator', 'purgeImageCache');
+	$GLOBALS['TL_CRON'][\Contao\System::getContainer()->getParameter('contao.image.purge_cache')][] = array('Automator', 'purgeImageCache');
 }
 
 
