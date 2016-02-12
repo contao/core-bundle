@@ -27,6 +27,14 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
+    contao.controller.backend_csv_import:
+        class: Contao\CoreBundle\Controller\BackendCsvImportController
+        arguments:
+            - "@database_connection"
+            - "@contao.framework"
+            - "@request_stack"
+            - "@security.token_storage"
+
     contao.controller.insert_tags:
         class: Contao\CoreBundle\Controller\InsertTagsController
         arguments:

@@ -1,0 +1,38 @@
+<div id="tl_buttons">
+    <a href="<?= ampersand($this->backUrl) ?>" class="header_back" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) ?>" accesskey="b"><?= $GLOBALS['TL_LANG']['MSC']['backBT'] ?></a>
+</div>
+<?= $this->message ?>
+<form action="<?= ampersand($this->action) ?>" id="<?= $this->formId ?>" class="tl_form" method="post" enctype="multipart/form-data">
+    <div class="tl_formbody_edit">
+        <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+        <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
+        <input type="hidden" name="MAX_FILE_SIZE" value="'<?= $this->fileMaxSize ?>">
+
+        <div class="tl_tbox">
+            <h3><label for="separator"><?= $GLOBALS['TL_LANG']['MSC']['separator'][0] ?></label></h3>
+            <select name="separator" id="separator" class="tl_select" onfocus="Backend.getScrollOffset()">
+                <?php foreach ($this->separators as $separator): ?>
+                    <option value="<?= $separator['value'] ?>"><?= $separator['label'] ?></option>
+                <?php endforeach; ?>
+            </select>
+            <?php if ($GLOBALS['TL_LANG']['MSC']['separator'][1] != ''): ?>
+                <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['separator'][1] ?></p>
+            <?php endif; ?>
+
+            <h3><?= $GLOBALS['TL_LANG']['MSC']['source'][0] ?></h3>
+
+            <?= $this->uploader ?>
+
+            <?php if (isset($GLOBALS['TL_LANG']['MSC']['source'][1])): ?>
+                <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['source'][1] ?></p>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    <div class="tl_formbody_submit">
+        <div class="tl_submit_container">
+            <button type="submit" name="save" id="save" class="tl_submit" accesskey="s"><?= $this->submitLabel ?></button>
+        </div>
+    </div>
+</form>

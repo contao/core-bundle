@@ -20,12 +20,13 @@ $GLOBALS['BE_MOD'] = array
 		'article' => array
 		(
 			'tables'      => array('tl_article', 'tl_content'),
-			'table'       => array('TableWizard', 'importTable'),
-			'list'        => array('ListWizard', 'importList')
+			'table'       => array('contao.controller.backend_csv_import', 'importTableWizard'),
+			'list'        => array('contao.controller.backend_csv_import', 'importListWizard'),
 		),
 		'form' => array
 		(
-			'tables'      => array('tl_form', 'tl_form_field')
+			'tables'      => array('tl_form', 'tl_form_field'),
+			'option'      => array('contao.controller.backend_csv_import', 'importOptionWizard'),
 		)
 	),
 
