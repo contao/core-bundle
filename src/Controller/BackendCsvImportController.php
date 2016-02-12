@@ -102,6 +102,7 @@ class BackendCsvImportController
      *
      * @return string
      *
+     * @throws \Exception
      * @throws RedirectResponseException
      */
     public function importOptionWizard(DataContainer $dc)
@@ -136,6 +137,7 @@ class BackendCsvImportController
      *
      * @return string
      *
+     * @throws \Exception
      * @throws RedirectResponseException
      */
     public function importTableWizard(DataContainer $dc)
