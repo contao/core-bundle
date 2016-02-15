@@ -117,24 +117,16 @@ class CsvImportUtil
      * @param string $submitLabel
      *
      * @return string
-     *
-     * @throws \Exception
      */
     public function generate($maxFileSize, $submitLabel)
     {
-        $uploader = $this->getUploader();
-
-        if ($uploader === null) {
-            throw new \Exception('The CSV uploader is not defined');
-        }
-
         $template              = $this->getTemplate();
         $template->formId      = $this->getFormId();
         $template->backUrl     = $this->getRefererUrl();
         $template->action      = $this->request->getRequestUri();
         $template->fileMaxSize = $maxFileSize;
         $template->messages    = $this->flashBag->all();
-        $template->uploader    = $uploader->generateMarkup();
+        $template->uploader    = $this->getUploader()->generateMarkup();
         $template->separators  = $this->generateSeparators();
         $template->submitLabel = $submitLabel;
 
@@ -186,20 +178,12 @@ class CsvImportUtil
      * Get the uploaded files
      *
      * @return array
-     *
-     * @throws \Exception
      */
     public function getUploadedFiles()
     {
-        $uploader = $this->getUploader();
-
-        if ($uploader === null) {
-            throw new \Exception('The CSV uploader is not defined');
-        }
-
         $files = [];
 
-        foreach ($uploader->uploadTo($this->getUploadFolder()) as $filePath) {
+        foreach ($this->getUploader()->uploadTo($this->getUploadFolder()) as $filePath) {
             $file = new File($filePath);
 
             // Add an error if the file extension is not valid
