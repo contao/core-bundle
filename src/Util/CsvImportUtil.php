@@ -50,11 +50,6 @@ class CsvImportUtil
     private $request;
 
     /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
      * Data callback
      * @var callable
      */
@@ -101,18 +96,18 @@ class CsvImportUtil
      * @param Connection               $connection
      * @param ContaoFrameworkInterface $framework
      * @param Request                  $request
-     * @param TokenStorageInterface    $tokenStorage
+     * @param FileUpload             $uploader
      */
     public function __construct(
         Connection $connection,
         ContaoFrameworkInterface $framework,
         Request $request,
-        TokenStorageInterface $tokenStorage
+        FileUpload $uploader
     ) {
-        $this->connection   = $connection;
-        $this->framework    = $framework;
-        $this->request      = $request;
-        $this->tokenStorage = $tokenStorage;
+        $this->connection = $connection;
+        $this->framework  = $framework;
+        $this->request    = $request;
+        $this->uploader   = $uploader;
     }
 
     /**
@@ -334,10 +329,6 @@ class CsvImportUtil
      */
     public function getUploader()
     {
-        if ($this->uploader === null) {
-            $this->uploader = $this->getDefaultUploader();
-        }
-
         return $this->uploader;
     }
 
@@ -389,36 +380,6 @@ class CsvImportUtil
     public function setUploadFolder($uploadFolder)
     {
         $this->uploadFolder = $uploadFolder;
-    }
-
-    /**
-     * Get the default file uploader
-     *
-     * @return FileUpload|null
-     */
-    protected function getDefaultUploader()
-    {
-        $token = $this->tokenStorage->getToken();
-
-        if ($token === null) {
-            return null;
-        }
-
-        $user = $token->getUser();
-
-        if ($token === null) {
-            return null;
-        }
-
-        $class = $user->uploader;
-
-        // See #4086 and #7046
-        // TODO why support uploaders?
-        if (!class_exists($class) || $class === 'DropZone') {
-            $class = 'FileUpload';
-        }
-
-        return new $class();
     }
 
     /**

@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Controller;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
+use Contao\FileUpload;
 use Doctrine\DBAL\Connection;
 use Contao\CoreBundle\Util\CsvImportUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -77,11 +78,17 @@ class BackendCsvImportController
      */
     public function importListWizard(DataContainer $dc)
     {
+        $uploader = $this->getDefaultUploader();
+
+        if ($uploader === null) {
+            return '';
+        }
+
         $csvImport = new CsvImportUtil(
             $this->connection,
             $this->framework,
             $this->requestStack->getCurrentRequest(),
-            $this->tokenStorage
+            $uploader
         );
 
         $csvImport->setCallback(function (array $data, array $row) {
@@ -107,11 +114,17 @@ class BackendCsvImportController
      */
     public function importOptionWizard(DataContainer $dc)
     {
+        $uploader = $this->getDefaultUploader();
+
+        if ($uploader === null) {
+            return '';
+        }
+
         $csvImport = new CsvImportUtil(
             $this->connection,
             $this->framework,
             $this->requestStack->getCurrentRequest(),
-            $this->tokenStorage
+            $uploader
         );
 
         $csvImport->setCallback(function (array $data, array $row) {
@@ -142,11 +155,17 @@ class BackendCsvImportController
      */
     public function importTableWizard(DataContainer $dc)
     {
+        $uploader = $this->getDefaultUploader();
+
+        if ($uploader === null) {
+            return '';
+        }
+
         $csvImport = new CsvImportUtil(
             $this->connection,
             $this->framework,
             $this->requestStack->getCurrentRequest(),
-            $this->tokenStorage
+            $uploader
         );
 
         $csvImport->setCallback(function (array $data, array $row) {
@@ -158,7 +177,7 @@ class BackendCsvImportController
         $csvImport->setSeparators([
             CsvImportUtil::SEPARATOR_COMMA,
             CsvImportUtil::SEPARATOR_SEMICOLON,
-            CsvImportUtil::SEPARATOR_TABULATOR
+            CsvImportUtil::SEPARATOR_TABULATOR,
         ]);
 
         if ($csvImport->isFormSubmitted()) {
@@ -166,5 +185,35 @@ class BackendCsvImportController
         }
 
         return $csvImport->generate($GLOBALS['TL_LANG']['MSC']['tw_import'][0]);
+    }
+
+    /**
+     * Get the default file uploader
+     *
+     * @return FileUpload|null
+     */
+    protected function getDefaultUploader()
+    {
+        $token = $this->tokenStorage->getToken();
+
+        if ($token === null) {
+            return null;
+        }
+
+        $user = $token->getUser();
+
+        if ($token === null) {
+            return null;
+        }
+
+        $class = $user->uploader;
+
+        // See #4086 and #7046
+        // TODO why support uploaders?
+        if (!class_exists($class) || $class === 'DropZone') {
+            $class = 'FileUpload';
+        }
+
+        return new $class();
     }
 }
