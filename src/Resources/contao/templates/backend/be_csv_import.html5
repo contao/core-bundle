@@ -1,7 +1,18 @@
 <div id="tl_buttons">
     <a href="<?= ampersand($this->backUrl) ?>" class="header_back" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) ?>" accesskey="b"><?= $GLOBALS['TL_LANG']['MSC']['backBT'] ?></a>
 </div>
-<?= $this->message ?>
+
+<?php if ($this->messages): ?>
+    <?php dump($this->messages) ?>
+    <div class="tl_message">
+        <?php foreach ($this->messages as $type => $messages): ?>
+            <?php foreach ($messages as $message): ?>
+                <p class="tl_<?= $type ?>"><?= $message ?></p>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
 <form action="<?= ampersand($this->action) ?>" id="<?= $this->formId ?>" class="tl_form" method="post" enctype="multipart/form-data">
     <div class="tl_formbody_edit">
         <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">

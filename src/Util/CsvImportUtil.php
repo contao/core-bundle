@@ -12,13 +12,12 @@ namespace Contao\CoreBundle\Util;
 
 use Contao\BackendTemplate;
 use Contao\CoreBundle\Exception\RedirectResponseException;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\File;
 use Contao\FileUpload;
-use Contao\Message;
 use Contao\Versions;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -41,14 +40,9 @@ class CsvImportUtil
     private $connection;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var FlashBagInterface
      */
-    private $framework;
-
-    /**
-     * @var Message
-     */
-    private $flashMessages;
+    private $flashBag;
 
     /**
      * @var Request
@@ -99,36 +93,34 @@ class CsvImportUtil
     /**
      * Constructor.
      *
-     * @param Connection               $connection
-     * @param Message                  $flashMessages
-     * @param ContaoFrameworkInterface $framework
-     * @param Request                  $request
-     * @param FileUpload               $uploader
+     * @param Connection        $connection
+     * @param FlashBagInterface $flashBag
+     * @param Request           $request
+     * @param FileUpload        $uploader
      */
     public function __construct(
         Connection $connection,
-        Message $flashMessages,
-        ContaoFrameworkInterface $framework,
+        FlashBagInterface $flashBag,
         Request $request,
         FileUpload $uploader
     ) {
-        $this->connection    = $connection;
-        $this->flashMessages = $flashMessages;
-        $this->framework     = $framework;
-        $this->request       = $request;
-        $this->uploader      = $uploader;
+        $this->connection = $connection;
+        $this->flashBag   = $flashBag;
+        $this->request    = $request;
+        $this->uploader   = $uploader;
     }
 
     /**
      * Generate the CSV import
      *
+     * @param int    $maxFileSize
      * @param string $submitLabel
      *
      * @return string
      *
      * @throws \Exception
      */
-    public function generate($submitLabel)
+    public function generate($maxFileSize, $submitLabel)
     {
         $uploader = $this->getUploader();
 
@@ -140,8 +132,8 @@ class CsvImportUtil
         $template->formId      = $this->getFormId();
         $template->backUrl     = $this->getRefererUrl();
         $template->action      = $this->request->getRequestUri();
-        $template->fileMaxSize = $this->framework->getAdapter('Contao\Config')->get('maxFileSize');
-        $template->message     = $this->flashMessages->generate();
+        $template->fileMaxSize = $maxFileSize;
+        $template->messages    = $this->flashBag->all();
         $template->uploader    = $uploader->generateMarkup();
         $template->separators  = $this->generateSeparators();
         $template->submitLabel = $submitLabel;
@@ -169,15 +161,12 @@ class CsvImportUtil
 
         // Add an error and reload the page if there was no file selected
         if (count($files) === 0) {
-            $this->flashMessages->addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
+            $this->flashBag->add('error', $GLOBALS['TL_LANG']['ERR']['all_fields']);
 
             throw new RedirectResponseException($this->request->getRequestUri());
         }
 
         $this->storeInDatabase($table, $field, $id, $this->getDataFromFiles($files));
-
-        // Set the backend offset cookie
-        $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
 
         // Redirect back
         throw new RedirectResponseException($this->getRefererUrl());
@@ -215,7 +204,7 @@ class CsvImportUtil
 
             // Add an error if the file extension is not valid
             if (!in_array($file->extension, $this->getFileExtensions(), true)) {
-                $this->flashMessages->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension));
+                $this->flashBag->add('error', sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension));
 
                 continue;
             }
@@ -238,7 +227,7 @@ class CsvImportUtil
 
         // Add an error and reload the page if there was no file selected
         if (count($files) === 0) {
-            $this->flashMessages->addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
+            $this->flashBag->add('error', $GLOBALS['TL_LANG']['ERR']['all_fields']);
 
             throw new RedirectResponseException($this->request->getRequestUri());
         }

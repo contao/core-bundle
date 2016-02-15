@@ -14,10 +14,10 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\FileUpload;
-use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Contao\CoreBundle\Util\CsvImportUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -31,6 +31,11 @@ class BackendCsvImportController
      * @var Connection
      */
     private $connection;
+
+    /**
+     * @var FlashBagInterface
+     */
+    private $flashBag;
 
     /**
      * @var ContaoFrameworkInterface
@@ -51,17 +56,20 @@ class BackendCsvImportController
      * Constructor.
      *
      * @param Connection               $connection
+     * @param FlashBagInterface        $flashBag
      * @param ContaoFrameworkInterface $framework
      * @param RequestStack             $requestStack
      * @param TokenStorageInterface    $tokenStorage
      */
     public function __construct(
         Connection $connection,
+        FlashBagInterface $flashBag,
         ContaoFrameworkInterface $framework,
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage
     ) {
         $this->connection   = $connection;
+        $this->flashBag     = $flashBag;
         $this->framework    = $framework;
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
@@ -87,8 +95,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
-            new Message(),
-            $this->framework,
+            $this->flashBag,
             $this->requestStack->getCurrentRequest(),
             $uploader
         );
@@ -97,11 +104,18 @@ class BackendCsvImportController
             return array_merge($data, $row);
         });
 
+        // Run the import upon form submit
         if ($csvImport->isFormSubmitted()) {
             $csvImport->run($dc->table, 'listitems', $dc->id);
+
+            // Set the backend offset cookie
+            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
         }
 
-        return $csvImport->generate($GLOBALS['TL_LANG']['MSC']['lw_import'][0]);
+        return $csvImport->generate(
+            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
+            $GLOBALS['TL_LANG']['MSC']['lw_import'][0]
+        );
     }
 
     /**
@@ -124,8 +138,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
-            new Message(),
-            $this->framework,
+            $this->flashBag,
             $this->requestStack->getCurrentRequest(),
             $uploader
         );
@@ -139,11 +152,18 @@ class BackendCsvImportController
             return $data;
         });
 
+        // Run the import upon form submit
         if ($csvImport->isFormSubmitted()) {
             $csvImport->run($dc->table, 'options', $dc->id);
+
+            // Set the backend offset cookie
+            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
         }
 
-        return $csvImport->generate($GLOBALS['TL_LANG']['MSC']['ow_import'][0]);
+        return $csvImport->generate(
+            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
+            $GLOBALS['TL_LANG']['MSC']['ow_import'][0]
+        );
     }
 
     /**
@@ -166,8 +186,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
-            new Message(),
-            $this->framework,
+            $this->flashBag,
             $this->requestStack->getCurrentRequest(),
             $uploader
         );
@@ -184,11 +203,18 @@ class BackendCsvImportController
             CsvImportUtil::SEPARATOR_TABULATOR,
         ]);
 
+        // Run the import upon form submit
         if ($csvImport->isFormSubmitted()) {
             $csvImport->run($dc->table, 'tableitems', $dc->id);
+
+            // Set the backend offset cookie
+            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
         }
 
-        return $csvImport->generate($GLOBALS['TL_LANG']['MSC']['tw_import'][0]);
+        return $csvImport->generate(
+            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
+            $GLOBALS['TL_LANG']['MSC']['tw_import'][0]
+        );
     }
 
     /**
@@ -213,7 +239,6 @@ class BackendCsvImportController
         $class = $user->uploader;
 
         // See #4086 and #7046
-        // TODO why support uploaders?
         if (!class_exists($class) || $class === 'DropZone') {
             $class = 'FileUpload';
         }
