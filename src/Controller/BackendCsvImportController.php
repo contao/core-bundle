@@ -14,6 +14,7 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\FileUpload;
+use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Contao\CoreBundle\Util\CsvImportUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -86,6 +87,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
+            new Message(),
             $this->framework,
             $this->requestStack->getCurrentRequest(),
             $uploader
@@ -122,6 +124,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
+            new Message(),
             $this->framework,
             $this->requestStack->getCurrentRequest(),
             $uploader
@@ -163,6 +166,7 @@ class BackendCsvImportController
 
         $csvImport = new CsvImportUtil(
             $this->connection,
+            new Message(),
             $this->framework,
             $this->requestStack->getCurrentRequest(),
             $uploader
