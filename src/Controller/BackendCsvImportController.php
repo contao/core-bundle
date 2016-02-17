@@ -91,9 +91,7 @@ class BackendCsvImportController
      */
     public function importListWizard(DataContainer $dc)
     {
-        if (($csvImport = $this->createImportInstance()) === null) {
-            return '';
-        }
+        $csvImport = $this->createImportInstance();
 
         $csvImport->setCallback(function (array $data, array $row) {
             return array_merge($data, $row);
@@ -114,9 +112,7 @@ class BackendCsvImportController
      */
     public function importOptionWizard(DataContainer $dc)
     {
-        if (($csvImport = $this->createImportInstance()) === null) {
-            return '';
-        }
+        $csvImport = $this->createImportInstance();
 
         $csvImport->setCallback(function (array $data, array $row) {
             $data[] = [
@@ -142,9 +138,7 @@ class BackendCsvImportController
      */
     public function importTableWizard(DataContainer $dc)
     {
-        if (($csvImport = $this->createImportInstance()) === null) {
-            return '';
-        }
+        $csvImport = $this->createImportInstance();
 
         $csvImport->setCallback(function (array $data, array $row) {
             $data[] = $row;
@@ -164,19 +158,15 @@ class BackendCsvImportController
     /**
      * Create the CSV import instance
      *
-     * @return CsvImportUtil|null
+     * @return CsvImportUtil
      */
     private function createImportInstance()
     {
-        if (($uploader = $this->getDefaultUploader()) === null) {
-            return null;
-        }
-
         return new CsvImportUtil(
             $this->connection,
             $this->flashBag,
             $this->requestStack->getCurrentRequest(),
-            $uploader
+            $this->getFileUploader()
         );
     }
 
@@ -233,27 +223,21 @@ class BackendCsvImportController
     }
 
     /**
-     * Get the default file uploader
+     * Get the file uploader
      *
-     * @return FileUpload|null
+     * @return FileUpload
      */
-    protected function getDefaultUploader()
+    protected function getFileUploader()
     {
-        if (($token = $this->tokenStorage->getToken()) === null) {
-            return null;
+        if (($token = $this->tokenStorage->getToken()) !== null && ($user = $token->getUser()) !== null) {
+            $class = $user->uploader;
+
+            // See #4086 and #7046
+            if (class_exists($class) && $class !== 'DropZone') {
+                return new $class();
+            }
         }
 
-        if (($user = $token->getUser()) === null) {
-            return null;
-        }
-
-        $class = $user->uploader;
-
-        // See #4086 and #7046
-        if (!class_exists($class) || $class === 'DropZone') {
-            $class = 'FileUpload';
-        }
-
-        return new $class();
+        return new FileUpload();
     }
 }
