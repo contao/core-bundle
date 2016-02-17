@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Exception\CsvImportErrorException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
@@ -82,7 +83,6 @@ class BackendCsvImportController
      *
      * @return string
      *
-     * @throws \Exception
      * @throws RedirectResponseException
      */
     public function importListWizard(DataContainer $dc)
@@ -95,18 +95,7 @@ class BackendCsvImportController
             return array_merge($data, $row);
         });
 
-        // Run the import upon form submit
-        if ($csvImport->isFormSubmitted()) {
-            $csvImport->run($dc->table, 'listitems', $dc->id);
-
-            // Set the backend offset cookie
-            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
-        }
-
-        return $csvImport->generate(
-            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
-            $GLOBALS['TL_LANG']['MSC']['lw_import'][0]
-        );
+        return $this->runDefaultRoutine($csvImport, $dc, 'listitems', $GLOBALS['TL_LANG']['MSC']['lw_import'][0]);
     }
 
     /**
@@ -116,7 +105,6 @@ class BackendCsvImportController
      *
      * @return string
      *
-     * @throws \Exception
      * @throws RedirectResponseException
      */
     public function importOptionWizard(DataContainer $dc)
@@ -134,18 +122,7 @@ class BackendCsvImportController
             return $data;
         });
 
-        // Run the import upon form submit
-        if ($csvImport->isFormSubmitted()) {
-            $csvImport->run($dc->table, 'options', $dc->id);
-
-            // Set the backend offset cookie
-            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
-        }
-
-        return $csvImport->generate(
-            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
-            $GLOBALS['TL_LANG']['MSC']['ow_import'][0]
-        );
+        return $this->runDefaultRoutine($csvImport, $dc, 'options', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]);
     }
 
     /**
@@ -155,7 +132,6 @@ class BackendCsvImportController
      *
      * @return string
      *
-     * @throws \Exception
      * @throws RedirectResponseException
      */
     public function importTableWizard(DataContainer $dc)
@@ -176,18 +152,7 @@ class BackendCsvImportController
             CsvImportUtil::SEPARATOR_TABULATOR,
         ]);
 
-        // Run the import upon form submit
-        if ($csvImport->isFormSubmitted()) {
-            $csvImport->run($dc->table, 'tableitems', $dc->id);
-
-            // Set the backend offset cookie
-            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
-        }
-
-        return $csvImport->generate(
-            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
-            $GLOBALS['TL_LANG']['MSC']['tw_import'][0]
-        );
+        return $this->runDefaultRoutine($csvImport, $dc, 'tableitems', $GLOBALS['TL_LANG']['MSC']['tw_import'][0]);
     }
 
     /**
@@ -207,6 +172,55 @@ class BackendCsvImportController
             $this->requestStack->getCurrentRequest(),
             $uploader
         );
+    }
+
+    /**
+     * Run the default import routine
+     *
+     * @param CsvImportUtil $csvImport
+     * @param DataContainer $dc
+     * @param string        $fieldName
+     * @param string        $submitLabel
+     *
+     * @return string
+     *
+     * @throws RedirectResponseException
+     */
+    private function runDefaultRoutine(CsvImportUtil $csvImport, DataContainer $dc, $fieldName, $submitLabel)
+    {
+        if ($csvImport->isFormSubmitted()) {
+            try {
+                $csvImport->run($dc->table, $fieldName, $dc->id);
+            } catch (CsvImportErrorException $e) {
+                // Add an error message and reload the page on import failure
+                $this->flashBag->add('error', $e->getMessage());
+                throw new RedirectResponseException($this->requestStack->getCurrentRequest()->getRequestUri());
+            }
+
+            // Set the backend offset cookie
+            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
+
+            // Redirect back
+            throw new RedirectResponseException($this->getRefererUrl());
+        }
+
+        return $csvImport->generate(
+            $this->framework->getAdapter('Contao\Config')->get('maxFileSize'),
+            $submitLabel,
+            $this->getRefererUrl()
+        );
+    }
+
+    /**
+     * Get the request URL without "key" parameter
+     *
+     * @return string
+     */
+    protected function getRefererUrl()
+    {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+
+        return str_replace('&key='.$currentRequest->query->get('key'), '', $currentRequest->getRequestUri());
     }
 
     /**

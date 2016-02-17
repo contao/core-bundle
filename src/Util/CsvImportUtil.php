@@ -11,7 +11,8 @@
 namespace Contao\CoreBundle\Util;
 
 use Contao\BackendTemplate;
-use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\Template;
+use Contao\CoreBundle\Exception\CsvImportErrorException;
 use Contao\File;
 use Contao\FileUpload;
 use Contao\Versions;
@@ -22,8 +23,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 /**
  * Provide methods to handle CSV import.
- *
- * @todo - separate the backend layer even more?
  *
  * @author Kamil Kuzminski <https://github.com/qzminski>
  */
@@ -68,7 +67,7 @@ class CsvImportUtil
 
     /**
      * Template
-     * @var BackendTemplate
+     * @var Template
      */
     private $template;
 
@@ -115,14 +114,15 @@ class CsvImportUtil
      *
      * @param int    $maxFileSize
      * @param string $submitLabel
+     * @param string $backUrl
      *
      * @return string
      */
-    public function generate($maxFileSize, $submitLabel)
+    public function generate($maxFileSize, $submitLabel, $backUrl)
     {
         $template              = $this->getTemplate();
         $template->formId      = $this->getFormId();
-        $template->backUrl     = $this->getRefererUrl();
+        $template->backUrl     = $backUrl;
         $template->action      = $this->request->getRequestUri();
         $template->fileMaxSize = $maxFileSize;
         $template->messages    = $this->flashBag->all();
@@ -140,28 +140,15 @@ class CsvImportUtil
      * @param string $field
      * @param int    $id
      *
-     * @throws \Exception
-     * @throws RedirectResponseException
+     * @throws CsvImportErrorException
      */
     public function run($table, $field, $id)
     {
         if (!$this->isFormSubmitted()) {
-            throw new \Exception('The CSV import form was not submitted');
+            throw new CsvImportErrorException('The CSV import form was not submitted');
         }
 
-        $files = $this->getUploadedFiles();
-
-        // Add an error and reload the page if there was no file selected
-        if (count($files) === 0) {
-            $this->flashBag->add('error', $GLOBALS['TL_LANG']['ERR']['all_fields']);
-
-            throw new RedirectResponseException($this->request->getRequestUri());
-        }
-
-        $this->storeInDatabase($table, $field, $id, $this->getDataFromFiles($files));
-
-        // Redirect back
-        throw new RedirectResponseException($this->getRefererUrl());
+        $this->storeInDatabase($table, $field, $id, $this->getData());
     }
 
     /**
@@ -202,8 +189,7 @@ class CsvImportUtil
     /**
      * Get the data from uploaded files
      *
-     * @throws \Exception
-     * @throws RedirectResponseException
+     * @throws CsvImportErrorException
      */
     public function getData()
     {
@@ -211,9 +197,7 @@ class CsvImportUtil
 
         // Add an error and reload the page if there was no file selected
         if (count($files) === 0) {
-            $this->flashBag->add('error', $GLOBALS['TL_LANG']['ERR']['all_fields']);
-
-            throw new RedirectResponseException($this->request->getRequestUri());
+            throw new CsvImportErrorException($GLOBALS['TL_LANG']['ERR']['all_fields']);
         }
 
         return $this->getDataFromFiles($files);
@@ -281,7 +265,7 @@ class CsvImportUtil
     /**
      * Get the template
      *
-     * @return BackendTemplate
+     * @return Template
      */
     public function getTemplate()
     {
@@ -295,9 +279,9 @@ class CsvImportUtil
     /**
      * Set the template
      *
-     * @param BackendTemplate $template
+     * @param Template $template
      */
-    public function setTemplate(BackendTemplate $template)
+    public function setTemplate(Template $template)
     {
         $this->template = $template;
     }
@@ -378,6 +362,8 @@ class CsvImportUtil
      * @param array $files
      *
      * @return array
+     *
+     * @throws CsvImportErrorException
      */
     private function getDataFromFiles(array $files)
     {
@@ -392,20 +378,6 @@ class CsvImportUtil
         }
 
         return $data;
-    }
-
-    /**
-     * Get the request URL without "key" parameter
-     *
-     * @return string
-     */
-    protected function getRefererUrl()
-    {
-        return str_replace(
-            '&key='.$this->request->query->get('key'),
-            '',
-            $this->request->getRequestUri()
-        );
     }
 
     /**
@@ -433,7 +405,7 @@ class CsvImportUtil
      *
      * @return string
      *
-     * @throws \Exception
+     * @throws CsvImportErrorException
      */
     private function getSeparator()
     {
@@ -441,7 +413,7 @@ class CsvImportUtil
         $separator = $this->request->request->get('separator');
 
         if (($mappedSeparator = array_search($separator, $mapper, true)) === false) {
-            throw new \Exception(sprintf('The CSV separator "%s" is invalid', $separator));
+            throw new CsvImportErrorException(sprintf('The CSV separator "%s" is invalid', $separator));
         }
 
         return $mappedSeparator;
