@@ -87,18 +87,9 @@ class BackendCsvImportController
      */
     public function importListWizard(DataContainer $dc)
     {
-        $uploader = $this->getDefaultUploader();
-
-        if ($uploader === null) {
+        if (($csvImport = $this->createImportInstance()) === null) {
             return '';
         }
-
-        $csvImport = new CsvImportUtil(
-            $this->connection,
-            $this->flashBag,
-            $this->requestStack->getCurrentRequest(),
-            $uploader
-        );
 
         $csvImport->setCallback(function (array $data, array $row) {
             return array_merge($data, $row);
@@ -130,18 +121,9 @@ class BackendCsvImportController
      */
     public function importOptionWizard(DataContainer $dc)
     {
-        $uploader = $this->getDefaultUploader();
-
-        if ($uploader === null) {
+        if (($csvImport = $this->createImportInstance()) === null) {
             return '';
         }
-
-        $csvImport = new CsvImportUtil(
-            $this->connection,
-            $this->flashBag,
-            $this->requestStack->getCurrentRequest(),
-            $uploader
-        );
 
         $csvImport->setCallback(function (array $data, array $row) {
             $data[] = [
@@ -178,18 +160,9 @@ class BackendCsvImportController
      */
     public function importTableWizard(DataContainer $dc)
     {
-        $uploader = $this->getDefaultUploader();
-
-        if ($uploader === null) {
+        if (($csvImport = $this->createImportInstance()) === null) {
             return '';
         }
-
-        $csvImport = new CsvImportUtil(
-            $this->connection,
-            $this->flashBag,
-            $this->requestStack->getCurrentRequest(),
-            $uploader
-        );
 
         $csvImport->setCallback(function (array $data, array $row) {
             $data[] = $row;
@@ -218,21 +191,36 @@ class BackendCsvImportController
     }
 
     /**
+     * Create the CSV import instance
+     *
+     * @return CsvImportUtil|null
+     */
+    private function createImportInstance()
+    {
+        if (($uploader = $this->getDefaultUploader()) === null) {
+            return null;
+        }
+
+        return new CsvImportUtil(
+            $this->connection,
+            $this->flashBag,
+            $this->requestStack->getCurrentRequest(),
+            $uploader
+        );
+    }
+
+    /**
      * Get the default file uploader
      *
      * @return FileUpload|null
      */
     protected function getDefaultUploader()
     {
-        $token = $this->tokenStorage->getToken();
-
-        if ($token === null) {
+        if (($token = $this->tokenStorage->getToken()) === null) {
             return null;
         }
 
-        $user = $token->getUser();
-
-        if ($token === null) {
+        if (($user = $token->getUser()) === null) {
             return null;
         }
 
