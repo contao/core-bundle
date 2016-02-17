@@ -12,11 +12,14 @@ namespace Contao\CoreBundle\Controller;
 
 use Contao\CoreBundle\Exception\CsvImportErrorException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\FileUpload;
 use Doctrine\DBAL\Connection;
 use Contao\CoreBundle\Util\CsvImportUtil;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -84,6 +87,7 @@ class BackendCsvImportController
      * @return string
      *
      * @throws RedirectResponseException
+     * @throws ResponseException
      */
     public function importListWizard(DataContainer $dc)
     {
@@ -106,6 +110,7 @@ class BackendCsvImportController
      * @return string
      *
      * @throws RedirectResponseException
+     * @throws ResponseException
      */
     public function importOptionWizard(DataContainer $dc)
     {
@@ -133,6 +138,7 @@ class BackendCsvImportController
      * @return string
      *
      * @throws RedirectResponseException
+     * @throws ResponseException
      */
     public function importTableWizard(DataContainer $dc)
     {
@@ -185,6 +191,7 @@ class BackendCsvImportController
      * @return string
      *
      * @throws RedirectResponseException
+     * @throws ResponseException
      */
     private function runDefaultRoutine(CsvImportUtil $csvImport, DataContainer $dc, $fieldName, $submitLabel)
     {
@@ -197,11 +204,13 @@ class BackendCsvImportController
                 throw new RedirectResponseException($this->requestStack->getCurrentRequest()->getRequestUri());
             }
 
+            $response = new RedirectResponse($this->getRefererUrl());
+
             // Set the backend offset cookie
-            $this->framework->getAdapter('Contao\System')->setCookie('BE_PAGE_OFFSET', 0, 0);
+            $response->headers->setCookie(new Cookie('BE_PAGE_OFFSET', 0, 0));
 
             // Redirect back
-            throw new RedirectResponseException($this->getRefererUrl());
+            throw new ResponseException($response);
         }
 
         return $csvImport->generate(
