@@ -93,6 +93,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('purge_cache')
                             ->defaultValue('monthly')
+                            ->validate()
                             ->ifNotInArray([false, 'monthly', 'weekly', 'daily', 'hourly', 'minutely'])
                                 ->thenInvalid('Invalid image cron period "%s"')
                             ->end()
