@@ -218,7 +218,7 @@ abstract class Controller extends \System
 					// Send a 404 header if the article does not exist
 					if (null === $objArticle)
 					{
-						throw new PageNotFoundException('Page not found');
+						throw new PageNotFoundException('Article "' . $strArticle . '" was not found in page ID ' . $objPage->id);
 					}
 
 					// Add the "first" and "last" classes (see #2583)
@@ -1199,19 +1199,19 @@ abstract class Controller extends \System
 		// Make sure there are no attempts to hack the file system
 		if (preg_match('@^\.+@i', $strFile) || preg_match('@\.+/@i', $strFile) || preg_match('@(://)+@i', $strFile))
 		{
-			throw new PageNotFoundException('Invalid file name');
+			throw new PageNotFoundException('File name "' . $strFile . '" is invalid');
 		}
 
 		// Limit downloads to the files directory
 		if (!preg_match('@^' . preg_quote(\Config::get('uploadPath'), '@') . '@i', $strFile))
 		{
-			throw new PageNotFoundException('Invalid path');
+			throw new PageNotFoundException('File path "' . $strFile . '" is invalid');
 		}
 
 		// Check whether the file exists
 		if (!file_exists(TL_ROOT . '/' . $strFile))
 		{
-			throw new PageNotFoundException('File not found');
+			throw new PageNotFoundException('File "' . $strFile . '" was not found');
 		}
 
 		$objFile = new \File($strFile);
