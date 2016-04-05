@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Monolog\ContaoTableProcessor;
 use League\Uri\Components\Query;
 use Patchwork\Utf8;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -233,32 +234,23 @@ abstract class System
 	 * @param string $strText     The log message
 	 * @param string $strFunction The function name
 	 * @param string $strCategory The category name
+	 *
+	 * @deprecated Deprecated since Contao 4.2, to be removed in Contao 5.
+	 *             Use the logger service instead.
 	 */
 	public static function log($strText, $strFunction, $strCategory)
 	{
-		$strUa = 'N/A';
-		$strIp = '127.0.0.1';
+		trigger_error('Using System::log() has been deprecated and will no longer work in Contao 5.0. Use the logger service instead', E_USER_DEPRECATED);
 
-		if (\Environment::get('httpUserAgent'))
-		{
-			$strUa = \Environment::get('httpUserAgent');
-		}
-		if (\Environment::get('remoteAddr'))
-		{
-			$strIp = static::anonymizeIp(\Environment::get('ip'));
+		$channel = 'contao_' . strtolower($strCategory);
+
+		if (static::getContainer()->has('monolog.logger.' . $channel)) {
+			$logger = static::getContainer()->get('monolog.logger.' . $channel);
+		} else {
+			$logger = static::getContainer()->get('monolog.logger.contao');
 		}
 
-		\Database::getInstance()->prepare("INSERT INTO tl_log (tstamp, source, action, username, text, func, ip, browser) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
-							   ->execute(time(), (TL_MODE == 'FE' ? 'FE' : 'BE'), $strCategory, ($GLOBALS['TL_USERNAME'] ? $GLOBALS['TL_USERNAME'] : ''), specialchars($strText), $strFunction, $strIp, $strUa);
-
-		// HOOK: allow to add custom loggers
-		if (isset($GLOBALS['TL_HOOKS']['addLogEntry']) && is_array($GLOBALS['TL_HOOKS']['addLogEntry']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['addLogEntry'] as $callback)
-			{
-				static::importStatic($callback[0])->{$callback[1]}($strText, $strFunction, $strCategory);
-			}
-		}
+		$logger->addInfo($strText, array('function' => $strFunction));
 	}
 
 
