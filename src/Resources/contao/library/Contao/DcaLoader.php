@@ -9,6 +9,7 @@
  */
 
 namespace Contao;
+use Symfony\Component\Yaml\Yaml;
 
 
 /**
@@ -83,6 +84,14 @@ class DcaLoader extends \Controller
 				foreach (\System::getContainer()->get('contao.resource_locator')->locate('dca/' . $this->strTable . '.php', null, false) as $file)
 				{
 					include $file;
+				}
+
+				foreach (\System::getContainer()->get('contao.resource_locator')->locate('dca/' . $this->strTable . '.yml', null, false) as $file)
+				{
+					$GLOBALS['TL_DCA'][$this->strTable] = array_replace_recursive(
+						Yaml::parse($file),
+						$GLOBALS['TL_DCA'][$this->strTable]
+					);
 				}
 			}
 			catch (\InvalidArgumentException $e) {}
