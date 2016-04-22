@@ -159,7 +159,11 @@
     </div>
     <div id="footer">
         <div class="wrap">
-            {% block hint %}{{ error.hint|format(template)|raw }}{% endblock %}
+            {% block hint %}
+                {% if error.hint is defined %}
+                    {{ error.hint|format(template)|raw }}
+                {% endif %}
+            {% endblock %}
         </div>
     </div>
 </body>
