@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle;
 
+use Composer\Autoload\ClassLoader;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
@@ -29,6 +30,22 @@ class ContaoCoreBundle extends Bundle implements DependentBundleInterface
 {
     const SCOPE_BACKEND = 'backend';
     const SCOPE_FRONTEND = 'frontend';
+
+    /**
+     * Register class loader for generated bundle names.
+     *
+     * @param KernelInterface $kernel
+     */
+    public function __construct(KernelInterface $kernel = null)
+    {
+        global $loader;
+
+        if (null === $kernel || !$loader instanceof ClassLoader) {
+            return;
+        }
+
+        $loader->add('Contao\CoreBundle\HttpKernel\Bundle', $kernel->getCacheDir() . '/contao/bundles');
+    }
 
     /**
      * {@inheritdoc}

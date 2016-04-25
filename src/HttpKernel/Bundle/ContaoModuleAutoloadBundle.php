@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\HttpKernel\Bundle;
 
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -22,15 +23,27 @@ use Symfony\Component\HttpKernel\KernelInterface;
 final class ContaoModuleAutoloadBundle extends Bundle implements DependentBundleInterface
 {
     /**
+     * @var string
+     */
+    public static $cacheDir;
+
+    /**
      * @inheritdoc
      */
     public static function getBundleDependencies(KernelInterface $kernel)
     {
+        if (null === static::$cacheDir) {
+            static::$cacheDir = $kernel->getCacheDir() . '/contao/bundles';
+        }
+
         $kernelDir  = $kernel->getRootDir();
         $bundles    = [];
 
+        $generator = new ModuleBundleGenerator();
+        $generator->generateBundles(static::$cacheDir, $kernelDir);
+
         foreach (static::getContaoModules(dirname($kernelDir)) as $module) {
-            $bundles[] = ['Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle', [$module, $kernelDir]];
+            $bundles[] = sprintf('Contao\CoreBundle\HttpKernel\Bundle\%sModuleBundle', Container::camelize($module));
         }
 
         return $bundles;
