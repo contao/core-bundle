@@ -133,6 +133,6 @@ class ContaoModuleBundle extends Bundle implements DependentBundleInterface
             return self::$moduleMapping[$name];
         }
 
-        return 'Contao\CoreBundle\HttpKernel\Bundle\\' . Container::camelize($name);
+        return 'Contao\CoreBundle\HttpKernel\Bundle\\' . Container::camelize($name) . 'ModuleBundle';
     }
 }
