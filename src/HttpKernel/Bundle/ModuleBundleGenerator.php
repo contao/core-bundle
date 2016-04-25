@@ -80,6 +80,9 @@ namespace Contao\CoreBundle\HttpKernel\Bundle;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 
+/**
+ * Generated bundle class for Contao module in system/modules/$module
+ */
 class $className extends ContaoModuleBundle
 {
     public function __construct()
