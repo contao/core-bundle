@@ -57,7 +57,7 @@ class ContaoModuleBundle extends Bundle implements DependentBundleInterface
         }
 
         if (file_exists($this->path . '/.skip')) {
-            throw new \RuntimeException('The module "system/modules/' . $this->name . '" as been disabled.');
+            throw new \RuntimeException('The module "system/modules/' . $this->name . '" has been disabled.');
         }
     }
 
@@ -126,7 +126,13 @@ class ContaoModuleBundle extends Bundle implements DependentBundleInterface
         return array_unique(array_merge($requires, $autoload['requires']));
     }
 
-
+    /**
+     * Returns FQCN from module folder and maps legacy core module names.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     private static function convertModuleToClass($name)
     {
         if (array_key_exists($name, self::$moduleMapping)) {
