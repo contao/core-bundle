@@ -78,10 +78,9 @@ class ModuleBundleGenerator
 
 namespace Contao\CoreBundle\HttpKernel\Bundle;
 
-use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class $className extends ContaoModuleBundle implements DependentBundleInterface
+class $className extends ContaoModuleBundle
 {
     public function __construct()
     {
