@@ -174,6 +174,6 @@ class TableWizard extends \Widget
 	{
 		$service = System::getContainer()->get('contao.controller.backend_csv_import');
 
-		return $service->importTableWizard($dc);
+		return $service->importTableWizardAction($dc);
 	}
 }

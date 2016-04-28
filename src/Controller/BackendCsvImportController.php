@@ -89,7 +89,7 @@ class BackendCsvImportController
      * @throws RedirectResponseException
      * @throws ResponseException
      */
-    public function importListWizard(DataContainer $dc)
+    public function importListWizardAction(DataContainer $dc)
     {
         $csvImport = $this->createImportInstance();
 
@@ -110,7 +110,7 @@ class BackendCsvImportController
      * @throws RedirectResponseException
      * @throws ResponseException
      */
-    public function importOptionWizard(DataContainer $dc)
+    public function importOptionWizardAction(DataContainer $dc)
     {
         $csvImport = $this->createImportInstance();
 
@@ -136,7 +136,7 @@ class BackendCsvImportController
      * @throws RedirectResponseException
      * @throws ResponseException
      */
-    public function importTableWizard(DataContainer $dc)
+    public function importTableWizardAction(DataContainer $dc)
     {
         $csvImport = $this->createImportInstance();
 
