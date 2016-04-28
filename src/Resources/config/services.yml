@@ -31,7 +31,6 @@ services:
         class: Contao\CoreBundle\Controller\BackendCsvImportController
         arguments:
             - "@database_connection"
-            - "@session.flash_bag"
             - "@contao.framework"
             - "@request_stack"
             - "@security.token_storage"

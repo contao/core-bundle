@@ -18,8 +18,6 @@ use Contao\FileUpload;
 use Contao\Versions;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Provide methods to handle CSV import.
@@ -37,11 +35,6 @@ class CsvImportUtil
      * @var Connection
      */
     private $connection;
-
-    /**
-     * @var FlashBagInterface
-     */
-    private $flashBag;
 
     /**
      * @var Request
@@ -93,18 +86,15 @@ class CsvImportUtil
      * Constructor.
      *
      * @param Connection        $connection
-     * @param FlashBagInterface $flashBag
      * @param Request           $request
      * @param FileUpload        $uploader
      */
     public function __construct(
         Connection $connection,
-        FlashBagInterface $flashBag,
         Request $request,
         FileUpload $uploader
     ) {
         $this->connection = $connection;
-        $this->flashBag   = $flashBag;
         $this->request    = $request;
         $this->uploader   = $uploader;
     }
@@ -125,7 +115,7 @@ class CsvImportUtil
         $template->backUrl     = $backUrl;
         $template->action      = $this->request->getRequestUri();
         $template->fileMaxSize = $maxFileSize;
-        $template->messages    = $this->flashBag->all();
+        $template->messages    = $this->request->getSession()->getFlashBag()->all();
         $template->uploader    = $this->getUploader()->generateMarkup();
         $template->separators  = $this->generateSeparators();
         $template->submitLabel = $submitLabel;
@@ -175,7 +165,7 @@ class CsvImportUtil
 
             // Add an error if the file extension is not valid
             if (!in_array($file->extension, $this->getFileExtensions(), true)) {
-                $this->flashBag->add('error', sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension));
+                $this->request->getSession()->getFlashBag()->add('error', sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension));
 
                 continue;
             }

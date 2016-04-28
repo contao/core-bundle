@@ -21,7 +21,6 @@ use Contao\CoreBundle\Util\CsvImportUtil;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -35,11 +34,6 @@ class BackendCsvImportController
      * @var Connection
      */
     private $connection;
-
-    /**
-     * @var FlashBagInterface
-     */
-    private $flashBag;
 
     /**
      * @var ContaoFrameworkInterface
@@ -60,20 +54,17 @@ class BackendCsvImportController
      * Constructor.
      *
      * @param Connection               $connection
-     * @param FlashBagInterface        $flashBag
      * @param ContaoFrameworkInterface $framework
      * @param RequestStack             $requestStack
      * @param TokenStorageInterface    $tokenStorage
      */
     public function __construct(
         Connection $connection,
-        FlashBagInterface $flashBag,
         ContaoFrameworkInterface $framework,
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage
     ) {
         $this->connection   = $connection;
-        $this->flashBag     = $flashBag;
         $this->framework    = $framework;
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
@@ -164,7 +155,6 @@ class BackendCsvImportController
     {
         return new CsvImportUtil(
             $this->connection,
-            $this->flashBag,
             $this->requestStack->getCurrentRequest(),
             $this->getFileUploader()
         );
@@ -190,7 +180,7 @@ class BackendCsvImportController
                 $csvImport->run($dc->table, $fieldName, $dc->id);
             } catch (CsvImportErrorException $e) {
                 // Add an error message and reload the page on import failure
-                $this->flashBag->add('error', $e->getMessage());
+                $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('error', $e->getMessage());
                 throw new RedirectResponseException($this->requestStack->getCurrentRequest()->getRequestUri());
             }
 
