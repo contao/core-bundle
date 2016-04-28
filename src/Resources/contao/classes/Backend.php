@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\Database\Result;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -414,8 +415,25 @@ abstract class Backend extends \Controller
 		// Custom action (if key is not defined in config.php the default action will be called)
 		elseif (\Input::get('key') && isset($arrModule[\Input::get('key')]))
 		{
-			$objCallback = \System::importStatic($arrModule[\Input::get('key')][0]);
-			$this->Template->main .= $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
+			$container  = static::getContainer();
+			$className  = $arrModule[\Input::get('key')][0];
+			$methodName = $arrModule[\Input::get('key')][1];
+
+			// Use the controller service
+			if (!class_exists($className) && $container->has($className)) {
+				$request = $container->get('request_stack')->getCurrentRequest();
+				$request->attributes->set('id', $dc->id);
+				$request->attributes->set('table', $dc->table);
+
+				/** @var Response $response */
+				$response = $container->get($className)->$methodName($request);
+
+				$this->Template->main .= $response->getContent();
+			} else {
+				// Use the regular callback
+				$objCallback = System::importStatic($className);
+				$this->Template->main .= $objCallback->$methodName($dc);
+			}
 
 			// Add the name of the parent element
 			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])

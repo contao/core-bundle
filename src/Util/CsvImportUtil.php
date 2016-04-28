@@ -85,9 +85,9 @@ class CsvImportUtil
     /**
      * Constructor.
      *
-     * @param Connection        $connection
-     * @param Request           $request
-     * @param FileUpload        $uploader
+     * @param Connection $connection
+     * @param Request    $request
+     * @param FileUpload $uploader
      */
     public function __construct(
         Connection $connection,
@@ -126,19 +126,17 @@ class CsvImportUtil
     /**
      * Run the import
      *
-     * @param string $table
      * @param string $field
-     * @param int    $id
      *
      * @throws CsvImportErrorException
      */
-    public function run($table, $field, $id)
+    public function run($field)
     {
         if (!$this->isFormSubmitted()) {
             throw new CsvImportErrorException('The CSV import form was not submitted');
         }
 
-        $this->storeInDatabase($table, $field, $id, $this->getData());
+        $this->storeInDatabase($field, $this->getData());
     }
 
     /**
@@ -165,7 +163,10 @@ class CsvImportUtil
 
             // Add an error if the file extension is not valid
             if (!in_array($file->extension, $this->getFileExtensions(), true)) {
-                $this->request->getSession()->getFlashBag()->add('error', sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension));
+                $this->request->getSession()->getFlashBag()->add(
+                    'error',
+                    sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $file->extension)
+                );
 
                 continue;
             }
@@ -196,15 +197,16 @@ class CsvImportUtil
     /**
      * Store data in the database
      *
-     * @param string $table
      * @param string $field
-     * @param int    $id
      * @param array  $data
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function storeInDatabase($table, $field, $id, array $data)
+    public function storeInDatabase($field, array $data)
     {
+        $id    = $this->request->attributes->get('id');
+        $table = $this->request->attributes->get('table');
+
         $versions = new Versions($table, $id);
         $versions->create();
 

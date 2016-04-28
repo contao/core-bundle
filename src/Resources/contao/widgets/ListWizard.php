@@ -123,7 +123,12 @@ class ListWizard extends \Widget
 	 */
 	public function importList(DataContainer $dc)
 	{
-		$service = System::getContainer()->get('contao.controller.backend_csv_import');
+        $container = System::getContainer();
+        $service   = $container->get('contao.controller.backend_csv_import');
+        $request   = $container->get('request_stack')->getCurrentRequest();
+
+        $request->attributes->set('id', $dc->id);
+        $request->attributes->set('table', $dc->table);
 
 		return $service->importListWizardAction($dc);
 	}
