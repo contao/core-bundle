@@ -183,7 +183,7 @@ class BackendCsvImportController
      * @throws RedirectResponseException
      * @throws ResponseException
      */
-    private function runDefaultRoutine(CsvImportUtil $csvImport, DataContainer $dc, $fieldName, $submitLabel)
+    protected function runDefaultRoutine(CsvImportUtil $csvImport, DataContainer $dc, $fieldName, $submitLabel)
     {
         if ($csvImport->isFormSubmitted()) {
             try {
