@@ -46,6 +46,23 @@ abstract class AbstractCsvImportController
     protected $tokenStorage;
 
     /**
+     * Constructor.
+     *
+     * @param Connection               $connection
+     * @param ContaoFrameworkInterface $framework
+     * @param TokenStorageInterface    $tokenStorage
+     */
+    public function __construct(
+        Connection $connection,
+        ContaoFrameworkInterface $framework,
+        TokenStorageInterface $tokenStorage
+    ) {
+        $this->connection   = $connection;
+        $this->framework    = $framework;
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    /**
      * Set the database connection
      *
      * @param Connection $connection

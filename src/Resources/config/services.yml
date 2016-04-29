@@ -33,7 +33,6 @@ services:
         arguments:
             - "@database_connection"
             - "@contao.framework"
-            - "@request_stack"
             - "@security.token_storage"
 
     contao.controller.backend_csv_import:
