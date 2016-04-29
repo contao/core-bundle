@@ -430,7 +430,8 @@ abstract class Backend extends \Controller
 
 				$this->Template->main .= $response->getContent();
 			} else {
-				// Use the regular callback
+				// Use the regular callback (BC)
+				@trigger_error('Using backend module callbacks has been deprecated and will no longer work in Contao 5.0. Use controllers to generate custom module actions.', E_USER_DEPRECATED);
 				$objCallback = System::importStatic($className);
 				$this->Template->main .= $objCallback->$methodName($dc);
 			}
