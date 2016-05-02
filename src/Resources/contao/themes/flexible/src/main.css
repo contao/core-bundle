@@ -73,6 +73,7 @@ body.popup {
 #left {
 	width:205px;
 	float:left;
+	background:#fff;
 }
 
 /* Main */
@@ -104,14 +105,14 @@ body.popup {
 }
 
 /* Navigation */
-#tl_navigation .tl_level_1 {
-	margin-top:6px;
-}
 #tl_navigation .tl_level_1_group {
 	margin-bottom:18px;
-	padding:6px !important;
 	font-weight:500;
 	border-bottom:1px solid #ddd;
+}
+#tl_navigation .tl_level_1_group > a {
+	display:block;
+	padding:6px;
 }
 #tl_navigation .tl_level_2 {
 	padding:0 0 18px 6px !important;
@@ -128,10 +129,11 @@ body.popup {
 	margin-top:-12px;
 }
 #tl_navigation .node-collapsed {
-	background:url("icons/navexp.svg") right 6px center no-repeat;
+	background:url("icons/navexp.svg") right 6px center no-repeat #f9f9f9;
+	margin-bottom:0;
 }
 #tl_navigation .node-expanded {
-	background:url("icons/navcol.svg") right 6px center no-repeat;
+	background:url("icons/navcol.svg") right 6px center no-repeat #f9f9f9;
 }
 
 /* Buttons */
@@ -1662,7 +1664,9 @@ fieldset.collapsed > legend {
 	}
 	#tl_navigation .tl_level_1_group {
 		margin-bottom:24px;
-		padding:12px 6px !important;
+	}
+	#tl_navigation .tl_level_1_group > a {
+		padding:12px 6px;
 	}
 	#tl_navigation .tl_level_2 a {
 		margin:6px 0;
