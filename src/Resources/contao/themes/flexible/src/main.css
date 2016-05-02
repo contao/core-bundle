@@ -130,6 +130,7 @@ body.popup {
 }
 #tl_navigation .node-collapsed {
 	background:url("icons/navexp.svg") right 6px center no-repeat #f9f9f9;
+	margin-bottom:0;
 }
 #tl_navigation .node-expanded {
 	background:url("icons/navcol.svg") right 6px center no-repeat #f9f9f9;
