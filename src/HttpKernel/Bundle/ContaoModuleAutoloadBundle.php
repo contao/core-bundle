@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\HttpKernel\Bundle;
 
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -28,6 +27,12 @@ final class ContaoModuleAutoloadBundle extends Bundle implements DependentBundle
     public static $cacheDir;
 
     /**
+     * @var ModuleBundleGenerator
+     */
+    public static $generator;
+
+
+    /**
      * @inheritdoc
      */
     public static function getBundleDependencies(KernelInterface $kernel)
@@ -36,42 +41,19 @@ final class ContaoModuleAutoloadBundle extends Bundle implements DependentBundle
             static::$cacheDir = $kernel->getCacheDir() . '/contao/bundles';
         }
 
-        $kernelDir  = $kernel->getRootDir();
-        $bundles    = [];
+        if (!static::$generator instanceof ModuleBundleGenerator) {
+            static::$generator = new ModuleBundleGenerator();
+        }
 
-        $generator = new ModuleBundleGenerator();
-        $generator->generateBundles(static::$cacheDir, $kernelDir);
+        $rootDir = $kernel->getRootDir();
+        $bundles = [];
 
-        foreach (static::getContaoModules(dirname($kernelDir)) as $module) {
-            $bundles[] = sprintf('Contao\CoreBundle\HttpKernel\Bundle\%sModuleBundle', Container::camelize($module));
+        static::$generator->generateBundles(static::$cacheDir, $rootDir);
+
+        foreach (static::$generator->getContaoModules($rootDir) as $module) {
+            $bundles[] = ModuleBundleGenerator::convertModuleToClass($module);
         }
 
         return $bundles;
-    }
-
-    /**
-     * Find Contao modules in system/modules that are not marked as skippable
-     *
-     * @param string $contaoRoot
-     *
-     * @return array
-     */
-    private static function getContaoModules($contaoRoot)
-    {
-        $modules = [];
-
-        foreach (scandir($contaoRoot . '/system/modules') as $dir) {
-            if ('.' === $dir || '..' === $dir) {
-                continue;
-            }
-
-            if (is_dir($contaoRoot . '/system/modules/' . $dir)
-                && !file_exists($contaoRoot . '/system/modules/' . $dir . '/.skip')
-            ) {
-                $modules[] = $dir;
-            }
-        }
-
-        return $modules;
     }
 }

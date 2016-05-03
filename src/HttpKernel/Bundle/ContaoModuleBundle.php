@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\HttpKernel\Bundle;
 
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -23,22 +22,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class ContaoModuleBundle extends Bundle implements DependentBundleInterface
 {
-    /**
-     * Old module names
-     * @var array
-     */
-    private static $moduleMapping =
-        [
-            'core'       => 'Contao\CoreBundle\ContaoCoreBundle',
-            'calendar'   => 'Contao\CalendarBundle\ContaoCalendarBundle',
-            'comments'   => 'Contao\CommentsBundle\ContaoCommentsBundle',
-            'faq'        => 'Contao\FaqBundle\ContaoFaqBundle',
-            'listing'    => 'Contao\ListingBundle\ContaoListingBundle',
-            'news'       => 'Contao\NewsBundle\ContaoNewsBundle',
-            'newsletter' => 'Contao\NewsletterBundle\ContaoNewsletterBundle',
-        ];
-
-
     /**
      * Sets the module name and application root directory.
      *
@@ -85,7 +68,7 @@ class ContaoModuleBundle extends Bundle implements DependentBundleInterface
         $requires = self::getAutoloadRequires(dirname($kernel->getRootDir()) . '/system/modules/' . $module);
 
         foreach ($requires as $name) {
-            $moduleClass = self::convertModuleToClass($name);
+            $moduleClass = ModuleBundleGenerator::convertModuleToClass($name);
 
             if (!class_exists($moduleClass)) {
                 if (0 === strpos($name, '*')) {
@@ -124,21 +107,5 @@ class ContaoModuleBundle extends Bundle implements DependentBundleInterface
         }
 
         return array_unique(array_merge($requires, $autoload['requires']));
-    }
-
-    /**
-     * Returns FQCN from module folder and maps legacy core module names.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    private static function convertModuleToClass($name)
-    {
-        if (array_key_exists($name, self::$moduleMapping)) {
-            return self::$moduleMapping[$name];
-        }
-
-        return 'Contao\CoreBundle\HttpKernel\Bundle\\' . Container::camelize($name) . 'ModuleBundle';
     }
 }
