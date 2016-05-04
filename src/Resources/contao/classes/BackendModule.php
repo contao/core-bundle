@@ -17,6 +17,9 @@ namespace Contao;
  * @property string $table
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *         
+ * @deprecated This class is deprecated and will be removed in Contao 5.0. Use
+ *             custom controllers instead.
  */
 abstract class BackendModule extends \Backend
 {
