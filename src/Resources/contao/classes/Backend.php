@@ -15,6 +15,7 @@ use Contao\Database\Result;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 
 /**
@@ -413,25 +414,35 @@ abstract class Backend extends \Controller
 		}
 
 		// Custom action (if key is not defined in config.php the default action will be called)
-		elseif (\Input::get('key') && isset($arrModule[\Input::get('key')]))
+		elseif (\Input::get('key'))
 		{
-			$container  = static::getContainer();
-			$className  = $arrModule[\Input::get('key')][0];
-			$methodName = $arrModule[\Input::get('key')][1];
+			// Use a controller
+			if (isset($arrModule['controllers'])) {
+				$container  = static::getContainer();
+				$controller = $arrModule['controllers'][\Input::get('key')][0];
+				$strategy   = ($arrModule['controllers'][\Input::get('key')][1]) ?: 'esi';
+				$parameters = ['table' => $dc->table, 'id' => $dc->id];
+				$isControllerReference = strpos($controller, ':') !== false;
 
-			// Use the controller service
-			if (!class_exists($className) && $container->has($className)) {
-				$request = $container->get('request_stack')->getCurrentRequest();
-				$request->attributes->set('id', $dc->id);
-				$request->attributes->set('table', $dc->table);
+				// Support both, controller references as well as route names
+				if ($isControllerReference) {
+					$uri = new ControllerReference(
+						$controller,
+						[],
+						$parameters
+					);
+				} else {
+					$uri = $container->get('router')->generate($controller, $parameters);
+				}
 
-				/** @var Response $response */
-				$response = $container->get($className)->$methodName($request);
+				$this->Template->main .= $container->get('fragment.handler')->render($uri, $strategy);
 
-				$this->Template->main .= $response->getContent();
-			} else {
+			} else if (isset($arrModule[\Input::get('key')])) {
 				// Use the regular callback (BC)
 				@trigger_error('Using backend module callbacks has been deprecated and will no longer work in Contao 5.0. Use controllers to generate custom module actions.', E_USER_DEPRECATED);
+
+				$className  = $arrModule[\Input::get('key')][0];
+				$methodName = $arrModule[\Input::get('key')][1];
 				$objCallback = System::importStatic($className);
 				$this->Template->main .= $objCallback->$methodName($dc);
 			}
