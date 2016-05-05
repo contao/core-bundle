@@ -77,34 +77,45 @@ trait TemplateInheritance
 		// Include the parent templates
 		while ($this->strParent !== null)
 		{
-			if ($this instanceof Template && 'html5' === $this->strFormat && \System::getContainer()->get('contao.twig.loader')->exists($this->strParent))
+			if ($this instanceof Template && 'html5' === $this->strFormat)
 			{
-				$strBuffer = \System::getContainer()->get('contao.twig')->render($this->strParent, $this->getData());
-			}
-			else
-			{
-				$strCurrent = $this->strParent;
-				$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
+				$error = false;
 
-				// Reset the flags
-				$this->strParent = null;
-				$this->strDefault = null;
-
-				ob_start();
-				include $strParent;
-
-				// Capture the output of the root template
-				if ($this->strParent === null)
-				{
-					$strBuffer = ob_get_contents();
-				}
-				elseif ($this->strParent == $strCurrent)
-				{
-					$this->strDefault = $this->getTemplatePath($this->strParent, $this->strFormat, true);
+				try {
+					$strBuffer = \System::getContainer()->get('contao.twig')->render(
+						$this->strParent . '.twig',
+						$this->getData()
+					);
+				} catch (\Twig_Error_Loader $e) {
+					$error = true;
 				}
 
-				ob_end_clean();
+				if (!$error) {
+					break;
+				}
 			}
+
+			$strCurrent = $this->strParent;
+			$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
+
+			// Reset the flags
+			$this->strParent = null;
+			$this->strDefault = null;
+
+			ob_start();
+			include $strParent;
+
+			// Capture the output of the root template
+			if ($this->strParent === null)
+			{
+				$strBuffer = ob_get_contents();
+			}
+			elseif ($this->strParent == $strCurrent)
+			{
+				$this->strDefault = $this->getTemplatePath($this->strParent, $this->strFormat, true);
+			}
+
+			ob_end_clean();
 		}
 
 		// Reset the internal arrays
