@@ -44,12 +44,6 @@ trait TemplateInheritance
 	protected $strFormat = 'html5';
 
 	/**
-	 * Parse with Twig
-	 * @var bool
-	 */
-	protected $blnTwig = false;
-
-	/**
 	 * Tag ending
 	 * @var string
 	 */
@@ -75,7 +69,6 @@ trait TemplateInheritance
 	 */
 	public function inherit()
 	{
-		$this->blnTwig = false;
 		$strBuffer = '';
 
 		// Start with the template itself
@@ -84,32 +77,34 @@ trait TemplateInheritance
 		// Include the parent templates
 		while ($this->strParent !== null)
 		{
-			$strCurrent = $this->strParent;
-			$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
-
-			if (strpos($strParent, '.twig.' . $this->strFormat) !== false)
+			if ($this instanceof Template && 'html5' === $this->strFormat && \System::getContainer()->get('contao.twig.loader')->exists($this->strParent))
 			{
-				$this->blnTwig = true;
+				$strBuffer = \System::getContainer()->get('contao.twig')->render($this->strParent, $this->getData());
 			}
-
-			// Reset the flags
-			$this->strParent = null;
-			$this->strDefault = null;
-
-			ob_start();
-			include $strParent;
-
-			// Capture the output of the root template
-			if ($this->strParent === null)
+			else
 			{
-				$strBuffer = ob_get_contents();
-			}
-			elseif ($this->strParent == $strCurrent)
-			{
-				$this->strDefault = $this->getTemplatePath($this->strParent, $this->strFormat, true);
-			}
+				$strCurrent = $this->strParent;
+				$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
 
-			ob_end_clean();
+				// Reset the flags
+				$this->strParent = null;
+				$this->strDefault = null;
+
+				ob_start();
+				include $strParent;
+
+				// Capture the output of the root template
+				if ($this->strParent === null)
+				{
+					$strBuffer = ob_get_contents();
+				}
+				elseif ($this->strParent == $strCurrent)
+				{
+					$this->strDefault = $this->getTemplatePath($this->strParent, $this->strFormat, true);
+				}
+
+				ob_end_clean();
+			}
 		}
 
 		// Reset the internal arrays
@@ -309,6 +304,11 @@ trait TemplateInheritance
 	 */
 	protected function getTemplatePath($strTemplate, $strFormat='html5', $blnDefault=false)
 	{
+		if ('html5' !== $strFormat)
+		{
+			trigger_error('Template formats are deprecated', E_USER_DEPRECATED);
+		}
+
 		if ($blnDefault)
 		{
 			return \TemplateLoader::getDefaultPath($strTemplate, $strFormat);
