@@ -315,7 +315,7 @@ trait TemplateInheritance
 	 */
 	protected function getTemplatePath($strTemplate, $strFormat='html5', $blnDefault=false)
 	{
-		if ('html5' !== $strFormat)
+		if ($strFormat != 'html5')
 		{
 			trigger_error('Template formats are deprecated', E_USER_DEPRECATED);
 		}
