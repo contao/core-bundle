@@ -372,7 +372,7 @@ class tl_settings extends Backend
 
 
 	/**
-	 * Make sure that "html5" is in the list of valid template files, so the back end works correctly (see #3398)
+	 * Make sure that "html5" and "twig" is in the list of valid template files, so the back end works correctly (see #3398)
 	 *
 	 * @param mixed $varValue
 	 *
@@ -383,6 +383,11 @@ class tl_settings extends Backend
 		if (strpos($varValue, 'html5') === false)
 		{
 			$varValue .= (($varValue != '') ? ',' : '') . 'html5';
+		}
+
+		if (strpos($varValue, 'twig') === false)
+		{
+			$varValue .= (($varValue != '') ? ',' : '') . 'twig';
 		}
 
 		return $varValue;
