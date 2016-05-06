@@ -129,7 +129,7 @@ abstract class AbstractCsvImportController
             } catch (CsvImportErrorException $e) {
                 // Add an error message and reload the page on import failure
                 $request->getSession()->getFlashBag()->add('error', $e->getMessage());
-                throw new RedirectResponseException($request->getRequestUri());
+                throw new RedirectResponseException($this->getUrlFromRequest($request));
             }
 
             $response = new RedirectResponse($this->getRefererUrl($request));
@@ -149,6 +149,18 @@ abstract class AbstractCsvImportController
     }
 
     /**
+     * Get the URL from request
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getUrlFromRequest(Request $request)
+    {
+        return $request->query->has('url') ? $request->query->get('url') : $request->getRequestUri();
+    }
+
+    /**
      * Get the request URL without "key" parameter
      *
      * @param Request $request
@@ -157,7 +169,7 @@ abstract class AbstractCsvImportController
      */
     protected function getRefererUrl(Request $request)
     {
-        return str_replace('&key='.$request->query->get('key'), '', $request->getRequestUri());
+        return str_replace('&key='.$request->query->get('key'), '', $this->getUrlFromRequest($request));
     }
 
     /**

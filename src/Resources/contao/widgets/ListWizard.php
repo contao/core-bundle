@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+
 
 /**
  * Provide methods to handle list items.
@@ -121,15 +123,16 @@ class ListWizard extends \Widget
 	 *
 	 * @deprecated Since 4.2 to be removed in 5.0. Use the BackendCsvImportController instead.
 	 */
-	public function importList(DataContainer $dc)
-	{
+    public function importList(DataContainer $dc)
+    {
         $container = System::getContainer();
-        $service   = $container->get('contao.controller.backend_csv_import');
         $request   = $container->get('request_stack')->getCurrentRequest();
+        $uri       = new ControllerReference(
+            'contao.controller.backend_csv_import',
+            [],
+            ['table' => $dc->table, 'id' => $dc->id, 'url' => $request->getRequestUri(), 'key' => \Input::get('key')]
+        );
 
-        $request->attributes->set('id', $dc->id);
-        $request->attributes->set('table', $dc->table);
-
-		return $service->importListWizardAction($dc);
-	}
+        return $container->get('fragment.handler')->render($uri);
+    }
 }

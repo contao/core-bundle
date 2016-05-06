@@ -204,8 +204,8 @@ class CsvImportUtil
      */
     public function storeInDatabase($field, array $data)
     {
-        $id    = $this->request->attributes->get('id');
-        $table = $this->request->attributes->get('table');
+        $id    = $this->request->query->get('id');
+        $table = $this->request->query->get('table');
 
         $versions = new Versions($table, $id);
         $versions->create();

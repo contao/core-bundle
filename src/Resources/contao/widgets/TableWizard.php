@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+
 
 /**
  * Provide methods to handle table fields.
@@ -173,12 +175,13 @@ class TableWizard extends \Widget
 	public function importTable(DataContainer $dc)
 	{
 		$container = System::getContainer();
-		$service   = $container->get('contao.controller.backend_csv_import');
 		$request   = $container->get('request_stack')->getCurrentRequest();
+		$uri       = new ControllerReference(
+			'contao.controller.backend_csv_import',
+			[],
+			['table' => $dc->table, 'id' => $dc->id, 'url' => $request->getRequestUri(), 'key' => \Input::get('key')]
+		);
 
-		$request->attributes->set('id', $dc->id);
-		$request->attributes->set('table', $dc->table);
-
-		return $service->importTableWizardAction($dc);
+		return $container->get('fragment.handler')->render($uri);
 	}
 }

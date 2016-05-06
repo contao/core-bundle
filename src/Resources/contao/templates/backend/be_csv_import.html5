@@ -3,7 +3,6 @@
 </div>
 
 <?php if ($this->messages): ?>
-    <?php dump($this->messages) ?>
     <div class="tl_message">
         <?php foreach ($this->messages as $type => $messages): ?>
             <?php foreach ($messages as $message): ?>
