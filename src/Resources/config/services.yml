@@ -112,10 +112,14 @@ services:
         calls:
             - ["setName", ["contao_frontend"]]
 
+    contao.logger:
+        class: Contao\CoreBundle\Util\Logger
+
     contao.security.remember_me:
         class: Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices
         arguments:
             - ["@contao.security.user_provider"]
             - "%secret%"
             - "frontend"
-            - {'name': 'FE_AUTO_LOGIN2'}
+            - {'name': 'FE_AUTO_LOGIN_NEW', 'remember_me_parameter': 'autologin', 'lifetime': '1000'}
+            - "@contao.logger"

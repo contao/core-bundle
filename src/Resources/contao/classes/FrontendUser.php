@@ -10,7 +10,8 @@
 
 namespace Contao;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use Contao\CoreBundle\Security\Authentication\ContaoToken;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -22,7 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendUser extends \User implements UserInterface
+class FrontendUser extends \User
 {
 
 	/**
@@ -126,13 +127,14 @@ class FrontendUser extends \User implements UserInterface
 			return true;
 		}
 
-		$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
-
-		dump($rememberMeService);
-
 		// Check whether auto login is enabled
 		if (\Config::get('autologin') > 0 && ($strCookie = \Input::cookie('FE_AUTO_LOGIN')) != '')
 		{
+
+			// New implementation
+			$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
+			$rememberMeService->autoLogin($this->getContainer()->get('request_stack')->getCurrentRequest());
+
 			// Try to find the user by his auto login cookie
 			if ($this->findBy('autologin', $strCookie) !== false)
 			{
@@ -185,12 +187,24 @@ class FrontendUser extends \User implements UserInterface
 		// Set the auto login data
 		if (\Config::get('autologin') > 0 && \Input::post('autologin'))
 		{
+
 			$time = time();
 			$strToken = md5(uniqid(mt_rand(), true));
 
 			$this->createdOn = $time;
 			$this->autologin = $strToken;
 			$this->save();
+
+			// New Autologin
+			$response = new Response();
+			$userToken = new ContaoToken($this); // Create the user token since only an anon Token exists so far
+			$this->getContainer()->get('contao.security.remember_me')
+				->loginSuccess(
+					$this->getContainer()->get('request_stack')->getCurrentRequest(),
+					$response,
+					$userToken
+				);
+			$response->sendHeaders();
 
 			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, false, true);
 		}
@@ -311,47 +325,5 @@ class FrontendUser extends \User implements UserInterface
 			}
 		}
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getRoles()
-	{
-		return [];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getPassword()
-	{
-		return $this->password;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getSalt()
-	{
-		// We do not need to provide an extra salt since it's save with the password
-		return null;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getUsername()
-	{
-		return $this->username;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function eraseCredentials()
-	{
-		// Not needed since at no point we save sensitive data like a plain password to the user
-	}
-
-
+	
 }

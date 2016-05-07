@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 /**
  * Authenticates and initializes user objects
@@ -90,7 +92,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends \System
+abstract class User extends \System implements UserInterface
 {
 
 	/**
@@ -671,6 +673,47 @@ abstract class User extends \System
 		}
 
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getRoles()
+	{
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPassword()
+	{
+		return $this->password;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getSalt()
+	{
+		// We do not need to provide an extra salt since it's save with the password
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getUsername()
+	{
+		return $this->username;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function eraseCredentials()
+	{
+		// Not needed since at no point we save sensitive data like a plain password to the user
 	}
 
 
