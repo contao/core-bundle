@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 /**
  * Provide methods to manage front end users.
@@ -20,7 +22,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendUser extends \User
+class FrontendUser extends \User implements UserInterface
 {
 
 	/**
@@ -123,6 +125,10 @@ class FrontendUser extends \User
 		{
 			return true;
 		}
+
+		$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
+
+		dump($rememberMeService);
 
 		// Check whether auto login is enabled
 		if (\Config::get('autologin') > 0 && ($strCookie = \Input::cookie('FE_AUTO_LOGIN')) != '')
@@ -305,4 +311,47 @@ class FrontendUser extends \User
 			}
 		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getRoles()
+	{
+		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPassword()
+	{
+		return $this->password;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getSalt()
+	{
+		// We do not need to provide an extra salt since it's save with the password
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getUsername()
+	{
+		return $this->username;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function eraseCredentials()
+	{
+		// Not needed since at no point we save sensitive data like a plain password to the user
+	}
+
+
 }

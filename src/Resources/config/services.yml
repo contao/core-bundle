@@ -111,3 +111,11 @@ services:
             - "_contao_fe_attributes"
         calls:
             - ["setName", ["contao_frontend"]]
+
+    contao.security.remember_me:
+        class: Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices
+        arguments:
+            - ["@contao.security.user_provider"]
+            - "%secret%"
+            - "frontend"
+            - {'name': 'FE_AUTO_LOGIN2'}
