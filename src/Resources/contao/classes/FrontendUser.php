@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\RememberMeToken;
 
 
 /**
@@ -128,39 +129,46 @@ class FrontendUser extends \User
 		}
 
 		// Check whether auto login is enabled
-		if (\Config::get('autologin') > 0 && ($strCookie = \Input::cookie('FE_AUTO_LOGIN')) != '')
+		if (\Config::get('autologin') > 0)
 		{
 
-			// New implementation
+			$isAuthenticated = false;
+
+			// Try to log in the user by the new multi auto login implementation
 			$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
-			$rememberMeService->autoLogin($this->getContainer()->get('request_stack')->getCurrentRequest());
+			$rememberMeToken = $rememberMeService->autoLogin($this->getContainer()->get('request_stack')->getCurrentRequest());
+			if($rememberMeToken instanceof RememberMeToken) {
+				$isAuthenticated = $rememberMeToken->isAuthenticated();
+			}
 
 			// Try to find the user by his auto login cookie
-			if ($this->findBy('autologin', $strCookie) !== false)
+			if (($strCookie = \Input::cookie('FE_AUTO_LOGIN')) != '' && $this->findBy('autologin', $strCookie) !== false)
 			{
 				// Check the auto login period
 				if ($this->createdOn >= (time() - \Config::get('autologin')))
 				{
-					// Validate the account status
-					if ($this->checkAccountStatus() !== false)
-					{
-						$this->setUserFromDb();
-
-						// Last login date
-						$this->lastLogin = $this->currentLogin;
-						$this->currentLogin = time();
-						$this->save();
-
-						// Generate the session
-						$this->generateSession();
-						$this->log('User "' . $this->username . '" was logged in automatically', __METHOD__, TL_ACCESS);
-
-						// Reload the page
-						\Controller::reload();
-
-						return true;
-					}
+					$isAuthenticated = true;
 				}
+			}
+
+			// If the user could be authenticated, validate the account status
+			if ($isAuthenticated === true && $this->checkAccountStatus() !== false)
+			{
+				$this->setUserFromDb();
+
+				// Last login date
+				$this->lastLogin = $this->currentLogin;
+				$this->currentLogin = time();
+				$this->save();
+
+				// Generate the session
+				$this->generateSession();
+				$this->log('User "' . $this->username . '" was logged in automatically', __METHOD__, TL_ACCESS);
+
+				// Reload the page
+				\Controller::reload();
+
+				return true;
 			}
 
 			// Remove the cookie if it is invalid to enable loading cached pages
@@ -220,6 +228,10 @@ class FrontendUser extends \User
 	 */
 	public function logout()
 	{
+		// $this->getContainer()->get('security.token_storage')->getToken() gets unset from service in User::logout implementation
+		// so we grab a copy here cause we need it for unsetting the remember me cookie
+		$userToken = $this->getContainer()->get('security.token_storage')->getToken();
+
 		// Default routine
 		if (parent::logout() == false)
 		{
@@ -236,6 +248,12 @@ class FrontendUser extends \User
 
 		// Remove the auto login cookie
 		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, false, true);
+
+		$this->getContainer()->get('contao.security.remember_me')->logout(
+			$this->getContainer()->get('request_stack')->getCurrentRequest(),
+			new Response(),
+			$userToken
+		);
 
 		return true;
 	}

@@ -65,6 +65,11 @@ class ContaoUserProvider implements UserProviderInterface
             return FrontendUser::getInstance();
         }
 
+        // Try to find a FrontendUser. Needed for Services like RememberMe
+        if($this->isFrontendScope() && FrontendUser::getInstance()->findBy('username', $username)){
+            return FrontendUser::getInstance();
+        }
+
         throw new UsernameNotFoundException('Can only load user "frontend" or "backend".');
     }
 

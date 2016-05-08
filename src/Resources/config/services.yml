@@ -121,5 +121,5 @@ services:
             - ["@contao.security.user_provider"]
             - "%secret%"
             - "frontend"
-            - {'name': 'FE_AUTO_LOGIN_NEW', 'remember_me_parameter': 'autologin', 'lifetime': '1000'}
+            - {'name': '%contao.security.autologin.cookie_name%', 'remember_me_parameter': 'autologin', 'lifetime': '%contao.security.autologin.cookie_lifetime%'}
             - "@contao.logger"
