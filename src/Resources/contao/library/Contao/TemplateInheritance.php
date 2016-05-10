@@ -77,24 +77,6 @@ trait TemplateInheritance
 		// Include the parent templates
 		while ($this->strParent !== null)
 		{
-			if ($this instanceof Template && 'html5' === $this->strFormat)
-			{
-				$error = false;
-
-				try {
-					$strBuffer = \System::getContainer()->get('contao.twig')->render(
-						$this->strParent . '.twig',
-						$this->getData()
-					);
-				} catch (\Twig_Error_Loader $e) {
-					$error = true;
-				}
-
-				if (!$error) {
-					break;
-				}
-			}
-
 			$strCurrent = $this->strParent;
 			$strParent = $this->strDefault ?: $this->getTemplatePath($this->strParent, $this->strFormat);
 
@@ -276,12 +258,7 @@ trait TemplateInheritance
 	 */
 	public function insert($name, array $data=null)
 	{
-		if (pathinfo($name, PATHINFO_EXTENSION) == 'twig')
-		{
-			echo \System::getContainer()->get('twig')->render($name, $data);
-			return;
-		}
-
+		/** @var Template $tpl */
 		if ($this instanceof Template)
 		{
 			$tpl = new static($name);
@@ -315,11 +292,6 @@ trait TemplateInheritance
 	 */
 	protected function getTemplatePath($strTemplate, $strFormat='html5', $blnDefault=false)
 	{
-		if ($strFormat != 'html5')
-		{
-			trigger_error('Template formats are deprecated', E_USER_DEPRECATED);
-		}
-
 		if ($blnDefault)
 		{
 			return \TemplateLoader::getDefaultPath($strTemplate, $strFormat);

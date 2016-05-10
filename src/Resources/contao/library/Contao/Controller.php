@@ -52,11 +52,6 @@ abstract class Controller extends \System
 	 */
 	public static function getTemplate($strTemplate, $strFormat='html5')
 	{
-		if ($strFormat != 'html5')
-		{
-			trigger_error('Template formats are deprecated', E_USER_DEPRECATED);
-		}
-
 		$arrAllowed = trimsplit(',', strtolower(\Config::get('templateFiles')));
 		array_push($arrAllowed, 'html5'); // see #3398
 
@@ -113,7 +108,6 @@ abstract class Controller extends \System
 			foreach ($arrCustomized as $strFile)
 			{
 				$strTemplate = basename($strFile, strrchr($strFile, '.'));
-
 				$arrTemplates[$strTemplate][] = $GLOBALS['TL_LANG']['MSC']['global'];
 			}
 		}
