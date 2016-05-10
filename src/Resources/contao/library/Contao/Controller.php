@@ -145,12 +145,6 @@ abstract class Controller extends \System
 							foreach ($arrThemeTemplates as $strFile)
 							{
 								$strTemplate = basename($strFile, strrchr($strFile, '.'));
-
-								if (pathinfo($strTemplate, PATHINFO_EXTENSION) == '.twig')
-								{
-									$strTemplate = basename($strFile, strrchr($strFile, '.'));
-								}
-
 								$arrTemplates[$strTemplate][] = $objTheme->name;
 							}
 						}
