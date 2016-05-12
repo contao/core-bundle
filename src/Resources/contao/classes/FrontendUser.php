@@ -14,7 +14,6 @@ use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\RememberMeToken;
 
-
 /**
  * Provide methods to manage front end users.
  *
@@ -23,6 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\RememberMeToken;
  * @property boolean $blnRecordExists
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Daniel Schwiperich <https://github.com/DanielSchwiperich>
  */
 class FrontendUser extends \User
 {
@@ -131,14 +131,16 @@ class FrontendUser extends \User
 		// Check whether auto login is enabled
 		if (\Config::get('autologin') > 0)
 		{
-
 			$isAuthenticated = false;
 
 			// Try to log in the user by the new multi auto login implementation
-			$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
-			$rememberMeToken = $rememberMeService->autoLogin($this->getContainer()->get('request_stack')->getCurrentRequest());
-			if($rememberMeToken instanceof RememberMeToken) {
-				$isAuthenticated = $rememberMeToken->isAuthenticated();
+			if(Config::get('allowMultiAutologin') === true)
+			{
+				$rememberMeService = $this->getContainer()->get('contao.security.remember_me');
+				$rememberMeToken = $rememberMeService->autoLogin($this->getContainer()->get('request_stack')->getCurrentRequest());
+				if ($rememberMeToken instanceof RememberMeToken) {
+					$isAuthenticated = $rememberMeToken->isAuthenticated();
+				}
 			}
 
 			// Try to find the user by his auto login cookie
@@ -173,6 +175,11 @@ class FrontendUser extends \User
 
 			// Remove the cookie if it is invalid to enable loading cached pages
 			$this->setCookie('FE_AUTO_LOGIN', $strCookie, (time() - 86400), null, null, false, true);
+
+			if(Config::get('allowMultiAutologin') === true)
+			{
+				$rememberMeService->loginFail($this->getContainer()->get('request_stack')->getCurrentRequest());
+			}
 		}
 
 		return false;
@@ -203,16 +210,19 @@ class FrontendUser extends \User
 			$this->autologin = $strToken;
 			$this->save();
 
-			// New Autologin
-			$response = new Response();
-			$userToken = new ContaoToken($this); // Create the user token since only an anon Token exists so far
-			$this->getContainer()->get('contao.security.remember_me')
-				->loginSuccess(
-					$this->getContainer()->get('request_stack')->getCurrentRequest(),
-					$response,
-					$userToken
-				);
-			$response->sendHeaders();
+			// Set the remember_me cookie if the service is active
+			if(Config::get('allowMultiAutologin') === true)
+			{
+				$response = new Response();
+				$userToken = new ContaoToken($this); // Create the user token since only an anon Token exists so far
+				$this->getContainer()->get('contao.security.remember_me')
+					->loginSuccess(
+						$this->getContainer()->get('request_stack')->getCurrentRequest(),
+						$response,
+						$userToken
+					);
+				$response->sendHeaders();
+			}
 
 			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, false, true);
 		}
@@ -249,11 +259,16 @@ class FrontendUser extends \User
 		// Remove the auto login cookie
 		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, false, true);
 
-		$this->getContainer()->get('contao.security.remember_me')->logout(
-			$this->getContainer()->get('request_stack')->getCurrentRequest(),
-			new Response(),
-			$userToken
-		);
+		// Remove the remember_me cookie if the service is active
+		if(Config::get('allowMultiAutologin') === true)
+		{
+			$this->getContainer()->get('contao.security.remember_me')->logout(
+				$this->getContainer()->get('request_stack')->getCurrentRequest(),
+				new Response(),
+				$userToken
+			);
+		}
+
 
 		return true;
 	}

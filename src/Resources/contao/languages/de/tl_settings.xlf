@@ -193,6 +193,14 @@
         <source>Do not check the request token when a form is submitted (insecure!).</source>
         <target>Das Anfrage-Token beim Absenden eines Formulars nicht prüfen (unsicher!).</target>
       </trans-unit>
+      <trans-unit id="tl_settings.allowMultiAutologin.0">
+        <source>Allows multiple autologin sessions</source>
+        <target>Erlaube mehrere Autologin Sessions</target>
+      </trans-unit>
+      <trans-unit id="tl_settings.allowMultiAutologin.1">
+        <source>Allows to have multiple autologin sessions per frontend user (member) from different devices and browsers. Considered NOT insecure!</source>
+        <target>Erlaubt das ein Frontend User (member) mehrere Autologin Sessions haben darf auf unterschiedlichen Geräten / Browsern. Wird nicht als unsicher eingestuft!</target>
+      </trans-unit>
       <trans-unit id="tl_settings.lockPeriod.0">
         <source>Account locking time</source>
         <target>Wartezeit bei gesperrtem Konto</target>

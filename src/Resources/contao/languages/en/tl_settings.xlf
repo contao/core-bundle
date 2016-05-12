@@ -146,6 +146,12 @@
       <trans-unit id="tl_settings.disableRefererCheck.1">
         <source>Do not check the request token when a form is submitted (insecure!).</source>
       </trans-unit>
+      <trans-unit id="tl_settings.allowMultiAutologin.0">
+        <source>Allows multiple autologin sessions</source>
+      </trans-unit>
+      <trans-unit id="tl_settings.allowMultiAutologin.1">
+        <source>Allows to have multiple autologin sessions per frontend user (member) from different devices and browsers. Considered NOT insecure!</source>
+      </trans-unit>
       <trans-unit id="tl_settings.lockPeriod.0">
         <source>Account locking time</source>
       </trans-unit>
