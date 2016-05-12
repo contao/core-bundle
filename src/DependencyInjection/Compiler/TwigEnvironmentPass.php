@@ -29,6 +29,7 @@ class TwigEnvironmentPass implements CompilerPassInterface
         $definition = $container->getDefinition('contao.twig');
 
         $options = $definition->getArgument(1);
+        $options['auto_reload'] = true;
         $options['autoescape'] = false;
 
         $definition->replaceArgument(1, $options);
