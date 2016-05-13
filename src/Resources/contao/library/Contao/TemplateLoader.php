@@ -115,12 +115,7 @@ class TemplateLoader
 		}
 
 		// Load the default template
-		if (isset(self::$files[$template]))
-		{
-			return TL_ROOT . '/' . self::$files[$template] . '/' . $file;
-		}
-
-		throw new \Exception('Could not find template "' . $template . '"');
+		return self::getDefaultPath($template, $format);
 	}
 
 

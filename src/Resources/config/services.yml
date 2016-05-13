@@ -117,3 +117,11 @@ services:
             - "_contao_fe_attributes"
         calls:
             - ["setName", ["contao_frontend"]]
+
+    contao.twig:
+        parent: twig
+        calls:
+            - ["setLoader", ["@contao.twig.loader"]]
+
+    contao.twig.loader:
+        class: Contao\CoreBundle\Twig\Loader\ContaoLoader
