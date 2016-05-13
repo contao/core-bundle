@@ -11,16 +11,19 @@
 namespace Contao\CoreBundle\Twig\Loader;
 
 /**
- * ContaoLoader
+ * Loads Contao templates from the filesystem.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
 class ContaoLoader extends \Twig_Loader_Filesystem
 {
     const BUNDLE_NAMESPACE = '__bundle__';
-    const THEME_NAMESPACE  = '__theme__';
-    const LOCAL_NAMESPACE  = '__local__';
+    const THEME_NAMESPACE = '__theme__';
+    const LOCAL_NAMESPACE = '__local__';
 
+    /**
+     * {@inheritdoc}
+     */
     public function __construct(array $paths = [])
     {
         parent::__construct($paths);
@@ -30,6 +33,11 @@ class ContaoLoader extends \Twig_Loader_Filesystem
         }
     }
 
+    /**
+     * Sets the theme paths.
+     *
+     * @param array $paths
+     */
     public function setThemePaths(array $paths)
     {
         $this->setPaths($paths, self::THEME_NAMESPACE);

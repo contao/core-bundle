@@ -17,20 +17,19 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * TwigLoaderPass
+ * Registers the Contao template paths.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
 class TwigLoaderPass implements CompilerPassInterface
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
         $contaoRoot = dirname($container->getParameter('kernel.root_dir'));
-        $localPath = $contaoRoot . '/templates';
+        $localPath = $contaoRoot.'/templates';
 
         $templates = Finder::create()
             ->files()
@@ -39,17 +38,19 @@ class TwigLoaderPass implements CompilerPassInterface
             ->in($container->getParameter('contao.resources_paths'))
         ;
 
-        $paths = array_map(
-            function (SplFileInfo $file) {
-                return $file->getPath();
-            },
-            iterator_to_array($templates)
-        );
-        $paths = array_reverse(array_unique(array_values($paths)));
+        $paths = [];
+
+        /** @var SplFileInfo[] $templates */
+        foreach ($templates as $template) {
+            $paths[] = $template->getPath();
+        }
+
+        $paths = array_reverse(array_unique($paths));
 
         $service = $container->getDefinition('contao.twig.loader');
         $service->addMethodCall('setPaths', [$paths, ContaoLoader::BUNDLE_NAMESPACE]);
         $service->addMethodCall('setPaths', [$localPath, ContaoLoader::LOCAL_NAMESPACE]);
+
         array_unshift($paths, $localPath);
         $service->setArguments([$paths]);
     }

@@ -14,15 +14,14 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * TwigEnvironmentPass
+ * Registers the Contao twig environment.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
 class TwigEnvironmentPass implements CompilerPassInterface
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
