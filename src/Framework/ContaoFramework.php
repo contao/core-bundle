@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\InvalidRequestTokenException;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
+use Contao\TemplateLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -297,6 +298,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         $this->validateInstallation();
 
         Input::initialize();
+        TemplateLoader::initialize();
 
         $this->setTimezone();
         $this->triggerInitializeSystemHook();

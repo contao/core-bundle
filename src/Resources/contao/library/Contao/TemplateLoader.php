@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Twig\Loader\ContaoLoader;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+
 
 /**
  * Automatically loads template files based on a mapper array
@@ -32,6 +36,24 @@ class TemplateLoader
 	 * @var array
 	 */
 	protected static $files = array();
+
+
+	/**
+	 * Find the Twig templates
+	 */
+	public static function initialize()
+	{
+		$arrPaths = \System::getContainer()->get('contao.twig.loader')->getPaths(ContaoLoader::BUNDLE_NAMESPACE);
+
+		foreach ($arrPaths as $strPath)
+		{
+			/** @var SplFileInfo $objFile */
+			foreach (Finder::create()->depth(0)->name('*.twig')->in($strPath) as $objFile)
+			{
+				static::addFile($objFile->getBasename('.twig'), str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $objFile->getPath()));
+			}
+		}
+	}
 
 
 	/**

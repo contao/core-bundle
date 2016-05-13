@@ -14,6 +14,7 @@ use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
+use Contao\CoreBundle\Twig\Loader\ContaoLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -213,6 +214,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container->set('request_stack', $requestStack);
         $container->set('session', $this->mockSession());
+        $container->set('contao.twig.loader', $this->mockTwigLoader());
 
         return $container;
     }
@@ -355,5 +357,27 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         ;
 
         return $rtAdapter;
+    }
+
+    /**
+     * Mocks the Twig loader.
+     *
+     * @return ContaoLoader|\PHPUnit_Framework_MockObject_MockObject The Twig loader object
+     */
+    protected function mockTwigLoader()
+    {
+        $loader = $this
+            ->getMockBuilder('Contao\CoreBundle\Twig\Loader\ContaoLoader')
+            ->setMethods(['getPaths'])
+            ->getMock()
+        ;
+
+        $loader
+            ->expects($this->any())
+            ->method('getPaths')
+            ->willReturn([])
+        ;
+
+        return $loader;
     }
 }

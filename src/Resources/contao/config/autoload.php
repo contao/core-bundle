@@ -136,11 +136,3 @@ TemplateLoader::addFiles(array
 	'rss_items_only'      => 'vendor/contao/core-bundle/src/Resources/contao/templates/rss',
 	'search_default'      => 'vendor/contao/core-bundle/src/Resources/contao/templates/search',
 ));
-
-
-foreach (\System::getContainer()->get('contao.twig.loader')->getPaths(\Contao\CoreBundle\Twig\Loader\ContaoLoader::BUNDLE_NAMESPACE) as $path) {
-	/** @var \Symfony\Component\Finder\SplFileInfo $file */
-	foreach (\Symfony\Component\Finder\Finder::create()->depth(0)->name('*.twig')->in($path) as $file) {
-		TemplateLoader::addFile($file->getBasename('.twig'), str_replace(TL_ROOT.'/', '', $file->getPath()));
-	}
-}
