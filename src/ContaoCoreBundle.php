@@ -13,8 +13,11 @@ namespace Contao\CoreBundle;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\TwigEnvironmentPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\TwigLoaderPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
 use Patchwork\Utf8\Bootup;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -58,5 +61,7 @@ class ContaoCoreBundle extends Bundle
 
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
+        $container->addCompilerPass(new TwigLoaderPass());
+        $container->addCompilerPass(new TwigEnvironmentPass(), PassConfig::TYPE_OPTIMIZE);
     }
 }
