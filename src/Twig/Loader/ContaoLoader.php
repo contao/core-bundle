@@ -28,7 +28,7 @@ class ContaoLoader extends \Twig_Loader_Filesystem
     {
         parent::__construct($paths);
 
-        if ($paths) {
+        if (!empty($paths)) {
             $this->setPaths($paths, self::BUNDLE_NAMESPACE);
         }
     }
