@@ -507,6 +507,7 @@ class Config
 			'uploadPath'       => 'contao.upload_path',
 			'debugMode'        => 'kernel.debug',
 			'disableIpCheck'   => 'contao.security.disable_ip_check',
+			'autologin'        => 'contao.security.autologin.cookie_lifetime',
 		);
 
 		foreach ($arrMap as $strKey=>$strParam)
