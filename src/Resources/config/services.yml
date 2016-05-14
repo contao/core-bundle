@@ -112,14 +112,10 @@ services:
         calls:
             - ["setName", ["contao_frontend"]]
 
-    contao.logger:
-        class: Contao\CoreBundle\Util\Logger
-
     contao.security.remember_me:
         class: Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices
         arguments:
             - ["@contao.security.user_provider"]
             - "%secret%"
             - "frontend"
-            - {'name': '%contao.security.autologin.cookie_name%', 'remember_me_parameter': 'autologin', 'lifetime': '%contao.security.autologin.cookie_lifetime%'}
-            - "@contao.logger"
+            - { name: '%contao.security.autologin.cookie_name%', remember_me_parameter: '%contao.security.autologin.formfield_name%', lifetime: '%contao.security.autologin.cookie_lifetime%' }

@@ -79,6 +79,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.security.disable_ip_check', $mergedConfig['security']['disable_ip_check']);
         $container->setParameter('contao.security.autologin.cookie_lifetime', $mergedConfig['security']['autologin']['cookie_lifetime']);
         $container->setParameter('contao.security.autologin.cookie_name', $mergedConfig['security']['autologin']['cookie_name']);
+        $container->setParameter('contao.security.autologin.formfield_name', $mergedConfig['security']['autologin']['formfield_name']);
 
         $this->addContainerScopeListener($container);
     }
