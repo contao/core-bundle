@@ -85,7 +85,7 @@ class BackendIndex extends \Backend
 		$strHeadline = sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle'));
 
 		$objTemplate->theme = \Backend::getTheme();
-		$objTemplate->messages = \Message::generate();
+		$objTemplate->messages = \System::getContainer()->get('twig')->render('@ContaoCore/messages.html.twig');
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
 		$objTemplate->languages = \System::getLanguages(true);

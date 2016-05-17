@@ -311,7 +311,7 @@ class TableWizard extends \Widget
 <div id="tl_buttons">
 <a href="'.ampersand(str_replace('&key=table', '', \Environment::get('request'))).'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
 </div>
-'.\Message::generate().'
+'.\System::getContainer()->get('twig')->render('@ContaoCore/messages.html.twig').'
 <form action="'.ampersand(\Environment::get('request'), true).'" id="tl_table_import" class="tl_form" method="post" enctype="multipart/form-data">
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_table_import">

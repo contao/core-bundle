@@ -110,7 +110,7 @@ class FileUpload extends \Backend
 			}
 			catch (\InvalidArgumentException $e)
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['filename']);
+				\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', $GLOBALS['TL_LANG']['ERR']['filename']);
 				$this->blnHasError = true;
 
 				continue;
@@ -119,7 +119,7 @@ class FileUpload extends \Backend
 			// Invalid file name
 			if (!\Validator::isValidFileName($file['name']))
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['filename']);
+				\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', $GLOBALS['TL_LANG']['ERR']['filename']);
 				$this->blnHasError = true;
 			}
 
@@ -128,19 +128,19 @@ class FileUpload extends \Backend
 			{
 				if ($file['error'] == 1 || $file['error'] == 2)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
+					\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
 					$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb_readable, __METHOD__, TL_ERROR);
 					$this->blnHasError = true;
 				}
 				elseif ($file['error'] == 3)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']));
+					\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']));
 					$this->log('File "'.$file['name'].'" was only partially uploaded' , __METHOD__, TL_ERROR);
 					$this->blnHasError = true;
 				}
 				elseif ($file['error'] > 0)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileerror'], $file['error'], $file['name']));
+					\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', sprintf($GLOBALS['TL_LANG']['ERR']['fileerror'], $file['error'], $file['name']));
 					$this->log('File "'.$file['name'].'" could not be uploaded (error '.$file['error'].')' , __METHOD__, TL_ERROR);
 					$this->blnHasError = true;
 				}
@@ -149,7 +149,7 @@ class FileUpload extends \Backend
 			// File is too big
 			elseif ($file['size'] > $maxlength_kb)
 			{
-				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
+				\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
 				$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb_readable, __METHOD__, TL_ERROR);
 				$this->blnHasError = true;
 			}
@@ -162,7 +162,7 @@ class FileUpload extends \Backend
 				// File type not allowed
 				if (!in_array($strExtension, \StringUtil::trimsplit(',', strtolower(\Config::get('uploadTypes')))))
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $strExtension));
+					\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.error', sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $strExtension));
 					$this->log('File type "'.$strExtension.'" is not allowed to be uploaded ('.$file['name'].')', __METHOD__, TL_ERROR);
 					$this->blnHasError = true;
 				}
@@ -180,7 +180,7 @@ class FileUpload extends \Backend
 						// Notify the user
 						if (!$blnResized)
 						{
-							\Message::addConfirmation(sprintf($GLOBALS['TL_LANG']['MSC']['fileUploaded'], $file['name']));
+							\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.confirm', sprintf($GLOBALS['TL_LANG']['MSC']['fileUploaded'], $file['name']));
 							$this->log('File "'.$file['name'].'" uploaded successfully', __METHOD__, TL_FILES);
 						}
 
@@ -303,7 +303,7 @@ class FileUpload extends \Backend
 		// The image is too big to be handled by the GD library
 		if ($objFile->isGdImage && ($arrImageSize[0] > \Config::get('gdMaxImgWidth') || $arrImageSize[1] > \Config::get('gdMaxImgHeight')))
 		{
-			\Message::addInfo(sprintf($GLOBALS['TL_LANG']['MSC']['fileExceeds'], $objFile->basename));
+			\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.info', sprintf($GLOBALS['TL_LANG']['MSC']['fileExceeds'], $objFile->basename));
 			$this->log('File "' . $objFile->basename . '" uploaded successfully but was too big to be resized automatically', __METHOD__, TL_FILES);
 
 			return false;
@@ -333,7 +333,7 @@ class FileUpload extends \Backend
 		if ($blnResize)
 		{
 			\Image::resize($strImage, $arrImageSize[0], $arrImageSize[1]);
-			\Message::addInfo(sprintf($GLOBALS['TL_LANG']['MSC']['fileResized'], $objFile->basename));
+			\System::getContainer()->get('session')->getFlashBag()->add('contao.' . TL_MODE . '.info', sprintf($GLOBALS['TL_LANG']['MSC']['fileResized'], $objFile->basename));
 			$this->log('File "' . $objFile->basename . '" uploaded successfully and was scaled down to the maximum dimensions', __METHOD__, TL_FILES);
 			$this->blnHasResized = true;
 

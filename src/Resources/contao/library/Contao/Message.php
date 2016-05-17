@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+@trigger_error('Using the Contao\Message class has been deprecated and will no longer work in Contao 5.0. Use the session flashbag and the @ContaoCore/messages.html.twig template instead.', E_USER_DEPRECATED);
+
 
 /**
  * Stores and outputs messages
@@ -25,6 +27,9 @@ namespace Contao;
  *     Message::addInfo('You can upload only two files');
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *         
+ * @deprecated Deprecated since Contao 4.2, to be removed in Contao 5.
+ *             Use the session flashbag and the @ContaoCore/messages.html.twig template instead.
  */
 class Message
 {

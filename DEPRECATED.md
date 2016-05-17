@@ -1,6 +1,20 @@
 Deprecated features
 ===================
 
+### Message class
+
+The `Message` class has been deprecated in Contao 4.2 and will be removed in
+Contao 5.0. Use the session and twig service instead:
+
+```php
+// Add an error message to "my-scope"
+System::getContainer()->get('session')->getFlashBag()->add('contao.my-scope.error', 'An error occurred');
+
+// Generate all messages in "my-scope"
+System::getContainer()->get('twig')->render('@ContaoCore/messages.html.twig', ['scope' => 'my-scope']);
+```
+
+
 ### Page handler without getResponse()
 
 Using a custom page handler without a `getResponse()` method has been

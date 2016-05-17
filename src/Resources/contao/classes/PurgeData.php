@@ -53,7 +53,7 @@ class PurgeData extends \Backend implements \executable
 		}
 
 		// Add potential error messages
-		$objTemplate->message .= \Message::generateUnwrapped();
+		$objTemplate->message .= \System::getContainer()->get('twig')->render('@ContaoCore/messages.html.twig', array('unwrapped' => true));
 
 		// Run the jobs
 		if (\Input::post('FORM_SUBMIT') == 'tl_purge')

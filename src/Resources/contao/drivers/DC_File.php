@@ -325,7 +325,7 @@ class DC_File extends \DataContainer implements \editable
 <div id="tl_buttons">
 <a href="'.$this->getReferer(true).'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
 </div>
-'.\Message::generate().'
+'.\System::getContainer()->get('twig')->render('@ContaoCore/messages.html.twig').'
 <form action="'.ampersand(\Environment::get('request'), true).'" id="'.$this->strTable.'" class="tl_form" method="post"'.(!empty($this->onsubmit) ? ' onsubmit="'.implode(' ', $this->onsubmit).'"' : '').'>
 
 <div class="tl_formbody_edit">

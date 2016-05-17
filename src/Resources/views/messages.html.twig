@@ -1,0 +1,21 @@
+{% set unwrapped = unwrapped|default(false) %}
+{% set scope = scope|default(constant('TL_MODE')) %}
+{% set types = ['error', 'confirm', 'new', 'info', 'raw'] %}
+
+{% if not unwrapped %}
+    <div class="tl_message">
+{% endif %}
+
+{% for type in types %}
+    {% for message in app.session.flashbag.get('contao.' ~ scope ~ '.' ~ type) %}
+        {% if type == 'raw' %}
+            {{ message|raw }}
+        {%  else %}
+            <p class="tl_{{ type }}">{{ message }}</p>
+        {%  endif %}
+    {% endfor %}
+{% endfor %}
+
+{% if not unwrapped %}
+    </div>
+{% endif %}
