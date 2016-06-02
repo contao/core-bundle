@@ -1,0 +1,17 @@
+{% set _panel = block('panel') %}
+{% set _errors = block('errors') %}
+
+{% if _panel is not empty %}
+    <div class="tl_panel">
+        {{ _panel | raw }}
+    </div>
+{% endif %}
+
+{% if _errors is not empty %}
+    <p class="tl_gerror">{{ _errors | raw }}</p>
+{% endif %}
+
+<div class="tl_listing_container">
+    {% block content %}
+    {% endblock %}
+</div>

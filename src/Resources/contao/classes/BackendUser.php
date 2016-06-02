@@ -13,6 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 
 /**
@@ -459,6 +460,9 @@ class BackendUser extends \User
 		/** @var AttributeBagInterface $objSessionBag */
 		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
+		/** @var RouterInterface $router */
+		$router = \System::getContainer()->get('router');
+
 		$arrModules = array();
 		$session = $objSessionBag->all();
 
@@ -497,7 +501,7 @@ class BackendUser extends \User
 							$arrModules[$strGroupName]['modules'][$strModuleName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MOD'][$strModuleName][1]);
 							$arrModules[$strGroupName]['modules'][$strModuleName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strModuleName]) ? $GLOBALS['TL_LANG']['MOD'][$strModuleName][0] : $GLOBALS['TL_LANG']['MOD'][$strModuleName]) != false) ? $label : $strModuleName;
 							$arrModules[$strGroupName]['modules'][$strModuleName]['class'] = 'navigation ' . $strModuleName;
-							$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = TL_SCRIPT . '?do=' . $strModuleName . '&amp;ref=' . TL_REFERER_ID;
+							$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', ['do' => $strModuleName, 'ref' => TL_REFERER_ID]);
 
 							// Mark the active module and its group
 							if (\Input::get('do') == $strModuleName)
