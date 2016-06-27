@@ -50,6 +50,8 @@ abstract class BackendModule extends \Backend
 	 */
 	public function __construct(DataContainer $dc=null)
 	{
+		@trigger_error('This class is deprecated and will be removed in Contao 5.0. Use custom controllers instead.', E_USER_DEPRECATED);
+
 		parent::__construct();
 		$this->objDc = $dc;
 	}
