@@ -130,7 +130,8 @@ class RebuildIndex extends \Backend implements \executable
 			// Display the pages
 			for ($i=0, $c=count($arrPages); $i<$c; $i++)
 			{
-				$strBuffer .= '<span class="page_url" data-url="' . $arrPages[$i] . '#' . $rand . $i . '">' . \StringUtil::substr($arrPages[$i], 100) . '</span><br>';
+				$strUrl = str_replace('app_dev.php/', '', $arrPages[$i]);
+				$strBuffer .= '<span class="page_url" data-url="' . $strUrl . '#' . $rand . $i . '">' . \StringUtil::substr($strUrl, 100) . '</span><br>';
 				unset($arrPages[$i]); // see #5681
 			}
 
