@@ -92,6 +92,8 @@ class CsvImportUtil
         $this->connection = $connection;
         $this->request    = $request;
         $this->uploader   = $uploader;
+
+        $this->setDefaultSeparators();
     }
 
     /**
@@ -236,10 +238,6 @@ class CsvImportUtil
      */
     public function getSeparators()
     {
-        if (count($this->separators) < 1) {
-            $this->setDefaultSeparators();
-        }
-
         return $this->separators;
     }
 
