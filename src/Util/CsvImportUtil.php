@@ -51,12 +51,7 @@ class CsvImportUtil
      * Available separators
      * @var array
      */
-    private $separators = [
-        self::SEPARATOR_COMMA,
-        self::SEPARATOR_LINEBREAK,
-        self::SEPARATOR_SEMICOLON,
-        self::SEPARATOR_TABULATOR,
-    ];
+    private $separators;
 
     /**
      * Template
@@ -117,7 +112,7 @@ class CsvImportUtil
         $template->fileMaxSize = $maxFileSize;
         $template->messages    = $this->request->getSession()->getFlashBag()->all();
         $template->uploader    = $this->getUploader()->generateMarkup();
-        $template->separators  = $this->generateSeparators();
+        $template->separators  = $this->getSeparators();
         $template->submitLabel = $submitLabel;
 
         return $template->parse();
@@ -241,6 +236,10 @@ class CsvImportUtil
      */
     public function getSeparators()
     {
+        if (count($this->separators) < 1) {
+            $this->setDefaultSeparators();
+        }
+
         return $this->separators;
     }
 
@@ -248,10 +247,47 @@ class CsvImportUtil
      * Set separators
      *
      * @param array $separators
+     *
+     * @throws \InvalidArgumentException
      */
     public function setSeparators(array $separators)
     {
+        foreach ($separators as $separator) {
+            if (!is_array($separator) || !$separator['value'] || !$separator['label']) {
+                throw new \InvalidArgumentException(
+                    'Each separator must be an array that contains "value" and "label" keys!'
+                );
+            }
+        }
+
         $this->separators = $separators;
+    }
+
+    /**
+     * Set default separators
+     */
+    private function setDefaultSeparators()
+    {
+        $this->setSeparators(
+            [
+                self::SEPARATOR_COMMA     => [
+                    'value' => 'comma',
+                    'label' => $GLOBALS['TL_LANG']['MSC']['comma'],
+                ],
+                self::SEPARATOR_LINEBREAK => [
+                    'value' => 'linebreak',
+                    'label' => $GLOBALS['TL_LANG']['MSC']['linebreak'],
+                ],
+                self::SEPARATOR_SEMICOLON => [
+                    'value' => 'semicolon',
+                    'label' => $GLOBALS['TL_LANG']['MSC']['semicolon'],
+                ],
+                self::SEPARATOR_TABULATOR => [
+                    'value' => 'tabulator',
+                    'label' => $GLOBALS['TL_LANG']['MSC']['tabulator'],
+                ],
+            ]
+        );
     }
 
     /**
@@ -373,26 +409,6 @@ class CsvImportUtil
     }
 
     /**
-     * Generate the separators for the template
-     *
-     * @return array
-     */
-    protected function generateSeparators()
-    {
-        $parsed = [];
-        $mapper = $this->getSeparatorsMapper();
-
-        foreach ($this->separators as $separator) {
-            $parsed[] = [
-                'value' => $mapper[$separator],
-                'label' => $GLOBALS['TL_LANG']['MSC'][$mapper[$separator]],
-            ];
-        }
-
-        return $parsed;
-    }
-
-    /**
      * Get the separator from the request
      *
      * @return string
@@ -401,28 +417,20 @@ class CsvImportUtil
      */
     private function getSeparator()
     {
-        $mapper    = $this->getSeparatorsMapper();
-        $separator = $this->request->request->get('separator');
+        $mappedSeparator = null;
+        $separator       = $this->request->request->get('separator');
 
-        if (($mappedSeparator = array_search($separator, $mapper, true)) === false) {
+        foreach ($this->getSeparators() as $k => $v) {
+            if ($v['value'] === $separator) {
+                $mappedSeparator = $k;
+                break;
+            }
+        }
+
+        if ($mappedSeparator === null) {
             throw new CsvImportErrorException(sprintf('The CSV separator "%s" is invalid', $separator));
         }
 
         return $mappedSeparator;
-    }
-
-    /**
-     * Get the separators mapper
-     *
-     * @return array
-     */
-    private function getSeparatorsMapper()
-    {
-        return [
-            self::SEPARATOR_COMMA     => 'comma',
-            self::SEPARATOR_LINEBREAK => 'linebreak',
-            self::SEPARATOR_SEMICOLON => 'semicolon',
-            self::SEPARATOR_TABULATOR => 'tabulator',
-        ];
     }
 }
