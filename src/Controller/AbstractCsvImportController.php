@@ -63,36 +63,6 @@ abstract class AbstractCsvImportController
     }
 
     /**
-     * Set the database connection
-     *
-     * @param Connection $connection
-     */
-    public function setConnection($connection)
-    {
-        $this->connection = $connection;
-    }
-
-    /**
-     * Set the Contao framework
-     *
-     * @param ContaoFrameworkInterface $framework
-     */
-    public function setFramework($framework)
-    {
-        $this->framework = $framework;
-    }
-
-    /**
-     * Set the token storage
-     *
-     * @param TokenStorageInterface $tokenStorage
-     */
-    public function setTokenStorage($tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
-
-    /**
      * Create the CSV import instance
      *
      * @param Request $request
