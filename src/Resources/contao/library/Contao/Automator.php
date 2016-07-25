@@ -232,6 +232,10 @@ class Automator extends \System
 		$objFolder = new \Folder('system/tmp');
 		$objFolder->purge();
 
+		// Create deleted .gitignore file again
+		$objFile = new \File('system/tmp/.gitignore');
+		$objFile->close();
+
 		// Add a log entry
 		$this->log('Purged the temp folder', __METHOD__, TL_CRON);
 	}
