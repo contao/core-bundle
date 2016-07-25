@@ -234,6 +234,7 @@ class Automator extends \System
 
 		// Create deleted .gitignore file again
 		$objFile = new \File('system/tmp/.gitignore');
+		$objFile->write('# Create the folder and ignore its content\n*\n!.gitignore');
 		$objFile->close();
 
 		// Add a log entry
