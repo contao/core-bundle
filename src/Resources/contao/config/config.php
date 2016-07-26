@@ -394,6 +394,10 @@ $GLOBALS['TL_HOOKS'] = array
 		array('Messages', 'versionCheck'),
 		array('Messages', 'maintenanceCheck'),
 		array('Messages', 'languageFallback')
+	),
+	'initializeSystem' => array
+	(
+		array('FrontendIndex', 'mapLegacyModuleControllers')
 	)
 );
 
