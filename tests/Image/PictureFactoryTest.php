@@ -17,6 +17,7 @@ use Contao\Image\ImportantPart;
 use Contao\Image\Image;
 use Contao\Image\Resizer;
 use Contao\Image\ResizeConfiguration;
+use Contao\Image\Picture;
 use Contao\Image\PictureConfiguration;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Image\Box;
@@ -88,9 +89,7 @@ class PictureFactoryTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pictureMock = $this->getMockBuilder('Contao\Image\Picture')
-             ->disableOriginalConstructor()
-             ->getMock();
+        $pictureMock = new Picture(['src' => $imageMock, 'srcset' => []], []);
 
         $pictureGenerator = $this->getMockBuilder('Contao\Image\PictureGenerator')
             ->disableOriginalConstructor()
@@ -163,6 +162,7 @@ class PictureFactoryTest extends TestCase
                     'zoom' => '50',
                     'sizes' => '100vw',
                     'densities' => '1x, 2x',
+                    'cssClass' => 'my-size',
                 ][$key];
             }));
 
@@ -215,7 +215,8 @@ class PictureFactoryTest extends TestCase
 
         $picture = $pictureFactory->create($path, 1);
 
-        $this->assertSame($pictureMock, $picture);
+        $this->assertSame($imageMock, $picture->getImg()['src']);
+        $this->assertEquals('my-size', $picture->getImg()['class']);
     }
 
     /**

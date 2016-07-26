@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Image\Picture;
 use Contao\Image\PictureGeneratorInterface;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\ResizeConfiguration;
@@ -83,22 +84,34 @@ class PictureFactory
      */
     public function create($path, $size = null)
     {
+        $attributes = [];
+
         if (is_array($size) && isset($size[2]) && substr_count($size[2], '_') === 1) {
             $image = $this->imageFactory->create($path, $size);
             $config = new PictureConfiguration();
         }
         else {
             $image = $this->imageFactory->create($path);
-            $config = $this->createConfig($size);
+            list($config, $attributes) = $this->createConfig($size);
         }
 
-        return $this->pictureGenerator->generate(
+        $picture = $this->pictureGenerator->generate(
             $image,
             $config,
             (new ResizeOptions())
                 ->setImagineOptions($this->imagineOptions)
                 ->setBypassCache($this->bypassCache)
         );
+
+        if (count($attributes)) {
+            $img = $picture->getImg();
+            foreach ($attributes as $attribute => $value) {
+                $img[$attribute] = $value;
+            }
+            $picture = new Picture($img, $picture->getSources());
+        }
+
+        return $picture;
     }
 
     private function createConfig($size)
@@ -108,6 +121,7 @@ class PictureFactory
         }
 
         $config = new PictureConfiguration();
+        $attributes = [];
 
         if (!isset($size[2]) || !is_numeric($size[2])) {
             $resizeConfig = new ResizeConfiguration();
@@ -124,14 +138,18 @@ class PictureFactory
             $configItem->setResizeConfig($resizeConfig);
             $config->setSize($configItem);
 
-            return $config;
+            return [$config, $attributes];
         }
 
-        $config->setSize($this->createConfigItem(
-            $this->framework
-                ->getAdapter('Contao\\ImageSizeModel')
-                ->findByPk($size[2])
-        ));
+        $imageSizeModel = $this->framework
+            ->getAdapter('Contao\\ImageSizeModel')
+            ->findByPk($size[2]);
+
+        $config->setSize($this->createConfigItem($imageSizeModel));
+
+        if ($imageSizeModel && $imageSizeModel->cssClass) {
+            $attributes['class'] = $imageSizeModel->cssClass;
+        }
 
         $imageSizeItems = $this->framework
             ->getAdapter('Contao\\ImageSizeItemModel')
@@ -145,7 +163,7 @@ class PictureFactory
             $config->setSizeItems($configItems);
         }
 
-        return $config;
+        return [$config, $attributes];
     }
 
     private function createConfigItem($imageSize)
