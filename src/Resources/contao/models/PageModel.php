@@ -52,6 +52,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @property integer $mobileLayout
  * @property boolean $includeCache
  * @property integer $cache
+ * @property integer $clientCache
  * @property boolean $includeChmod
  * @property integer $cuser
  * @property integer $cgroup

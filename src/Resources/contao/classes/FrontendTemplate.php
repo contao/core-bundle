@@ -87,7 +87,10 @@ class FrontendTemplate extends \Template
 	{
 		$this->compile($blnCheckRequest);
 
-		return parent::getResponse();
+		$response = parent::getResponse();
+		$this->setCacheHeaders($response);
+
+		return $response;
 	}
 
 
@@ -124,7 +127,6 @@ class FrontendTemplate extends \Template
 			}
 		}
 
-		// Unset only after the output has been cached (see #7824)
 		unset($_SESSION['LOGIN_ERROR']);
 
 		// Replace insert tags and then re-replace the request_token tag in case a form element has been loaded via insert tag
@@ -313,5 +315,28 @@ class FrontendTemplate extends \Template
 		}
 
 		return '<div class="custom">' . "\n" . $sections . "\n" . '</div>' . "\n";
+	}
+
+	/**
+	 * Set the cache headers according to the page settings.
+	 *
+	 * @param Response $response
+	 */
+	private function setCacheHeaders(Response $response)
+	{
+		/** @var $objPage \PageModel */
+		global $objPage;
+
+		if (false === $objPage->cache && false === $objPage->clientCache) {
+			return;
+		}
+
+		if ($objPage->cache > 0) {
+			$response->setSharedMaxAge($objPage->cache);
+		}
+
+		if ($objPage->clientCache > 0) {
+			$response->setMaxAge($objPage->clientCache);
+		}
 	}
 }
