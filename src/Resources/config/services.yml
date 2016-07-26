@@ -27,6 +27,13 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
+    contao.controller.frontend_module:
+        class: Contao\CoreBundle\Controller\FrontendModuleController
+        arguments:
+            - "@contao.framework"
+        calls:
+            - ["setContainer", ["@service_container"]]
+
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
         public: false

@@ -15,6 +15,9 @@ use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use League\Uri\Components\Query;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 
 /**
@@ -174,12 +177,13 @@ abstract class Controller extends \System
 	/**
 	 * Generate a front end module and return it as string
 	 *
-	 * @param mixed  $intId     A module ID or a Model object
-	 * @param string $strColumn The name of the column
+	 * @param mixed  $intId         A module ID or a Model object
+	 * @param string $strColumn     The name of the column
+	 * @param bool   $forceLegacy   Forces legacy rendering
 	 *
 	 * @return string The module HTML markup
 	 */
-	public static function getFrontendModule($intId, $strColumn='main')
+	public static function getFrontendModule($intId, $strColumn='main', $forceLegacy=false)
 	{
 		if (!is_object($intId) && !strlen($intId))
 		{
@@ -298,6 +302,18 @@ abstract class Controller extends \System
 				{
 					return '';
 				}
+			}
+
+			if (true !== $forceLegacy) {
+				/** @var FragmentHandler $fragmentHandler */
+				$fragmentHandler = \System::getContainer()->get('fragment.handler');
+
+				// TODO: Implement fragmentRegistry service to support different rendering modes per controller?
+				return $fragmentHandler->render(new ControllerReference(
+					'contao.controller.frontend_module:forwardAction',
+					[],
+					['feModId' => $objRow->id]
+				), 'esi');
 			}
 
 			// Check the visibility (see #6311)
