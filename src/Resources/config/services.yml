@@ -34,6 +34,12 @@ services:
         calls:
             - ["setContainer", ["@service_container"]]
 
+    contao.controller.frontend_module.html:
+        class: Contao\CoreBundle\Controller\FrontendModule\HtmlModuleController
+        parent: 'contao.controller.frontend_module'
+        tags:
+            - { name: contao.frontend_module, type: html, method: indexAction }
+
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
         public: false
