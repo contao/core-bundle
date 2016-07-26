@@ -83,6 +83,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 256 }
 
+    contao.listener.controller_argument:
+        class: Contao\CoreBundle\EventListener\ControllerArgumentListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
     contao.listener.output_from_cache:
         class: Contao\CoreBundle\EventListener\OutputFromCacheListener
         arguments:
