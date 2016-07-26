@@ -331,12 +331,19 @@ class FrontendTemplate extends \Template
 			return;
 		}
 
-		if ($objPage->cache > 0) {
-			$response->setSharedMaxAge($objPage->cache);
+		// If FE_USER_LOGGED_IN or BE_USER_LOGGED_IN every request is private
+		if (true === FE_USER_LOGGED_IN || true === BE_USER_LOGGED_IN) {
+			$response->setPrivate();
+			return;
 		}
 
+		// The client cache is always depending on the admin settings
 		if ($objPage->clientCache > 0) {
 			$response->setMaxAge($objPage->clientCache);
+		}
+		
+		if ($objPage->cache > 0) {
+			$response->setSharedMaxAge($objPage->cache);
 		}
 	}
 }
