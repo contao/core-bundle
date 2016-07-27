@@ -187,6 +187,9 @@ services:
             - "%contao.image.bypass_cache%"
             - "%contao.image.imagine_options%"
 
+    contao.security.legacy_password_encoder:
+        class: Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder
+
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
         public: false

@@ -9,6 +9,8 @@
  */
 
 namespace Contao;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
@@ -137,6 +139,8 @@ abstract class User extends \System
 	 */
 	protected $arrData = array();
 
+    protected $roles = [];
+
 
 	/**
 	 * Import the database object
@@ -258,58 +262,24 @@ abstract class User extends \System
 	 */
 	public function authenticate()
 	{
-		// Check the cookie hash
-		if ($this->strHash != $this->getSessionHash($this->strCookie))
-		{
-			return false;
-		}
+        $container = System::getContainer();
 
-		$objSession = $this->Database->prepare("SELECT * FROM tl_session WHERE hash=?")
-									 ->execute($this->strHash);
+        /** @var AuthorizationCheckerInterface $authorizationChecker */
+        $authorizationChecker = $container->get('security.authorization_checker');
 
-		// Try to find the session in the database
-		if ($objSession->numRows < 1)
-		{
-			return false;
-		}
+        /** @var TokenStorageInterface $tokenStorage */
+        $tokenStorage = $container->get('security.token_storage');
 
-		$time = time();
-		$container = \System::getContainer();
-		$session = $container->get('session');
+        if (
+            $authorizationChecker->isGranted($this->roles) &&
+            $this->findBy('username', $tokenStorage->getToken()->getUsername())
+        ) {
+            $this->setUserFromDb();
 
-		// Validate the session
-		if ($objSession->sessionID != $session->getId() || (!$container->getParameter('contao.security.disable_ip_check') && $objSession->ip != $this->strIp) || $objSession->hash != $this->strHash || ($objSession->tstamp + \Config::get('sessionTimeout')) < $time)
-		{
-			return false;
-		}
+            return true;
+        }
 
-		$this->intId = $objSession->pid;
-
-		// Load the user object
-		if ($this->findBy('id', $this->intId) == false)
-		{
-			return false;
-		}
-
-		$this->setUserFromDb();
-
-		// Update session
-		$this->Database->prepare("UPDATE tl_session SET tstamp=$time WHERE hash=?")
-					   ->execute($this->strHash);
-
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-
-		// HOOK: post authenticate callback
-		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-			{
-				$this->import($callback[0], 'objAuth', true);
-				$this->objAuth->{$callback[1]}($this);
-			}
-		}
-
-		return true;
+        return false;
 	}
 
 

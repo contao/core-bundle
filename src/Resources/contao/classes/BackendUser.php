@@ -13,6 +13,8 @@ namespace Contao;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
 /**
@@ -98,6 +100,8 @@ class BackendUser extends \User
 	 */
 	protected $arrFilemountIds;
 
+    protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
+
 
 	/**
 	 * Initialize the object
@@ -153,39 +157,6 @@ class BackendUser extends \User
 
 		return parent::__get($strKey);
 	}
-
-
-	/**
-	 * Redirect to the login screen if authentication fails
-	 *
-	 * @return boolean True if the user could be authenticated
-	 */
-	public function authenticate()
-	{
-		// Do not redirect if authentication is successful
-		if (parent::authenticate())
-		{
-			return true;
-		}
-
-		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
-
-		if ($route == 'contao_backend_login')
-		{
-			return false;
-		}
-
-		$parameters = array();
-
-		// Redirect to the last page visited upon login
-		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
-		{
-			$parameters['referer'] = base64_encode(\Environment::get('request'));
-		}
-
-		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
-	}
-
 
 	/**
 	 * Check whether the current user has a certain access right
