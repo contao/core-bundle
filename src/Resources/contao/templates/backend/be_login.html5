@@ -36,7 +36,9 @@
         <div class="formbody">
           <input type="hidden" name="FORM_SUBMIT" value="tl_login">
           <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
-          <?= $this->messages ?>
+          <?php if ($this->message): ?>
+            <p class="tl_error"><?= $this->message ?></p>
+          <?php endif; ?>
           <?php if ($this->noCookies): ?>
             <p class="tl_error"><?= $this->noCookies ?></p>
           <?php endif; ?>

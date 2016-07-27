@@ -14,6 +14,8 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\FrontendUser;
+use Contao\User;
+use Contao\UserModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -53,19 +55,21 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        if ($this->isBackendUsername($username)) {
-            $this->framework->initialize();
+        $this->framework->initialize();
 
-            return BackendUser::getInstance();
+        /** @var UserModel $userModel */
+        $userModel = $this->framework->getAdapter('Contao\UserModel');
+        $user = $userModel->findOneBy('username', $username);
+
+        $user->applyArrDataToProperties();
+
+        if (null === $user) {
+            throw new UsernameNotFoundException(
+                sprintf('Username "%s" does not exist.', $username)
+            );
         }
 
-        if ($this->isFrontendUsername($username)) {
-            $this->framework->initialize();
-
-            return FrontendUser::getInstance();
-        }
-
-        throw new UsernameNotFoundException('Can only load user "frontend" or "backend".');
+        return $user;
     }
 
     /**
@@ -73,7 +77,13 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        throw new UnsupportedUserException('Cannot refresh a Contao user.');
+        if (!$user instanceof UserModel) {
+            throw new UnsupportedUserException(
+                sprintf('Instances of "%s" are not supported.', get_class($user))
+            );
+        }
+
+        return $this->loadUserByUsername($user->getUsername());
     }
 
     /**
@@ -81,30 +91,6 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return is_subclass_of($class, 'Contao\User');
-    }
-
-    /**
-     * Checks if the given username can be mapped to a front end user.
-     *
-     * @param string $username
-     *
-     * @return bool
-     */
-    private function isFrontendUsername($username)
-    {
-        return 'frontend' === $username && $this->isFrontendScope();
-    }
-
-    /**
-     * Checks if the given username can be mapped to a back end user.
-     *
-     * @param string $username
-     *
-     * @return bool
-     */
-    private function isBackendUsername($username)
-    {
-        return 'backend' === $username && $this->isBackendScope();
+        return $class === 'Contao\UserModel';
     }
 }

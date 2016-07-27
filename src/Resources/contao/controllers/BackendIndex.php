@@ -10,7 +10,15 @@
 
 namespace Contao;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -20,6 +28,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BackendIndex extends \Backend
 {
+    /** @var ContainerInterface $container */
+    protected $container;
+
+    /** @var FlashBagInterface $flashBag */
+    protected $flashBag;
 
 	/**
 	 * Initialize the controller
@@ -32,34 +45,11 @@ class BackendIndex extends \Backend
 	 */
 	public function __construct()
 	{
+	    $this->container = System::getContainer();
+        $this->flashBag = $this->container->get('session')->getFlashBag();
+
 		$this->import('BackendUser', 'User');
 		parent::__construct();
-
-		// Login
-		if ($this->User->login())
-		{
-			$strUrl = 'contao/main.php';
-
-			// Redirect to the last page visited
-			if (\Input::get('referer', true) != '')
-			{
-				$strUrl = base64_decode(\Input::get('referer', true));
-			}
-
-			$this->redirect($strUrl);
-		}
-
-		// Reload the page if authentication fails
-		elseif (!empty($_POST['username']) && !empty($_POST['password']))
-		{
-			$this->reload();
-		}
-
-		// Reload the page once after a logout to create a new session ID
-		elseif ($this->User->logout())
-		{
-			$this->reload();
-		}
 
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('tl_user');
@@ -73,6 +63,8 @@ class BackendIndex extends \Backend
 	 */
 	public function run()
 	{
+	    $this->checkLogin();
+
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_login');
 
@@ -85,7 +77,6 @@ class BackendIndex extends \Backend
 		$strHeadline = sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle'));
 
 		$objTemplate->theme = \Backend::getTheme();
-		$objTemplate->messages = \Message::generate();
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
 		$objTemplate->languages = \System::getLanguages(true);
@@ -104,6 +95,40 @@ class BackendIndex extends \Backend
 		$objTemplate->feLink = $GLOBALS['TL_LANG']['MSC']['feLink'];
 		$objTemplate->default = $GLOBALS['TL_LANG']['MSC']['default'];
 
+        if ($this->flashBag->has('be_login')) {
+            $flashes = $this->flashBag->get('be_login');
+
+            $objTemplate->message = $flashes[0];
+        }
+
 		return $objTemplate->getResponse();
 	}
+
+	protected function checkLogin()
+    {
+        /** @var AuthenticationUtils $authenticationUtils */
+        $authenticationUtils = $this->container->get('security.authentication_utils');
+
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        if ($error instanceof DisabledException ||
+            $error instanceof AccountExpiredException ||
+            $error instanceof BadCredentialsException
+        ) {
+            $this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+        } elseif ($error instanceof LockedException) {
+            $time = time();
+
+            /** @var TokenStorageInterface $tokenStorage */
+            $tokenStorage = $this->container->get('security.token_storage');
+            $user = $tokenStorage->getToken()->getUser();
+
+            $this->flashBag->set('be_login', sprintf(
+                $GLOBALS['TL_LANG']['ERR']['accountLocked'],
+                ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+            ));
+        } elseif ($error instanceof \Exception) {
+            throw $error;
+        }
+    }
 }
