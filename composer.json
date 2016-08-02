@@ -23,6 +23,7 @@
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/yaml": "~2.8|~3.0",
         "sensio/framework-extra-bundle": "^3.0.2",
+        "mmoreram/symfony-bundle-dependencies": "~1.1",
         "psr/log": "~1.0",
         "twig/twig": "~1.20",
         "doctrine/doctrine-bundle": "~1.6",

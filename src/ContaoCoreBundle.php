@@ -10,13 +10,16 @@
 
 namespace Contao\CoreBundle;
 
+use Composer\Autoload\ClassLoader;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Patchwork\Utf8\Bootup;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Configures the Contao core bundle.
@@ -24,7 +27,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class ContaoCoreBundle extends Bundle
+class ContaoCoreBundle extends Bundle implements DependentBundleInterface
 {
     const SCOPE_BACKEND = 'backend';
     const SCOPE_FRONTEND = 'frontend';
@@ -58,5 +61,20 @@ class ContaoCoreBundle extends Bundle
 
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getBundleDependencies(KernelInterface $kernel)
+    {
+        return [
+            'Symfony\Bundle\FrameworkBundle\FrameworkBundle',
+            'Symfony\Bundle\SecurityBundle\SecurityBundle',
+            'Symfony\Bundle\TwigBundle\TwigBundle',
+            'Symfony\Bundle\MonologBundle\MonologBundle',
+            'Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle',
+            'Doctrine\Bundle\DoctrineBundle\DoctrineBundle',
+        ];
     }
 }
