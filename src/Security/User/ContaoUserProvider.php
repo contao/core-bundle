@@ -57,13 +57,13 @@ class ContaoUserProvider implements UserProviderInterface
         $userModel = $this->framework->getAdapter('Contao\UserModel');
         $user = $userModel->findOneBy('username', $username);
 
-        $user->applyArrDataToProperties();
-
         if (null === $user) {
             throw new UsernameNotFoundException(
                 sprintf('Username "%s" does not exist.', $username)
             );
         }
+
+        $user->applyArrDataToProperties();
 
         return $user;
     }
