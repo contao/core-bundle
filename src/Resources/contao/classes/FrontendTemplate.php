@@ -130,7 +130,7 @@ class FrontendTemplate extends \Template
 		unset($_SESSION['LOGIN_ERROR']);
 
 		// Replace insert tags and then re-replace the request_token tag in case a form element has been loaded via insert tag
-		$this->strBuffer = $this->replaceInsertTags($this->strBuffer, false);
+		$this->strBuffer = $this->replaceInsertTags($this->strBuffer);
 		$this->strBuffer = str_replace(array('{{request_token}}', '[{]', '[}]'), array(REQUEST_TOKEN, '{{', '}}'), $this->strBuffer);
 		$this->strBuffer = $this->replaceDynamicScriptTags($this->strBuffer); // see #4203
 
