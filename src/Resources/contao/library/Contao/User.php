@@ -137,7 +137,7 @@ abstract class User extends \System
 	 */
 	protected $arrData = array();
 
-    protected $roles = [];
+	protected $roles = [];
 
 
 	/**
@@ -260,24 +260,24 @@ abstract class User extends \System
 	 */
 	public function authenticate()
 	{
-        $container = System::getContainer();
+		$container = System::getContainer();
 
-        /** @var AuthorizationCheckerInterface $authorizationChecker */
-        $authorizationChecker = $container->get('security.authorization_checker');
+		/** @var AuthorizationCheckerInterface $authorizationChecker */
+		$authorizationChecker = $container->get('security.authorization_checker');
 
-        /** @var TokenStorageInterface $tokenStorage */
-        $tokenStorage = $container->get('security.token_storage');
+		/** @var TokenStorageInterface $tokenStorage */
+		$tokenStorage = $container->get('security.token_storage');
 
-        if (
-            $authorizationChecker->isGranted($this->roles) &&
-            $this->findBy('username', $tokenStorage->getToken()->getUsername())
-        ) {
-            $this->setUserFromDb();
+		if (
+			$authorizationChecker->isGranted($this->roles) &&
+			$this->findBy('username', $tokenStorage->getToken()->getUsername())
+		) {
+			$this->setUserFromDb();
 
-            return true;
-        }
+			return true;
+		}
 
-        return false;
+		return false;
 	}
 
 
