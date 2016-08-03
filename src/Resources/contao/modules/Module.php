@@ -456,4 +456,18 @@ abstract class Module extends \Frontend
 
 		return '';
 	}
+
+
+	/**
+	 * Use this method if you want your front end module to not support being
+	 * rendered as ESI which might automatically happen if the user enabled the
+	 * ESI settings in the front end module settings and after that switched to
+	 * a front end module which does not support ESI.
+	 *
+	 * @return bool
+	 */
+	public function supportsEsi()
+	{
+		return true;
+	}
 }

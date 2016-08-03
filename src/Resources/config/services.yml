@@ -32,6 +32,11 @@ services:
         arguments:
             - "@contao.framework"
 
+    contao.controller.esi_module:
+        class: Contao\CoreBundle\Controller\EsiModuleController
+        arguments:
+            - "@contao.framework"
+
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
         public: false

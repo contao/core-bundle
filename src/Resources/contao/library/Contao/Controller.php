@@ -15,6 +15,8 @@ use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use League\Uri\Components\Query;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 
 /**
@@ -320,6 +322,13 @@ abstract class Controller extends \System
 
 			/** @var Module $objModule */
 			$objModule = new $strClass($objRow, $strColumn);
+
+			// ESI support
+			if ($objRow->esi_enable && $objModule->supportsEsi())
+			{
+				return static::renderEsi($objRow, $strColumn);
+			}
+
 			$strBuffer = $objModule->generate();
 
 			// HOOK: add custom logic
@@ -2245,5 +2254,48 @@ abstract class Controller extends \System
 
 		$objVersions = new \Versions($strTable, $intId);
 		$objVersions->create();
+	}
+
+
+	/**
+	 * Renders the ESI tag for a front end module.
+	 *
+	 * @param $objRow
+	 */
+	private static function renderEsi($objRow, $strColumn)
+	{
+		$container       = \System::getContainer();
+		$request         = $container->get('request_stack')->getCurrentRequest();
+		$fragmentHandler = $container->get('fragment.handler');
+		$attributes      = [];
+		$params          = [];
+
+		// Controller attributes
+		$attributes['pageId']         = $GLOBALS['objPage']->id;
+		$attributes['ignorePageInfo'] = (bool) $objRow->esi_ignore_page_info;
+		$attributes['varyHeaders']    = array_unique(
+			array_filter(explode(',', $objRow->esi_vary_headers))
+		);
+		$attributes['sharedMaxAge']   = (int) $objRow->esi_shared_max_age;
+		$attributes['feModuleId']     = (int) $objRow->esi_fe_module;
+		$attributes['inColumn']       = $strColumn;
+
+		// Query params to keep
+		if ('' === $objRow->esi_query_params_to_keep) {
+			$toKeepKeys = array_unique(
+				array_filter(explode(',', $objRow->esi_query_params_to_keep))
+			);
+			foreach ($request->query->all() as $k => $v) {
+				if (in_array($k, $toKeepKeys)) {
+					$params[$k] = $v;
+				}
+			}
+		}
+
+		return $fragmentHandler->render(new ControllerReference(
+			'contao.controller.esi_module:renderAction',
+			$attributes,
+			$params
+		), 'esi');
 	}
 }
