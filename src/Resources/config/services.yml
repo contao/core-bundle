@@ -27,6 +27,23 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
+    contao.controller.frontend_module:
+        class: Contao\CoreBundle\Controller\FrontendModuleController
+        arguments:
+            - "@contao.framework"
+        calls:
+            - ["setContainer", ["@service_container"]]
+
+    contao.controller.frontend_module.legacy:
+        class: Contao\CoreBundle\Controller\FrontendModule\LegacyModuleController
+        parent: 'contao.controller.frontend_module'
+
+    contao.controller.frontend_module.html:
+        class: Contao\CoreBundle\Controller\FrontendModule\HtmlModuleController
+        parent: 'contao.controller.frontend_module'
+        tags:
+            - { name: contao.frontend_module, type: html, method: indexAction }
+
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
         public: false

@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Controller\FrontendModuleController;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
@@ -307,5 +308,20 @@ class FrontendIndex extends \Frontend
 	protected function outputFromCache()
 	{
 		@trigger_error('Using FrontendIndex::outputFromCache() has been deprecated and will no longer work in Contao 5.0. Use the kernel.request event instead.', E_USER_DEPRECATED);
+	}
+
+
+
+	/**
+	 * Map the new controller stuff to legacy modules array for BC reasons.
+	 */
+	public function mapLegacyModuleControllers()
+	{
+		/** @var FrontendModuleController $feController */
+		$feController = \System::getContainer()->get('contao.controller.frontend_module');
+
+		foreach ($feController->getControllers() as $type => $controllerReference) {
+			$GLOBALS['FE_MOD']['routes'][$type] = 'Contao\ModuleProxy';
+		}
 	}
 }
