@@ -100,7 +100,7 @@ class BackendUser extends \User
 	 */
 	protected $arrFilemountIds;
 
-    protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
+	protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
 
 
 	/**

@@ -28,11 +28,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class BackendIndex extends \Backend
 {
-    /** @var ContainerInterface $container */
-    protected $container;
+	/** @var ContainerInterface $container */
+	protected $container;
 
-    /** @var FlashBagInterface $flashBag */
-    protected $flashBag;
+	/** @var FlashBagInterface $flashBag */
+	protected $flashBag;
 
 	/**
 	 * Initialize the controller
@@ -45,8 +45,8 @@ class BackendIndex extends \Backend
 	 */
 	public function __construct()
 	{
-	    $this->container = System::getContainer();
-        $this->flashBag = $this->container->get('session')->getFlashBag();
+		$this->container = System::getContainer();
+		$this->flashBag = $this->container->get('session')->getFlashBag();
 
 		$this->import('BackendUser', 'User');
 		parent::__construct();
@@ -63,7 +63,7 @@ class BackendIndex extends \Backend
 	 */
 	public function run()
 	{
-	    $this->checkLogin();
+		$this->checkLogin();
 
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_login');
@@ -90,40 +90,40 @@ class BackendIndex extends \Backend
 		$objTemplate->default = $GLOBALS['TL_LANG']['MSC']['default'];
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
 
-        if ($this->flashBag->has('be_login')) {
-            $flashes = $this->flashBag->get('be_login');
+		if ($this->flashBag->has('be_login')) {
+			$flashes = $this->flashBag->get('be_login');
 
-            $objTemplate->message = $flashes[0];
-        }
+			$objTemplate->message = $flashes[0];
+		}
 
 		return $objTemplate->getResponse();
 	}
 
 	protected function checkLogin()
-    {
-        /** @var AuthenticationUtils $authenticationUtils */
-        $authenticationUtils = $this->container->get('security.authentication_utils');
+	{
+		/** @var AuthenticationUtils $authenticationUtils */
+		$authenticationUtils = $this->container->get('security.authentication_utils');
 
-        $error = $authenticationUtils->getLastAuthenticationError();
+		$error = $authenticationUtils->getLastAuthenticationError();
 
-        if ($error instanceof DisabledException ||
-            $error instanceof AccountExpiredException ||
-            $error instanceof BadCredentialsException
-        ) {
-            $this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-        } elseif ($error instanceof LockedException) {
-            $time = time();
+		if ($error instanceof DisabledException ||
+			$error instanceof AccountExpiredException ||
+			$error instanceof BadCredentialsException
+		) {
+			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+		} elseif ($error instanceof LockedException) {
+			$time = time();
 
-            /** @var TokenStorageInterface $tokenStorage */
-            $tokenStorage = $this->container->get('security.token_storage');
-            $user = $tokenStorage->getToken()->getUser();
+			/** @var TokenStorageInterface $tokenStorage */
+			$tokenStorage = $this->container->get('security.token_storage');
+			$user = $tokenStorage->getToken()->getUser();
 
-            $this->flashBag->set('be_login', sprintf(
-                $GLOBALS['TL_LANG']['ERR']['accountLocked'],
-                ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
-            ));
-        } elseif ($error instanceof \Exception) {
-            throw $error;
-        }
-    }
+			$this->flashBag->set('be_login', sprintf(
+				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
+				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+			));
+		} elseif ($error instanceof \Exception) {
+			throw $error;
+		}
+	}
 }
