@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Controller;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -39,13 +38,12 @@ class NonCacheableInsertTagsController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param string $insertTag
      */
-    public function renderAction(Request $request)
+    public function renderAction($insertTag)
     {
         $this->framework->initialize();
 
-        $insertTag = '{{' . $request->query->get('it') . '}}';
         $result = $this->framework->createInstance('Contao\InsertTags')
                         ->replace($insertTag, false);
 
