@@ -165,12 +165,12 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  */
 class UserModel extends Model implements AdvancedUserInterface, EncoderAwareInterface, \Serializable
 {
-    private $id;
-    private $username;
-    private $password;
-    private $salt;
-    private $encoder = false;
-    private $disable;
+    protected $id;
+    protected $username;
+    protected $password;
+    protected $salt;
+    protected $encoder = false;
+    protected $disable;
 
     /**
      * Table name
