@@ -10,11 +10,13 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -156,6 +158,38 @@ class BackendUser extends \User
 		}
 
 		return parent::__get($strKey);
+	}
+
+	public function authenticate()
+	{
+		parent::authenticate();
+
+		\System::loadLanguageFile('default');
+
+		/** @var AuthenticationUtils $authenticationUtils */
+		$authenticationUtils = $this->container->get('security.authentication_utils');
+
+		$error = $authenticationUtils->getLastAuthenticationError();
+
+		if ($error instanceof DisabledException ||
+			$error instanceof AccountExpiredException ||
+			$error instanceof BadCredentialsException
+		) {
+			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+		} elseif ($error instanceof LockedException) {
+			$time = time();
+
+			/** @var TokenStorageInterface $tokenStorage */
+			$tokenStorage = $this->container->get('security.token_storage');
+			$user = $tokenStorage->getToken()->getUser();
+
+			$this->flashBag->set('be_login', sprintf(
+				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
+				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+			));
+		} elseif ($error instanceof \Exception) {
+			throw $error;
+		}
 	}
 
 	/**
