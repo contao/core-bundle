@@ -9,6 +9,8 @@
  */
 
 namespace Contao;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -139,6 +141,12 @@ abstract class User extends \System
 
 	protected $roles = [];
 
+	/** @var ContainerInterface $container */
+	protected $container;
+
+	/** @var FlashBagInterface $flashBag */
+	protected $flashBag;
+
 
 	/**
 	 * Import the database object
@@ -147,6 +155,9 @@ abstract class User extends \System
 	{
 		parent::__construct();
 		$this->import('Database');
+
+		$this->container = System::getContainer();
+		$this->flashBag = $this->container->get('session')->getFlashBag();
 	}
 
 
