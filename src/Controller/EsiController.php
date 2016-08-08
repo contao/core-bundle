@@ -63,8 +63,7 @@ final class EsiController extends Controller
     /**
      * @param int    $feModuleId
      * @param string $inColumn
-     * @param null   $pageId
-     * @param bool   $loadPageInfo
+     * @param int    $pageId
      * @param array  $varyHeaders
      * @param int    $sharedMaxAge
      *
@@ -73,8 +72,7 @@ final class EsiController extends Controller
     public function renderFrontendModule(
         $feModuleId,
         $inColumn,
-        $pageId = null,
-        $loadPageInfo = false,
+        $pageId = 0,
         array $varyHeaders = [],
         $sharedMaxAge = 0
     ) {
@@ -83,14 +81,12 @@ final class EsiController extends Controller
         $feModuleId     = (int) $feModuleId;
         $inColumn       = (string) $inColumn;
         $pageId         = (int) $pageId;
-        $pageId         = 0 === $pageId ? null : $pageId;
-        $loadPageInfo   = (bool) $loadPageInfo;
         $varyHeaders    = (array) $varyHeaders;
         $sharedMaxAge   = (int) $sharedMaxAge;
 
         $this->framework->initialize();
 
-        if (true === $loadPageInfo && null !== $pageId) {
+        if (0 !== $pageId) {
             $page = $this->framework->getAdapter('Contao\PageModel')
                         ->findWithDetails($pageId);
 

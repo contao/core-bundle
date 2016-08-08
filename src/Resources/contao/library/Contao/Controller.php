@@ -2274,8 +2274,7 @@ abstract class Controller extends \System
 		// Controller attributes
 		$attributes['feModuleId']     = (int) $objRow->id;
 		$attributes['inColumn']       = $strColumn;
-		$attributes['pageId']         = $GLOBALS['objPage']->id;
-		$attributes['loadPageInfo']   = (bool) !$objRow->esi_ignore_page_info;
+		$attributes['pageId']         = $objRow->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
 		$attributes['varyHeaders']    = array_unique(
 			array_filter(explode(',', $objRow->esi_vary_headers))
 		);
