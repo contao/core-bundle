@@ -374,6 +374,36 @@
       <trans-unit id="tl_module.cssID.1">
         <source>Here you can set an ID and one or more classes.</source>
       </trans-unit>
+      <trans-unit id="tl_module.esi_enable.0">
+        <source>Enable ESI</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_enable.1">
+        <source>You can include this front end module as an ESI tag and configure HTTP Caching settings.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_shared_max_age.0">
+        <source>Cache timeout (Shared Max Age)</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_shared_max_age.1">
+        <source>You can optionally choose a cache timeout here. If you do not select a timeout, the front end module will be generated on each request.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_ignore_page_info.0">
+        <source>Ignore page information</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_ignore_page_info.1">
+        <source>A lot of front end modules rely on the current page object information. If this module does not, you can save performance by not loading this information. Simply tick this checkbox.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_query_params_to_keep.0">
+        <source>GET parameters to keep for ESI request</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_query_params_to_keep.1">
+        <source>A lot of front end modules react on additional GET parameters such as "page", "id" or "product". Add a comma separated list of GET parameters you would like to pass on from the main request to the ESI request.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_vary_headers.0">
+        <source>HTTP Vary headers</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_vary_headers.1">
+        <source>An HTTP Vary header will include the given headers when calculating the cache key. You can enter a comma separated list of headers here. E.g. enter "Cookie" if you want every logged in user to have their own cache.</source>
+      </trans-unit>
       <trans-unit id="tl_module.disableCaptcha.0">
         <source>Disable the security question</source>
       </trans-unit>
@@ -484,6 +514,9 @@
       </trans-unit>
       <trans-unit id="tl_module.account_legend">
         <source>Account settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.esi_legend">
+        <source>ESI settings</source>
       </trans-unit>
       <trans-unit id="tl_module.emailText.0">
         <source>Your registration on %s</source>
