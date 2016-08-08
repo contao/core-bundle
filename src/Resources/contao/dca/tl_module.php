@@ -767,9 +767,9 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 			'options'                 => array(0, 5, 15, 30, 60, 300, 900, 1800, 3600, 10800, 21600, 43200, 86400, 259200, 604800, 2592000),
 			'reference'               => &$GLOBALS['TL_LANG']['CACHE'],
 			'eval'                    => array('tl_class'=>'w50'),
-			'load_callback'           => function() {
+			'load_callback'           => [function() {
 				\System::loadLanguageFile('tl_page');
-			},
+			}],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'esi_ignore_page_info' => array
