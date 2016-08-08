@@ -119,7 +119,7 @@ class InsertTags extends \Controller
 					/** @var FragmentHandler $fragmentHandler */
 					$fragmentHandler = \System::getContainer()->get('fragment.handler');
 					$strBuffer .= $fragmentHandler->render(new ControllerReference(
-						'contao.controller.non_cacheable_insert_tags:renderAction',
+						'contao.controller.esi:renderInsertTag',
 						['insertTag' => '{{' . $strTag . '}}']
 					), 'esi');
 					continue;

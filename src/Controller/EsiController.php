@@ -17,12 +17,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Handles the Contao ESI Module Controller. This might be subject to change
+ * Handles the Contao ESI requests. This might be subject to change
  * in the very near future which is why this class is declared final.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-final class EsiModuleController extends Controller
+final class EsiController extends Controller
 {
     /**
      * @var ContaoFrameworkInterface
@@ -40,6 +40,27 @@ final class EsiModuleController extends Controller
     }
 
     /**
+     * @param string $insertTag
+     */
+    public function renderInsertTag($insertTag)
+    {
+        $this->framework->initialize();
+
+        try {
+            $result = $this->framework->createInstance('Contao\InsertTags')
+                ->replace($insertTag, false);
+            $response = new Response($result);
+
+        } catch (ResponseException $e) {
+            $response = $e->getResponse();
+        }
+
+        $response->setPrivate();
+
+        return $response;
+    }
+
+    /**
      * @param int    $feModuleId
      * @param string $inColumn
      * @param null   $pageId
@@ -49,7 +70,7 @@ final class EsiModuleController extends Controller
      *
      * @return Response
      */
-    public function renderAction(
+    public function renderFrontendModule(
         $feModuleId,
         $inColumn,
         $pageId = null,

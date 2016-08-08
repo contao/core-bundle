@@ -2297,7 +2297,7 @@ abstract class Controller extends \System
 		}
 
 		return $fragmentHandler->render(new ControllerReference(
-			'contao.controller.esi_module:renderAction',
+			'contao.controller.esi:renderFrontendModule',
 			$attributes,
 			$params
 		), 'esi');

@@ -27,13 +27,8 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
-    contao.controller.non_cacheable_insert_tags:
-        class: Contao\CoreBundle\Controller\NonCacheableInsertTagsController
-        arguments:
-            - "@contao.framework"
-
-    contao.controller.esi_module:
-        class: Contao\CoreBundle\Controller\EsiModuleController
+    contao.controller.esi:
+        class: Contao\CoreBundle\Controller\EsiController
         arguments:
             - "@contao.framework"
 
