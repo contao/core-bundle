@@ -39,26 +39,36 @@ final class EsiModuleController extends Controller
     }
 
     /**
-     * @param int    $pageId
-     * @param bool   $ignorePageInfo
      * @param int    $feModuleId
      * @param string $inColumn
+     * @param null   $pageId
+     * @param bool   $loadPageInfo
      * @param array  $varyHeaders
      * @param int    $sharedMaxAge
      *
      * @return Response
      */
     public function renderAction(
-        $pageId,
-        $ignorePageInfo,
         $feModuleId,
         $inColumn,
-        array $varyHeaders,
-        $sharedMaxAge
+        $pageId = null,
+        $loadPageInfo = false,
+        array $varyHeaders = [],
+        $sharedMaxAge = 0
     ) {
+        // Make sure params have the correct type (e.g. SF ESI renders a "true"
+        // as 1 for a request attribute)
+        $feModuleId     = (int) $feModuleId;
+        $inColumn       = (string) $inColumn;
+        $pageId         = (int) $pageId;
+        $pageId         = 0 === $pageId ? null : $pageId;
+        $loadPageInfo   = (bool) $loadPageInfo;
+        $varyHeaders    = (array) $varyHeaders;
+        $sharedMaxAge   = (int) $sharedMaxAge;
+
         $this->framework->initialize();
 
-        if (false === $ignorePageInfo) {
+        if (true === $loadPageInfo && null !== $pageId) {
             $page = $this->framework->getAdapter('Contao\PageModel')
                         ->findWithDetails($pageId);
 
