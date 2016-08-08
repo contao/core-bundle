@@ -11,6 +11,7 @@
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,10 +78,14 @@ final class EsiModuleController extends Controller
             }
         }
 
-        $result = $this->framework->getAdapter('Contao\Controller')
-                        ->getFrontendModule($feModuleId, $inColumn, true);
+        try {
+            $result = $this->framework->getAdapter('Contao\Controller')
+                ->getFrontendModule($feModuleId, $inColumn, true);
+            $response = new Response($result);
 
-        $response = new Response($result);
+        } catch (ResponseException $e) {
+            $response = $e->getResponse();
+        }
 
         if ($sharedMaxAge > 0) {
             $response->setSharedMaxAge($sharedMaxAge);
