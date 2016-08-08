@@ -78,7 +78,7 @@ final class EsiModuleController extends Controller
         }
 
         $result = $this->framework->getAdapter('Contao\Controller')
-                        ->getFrontendModule($feModuleId, $inColumn);
+                        ->getFrontendModule($feModuleId, $inColumn, true);
 
         $response = new Response($result);
 
