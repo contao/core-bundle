@@ -2289,6 +2289,9 @@ abstract class Controller extends \System
 			foreach ($request->query->all() as $k => $v) {
 				if (in_array($k, $toKeepKeys)) {
 					$params[$k] = $v;
+
+					// Mark as used for the Contao main request
+					\Input::get($k);
 				}
 			}
 		}
