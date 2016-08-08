@@ -176,12 +176,13 @@ abstract class Controller extends \System
 	/**
 	 * Generate a front end module and return it as string
 	 *
-	 * @param mixed  $intId     A module ID or a Model object
-	 * @param string $strColumn The name of the column
+	 * @param mixed  $intId        A module ID or a Model object
+	 * @param string $strColumn    The name of the column
+	 * @param bool   $blnIgnoreEsi Whether ESI should be ignored
 	 *
 	 * @return string The module HTML markup
 	 */
-	public static function getFrontendModule($intId, $strColumn='main')
+	public static function getFrontendModule($intId, $strColumn='main', $blnIgnoreEsi = false)
 	{
 		if (!is_object($intId) && !strlen($intId))
 		{
@@ -324,7 +325,7 @@ abstract class Controller extends \System
 			$objModule = new $strClass($objRow, $strColumn);
 
 			// ESI support
-			if ($objRow->esi_enable && $objModule->supportsEsi())
+			if (!$blnIgnoreEsi && $objRow->esi_enable && $objModule->supportsEsi())
 			{
 				return static::renderEsi($objRow, $strColumn);
 			}
@@ -2271,14 +2272,14 @@ abstract class Controller extends \System
 		$params          = [];
 
 		// Controller attributes
+		$attributes['feModuleId']     = (int) $objRow->id;
+		$attributes['inColumn']       = $strColumn;
 		$attributes['pageId']         = $GLOBALS['objPage']->id;
-		$attributes['ignorePageInfo'] = (bool) $objRow->esi_ignore_page_info;
+		$attributes['loadPageInfo']   = (bool) !$objRow->esi_ignore_page_info;
 		$attributes['varyHeaders']    = array_unique(
 			array_filter(explode(',', $objRow->esi_vary_headers))
 		);
 		$attributes['sharedMaxAge']   = (int) $objRow->esi_shared_max_age;
-		$attributes['feModuleId']     = (int) $objRow->esi_fe_module;
-		$attributes['inColumn']       = $strColumn;
 
 		// Query params to keep
 		if ('' === $objRow->esi_query_params_to_keep) {
