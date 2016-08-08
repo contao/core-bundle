@@ -71,8 +71,14 @@ final class EsiModuleController extends Controller
                         ->getFrontendModule($feModuleId, $inColumn);
 
         $response = new Response($result);
-        $response->setSharedMaxAge($sharedMaxAge);
-        $response->setVary($varyHeaders);
+
+        if ($sharedMaxAge > 0) {
+            $response->setSharedMaxAge($sharedMaxAge);
+        }
+
+        if (0 !== count($varyHeaders)) {
+            $response->setVary($varyHeaders);
+        }
 
         return $response;
     }
