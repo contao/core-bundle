@@ -66,6 +66,7 @@ final class EsiController extends Controller
      * @param int    $pageId
      * @param array  $varyHeaders
      * @param int    $sharedMaxAge
+     * @param string $cacheKey
      *
      * @return Response
      */
@@ -76,19 +77,11 @@ final class EsiController extends Controller
         array $varyHeaders = [],
         $sharedMaxAge = 0
     ) {
-        // Make sure params have the correct type (e.g. SF ESI renders a "true"
-        // as 1 for a request attribute)
-        $feModuleId     = (int) $feModuleId;
-        $inColumn       = (string) $inColumn;
-        $pageId         = (int) $pageId;
-        $varyHeaders    = (array) $varyHeaders;
-        $sharedMaxAge   = (int) $sharedMaxAge;
-
         $this->framework->initialize();
 
-        if (0 !== $pageId) {
+        if (0 !== (int) $pageId) {
             $page = $this->framework->getAdapter('Contao\PageModel')
-                        ->findWithDetails($pageId);
+                        ->findWithDetails((int) $pageId);
 
             if (null !== $page) {
                 $GLOBALS['objPage'] = $page;
@@ -97,19 +90,19 @@ final class EsiController extends Controller
 
         try {
             $result = $this->framework->getAdapter('Contao\Controller')
-                ->getFrontendModule($feModuleId, $inColumn, true);
+                ->getFrontendModule((int) $feModuleId, (string) $inColumn, true);
             $response = new Response($result);
 
         } catch (ResponseException $e) {
             $response = $e->getResponse();
         }
 
-        if ($sharedMaxAge > 0) {
-            $response->setSharedMaxAge($sharedMaxAge);
+        if ((int) $sharedMaxAge > 0) {
+            $response->setSharedMaxAge((int) $sharedMaxAge);
         }
 
-        if (0 !== count($varyHeaders)) {
-            $response->setVary($varyHeaders);
+        if (0 !== count((array) $varyHeaders)) {
+            $response->setVary((array) $varyHeaders);
         }
 
         return $response;

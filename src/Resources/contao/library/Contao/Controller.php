@@ -15,8 +15,6 @@ use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use League\Uri\Components\Query;
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 
 /**
@@ -327,7 +325,7 @@ abstract class Controller extends \System
 			// ESI support
 			if (!$blnIgnoreEsi && $objRow->esi_enable && $objModule->supportsEsi())
 			{
-				return static::renderEsi($objRow, $strColumn);
+				return $objModule->renderEsi();
 			}
 
 			$strBuffer = $objModule->generate();
@@ -2255,50 +2253,5 @@ abstract class Controller extends \System
 
 		$objVersions = new \Versions($strTable, $intId);
 		$objVersions->create();
-	}
-
-
-	/**
-	 * Renders the ESI tag for a front end module.
-	 *
-	 * @param $objRow
-	 */
-	private static function renderEsi($objRow, $strColumn)
-	{
-		$container       = \System::getContainer();
-		$request         = $container->get('request_stack')->getCurrentRequest();
-		$fragmentHandler = $container->get('fragment.handler');
-		$attributes      = [];
-		$params          = [];
-
-		// Controller attributes
-		$attributes['feModuleId']     = (int) $objRow->id;
-		$attributes['inColumn']       = $strColumn;
-		$attributes['pageId']         = $objRow->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
-		$attributes['varyHeaders']    = array_unique(
-			array_filter(explode(',', $objRow->esi_vary_headers))
-		);
-		$attributes['sharedMaxAge']   = (int) $objRow->esi_shared_max_age;
-
-		// Query params to keep
-		if ('' === $objRow->esi_query_params_to_keep) {
-			$toKeepKeys = array_unique(
-				array_filter(explode(',', $objRow->esi_query_params_to_keep))
-			);
-			foreach ($request->query->all() as $k => $v) {
-				if (in_array($k, $toKeepKeys)) {
-					$params[$k] = $v;
-
-					// Mark as used for the Contao main request
-					\Input::get($k);
-				}
-			}
-		}
-
-		return $fragmentHandler->render(new ControllerReference(
-			'contao.controller.esi:renderFrontendModule',
-			$attributes,
-			$params
-		), 'esi');
 	}
 }

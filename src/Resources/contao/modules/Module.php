@@ -9,6 +9,8 @@
  */
 
 namespace Contao;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 
 /**
@@ -469,5 +471,95 @@ abstract class Module extends \Frontend
 	public function supportsEsi()
 	{
 		return true;
+	}
+
+	/**
+	 * Renders the ESI tag for a front end module.
+	 *
+	 * @return string
+	 */
+	public function renderEsi()
+	{
+		$fragmentHandler = \System::getContainer()->get('fragment.handler');
+
+		return $fragmentHandler->render(new ControllerReference(
+			'contao.controller.esi:renderFrontendModule',
+			$this->getEsiAttributes(),
+			$this->getEsiParams()
+		), 'esi');
+	}
+
+
+	/**
+	 * Prepares the ESI controller attributes.
+	 *
+	 * @return array
+	 */
+	protected function getEsiAttributes()
+	{
+		$attributes = [];
+
+		// Controller attributes
+		$attributes['feModuleId']   = (int) $this->id;
+		$attributes['inColumn']     = $this->inColumn;
+		$attributes['pageId']       = $this->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
+		$attributes['varyHeaders']  = array_unique(
+			array_filter(explode(',', $this->esi_vary_headers))
+		);
+		$attributes['sharedMaxAge'] = (int) $this->esi_shared_max_age;
+		$attributes['cacheKey']     = $this->getEsiCacheKey();
+
+		return $attributes;
+	}
+
+
+	/**
+	 * Prepares our own custom ESI cache key.
+	 * By default this does only consider the TL_VIEW cookie so that the cache
+	 * differs for the regular page layout and the mobile layout.
+	 *
+	 * Override this in your own front end module to force individual caches
+	 * by other criteria.
+	 * If you want to vary by a certain HTTP header, you should rather override
+	 * the "varyHeaders" array key in getEsiAttributes().
+	 *
+	 * @return string
+	 */
+	protected function getEsiCacheKey()
+	{
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		return md5($request->cookies->get('TL_VIEW'));
+	}
+
+
+	/**
+	 * Prepares the ESI controller params.
+	 *
+	 * @return array
+	 */
+	protected function getEsiParams()
+	{
+		$params  = [];
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		// Query params to keep
+		if ('' === $this->esi_query_params_to_keep) {
+			$toKeepKeys = array_unique(
+				array_filter(explode(',', $this->esi_query_params_to_keep))
+			);
+			foreach ($request->query->all() as $k => $v) {
+				if (in_array($k, $toKeepKeys)) {
+					$params[$k] = $v;
+
+					// Mark as used for the Contao main request
+					\Input::get($k);
+				}
+			}
+		}
+
+		return $params;
 	}
 }
