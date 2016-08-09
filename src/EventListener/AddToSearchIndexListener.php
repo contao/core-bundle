@@ -63,6 +63,18 @@ class AddToSearchIndexListener
     }
 
     /**
+     * @param string $rgxp
+     *
+     * @return AddToSearchIndexListener
+     */
+    public function addIgnorePathRegex($rgxp)
+    {
+        $this->ignorePathRegexes[] = $rgxp;
+
+        return $this;
+    }
+
+    /**
      * Forwards the request to the Frontend class if there is a page object.
      *
      * @param PostResponseEvent $event

@@ -40,6 +40,6 @@ class AddFragmentsSupportPass implements CompilerPassInterface
         $rgxp = '/' . preg_quote($container->getParameter('fragment.path'), '/') . '/';
 
         $searchListener = $container->findDefinition('contao.listener.add_to_search_index');
-        $searchListener->addMethodCall('setIgnorePathRegexes', [[$rgxp]]);
+        $searchListener->addMethodCall('addIgnorePathRegex', [$rgxp]);
     }
 }
