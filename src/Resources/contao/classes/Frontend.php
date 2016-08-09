@@ -648,4 +648,20 @@ abstract class Frontend extends \Controller
 			}
 		}
 	}
+
+	/**
+	 * Check whether there is a cached version of the page and return a response object
+	 *
+	 * @return Response|null
+	 *
+	 * @deprecated This method will always return null and does not have any effect
+	 *             anymore. Caching is achieved using the powerful Symfony reverse
+	 *             proxy. Will be removed in Contao 5.0.
+	 */
+	public static function getResponseFromCache()
+	{
+		@trigger_error('Using Frontend::getResponseFromCache() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
+		return null;
+	}
 }
