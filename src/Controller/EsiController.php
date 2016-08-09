@@ -30,7 +30,7 @@ final class EsiController extends Controller
     private $framework;
 
     /**
-     * NonCacheableInsertTagsController constructor.
+     * EsiController constructor.
      *
      * @param $framework
      */
@@ -42,7 +42,7 @@ final class EsiController extends Controller
     /**
      * @param string $insertTag
      */
-    public function renderInsertTag($insertTag)
+    public function renderNonCacheableInsertTag($insertTag)
     {
         $this->framework->initialize();
 
@@ -55,6 +55,7 @@ final class EsiController extends Controller
             $response = $e->getResponse();
         }
 
+        // Never cache non cacheable insert tags
         $response->setPrivate();
 
         return $response;
