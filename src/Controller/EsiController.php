@@ -98,6 +98,12 @@ final class EsiController extends Controller
             $response = $e->getResponse();
         }
 
+        // Never cache on front end preview
+        if (true === BE_USER_LOGGED_IN) {
+            $response->setPrivate();
+            return $response;
+        }
+
         if ((int) $sharedMaxAge > 0) {
             $response->setSharedMaxAge((int) $sharedMaxAge);
         }
