@@ -50,13 +50,13 @@ final class EsiController extends Controller
             $result = $this->framework->createInstance('Contao\InsertTags')
                 ->replace($insertTag, false);
             $response = new Response($result);
+            
+            // Never cache non cacheable insert tags
+            $response->setPrivate();
 
         } catch (ResponseException $e) {
             $response = $e->getResponse();
         }
-
-        // Never cache non cacheable insert tags
-        $response->setPrivate();
 
         return $response;
     }
