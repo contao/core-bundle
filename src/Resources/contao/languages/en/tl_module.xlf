@@ -402,7 +402,7 @@
         <source>HTTP Vary headers</source>
       </trans-unit>
       <trans-unit id="tl_module.esi_vary_headers.1">
-        <source>An HTTP Vary header will include the given headers when calculating the cache key. You can enter a comma separated list of headers here. E.g. enter "Cookie" if you want every logged in user to have their own cache.</source>
+        <source>An HTTP Vary header will include the given headers when calculating the cache key. You can enter a comma separated list of headers here.</source>
       </trans-unit>
       <trans-unit id="tl_module.disableCaptcha.0">
         <source>Disable the security question</source>
