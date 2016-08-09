@@ -502,7 +502,7 @@ abstract class Module extends \Frontend
 		// Controller attributes
 		$attributes['feModuleId']   = (int) $this->id;
 		$attributes['inColumn']     = $this->inColumn;
-		$attributes['pageId']       = $this->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
+		$attributes['pageId']       = !$this->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
 		$attributes['varyHeaders']  = array_unique(
 			array_filter(explode(',', $this->esi_vary_headers))
 		);
