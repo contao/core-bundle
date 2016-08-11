@@ -951,4 +951,27 @@ class StringUtil
 
 		return $arrFragments;
 	}
+
+
+	/**
+	 * Locale aware UTF-8 to ASCII string transliteration
+	 *
+	 * @param string       $strString
+	 * @param array|string $varLocale
+	 *
+	 * @return string
+	 */
+	public static function toAscii($strString, $varLocale)
+	{
+		$locale = setlocale(LC_ALL, $varLocale);
+		$strString = Utf8::toAscii($strString);
+
+		// Reset the locale
+		if ($locale)
+		{
+			setlocale(LC_ALL, $locale);
+		}
+
+		return $strString;
+	}
 }
