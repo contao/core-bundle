@@ -712,10 +712,8 @@ class Theme extends \Backend
 		}
 
 		// Romanize the name
-		$strName = Utf8::toAscii($objTheme->name);
-		$strName = strtolower(str_replace(' ', '_', $strName));
-		$strName = preg_replace('/[^A-Za-z0-9._-]/', '', $strName);
-		$strName = basename($strName);
+		$strName = \System::getContainer()->get('contao.slugify')->slugify($objTheme->name);
+		$strName = str_replace(array('-/', '/-', '.-', '.'), array('', '', '-', ''), $strName);
 
 		// Create a new XML document
 		$xml = new \DOMDocument('1.0', 'UTF-8');
