@@ -28,6 +28,29 @@ class Slugify implements SlugifyInterface
     /**
      * @var array
      */
+    private $rulesets = [
+        'default',
+        'azerbaijani',
+        'burmese',
+        'hindi',
+        'georgian',
+        'norwegian',
+        'vietnamese',
+        'ukrainian',
+        'latvian',
+        'finnish',
+        'greek',
+        'czech',
+        'arabic',
+        'turkish',
+        'polish',
+        'german',
+        'russian',
+    ];
+
+    /**
+     * @var array
+     */
     private $mapper = [
         'ar' => 'arabic',
         'de_AT' => 'austrian',
@@ -65,12 +88,18 @@ class Slugify implements SlugifyInterface
     /**
      * {@inheritdoc}
      */
-    public function slugify($string, $language)
+    public function slugify($string, $language = null)
     {
-        $ruleset = $this->getRulesetForLanguage($language);
+        if (null === $language) {
+            foreach ($this->rulesets as $ruleset) {
+                $this->slugify->activateRuleSet($ruleset);
+            }
+        } else {
+            $ruleset = $this->getRulesetForLanguage($language);
 
-        if (null !== $ruleset) {
-            $this->slugify->activateRuleSet($ruleset);
+            if (null !== $ruleset) {
+                $this->slugify->activateRuleSet($ruleset);
+            }
         }
 
         return $this->slugify->slugify($string);
@@ -81,6 +110,10 @@ class Slugify implements SlugifyInterface
      */
     public function getRulesetForLanguage($language)
     {
+        if (null === $language) {
+            return null;
+        }
+
         if (isset($this->mapper[$language])) {
             return $this->mapper[$language];
         }

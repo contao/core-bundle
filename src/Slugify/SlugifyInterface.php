@@ -21,12 +21,12 @@ interface SlugifyInterface
     /**
      * Returns an URL safe version of a string.
      *
-     * @param string $string
-     * @param string $language
+     * @param string      $string
+     * @param string|null $language
      *
      * @return string
      */
-    public function slugify($string, $language);
+    public function slugify($string, $language = null);
 
     /**
      * Returns the Slugify ruleset for a language.
