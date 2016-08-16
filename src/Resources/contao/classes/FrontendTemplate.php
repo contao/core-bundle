@@ -337,7 +337,6 @@ class FrontendTemplate extends \Template
 			return;
 		}
 
-		// The client cache is always depending on the admin settings
 		if ($objPage->clientCache > 0) {
 			$response->setMaxAge($objPage->clientCache);
 		}

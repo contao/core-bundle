@@ -655,8 +655,9 @@ abstract class Frontend extends \Controller
 	 * @return Response|null
 	 *
 	 * @deprecated This method will always return null and does not have any effect
-	 *             anymore. Caching is achieved using the powerful Symfony reverse
-	 *             proxy. Will be removed in Contao 5.0.
+	 *             anymore. Caching is achieved using proper caching headers on
+     *             the response which can be handled by any reverse proxy.
+	 *             Will be removed in Contao 5.0.
 	 */
 	public static function getResponseFromCache()
 	{
