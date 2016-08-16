@@ -46,18 +46,14 @@ final class EsiController extends Controller
     {
         $this->framework->initialize();
 
-        try {
-            $result = $this->framework->createInstance('Contao\InsertTags')
-                ->replace($insertTag, false);
-            $response = new Response($result);
-            
-            // Never cache non cacheable insert tags
-            $response->setPrivate();
+        $result = $this->framework->createInstance('Contao\InsertTags')
+            ->replace($insertTag, false);
 
-        } catch (ResponseException $e) {
-            $response = $e->getResponse();
-        }
+        $response = new Response($result);
 
+        // Never cache non cacheable insert tags
+        $response->setPrivate();
+        
         return $response;
     }
 
@@ -89,14 +85,10 @@ final class EsiController extends Controller
             }
         }
 
-        try {
-            $result = $this->framework->getAdapter('Contao\Controller')
+        $result = $this->framework->getAdapter('Contao\Controller')
                 ->getFrontendModule((int) $feModuleId, (string) $inColumn, true);
-            $response = new Response($result);
 
-        } catch (ResponseException $e) {
-            $response = $e->getResponse();
-        }
+        $response = new Response($result);
 
         // Never cache on front end preview
         if (true === BE_USER_LOGGED_IN) {
