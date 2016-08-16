@@ -507,30 +507,8 @@ abstract class Module extends \Frontend
 			array_filter(explode(',', $this->esi_vary_headers))
 		);
 		$attributes['sharedMaxAge'] = (int) $this->esi_shared_max_age;
-		$attributes['cacheKey']     = $this->getEsiCacheKey();
 
 		return $attributes;
-	}
-
-
-	/**
-	 * Prepares our own custom ESI cache key.
-	 * By default this does only consider the TL_VIEW cookie so that the cache
-	 * differs for the regular page layout and the mobile layout.
-	 *
-	 * Override this in your own front end module to force individual caches
-	 * by other criteria.
-	 * If you want to vary by a certain HTTP header, you should rather override
-	 * the "varyHeaders" array key in getEsiAttributes().
-	 *
-	 * @return string
-	 */
-	protected function getEsiCacheKey()
-	{
-		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
-		return md5($request->cookies->get('TL_VIEW', 'desktop'));
 	}
 
 
