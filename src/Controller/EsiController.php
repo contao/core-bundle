@@ -53,7 +53,7 @@ final class EsiController extends Controller
 
         // Never cache non cacheable insert tags
         $response->setPrivate();
-        
+
         return $response;
     }
 
