@@ -14,7 +14,8 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Adds the composer packages and versions to the container.
+ * Makes sure the fragment path is ignored in the search index request listener
+ * if configured.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
