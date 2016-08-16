@@ -530,7 +530,7 @@ abstract class Module extends \Frontend
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		return md5($request->cookies->get('TL_VIEW'));
+		return md5($request->cookies->get('TL_VIEW', 'desktop'));
 	}
 
 
