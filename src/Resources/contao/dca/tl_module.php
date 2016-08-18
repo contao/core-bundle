@@ -133,7 +133,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		'protected'                   => 'groups',
 		'reg_assignDir'               => 'reg_homeDir',
 		'reg_activate'                => 'reg_jumpTo,reg_text',
-		'esi_enable'                  => 'esi_shared_max_age,esi_ignore_page_info,esi_query_params_to_keep,esi_vary_headers'
+		'esi_enable'                  => 'esi_shared_max_age'
 	),
 
 	// Fields
@@ -771,30 +771,6 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 				\System::loadLanguageFile('tl_page');
 			}],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'esi_ignore_page_info' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['esi_ignore_page_info'],
-			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
-			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'esi_query_params_to_keep' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['esi_query_params_to_keep'],
-			'exclude'                 => true,
-			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'clr long', 'maxlength'=>255),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'esi_vary_headers' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['esi_vary_headers'],
-			'exclude'                 => true,
-			'inputType'               => 'text',
-			'eval'                    => array('tl_class'=>'clr long', 'maxlength'=>255),
-			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 	)
 );

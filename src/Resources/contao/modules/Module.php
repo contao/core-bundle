@@ -498,17 +498,28 @@ abstract class Module extends \Frontend
 	protected function getEsiAttributes()
 	{
 		$attributes = [];
+		global $objPage;
 
 		// Controller attributes
 		$attributes['feModuleId']   = (int) $this->id;
 		$attributes['inColumn']     = $this->inColumn;
-		$attributes['pageId']       = !$this->esi_ignore_page_info ? $GLOBALS['objPage']->id : 0;
-		$attributes['varyHeaders']  = array_unique(
-			array_filter(explode(',', $this->esi_vary_headers))
-		);
+		$attributes['pageId']       = $this->needsCurrentPageObjectInEsiRequest() ? $objPage->id : 0;
+		$attributes['varyHeaders']  = []; // Override this in your child class if needed
 		$attributes['sharedMaxAge'] = (int) $this->esi_shared_max_age;
 
 		return $attributes;
+	}
+
+
+	/**
+	 * Return true in your child class if your module supports being rendered
+	 * as ESI and needs the global $objPage to be present.
+	 *
+	 * @return bool
+	 */
+	protected function needsCurrentPageObjectInEsiRequest()
+	{
+		return false;
 	}
 
 
