@@ -203,4 +203,27 @@ class ModuleLogin extends \Module
 		$this->Template->autologin = ($this->autologin && \Config::get('autologin') > 0);
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];
 	}
+
+	/**
+	 * Always render the login module as esi tag.
+	 *
+	 * @return bool
+	 */
+	public function shouldRenderEsi()
+	{
+		return true;
+	}
+
+	/**
+	 * Make sure, this module is never cached.
+	 *
+	 * @return array
+	 */
+	protected function getEsiAttributes()
+	{
+		$attributes = parent::getEsiAttributes();
+		$attributes['sharedMaxAge'] = 0;
+
+		return $attributes;
+	}
 }
