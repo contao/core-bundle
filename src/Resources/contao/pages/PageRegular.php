@@ -30,7 +30,7 @@ class PageRegular extends \Frontend
 	 */
 	public function generate($objPage, $blnCheckRequest=false)
 	{
-		$this->prepare($objPage);
+		$this->preparePage($objPage, true);
 
 		$this->Template->output($blnCheckRequest);
 	}
@@ -46,20 +46,19 @@ class PageRegular extends \Frontend
 	 */
 	public function getResponse($objPage, $blnCheckRequest=false)
 	{
-		$this->prepare($objPage);
+		$this->preparePage($objPage, true);
 
 		return $this->Template->getResponse($blnCheckRequest);
 	}
 
 
 	/**
-	 * Generate a regular page
+	 * Prepare the page for a regular page
 	 *
-	 * @param PageModel $objPage
-	 *
-	 * @internal Do not call this method in your code. It will be made private in Contao 5.0.
+	 * @param PageModel|\PageModel $objPage PageModel with details
+	 * @param bool                 $createTemplate
 	 */
-	protected function prepare($objPage)
+	public function preparePage(\PageModel $objPage, $createTemplate = false)
 	{
 		$GLOBALS['TL_KEYWORDS'] = '';
 		$GLOBALS['TL_LANGUAGE'] = $objPage->language;
@@ -101,8 +100,45 @@ class PageRegular extends \Frontend
 		$objPage->outputFormat = $strFormat;
 		$objPage->outputVariant = $strVariant;
 
-		// Initialize the template
-		$this->createTemplate($objPage, $objLayout);
+		if (true === $createTemplate) {
+			// Initialize the template
+			$this->createTemplate($objPage, $objLayout);
+			$this->addSectionsToTemplate($objLayout);
+		}
+
+		// HOOK: modify the page or layout object
+		if (isset($GLOBALS['TL_HOOKS']['generatePage']) && is_array($GLOBALS['TL_HOOKS']['generatePage']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['generatePage'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->{$callback[0]}->{$callback[1]}($objPage, $objLayout, $this);
+			}
+		}
+
+		// Fall back to the default title tag
+		if ($objLayout->titleTag == '')
+		{
+			$objLayout->titleTag = '{{page::pageTitle}} - {{page::rootPageTitle}}';
+		}
+
+		if (true === $createTemplate) {
+			// Initialize the template
+			$this->handleTitlesAndDescription($objPage, $objLayout);
+
+			// Execute AFTER the modules have been generated and create footer scripts first
+			$this->createFooterScripts($objLayout);
+			$this->createHeaderScripts($objPage, $objLayout);
+		}
+	}
+
+	/**
+	 * Adds the sections to the template.
+	 *
+	 * @param $objLayout
+	 */
+	protected function addSectionsToTemplate($objLayout)
+	{
 
 		// Initialize modules and sections
 		$arrCustomSections = array();
@@ -181,23 +217,17 @@ class PageRegular extends \Frontend
 		}
 
 		$this->Template->sections = $arrCustomSections;
+	}
 
-		// Mark RTL languages (see #7171)
-		if ($GLOBALS['TL_LANG']['MSC']['textDirection'] == 'rtl')
-		{
-			$this->Template->isRTL = true;
-		}
 
-		// HOOK: modify the page or layout object
-		if (isset($GLOBALS['TL_HOOKS']['generatePage']) && is_array($GLOBALS['TL_HOOKS']['generatePage']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['generatePage'] as $callback)
-			{
-				$this->import($callback[0]);
-				$this->{$callback[0]}->{$callback[1]}($objPage, $objLayout, $this);
-			}
-		}
-
+	/**
+	 * Adds page titles and description to the template.
+	 *
+	 * @param $objPage
+	 * @param $objLayout
+	 */
+	protected function handleTitlesAndDescription($objPage, $objLayout)
+	{
 		// Set the page title and description AFTER the modules have been generated
 		$this->Template->mainTitle = $objPage->rootPageTitle;
 		$this->Template->pageTitle = $objPage->pageTitle ?: $objPage->title;
@@ -209,12 +239,6 @@ class PageRegular extends \Frontend
 		$this->Template->mainTitle = str_replace('[-]', '', $this->Template->mainTitle);
 		$this->Template->pageTitle = str_replace('[-]', '', $this->Template->pageTitle);
 
-		// Fall back to the default title tag
-		if ($objLayout->titleTag == '')
-		{
-			$objLayout->titleTag = '{{page::pageTitle}} - {{page::rootPageTitle}}';
-		}
-
 		// Assign the title and description
 		$this->Template->title = \StringUtil::stripInsertTags($this->replaceInsertTags($objLayout->titleTag)); // see #7097
 		$this->Template->description = str_replace(array("\n", "\r", '"'), array(' ' , '', ''), $objPage->description);
@@ -222,10 +246,6 @@ class PageRegular extends \Frontend
 		// Body onload and body classes
 		$this->Template->onload = trim($objLayout->onload);
 		$this->Template->class = trim($objLayout->cssClass . ' ' . $objPage->cssClass);
-
-		// Execute AFTER the modules have been generated and create footer scripts first
-		$this->createFooterScripts($objLayout);
-		$this->createHeaderScripts($objPage, $objLayout);
 	}
 
 
@@ -475,6 +495,12 @@ class PageRegular extends \Frontend
 		$this->Template->charset = \Config::get('characterSet');
 		$this->Template->base = \Environment::get('base');
 		$this->Template->isRTL = false;
+
+		// Mark RTL languages (see #7171)
+		if ($GLOBALS['TL_LANG']['MSC']['textDirection'] == 'rtl')
+		{
+			$this->Template->isRTL = true;
+		}
 	}
 
 

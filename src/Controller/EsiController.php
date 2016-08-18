@@ -80,7 +80,20 @@ final class EsiController extends Controller
             $page = $this->framework->getAdapter('Contao\PageModel')
                         ->findWithDetails((int) $pageId);
 
-            if (null !== $page) {
+            // Check if the page type supports adding more information to
+            // the page object
+            if (null !== $page
+                && isset($GLOBALS['TL_PTY'][$page->type])
+                && class_exists($GLOBALS['TL_PTY'][$page->type])) {
+                $pageType = new $GLOBALS['TL_PTY'][$page->type]();
+
+                // We're not using interfaces here because we want to eventually
+                // turn page types into proper services too. This is when we'll
+                // implement interfaces.
+                if (method_exists($pageType, 'preparePage')) {
+                    $pageType->preparePage($page);
+                }
+
                 $GLOBALS['objPage'] = $page;
             }
         }
