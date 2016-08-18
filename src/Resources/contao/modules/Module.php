@@ -468,7 +468,7 @@ abstract class Module extends \Frontend
 	 *
 	 * @return bool
 	 */
-	public function supportsEsi()
+	public function shouldRenderEsi()
 	{
 		return false;
 	}

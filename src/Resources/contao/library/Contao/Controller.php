@@ -323,7 +323,7 @@ abstract class Controller extends \System
 			$objModule = new $strClass($objRow, $strColumn);
 
 			// ESI support
-			if (!$blnIgnoreEsi && $objRow->esi_enable && $objModule->supportsEsi())
+			if (!$blnIgnoreEsi && $objModule->shouldRenderEsi())
 			{
 				return $objModule->renderEsi();
 			}
