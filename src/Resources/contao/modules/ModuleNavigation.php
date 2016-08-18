@@ -107,6 +107,7 @@ class ModuleNavigation extends \Module
 	 */
 	public function shouldRenderEsi()
 	{
+		// TODO: What about the front end user instance?
 		return (bool) $this->esi_enable;
 	}
 
