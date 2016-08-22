@@ -75,10 +75,12 @@ class RequestToken
 			return true;
 		}
 
+		$container = \System::getContainer();
+
 		// Check against the whitelist (thanks to Tristan Lins) (see #3164)
 		if (\Config::get('requestTokenWhitelist'))
 		{
-			$strHostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$strHostname = gethostbyaddr($container->get('request_stack')->getCurrentRequest()->getClientIp());
 
 			foreach (\Config::get('requestTokenWhitelist') as $strDomain)
 			{
@@ -88,8 +90,6 @@ class RequestToken
 				}
 			}
 		}
-
-		$container = \System::getContainer();
 
 		return $container->get('security.csrf.token_manager')->isTokenValid(new CsrfToken($container->getParameter('contao.csrf_token_name'), $strToken));
 	}
