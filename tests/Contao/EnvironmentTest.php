@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\Test\Contao;
 
 use Contao\CoreBundle\Test\TestCase;
 use Contao\Environment;
-use Contao\System;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests the Environment class.
@@ -51,6 +51,7 @@ class EnvironmentTest extends TestCase
         $this->setSapi('apache');
 
         $_SERVER = [
+            'REMOTE_ADDR' => '213.213.213.0',
             'SERVER_PORT' => 80,
             'HTTP_HOST' => 'localhost',
             'HTTP_CONNECTION' => 'keep-alive',
@@ -58,7 +59,7 @@ class EnvironmentTest extends TestCase
             'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.149 Safari/537.36',
             'HTTP_ACCEPT_ENCODING' => 'gzip,deflate,sdch',
             'HTTP_ACCEPT_LANGUAGE' => 'de-DE,de;q=0.8,en-GB;q=0.6,en;q=0.4',
-            'HTTP_X_FORWARDED_FOR' => '123.456.789.0',
+            'HTTP_X_FORWARDED_FOR' => '123.123.123.0',
             'SERVER_NAME' => 'localhost',
             'SERVER_ADDR' => '127.0.0.1',
             'DOCUMENT_ROOT' => $this->getRootDir(),
@@ -81,6 +82,7 @@ class EnvironmentTest extends TestCase
         $this->setSapi('cgi_fcgi');
 
         $_SERVER = [
+            'REMOTE_ADDR' => '213.213.213.0',
             'SERVER_PORT' => 80,
             'HTTP_HOST' => 'localhost',
             'HTTP_CONNECTION' => 'close',
@@ -88,7 +90,7 @@ class EnvironmentTest extends TestCase
             'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.149 Safari/537.36',
             'HTTP_ACCEPT_ENCODING' => 'gzip,deflate,sdch',
             'HTTP_ACCEPT_LANGUAGE' => 'de-DE,de;q=0.8,en-GB;q=0.6,en;q=0.4',
-            'HTTP_X_FORWARDED_FOR' => '123.456.789.0',
+            'HTTP_X_FORWARDED_FOR' => '123.123.123.0',
             'SERVER_NAME' => 'localhost',
             'SERVER_ADDR' => '127.0.0.1',
             'DOCUMENT_ROOT' => $this->getRootDir(),
@@ -115,6 +117,7 @@ class EnvironmentTest extends TestCase
         $this->setSapi('fpm_fcgi');
 
         $_SERVER = [
+            'REMOTE_ADDR' => '213.213.213.0',
             'SERVER_PORT' => 80,
             'HTTP_HOST' => 'localhost',
             'HTTP_CONNECTION' => 'close',
@@ -122,7 +125,7 @@ class EnvironmentTest extends TestCase
             'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.149 Safari/537.36',
             'HTTP_ACCEPT_ENCODING' => 'gzip,deflate,sdch',
             'HTTP_ACCEPT_LANGUAGE' => 'de-DE,de;q=0.8,en-GB;q=0.6,en;q=0.4',
-            'HTTP_X_FORWARDED_FOR' => '123.456.789.0',
+            'HTTP_X_FORWARDED_FOR' => '123.123.123.0',
             'SERVER_NAME' => 'localhost',
             'SERVER_ADDR' => '127.0.0.1',
             'DOCUMENT_ROOT' => $this->getRootDir(),
@@ -144,8 +147,9 @@ class EnvironmentTest extends TestCase
      */
     protected function runTests()
     {
-        // Environment::get('ip') needs the request stack
-        System::setContainer($this->mockContainerWithContaoScopes());
+        Environment::setRequest(Request::createFromGlobals());
+        Request::setTrustedProxies(['213.213.213.0']);
+        $_SERVER = [];
 
         $agent = Environment::get('agent');
 
@@ -167,18 +171,26 @@ class EnvironmentTest extends TestCase
         $this->assertEquals(['gzip', 'deflate', 'sdch'], Environment::get('httpAcceptEncoding'));
         $this->assertEquals('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.149 Safari/537.36', Environment::get('httpUserAgent'));
         $this->assertEquals('localhost', Environment::get('httpHost'));
-        $this->assertEmpty(Environment::get('httpXForwardedHost'));
+        $this->assertEquals('123.123.123.0', Environment::get('httpXForwardedHost'));
 
         $this->assertFalse(Environment::get('ssl'));
         $this->assertEquals('http://localhost', Environment::get('url'));
         $this->assertEquals('http://localhost/core/en/academy.html?do=test', Environment::get('uri'));
-        $this->assertEquals('123.456.789.0', Environment::get('ip'));
+        $this->assertEquals('123.123.123.0', Environment::get('ip'));
         $this->assertEquals('127.0.0.1', Environment::get('server'));
         $this->assertEquals('index.php', Environment::get('script'));
         $this->assertEquals('en/academy.html?do=test', Environment::get('request'));
         $this->assertEquals('en/academy.html?do=test', Environment::get('indexFreeRequest'));
         $this->assertEquals('http://localhost'.Environment::get('path').'/', Environment::get('base'));
         $this->assertFalse(Environment::get('isAjaxRequest'));
+    }
+
+    public function testAjaxRequest()
+    {
+        $_SERVER = [];
+        Environment::setRequest(new Request([], [], [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']));
+
+        $this->assertTrue(Environment::get('isAjaxRequest'));
     }
 
     /**

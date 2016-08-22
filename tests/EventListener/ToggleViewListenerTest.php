@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Test\EventListener;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\Test\TestCase;
+use Contao\Environment;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +39,8 @@ class ToggleViewListenerTest extends TestCase
     public static function setUpBeforeClass()
     {
         $_SERVER['HTTP_HOST'] = 'localhost';
+        Environment::setRequest(Request::createFromGlobals());
+        $_SERVER = [];
     }
 
     /**
