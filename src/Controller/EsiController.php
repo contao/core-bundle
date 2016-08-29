@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Controller;
 
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\InsertTags;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -100,6 +101,11 @@ final class EsiController extends Controller
 
         $result = $this->framework->getAdapter('Contao\Controller')
                 ->getFrontendModule((int) $feModuleId, (string) $inColumn, true);
+
+        // FIXME: Should this be a response listener? Feels wrong to call it here
+        /** @var InsertTags $insertTags */
+        $insertTags = $this->framework->createInstance('Contao\InsertTags');
+        $result = $insertTags->replace($result, true);
 
         $response = new Response($result);
 
