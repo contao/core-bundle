@@ -32,6 +32,15 @@
 # Do not change the priorities unless you know what you are doing!
 ##
 services:
+    contao.listener.add_member_cache_headers:
+        class: Contao\CoreBundle\EventListener\AddMemberCacheHeadersListener
+        arguments:
+            - "@contao.framework"
+            - "@security.token_storage"
+            - "%secret%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
     contao.listener.add_to_search_index:
         class: Contao\CoreBundle\EventListener\AddToSearchIndexListener
         arguments:

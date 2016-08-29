@@ -228,7 +228,6 @@ class ModuleCustomnav extends \Module
 	 */
 	public function shouldRenderEsi()
 	{
-		// TODO: What about the front end user instance?
 		return (bool) $this->esi_enable;
 	}
 
@@ -237,6 +236,15 @@ class ModuleCustomnav extends \Module
 	 * {@inheritdoc}
 	 */
 	public function needsCurrentPageObjectInEsiRequest()
+	{
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function cacheIndividuallyForEveryMemberGroup()
 	{
 		return true;
 	}

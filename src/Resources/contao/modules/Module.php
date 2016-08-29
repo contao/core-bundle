@@ -504,8 +504,18 @@ abstract class Module extends \Frontend
 		$attributes['feModuleId']   = (int) $this->id;
 		$attributes['inColumn']     = $this->inColumn;
 		$attributes['pageId']       = $this->needsCurrentPageObjectInEsiRequest() ? $objPage->id : 0;
-		$attributes['varyHeaders']  = []; // Override this in your child class if needed
+		$attributes['varyHeaders']  = [];
 		$attributes['sharedMaxAge'] = (int) $this->esi_shared_max_age;
+
+		// Cache entries for members
+		if ($this->cacheIndividuallyForEveryMember()) {
+			$attributes['varyHeaders'][] = 'Contao-Member-Context-Hash';
+		}
+
+		// Cache entries for member groups
+		if ($this->cacheIndividuallyForEveryMemberGroup()) {
+			$attributes['varyHeaders'][] = 'Contao-MemberGroup-Context-Hash';
+		}
 
 		return $attributes;
 	}
@@ -518,6 +528,36 @@ abstract class Module extends \Frontend
 	 * @return bool
 	 */
 	protected function needsCurrentPageObjectInEsiRequest()
+	{
+		return false;
+	}
+
+
+	/**
+	 * Return true in your child class if your module needs to have a different
+	 * cache entry per single logged in front end user (member). Note that this
+	 * will create a single cache entry for every single member. You should
+	 * choose wisely whether you want to cache a module that is different for
+	 * every front end member at all.
+	 *
+	 * @return bool
+	 */
+	protected function cacheIndividuallyForEveryMember()
+	{
+		return false;
+	}
+
+
+	/**
+	 * Return true in your child class if your module needs to have a different
+	 * cache entry per member group settings. Note that this will create a
+	 * different cache entry for every member group combination. E.g. members
+	 * of group id's 1,2 and 3 will get a different cache file than members of
+	 * group id's 1 and 3 only. Don't worry, "1,2,3" is the same as "2,3,1".
+	 *
+	 * @return bool
+	 */
+	protected function cacheIndividuallyForEveryMemberGroup()
 	{
 		return false;
 	}
