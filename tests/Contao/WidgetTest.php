@@ -10,7 +10,9 @@
 
 namespace Contao\CoreBundle\Test\Contao;
 
+use Contao\CoreBundle\Request\ValueAdapter;
 use Contao\Input;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests the Widget class.
@@ -55,9 +57,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
 
         $method->setAccessible(true);
 
-        $_POST[$input] = $value;
-        Input::resetCache();
-        Input::initialize();
+        Input::setValueAdapter(new ValueAdapter(new Request([], [$input => $value])));
 
         $this->assertEquals($expected, $method->invoke($widget, $key));
 

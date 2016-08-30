@@ -38,7 +38,7 @@ services:
             - "@contao.framework"
             - "%fragment.path%"
         tags:
-            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     contao.listener.bypass_maintenance:
         class: Contao\CoreBundle\EventListener\BypassMaintenanceListener

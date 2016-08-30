@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Frontend;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
  * Adds a page to the search index after the response has been sent.
@@ -48,9 +48,9 @@ class AddToSearchIndexListener
     /**
      * Forwards the request to the Frontend class if there is a page object.
      *
-     * @param PostResponseEvent $event
+     * @param FilterResponseEvent $event
      */
-    public function onKernelTerminate(PostResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event)
     {
         if (!$this->framework->isInitialized()) {
             return;
