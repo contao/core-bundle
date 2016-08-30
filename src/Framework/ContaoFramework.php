@@ -295,7 +295,6 @@ class ContaoFramework implements ContaoFrameworkInterface
 
         $this->validateInstallation();
 
-        Input::initialize();
         TemplateLoader::initialize();
 
         $this->setTimezone();
