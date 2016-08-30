@@ -22,15 +22,32 @@ use Symfony\Component\HttpFoundation\Request;
 class EnvironmentTest extends TestCase
 {
     /**
+     * @var array
+     */
+    private static $server;
+
+    /**
      * {@inheritdoc}
      */
     public static function setupBeforeClass()
     {
+        parent::setUpBeforeClass();
+        self::$server = $_SERVER;
+
         Environment::reset();
         Environment::set('path', '/core');
 
         require __DIR__.'/../../src/Resources/contao/config/default.php';
         require __DIR__.'/../../src/Resources/contao/config/agents.php';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tearDownAfterClass()
+    {
+        $_SERVER = self::$server;
+        parent::tearDownAfterClass();
     }
 
     /**
