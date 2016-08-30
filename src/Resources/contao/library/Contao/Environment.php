@@ -54,7 +54,7 @@ class Environment
 	protected static $arrCache = array();
 
 	/**
-	 * Gateway function used by Contao3RequestSynchronizingListener to push the current (sub-)request.
+	 * Gateway function used by LegacyRequestValueSynchronizingListener to push the current (sub-)request.
 	 *
 	 * @param Request $objRequest The request.
 	 */
