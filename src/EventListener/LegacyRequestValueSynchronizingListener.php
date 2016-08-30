@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
  *             Use the request or request stack instead.
  */
-class LegacyRequestValueSynchronizingListener implements EventSubscriberInterface
+class LegacyRequestValueSynchronizingListener
 {
     /**
      * @var RequestStack
@@ -41,17 +41,6 @@ class LegacyRequestValueSynchronizingListener implements EventSubscriberInterfac
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::REQUEST => array('startRequest', 10),
-            KernelEvents::FINISH_REQUEST => array('finishRequest', -10)
-        ];
     }
 
     /**

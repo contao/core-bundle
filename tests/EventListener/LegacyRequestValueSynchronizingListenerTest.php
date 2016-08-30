@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Test\EventListener;
 use Contao\CoreBundle\EventListener\LegacyRequestValueSynchronizingListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Tests the LegacyRequestValueSynchronizingListener class.
@@ -22,17 +21,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class LegacyRequestValueSynchronizingListenerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Test that the getSubscribedEvents() method subscribes to all desired events.
-     */
-    public function testSubscribesToAllEvents()
-    {
-        $this->assertEquals(
-            [KernelEvents::REQUEST, KernelEvents::FINISH_REQUEST],
-            array_keys(LegacyRequestValueSynchronizingListener::getSubscribedEvents())
-        );
-    }
-
     /**
      * Test that the request is handled correctly.
      */
