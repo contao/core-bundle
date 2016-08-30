@@ -10,8 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Request\ValueAdapter;
 use Patchwork\Utf8;
-
 
 /**
  * Safely read the user input
@@ -29,10 +29,13 @@ use Patchwork\Utf8;
  *     }
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
+ *             You should not use this class anymore but use the request or request stack directly.
+ *             From Contao 5.0 on developers must validate input on their own as trying to "fix it" is wrong.
  */
 class Input
 {
-
 	/**
 	 * Object instance (Singleton)
 	 * @var Input
@@ -40,32 +43,36 @@ class Input
 	protected static $objInstance;
 
 	/**
-	 * Cache
-	 * @var array
+	 * @var ValueAdapter
 	 */
-	protected static $arrCache = array();
+	private static $objValueAdapter;
 
 	/**
-	 * Unused $_GET parameters
-	 * @var array
+	 * Gateway function used by LegacyRequestValueSynchronizingListener to push the current (sub-)request.
+	 *
+	 * @param ValueAdapter $objValueAdapter The request value adapter.
 	 */
-	protected static $arrUnusedGet = array();
-
-	/**
-	 * Magic quotes setting
-	 * @var boolean
-	 */
-	protected static $blnMagicQuotes = false;
-
+	public static function setValueAdapter(ValueAdapter $objValueAdapter = null)
+	{
+		self::$objValueAdapter = $objValueAdapter;
+		if ($objValueAdapter)
+		{
+			$objValueAdapter->exportGlobals();
+		}
+	}
 
 	/**
 	 * Clean the global GPC arrays
+	 *
+	 * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
+	 *             This is only for legacy reasons to keep the ABI - LegacyRequestValueSynchronizingListener takes care of
+	 *             tracking the requests now.
 	 */
 	public static function initialize()
 	{
-		$_GET    = static::cleanKey($_GET);
-		$_POST   = static::cleanKey($_POST);
-		$_COOKIE = static::cleanKey($_COOKIE);
+		// No op since Contao 4.3 - to be removed in Contao 5.
+		@trigger_error('Input::initialize() is not needed anymore!', E_USER_DEPRECATED);
+		self::setValueAdapter(new ValueAdapter(\Symfony\Component\HttpFoundation\Request::createFromGlobals()));
 	}
 
 
@@ -80,16 +87,16 @@ class Input
 	 */
 	public static function get($strKey, $blnDecodeEntities=false, $blnKeepUnused=false)
 	{
-		if (!isset($_GET[$strKey]))
+		if (!(isset(self::$objValueAdapter) && self::$objValueAdapter->filtered->query->has($strKey)))
 		{
 			return null;
 		}
 
 		$strCacheKey = $blnDecodeEntities ? 'getDecoded' : 'getEncoded';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
-			$varValue = $_GET[$strKey];
+			$varValue = self::$objValueAdapter->filtered->query->get($strKey);
 
 			$varValue = static::decodeEntities($varValue);
 			$varValue = static::xssClean($varValue, true);
@@ -102,16 +109,16 @@ class Input
 
 			$varValue = static::encodeInsertTags($varValue);
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
 		// Mark the parameter as used (see #4277)
 		if (!$blnKeepUnused)
 		{
-			unset(static::$arrUnusedGet[$strKey]);
+			self::$objValueAdapter->setUsed($strKey);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -125,9 +132,14 @@ class Input
 	 */
 	public static function post($strKey, $blnDecodeEntities=false)
 	{
+		if (!isset(self::$objValueAdapter))
+		{
+			return null;
+		}
+
 		$strCacheKey = $blnDecodeEntities ? 'postDecoded' : 'postEncoded';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
 			$varValue = static::findPost($strKey);
 
@@ -150,10 +162,10 @@ class Input
 				$varValue = static::encodeInsertTags($varValue);
 			}
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -167,9 +179,14 @@ class Input
 	 */
 	public static function postHtml($strKey, $blnDecodeEntities=false)
 	{
+		if (!isset(self::$objValueAdapter))
+		{
+			return null;
+		}
+
 		$strCacheKey = $blnDecodeEntities ? 'postHtmlDecoded' : 'postHtmlEncoded';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
 			$varValue = static::findPost($strKey);
 
@@ -192,10 +209,10 @@ class Input
 				$varValue = static::encodeInsertTags($varValue);
 			}
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -208,9 +225,14 @@ class Input
 	 */
 	public static function postRaw($strKey)
 	{
+		if (!isset(self::$objValueAdapter))
+		{
+			return null;
+		}
+
 		$strCacheKey = 'postRaw';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
 			$varValue = static::findPost($strKey);
 
@@ -227,10 +249,10 @@ class Input
 				$varValue = static::encodeInsertTags($varValue);
 			}
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -243,9 +265,14 @@ class Input
 	 */
 	public static function postUnsafeRaw($strKey)
 	{
+		if (!isset(self::$objValueAdapter))
+		{
+			return null;
+		}
+
 		$strCacheKey = 'postUnsafeRaw';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
 			$varValue = static::findPost($strKey);
 
@@ -254,10 +281,10 @@ class Input
 				return $varValue;
 			}
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -271,16 +298,21 @@ class Input
 	 */
 	public static function cookie($strKey, $blnDecodeEntities=false)
 	{
-		if (!isset($_COOKIE[$strKey]))
+		if (!isset(self::$objValueAdapter))
+		{
+			return null;
+		}
+
+		if (!self::$objValueAdapter->filtered->cookies->has($strKey))
 		{
 			return null;
 		}
 
 		$strCacheKey = $blnDecodeEntities ? 'cookieDecoded' : 'cookieEncoded';
 
-		if (!isset(static::$arrCache[$strCacheKey][$strKey]))
+		if (!self::$objValueAdapter->hasCached($strCacheKey, $strKey))
 		{
-			$varValue = $_COOKIE[$strKey];
+			$varValue = self::$objValueAdapter->filtered->cookies->get($strKey);
 
 			$varValue = static::decodeEntities($varValue);
 			$varValue = static::xssClean($varValue, true);
@@ -293,10 +325,10 @@ class Input
 
 			$varValue = static::encodeInsertTags($varValue);
 
-			static::$arrCache[$strCacheKey][$strKey] = $varValue;
+			self::$objValueAdapter->setCached($strCacheKey, $strKey, $varValue);
 		}
 
-		return static::$arrCache[$strCacheKey][$strKey];
+		return self::$objValueAdapter->getCached($strCacheKey, $strKey);
 	}
 
 
@@ -314,16 +346,16 @@ class Input
 
 		$strKey = static::cleanKey($strKey);
 
-		unset(static::$arrCache['getEncoded'][$strKey]);
-		unset(static::$arrCache['getDecoded'][$strKey]);
+		self::$objValueAdapter->removeCached('getEncoded', $strKey);
+		self::$objValueAdapter->removeCached('getDecoded', $strKey);
 
 		if ($varValue === null)
 		{
-			unset($_GET[$strKey]);
+			self::$objValueAdapter->filtered->query->remove($strKey);
 		}
 		else
 		{
-			$_GET[$strKey] = $varValue;
+			self::$objValueAdapter->filtered->query->set($strKey, $varValue);
 
 			if ($blnAddUnused)
 			{
@@ -343,20 +375,20 @@ class Input
 	{
 		$strKey = static::cleanKey($strKey);
 
-		unset(static::$arrCache['postEncoded'][$strKey]);
-		unset(static::$arrCache['postDecoded'][$strKey]);
-		unset(static::$arrCache['postHtmlEncoded'][$strKey]);
-		unset(static::$arrCache['postHtmlDecoded'][$strKey]);
-		unset(static::$arrCache['postRaw'][$strKey]);
-		unset(static::$arrCache['postUnsafeRaw'][$strKey]);
+		self::$objValueAdapter->removeCached('postEncoded', $strKey);
+		self::$objValueAdapter->removeCached('postDecoded', $strKey);
+		self::$objValueAdapter->removeCached('postHtmlEncoded', $strKey);
+		self::$objValueAdapter->removeCached('postHtmlDecoded', $strKey);
+		self::$objValueAdapter->removeCached('postRaw', $strKey);
+		self::$objValueAdapter->removeCached('postUnsafeRaw', $strKey);
 
 		if ($varValue === null)
 		{
-			unset($_POST[$strKey]);
+			self::$objValueAdapter->filtered->request->remove($strKey);
 		}
 		else
 		{
-			$_POST[$strKey] = $varValue;
+			self::$objValueAdapter->filtered->request->set($strKey, $varValue);
 		}
 	}
 
@@ -371,16 +403,16 @@ class Input
 	{
 		$strKey = static::cleanKey($strKey);
 
-		unset(static::$arrCache['cookieEncoded'][$strKey]);
-		unset(static::$arrCache['cookieDecoded'][$strKey]);
+		self::$objValueAdapter->removeCached('cookieEncoded', $strKey);
+		self::$objValueAdapter->removeCached('cookieDecoded', $strKey);
 
 		if ($varValue === null)
 		{
-			unset($_COOKIE[$strKey]);
+			self::$objValueAdapter->filtered->cookies->remove($strKey);
 		}
 		else
 		{
-			$_COOKIE[$strKey] = $varValue;
+			self::$objValueAdapter->filtered->cookies->set($strKey, $varValue);
 		}
 	}
 
@@ -390,7 +422,7 @@ class Input
 	 */
 	public static function resetCache()
 	{
-		static::$arrCache = array();
+		self::$objValueAdapter->clearCache();
 	}
 
 
@@ -401,7 +433,7 @@ class Input
 	 */
 	public static function hasUnusedGet()
 	{
-		return count(static::$arrUnusedGet) > 0;
+		return self::$objValueAdapter->hasUnusedGet();
 	}
 
 
@@ -412,7 +444,7 @@ class Input
 	 */
 	public static function getUnusedGet()
 	{
-		return array_keys(static::$arrUnusedGet);
+		return self::$objValueAdapter->getUnusedGet();
 	}
 
 
@@ -424,7 +456,7 @@ class Input
 	 */
 	public static function setUnusedGet($strKey, $varValue)
 	{
-		static::$arrUnusedGet[$strKey] = $varValue;
+		self::$objValueAdapter->setUsed($strKey, false);
 	}
 
 
@@ -690,7 +722,7 @@ class Input
 
 		// Preserve basic entities
 		$varValue = static::preserveBasicEntities($varValue);
-		$varValue = html_entity_decode($varValue, ENT_QUOTES, \Config::get('characterSet'));
+		$varValue = html_entity_decode($varValue, ENT_QUOTES, Config::get('characterSet'));
 
 		return $varValue;
 	}
@@ -786,11 +818,12 @@ class Input
 	 */
 	public static function findPost($strKey)
 	{
-		if (isset($_POST[$strKey]))
+		if (self::$objValueAdapter->filtered->request->has($strKey))
 		{
-			return $_POST[$strKey];
+			return self::$objValueAdapter->filtered->request->get($strKey);
 		}
 
+		// FIXME: Would need to adapt the session bag here but there is none for global session values. Ignore this?
 		if (isset($_SESSION['FORM_DATA'][$strKey]))
 		{
 			return ($strKey == 'FORM_SUBMIT') ? preg_replace('/^auto_/i', '', $_SESSION['FORM_DATA'][$strKey]) : $_SESSION['FORM_DATA'][$strKey];
@@ -808,7 +841,6 @@ class Input
 	 */
 	protected function __construct()
 	{
-		static::initialize();
 	}
 
 
