@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @internal
  */
-class ValueAdapter
+final class ValueAdapter
 {
     /**
      * The request instance.
