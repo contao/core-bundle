@@ -37,6 +37,15 @@ final class ContaoCoreEvents
     const IMAGE_SIZES_USER = 'contao.image_sizes_user';
 
     /**
+     * The contao.preflight_request event is triggered when a preflight request is executed.
+     *
+     * @var string
+     *
+     * @see Contao\CoreBundle\Event\PreflightRequestEvent
+     */
+    const PREFLIGHT_REQUEST = 'contao.preflight_request';
+
+    /**
      * The contao.preview_url_create event is triggered when the front end preview URL is generated.
      *
      * @var string

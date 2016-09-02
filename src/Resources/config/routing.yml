@@ -2,6 +2,13 @@ contao:
     resource: "@ContaoCoreBundle/Controller"
     type: annotation
 
+# Caching preflight request
+contao_preflight:
+    path: /contao/preflight
+    defaults:
+        _scope: frontend
+        _controller: "contao.controller.preflight_request:indexAction"
+
 # Redirect /contao/ to /contao
 contao_backend_redirect:
     path: /contao/
