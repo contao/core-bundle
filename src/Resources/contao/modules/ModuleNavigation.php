@@ -101,4 +101,28 @@ class ModuleNavigation extends \Module
 		$this->Template->skipNavigation = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']);
 		$this->Template->items = $this->renderNavigation($trail[$level], 1, $host, $lang);
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function shouldRenderEsi()
+	{
+		return (bool) $this->esi_enable;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function needsCurrentPageObjectInEsiRequest()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function cacheIndividuallyForEveryMemberGroup()
+	{
+		return true;
+	}
 }

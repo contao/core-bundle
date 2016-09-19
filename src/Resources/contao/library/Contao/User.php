@@ -252,6 +252,19 @@ abstract class User extends \System
 
 
 	/**
+	 * Returns an ordered array of group id's the user is assigned to.
+	 *
+	 * @return array
+	 */
+	public function getGroups()
+	{
+		$groups = (array) $this->groups;
+		sort($groups);
+		return $groups;
+	}
+
+
+	/**
 	 * Authenticate a user
 	 *
 	 * @return boolean True if the user could be authenticated

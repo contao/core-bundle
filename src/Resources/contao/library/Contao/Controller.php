@@ -174,12 +174,13 @@ abstract class Controller extends \System
 	/**
 	 * Generate a front end module and return it as string
 	 *
-	 * @param mixed  $intId     A module ID or a Model object
-	 * @param string $strColumn The name of the column
+	 * @param mixed  $intId        A module ID or a Model object
+	 * @param string $strColumn    The name of the column
+	 * @param bool   $blnIgnoreEsi Whether ESI should be ignored
 	 *
 	 * @return string The module HTML markup
 	 */
-	public static function getFrontendModule($intId, $strColumn='main')
+	public static function getFrontendModule($intId, $strColumn='main', $blnIgnoreEsi = false)
 	{
 		if (!is_object($intId) && !strlen($intId))
 		{
@@ -320,6 +321,13 @@ abstract class Controller extends \System
 
 			/** @var Module $objModule */
 			$objModule = new $strClass($objRow, $strColumn);
+
+			// ESI support
+			if (!$blnIgnoreEsi && $objModule->shouldRenderEsi())
+			{
+				return $objModule->renderEsi();
+			}
+
 			$strBuffer = $objModule->generate();
 
 			// HOOK: add custom logic

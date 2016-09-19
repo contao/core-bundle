@@ -221,4 +221,31 @@ class ModuleCustomnav extends \Module
 		$this->Template->skipNavigation = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']);
 		$this->Template->items = !empty($items) ? $objTemplate->parse() : '';
 	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function shouldRenderEsi()
+	{
+		return (bool) $this->esi_enable;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function needsCurrentPageObjectInEsiRequest()
+	{
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function cacheIndividuallyForEveryMemberGroup()
+	{
+		return true;
+	}
 }

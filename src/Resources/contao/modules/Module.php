@@ -9,6 +9,8 @@
  */
 
 namespace Contao;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 
 /**
@@ -455,5 +457,138 @@ abstract class Module extends \Frontend
 		}
 
 		return '';
+	}
+
+
+	/**
+	 * Use this method if you want your front end module to support being
+	 * rendered as ESI. Note that you might likely override/extend the other methods
+	 * getEsiAttributes() and getEsiParams() as well, so you get the information
+	 * you need.
+	 *
+	 * @return bool
+	 */
+	public function shouldRenderEsi()
+	{
+		return false;
+	}
+
+	/**
+	 * Renders the ESI tag for a front end module.
+	 *
+	 * @return string
+	 */
+	public function renderEsi()
+	{
+		$fragmentHandler = \System::getContainer()->get('fragment.handler');
+
+		return $fragmentHandler->render(new ControllerReference(
+			'contao.controller.esi:renderFrontendModule',
+			$this->getEsiAttributes(),
+			$this->getEsiParams()
+		), 'esi');
+	}
+
+
+	/**
+	 * Prepares the ESI controller attributes.
+	 *
+	 * @return array
+	 */
+	protected function getEsiAttributes()
+	{
+		$attributes = [];
+		global $objPage;
+
+		// Controller attributes
+		$attributes['feModuleId']   = (int) $this->id;
+		$attributes['inColumn']     = $this->inColumn;
+		$attributes['pageId']       = $this->needsCurrentPageObjectInEsiRequest() ? $objPage->id : 0;
+		$attributes['varyHeaders']  = [];
+		$attributes['sharedMaxAge'] = (int) $this->esi_shared_max_age;
+
+		// Cache entries for members
+		if ($this->cacheIndividuallyForEveryMember()) {
+			$attributes['varyHeaders'][] = 'Contao-Member-Context-Hash';
+		}
+
+		// Cache entries for member groups
+		if ($this->cacheIndividuallyForEveryMemberGroup()) {
+			$attributes['varyHeaders'][] = 'Contao-MemberGroup-Context-Hash';
+		}
+
+		return $attributes;
+	}
+
+
+	/**
+	 * Return true in your child class if your module supports being rendered
+	 * as ESI and needs the global $objPage to be present.
+	 *
+	 * @return bool
+	 */
+	protected function needsCurrentPageObjectInEsiRequest()
+	{
+		return false;
+	}
+
+
+	/**
+	 * Return true in your child class if your module needs to have a different
+	 * cache entry per single logged in front end user (member). Note that this
+	 * will create a single cache entry for every single member. You should
+	 * choose wisely whether you want to cache a module that is different for
+	 * every front end member at all.
+	 *
+	 * @return bool
+	 */
+	protected function cacheIndividuallyForEveryMember()
+	{
+		return false;
+	}
+
+
+	/**
+	 * Return true in your child class if your module needs to have a different
+	 * cache entry per member group settings. Note that this will create a
+	 * different cache entry for every member group combination. E.g. members
+	 * of group id's 1,2 and 3 will get a different cache file than members of
+	 * group id's 1 and 3 only. Don't worry, "1,2,3" is the same as "2,3,1".
+	 *
+	 * @return bool
+	 */
+	protected function cacheIndividuallyForEveryMemberGroup()
+	{
+		return false;
+	}
+
+
+	/**
+	 * Prepares the ESI controller params.
+	 *
+	 * @return array
+	 */
+	protected function getEsiParams()
+	{
+		$params  = [];
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		// Query params to keep
+		if ('' === $this->esi_query_params_to_keep) {
+			$toKeepKeys = array_unique(
+				array_filter(explode(',', $this->esi_query_params_to_keep))
+			);
+			foreach ($request->query->all() as $k => $v) {
+				if (in_array($k, $toKeepKeys)) {
+					$params[$k] = $v;
+
+					// Mark as used for the Contao main request
+					\Input::get($k);
+				}
+			}
+		}
+
+		return $params;
 	}
 }

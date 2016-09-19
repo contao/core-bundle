@@ -28,6 +28,11 @@ class AddToSearchIndexListener
     private $framework;
 
     /**
+     * @var array
+     */
+    private $ignorePathRegexes = [];
+
+    /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
@@ -35,6 +40,38 @@ class AddToSearchIndexListener
     public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIgnorePathRegexes()
+    {
+        return $this->ignorePathRegexes;
+    }
+
+    /**
+     * @param array $ignorePathRegexes
+     *
+     * @return AddToSearchIndexListener
+     */
+    public function setIgnorePathRegexes(array $ignorePathRegexes)
+    {
+        $this->ignorePathRegexes = $ignorePathRegexes;
+
+        return $this;
+    }
+
+    /**
+     * @param string $rgxp
+     *
+     * @return AddToSearchIndexListener
+     */
+    public function addIgnorePathRegex($rgxp)
+    {
+        $this->ignorePathRegexes[] = $rgxp;
+
+        return $this;
     }
 
     /**
@@ -46,6 +83,14 @@ class AddToSearchIndexListener
     {
         if (!$this->framework->isInitialized()) {
             return;
+        }
+
+        if (0 !== count($this->ignorePathRegexes)) {
+            foreach ($this->ignorePathRegexes as $regex) {
+                if (preg_match($regex, $event->getRequest()->getPathInfo())) {
+                    return;
+                }
+            }
         }
 
         /** @var Frontend $frontend */
