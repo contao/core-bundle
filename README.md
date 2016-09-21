@@ -34,7 +34,8 @@ Edit your `app/config/config.yml` file and add the following:
 # Contao configuration
 contao:
     # Required parameters
-    prepend_locale: true
+    prepend_locale: false
+    folder_urls:    false
     encryption_key: "%kernel.secret%"
 
     # Optional parameters
