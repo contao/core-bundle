@@ -102,6 +102,13 @@ class FrontendTemplate extends \Template
 	 */
 	protected function compile($blnCheckRequest=false)
 	{
+		// Do not compile the template again if already called e.g. by parent::getResponse()
+		if ($this->strBuffer)
+		{
+			parent::compile();
+			return;
+		}
+
 		$this->keywords = '';
 		$arrKeywords = \StringUtil::trimsplit(',', $GLOBALS['TL_KEYWORDS']);
 
