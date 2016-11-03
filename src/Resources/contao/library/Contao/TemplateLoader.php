@@ -135,21 +135,21 @@ class TemplateLoader
 			return TL_ROOT . '/' . self::$files[$template] . '/' . $file;
 		}
 
-		$strRelpath = null;
+		$strAbsPath = null;
 
 		try
 		{
 			// Search for the template if it is not in the lookup array (last match wins)
 			foreach (\System::getContainer()->get('contao.resource_finder')->findIn('templates')->name($file) as $file)
 			{
-				$strRelpath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $file->getPathname());
+				$strAbsPath = $file->getPathname();
 			}
 		}
 		catch (\InvalidArgumentException $e) {}
 
-		if ($strRelpath !== null)
+		if ($strAbsPath !== null)
 		{
-			return TL_ROOT . '/' . $strRelpath;
+			return $strAbsPath;
 		}
 
 		throw new \Exception('Could not find template "' . $template . '"');
@@ -172,9 +172,20 @@ class TemplateLoader
 		{
 			try
 			{
+				$objFileSystem = \System::getContainer()->get('file_system');
+				$strRootDir    = \System::getContainer()->getParameter('kernel.root_dir');
+
 				foreach (\System::getContainer()->get('contao.resource_finder')->findIn('templates')->name('*.html5') as $file)
 				{
-					self::addFile($file->getBasename('.html5'), str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $file->getPath()));
+					$strRelPath = rtrim(
+						$objFileSystem->makePathRelative(
+							strtr($file->getPath(), '\\', '/'),
+							strtr(dirname($strRootDir), '\\', '/')
+						),
+						'/'
+					);
+
+					self::addFile($file->getBasename('.html5'), $strRelPath);
 				}
 			}
 			catch (\InvalidArgumentException $e) {}
