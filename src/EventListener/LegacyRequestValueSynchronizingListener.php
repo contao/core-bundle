@@ -10,13 +10,13 @@
 
 namespace Contao\CoreBundle\EventListener;
 
+use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\CoreBundle\Request\ValueAdapter;
 use Contao\Environment;
 use Contao\Input;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Sets the current request on the \Input and \Environment classes.
@@ -28,6 +28,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class LegacyRequestValueSynchronizingListener
 {
+    use ScopeAwareTrait;
+
     /**
      * @var RequestStack
      */
@@ -51,6 +53,11 @@ class LegacyRequestValueSynchronizingListener
     public function startRequest()
     {
         $request = $this->requestStack->getCurrentRequest();
+        // Only handle for Contao requests.
+        if (!$this->isContaoScope($request)) {
+            $this->handleForRequest(null);
+            return;
+        }
 
         if (!$request->attributes->has('_contao_value_adapter')) {
             $request->attributes->set('_contao_value_adapter', new ValueAdapter($request));
@@ -67,6 +74,11 @@ class LegacyRequestValueSynchronizingListener
     public function finishRequest()
     {
         $request = $this->requestStack->getParentRequest();
+        // Only handle for Contao requests.
+        if (!$this->isContaoScope($request)) {
+            $this->handleForRequest(null);
+            return;
+        }
 
         $this->handleForRequest($request);
     }
@@ -82,5 +94,36 @@ class LegacyRequestValueSynchronizingListener
     {
         Environment::setRequest($request);
         Input::setValueAdapter($request ? $request->attributes->get('_contao_value_adapter') : null);
+    }
+
+    /**
+     * Checks whether the request is a Contao request.
+     *
+     * @param Request $request The request to check.
+     *
+     * @return bool
+     */
+    protected function isContaoScope(Request $request = null)
+    {
+        return $this->isScope(ContaoCoreBundle::SCOPE_BACKEND, $request)
+            || $this->isScope(ContaoCoreBundle::SCOPE_FRONTEND, $request);
+    }
+
+    /**
+     * Checks whether the _scope attributes matches a scope.
+     *
+     * @param string  $scope   The scope to check.
+     *
+     * @param Request $request The request to check.
+     *
+     * @return bool
+     */
+    private function isScope($scope, Request $request = null)
+    {
+        if (null === $request || !$request->attributes->has('_scope')) {
+            return false;
+        }
+
+        return $request->attributes->get('_scope') === $scope;
     }
 }
