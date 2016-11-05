@@ -30,7 +30,7 @@ class LegacyPasswordEncoder extends BasePasswordEncoder
             throw new BadCredentialsException('Invalid password.');
         }
 
-        return ('' == $salt) ? (sha1($raw)) : sha1($salt.$raw);
+        return ('' === $salt) ? (sha1($raw)) : sha1($salt.$raw);
     }
 
     /**
