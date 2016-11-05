@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 
@@ -258,6 +259,14 @@ abstract class User extends \System
 	 */
 	public function authenticate()
 	{
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
+
+		// Get the authentication status from the Contao token
+		if ($token instanceof TokenInterface && $token->getUser() === $this)
+		{
+			return true;
+		}
+
 		// Check the cookie hash
 		if ($this->strHash != $this->getSessionHash($this->strCookie))
 		{
