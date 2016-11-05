@@ -33,7 +33,7 @@ use Symfony\Component\Routing\RouterInterface;
  * @author Dominik Tomasi <https://github.com/dtomasi>
  * @author Andreas Schempp <https://github.com/aschempp>
  *
- * @internal Do not instantiate this class in your code. Use the "contao.framework" service instead.
+ * @internal Do not instantiate this class in your code; use the "contao.framework" service instead
  */
 class ContaoFramework implements ContaoFrameworkInterface
 {
@@ -99,13 +99,8 @@ class ContaoFramework implements ContaoFrameworkInterface
      * @param string           $rootDir
      * @param int              $errorLevel
      */
-    public function __construct(
-        RequestStack $requestStack,
-        RouterInterface $router,
-        SessionInterface $session,
-        $rootDir,
-        $errorLevel
-    ) {
+    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, $rootDir, $errorLevel)
+    {
         $this->router = $router;
         $this->session = $session;
         $this->rootDir = $rootDir;
@@ -175,7 +170,7 @@ class ContaoFramework implements ContaoFrameworkInterface
     /**
      * Sets the Contao constants.
      *
-     * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
+     * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0
      */
     private function setConstants()
     {
@@ -407,11 +402,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         }
 
         if (file_exists($this->rootDir.'/../system/config/initconfig.php')) {
-            @trigger_error(
-                'Using the initconfig.php file has been deprecated and will no longer work in Contao 5.0.',
-                E_USER_DEPRECATED
-            );
-
+            @trigger_error('Using the initconfig.php file has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
             include $this->rootDir.'/../system/config/initconfig.php';
         }
     }

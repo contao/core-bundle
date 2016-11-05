@@ -75,16 +75,8 @@ class ImageFactory implements ImageFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        ResizerInterface $resizer,
-        ImagineInterface $imagine,
-        ImagineInterface $imagineSvg,
-        Filesystem $filesystem,
-        ContaoFrameworkInterface $framework,
-        $bypassCache,
-        array $imagineOptions,
-        array $validExtensions
-    ) {
+    public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions)
+    {
         $this->resizer = $resizer;
         $this->imagine = $imagine;
         $this->imagineSvg = $imagineSvg;
@@ -100,7 +92,7 @@ class ImageFactory implements ImageFactoryInterface
      */
     public function create($path, $size = null, $targetPath = null)
     {
-        if (is_object($path) && $path instanceof ImageInterface) {
+        if ($path instanceof ImageInterface) {
             $image = $path;
         } else {
             $fileExtension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
@@ -112,13 +104,15 @@ class ImageFactory implements ImageFactoryInterface
             }
 
             if (!in_array($fileExtension, $this->validExtensions)) {
-                throw new \InvalidArgumentException('Image type "'.$fileExtension.'" was not allowed to be processed');
+                throw new \InvalidArgumentException(
+                    sprintf('Image type "%s" was not allowed to be processed', $fileExtension)
+                );
             }
 
             $image = new Image((string) $path, $imagine, $this->filesystem);
         }
 
-        if (is_object($size) && $size instanceof ResizeConfigurationInterface) {
+        if ($size instanceof ResizeConfigurationInterface) {
             $resizeConfig = $size;
             $importantPart = null;
         } else {
@@ -148,6 +142,44 @@ class ImageFactory implements ImageFactoryInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getImportantPartFromLegacyMode(ImageInterface $image, $mode)
+    {
+        if (1 !== substr_count($mode, '_')) {
+            throw new \InvalidArgumentException(sprintf('"%s" is not a legacy resize mode', $mode));
+        }
+
+        $importantPart = [
+            0,
+            0,
+            $image->getDimensions()->getSize()->getWidth(),
+            $image->getDimensions()->getSize()->getHeight(),
+        ];
+
+        list($modeX, $modeY) = explode('_', $mode);
+
+        if ('left' === $modeX) {
+            $importantPart[2] = 1;
+        } elseif ('right' === $modeX) {
+            $importantPart[0] = $importantPart[2] - 1;
+            $importantPart[2] = 1;
+        }
+
+        if ('top' === $modeY) {
+            $importantPart[3] = 1;
+        } elseif ('bottom' === $modeY) {
+            $importantPart[1] = $importantPart[3] - 1;
+            $importantPart[3] = 1;
+        }
+
+        return new ImportantPart(
+            new Point($importantPart[0], $importantPart[1]),
+            new Box($importantPart[2], $importantPart[3])
+        );
+    }
+
+    /**
      * Creates a resize configuration object.
      *
      * @param int|array|null $size  An image size or an array with width, height and resize mode
@@ -164,7 +196,7 @@ class ImageFactory implements ImageFactoryInterface
         $config = new ResizeConfiguration();
 
         if (isset($size[2]) && is_numeric($size[2])) {
-            /* @var ImageSizeModel $imageModel */
+            /** @var ImageSizeModel $imageModel */
             $imageModel = $this->framework->getAdapter('Contao\ImageSizeModel');
             $imageSize = $imageModel->findByPk($size[2]);
 
@@ -195,38 +227,9 @@ class ImageFactory implements ImageFactoryInterface
             return [$config, null];
         }
 
-        $importantPart = [
-            0,
-            0,
-            $image->getDimensions()->getSize()->getWidth(),
-            $image->getDimensions()->getSize()->getHeight(),
-        ];
-
-        list($modeX, $modeY) = explode('_', $size[2]);
-
-        if ('left' === $modeX) {
-            $importantPart[2] = 1;
-        } elseif ('right' === $modeX) {
-            $importantPart[0] = $importantPart[2] - 1;
-            $importantPart[2] = 1;
-        }
-
-        if ('top' === $modeY) {
-            $importantPart[3] = 1;
-        } elseif ('bottom' === $modeY) {
-            $importantPart[1] = $importantPart[3] - 1;
-            $importantPart[3] = 1;
-        }
-
         $config->setMode(ResizeConfigurationInterface::MODE_CROP);
 
-        return [
-            $config,
-            new ImportantPart(
-                new Point($importantPart[0], $importantPart[1]),
-                new Box($importantPart[2], $importantPart[3])
-            ),
-        ];
+        return [$config, $this->getImportantPartFromLegacyMode($image, $size[2])];
     }
 
     /**
@@ -238,7 +241,7 @@ class ImageFactory implements ImageFactoryInterface
      */
     private function createImportantPart($path)
     {
-        /* @var FilesModel $filesModel */
+        /** @var FilesModel $filesModel */
         $filesModel = $this->framework->getAdapter('Contao\FilesModel');
         $file = $filesModel->findByPath($path);
 

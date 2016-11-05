@@ -39,7 +39,7 @@ class CombinedFileDumper implements DumperInterface
     /**
      * @var string
      */
-    private $header = '<?php '; // add one space to prevent the "unexpected $end" error
+    private $header = "<?php\n"; // add a line-break to prevent the "unexpected $end" error
 
     /**
      * Constructor.
@@ -64,7 +64,7 @@ class CombinedFileDumper implements DumperInterface
      */
     public function setHeader($header)
     {
-        if (strpos($header, '<?php') !== 0) {
+        if (0 !== strpos($header, '<?php')) {
             throw new \InvalidArgumentException('The file header must start with an opening PHP tag.');
         }
 

@@ -77,20 +77,24 @@ class ImageFactoryTest extends TestCase
             ->expects($this->exactly(2))
             ->method('resize')
             ->with(
-                $this->callback(function ($image) use (&$path) {
-                    /* @var Image $image */
-                    $this->assertEquals($path, $image->getPath());
+                $this->callback(
+                    function ($image) use (&$path) {
+                        /* @var Image $image */
+                        $this->assertEquals($path, $image->getPath());
 
-                    return true;
-                }),
-                $this->callback(function ($config) {
-                    /* @var ResizeConfiguration $config */
-                    $this->assertEquals(100, $config->getWidth());
-                    $this->assertEquals(200, $config->getHeight());
-                    $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($config) {
+                        /* @var ResizeConfiguration $config */
+                        $this->assertEquals(100, $config->getWidth());
+                        $this->assertEquals(200, $config->getHeight());
+                        $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
 
-                    return true;
-                })
+                        return true;
+                    }
+                )
             )
             ->willReturn($imageMock)
         ;
@@ -180,33 +184,39 @@ class ImageFactoryTest extends TestCase
             ->expects($this->once())
             ->method('resize')
             ->with(
-                $this->callback(function ($image) use ($path) {
-                    /* @var Image $image */
-                    $this->assertEquals($path, $image->getPath());
+                $this->callback(
+                    function ($image) use ($path) {
+                        /* @var Image $image */
+                        $this->assertEquals($path, $image->getPath());
 
-                    $this->assertEquals(
-                        new ImportantPart(new Point(50, 50), new Box(25, 25)),
-                        $image->getImportantPart()
-                    );
+                        $this->assertEquals(
+                            new ImportantPart(new Point(50, 50), new Box(25, 25)),
+                            $image->getImportantPart()
+                        );
 
-                    return true;
-                }),
-                $this->callback(function ($config) {
-                    /* @var ResizeConfiguration $config */
-                    $this->assertEquals(100, $config->getWidth());
-                    $this->assertEquals(200, $config->getHeight());
-                    $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
-                    $this->assertEquals(50, $config->getZoomLevel());
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($config) {
+                        /* @var ResizeConfiguration $config */
+                        $this->assertEquals(100, $config->getWidth());
+                        $this->assertEquals(200, $config->getHeight());
+                        $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
+                        $this->assertEquals(50, $config->getZoomLevel());
 
-                    return true;
-                }),
-                $this->callback(function ($options) {
-                    /* @var ResizeOptions $options */
-                    $this->assertEquals(['jpeg_quality' => 80], $options->getImagineOptions());
-                    $this->assertEquals($this->getRootDir().'/target/path.jpg', $options->getTargetPath());
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($options) {
+                        /* @var ResizeOptions $options */
+                        $this->assertEquals(['jpeg_quality' => 80], $options->getImagineOptions());
+                        $this->assertEquals($this->getRootDir().'/target/path.jpg', $options->getTargetPath());
 
-                    return true;
-                })
+                        return true;
+                    }
+                )
             )
             ->willReturn($imageMock)
         ;
@@ -378,23 +388,29 @@ class ImageFactoryTest extends TestCase
             ->expects($this->once())
             ->method('resize')
             ->with(
-                $this->callback(function ($image) use ($imageMock) {
-                    $this->assertSame($imageMock, $image);
+                $this->callback(
+                    function ($image) use ($imageMock) {
+                        $this->assertSame($imageMock, $image);
 
-                    return true;
-                }),
-                $this->callback(function ($config) use ($resizeConfig) {
-                    $this->assertSame($resizeConfig, $config);
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($config) use ($resizeConfig) {
+                        $this->assertSame($resizeConfig, $config);
 
-                    return true;
-                }),
-                $this->callback(function ($options) {
-                    /* @var ResizeOptions $options */
-                    $this->assertEquals(['jpeg_quality' => 80], $options->getImagineOptions());
-                    $this->assertEquals($this->getRootDir().'/target/path.jpg', $options->getTargetPath());
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($options) {
+                        /* @var ResizeOptions $options */
+                        $this->assertEquals(['jpeg_quality' => 80], $options->getImagineOptions());
+                        $this->assertEquals($this->getRootDir().'/target/path.jpg', $options->getTargetPath());
 
-                    return true;
-                })
+                        return true;
+                    }
+                )
             )
             ->willReturn($imageMock)
         ;
@@ -455,26 +471,30 @@ class ImageFactoryTest extends TestCase
             ->expects($this->once())
             ->method('resize')
             ->with(
-                $this->callback(function ($image) use ($path, $expected) {
-                    /* @var Image $image */
-                    $this->assertEquals($path, $image->getPath());
+                $this->callback(
+                    function ($image) use ($path, $expected) {
+                        /* @var Image $image */
+                        $this->assertEquals($path, $image->getPath());
 
-                    $this->assertEquals(
-                        new ImportantPart(new Point($expected[0], $expected[1]), new Box($expected[2], $expected[3])),
-                        $image->getImportantPart()
-                    );
+                        $this->assertEquals(
+                            new ImportantPart(new Point($expected[0], $expected[1]), new Box($expected[2], $expected[3])),
+                            $image->getImportantPart()
+                        );
 
-                    return true;
-                }),
-                $this->callback(function ($config) {
-                    /* @var ResizeConfiguration $config */
-                    $this->assertEquals(50, $config->getWidth());
-                    $this->assertEquals(50, $config->getHeight());
-                    $this->assertEquals(ResizeConfiguration::MODE_CROP, $config->getMode());
-                    $this->assertEquals(0, $config->getZoomLevel());
+                        return true;
+                    }
+                ),
+                $this->callback(
+                    function ($config) {
+                        /* @var ResizeConfiguration $config */
+                        $this->assertEquals(50, $config->getWidth());
+                        $this->assertEquals(50, $config->getHeight());
+                        $this->assertEquals(ResizeConfiguration::MODE_CROP, $config->getMode());
+                        $this->assertEquals(0, $config->getZoomLevel());
 
-                    return true;
-                })
+                        return true;
+                    }
+                )
             )
             ->willReturn($imageMock)
         ;
@@ -539,6 +559,53 @@ class ImageFactoryTest extends TestCase
         $image = $imageFactory->create($path, [50, 50, $mode]);
 
         $this->assertSame($imageMock, $image);
+    }
+
+    /**
+     * Tests the getImportantPartFromLegacyMode() method.
+     *
+     * @param string $mode
+     * @param string $expected
+     *
+     * @dataProvider getCreateWithLegacyMode
+     */
+    public function testGetImportantPartFromLegacyMode($mode, $expected)
+    {
+        $dimensionsMock = $this->getMock('Contao\Image\ImageDimensionsInterface');
+
+        $dimensionsMock
+            ->expects($this->any())
+            ->method('getSize')
+            ->willReturn(new Box(100, 100))
+        ;
+
+        $imageMock = $this->getMock('Contao\Image\ImageInterface');
+
+        $imageMock
+            ->expects($this->any())
+            ->method('getDimensions')
+            ->willReturn($dimensionsMock)
+        ;
+
+        $imageFactory = $this->createImageFactory();
+
+        $this->assertEquals(
+            new ImportantPart(new Point($expected[0], $expected[1]), new Box($expected[2], $expected[3])),
+            $imageFactory->getImportantPartFromLegacyMode($imageMock, $mode)
+        );
+    }
+
+    /**
+     * Tests the getImportantPartFromLegacyMode() method throws an exception for invalid resize modes.
+     */
+    public function testGetImportantPartFromLegacyModeInvalidMode()
+    {
+        $imageMock = $this->getMock('Contao\Image\ImageInterface');
+        $imageFactory = $this->createImageFactory();
+
+        $this->setExpectedException('InvalidArgumentException', 'not a legacy resize mode');
+
+        $imageFactory->getImportantPartFromLegacyMode($imageMock, 'invalid');
     }
 
     /**
@@ -804,16 +871,8 @@ class ImageFactoryTest extends TestCase
      *
      * @return string The image path
      */
-    public static function getImageHookCallback(
-        $originalPath,
-        $targetWidth,
-        $targetHeight,
-        $resizeMode,
-        $cacheName,
-        $fileObj,
-        $targetPath,
-        $imageObj
-    ) {
+    public static function getImageHookCallback($originalPath, $targetWidth, $targetHeight, $resizeMode, $cacheName, $fileObj, $targetPath, $imageObj)
+    {
         // Do not include $cacheName as it is dynamic (mtime)
         $path = 'assets/'
             .$originalPath
@@ -946,16 +1005,8 @@ class ImageFactoryTest extends TestCase
      *
      * @return ImageFactory
      */
-    private function createImageFactory(
-        $resizer = null,
-        $imagine = null,
-        $imagineSvg = null,
-        $filesystem = null,
-        $framework = null,
-        $bypassCache = null,
-        $imagineOptions = null,
-        $validExtensions = null
-    ) {
+    private function createImageFactory($resizer = null, $imagine = null, $imagineSvg = null, $filesystem = null, $framework = null, $bypassCache = null, $imagineOptions = null, $validExtensions = null)
+    {
         if (null === $resizer) {
             $resizer = $this
                 ->getMockBuilder('Contao\Image\Resizer')

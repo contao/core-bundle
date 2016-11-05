@@ -106,7 +106,8 @@ class FormFileUpload extends \Widget implements \uploadable
 		}
 
 		$file = $_FILES[$this->strName];
-		$maxlength_kb = $this->getReadableSize($this->maxlength);
+		$maxlength_kb = $this->getMaximumUploadSize();
+		$maxlength_kb_readable = $this->getReadableSize($maxlength_kb);
 
 		// Sanitize the filename
 		try
@@ -133,18 +134,15 @@ class FormFileUpload extends \Widget implements \uploadable
 		{
 			if ($file['error'] == 1 || $file['error'] == 2)
 			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb));
-				$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb, __METHOD__, TL_ERROR);
+				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
 			}
 			elseif ($file['error'] == 3)
 			{
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']));
-				$this->log('File "'.$file['name'].'" was only partially uploaded', __METHOD__, TL_ERROR);
 			}
 			elseif ($file['error'] > 0)
 			{
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileerror'], $file['error'], $file['name']));
-				$this->log('File "'.$file['name'].'" could not be uploaded (error '.$file['error'].')' , __METHOD__, TL_ERROR);
 			}
 
 			unset($_FILES[$this->strName]);
@@ -153,11 +151,9 @@ class FormFileUpload extends \Widget implements \uploadable
 		}
 
 		// File is too big
-		if ($this->maxlength > 0 && $file['size'] > $this->maxlength)
+		if ($file['size'] > $maxlength_kb)
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb));
-			$this->log('File "'.$file['name'].'" exceeds the maximum file size of '.$maxlength_kb, __METHOD__, TL_ERROR);
-
+			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
 			unset($_FILES[$this->strName]);
 
 			return;
@@ -170,8 +166,6 @@ class FormFileUpload extends \Widget implements \uploadable
 		if (!in_array($objFile->extension, $uploadTypes))
 		{
 			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
-			$this->log('File type "'.$objFile->extension.'" is not allowed to be uploaded ('.$file['name'].')', __METHOD__, TL_ERROR);
-
 			unset($_FILES[$this->strName]);
 
 			return;
@@ -183,8 +177,6 @@ class FormFileUpload extends \Widget implements \uploadable
 			if ($arrImageSize[0] > \Config::get('imageWidth'))
 			{
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filewidth'], $file['name'], \Config::get('imageWidth')));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image width of '.\Config::get('imageWidth').' pixels', __METHOD__, TL_ERROR);
-
 				unset($_FILES[$this->strName]);
 
 				return;
@@ -194,8 +186,6 @@ class FormFileUpload extends \Widget implements \uploadable
 			if ($arrImageSize[1] > \Config::get('imageHeight'))
 			{
 				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileheight'], $file['name'], \Config::get('imageHeight')));
-				$this->log('File "'.$file['name'].'" exceeds the maximum image height of '.\Config::get('imageHeight').' pixels', __METHOD__, TL_ERROR);
-
 				unset($_FILES[$this->strName]);
 
 				return;
@@ -206,7 +196,6 @@ class FormFileUpload extends \Widget implements \uploadable
 		if (!$this->hasErrors())
 		{
 			$_SESSION['FILES'][$this->strName] = $_FILES[$this->strName];
-			$this->log('File "'.$file['name'].'" uploaded successfully', __METHOD__, TL_FILES);
 
 			if ($this->storeFile)
 			{
@@ -296,7 +285,7 @@ class FormFileUpload extends \Widget implements \uploadable
 					);
 
 					// Add a log entry
-					$this->log('File "'.$file['name'].'" has been moved to "'.$strUploadFolder.'"', __METHOD__, TL_FILES);
+					$this->log('File "' . $strUploadFolder . '/' . $file['name'] . '" has been uploaded', __METHOD__, TL_FILES);
 				}
 			}
 		}
@@ -318,5 +307,38 @@ class FormFileUpload extends \Widget implements \uploadable
 						(($this->strClass != '') ? ' ' . $this->strClass : ''),
 						$this->getAttributes(),
 						$this->strTagEnding);
+	}
+
+
+	/**
+	 * Return the maximum upload file size in bytes
+	 *
+	 * @return string
+	 */
+	protected function getMaximumUploadSize()
+	{
+		if ($this->maxlength > 0)
+		{
+			return $this->maxlength;
+		}
+
+		// Get the upload_max_filesize from the php.ini
+		$upload_max_filesize = ini_get('upload_max_filesize');
+
+		// Convert the value to bytes
+		if (stripos($upload_max_filesize, 'K') !== false)
+		{
+			$upload_max_filesize = round($upload_max_filesize * 1024);
+		}
+		elseif (stripos($upload_max_filesize, 'M') !== false)
+		{
+			$upload_max_filesize = round($upload_max_filesize * 1024 * 1024);
+		}
+		elseif (stripos($upload_max_filesize, 'G') !== false)
+		{
+			$upload_max_filesize = round($upload_max_filesize * 1024 * 1024 * 1024);
+		}
+
+		return min($upload_max_filesize, \Config::get('maxFileSize'));
 	}
 }

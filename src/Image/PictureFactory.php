@@ -14,11 +14,14 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\ImageSizeItemModel;
 use Contao\ImageSizeModel;
 use Contao\Image\ImageInterface;
+use Contao\Image\Picture;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationInterface;
 use Contao\Image\PictureConfigurationItem;
 use Contao\Image\PictureGeneratorInterface;
+use Contao\Image\PictureInterface;
 use Contao\Image\ResizeConfiguration;
+use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeOptions;
 
 /**
@@ -54,15 +57,15 @@ class PictureFactory implements PictureFactoryInterface
     private $imagineOptions;
 
     /**
+     * @var string
+     */
+    private $defaultDensities = '';
+
+    /**
      * {@inheritdoc}
      */
-    public function __construct(
-        PictureGeneratorInterface $pictureGenerator,
-        ImageFactoryInterface $imageFactory,
-        ContaoFrameworkInterface $framework,
-        $bypassCache,
-        array $imagineOptions
-    ) {
+    public function __construct(PictureGeneratorInterface $pictureGenerator, ImageFactoryInterface $imageFactory, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions)
+    {
         $this->pictureGenerator = $pictureGenerator;
         $this->imageFactory = $imageFactory;
         $this->framework = $framework;
@@ -73,32 +76,46 @@ class PictureFactory implements PictureFactoryInterface
     /**
      * {@inheritdoc}
      */
+    public function setDefaultDensities($densities)
+    {
+        $this->defaultDensities = (string) $densities;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create($path, $size = null)
     {
-        if (is_array($size) && isset($size[2]) && 1 === substr_count($size[2], '_')) {
-            $image = $this->imageFactory->create($path, $size);
-            $config = new PictureConfiguration();
-        } else {
-            if (is_object($path) && $path instanceof ImageInterface) {
-                $image = $path;
-            } else {
-                $image = $this->imageFactory->create($path);
-            }
+        $attributes = [];
 
-            if (is_object($size) && $size instanceof PictureConfigurationInterface) {
-                $config = $size;
-            } else {
-                $config = $this->createConfig($size);
-            }
+        if ($path instanceof ImageInterface) {
+            $image = $path;
+        } else {
+            $image = $this->imageFactory->create($path);
         }
 
-        return $this->pictureGenerator->generate(
+        if (is_array($size) && isset($size[2]) && 1 === substr_count($size[2], '_')) {
+            $image->setImportantPart($this->imageFactory->getImportantPartFromLegacyMode($image, $size[2]));
+            $size[2] = ResizeConfigurationInterface::MODE_CROP;
+        }
+
+        if ($size instanceof PictureConfigurationInterface) {
+            $config = $size;
+        } else {
+            list($config, $attributes) = $this->createConfig($size);
+        }
+
+        $picture = $this->pictureGenerator->generate(
             $image,
             $config,
-            (new ResizeOptions())
-                ->setImagineOptions($this->imagineOptions)
-                ->setBypassCache($this->bypassCache)
+            (new ResizeOptions())->setImagineOptions($this->imagineOptions)->setBypassCache($this->bypassCache)
         );
+
+        $picture = $this->addImageAttributes($picture, $attributes);
+
+        return $picture;
     }
 
     /**
@@ -106,7 +123,7 @@ class PictureFactory implements PictureFactoryInterface
      *
      * @param int|array|null $size
      *
-     * @return PictureConfiguration
+     * @return array<PictureConfiguration,array>
      */
     private function createConfig($size)
     {
@@ -115,6 +132,7 @@ class PictureFactory implements PictureFactoryInterface
         }
 
         $config = new PictureConfiguration();
+        $attributes = [];
 
         if (!isset($size[2]) || !is_numeric($size[2])) {
             $resizeConfig = new ResizeConfiguration();
@@ -133,19 +151,28 @@ class PictureFactory implements PictureFactoryInterface
 
             $configItem = new PictureConfigurationItem();
             $configItem->setResizeConfig($resizeConfig);
+
+            if ($this->defaultDensities) {
+                $configItem->setDensities($this->defaultDensities);
+            }
+
             $config->setSize($configItem);
 
-            return $config;
+            return [$config, $attributes];
         }
 
-        /* @var ImageSizeModel $imageSizeModel */
+        /** @var ImageSizeModel $imageSizeModel */
         $imageSizeModel = $this->framework->getAdapter('Contao\ImageSizeModel');
+        $imageSizes = $imageSizeModel->findByPk($size[2]);
 
-        $config->setSize($this->createConfigItem($imageSizeModel->findByPk($size[2])));
+        $config->setSize($this->createConfigItem($imageSizes));
 
-        /* @var ImageSizeItemModel $imageSizeItemModel */
+        if ($imageSizes && $imageSizes->cssClass) {
+            $attributes['class'] = $imageSizes->cssClass;
+        }
+
+        /** @var ImageSizeItemModel $imageSizeItemModel */
         $imageSizeItemModel = $this->framework->getAdapter('Contao\ImageSizeItemModel');
-
         $imageSizeItems = $imageSizeItemModel->findVisibleByPid($size[2], ['order' => 'sorting ASC']);
 
         if (null !== $imageSizeItems) {
@@ -158,7 +185,7 @@ class PictureFactory implements PictureFactoryInterface
             $config->setSizeItems($configItems);
         }
 
-        return $config;
+        return [$config, $attributes];
     }
 
     /**
@@ -193,5 +220,30 @@ class PictureFactory implements PictureFactoryInterface
         }
 
         return $configItem;
+    }
+
+    /**
+     * Adds the image attributes.
+     *
+     * @param PictureInterface $picture
+     * @param array            $attributes
+     *
+     * @return PictureInterface
+     */
+    private function addImageAttributes(PictureInterface $picture, array $attributes)
+    {
+        if (empty($attributes)) {
+            return $picture;
+        }
+
+        $img = $picture->getImg();
+
+        foreach ($attributes as $attribute => $value) {
+            $img[$attribute] = $value;
+        }
+
+        $picture = new Picture($img, $picture->getSources());
+
+        return $picture;
     }
 }

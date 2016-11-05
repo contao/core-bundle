@@ -91,7 +91,11 @@ class UrlGeneratorTest extends TestCase
         $this->assertEquals('contao_frontend', $this->getGenerator(false, 0)->generate('index/foobar'));
         $this->assertArrayHasKey('alias', $this->getGenerator()->generate('index/foobar'));
 
-        $this->assertEquals('contao_frontend', $this->getGenerator(false, 0)->generate('index/{foo}', ['foo' => 'bar']));
+        $this->assertEquals(
+            'contao_frontend',
+            $this->getGenerator(false, 0)->generate('index/{foo}', ['foo' => 'bar'])
+        );
+
         $this->assertArrayHasKey('alias', $this->getGenerator()->generate('index/{foo}', ['foo' => 'bar']));
         $this->assertEquals('index/foo/bar', $this->getGenerator()->generate('index/{foo}', ['foo' => 'bar'])['alias']);
     }
@@ -238,7 +242,7 @@ class UrlGeneratorTest extends TestCase
             'https://contao.org/',
             $generator->generate(
                 'index',
-                ['_domain' => 'contao.org:80', '_ssl' => true],
+                ['_domain' => 'contao.org:443', '_ssl' => true],
                 UrlGenerator::ABSOLUTE_URL
            )
         );

@@ -183,24 +183,30 @@ class Search
 								->limit(1)
 								->execute($arrSet['checksum'], $arrSet['pid']);
 
+		// Update the URL if the new URL is shorter or the current URL is not canonical
+		if ($objIndex->numRows && $objIndex->url != $arrSet['url'])
+		{
+			if (strpos($arrSet['url'], '?') === false && strpos($objIndex->url, '?') !== false)
+			{
+				// the new URL is more canonical (no query string)
+			}
+			elseif (substr_count($arrSet['url'], '/') > substr_count($objIndex->url, '/') || strpos($arrSet['url'], '?') !== false && strpos($objIndex->url, '?') === false || strlen($arrSet['url']) > strlen($objIndex->url))
+			{
+				$arrSet['url'] = $objIndex->url; // the current URL is more canonical (shorter and/or less fragments)
+			}
+			else
+			{
+				return false; // the same page has been indexed under a different URL already (see #8460)
+			}
+		}
+
+		$objIndex = $objDatabase->prepare("SELECT id FROM tl_search WHERE url=? AND pid=?")
+								->limit(1)
+								->execute($arrSet['url'], $arrSet['pid']);
+
 		// Add the page to the tl_search table
 		if ($objIndex->numRows)
 		{
-			if ($objIndex->url == $arrSet['url'])
-			{
-				return false; // up to date
-			}
-
-			// Update the URL if the new URL is shorter or the current URL is not canonical
-			if (strpos($arrSet['url'], '?') === false && strpos($objIndex->url, '?') !== false)
-			{
-				// ignore
-			}
-			elseif (substr_count($arrSet['url'], '/') > substr_count($objIndex->url, '/') || strpos($arrSet['url'], '?') !== false && strpos($objIndex->url, '?') === false)
-			{
-				$arrSet['url'] = $objIndex->url;
-			}
-
 			$objDatabase->prepare("UPDATE tl_search %s WHERE id=?")
 						->set($arrSet)
 						->execute($objIndex->id);

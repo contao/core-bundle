@@ -32,13 +32,16 @@ interface PictureFactoryInterface
      * @param bool                      $bypassCache
      * @param array                     $imagineOptions
      */
-    public function __construct(
-        PictureGeneratorInterface $pictureGenerator,
-        ImageFactoryInterface $imageFactory,
-        ContaoFrameworkInterface $framework,
-        $bypassCache,
-        array $imagineOptions
-    );
+    public function __construct(PictureGeneratorInterface $pictureGenerator, ImageFactoryInterface $imageFactory, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions);
+
+    /**
+     * Sets the default densities for generating pictures.
+     *
+     * @param string $densities
+     *
+     * @return static
+     */
+    public function setDefaultDensities($densities);
 
     /**
      * Creates a Picture object.

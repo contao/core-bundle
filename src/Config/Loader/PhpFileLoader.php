@@ -33,7 +33,7 @@ class PhpFileLoader extends Loader
         $code = rtrim(file_get_contents($file));
 
         // Opening tag
-        if (strncmp($code, '<?php', 5) === 0) {
+        if (0 === strncmp($code, '<?php', 5)) {
             $code = substr($code, 5);
         }
 
@@ -52,7 +52,7 @@ class PhpFileLoader extends Loader
             $code = substr($code, 0, -2);
         }
 
-        return rtrim($code)."\n";
+        return sprintf("\nnamespace {%s\n\n}\n", rtrim($code));
     }
 
     /**

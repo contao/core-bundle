@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\Database\Result;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -717,12 +718,10 @@ abstract class Backend extends \Controller
 		}
 
 		$objPage = null;
-		$db = \Database::getInstance();
 
 		if ($strPtable == 'tl_article')
 		{
-			$objPage = $db->prepare("SELECT * FROM tl_page WHERE id=(SELECT pid FROM tl_article WHERE id=?)")
-						  ->execute($intPid);
+			$objPage = \PageModel::findOneBy(array('tl_page.id=(SELECT pid FROM tl_article WHERE id=?)'), $intPid);
 		}
 		else
 		{
@@ -736,26 +735,39 @@ abstract class Backend extends \Controller
 						$objPage = $val;
 					}
 				}
+
+				if ($objPage instanceof Result && $objPage->numRows < 1)
+				{
+					return;
+				}
+
+				if (is_object($objPage) && !($objPage instanceof PageModel))
+				{
+					$objPage = \PageModel::findByPk($objPage->id);
+				}
 			}
 		}
 
-		if ($objPage === null || $objPage->numRows < 1)
+		if ($objPage === null)
 		{
 			return;
 		}
 
-		$objModel = new \PageModel();
-		$objModel->setRow($objPage->row());
-		$objModel->loadDetails();
+		$objPage->loadDetails();
 
 		// Convert the language to a locale (see #5678)
-		$strLanguage = str_replace('-', '_', $objModel->rootLanguage);
+		$strLanguage = str_replace('-', '_', $objPage->rootLanguage);
 
 		if (isset($arrMeta[$strLanguage]))
 		{
-			if (\Input::post('alt') == '' && !empty($arrMeta[$strLanguage]['title']))
+			if (\Input::post('title') == '' && !empty($arrMeta[$strLanguage]['title']))
 			{
-				\Input::setPost('alt', $arrMeta[$strLanguage]['title']);
+				\Input::setPost('title', $arrMeta[$strLanguage]['title']);
+			}
+
+			if (\Input::post('alt') == '' && !empty($arrMeta[$strLanguage]['alt']))
+			{
+				\Input::setPost('alt', $arrMeta[$strLanguage]['alt']);
 			}
 
 			if (\Input::post('caption') == '' && !empty($arrMeta[$strLanguage]['caption']))

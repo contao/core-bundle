@@ -178,7 +178,7 @@ class ModuleSearch extends \Module
 			$query_endtime = microtime(true);
 
 			// Sort out protected pages
-			if (\Config::get('indexProtected') && !BE_USER_LOGGED_IN)
+			if (\Config::get('indexProtected'))
 			{
 				$this->import('FrontendUser', 'User');
 
@@ -258,20 +258,21 @@ class ModuleSearch extends \Module
 				$objTemplate->url = $arrResult[$i]['url'];
 				$objTemplate->link = $arrResult[$i]['title'];
 				$objTemplate->href = $arrResult[$i]['url'];
-				$objTemplate->title = \StringUtil::specialchars($arrResult[$i]['title']);
+				$objTemplate->title = \StringUtil::specialchars(\StringUtil::stripInsertTags($arrResult[$i]['title']));
 				$objTemplate->class = (($i == ($from - 1)) ? 'first ' : '') . (($i == ($to - 1) || $i == ($count - 1)) ? 'last ' : '') . (($i % 2 == 0) ? 'even' : 'odd');
 				$objTemplate->relevance = sprintf($GLOBALS['TL_LANG']['MSC']['relevance'], number_format($arrResult[$i]['relevance'] / $arrResult[0]['relevance'] * 100, 2) . '%');
 				$objTemplate->filesize = $arrResult[$i]['filesize'];
 				$objTemplate->matches = $arrResult[$i]['matches'];
 
 				$arrContext = array();
+				$strText = \StringUtil::stripInsertTags($arrResult[$i]['text']);
 				$arrMatches = \StringUtil::trimsplit(',', $arrResult[$i]['matches']);
 
 				// Get the context
 				foreach ($arrMatches as $strWord)
 				{
 					$arrChunks = array();
-					preg_match_all('/(^|\b.{0,'.$this->contextLength.'}\PL)' . str_replace('+', '\\+', $strWord) . '(\PL.{0,'.$this->contextLength.'}\b|$)/ui', $arrResult[$i]['text'], $arrChunks);
+					preg_match_all('/(^|\b.{0,'.$this->contextLength.'}\PL)' . str_replace('+', '\\+', $strWord) . '(\PL.{0,'.$this->contextLength.'}\b|$)/ui', $strText, $arrChunks);
 
 					foreach ($arrChunks[0] as $strContext)
 					{

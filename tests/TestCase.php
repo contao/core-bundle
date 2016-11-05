@@ -21,6 +21,7 @@ use Contao\Image\ResizeCalculator;
 use Contao\Image\PictureGenerator;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Gd\Imagine as ImagineGd;
+use Psr\Log\NullLogger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
@@ -224,6 +225,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container->set('request_stack', $requestStack);
         $container->set('session', $this->mockSession());
+        $container->set('monolog.logger.contao', new NullLogger());
 
         return $container;
     }
@@ -231,17 +233,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Returns a ContaoFramework instance.
      *
-     * @param RequestStack    $requestStack
-     * @param RouterInterface $router
-     * @param array           $adapters
+     * @param RequestStack|null    $requestStack
+     * @param RouterInterface|null $router
+     * @param array                $adapters
+     * @param array                $instances
      *
      * @return ContaoFramework The object instance
      */
-    public function mockContaoFramework(
-        RequestStack $requestStack = null,
-        RouterInterface $router = null,
-        array $adapters = []
-    ) {
+    public function mockContaoFramework(RequestStack $requestStack = null, RouterInterface $router = null, array $adapters = [], array $instances = [])
+    {
         $container = $this->mockContainerWithContaoScopes();
 
         if (null === $requestStack) {
@@ -274,7 +274,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 $this->getRootDir().'/app',
                 error_reporting(),
             ])
-            ->setMethods(['getAdapter'])
+            ->setMethods(['getAdapter', 'createInstance'])
             ->getMock()
         ;
 
@@ -286,6 +286,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             })
         ;
 
+        $framework
+            ->expects($this->any())
+            ->method('createInstance')
+            ->willReturnCallback(function ($key) use ($instances) {
+                return $instances[$key];
+            })
+        ;
+
         $framework->setContainer($container);
 
         return $framework;
@@ -294,9 +302,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Mocks a config adapter.
      *
+     * @param int|null $minPasswordLength
+     *
      * @return Adapter|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function mockConfigAdapter()
+    protected function mockConfigAdapter($minPasswordLength = null)
     {
         $configAdapter = $this
             ->getMockBuilder('Contao\CoreBundle\Framework\Adapter')
@@ -326,7 +336,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $configAdapter
             ->expects($this->any())
             ->method('get')
-            ->willReturnCallback(function ($key) {
+            ->willReturnCallback(function ($key) use ($minPasswordLength) {
                 switch ($key) {
                     case 'characterSet':
                         return 'UTF-8';
@@ -337,6 +347,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     case 'gdMaxImgWidth':
                     case 'gdMaxImgHeight':
                         return 3000;
+
+                    case 'minPasswordLength':
+                        return $minPasswordLength;
 
                     default:
                         return null;

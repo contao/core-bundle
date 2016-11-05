@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Patchwork\Utf8;
+use Psr\Log\LogLevel;
 
 
 /**
@@ -311,7 +312,14 @@ class StringUtil
 	 */
 	public static function encodeEmail($strString)
 	{
-		foreach (static::extractEmail($strString) as $strEmail)
+		if (strpos($strString, '@') === false)
+		{
+			return $strString;
+		}
+
+		$arrEmails = static::extractEmail($strString, \Config::get('allowedTags'));
+
+		foreach ($arrEmails as $strEmail)
 		{
 			$strEncoded = '';
 			$arrCharacters = Utf8::str_split($strEmail);
@@ -331,25 +339,58 @@ class StringUtil
 	/**
 	 * Extract all e-mail addresses from a string
 	 *
-	 * @param string $strString The string
+	 * @param string $strString      The string
+	 * @param string $strAllowedTags A list of allowed HTML tags
 	 *
 	 * @return array The e-mail addresses
 	 */
-	public static function extractEmail($strString)
+	public static function extractEmail($strString, $strAllowedTags='')
 	{
 		$arrEmails = array();
 
-		preg_match_all('/(?:[^\x00-\x20\x22\x40\x7F]+|\x22[^\x00-\x1F\x7F]+?\x22)@(?:\[(?:IPv)?[a-f0-9.:]+\]|[\w.-]+\.[a-z]{2,63}\b)/u', $strString, $arrEmails);
-
-		foreach ($arrEmails[0] as $strKey=>$strEmail)
+		if (strpos($strString, '@') === false)
 		{
-			if (!\Validator::isEmail($strEmail))
+			return $arrEmails;
+		}
+
+		// Find all mailto: addresses
+		preg_match_all('/mailto:(?:[^\x00-\x20\x22\x40\x7F]+|\x22[^\x00-\x1F\x7F]+?\x22)@(?:\[(?:IPv)?[a-f0-9.:]+\]|[\w.-]+\.[a-z]{2,63}\b)/u', $strString, $matches);
+
+		foreach ($matches[0] as &$strEmail)
+		{
+			$strEmail = str_replace('mailto:', '', $strEmail);
+
+			if (\Validator::isEmail($strEmail))
 			{
-				unset($arrEmails[0][$strKey]);
+				$arrEmails[] = $strEmail;
 			}
 		}
 
-		return array_values($arrEmails[0]);
+		// Encode opening arrow brackets (see #3998)
+		$strString = preg_replace_callback('@</?([^\s<>/]*)@', function ($matches) use ($strAllowedTags)
+		{
+			if ($matches[1] == '' || strpos(strtolower($strAllowedTags), '<' . strtolower($matches[1]) . '>') === false)
+			{
+				$matches[0] = str_replace('<', '&lt;', $matches[0]);
+			}
+
+			return $matches[0];
+		}, $strString);
+
+		// Find all addresses in the plain text
+		preg_match_all('/(?:[^\x00-\x20\x22\x40\x7F]+|\x22[^\x00-\x1F\x7F]+?\x22)@(?:\[(?:IPv)?[a-f0-9.:]+\]|[\w.-]+\.[a-z]{2,63}\b)/u', strip_tags($strString), $matches);
+
+		foreach ($matches[0] as &$strEmail)
+		{
+			$strEmail = str_replace('&lt;', '<', $strEmail);
+
+			if (\Validator::isEmail($strEmail))
+			{
+				$arrEmails[] = $strEmail;
+			}
+		}
+
+		return array_unique($arrEmails);
 	}
 
 
@@ -510,58 +551,181 @@ class StringUtil
 	 *
 	 * @return string The converted string
 	 *
-	 * @throws \Exception If $strString cannot be parsed
+	 * @throws \Exception                If $strString cannot be parsed
+	 * @throws \InvalidArgumentException If there are incorrectly formatted if-tags
 	 */
 	public static function parseSimpleTokens($strString, $arrData)
 	{
 		$strReturn = '';
 
-		// Remove any unwanted tags (especially PHP tags)
-		$strString = strip_tags($strString, \Config::get('allowedTags'));
-		$arrTags = preg_split('/({[^}]+})/', $strString, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
-
-		// Replace the tags
-		foreach ($arrTags as $strTag)
+		$replaceTokens = function ($strSubject) use ($arrData)
 		{
-			if (strncmp($strTag, '{if', 3) === 0)
+			// Replace tokens
+			return preg_replace_callback
+			(
+				'/##([^=!<>\s]+?)##/',
+				function (array $matches) use ($arrData)
+				{
+					if (!array_key_exists($matches[1], $arrData))
+					{
+						\System::getContainer()
+							->get('monolog.logger.contao')
+							->log(LogLevel::INFO, sprintf('Tried to parse unknown simple token "%s".', $matches[1]))
+						;
+
+						return '##' . $matches[1] . '##';
+					}
+
+					return $arrData[$matches[1]];
+				},
+				$strSubject
+			);
+		};
+
+		$evaluateExpression = function ($strExpression) use ($arrData)
+		{
+			if (!preg_match('/^([^=!<>\s]+)([=!<>]+)(.+)$/is', $strExpression, $arrMatches))
 			{
-				$strReturn .= preg_replace('/\{if ([A-Za-z0-9_]+)([=!<>]+)([^;$\(\)\[\]\}]+).*\}/i', '<?php if ($arrData[\'$1\'] $2 $3): ?>', $strTag);
+				return false;
 			}
-			elseif (strncmp($strTag, '{elseif', 7) === 0)
+
+			$strToken = $arrMatches[1];
+			$strOperator = $arrMatches[2];
+			$strValue = $arrMatches[3];
+
+			if (!array_key_exists($strToken, $arrData))
 			{
-				$strReturn .= preg_replace('/\{elseif ([A-Za-z0-9_]+)([=!<>]+)([^;$\(\)\[\]\}]+).*\}/i', '<?php elseif ($arrData[\'$1\'] $2 $3): ?>', $strTag);
+				\System::getContainer()
+					->get('monolog.logger.contao')
+					->log(LogLevel::INFO, sprintf('Tried to evaluate unknown simple token "%s".', $strToken))
+				;
+
+				return false;
 			}
-			elseif (strncmp($strTag, '{else', 5) === 0)
+
+			$varTokenValue = $arrData[$strToken];
+
+			if (is_numeric($strValue))
 			{
-				$strReturn .= '<?php else: ?>';
+				if (strpos($strValue, '.') === false)
+				{
+					$varValue = intval($strValue);
+				}
+				else
+				{
+					$varValue = floatval($strValue);
+				}
 			}
-			elseif (strncmp($strTag, '{endif', 6) === 0)
+			elseif (strtolower($strValue) === 'true')
 			{
-				$strReturn .= '<?php endif; ?>';
+				$varValue = true;
+			}
+			elseif (strtolower($strValue) === 'false')
+			{
+				$varValue = false;
+			}
+			elseif (strtolower($strValue) === 'null')
+			{
+				$varValue = null;
+			}
+			elseif (substr($strValue, 0, 1) === '"' && substr($strValue, -1) === '"')
+			{
+				$varValue = str_replace('\"', '"', substr($strValue, 1, -1));
+			}
+			elseif (substr($strValue, 0, 1) === "'" && substr($strValue, -1) === "'")
+			{
+				$varValue = str_replace("\\'", "'", substr($strValue, 1, -1));
 			}
 			else
 			{
-				$strReturn .= $strTag;
+				throw new \InvalidArgumentException(sprintf('Unknown data type of comparison value "%s".', $strValue));
+			}
+
+			switch ($strOperator)
+			{
+				case '==':
+					return $varTokenValue == $varValue;
+
+				case '!=':
+					return $varTokenValue != $varValue;
+
+				case '===':
+					return $varTokenValue === $varValue;
+
+				case '!==':
+					return $varTokenValue !== $varValue;
+
+				case '<':
+					return $varTokenValue < $varValue;
+
+				case '>':
+					return $varTokenValue > $varValue;
+
+				case '<=':
+					return $varTokenValue <= $varValue;
+
+				case '>=':
+					return $varTokenValue >= $varValue;
+
+				default:
+					throw new \InvalidArgumentException(sprintf('Unknown simple token comparison operator "%s".', $strOperator));
+			}
+		};
+
+		// The last item is true if it is inside a matching if-tag
+		$arrStack = [true];
+
+		// The last item is true if any if/elseif at that level was true
+		$arrIfStack = [true];
+
+		// Tokenize the string into tag and text blocks
+		$arrTags = preg_split('/({[^{}]+})\n?/', $strString, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+
+		// Parse the tokens
+		foreach ($arrTags as $strTag)
+		{
+			// True if it is inside a matching if-tag
+			$blnCurrent = $arrStack[count($arrStack) - 1];
+			$blnCurrentIf = $arrIfStack[count($arrIfStack) - 1];
+
+			if (strncmp($strTag, '{if', 3) === 0)
+			{
+				$blnExpression = $evaluateExpression(substr($strTag, 4, -1));
+				$arrStack[] = $blnCurrent && $blnExpression;
+				$arrIfStack[] = $blnExpression;
+			}
+			elseif (strncmp($strTag, '{elseif', 7) === 0)
+			{
+				$blnExpression = $evaluateExpression(substr($strTag, 8, -1));
+				array_pop($arrStack);
+				array_pop($arrIfStack);
+				$arrStack[] = !$blnCurrentIf && $arrStack[count($arrStack) - 1] && $blnExpression;
+				$arrIfStack[] = $blnCurrentIf || $blnExpression;
+			}
+			elseif (strncmp($strTag, '{else}', 6) === 0)
+			{
+				array_pop($arrStack);
+				array_pop($arrIfStack);
+				$arrStack[] = !$blnCurrentIf && $arrStack[count($arrStack) - 1];
+				$arrIfStack[] = true;
+			}
+			elseif (strncmp($strTag, '{endif}', 7) === 0)
+			{
+				array_pop($arrStack);
+				array_pop($arrIfStack);
+			}
+			elseif ($blnCurrent)
+			{
+				$strReturn .= $replaceTokens($strTag);
 			}
 		}
 
-		// Replace tokens
-		$strReturn = str_replace('?><br />', '?>', $strReturn);
-		$strReturn = preg_replace('/##([A-Za-z0-9_]+)##/i', '<?= $arrData[\'$1\'] ?>', $strReturn);
-		$strReturn = str_replace("] ?>\n", '] . "\n" ?>' . "\n", $strReturn); // see #7178
-
-		// Eval the code
-		ob_start();
-		$blnEval = eval("?>" . $strReturn);
-		$strReturn = ob_get_clean();
-
-		// Throw an exception if there is an eval() error
-		if ($blnEval === false)
+		// Throw an exception if there is an error
+		if (count($arrStack) !== 1)
 		{
-			throw new \Exception("Error parsing simple tokens ($strReturn)");
+			throw new \Exception('Error parsing simple tokens');
 		}
 
-		// Return the evaled code
 		return $strReturn;
 	}
 

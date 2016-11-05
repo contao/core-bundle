@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
+
 
 /**
  * Authenticates and initializes user objects
@@ -429,7 +431,9 @@ abstract class User extends \System
 		$this->save();
 
 		// Generate the session
+		$this->regenerateSessionId();
 		$this->generateSession();
+
 		$this->log('User "' . $this->username . '" has logged in', __METHOD__, TL_ACCESS);
 
 		// HOOK: post login callback
@@ -544,6 +548,36 @@ abstract class User extends \System
 
 
 	/**
+	 * Regenerate the session ID
+	 *
+	 * @throws \RuntimeException
+	 */
+	protected function regenerateSessionId()
+	{
+		$container = \System::getContainer();
+		$strategy = $container->getParameter('security.authentication.session_strategy.strategy');
+
+		// Regenerate the session ID to harden against session fixation attacks
+		switch ($strategy)
+		{
+			case SessionAuthenticationStrategy::NONE:
+				break;
+
+			case SessionAuthenticationStrategy::MIGRATE:
+				$container->get('session')->migrate(false); // do not destroy the old session
+				break;
+
+			case SessionAuthenticationStrategy::INVALIDATE:
+				$container->get('session')->invalidate();
+				break;
+
+			default:
+				throw new \RuntimeException(sprintf('Invalid session authentication strategy "%s"', $strategy));
+		}
+	}
+
+
+	/**
 	 * Generate a session
 	 */
 	protected function generateSession()
@@ -562,7 +596,7 @@ abstract class User extends \System
 					   ->execute($this->intId, $time, $this->strCookie, \System::getContainer()->get('session')->getId(), $this->strIp, $this->strHash);
 
 		// Set the authentication cookie
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
+		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
 	}
 
 
@@ -600,7 +634,7 @@ abstract class User extends \System
 					   ->execute($this->strHash);
 
 		// Remove cookie and hash
-		$this->setCookie($this->strCookie, $this->strHash, ($time - 86400), null, null, false, true);
+		$this->setCookie($this->strCookie, $this->strHash, ($time - 86400), null, null, \Environment::get('ssl'), true);
 		$this->strHash = '';
 
 		\System::getContainer()->get('session')->invalidate();

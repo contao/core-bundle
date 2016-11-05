@@ -267,7 +267,7 @@ class Ajax extends \Backend
 			case 'reloadPagetree':
 			case 'reloadFiletree':
 				$intId = \Input::get('id');
-				$strField = $dc->field = \Input::post('name');
+				$strField = $dc->inputName = \Input::post('name');
 
 				// Handle the keys in "edit multiple" mode
 				if (\Input::get('act') == 'editAll')
@@ -275,6 +275,8 @@ class Ajax extends \Backend
 					$intId = preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $strField);
 					$strField = preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $strField);
 				}
+
+				$dc->field = $strField;
 
 				// The field does not exist
 				if (!isset($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField]))
@@ -287,24 +289,27 @@ class Ajax extends \Backend
 				$varValue = null;
 
 				// Load the value
-				if ($GLOBALS['TL_DCA'][$dc->table]['config']['dataContainer'] == 'File')
+				if (\Input::get('act') != 'overrideAll')
 				{
-					$varValue = \Config::get($strField);
-				}
-				elseif ($intId > 0 && $this->Database->tableExists($dc->table))
-				{
-					$objRow = $this->Database->prepare("SELECT * FROM " . $dc->table . " WHERE id=?")
-											 ->execute($intId);
-
-					// The record does not exist
-					if ($objRow->numRows < 1)
+					if ($GLOBALS['TL_DCA'][$dc->table]['config']['dataContainer'] == 'File')
 					{
-						$this->log('A record with the ID "' . $intId . '" does not exist in table "' . $dc->table . '"', __METHOD__, TL_ERROR);
-						throw new BadRequestHttpException('Bad request');
+						$varValue = \Config::get($strField);
 					}
+					elseif ($intId > 0 && $this->Database->tableExists($dc->table))
+					{
+						$objRow = $this->Database->prepare("SELECT * FROM " . $dc->table . " WHERE id=?")
+												 ->execute($intId);
 
-					$varValue = $objRow->$strField;
-					$dc->activeRecord = $objRow;
+						// The record does not exist
+						if ($objRow->numRows < 1)
+						{
+							$this->log('A record with the ID "' . $intId . '" does not exist in table "' . $dc->table . '"', __METHOD__, TL_ERROR);
+							throw new BadRequestHttpException('Bad request');
+						}
+
+						$varValue = $objRow->$strField;
+						$dc->activeRecord = $objRow;
+					}
 				}
 
 				// Call the load_callback
@@ -359,7 +364,7 @@ class Ajax extends \Backend
 				$strClass = $GLOBALS['BE_FFL'][$strKey];
 
 				/** @var FileTree|PageTree $objWidget */
-				$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField], $dc->field, $varValue, $strField, $dc->table, $dc));
+				$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField], $dc->inputName, $varValue, $strField, $dc->table, $dc));
 
 				throw new ResponseException($this->convertToResponse($objWidget->generate()));
 

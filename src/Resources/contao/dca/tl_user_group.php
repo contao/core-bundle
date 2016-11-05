@@ -43,7 +43,7 @@ $GLOBALS['TL_DCA']['tl_user_group'] = array
 			'mode'                    => 1,
 			'fields'                  => array('name'),
 			'flag'                    => 1,
-			'panelLayout'             => 'filter,search,limit',
+			'panelLayout'             => 'filter;search,limit',
 		),
 		'label' => array
 		(
@@ -121,13 +121,14 @@ $GLOBALS['TL_DCA']['tl_user_group'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'maxlength'=>255),
+			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'modules' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['modules'],
 			'exclude'                 => true,
+			'filter'                  => true,
 			'inputType'               => 'checkbox',
 			'options_callback'        => array('tl_user_group', 'getModules'),
 			'reference'               => &$GLOBALS['TL_LANG']['MOD'],
@@ -279,13 +280,16 @@ class tl_user_group extends Backend
 	public function addIcon($row, $label)
 	{
 		$image = 'group';
+		$time = \Date::floorToMinute();
 
-		if ($row['disable'] || strlen($row['start']) && $row['start'] > time() || strlen($row['stop']) && $row['stop'] < time())
+		$disabled = $row['start'] !== '' && $row['start'] > $time || $row['stop'] !== '' && $row['stop'] < $time;
+
+		if ($row['disable'] || $disabled)
 		{
 			$image .= '_';
 		}
 
-		return sprintf('<div class="list_icon" style="background-image:url(\'%ssystem/themes/%s/icons/%s.svg\')" data-icon="%s.svg" data-icon-disabled="%s.svg">%s</div>', TL_ASSETS_URL, Backend::getTheme(), $image, rtrim($image, '_'), rtrim($image, '_') . '_', $label);
+		return sprintf('<div class="list_icon" style="background-image:url(\'%ssystem/themes/%s/icons/%s.svg\')" data-icon="%s.svg" data-icon-disabled="%s.svg">%s</div>', TL_ASSETS_URL, Backend::getTheme(), $image, $disabled ? $image : rtrim($image, '_'), rtrim($image, '_') . '_', $label);
 	}
 
 

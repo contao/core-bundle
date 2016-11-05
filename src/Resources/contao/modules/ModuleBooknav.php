@@ -135,11 +135,18 @@ class ModuleBooknav extends \Module
 				$intKey = $arrLookup[($current - 1)];
 			}
 
-			$this->Template->hasPrev = true;
-			$this->Template->prevHref = $this->arrPages[$intKey]->getFrontendUrl();
-			$this->Template->prevTitle = \StringUtil::specialchars($this->arrPages[$intKey]->title, true);
-			$this->Template->prevPageTitle = \StringUtil::specialchars($this->arrPages[$intKey]->pageTitle, true);
-			$this->Template->prevLink = $this->arrPages[$intKey]->title;
+			if ($intKey === null)
+			{
+				$this->Template->hasPrev = false;
+			}
+			else
+			{
+				$this->Template->hasPrev = true;
+				$this->Template->prevHref = $this->arrPages[$intKey]->getFrontendUrl();
+				$this->Template->prevTitle = \StringUtil::specialchars($this->arrPages[$intKey]->title, true);
+				$this->Template->prevPageTitle = \StringUtil::specialchars($this->arrPages[$intKey]->pageTitle, true);
+				$this->Template->prevLink = $this->arrPages[$intKey]->title;
+			}
 		}
 
 		// Next page
@@ -154,11 +161,18 @@ class ModuleBooknav extends \Module
 				$intKey = $arrLookup[($current + 1)];
 			}
 
-			$this->Template->hasNext = true;
-			$this->Template->nextHref = $this->arrPages[$intKey]->getFrontendUrl();
-			$this->Template->nextTitle = \StringUtil::specialchars($this->arrPages[$intKey]->title, true);
-			$this->Template->nextPageTitle = \StringUtil::specialchars($this->arrPages[$intKey]->pageTitle, true);
-			$this->Template->nextLink = $this->arrPages[$intKey]->title;
+			if ($intKey === null)
+			{
+				$this->Template->hasNext = false;
+			}
+			else
+			{
+				$this->Template->hasNext = true;
+				$this->Template->nextHref = $this->arrPages[$intKey]->getFrontendUrl();
+				$this->Template->nextTitle = \StringUtil::specialchars($this->arrPages[$intKey]->title, true);
+				$this->Template->nextPageTitle = \StringUtil::specialchars($this->arrPages[$intKey]->pageTitle, true);
+				$this->Template->nextLink = $this->arrPages[$intKey]->title;
+			}
 		}
 	}
 
@@ -183,8 +197,8 @@ class ModuleBooknav extends \Module
 		{
 			$_groups = \StringUtil::deserialize($objPage->groups);
 
-			// Do not show protected pages unless a back end or front end user is logged in
-			if (!$objPage->protected || BE_USER_LOGGED_IN || (is_array($_groups) && count(array_intersect($groups, $_groups))) || $this->showProtected)
+			// Do not show protected pages unless a front end user is logged in
+			if (!$objPage->protected || (is_array($_groups) && count(array_intersect($groups, $_groups))) || $this->showProtected)
 			{
 				$this->arrPages[$objPage->id] = $objPage;
 
