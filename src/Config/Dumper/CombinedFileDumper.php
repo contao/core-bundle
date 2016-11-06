@@ -39,14 +39,14 @@ class CombinedFileDumper implements DumperInterface
     /**
      * @var string
      */
-    private $header = '<?php '; // add one space to prevent the "unexpected $end" error
+    private $header = "<?php\n"; // add a line-break to prevent the "unexpected $end" error
 
     /**
      * Constructor.
      *
-     * @param Filesystem      $filesystem A filesystem abstraction
-     * @param LoaderInterface $loader     A loader to get PHP content from the files
-     * @param string          $cacheDir   The base directory where to put cache files
+     * @param Filesystem      $filesystem
+     * @param LoaderInterface $loader
+     * @param string          $cacheDir
      */
     public function __construct(Filesystem $filesystem, LoaderInterface $loader, $cacheDir)
     {
@@ -58,13 +58,13 @@ class CombinedFileDumper implements DumperInterface
     /**
      * Sets the header for a PHP file (e.g. a file doc block).
      *
-     * @param string $header The file header
+     * @param string $header
      *
-     * @throws \InvalidArgumentException If the file header does not start with an opening PHP tag
+     * @throws \InvalidArgumentException
      */
     public function setHeader($header)
     {
-        if (strpos($header, '<?php') !== 0) {
+        if (0 !== strpos($header, '<?php')) {
             throw new \InvalidArgumentException('The file header must start with an opening PHP tag.');
         }
 

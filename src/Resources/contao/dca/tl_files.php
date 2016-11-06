@@ -204,7 +204,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['importantPartWidth'],
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50'),
+			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50 clr'),
 			'sql'                     => "int(10) NOT NULL default '0'"
 		),
 		'importantPartHeight' => array
@@ -218,7 +218,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['meta'],
 			'inputType'               => 'metaWizard',
-			'eval'                    => array('allowHtml'=>true, 'metaFields'=>array('title'=>'maxlength="255"', 'link'=>'maxlength="255"', 'caption'=>'maxlength="255"')),
+			'eval'                    => array('allowHtml'=>true, 'metaFields'=>array('title'=>'maxlength="255"', 'alt'=>'maxlength="255"', 'link'=>'maxlength="255"', 'caption'=>'maxlength="255"')),
 			'sql'                     => "blob NULL"
 		)
 	)
@@ -445,13 +445,14 @@ class tl_files extends Backend
 	/**
 	 * Check a file name and romanize it
 	 *
-	 * @param mixed $varValue
+	 * @param string                  $varValue
+	 * @param DataContainer|DC_Folder $dc
 	 *
 	 * @return mixed
 	 *
 	 * @throws Exception
 	 */
-	public function checkFilename($varValue)
+	public function checkFilename($varValue, DataContainer $dc)
 	{
 		$varValue = Patchwork\Utf8::toAscii($varValue);
 		$varValue = str_replace('"', '', $varValue);
@@ -459,6 +460,22 @@ class tl_files extends Backend
 		if (strpos($varValue, '/') !== false || preg_match('/\.$/', $varValue))
 		{
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidName']);
+		}
+
+		// Check the length without the file extension
+		if ($dc->activeRecord && $varValue != '')
+		{
+			$intMaxlength = $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['maxlength'];
+
+			if ($dc->activeRecord->type == 'file')
+			{
+				$intMaxlength -= (strlen($dc->activeRecord->extension) + 1);
+			}
+
+			if ($intMaxlength && utf8_strlen($varValue) > $intMaxlength)
+			{
+				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['maxlength'], $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['label'][0], $intMaxlength));
+			}
 		}
 
 		return $varValue;
@@ -612,14 +629,7 @@ class tl_files extends Backend
 	 */
 	public function showFile($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (Input::get('popup'))
-		{
-			return '';
-		}
-		else
-		{
-			return '<a href="contao/popup.php?src=' . base64_encode($row['id']) . '" title="'.StringUtil::specialchars($title).'"'.$attributes.' onclick="Backend.openModalIframe({\'width\':'.$row['popupWidth'].',\'title\':\''.str_replace("'", "\\'", StringUtil::specialchars($row['fileNameEncoded'])).'\',\'url\':this.href,\'height\':'.$row['popupHeight'].'});return false">'.Image::getHtml($icon, $label).'</a> ';
-		}
+		return '<a href="contao/popup.php?src=' . base64_encode($row['id']) . '" title="'.StringUtil::specialchars($title).'"'.$attributes.' onclick="Backend.openModalIframe({\'width\':'.$row['popupWidth'].',\'title\':\''.str_replace("'", "\\'", StringUtil::specialchars($row['fileNameEncoded'])).'\',\'url\':this.href,\'height\':'.$row['popupHeight'].'});return false">'.Image::getHtml($icon, $label).'</a> ';
 	}
 
 
@@ -680,8 +690,15 @@ class tl_files extends Backend
 			}
 		}
 
+		$class = $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['tl_class'] . ' cbx"';
+
+		if (Input::get('act') == 'editAll' || Input::get('act') == 'overrideAll')
+		{
+			$class = str_replace(array('w50', 'clr', 'wizard', 'long', 'm12', 'cbx'), '', $class);
+		}
+
 		return '
-<div class="' . $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['tl_class'] . ' cbx">
+<div class="' . $class . '">
   <div id="ctrl_' . $dc->field . '" class="tl_checkbox_single_container">
     <input type="hidden" name="' . $dc->inputName . '" value=""><input type="checkbox" name="' . $dc->inputName . '" id="opt_' . $dc->field . '_0" class="tl_checkbox" value="1"' . ($blnPublic ? ' checked="checked"' : '') . ' onfocus="Backend.getScrollOffset()"> <label for="opt_' . $dc->field . '_0">' . $GLOBALS['TL_LANG']['tl_files']['protected'][0] . '</label>
   </div>' . (Config::get('showHelp') ? '

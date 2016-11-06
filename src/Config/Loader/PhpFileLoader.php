@@ -23,17 +23,17 @@ class PhpFileLoader extends Loader
     /**
      * Reads the contents of a PHP file stripping the opening and closing PHP tags.
      *
-     * @param string      $file A PHP file path
-     * @param string|null $type The resource type
+     * @param string      $file
+     * @param string|null $type
      *
-     * @return string The PHP code without the PHP tags
+     * @return string
      */
     public function load($file, $type = null)
     {
         $code = rtrim(file_get_contents($file));
 
         // Opening tag
-        if (strncmp($code, '<?php', 5) === 0) {
+        if (0 === strncmp($code, '<?php', 5)) {
             $code = substr($code, 5);
         }
 
@@ -52,7 +52,7 @@ class PhpFileLoader extends Loader
             $code = substr($code, 0, -2);
         }
 
-        return rtrim($code)."\n";
+        return sprintf("\nnamespace {%s\n\n}\n", rtrim($code));
     }
 
     /**

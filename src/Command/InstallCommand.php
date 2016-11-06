@@ -47,6 +47,7 @@ class InstallCommand extends AbstractLockedCommand
      */
     private $emptyDirs = [
         'system',
+        'system/config',
         'templates',
         'web/system',
     ];
@@ -58,7 +59,6 @@ class InstallCommand extends AbstractLockedCommand
         'assets/css',
         'assets/js',
         'system/cache',
-        'system/config',
         'system/modules',
         'system/themes',
         'system/tmp',
@@ -114,7 +114,7 @@ class InstallCommand extends AbstractLockedCommand
     /**
      * Adds an empty directory.
      *
-     * @param string $path The path
+     * @param string $path
      */
     private function addEmptyDir($path)
     {
@@ -142,7 +142,7 @@ class InstallCommand extends AbstractLockedCommand
     /**
      * Adds a directory with a .gitignore file.
      *
-     * @param string $path The path
+     * @param string $path
      */
     private function addIgnoredDir($path)
     {
@@ -163,10 +163,6 @@ class InstallCommand extends AbstractLockedCommand
      */
     private function addInitializePhp()
     {
-        if ($this->fs->exists($this->rootDir.'/system/initialize.php')) {
-            return;
-        }
-
         $this->fs->dumpFile(
             $this->rootDir.'/system/initialize.php',
             <<<'EOF'
@@ -200,6 +196,6 @@ if (!($response instanceof InitializeControllerResponse)) {
 EOF
         );
 
-        $this->io->text("Added the <comment>system/initialize.php</comment> file.\n");
+        $this->io->text("Added/updated the <comment>system/initialize.php</comment> file.\n");
     }
 }

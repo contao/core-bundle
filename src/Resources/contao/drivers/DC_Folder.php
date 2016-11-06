@@ -13,6 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Util\SymlinkUtil;
+use Contao\Image\ResizeConfiguration;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,6 +21,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Provide methods to modify the file system.
+ *
+ * @property string  $path
+ * @property string  $extension
+ * @property boolean $createNewVersion
+ * @property boolean $isDbAssisted
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -438,7 +444,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <input type="hidden" name="FORM_SUBMIT" value="tl_select">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').(($session['search'][$this->strTable]['value'] != '') ? '
 
-<div class="tl_message tl_message_picker">
+<div class="tl_message">
  <p class="tl_info">'.$GLOBALS['TL_LANG']['MSC']['searchExclude'].'</p>
 </div>' : '').($blnClipboard ? '
 
@@ -464,9 +470,9 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			// Submit buttons
 			$arrButtons = array();
 
-			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notDeletable'])
+			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notEditable'])
 			{
-				$arrButtons['delete'] = '<button type="submit" name="delete" id="delete" class="tl_submit" accesskey="d" onclick="return confirm(\''.$GLOBALS['TL_LANG']['MSC']['delAllConfirmFile'].'\')">'.$GLOBALS['TL_LANG']['MSC']['deleteSelected'].'</button>';
+				$arrButtons['edit'] = '<button type="submit" name="edit" id="edit" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['MSC']['editSelected'].'</button>';
 			}
 
 			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notSortable'])
@@ -479,9 +485,9 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				$arrButtons['copy'] = '<button type="submit" name="copy" id="copy" class="tl_submit" accesskey="c">'.$GLOBALS['TL_LANG']['MSC']['copySelected'].'</button>';
 			}
 
-			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notEditable'])
+			if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notDeletable'])
 			{
-				$arrButtons['edit'] = '<button type="submit" name="edit" id="edit" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['MSC']['editSelected'].'</button>';
+				$arrButtons['delete'] = '<button type="submit" name="delete" id="delete" class="tl_submit" accesskey="d" onclick="return confirm(\''.$GLOBALS['TL_LANG']['MSC']['delAllConfirmFile'].'\')">'.$GLOBALS['TL_LANG']['MSC']['deleteSelected'].'</button>';
 			}
 
 			// Call the buttons_callback (see #4691)
@@ -501,12 +507,30 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				}
 			}
 
+			if (count($arrButtons) < 3)
+			{
+				$strButtons = implode(' ', $arrButtons);
+			}
+			else
+			{
+				$strButtons = array_shift($arrButtons) . ' ';
+				$strButtons .= '<div class="split-button">';
+				$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
+
+				foreach ($arrButtons as $strButton)
+				{
+					$strButtons .= '<li>' . $strButton . '</li>';
+				}
+
+				$strButtons .= '</ul></div>';
+			}
+
 			$return .= '
 
 <div class="tl_formbody_submit" style="text-align:right">
 
 <div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
+  ' . $strButtons . '
 </div>
 
 </div>
@@ -835,11 +859,17 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		}
 
 		// Add a log entry
-		$this->log('File or folder "'.$source.'" has been duplicated', __METHOD__, TL_FILES);
+		$this->log('File or folder "'.$source.'" has been copied to "'.$destination.'"', __METHOD__, TL_FILES);
 
 		// Redirect
 		if (!$blnDoNotRedirect)
 		{
+			// Switch to edit mode
+			if (is_file(TL_ROOT . '/' . $destination))
+			{
+				$this->redirect($this->switchToEdit($destination));
+			}
+
 			$this->redirect($this->getReferer());
 		}
 	}
@@ -1038,7 +1068,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		// See #4086
 		if (!class_exists($class))
 		{
-			$class = 'FileUpload';
+			$class = 'DropZone';
 		}
 
 		/** @var FileUpload $objUploader */
@@ -1053,7 +1083,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				// Upload the files
 				$arrUploaded = $objUploader->uploadTo($strFolder);
 
-				if (empty($arrUploaded))
+				if (empty($arrUploaded) && !$objUploader->hasError())
 				{
 					\Message::addError($GLOBALS['TL_LANG']['ERR']['emptyUpload']);
 					$this->reload();
@@ -1129,6 +1159,24 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
+		if (count($arrButtons) < 3)
+		{
+			$strButtons = implode(' ', $arrButtons);
+		}
+		else
+		{
+			$strButtons = array_shift($arrButtons) . ' ';
+			$strButtons .= '<div class="split-button">';
+			$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
+
+			foreach ($arrButtons as $strButton)
+			{
+				$strButtons .= '<li>' . $strButton . '</li>';
+			}
+
+			$strButtons .= '</ul></div>';
+		}
+
 		// Display the upload form
 		return '
 <div id="tl_buttons">
@@ -1142,7 +1190,9 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <input type="hidden" name="MAX_FILE_SIZE" value="'.\Config::get('maxFileSize').'">
 
 <div class="tl_tbox">
-  <h3>'.$GLOBALS['TL_LANG'][$this->strTable]['fileupload'][0].'</h3>'.$objUploader->generateMarkup().'
+  <div class="widget">
+    <h3>'.$GLOBALS['TL_LANG'][$this->strTable]['fileupload'][0].'</h3>'.$objUploader->generateMarkup().'
+  </div>
 </div>
 
 </div>
@@ -1150,7 +1200,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
+  ' . $strButtons . '
 </div>
 
 </div>
@@ -1252,7 +1302,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 			// Render boxes
 			$class = 'tl_tbox';
-			$blnIsFirst = true;
 
 			foreach ($boxes as $v)
 			{
@@ -1270,7 +1319,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					{
 						$objFile = is_dir(TL_ROOT . '/' . $this->intId) ? new \Folder($this->intId) : new \File($this->intId);
 
-						$this->strPath = $objFile->dirname;
+						$this->strPath = str_replace(TL_ROOT . '/', '', $objFile->dirname);
 						$this->strExtension = ($objFile->origext != '') ? '.'.$objFile->origext : '';
 						$this->varValue = $objFile->filename;
 
@@ -1289,13 +1338,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					else
 					{
 						$this->varValue = ($objModel !== null) ? $objModel->$vv : null;
-					}
-
-					// Autofocus the first field
-					if ($blnIsFirst && $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['inputType'] == 'text')
-					{
-						$GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['eval']['autofocus'] = 'autofocus';
-						$blnIsFirst = false;
 					}
 
 					// Call load_callback
@@ -1339,7 +1381,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		// Submit buttons
 		$arrButtons = array();
 		$arrButtons['save'] = '<button type="submit" name="save" id="save" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['MSC']['save'].'</button>';
-		$arrButtons['saveNclose'] = '<button type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c">'.$GLOBALS['TL_LANG']['MSC']['saveNclose'].'</button>';
+
+		if (!\Input::get('nb'))
+		{
+			$arrButtons['saveNclose'] = '<button type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c">'.$GLOBALS['TL_LANG']['MSC']['saveNclose'].'</button>';
+		}
 
 		// Call the buttons_callback (see #4691)
 		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback']))
@@ -1358,6 +1404,24 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
+		if (count($arrButtons) < 3)
+		{
+			$strButtons = implode(' ', $arrButtons);
+		}
+		else
+		{
+			$strButtons = array_shift($arrButtons) . ' ';
+			$strButtons .= '<div class="split-button">';
+			$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
+
+			foreach ($arrButtons as $strButton)
+			{
+				$strButtons .= '<li>' . $strButton . '</li>';
+			}
+
+			$strButtons .= '</ul></div>';
+		}
+
 		// Add the buttons and end the form
 		$return .= '
 </div>
@@ -1365,17 +1429,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
+  ' . $strButtons . '
 </div>
 
 </div>
-</form>
-
-<script>
-  window.addEvent(\'domready\', function() {
-    Theme.focusInput("'.$this->strTable.'");
-  });
-</script>';
+</form>';
 
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
 		$return = $version . '
@@ -1516,7 +1574,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			// Walk through each record
 			foreach ($ids as $id)
 			{
-				$this->intId = md5($id);
+				$this->intId = $id;
 				$this->strPalette = \StringUtil::trimsplit('[;,]', $this->getPalette());
 
 				$objModel = null;
@@ -1550,6 +1608,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				$class = 'tl_box';
 				$formFields = array();
+				$strHash = md5($id);
 
 				foreach ($this->strPalette as $v)
 				{
@@ -1565,15 +1624,15 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					}
 
 					$this->strField = $v;
-					$this->strInputName = $v.'_'.$this->intId;
-					$formFields[] = $v.'_'.$this->intId;
+					$this->strInputName = $v.'_'.$strHash;
+					$formFields[] = $v.'_'.$strHash;
 
 					// Load the current value
 					if ($v == 'name')
 					{
 						$objFile = is_dir(TL_ROOT . '/' . $id) ? new \Folder($id) : new \File($id);
 
-						$this->strPath = $objFile->dirname;
+						$this->strPath = str_replace(TL_ROOT . '/', '', $objFile->dirname);
 						$this->strExtension = ($objFile->origext != '') ? '.'.$objFile->origext : '';
 						$this->varValue = $objFile->filename;
 
@@ -1611,7 +1670,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				// Close box
 				$return .= '
-  <input type="hidden" name="FORM_FIELDS_'.$this->intId.'[]" value="'.\StringUtil::specialchars(implode(',', $formFields)).'">
+  <input type="hidden" name="FORM_FIELDS_'.$strHash.'[]" value="'.\StringUtil::specialchars(implode(',', $formFields)).'">
 </div>';
 
 				// Save the record
@@ -1690,11 +1749,29 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				}
 			}
 
+			if (count($arrButtons) < 3)
+			{
+				$strButtons = implode(' ', $arrButtons);
+			}
+			else
+			{
+				$strButtons = array_shift($arrButtons) . ' ';
+				$strButtons .= '<div class="split-button">';
+				$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
+
+				foreach ($arrButtons as $strButton)
+				{
+					$strButtons .= '<li>' . $strButton . '</li>';
+				}
+
+				$strButtons .= '</ul></div>';
+			}
+
 			// Add the form
 			$return = '
 
 <form action="'.ampersand(\Environment::get('request'), true).'" id="'.$this->strTable.'" class="tl_form" method="post">
-<div class="tl_formbody_edit">
+<div class="tl_formbody_edit nogrid">
 <input type="hidden" name="FORM_SUBMIT" value="'.$this->strTable.'">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">'.($this->noReload ? '
 
@@ -1705,17 +1782,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
+  ' . $strButtons . '
 </div>
 
 </div>
-</form>
-
-<script>
-  window.addEvent(\'domready\', function() {
-    Theme.focusInput("'.$this->strTable.'");
-  });
-</script>';
+</form>';
 
 			// Set the focus if there is an error
 			if ($this->noReload)
@@ -1757,7 +1828,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				if (!$GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['exclude'] && !$GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['eval']['doNotShow'] && (strlen($GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['inputType']) || is_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['input_field_callback'])))
 				{
 					$options .= '
-  <input type="checkbox" name="all_fields[]" id="all_'.$field.'" class="tl_checkbox" value="'.\StringUtil::specialchars($field).'"> <label for="all_'.$field.'" class="tl_checkbox_label">'.(($GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['label'][0] ?: $GLOBALS['TL_LANG']['MSC'][$field][0]).' <span style="color:#999;padding-left:3px">['.$field.']</span>').'</label><br>';
+  <input type="checkbox" name="all_fields[]" id="all_'.$field.'" class="tl_checkbox" value="'.\StringUtil::specialchars($field).'"> <label for="all_'.$field.'" class="tl_checkbox_label">'.(($GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['label'][0] ?: ($GLOBALS['TL_LANG']['MSC'][$field][0] ?: $field)).' <span style="color:#999;padding-left:3px">['.$field.']</span>').'</label><br>';
 				}
 			}
 
@@ -1774,12 +1845,14 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <p class="tl_error">'.$GLOBALS['TL_LANG']['ERR']['general'].'</p>' : '').'
 
 <div class="tl_tbox">
+<div class="widget">
 <fieldset class="tl_checkbox_container">
   <legend'.($blnIsError ? ' class="error"' : '').'>'.$GLOBALS['TL_LANG']['MSC']['all_fields'][0].'</legend>
   <input type="checkbox" id="check_all" class="tl_checkbox" onclick="Backend.toggleCheckboxes(this)"> <label for="check_all" style="color:#a6a6a6"><em>'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</em></label><br>'.$options.'
 </fieldset>'.($blnIsError ? '
 <p class="tl_error">'.$GLOBALS['TL_LANG']['ERR']['all_fields'].'</p>' : ((\Config::get('showHelp') && strlen($GLOBALS['TL_LANG']['MSC']['all_fields'][1])) ? '
 <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['MSC']['all_fields'][1].'</p>' : '')).'
+</div>
 </div>
 
 </div>
@@ -1977,6 +2050,24 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
+		if (count($arrButtons) < 3)
+		{
+			$strButtons = implode(' ', $arrButtons);
+		}
+		else
+		{
+			$strButtons = array_shift($arrButtons) . ' ';
+			$strButtons .= '<div class="split-button">';
+			$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
+
+			foreach ($arrButtons as $strButton)
+			{
+				$strButtons .= '<li>' . $strButton . '</li>';
+			}
+
+			$strButtons .= '</ul></div>';
+		}
+
 		// Add the form
 		return $version . '
 <div id="tl_buttons">
@@ -1988,16 +2079,18 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <input type="hidden" name="FORM_SUBMIT" value="tl_files">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
 <div class="tl_tbox">
-  <h3><label for="ctrl_source">'.$GLOBALS['TL_LANG']['tl_files']['editor'][0].'</label></h3>
-  <textarea name="source" id="ctrl_source" class="tl_textarea monospace" rows="12" cols="80" style="height:400px" onfocus="Backend.getScrollOffset()">' . "\n" . htmlspecialchars($strContent) . '</textarea>' . ((\Config::get('showHelp') && strlen($GLOBALS['TL_LANG']['tl_files']['editor'][1])) ? '
-  <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['tl_files']['editor'][1].'</p>' : '') . '
+  <div class="widget">
+    <h3><label for="ctrl_source">'.$GLOBALS['TL_LANG']['tl_files']['editor'][0].'</label></h3>
+    <textarea name="source" id="ctrl_source" class="tl_textarea monospace" rows="12" cols="80" style="height:400px" onfocus="Backend.getScrollOffset()">' . "\n" . htmlspecialchars($strContent) . '</textarea>' . ((\Config::get('showHelp') && strlen($GLOBALS['TL_LANG']['tl_files']['editor'][1])) ? '
+    <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['tl_files']['editor'][1].'</p>' : '') . '
+  </div>
 </div>
 </div>
 
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  ' . implode(' ', $arrButtons) . '
+  ' . $strButtons . '
 </div>
 
 </div>
@@ -2613,6 +2706,14 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 			$currentEncoded = $this->urlEncode($currentFile);
 			$return .= "\n  " . '<li class="tl_file click2edit toggle_select hover-div"><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing).'px">';
+			$thumbnail .= ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize);
+
+			if ($objFile->width && $objFile->height)
+			{
+				$thumbnail .= ', '.$objFile->width.'x'.$objFile->height.' px';
+			}
+
+			$thumbnail .= ')</span>';
 
 			// Generate the thumbnail
 			if ($objFile->isImage)
@@ -2630,24 +2731,14 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 						$popupHeight = 625 / $objFile->viewWidth * $objFile->viewHeight + 236;
 					}
 
-					$thumbnail .= ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize);
-
-					if ($objFile->width && $objFile->height)
-					{
-						$thumbnail .= ', '.$objFile->width.'x'.$objFile->height.' px';
-					}
-
-					$thumbnail .= ')</span>';
-
 					if (\Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
 					{
-						$imageObj = \Image::create($currentEncoded, array(400, (($objFile->height && $objFile->height < 50) ? $objFile->height : 50), 'box'));
-						$importantPart = $imageObj->getImportantPart();
-						$thumbnail .= '<br>' . \Image::getHtml($imageObj->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px -19px"');
+						$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, 'box'))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -19px"');
+						$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
 
-						if ($importantPart['x'] > 0 || $importantPart['y'] > 0 || $importantPart['width'] < $objFile->width || $importantPart['height'] < $objFile->height)
+						if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
 						{
-							$thumbnail .= ' ' . \Image::getHtml($imageObj->setZoomLevel(100)->setTargetWidth(320)->setTargetHeight((($objFile->height && $objFile->height < 40) ? $objFile->height : 40))->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px 0"');
+							$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
 						}
 					}
 				}
@@ -2655,10 +2746,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					$popupHeight = 386; // dimensionless SVGs are rendered at 300x150px, so the popup needs to be 150px + 236px high
 				}
-			}
-			else
-			{
-				$thumbnail .= ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize).')</span>';
 			}
 
 			$strFileNameEncoded = \StringUtil::convertEncoding(\StringUtil::specialchars(basename($currentFile)), \Config::get('characterSet'));
@@ -2697,6 +2784,21 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	 */
 	protected function panel()
 	{
+		// Reset all filters
+		if (isset($_POST['filter_reset']) && \Input::post('FORM_SUBMIT') == 'tl_filters')
+		{
+			/** @var AttributeBagInterface $objSessionBag */
+			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
+
+			$data = $objSessionBag->all();
+
+			unset($data['search'][$this->strTable]);
+
+			$objSessionBag->replace($data);
+
+			$this->reload();
+		}
+
 		$search = $this->searchMenu();
 
 		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
@@ -2711,7 +2813,8 @@ class DC_Folder extends \DataContainer implements \listable, \editable
   <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
   <div class="tl_panel cf">
     <div class="tl_submit_panel tl_subpanel">
-      <input type="image" name="filter" id="filter" src="' . \Image::getPath('sync.svg') . '" class="tl_img_submit" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '" alt="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['apply']) . '">
+      <button name="filter" id="filter" class="tl_img_submit filter_apply" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['apply'] . '</button>
+      <button name="filter_reset" id="filter_reset" value="1" class="tl_img_submit filter_reset" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['reset'] . '</button>
     </div>'.$search.'
   </div>
 </div>
@@ -2791,7 +2894,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
       <select name="tl_field" class="tl_select' . ($active ? ' active' : '') . '">
         <option value="name">'.($GLOBALS['TL_DCA'][$this->strTable]['fields']['name']['label'][0] ?: (is_array($GLOBALS['TL_LANG']['MSC']['name']) ? $GLOBALS['TL_LANG']['MSC']['name'][0] : $GLOBALS['TL_LANG']['MSC']['name'])).'</option>
       </select>
-      <span> = </span>
+      <span>=</span>
       <input type="search" name="tl_value" class="tl_text' . ($active ? ' active' : '') . '" value="'.\StringUtil::specialchars($session['search'][$this->strTable]['value']).'">
     </div>';
 	}

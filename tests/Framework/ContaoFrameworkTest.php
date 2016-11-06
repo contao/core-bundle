@@ -15,8 +15,10 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Test\TestCase;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Security\Csrf\CsrfTokenManager;
 
 /**
@@ -25,6 +27,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManager;
  * @author Christian Schiffler <https://github.com/discordier>
  * @author Yanick Witschi <https://github.com/toflar>
  * @author Dominik Tomasi <https://github.com/dtomasi>
+ * @author Andreas Schempp <https://github.com/aschempp>
  *
  * @preserveGlobalState disabled
  */
@@ -141,8 +144,49 @@ class ContaoFrameworkTest extends TestCase
         $this->assertNull(TL_MODE);
         $this->assertEquals($this->getRootDir(), TL_ROOT);
         $this->assertNull(TL_REFERER_ID);
-        $this->assertEquals('console', TL_SCRIPT);
+        $this->assertEquals('', TL_SCRIPT);
         $this->assertNull(TL_PATH);
+    }
+
+    /**
+     * Tests initializing the framework with request but without route.
+     *
+     * @runInSeparateProcess
+     */
+    public function testWithoutRoute()
+    {
+        $request = new Request();
+        $request->setLocale('de');
+
+        $routingLoader = $this->getMock('Symfony\Component\Config\Loader\LoaderInterface');
+
+        $routingLoader
+            ->method('load')
+            ->willReturn(new RouteCollection())
+        ;
+
+        $container = $this->mockContainerWithContaoScopes();
+        $container->get('request_stack')->push($request);
+        $container->set('routing.loader', $routingLoader);
+
+        $framework = $this->mockContaoFramework($container->get('request_stack'), new Router($container, []));
+        $framework->setContainer($container);
+        $framework->initialize();
+
+        $this->assertTrue(defined('TL_MODE'));
+        $this->assertTrue(defined('TL_START'));
+        $this->assertTrue(defined('TL_ROOT'));
+        $this->assertTrue(defined('TL_REFERER_ID'));
+        $this->assertTrue(defined('TL_SCRIPT'));
+        $this->assertTrue(defined('BE_USER_LOGGED_IN'));
+        $this->assertTrue(defined('FE_USER_LOGGED_IN'));
+        $this->assertTrue(defined('TL_PATH'));
+        $this->assertEquals(null, TL_MODE);
+        $this->assertEquals($this->getRootDir(), TL_ROOT);
+        $this->assertEquals(null, TL_REFERER_ID);
+        $this->assertEquals(null, TL_SCRIPT);
+        $this->assertEquals('', TL_PATH);
+        $this->assertEquals('de', $GLOBALS['TL_LANGUAGE']);
     }
 
     /**
@@ -453,7 +497,16 @@ class ContaoFrameworkTest extends TestCase
     public function testCreateInstance()
     {
         $class = 'Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass';
-        $instance = $this->mockContaoFramework()->createInstance($class, [1, 2]);
+
+        $instance = $this
+            ->mockContaoFramework(
+                null,
+                null,
+                [],
+                [$class => new $class(1, 2)]
+            )
+            ->createInstance($class, [1, 2])
+        ;
 
         $this->assertInstanceOf($class, $instance);
         $this->assertEquals([1, 2], $instance->constructorArgs);
@@ -465,7 +518,16 @@ class ContaoFrameworkTest extends TestCase
     public function testCreateInstanceSingelton()
     {
         $class = 'Contao\CoreBundle\Test\Fixtures\Adapter\LegacySingletonClass';
-        $instance = $this->mockContaoFramework()->createInstance($class, [1, 2]);
+
+        $instance = $this
+            ->mockContaoFramework(
+                null,
+                null,
+                [],
+                [$class => $class::getInstance(1, 2)]
+            )
+            ->createInstance($class, [1, 2])
+        ;
 
         $this->assertInstanceOf($class, $instance);
         $this->assertEquals([1, 2], $instance->constructorArgs);
@@ -476,12 +538,23 @@ class ContaoFrameworkTest extends TestCase
      */
     public function testGetAdapter()
     {
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            ['LegacyClass' => new Adapter('Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass')]
-        );
+        $class = 'Contao\CoreBundle\Test\Fixtures\Adapter\LegacyClass';
 
-        $this->assertInstanceOf('Contao\CoreBundle\Framework\Adapter', $framework->getAdapter('LegacyClass'));
+        $adapter = $this
+            ->mockContaoFramework(
+                null,
+                null,
+                [$class => new Adapter($class)]
+            )
+            ->getAdapter($class)
+        ;
+
+        $this->assertInstanceOf('Contao\CoreBundle\Framework\Adapter', $adapter);
+
+        $ref = new \ReflectionClass($adapter);
+        $prop = $ref->getProperty('class');
+        $prop->setAccessible(true);
+
+        $this->assertEquals($class, $prop->getValue($adapter));
     }
 }

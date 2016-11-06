@@ -738,7 +738,7 @@ abstract class Widget extends \Controller
 		}
 		elseif ($varValue != '')
 		{
-			return ' ' . $strKey . '="' . $varValue . '"';
+			return ' ' . $strKey . '="' . \StringUtil::specialchars($varValue) . '"';
 		}
 
 		return '';
@@ -1060,6 +1060,14 @@ abstract class Widget extends \Controller
 					if (!\Validator::isGooglePlusId($varInput))
 					{
 						$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidGoogleId'], $this->strLabel));
+					}
+					break;
+
+				// Check whether the current value is a field name
+				case 'fieldname':
+					if (!\Validator::isFieldName($varInput))
+					{
+						$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalidFieldName'], $this->strLabel));
 					}
 					break;
 
@@ -1429,17 +1437,14 @@ abstract class Widget extends \Controller
 			return '';
 		}
 
-		$type = preg_replace('/^([A-Za-z]+)(\(| ).*$/', '$1', $sql);
+		if (stripos($sql, 'NOT NULL') === false)
+		{
+			return null;
+		}
 
-		if (strpos($sql, 'NULL') !== false && strpos($sql, 'NOT NULL') === false)
-		{
-			return null;
-		}
-		elseif (in_array($type, array('binary', 'varbinary', 'tinyblob', 'blob', 'mediumblob', 'longblob')))
-		{
-			return null;
-		}
-		elseif (in_array($type, array('int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal')))
+		$type = strtolower(preg_replace('/^([A-Za-z]+)(\(| ).*$/', '$1', $sql));
+
+		if (in_array($type, array('int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal')))
 		{
 			return 0;
 		}

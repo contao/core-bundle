@@ -132,7 +132,8 @@ class ContentGallery extends \ContentElement
 					'uuid'      => $objFiles->uuid,
 					'name'      => $objFile->basename,
 					'singleSRC' => $objFiles->path,
-					'alt'       => $arrMeta['title'],
+					'title'     => \StringUtil::specialchars($arrMeta['title']),
+					'alt'       => \StringUtil::specialchars($arrMeta['alt']),
 					'imageUrl'  => $arrMeta['link'],
 					'caption'   => $arrMeta['caption']
 				);
@@ -192,7 +193,8 @@ class ContentGallery extends \ContentElement
 						'uuid'      => $objSubfiles->uuid,
 						'name'      => $objFile->basename,
 						'singleSRC' => $objSubfiles->path,
-						'alt'       => $arrMeta['title'],
+						'title'     => \StringUtil::specialchars($arrMeta['title']),
+						'alt'       => \StringUtil::specialchars($arrMeta['alt']),
 						'imageUrl'  => $arrMeta['link'],
 						'caption'   => $arrMeta['caption']
 					);
@@ -235,7 +237,7 @@ class ContentGallery extends \ContentElement
 					if (!empty($tmp) && is_array($tmp))
 					{
 						// Remove all values
-						$arrOrder = array_map(function(){}, array_flip($tmp));
+						$arrOrder = array_map(function () {}, array_flip($tmp));
 
 						// Move the matching elements to their position in $arrOrder
 						foreach ($images as $k=>$v)
@@ -262,6 +264,7 @@ class ContentGallery extends \ContentElement
 
 			case 'random':
 				shuffle($images);
+				$this->Template->isRandomOrder = true;
 				break;
 		}
 
@@ -287,7 +290,7 @@ class ContentGallery extends \ContentElement
 			// Do not index or cache the page if the page number is outside the range
 			if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
 			{
-				throw new PageNotFoundException('Page not found');
+				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
 			}
 
 			// Set limit and offset

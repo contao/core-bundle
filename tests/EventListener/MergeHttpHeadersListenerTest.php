@@ -59,10 +59,10 @@ class MergeHttpHeadersListenerTest extends TestCase
         ;
 
         $listener = new MergeHttpHeadersListener($framework);
-        $listener->setHeaders(['FOOBAR: foobar']);
+        $listener->setHeaders(['Content-Type: text/html']);
         $listener->onKernelResponse($responseEvent);
 
-        $this->assertFalse($responseEvent->getResponse()->headers->has('FOOBAR'));
+        $this->assertFalse($responseEvent->getResponse()->headers->has('Content-Type'));
     }
 
     /**
@@ -87,22 +87,22 @@ class MergeHttpHeadersListenerTest extends TestCase
         ;
 
         $listener = new MergeHttpHeadersListener($framework);
-        $listener->setHeaders(['FOOBAR: content']);
+        $listener->setHeaders(['Content-Type: text/html']);
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
 
-        $this->assertTrue($response->headers->has('FOOBAR'));
-        $this->assertSame('content', $response->headers->get('FOOBAR'));
+        $this->assertTrue($response->headers->has('Content-Type'));
+        $this->assertSame('text/html', $response->headers->get('Content-Type'));
     }
 
     /**
-     * Tests that existing headers are not overriden.
+     * Tests that multi-value headers are not overriden.
      */
-    public function testHeadersAreNotOverridenIfAlreadyPresentInResponse()
+    public function testMultiValueHeadersAreNotOverriden()
     {
         $response = new Response();
-        $response->headers->set('FOOBAR', 'content');
+        $response->headers->set('Set-Cookie', 'content');
 
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -121,16 +121,73 @@ class MergeHttpHeadersListenerTest extends TestCase
         ;
 
         $listener = new MergeHttpHeadersListener($framework);
-        $listener->setHeaders(['FOOBAR: new-content']);
+        $listener->setHeaders(['set-cookie: new-content']); // test a lower-case key here
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
 
-        $this->assertTrue($response->headers->has('FOOBAR'));
+        $this->assertTrue($response->headers->has('Set-Cookie'));
 
-        $allHeaders = $response->headers->get('FOOBAR', null, false);
+        $allHeaders = $response->headers->get('Set-Cookie', null, false);
 
         $this->assertSame('content', $allHeaders[0]);
         $this->assertSame('new-content', $allHeaders[1]);
+    }
+
+    /**
+     * Tests that multi-value headers can be added and removed.
+     */
+    public function testAddingAndRemovingMultiHeaders()
+    {
+        $listener = new MergeHttpHeadersListener($this->mockContaoFramework());
+
+        $this->assertEquals(
+            $listener->getMultiHeaders(),
+            [
+                'set-cookie',
+                'link',
+                'vary',
+                'pragma',
+                'cache-control',
+            ]
+        );
+
+        $listener->removeMultiHeader('cache-control');
+
+        $this->assertEquals(
+            $listener->getMultiHeaders(),
+            [
+                'set-cookie',
+                'link',
+                'vary',
+                'pragma',
+            ]
+        );
+
+        $listener->addMultiHeader('dummy');
+
+        $this->assertEquals(
+            $listener->getMultiHeaders(),
+            [
+                'set-cookie',
+                'link',
+                'vary',
+                'pragma',
+                'dummy',
+            ]
+        );
+
+        $listener->setMultiHeader(['set-cookie', 'link', 'vary', 'pragma', 'cache-control']);
+
+        $this->assertEquals(
+            $listener->getMultiHeaders(),
+            [
+                'set-cookie',
+                'link',
+                'vary',
+                'pragma',
+                'cache-control',
+            ]
+        );
     }
 }

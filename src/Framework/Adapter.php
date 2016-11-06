@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Framework;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  *
- * @internal Do not instantiate this class in your code. Use ContaoFramework::getAdapter() instead.
+ * @internal Do not instantiate this class in your code; use ContaoFramework::getAdapter() instead
  */
 class Adapter
 {
@@ -27,7 +27,7 @@ class Adapter
     /**
      * Constructor.
      *
-     * @param string $class The fully qualified class name
+     * @param string $class
      */
     public function __construct($class)
     {
@@ -37,10 +37,10 @@ class Adapter
     /**
      * Calls a method of the adapted class.
      *
-     * @param string $name      The method name
-     * @param array  $arguments Optional arguments
+     * @param string $name
+     * @param array  $arguments
      *
-     * @return mixed The return value of the original method
+     * @return mixed
      */
     public function __call($name, array $arguments = [])
     {

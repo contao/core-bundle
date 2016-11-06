@@ -139,15 +139,7 @@ abstract class Controller extends \System
 							foreach ($arrThemeTemplates as $strFile)
 							{
 								$strTemplate = basename($strFile, strrchr($strFile, '.'));
-
-								if (!isset($arrTemplates[$strTemplate]))
-								{
-									$arrTemplates[$strTemplate][] = $objTheme->name;
-								}
-								else
-								{
-									$arrTemplates[$strTemplate][] = $objTheme->name;
-								}
+								$arrTemplates[$strTemplate][] = $objTheme->name;
 							}
 						}
 					}
@@ -218,13 +210,13 @@ abstract class Controller extends \System
 					// Send a 404 header if there is no published article
 					if (null === $objArticle)
 					{
-						throw new PageNotFoundException('Page not found');
+						throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
 					}
 
 					// Send a 403 header if the article cannot be accessed
 					if (!static::isVisibleElement($objArticle))
 					{
-						throw new AccessDeniedException('Access denied');
+						throw new AccessDeniedException('Access denied: ' . \Environment::get('uri'));
 					}
 
 					// Add the "first" and "last" classes (see #2583)
@@ -643,7 +635,7 @@ abstract class Controller extends \System
 		$blnReturn = true;
 
 		// Only apply the restrictions in the front end
-		if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN)
+		if (TL_MODE == 'FE')
 		{
 			// Protected element
 			if ($objElement->protected)
@@ -753,6 +745,11 @@ abstract class Controller extends \System
 			}
 		}
 
+		global $objPage;
+
+		$objLayout = \LayoutModel::findByPk($objPage->layoutId);
+		$blnCombineScripts = ($objLayout === null) ? false : $objLayout->combineScripts;
+
 		$arrReplace['[[TL_BODY]]'] = $strScripts;
 		$strScripts = '';
 
@@ -811,7 +808,17 @@ abstract class Controller extends \System
 		// Create the aggregated style sheet
 		if ($objCombiner->hasEntries())
 		{
-			$strScripts .= \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . "\n";
+			if ($blnCombineScripts)
+			{
+				$strScripts .= \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . "\n";
+			}
+			else
+			{
+				foreach ($objCombiner->getFileUrls() as $strUrl)
+				{
+					$strScripts .= \Template::generateStyleTag($strUrl, 'all') . "\n";
+				}
+			}
 		}
 
 		$arrReplace['[[TL_CSS]]'] = $strScripts;
@@ -845,12 +852,36 @@ abstract class Controller extends \System
 			// Create the aggregated script and add it before the non-static scripts (see #4890)
 			if ($objCombiner->hasEntries())
 			{
-				$strScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . "\n" . $strScripts;
+				if ($blnCombineScripts)
+				{
+					$strScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . "\n" . $strScripts;
+				}
+				else
+				{
+					$arrReversed = array_reverse($objCombiner->getFileUrls());
+
+					foreach ($arrReversed as $strUrl)
+					{
+						$strScripts = \Template::generateScriptTag($strUrl) . "\n" . $strScripts;
+					}
+				}
 			}
 
 			if ($objCombinerAsync->hasEntries())
 			{
-				$strScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . "\n" . $strScripts;
+				if ($blnCombineScripts)
+				{
+					$strScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . "\n" . $strScripts;
+				}
+				else
+				{
+					$arrReversed = array_reverse($objCombinerAsync->getFileUrls());
+
+					foreach ($arrReversed as $strUrl)
+					{
+						$strScripts = \Template::generateScriptTag($strUrl, true) . "\n" . $strScripts;
+					}
+				}
 			}
 		}
 
@@ -997,7 +1028,7 @@ abstract class Controller extends \System
 		// Make the location an absolute URL
 		if (!preg_match('@^https?://@i', $strLocation))
 		{
-			$strLocation = \Environment::get('base') . $strLocation;
+			$strLocation = \Environment::get('base') . ltrim($strLocation, '/');
 		}
 
 		// Ajax request
@@ -1050,18 +1081,13 @@ abstract class Controller extends \System
 	 * @param boolean $blnFixDomain Check the domain of the target page and append it if necessary
 	 *
 	 * @return string An URL that can be used in the front end
+	 *
+	 * @deprecated Deprecated since Contao 4.2, to be removed in Contao 5.0.
+	 *             Use the contao.routing.url_generator service or PageModel::getFrontendUrl() instead.
 	 */
 	public static function generateFrontendUrl(array $arrRow, $strParams=null, $strForceLang=null, $blnFixDomain=false)
 	{
-		if ($strForceLang !== null)
-		{
-			@trigger_error('Using Controller::generateFrontendUrl() with $strForceLang has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-		}
-
-		if ($blnFixDomain !== true)
-		{
-			@trigger_error('Using Controller::generateFrontendUrl() without $blnFixDomain has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-		}
+		@trigger_error('Using Controller::generateFrontendUrl() has been deprecated and will no longer work in Contao 5.0. Use the contao.routing.url_generator service or PageModel::getFrontendUrl() instead.', E_USER_DEPRECATED);
 
 		if (!isset($arrRow['rootId']))
 		{
@@ -1078,19 +1104,7 @@ abstract class Controller extends \System
 			}
 		}
 
-		$objRouter = \System::getContainer()->get('router');
 		$arrParams = [];
-		$strRoute = 'contao_frontend';
-
-		// Correctly handle the "index" alias (see #3961)
-		if ($arrRow['alias'] == 'index' && $strParams == '')
-		{
-			$strRoute = 'contao_index';
-		}
-		else
-		{
-			$arrParams['alias'] = ($arrRow['alias'] ?: $arrRow['id']) . $strParams;
-		}
 
 		// Set the language
 		if ($strForceLang != '')
@@ -1113,8 +1127,21 @@ abstract class Controller extends \System
 			$arrParams['_locale'] = $objPage->rootLanguage;
 		}
 
-		$strUrl = $objRouter->generate($strRoute, $arrParams);
-		$strUrl = substr($strUrl, strlen(\Environment::get('path')) + 1);
+		// Add the domain if it differs from the current one (see #3765 and #6927)
+		if ($blnFixDomain)
+		{
+			$arrParams['_domain'] = $arrRow['domain'];
+			$arrParams['_ssl'] = (bool) $arrRow['rootUseSSL'];
+		}
+
+		$objUrlGenerator = \System::getContainer()->get('contao.routing.url_generator');
+		$strUrl = $objUrlGenerator->generate(($arrRow['alias'] ?: $arrRow['id']) . $strParams, $arrParams);
+
+		// Remove path from absolute URLs
+		if (0 === strpos($strUrl, '/'))
+		{
+			$strUrl = substr($strUrl, strlen(\Environment::get('path')) + 1);
+		}
 
 		// Decode sprintf placeholders
 		if (strpos($strParams, '%') !== false)
@@ -1126,12 +1153,6 @@ abstract class Controller extends \System
 			{
 				$strUrl = str_replace('%25' . $v, '%' . $v, $strUrl);
 			}
-		}
-
-		// Add the domain if it differs from the current one (see #3765 and #6927)
-		if ($blnFixDomain && !empty($arrRow['domain']) && $arrRow['domain'] != \Environment::get('host'))
-		{
-			$strUrl = ($arrRow['rootUseSSL'] ? 'https://' : 'http://') . $arrRow['domain'] . \Environment::get('path') . '/' . $strUrl;
 		}
 
 		// HOOK: add custom logic
@@ -1485,8 +1506,14 @@ abstract class Controller extends \System
 
 		try
 		{
-			$src = \Image::create($arrItem['singleSRC'], $size)->executeResize()->getResizedPath();
-			$picture = \Picture::create($arrItem['singleSRC'], $size)->getTemplateData();
+			$src = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $arrItem['singleSRC'], $size)->getUrl(TL_ROOT);
+			$picture = \System::getContainer()->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $arrItem['singleSRC'], $size);
+
+			$picture = array
+			(
+				'img' => $picture->getImg(TL_ROOT),
+				'sources' => $picture->getSources(TL_ROOT)
+			);
 
 			if ($src !== $arrItem['singleSRC'])
 			{
@@ -1509,7 +1536,12 @@ abstract class Controller extends \System
 		}
 
 		$picture['alt'] = \StringUtil::specialchars($arrItem['alt']);
-		$picture['title'] = \StringUtil::specialchars($arrItem['title']);
+
+		// Only add the title if the image is not part of an image link
+		if (empty($arrItem['imageUrl']) && empty($arrItem['fullsize']))
+		{
+			$picture['title'] = \StringUtil::specialchars($arrItem['title']);
+		}
 
 		$objTemplate->picture = $picture;
 
@@ -1520,7 +1552,7 @@ abstract class Controller extends \System
 		}
 
 		// Float image
-		if ($arrItem['floating'] != '')
+		if ($arrItem['floating'])
 		{
 			$objTemplate->floatClass = ' float_' . $arrItem['floating'];
 		}
@@ -1529,7 +1561,7 @@ abstract class Controller extends \System
 		$strHrefKey = ($objTemplate->href != '') ? 'imageHref' : 'href';
 
 		// Image link
-		if ($arrItem['imageUrl'] != '' && TL_MODE == 'FE')
+		if ($arrItem['imageUrl'] && TL_MODE == 'FE')
 		{
 			$objTemplate->$strHrefKey = $arrItem['imageUrl'];
 			$objTemplate->attributes = '';
@@ -1565,7 +1597,7 @@ abstract class Controller extends \System
 		$objTemplate->src = TL_FILES_URL . $src;
 		$objTemplate->alt = \StringUtil::specialchars($arrItem['alt']);
 		$objTemplate->title = \StringUtil::specialchars($arrItem['title']);
-		$objTemplate->linkTitle = $objTemplate->title;
+		$objTemplate->linkTitle = \StringUtil::specialchars($arrItem['linkTitle'] ?: $arrItem['title']);
 		$objTemplate->fullsize = $arrItem['fullsize'] ? true : false;
 		$objTemplate->addBefore = ($arrItem['floating'] != 'below');
 		$objTemplate->margin = static::generateMargin($arrMargin);
@@ -1656,15 +1688,20 @@ abstract class Controller extends \System
 
 				$arrEnclosures[] = array
 				(
-					'link'      => $arrMeta['title'],
-					'filesize'  => static::getReadableSize($objFile->filesize),
+					'id'        => $objFiles->id,
+					'uuid'      => $objFiles->uuid,
+					'name'      => $objFile->basename,
 					'title'     => \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
+					'link'      => $arrMeta['title'],
+					'caption'   => $arrMeta['caption'],
 					'href'      => $strHref,
-					'enclosure' => $objFiles->path,
+					'filesize'  => static::getReadableSize($objFile->filesize),
 					'icon'      => \Image::getPath($objFile->icon),
 					'mime'      => $objFile->mime,
+					'meta'      => $arrMeta,
 					'extension' => $objFile->extension,
-					'meta'      => $arrMeta
+					'path'      => $objFile->dirname,
+					'enclosure' => $objFiles->path // backwards compatibility
 				);
 			}
 		}
@@ -1707,7 +1744,8 @@ abstract class Controller extends \System
 			}
 			else
 			{
-				define($strConstant, '//' . preg_replace('@https?://@', '', $url) . \Environment::get('path') . '/');
+				$strProtocol = (($objPage !== null && $objPage->rootUseSSL) || \Environment::get('ssl')) ? 'https://' : 'http://';
+				define($strConstant, $strProtocol . preg_replace('@https?://@', '', $url) . \Environment::get('path') . '/');
 			}
 		}
 

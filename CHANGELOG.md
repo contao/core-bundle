@@ -1,24 +1,23 @@
 # Contao core bundle change log
 
-### 4.2.0-RC1 (2016-05-XX)
+### 4.3.0-beta1 (2016-XX-XX)
 
- * Support subpalettes in subpalettes (see #450).
- * Add keys to the cronjobs array (see #440).
-
-### 4.2.0-beta1 (2016-04-25)
-
- * Remove the internal cache routines from the maintenance module (see #459).
- * Modernize the back end theme and use SVG icons (see contao/core#4608).
- * Add the PaletteManipulator class to modify DCA palettes (see #474).
- * Optimize the jQuery and MooTools templates (see contao/core#8017).
- * Show the record ID and table name in the diff view (see contao/core#5800).
- * Add a "reset filters" button (see contao/core#6239).
- * Support filters in the tree view (see contao/core#7074).
- * Recursively replace insert tags (see #473).
- * Add the Vimeo content element (see contao/core#8219).
- * Improve the YouTube element (see contao/core#7514).
- * Update the Piwik tracking code (see contao/core#8229).
- * Use instanceof to check the return value of Model::getRelated() (see #451).
- * Use the Composer class loader to load the Contao classes (see #437).
- * Add the "ignoreFePreview" flag to the model classes (see #452).
- * Clean up the code of the file selector (see #456).
+ * Set the secure cookie flag when using SSL (see contao/core#8474).
+ * Allow to select a custom form template (see contao/core#8454).
+ * Do not show protected elements if "show unpublished elements" is enabled (see contao/core#8149).
+ * Scroll form error messages into view (see contao/core#8044).
+ * Add a "title" field to the meta wizard (see #601).
+ * Support using namespaces and use statements in DCA and config files (see contao/core#8530).
+ * Make the back end navigation keyboard navigable (see contao/core#8526).
+ * Correctly set host and scheme in the URL generator (see #592).
+ * Add the "save and duplicate" button (see contao/core#8510).
+ * Add more flexible custom layout sections (see contao/core#6630).
+ * Make all wizards sortable via keyboard (see #583).
+ * Add CSS classes to image sizes (see #555).
+ * Improve the responsiveness of the back end theme.
+ * Provide an image service to handle image and picture elements (see #342).
+ * Allow to adjust the Contao configuration by adding settings under "contao.localconfig" (see #521).
+ * Make script combination optional in case the website supports HTTP/2 (see #484).
+ * Automatically find the template files.
+ * Make the legacy configuration files optional (see #521).
+ * Move the analytics templates to the head section (see contao/core#8182).

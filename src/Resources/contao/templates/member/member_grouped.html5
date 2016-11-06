@@ -7,7 +7,7 @@
   <?php endif; ?>
 
   <?php if ($this->message): ?>
-    <?= $this->message ?>
+    <p class="tl_confirm"><?= $this->message ?></p>
   <?php endif; ?>
 
   <form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>">
@@ -29,6 +29,14 @@
       </div>
     </div>
   </form>
+
+  <?php if ($this->hasError): ?>
+    <script>
+      try {
+        window.scrollTo(null, parseInt($('<?php echo $this->formId; ?>').getElement('p.error').getPosition().y - 40));
+      } catch(e) {}
+    </script>
+  <?php endif; ?>
 
 </div>
 <!-- indexer::continue -->

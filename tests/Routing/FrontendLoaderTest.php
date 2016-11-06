@@ -106,11 +106,6 @@ class FrontendLoaderTest extends \PHPUnit_Framework_TestCase
             '/foobar.html',
             $router->generate('contao_frontend', ['alias' => 'foobar'])
         );
-
-        $this->assertEquals(
-            '/foobar.html',
-            $router->generate('contao_frontend', ['alias' => 'foobar', '_locale' => 'en'])
-        );
     }
 
     /**
@@ -155,11 +150,6 @@ class FrontendLoaderTest extends \PHPUnit_Framework_TestCase
             '/',
             $router->generate('contao_index')
         );
-
-        $this->assertEquals(
-            '/',
-            $router->generate('contao_index', ['_locale' => 'en'])
-        );
     }
 
     /**
@@ -194,10 +184,10 @@ class FrontendLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Generates a router using the given RouteCollection.
      *
-     * @param RouteCollection $collection The route collection
-     * @param string          $urlSuffix  The URL suffix
+     * @param RouteCollection $collection
+     * @param string          $urlSuffix
      *
-     * @return Router The router object
+     * @return Router
      */
     private function getRouter(RouteCollection $collection, $urlSuffix = '.html')
     {

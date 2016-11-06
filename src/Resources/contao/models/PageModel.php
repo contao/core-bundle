@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 /**
@@ -51,6 +52,7 @@ use Contao\CoreBundle\Exception\NoRootPageFoundException;
  * @property integer $mobileLayout
  * @property boolean $includeCache
  * @property integer $cache
+ * @property integer $clientCache
  * @property boolean $includeChmod
  * @property integer $cuser
  * @property integer $cgroup
@@ -86,6 +88,7 @@ use Contao\CoreBundle\Exception\NoRootPageFoundException;
  * @property array   $subpages
  * @property string  $outputFormat
  * @property string  $outputVariant
+ * @property integer $layoutId
  * @property boolean $hasJQuery
  * @property boolean $hasMooTools
  * @property boolean $isMobile
@@ -500,9 +503,7 @@ class PageModel extends \Model
 		}
 
 		// Remove everything that is not an alias
-		$arrAliases = array_filter(array_map(function($v) {
-			return preg_match('/^[\w\/.-]+$/u', $v) ? $v : null;
-		}, $arrAliases));
+		$arrAliases = array_filter(array_map(function ($v) { return preg_match('/^[\w\/.-]+$/u', $v) ? $v : null; }, $arrAliases));
 
 		// Return if nothing is left
 		if (empty($arrAliases))
@@ -566,7 +567,7 @@ class PageModel extends \Model
 	{
 		$time = \Date::floorToMinute();
 
-		$objSubpages = \Database::getInstance()->prepare("SELECT p1.*, (SELECT COUNT(*) FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type!='error_403' AND p2.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p2.hide='' OR sitemap='map_always')" : " AND p2.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p2.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p2.start='' OR p2.start<='$time') AND (p2.stop='' OR p2.stop>'" . ($time + 60) . "') AND p2.published='1'" : "") . ") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type!='error_403' AND p1.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p1.hide='' OR sitemap='map_always')" : " AND p1.hide=''") : "") . ((FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN) ? " AND p1.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p1.start='' OR p1.start<='$time') AND (p1.stop='' OR p1.stop>'" . ($time + 60) . "') AND p1.published='1'" : "") . " ORDER BY p1.sorting")
+		$objSubpages = \Database::getInstance()->prepare("SELECT p1.*, (SELECT COUNT(*) FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type!='error_403' AND p2.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p2.hide='' OR sitemap='map_always')" : " AND p2.hide=''") : "") . (FE_USER_LOGGED_IN ? " AND p2.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p2.start='' OR p2.start<='$time') AND (p2.stop='' OR p2.stop>'" . ($time + 60) . "') AND p2.published='1'" : "") . ") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type!='error_403' AND p1.type!='error_404'" . (!$blnShowHidden ? ($blnIsSitemap ? " AND (p1.hide='' OR sitemap='map_always')" : " AND p1.hide=''") : "") . (FE_USER_LOGGED_IN ? " AND p1.guests=''" : "") . (!BE_USER_LOGGED_IN ? " AND (p1.start='' OR p1.start<='$time') AND (p1.stop='' OR p1.stop>'" . ($time + 60) . "') AND p1.published='1'" : "") . " ORDER BY p1.sorting")
 											   ->execute($intPid);
 
 		if ($objSubpages->numRows < 1)
@@ -596,7 +597,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ") AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
 
-		if (FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN)
+		if (FE_USER_LOGGED_IN)
 		{
 			$arrColumns[] = "$t.guests=''";
 		}
@@ -629,7 +630,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
 
-		if (FE_USER_LOGGED_IN && !BE_USER_LOGGED_IN)
+		if (FE_USER_LOGGED_IN)
 		{
 			$arrColumns[] = "$t.guests=''";
 		}
@@ -659,6 +660,17 @@ class PageModel extends \Model
 	 */
 	public static function findPublishedFallbackByHostname($strHost, array $arrOptions=array())
 	{
+		// Try to load from the registry (see #8544)
+		if (empty($arrOptions))
+		{
+			$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $strHost, 'contao.dns-fallback');
+
+			if ($objModel !== null)
+			{
+				return $objModel;
+			}
+		}
+
 		$t = static::$strTable;
 		$arrColumns = array("$t.dns=? AND $t.fallback='1'");
 
@@ -772,6 +784,40 @@ class PageModel extends \Model
 
 
 	/**
+	 * Register the contao.dns-fallback alias when the model is attached to the registry
+	 *
+	 * @param Model\Registry $registry The model registry
+	 */
+	public function onRegister(Model\Registry $registry)
+	{
+		parent::onRegister($registry);
+
+		// Register this model as being the fallback page for a given dns
+		if ($this->fallback && $this->type == 'root' && !$registry->isRegisteredAlias($this, 'contao.dns-fallback', $this->dns))
+		{
+			$registry->registerAlias($this, 'contao.dns-fallback', $this->dns);
+		}
+	}
+
+
+	/**
+	 * Unregister the contao.dns-fallback alias when the model is detached from the registry
+	 *
+	 * @param Model\Registry $registry The model registry
+	 */
+	public function onUnregister(Model\Registry $registry)
+	{
+		parent::onUnregister($registry);
+
+		// Unregister the fallback page
+		if ($this->fallback && $this->type == 'root' && $registry->isRegisteredAlias($this, 'contao.dns-fallback', $this->dns))
+		{
+			$registry->unregisterAlias($this, 'contao.dns-fallback', $this->dns);
+		}
+	}
+
+
+	/**
 	 * Get the details of a page including inherited parameters
 	 *
 	 * @return PageModel The page model
@@ -792,6 +838,7 @@ class PageModel extends \Model
 		$this->layout = $this->includeLayout ? $this->layout : false;
 		$this->mobileLayout = $this->includeLayout ? $this->mobileLayout : false;
 		$this->cache = $this->includeCache ? $this->cache : false;
+		$this->clientCache = $this->includeCache ? $this->clientCache : false;
 
 		$pid = $this->pid;
 		$type = $this->type;
@@ -840,9 +887,10 @@ class PageModel extends \Model
 					}
 
 					// Cache
-					if ($objParentPage->includeCache && $this->cache === false)
+					if ($objParentPage->includeCache)
 					{
-						$this->cache = $objParentPage->cache;
+						$this->cache = $this->cache ?: $objParentPage->cache;
+						$this->clientCache = $this->clientCache ?: $objParentPage->clientCache;
 					}
 
 					// Layout
@@ -925,12 +973,6 @@ class PageModel extends \Model
 
 		$this->trail = array_reverse($trail);
 
-		// Do not cache protected pages
-		if ($this->protected)
-		{
-			$this->cache = 0;
-		}
-
 		// Use the global date format if none is set (see #6104)
 		if ($this->dateFormat == '')
 		{
@@ -968,7 +1010,30 @@ class PageModel extends \Model
 			@trigger_error('Using PageModel::getFrontendUrl() with $strForceLang has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 		}
 
-		return \Controller::generateFrontendUrl($this->loadDetails()->row(), $strParams, $strForceLang, true);
+		$this->loadDetails();
+
+		$objUrlGenerator = \System::getContainer()->get('contao.routing.url_generator');
+
+		$strUrl = $objUrlGenerator->generate
+		(
+			($this->alias ?: $this->id) . $strParams,
+			array
+			(
+				'_locale' => ($strForceLang ?: $this->rootLanguage),
+				'_domain' => $this->domain,
+				'_ssl' => (bool) $this->rootUseSSL,
+			)
+		);
+
+		// Make the URL relative to the base path
+		if (0 === strpos($strUrl, '/'))
+		{
+			$strUrl = substr($strUrl, strlen(\Environment::get('path')) + 1);
+		}
+
+		$strUrl = $this->applyLegacyLogic($strUrl, $strParams);
+
+		return $strUrl;
 	}
 
 
@@ -981,11 +1046,63 @@ class PageModel extends \Model
 	 */
 	public function getAbsoluteUrl($strParams=null)
 	{
-		$strUrl = \Controller::generateFrontendUrl($this->loadDetails()->row(), $strParams, null, true);
+		$this->loadDetails();
 
-		if (strncmp($strUrl, 'http://', 7) !== 0 && strncmp($strUrl, 'https://', 8) !== 0)
+		$objUrlGenerator = \System::getContainer()->get('contao.routing.url_generator');
+
+		$strUrl = $objUrlGenerator->generate
+		(
+			($this->alias ?: $this->id) . $strParams,
+			array
+			(
+				'_locale' => $this->rootLanguage,
+				'_domain' => $this->domain,
+				'_ssl' => (bool) $this->rootUseSSL,
+			),
+			UrlGeneratorInterface::ABSOLUTE_URL
+		);
+
+		$strUrl = $this->applyLegacyLogic($strUrl, $strParams);
+
+		return $strUrl;
+	}
+
+
+	/**
+	 * Modifies a URL from the URL generator.
+	 *
+	 * @param string $strUrl
+	 * @param string $strParams
+	 *
+	 * @return string
+	 */
+	private function applyLegacyLogic($strUrl, $strParams)
+	{
+		// Decode sprintf placeholders
+		if (strpos($strParams, '%') !== false)
 		{
-			$strUrl = ($this->rootUseSSL ? 'https://' : 'http://') . \Environment::get('host') . TL_PATH . '/' . $strUrl;
+			@trigger_error('Using sprintf placeholders in URLs has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
+			$arrMatches = array();
+			preg_match_all('/%([sducoxXbgGeEfF])/', $strParams, $arrMatches);
+
+			foreach (array_unique($arrMatches[1]) as $v)
+			{
+				$strUrl = str_replace('%25' . $v, '%' . $v, $strUrl);
+			}
+		}
+
+		// HOOK: add custom logic
+		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))
+		{
+			@trigger_error('Using the "generateFrontendUrl" hook has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
+			foreach ($GLOBALS['TL_HOOKS']['generateFrontendUrl'] as $callback)
+			{
+				$strUrl = \System::importStatic($callback[0])->{$callback[1]}($this->row(), $strParams, $strUrl);
+			}
+
+			return $strUrl;
 		}
 
 		return $strUrl;

@@ -14,7 +14,6 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\FrontendUser;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,19 +36,17 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * Constructor.
      *
-     * @param ContainerInterface       $container The service container
-     * @param ContaoFrameworkInterface $framework The Contao framework service
+     * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFrameworkInterface $framework)
     {
-        $this->container = $container;
         $this->framework = $framework;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @return BackendUser|FrontendUser The user object
+     * @return BackendUser|FrontendUser
      */
     public function loadUserByUsername($username)
     {
@@ -92,9 +89,9 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * Checks if the given username can be mapped to a front end user.
      *
-     * @param string $username The username
+     * @param string $username
      *
-     * @return bool True if the username can be mapped to a front end user
+     * @return bool
      */
     private function isFrontendUsername($username)
     {
@@ -104,9 +101,9 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * Checks if the given username can be mapped to a back end user.
      *
-     * @param string $username The username
+     * @param string $username
      *
-     * @return bool True if the username can be mapped to a back end user
+     * @return bool
      */
     private function isBackendUsername($username)
     {

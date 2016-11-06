@@ -26,7 +26,7 @@ class ScriptHandler
     /**
      * Adds the Contao directories.
      *
-     * @param Event $event The event object
+     * @param Event $event
      */
     public static function addDirectories(Event $event)
     {
@@ -36,7 +36,7 @@ class ScriptHandler
     /**
      * Generates the symlinks.
      *
-     * @param Event $event The event object
+     * @param Event $event
      */
     public static function generateSymlinks(Event $event)
     {
@@ -46,7 +46,7 @@ class ScriptHandler
     /**
      * Sets the environment variable for the random secret.
      *
-     * @param Event $event The event object
+     * @param Event $event
      */
     public static function generateRandomSecret(Event $event)
     {
@@ -66,10 +66,10 @@ class ScriptHandler
     /**
      * Executes a command.
      *
-     * @param string $cmd   The command
-     * @param Event  $event The event object
+     * @param string $cmd
+     * @param Event  $event
      *
-     * @throws \RuntimeException If the PHP executable cannot be found or the command cannot be executed
+     * @throws \RuntimeException
      */
     private static function executeCommand($cmd, Event $event)
     {
@@ -79,7 +79,15 @@ class ScriptHandler
             throw new \RuntimeException('The php executable could not be found.');
         }
 
-        $process = new Process(sprintf('%s app/console --ansi %s', $phpPath, $cmd));
+        $process = new Process(
+            sprintf(
+                '%s bin/console%s %s%s',
+                $phpPath,
+                $event->getIO()->isDecorated() ? ' --ansi' : '',
+                $cmd,
+                self::getVerbosityFlag($event)
+            )
+        );
 
         $process->run(
             function ($type, $buffer) use ($event) {
@@ -93,11 +101,37 @@ class ScriptHandler
     }
 
     /**
+     * Returns the verbosity flag depending on the console IO verbosity.
+     *
+     * @param Event $event
+     *
+     * @return string
+     */
+    private static function getVerbosityFlag(Event $event)
+    {
+        $io = $event->getIO();
+
+        switch (true) {
+            case $io->isVerbose():
+                return ' -v';
+
+            case $io->isVeryVerbose():
+                return ' -vv';
+
+            case $io->isDebug():
+                return ' -vvv';
+
+            default:
+                return '';
+        }
+    }
+
+    /**
      * Checks if there is at least one config file defined but none of the files exists.
      *
-     * @param array $config The incenteev-parameters configuration
+     * @param array $config
      *
-     * @return bool True if there is at least one config file defined but none of the files exists
+     * @return bool
      */
     private static function canGenerateSecret(array $config)
     {
@@ -117,7 +151,7 @@ class ScriptHandler
     /**
      * Loads the random_compat library.
      *
-     * @param Event $event The event object
+     * @param Event $event
      */
     private static function loadRandomCompat(Event $event)
     {

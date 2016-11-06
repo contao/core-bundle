@@ -99,7 +99,7 @@ class ModuleCustomnav extends \Module
 
 			if (!empty($tmp) && is_array($tmp))
 			{
-				$arrPages = array_map(function(){}, array_flip($tmp));
+				$arrPages = array_map(function () {}, array_flip($tmp));
 			}
 		}
 
@@ -129,8 +129,8 @@ class ModuleCustomnav extends \Module
 		{
 			$_groups = \StringUtil::deserialize($objModel->groups);
 
-			// Do not show protected pages unless a back end or front end user is logged in
-			if (!$objModel->protected || BE_USER_LOGGED_IN || (is_array($_groups) && count(array_intersect($_groups, $groups))) || $this->showProtected)
+			// Do not show protected pages unless a front end user is logged in
+			if (!$objModel->protected || (is_array($_groups) && count(array_intersect($_groups, $groups))) || $this->showProtected)
 			{
 				// Get href
 				switch ($objModel->type)
@@ -140,7 +140,7 @@ class ModuleCustomnav extends \Module
 						break;
 
 					case 'forward':
-						if (($objNext = $objModel->getRelated('jumpTo')) instanceof PageModel)
+						if (($objNext = $objModel->getRelated('jumpTo')) instanceof PageModel || ($objNext = \PageModel::findFirstPublishedRegularByPid($objModel->id)) instanceof PageModel)
 						{
 							/** @var PageModel $objNext */
 							$href = $objNext->getFrontendUrl();

@@ -306,7 +306,19 @@ class DcaExtractor extends \Controller
 		// Fields
 		foreach ($this->arrFields as $k=>$v)
 		{
-			$return['TABLE_FIELDS'][$k] = '`' . $k . '` ' . $v;
+			if (is_array($v))
+			{
+				if (!isset($v['name']))
+				{
+					$v['name'] = $k;
+				}
+
+				$return['SCHEMA_FIELDS'][$k] = $v;
+			}
+			else
+			{
+				$return['TABLE_FIELDS'][$k] = '`' . $k . '` ' . $v;
+			}
 		}
 
 		$quote = function ($item) { return '`' . $item . '`'; };
@@ -434,17 +446,16 @@ class DcaExtractor extends \Controller
 
 				try
 				{
-					/** @var SplFileInfo[] $files */
 					$files = \System::getContainer()->get('contao.resource_locator')->locate('config/database.sql', null, false);
-
-					foreach ($files as $file)
-					{
-						$arrSql = array_merge_recursive($arrSql, \SqlFileParser::parse($file));
-					}
 				}
 				catch (\InvalidArgumentException $e)
 				{
-					// No database.sql files found (see #349)
+					$files = array();
+				}
+
+				foreach ($files as $file)
+				{
+					$arrSql = array_merge_recursive($arrSql, \SqlFileParser::parse($file));
 				}
 
 				static::$arrSql = $arrSql;

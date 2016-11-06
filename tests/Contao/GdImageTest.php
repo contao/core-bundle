@@ -10,7 +10,9 @@
 
 namespace Contao\CoreBundle\Test\Contao;
 
+use Contao\CoreBundle\Test\TestCase;
 use Contao\GdImage;
+use Contao\System;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -22,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class GdImageTest extends \PHPUnit_Framework_TestCase
+class GdImageTest extends TestCase
 {
     /**
      * @var string
@@ -57,6 +59,7 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         define('TL_ROOT', self::$rootDir);
+        System::setContainer($this->mockContainerWithContaoScopes());
     }
 
     /**
@@ -82,14 +85,24 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(imageistruecolor($image->getResource()));
         $this->assertEquals(100, imagesx($image->getResource()));
         $this->assertEquals(100, imagesy($image->getResource()));
-        $this->assertEquals(127, imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 0, 0))['alpha'], 'Image should be transparent');
-        $this->assertEquals(127, imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 99, 99))['alpha'], 'Image should be transparent');
+
+        $this->assertEquals(
+            127,
+            imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 0, 0))['alpha'],
+            'Image should be transparent'
+        );
+
+        $this->assertEquals(
+            127,
+            imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 99, 99))['alpha'],
+            'Image should be transparent'
+        );
     }
 
     /**
      * Tests the fromFile() method.
      *
-     * @param string $type The image type
+     * @param string $type
      *
      * @dataProvider getImageTypes
      */
@@ -122,15 +135,15 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the saveToFile() method.
      *
-     * @param string $type The image type
+     * @param string $type
      *
      * @dataProvider getImageTypes
      */
     public function testSaveToFile($type)
     {
         $file = self::$rootDir.'/test.'.$type;
-        $image = GdImage::fromDimensions(100, 100);
 
+        $image = GdImage::fromDimensions(100, 100);
         $image->saveToFile($file);
 
         $this->assertFileExists($file);
@@ -311,7 +324,7 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Provides the image types for the tests.
      *
-     * @return array The image types
+     * @return array
      */
     public function getImageTypes()
     {

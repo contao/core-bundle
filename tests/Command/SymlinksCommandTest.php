@@ -32,9 +32,9 @@ class SymlinksCommandTest extends TestCase
     {
         $fs = new Filesystem();
 
-        $fs->remove($this->getRootDir().'/app/cache');
         $fs->remove($this->getRootDir().'/system/logs');
-        $fs->remove($this->getRootDir().'/system/themes/flexible');
+        $fs->remove($this->getRootDir().'/system/themes');
+        $fs->remove($this->getRootDir().'/var/cache');
         $fs->remove($this->getRootDir().'/web');
     }
 
@@ -75,7 +75,7 @@ class SymlinksCommandTest extends TestCase
         $this->assertContains('web/system/modules/foobar/html', $display);
         $this->assertContains('system/modules/foobar/html', $display);
         $this->assertContains('web/system/modules/foobar/html/foo', $display);
-        $this->assertContains('Skipped because system/modules/foobar/html has been symlinked already.', $display);
+        $this->assertContains('Skipped because system/modules/foobar/html will be symlinked.', $display);
         $this->assertContains('system/themes/flexible', $display);
         $this->assertContains('vendor/contao/test-bundle/Resources/contao/themes/flexible', $display);
         $this->assertContains('web/assets', $display);
@@ -83,7 +83,7 @@ class SymlinksCommandTest extends TestCase
         $this->assertContains('web/system/themes', $display);
         $this->assertContains('system/themes', $display);
         $this->assertContains('system/logs', $display);
-        $this->assertContains('app/logs', $display);
+        $this->assertContains('var/logs', $display);
     }
 
     /**

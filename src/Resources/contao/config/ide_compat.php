@@ -35,6 +35,7 @@ namespace {
 	class StyleSheets extends \Contao\StyleSheets {}
 	class Theme extends \Contao\Theme {}
 	class Versions extends \Contao\Versions {}
+	class BackendAlerts extends \Contao\BackendAlerts {}
 	class BackendConfirm extends \Contao\BackendConfirm {}
 	class BackendFile extends \Contao\BackendFile {}
 	class BackendHelp extends \Contao\BackendHelp {}
@@ -204,6 +205,7 @@ namespace {
 	class Password extends \Contao\Password {}
 	class RadioButton extends \Contao\RadioButton {}
 	class RadioTable extends \Contao\RadioTable {}
+	class SectionWizard extends \Contao\SectionWizard {}
 	class SelectMenu extends \Contao\SelectMenu {}
 	class TableWizard extends \Contao\TableWizard {}
 	class TextArea extends \Contao\TextArea {}

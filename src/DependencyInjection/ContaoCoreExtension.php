@@ -76,10 +76,16 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.error_level', $mergedConfig['error_level']);
         $container->setParameter('contao.image.bypass_cache', $mergedConfig['image']['bypass_cache']);
         $container->setParameter('contao.image.target_path', $mergedConfig['image']['target_path']);
+        $container->setParameter('contao.image.valid_extensions', $mergedConfig['image']['valid_extensions']);
+        $container->setParameter('contao.image.imagine_options', $mergedConfig['image']['imagine_options']);
         $container->setParameter('contao.security.disable_ip_check', $mergedConfig['security']['disable_ip_check']);
         $container->setParameter('contao.security.autologin.cookie_lifetime', $mergedConfig['security']['autologin']['cookie_lifetime']);
         $container->setParameter('contao.security.autologin.cookie_name', $mergedConfig['security']['autologin']['cookie_name']);
         $container->setParameter('contao.security.autologin.formfield_name', $mergedConfig['security']['autologin']['formfield_name']);
+
+        if (isset($mergedConfig['localconfig'])) {
+            $container->setParameter('contao.localconfig', $mergedConfig['localconfig']);
+        }
 
         $this->addContainerScopeListener($container);
     }
@@ -87,7 +93,7 @@ class ContaoCoreExtension extends ConfigurableExtension
     /**
      * Adds the container scope listener.
      *
-     * @param ContainerBuilder $container The container builder
+     * @param ContainerBuilder $container
      */
     private function addContainerScopeListener(ContainerBuilder $container)
     {

@@ -48,15 +48,12 @@ class ImageSizes
     /**
      * Constructor.
      *
-     * @param Connection               $connection      The connection
-     * @param EventDispatcherInterface $eventDispatcher The event dispatcher
-     * @param ContaoFrameworkInterface $framework       The Contao framework
+     * @param Connection               $connection
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(
-        Connection $connection,
-        EventDispatcherInterface $eventDispatcher,
-        ContaoFrameworkInterface $framework
-    ) {
+    public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
+    {
         $this->connection = $connection;
         $this->eventDispatcher = $eventDispatcher;
         $this->framework = $framework;
@@ -65,7 +62,7 @@ class ImageSizes
     /**
      * Returns the image sizes as options suitable for widgets.
      *
-     * @return array The image sizes
+     * @return array
      */
     public function getAllOptions()
     {
@@ -81,9 +78,9 @@ class ImageSizes
     /**
      * Returns the image sizes for the given user suitable for widgets.
      *
-     * @param BackendUser $user The back end user
+     * @param BackendUser $user
      *
-     * @return array The image sizes
+     * @return array
      */
     public function getOptionsForUser(BackendUser $user)
     {
@@ -130,9 +127,9 @@ class ImageSizes
     /**
      * Filters the options by the given allowed sizes and returns the result.
      *
-     * @param array $allowedSizes The allowed options
+     * @param array $allowedSizes
      *
-     * @return array The filtered options
+     * @return array
      */
     private function filterOptions(array $allowedSizes)
     {
@@ -156,10 +153,10 @@ class ImageSizes
     /**
      * Filters image sizes.
      *
-     * @param array  $sizes         The available sizes
-     * @param array  $allowedSizes  The allowed sizes
-     * @param array  $filteredSizes The filtered sizes
-     * @param string $group         The group name
+     * @param array  $sizes
+     * @param array  $allowedSizes
+     * @param array  $filteredSizes
+     * @param string $group
      */
     private function filterImageSizes(array $sizes, array $allowedSizes, array &$filteredSizes, $group)
     {
@@ -173,10 +170,10 @@ class ImageSizes
     /**
      * Filters resize modes.
      *
-     * @param array  $sizes         The available sizes
-     * @param array  $allowedSizes  The allowed sizes
-     * @param array  $filteredSizes The filtered sizes
-     * @param string $group         The group name
+     * @param array  $sizes
+     * @param array  $allowedSizes
+     * @param array  $filteredSizes
+     * @param string $group
      */
     private function filterResizeModes(array $sizes, array $allowedSizes, array &$filteredSizes, $group)
     {

@@ -21,14 +21,14 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  *
- * @deprecated Deprecated in Contao 4.0, to be removed in Contao 5.0.
+ * @deprecated Deprecated in Contao 4.0, to be removed in Contao 5.0
  */
 class InitializeController extends Controller
 {
     /**
      * Initializes the Contao framework.
      *
-     * @return InitializeControllerResponse The response object
+     * @return InitializeControllerResponse
      *
      * @Route("/_contao/initialize", name="contao_initialize")
      */

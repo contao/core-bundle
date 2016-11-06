@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
+
 
 /**
  * A static class to replace insert tags
@@ -112,9 +116,11 @@ class InsertTags extends \Controller
 			// Skip certain elements if the output will be cached
 			if ($blnCache)
 			{
-				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[0] == 'file' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || in_array('uncached', $flags))
+				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || ($elements[0] == 'file' && !\Validator::isStringUuid($elements[1])) || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || in_array('uncached', $flags))
 				{
-					$strBuffer .= '{{' . $strTag . '}}';
+					/** @var FragmentHandler $fragmentHandler */
+					$fragmentHandler = \System::getContainer()->get('fragment.handler');
+					$strBuffer .= $fragmentHandler->render(new ControllerReference('contao.controller.insert_tags:renderAction', ['insertTag' => '{{' . $strTag . '}}']), 'esi');
 					continue;
 				}
 			}
@@ -137,7 +143,7 @@ class InsertTags extends \Controller
 					}
 					else
 					{
-						$arrCache[$strTag] = $arrCache[$strTag] = '<span lang="' . $elements[1] . '">';
+						$arrCache[$strTag] = $arrCache[$strTag] = '<span lang="' . \StringUtil::specialchars($elements[1]) . '">';
 					}
 					break;
 
@@ -439,6 +445,7 @@ class InsertTags extends \Controller
 
 				// Closing link tag
 				case 'link_close':
+				case 'email_close':
 					$arrCache[$strTag] = '</a>';
 					break;
 
@@ -689,7 +696,7 @@ class InsertTags extends \Controller
 				case 'acronym':
 					if ($elements[1] != '')
 					{
-						$arrCache[$strTag] = '<abbr title="'. $elements[1] .'">';
+						$arrCache[$strTag] = '<abbr title="'. \StringUtil::specialchars($elements[1]) .'">';
 					}
 					else
 					{
@@ -733,7 +740,7 @@ class InsertTags extends \Controller
 									break;
 
 								case 'alt':
-									$alt = \StringUtil::specialchars($value);
+									$alt = $value;
 									break;
 
 								case 'class':
@@ -810,23 +817,29 @@ class InsertTags extends \Controller
 						if (strtolower($elements[0]) == 'image')
 						{
 							$dimensions = '';
-							$imageObj = \Image::create($strFile, array($width, $height, $mode));
-							$src = $imageObj->executeResize()->getResizedPath();
+							$src = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFile), array($width, $height, $mode))->getUrl(TL_ROOT);
 							$objFile = new \File(rawurldecode($src));
 
 							// Add the image dimensions
 							if (($imgSize = $objFile->imageSize) !== false)
 							{
-								$dimensions = ' width="' . $imgSize[0] . '" height="' . $imgSize[1] . '"';
+								$dimensions = ' width="' . \StringUtil::specialchars($imgSize[0]) . '" height="' . \StringUtil::specialchars($imgSize[1]) . '"';
 							}
 
-							$arrCache[$strTag] = '<img src="' . TL_FILES_URL . $src . '" ' . $dimensions . ' alt="' . $alt . '"' . (($class != '') ? ' class="' . $class . '"' : '') . '>';
+							$arrCache[$strTag] = '<img src="' . TL_FILES_URL . $src . '" ' . $dimensions . ' alt="' . \StringUtil::specialchars($alt) . '"' . (($class != '') ? ' class="' . \StringUtil::specialchars($class) . '"' : '') . '>';
 						}
 
 						// Picture
 						else
 						{
-							$picture = \Picture::create($strFile, array(0, 0, $size))->getTemplateData();
+							$picture = \System::getContainer()->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $strFile, $size);
+
+							$picture = array
+							(
+								'img' => $picture->getImg(TL_ROOT),
+								'sources' => $picture->getSources(TL_ROOT)
+							);
+
 							$picture['alt'] = $alt;
 							$picture['class'] = $class;
 							$pictureTemplate = new \FrontendTemplate($strTemplate);
@@ -839,14 +852,14 @@ class InsertTags extends \Controller
 						{
 							if (strncmp($rel, 'lightbox', 8) !== 0)
 							{
-								$attribute = ' rel="' . $rel . '"';
+								$attribute = ' rel="' . \StringUtil::specialchars($rel) . '"';
 							}
 							else
 							{
-								$attribute = ' data-lightbox="' . substr($rel, 8) . '"';
+								$attribute = ' data-lightbox="' . \StringUtil::specialchars(substr($rel, 8)) . '"';
 							}
 
-							$arrCache[$strTag] = '<a href="' . TL_FILES_URL . $strFile . '"' . (($alt != '') ? ' title="' . $alt . '"' : '') . $attribute . '>' . $arrCache[$strTag] . '</a>';
+							$arrCache[$strTag] = '<a href="' . TL_FILES_URL . $strFile . '"' . (($alt != '') ? ' title="' . \StringUtil::specialchars($alt) . '"' : '') . $attribute . '>' . $arrCache[$strTag] . '</a>';
 						}
 					}
 					catch (\Exception $e)
@@ -924,10 +937,11 @@ class InsertTags extends \Controller
 							}
 						}
 					}
-					if (\Config::get('debugMode'))
-					{
-						$GLOBALS['TL_DEBUG']['unknown_insert_tags'][] = $strTag;
-					}
+
+					\System::getContainer()
+						->get('monolog.logger.contao')
+						->log(LogLevel::INFO, 'Unknown insert tag: ' . $strTag)
+					;
 					break;
 			}
 
@@ -939,7 +953,6 @@ class InsertTags extends \Controller
 					switch ($flag)
 					{
 						case 'addslashes':
-						case 'stripslashes':
 						case 'standardize':
 						case 'ampersand':
 						case 'specialchars':
@@ -956,14 +969,12 @@ class InsertTags extends \Controller
 						case 'rtrim':
 						case 'ltrim':
 						case 'utf8_romanize':
-						case 'strrev':
 						case 'urlencode':
 						case 'rawurlencode':
 							$arrCache[$strTag] = $flag($arrCache[$strTag]);
 							break;
 
 						case 'encodeEmail':
-						case 'decodeEntities':
 							$arrCache[$strTag] = \StringUtil::$flag($arrCache[$strTag]);
 							break;
 
@@ -1020,10 +1031,11 @@ class InsertTags extends \Controller
 									}
 								}
 							}
-							if (\Config::get('debugMode'))
-							{
-								$GLOBALS['TL_DEBUG']['unknown_insert_tag_flags'][] = $flag;
-							}
+
+							\System::getContainer()
+								->get('monolog.logger.contao')
+								->log(LogLevel::INFO, 'Unknown insert tag flag: ' . $flag)
+							;
 							break;
 					}
 				}

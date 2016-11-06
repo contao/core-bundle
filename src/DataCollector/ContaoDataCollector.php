@@ -10,11 +10,11 @@
 
 namespace Contao\CoreBundle\DataCollector;
 
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\LayoutModel;
 use Contao\Model\Registry;
 use Contao\PageModel;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -26,6 +26,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
  */
 class ContaoDataCollector extends DataCollector
 {
+    use FrameworkAwareTrait;
     use ScopeAwareTrait;
 
     /**
@@ -36,12 +37,10 @@ class ContaoDataCollector extends DataCollector
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container The container object
-     * @param array              $packages  The Composer packages
+     * @param array $packages
      */
-    public function __construct(ContainerInterface $container, array $packages)
+    public function __construct(array $packages)
     {
-        $this->container = $container;
         $this->packages = $packages;
     }
 
@@ -64,7 +63,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the Contao version and build number.
      *
-     * @return string The version number
+     * @return string
      */
     public function getContaoVersion()
     {
@@ -78,7 +77,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the summary.
      *
-     * @return array The summary
+     * @return array
      */
     public function getSummary()
     {
@@ -88,7 +87,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the set classes.
      *
-     * @return array The set classes
+     * @return array
      */
     public function getClassesSet()
     {
@@ -102,7 +101,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the aliased classes.
      *
-     * @return array The aliased classes
+     * @return array
      */
     public function getClassesAliased()
     {
@@ -116,7 +115,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the composerized classes.
      *
-     * @return array The composerized classes
+     * @return array
      */
     public function getClassesComposerized()
     {
@@ -128,29 +127,9 @@ class ContaoDataCollector extends DataCollector
     }
 
     /**
-     * Returns the unknown insert tags.
-     *
-     * @return array The insert tags
-     */
-    public function getUnknownInsertTags()
-    {
-        return $this->getData('unknown_insert_tags');
-    }
-
-    /**
-     * Returns the unknown insert tag flags.
-     *
-     * @return array The insert tag flags
-     */
-    public function getUnknownInsertTagFlags()
-    {
-        return $this->getData('unknown_insert_tag_flags');
-    }
-
-    /**
      * Returns the additional data added by unknown sources.
      *
-     * @return array The additional data
+     * @return array
      */
     public function getAdditionalData()
     {
@@ -166,9 +145,7 @@ class ContaoDataCollector extends DataCollector
             $data['classes_set'],
             $data['classes_aliased'],
             $data['classes_composerized'],
-            $data['database_queries'],
-            $data['unknown_insert_tags'],
-            $data['unknown_insert_tag_flags']
+            $data['database_queries']
         );
 
         return $data;
@@ -185,9 +162,9 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the debug data as array.
      *
-     * @param string $key The key
+     * @param string $key
      *
-     * @return array The debug data
+     * @return array
      */
     private function getData($key)
     {
@@ -225,7 +202,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the page layout name (front end only).
      *
-     * @return string The page layout name
+     * @return string
      */
     private function getLayoutName()
     {
@@ -241,7 +218,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the template name (front end only).
      *
-     * @return string The template name
+     * @return string
      */
     private function getTemplateName()
     {
@@ -257,7 +234,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Returns the layout model (front end only).
      *
-     * @return LayoutModel|null The layout model
+     * @return LayoutModel|null
      */
     private function getLayout()
     {
@@ -268,6 +245,9 @@ class ContaoDataCollector extends DataCollector
             return null;
         }
 
-        return $objPage->getRelated('layout');
+        /** @var LayoutModel $layout */
+        $layout = $this->getFramework()->getAdapter('Contao\LayoutModel');
+
+        return $layout->findByPk($objPage->layoutId);
     }
 }

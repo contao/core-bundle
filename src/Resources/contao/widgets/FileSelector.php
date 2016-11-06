@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\Image\ResizeConfiguration;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
 
@@ -227,7 +228,24 @@ class FileSelector extends \Widget
 		// Root nodes (breadcrumb menu)
 		if (!empty($GLOBALS['TL_DCA']['tl_files']['list']['sorting']['root']))
 		{
-			$nodes = $this->eliminateNestedPaths($GLOBALS['TL_DCA']['tl_files']['list']['sorting']['root']);
+			$root = $GLOBALS['TL_DCA']['tl_files']['list']['sorting']['root'];
+
+			// Allow only those roots that are within the custom path
+			if ($this->path != '')
+			{
+				$root = array_intersect(preg_grep('/^' . preg_quote($this->path, '/') . '(?:$|\/)/', $root), $root);
+
+				if (empty($root))
+				{
+					// Set all folders inside the custom path as root nodes
+					$root = array_map(function ($el) { return $this->path . '/' . $el; }, scan(TL_ROOT . '/' . $this->path));
+
+					// Hide the breadcrumb
+					$GLOBALS['TL_DCA']['tl_file']['list']['sorting']['breadcrumb'] = '';
+				}
+			}
+
+			$nodes = $this->eliminateNestedPaths($root);
 
 			foreach ($nodes as $node)
 			{
@@ -270,7 +288,7 @@ class FileSelector extends \Widget
 		}
 
 		// Return the tree
-		return '<ul class="tl_listing tree_view picker_selector'.(($this->strClass != '') ? ' ' . $this->strClass : '').'" id="'.$this->strId.'">
+		return '<ul class="tl_listing tree_view picker_selector'.(($this->strClass != '') ? ' ' . $this->strClass : '').'" id="'.$this->strId.'" data-callback="reloadFiletree">
     <li class="tl_folder_top"><div class="tl_left">'.\Image::getHtml($GLOBALS['TL_DCA']['tl_files']['list']['sorting']['icon'] ?: 'filemounts.svg').' '.(\Config::get('websiteTitle') ?: 'Contao Open Source CMS').'</div> <div class="tl_right">&nbsp;</div><div style="clear:both"></div></li><li class="parent" id="'.$this->strId.'_parent"><ul>'.$tree.$strReset.'
   </ul></li></ul>';
 	}
@@ -536,25 +554,24 @@ class FileSelector extends \Widget
 				}
 
 				$return .= "\n    " . '<li class="tl_file toggle_select hover-div"><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing).'px">';
+				$thumbnail .= ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize);
+
+				if ($objFile->width && $objFile->height)
+				{
+					$thumbnail .= ', '.$objFile->width.'x'.$objFile->height.' px';
+				}
+
+				$thumbnail .= ')</span>';
 
 				// Generate thumbnail
-				if ($objFile->isImage && $objFile->viewHeight > 0)
+				if ($objFile->isImage && $objFile->viewHeight > 0 && \Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
 				{
-					if ($objFile->width && $objFile->height)
-					{
-						$thumbnail .= ' <span class="tl_gray">(' . $objFile->width . 'x' . $objFile->height . ')</span>';
-					}
+					$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, 'box'))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -19px"');
+					$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
 
-					if (\Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
+					if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
 					{
-						$imageObj = \Image::create($currentEncoded, array(400, (($objFile->height && $objFile->height < 50) ? $objFile->height : 50), 'box'));
-						$importantPart = $imageObj->getImportantPart();
-						$thumbnail .= '<br>' . \Image::getHtml($imageObj->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px -19px"');
-
-						if ($importantPart['x'] > 0 || $importantPart['y'] > 0 || $importantPart['width'] < $objFile->width || $importantPart['height'] < $objFile->height)
-						{
-							$thumbnail .= ' ' . \Image::getHtml($imageObj->setZoomLevel(100)->setTargetWidth(320)->setTargetHeight((($objFile->height && $objFile->height < 40) ? $objFile->height : 40))->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px 0"');
-						}
+						$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
 					}
 				}
 

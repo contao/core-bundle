@@ -132,7 +132,7 @@ class BackendMain extends \Backend
 
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_welcome');
-		$objTemplate->messages = \Message::generateUnwrapped() . \Message::getSystemMessages();
+		$objTemplate->messages = \Message::generateUnwrapped() . \Backend::getSystemMessages();
 		$objTemplate->loginMsg = $GLOBALS['TL_LANG']['MSC']['firstLogin'];
 
 		// Add the login message
@@ -143,7 +143,7 @@ class BackendMain extends \Backend
 
 			$objTemplate->loginMsg = sprintf(
 				$GLOBALS['TL_LANG']['MSC']['lastLogin'][1],
-				'<time datetime="' . date('Y-m-d H:i', $this->User->lastLogin) . '">' . $diff . '</time>'
+				'<time title="' . \Date::parse(\Config::get('datimFormat'), $this->User->lastLogin) . '">' . $diff . '</time>'
 			);
 		}
 
@@ -185,7 +185,7 @@ class BackendMain extends \Backend
 		$objSession = \System::getContainer()->get('session');
 
 		// File picker reference
-		if (\Input::get('popup') && \Input::get('act') != 'show' && (\Input::get('do') == 'page' || \Input::get('do') == 'files') && $objSession->get('filePickerRef'))
+		if (\Input::get('popup') && \Input::get('act') != 'show' && (\Input::get('do') == 'page' && $this->User->hasAccess('page', 'modules') || \Input::get('do') == 'files' && $this->User->hasAccess('files', 'modules')) && $objSession->get('filePickerRef'))
 		{
 			$this->Template->managerHref = ampersand($objSession->get('filePickerRef'));
 			$this->Template->manager = (strpos($objSession->get('filePickerRef'), 'contao/page?') !== false) ? $GLOBALS['TL_LANG']['MSC']['pagePickerHome'] : $GLOBALS['TL_LANG']['MSC']['filePickerHome'];
@@ -221,7 +221,12 @@ class BackendMain extends \Backend
 		$this->Template->collapseNode = $GLOBALS['TL_LANG']['MSC']['collapseNode'];
 		$this->Template->loadingData = $GLOBALS['TL_LANG']['MSC']['loadingData'];
 		$this->Template->isPopup = \Input::get('popup');
-		$this->Template->systemErrorMessages = \Message::countSystemErrorMessages();
+		$this->Template->systemMessages = $GLOBALS['TL_LANG']['MSC']['systemMessages'];
+		$this->Template->burger = $GLOBALS['TL_LANG']['MSC']['burgerTitle'];
+
+		$strSystemMessages = \Backend::getSystemMessages();
+		$this->Template->systemMessagesCount = substr_count($strSystemMessages, 'class="tl_');
+		$this->Template->systemErrorMessagesCount = substr_count($strSystemMessages, 'class="tl_error"');
 
 		// Front end preview links
 		if (defined('CURRENT_ID') && CURRENT_ID != '')

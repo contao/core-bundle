@@ -174,7 +174,7 @@ class FrontendUser extends \User
 			}
 
 			// Remove the cookie if it is invalid to enable loading cached pages
-			$this->setCookie('FE_AUTO_LOGIN', $strCookie, (time() - 86400), null, null, false, true);
+			$this->setCookie('FE_AUTO_LOGIN', $strCookie, (time() - 86400), null, null, \Environment::get('ssl'), true);
 
 			if(Config::get('allowMultiAutologin') === true)
 			{
@@ -202,7 +202,6 @@ class FrontendUser extends \User
 		// Set the auto login data
 		if (\Config::get('autologin') > 0 && \Input::post('autologin'))
 		{
-
 			$time = time();
 			$strToken = md5(uniqid(mt_rand(), true));
 
@@ -224,7 +223,7 @@ class FrontendUser extends \User
 				$response->sendHeaders();
 			}
 
-			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, false, true);
+			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, \Environment::get('ssl'), true);
 		}
 
 		return true;
@@ -257,7 +256,7 @@ class FrontendUser extends \User
 		}
 
 		// Remove the auto login cookie
-		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, false, true);
+		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, \Environment::get('ssl'), true);
 
 		// Remove the remember_me cookie if the service is active
 		if(Config::get('allowMultiAutologin') === true)
@@ -358,5 +357,4 @@ class FrontendUser extends \User
 			}
 		}
 	}
-	
 }

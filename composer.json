@@ -11,6 +11,9 @@
     ],
     "require": {
         "php": ">=5.5.0",
+        "ext-dom": "*",
+        "ext-gd": "*",
+        "ext-pcre": "*",
         "symfony/framework-bundle": "~2.8|~3.0",
         "symfony/console": "~2.8|~3.0",
         "symfony/filesystem": "~2.8|~3.0",
@@ -25,9 +28,10 @@
         "doctrine/doctrine-bundle": "~1.6",
         "doctrine/doctrine-cache-bundle": "~1.3",
         "swiftmailer/swiftmailer": "^5.2.1",
-        "leafo/scssphp": "~0.1",
-        "league/uri": "~4.0",
+        "imagine/imagine": "^0.6",
         "knplabs/knp-time-bundle": "^1.5.2",
+        "leafo/scssphp": "^0.6",
+        "league/uri": "~4.0",
         "matthiasmullie/minify": "~1.3",
         "michelf/php-markdown": "~1.4",
         "oyejorge/less.php": "~1.7",
@@ -36,12 +40,19 @@
         "simplepie/simplepie": "~1.3",
         "tecnickcom/tcpdf": "~6.0",
         "true/punycode": "~1.0",
-        "contao-components/all": "~4.2"
+        "contao/image": "^0.3",
+        "contao/imagine-svg": "^0.1",
+        "contao-components/all": "dev-release/6.0.0 as 6.0.0",
+        "contao-components/contao": "dev-release/6.0.0 as 6.0.0"
     },
     "require-dev": {
+        "ext-fileinfo": "*",
         "composer/composer": "~1.0",
-        "fabpot/php-cs-fixer": "~1.8",
+        "doctrine/orm": "~2.5",
+        "doctrine/doctrine-migrations-bundle": "^1.1",
+        "friendsofphp/php-cs-fixer": "~1.8",
         "lexik/maintenance-bundle": "~2.0",
+        "monolog/monolog": "~1.11",
         "phpunit/phpunit": "~4.5",
         "satooshi/php-coveralls": "~0.6",
         "symfony/phpunit-bridge": "~2.8|~3.0"
@@ -57,16 +68,15 @@
             "Contao\\CoreBundle\\": "src/"
         },
         "classmap": [
-            "src/Resources/contao/classes",
-            "src/Resources/contao/controllers",
-            "src/Resources/contao/drivers",
-            "src/Resources/contao/elements",
-            "src/Resources/contao/forms",
-            "src/Resources/contao/library",
-            "src/Resources/contao/models",
-            "src/Resources/contao/modules",
-            "src/Resources/contao/pages",
-            "src/Resources/contao/widgets"
+            "src/Resources/contao"
+        ],
+        "exclude-from-classmap": [
+            "src/Resources/contao/config",
+            "src/Resources/contao/dca",
+            "src/Resources/contao/helper",
+            "src/Resources/contao/languages",
+            "src/Resources/contao/templates",
+            "src/Resources/contao/themes"
         ]
     },
     "autoload-dev": {
@@ -80,9 +90,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "4.2.x-dev"
+            "dev-develop": "4.3.x-dev"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

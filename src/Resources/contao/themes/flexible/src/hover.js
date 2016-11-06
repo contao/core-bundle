@@ -15,17 +15,6 @@ var Theme = {
 	isWebkit: (Browser.chrome || Browser.safari || navigator.userAgent.match(/(?:webkit|khtml)/i)),
 
 	/**
-	 * Autofocus the first text field or textarea
-	 *
-	 * @param {string} id The ID of the parent element
-	 */
-	focusInput: function(id) {
-		if (id == '') return;
-		var el = $$('#' + id + ' input[class^="tl_text"],#' + id + ' textarea');
-		if (el && el.length > 0) el[0].focus();
-	},
-
-	/**
 	 * Colorize a table row when hovering over it
 	 *
 	 * @param {object} el    The DOM element
@@ -162,7 +151,7 @@ var Theme = {
 			}
 
 			// Single line height
-			var line = dummy.clientHeight;
+			var line = Math.max(dummy.clientHeight, 30);
 
 			// Respond to the "input" event
 			el.addEvent('input', function() {
@@ -170,7 +159,7 @@ var Theme = {
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
 					.replace(/\n|\r\n/g, '<br>X'));
-				var height = Math.max(line, dummy.getSize().y) + 2;
+				var height = Math.max(line, dummy.getSize().y + 2);
 				if (this.clientHeight != height) this.tween('height', height);
 			}).set('tween', { 'duration':100 }).setStyle('height', line + 'px');
 
@@ -184,12 +173,83 @@ var Theme = {
 	 * Set up the menu toggle
 	 */
 	setupMenuToggle: function() {
-		var tog = $('burger');
-		if (tog.getParent('li').getStyle('display') == 'none') return;
-		$('tl_navigation').inject($('header'), 'after');
-		$('left').destroy();
-		tog.addEvent('click', function() {
-			document.body.toggleClass('show-navigation');
+		var burger = $('burger');
+		if (!burger) return;
+
+		burger
+			.addEvent('click', function(e) {
+				document.body.toggleClass('show-navigation');
+			})
+			.addEvent('keydown', function(e) {
+				if (e.event.keyCode == 27) {
+					document.body.toggleClass('show-navigation');
+				}
+			})
+		;
+	},
+
+	/**
+	 * Hide the menu on scroll
+	 */
+	hideMenuOnScroll: function() {
+		if (!('ontouchmove' in window)) return;
+
+		var wh = window.getSize().y,
+			dh = window.getScrollSize().y - wh,
+			anchor = 0;
+
+		if (wh >= dh) return;
+
+		window
+			.addEvent('touchmove', function() {
+				var ws = window.getScroll().y;
+
+				if (Math.abs(anchor - ws) < 20) return;
+
+				if (ws > 0 && ws > anchor) {
+					$('header').addClass('down');
+				} else {
+					$('header').removeClass('down');
+				}
+
+				anchor = ws;
+			})
+			.addEvent('scroll', function() {
+				if (window.getScroll().y < 1) {
+					$('header').removeClass('down');
+				}
+			})
+		;
+	},
+
+	/**
+	 * Set up the split button toggle
+	 */
+	setupSplitButtonToggle: function() {
+		var toggle = $('sbtog'), timer;
+		if (!toggle) return;
+
+		toggle.addEvent('click', function(e) {
+			toggle.getParent('.split-button').getElement('ul').toggleClass('invisible');
+			e.stopPropagation();
+		});
+
+		if (!('ontouchmove' in window)) {
+			toggle
+				.addEvent('mouseenter', function(e) {
+					timer = setTimeout(function() {
+						toggle.getParent('.split-button').getElement('ul').removeClass('invisible');
+						e.stopPropagation();
+					}, 150);
+				})
+				.addEvent('mouseleave', function() {
+					clearTimeout(timer);
+				})
+			;
+		}
+
+		$(document.body).addEvent('click', function() {
+			toggle.getParent('.split-button').getElement('ul').addClass('invisible');
 		});
 	}
 };
@@ -200,6 +260,8 @@ window.addEvent('domready', function() {
 	Theme.setupCtrlClick();
 	Theme.setupTextareaResizing();
 	Theme.setupMenuToggle();
+	Theme.hideMenuOnScroll();
+	Theme.setupSplitButtonToggle();
 });
 
 // Respond to Ajax changes

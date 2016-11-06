@@ -89,6 +89,12 @@ class PageRegular extends \Frontend
 		/** @var ThemeModel $objTheme */
 		$objTheme = $objLayout->getRelated('pid');
 
+		// Set the default image densities
+		\System::getContainer()->get('contao.image.picture_factory')->setDefaultDensities($objTheme->defaultImageDensities);
+
+		// Store the layout ID
+		$objPage->layoutId = $objLayout->id;
+
 		// Set the layout template and template group
 		$objPage->template = $objLayout->template ?: 'fe_page';
 		$objPage->templateGroup = $objTheme->templates;
@@ -421,7 +427,14 @@ class PageRegular extends \Frontend
 			{
 				if (($strVersion = $arrPackages['contao-components/mootools']) !== null)
 				{
-					$this->Template->mooScripts .= \Template::generateScriptTag('https://ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
+					if (version_compare($strVersion, '1.5.1', '>'))
+					{
+						$this->Template->mooScripts .= \Template::generateScriptTag('https://ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools.min.js') . "\n";
+					}
+					else
+					{
+						$this->Template->mooScripts .= \Template::generateScriptTag('https://ajax.googleapis.com/ajax/libs/mootools/' . $strVersion . '/mootools-yui-compressed.js') . "\n";
+					}
 
 					// Local fallback (thanks to DyaGa)
 					if ($objLayout->mooSource == 'moo_fallback')
@@ -464,7 +477,23 @@ class PageRegular extends \Frontend
 
 		// Initialize the custom layout sections
 		$this->Template->sections = array();
-		$this->Template->sPosition = $objLayout->sPosition;
+		$this->Template->positions = array();
+
+		if ($objLayout->sections != '')
+		{
+			$arrPositions = array();
+			$arrSections = \StringUtil::deserialize($objLayout->sections);
+
+			if (!empty($arrSections) && is_array($arrSections))
+			{
+				foreach ($arrSections as $v)
+				{
+					$arrPositions[$v['position']][$v['id']] = $v;
+				}
+			}
+
+			$this->Template->positions = $arrPositions;
+		}
 
 		// Default settings
 		$this->Template->layout = $objLayout;
@@ -590,7 +619,7 @@ class PageRegular extends \Frontend
 				if (!empty($tmp) && is_array($tmp))
 				{
 					// Remove all values
-					$arrOrder = array_map(function(){}, array_flip($tmp));
+					$arrOrder = array_map(function () {}, array_flip($tmp));
 
 					// Move the matching elements to their position in $arrOrder
 					foreach ($arrExternal as $k=>$v)
@@ -649,6 +678,21 @@ class PageRegular extends \Frontend
 
 		// Add a placeholder for dynamic <head> tags (see #4203)
 		$strHeadTags = '[[TL_HEAD]]';
+
+		// Add the analytics scripts
+		if ($objLayout->analytics != '')
+		{
+			$arrAnalytics = \StringUtil::deserialize($objLayout->analytics, true);
+
+			foreach ($arrAnalytics as $strTemplate)
+			{
+				if ($strTemplate != '')
+				{
+					$objTemplate = new \FrontendTemplate($strTemplate);
+					$strHeadTags .= $objTemplate->parse();
+				}
+			}
+		}
 
 		// Add the user <head> tags
 		if (($strHead = trim($objLayout->head)) != false)
@@ -728,21 +772,6 @@ class PageRegular extends \Frontend
 		if ($objLayout->script != '')
 		{
 			$strScripts .= "\n" . trim($objLayout->script) . "\n";
-		}
-
-		// Add the analytics scripts
-		if ($objLayout->analytics != '')
-		{
-			$arrAnalytics = \StringUtil::deserialize($objLayout->analytics, true);
-
-			foreach ($arrAnalytics as $strTemplate)
-			{
-				if ($strTemplate != '')
-				{
-					$objTemplate = new \FrontendTemplate($strTemplate);
-					$strScripts .= $objTemplate->parse();
-				}
-			}
 		}
 
 		$this->Template->mootools = $strScripts;

@@ -25,7 +25,12 @@ h2 {
 	text-align:right;
 }
 .formbody .tl_select {
-	width:220px;
+	width:42%;
+	max-width:220px;
+}
+.formbody .tl_submit {
+	padding-top:6px;
+	padding-bottom:6px;
 }
 .formbody .arrow {
 	position:relative;
@@ -40,7 +45,7 @@ h2 {
 	padding:6px 6px 6px 28px;
 	border-radius:2px;
 	background:url("icons/show.svg") no-repeat left center;
-	color:#4b85ba;
+	color:#427aae;
 	line-height:1.2;
 }
 
@@ -76,14 +81,4 @@ h2 {
 	margin:0;
 	padding:3px 6px;
 	font: 300 .75rem/1.25 "Roboto Mono", monospace;
-}
-
-/* Handheld */
-@media (max-width:767px) {
-	.formbody .tl_select {
-		width:35%;
-	}
-	.formbody .arrow {
-		margin-left:9px;
-	}
 }

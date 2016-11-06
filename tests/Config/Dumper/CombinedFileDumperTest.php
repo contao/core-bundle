@@ -45,7 +45,7 @@ class CombinedFileDumperTest extends TestCase
     public function testDump()
     {
         $dumper = new CombinedFileDumper(
-            $this->mockFilesystem("<?php \necho 'test';\n"),
+            $this->mockFilesystem("<?php\n\necho 'test';\n"),
             $this->mockLoader(),
             $this->getCacheDir()
         );
@@ -59,12 +59,12 @@ class CombinedFileDumperTest extends TestCase
     public function testValidHeader()
     {
         $dumper = new CombinedFileDumper(
-            $this->mockFilesystem("<?php \necho 'foo';\necho 'test';\n"),
+            $this->mockFilesystem("<?php\necho 'foo';\necho 'test';\n"),
             $this->mockLoader(),
             $this->getCacheDir()
         );
 
-        $dumper->setHeader("<?php \necho 'foo';");
+        $dumper->setHeader("<?php\necho 'foo';");
         $dumper->dump(['test.php'], 'test.php');
     }
 
@@ -88,9 +88,9 @@ class CombinedFileDumperTest extends TestCase
     /**
      * Returns a mocked filesystem object.
      *
-     * @param mixed $expects The value expected to dump
+     * @param mixed $expects
      *
-     * @return Filesystem The filesystem object
+     * @return Filesystem
      */
     private function mockFilesystem($expects)
     {
@@ -111,7 +111,7 @@ class CombinedFileDumperTest extends TestCase
     /**
      * Returns a mocked file loader object.
      *
-     * @return PhpFileLoader The file loader object
+     * @return PhpFileLoader
      */
     private function mockLoader()
     {

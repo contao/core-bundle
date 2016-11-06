@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Constructor.
      *
-     * @param bool $debug If kernel debug mode is enabled
+     * @param bool $debug
      */
     public function __construct($debug)
     {
@@ -38,7 +38,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Generates the configuration tree builder.
      *
-     * @return TreeBuilder The tree builder
+     * @return TreeBuilder
      */
     public function getConfigTreeBuilder()
     {
@@ -75,7 +75,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('contao_csrf_token')
                 ->end()
                 ->booleanNode('pretty_error_screens')
-                    ->defaultTrue()
+                    ->defaultValue(!$this->debug)
                 ->end()
                 ->integerNode('error_level')
                     ->min(-1)
@@ -90,6 +90,18 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('target_path')
                             ->defaultValue('assets/images')
+                        ->end()
+                        ->arrayNode('valid_extensions')
+                            ->prototype('scalar')->end()
+                            ->defaultValue(['jpg', 'jpeg', 'gif', 'png', 'tif', 'tiff', 'bmp', 'svg', 'svgz'])
+                        ->end()
+                        ->arrayNode('imagine_options')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->integerNode('jpeg_quality')
+                                    ->defaultValue(80)
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -117,6 +129,8 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
+                ->end()
+                ->variableNode('localconfig')
                 ->end()
             ->end()
         ;

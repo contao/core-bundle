@@ -167,11 +167,11 @@ class FileTree extends \Widget
 
 							if ($objFile->isImage)
 							{
-								$image = 'placeholder.png';
+								$image = \Image::getPath('placeholder.svg');
 
 								if (($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')) && $objFile->viewWidth && $objFile->viewHeight)
 								{
-									$image = \Image::get($objFiles->path, 80, 60, 'center_center');
+									$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFiles->path, array(80, 60, 'center_center'))->getUrl(TL_ROOT);
 								}
 
 								$arrValues[$objFiles->uuid] = \Image::getHtml($image, '', 'class="gimage" title="' . \StringUtil::specialchars($strInfo) . '"');
@@ -211,11 +211,11 @@ class FileTree extends \Widget
 									// Only show images
 									if ($objFile->isImage)
 									{
-										$image = 'placeholder.png';
+										$image = \Image::getPath('placeholder.svg');
 
 										if (($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')) && $objFile->viewWidth && $objFile->viewHeight)
 										{
-											$image = \Image::get($objSubfiles->path, 80, 60, 'center_center');
+											$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objSubfiles->path, array(80, 60, 'center_center'))->getUrl(TL_ROOT);
 										}
 
 										$arrValues[$objSubfiles->uuid] = \Image::getHtml($image, '', 'class="gimage" title="' . \StringUtil::specialchars($strInfo) . '"');
@@ -241,11 +241,11 @@ class FileTree extends \Widget
 								// Only show images
 								if ($objFile->isImage)
 								{
-									$image = 'placeholder.png';
+									$image = \Image::getPath('placeholder.svg');
 
 									if (($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')) && $objFile->viewWidth && $objFile->viewHeight)
 									{
-										$image = \Image::get($objFiles->path, 80, 60, 'center_center');
+										$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFiles->path, array(80, 60, 'center_center'))->getUrl(TL_ROOT);
 									}
 
 									$arrValues[$objFiles->uuid] = \Image::getHtml($image, '', 'class="gimage removable" title="' . \StringUtil::specialchars($strInfo) . '"');
@@ -307,7 +307,7 @@ class FileTree extends \Widget
 		}
 
 		$return .= '</ul>
-    <p><a href="contao/file.php?do='.\Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.implode(',', array_keys($arrSet)).'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
+    <p><a href="contao/file.php?do='.\Input::get('do').'&amp;table='.$this->strTable.'&amp;field='.$this->strField.'&amp;act=show&amp;id='.$this->activeRecord->id.'&amp;value='.implode(',', array_keys($arrSet)).'&amp;rt='.REQUEST_TOKEN.'" class="tl_submit" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])).'\',\'url\':this.href,\'id\':\''.$this->strId.'\'});return false">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>' . ($blnHasOrder ? '
     <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '') . '
   </div>';
 
