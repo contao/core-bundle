@@ -193,6 +193,18 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockContainerWithContaoScopes($scope = null)
     {
+        return $this->mockContainerWithRequest($this->mockRequest($scope));
+    }
+
+    /**
+     * Mocks a container with a request.
+     *
+     * @param string|null $request
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|Container
+     */
+    protected function mockContainerWithRequest($request = null)
+    {
         $container = new Container();
         $container->setParameter('kernel.root_dir', $this->getRootDir());
         $container->setParameter('kernel.cache_dir', $this->getCacheDir());
@@ -212,12 +224,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             new FileLocator($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao')
         );
 
-        $request = new Request();
-        $request->server->set('REMOTE_ADDR', '123.456.789.0');
-        $request->server->set('SCRIPT_NAME', '/core/index.php');
-
-        if (null !== $scope) {
-            $request->attributes->set('_scope', $scope);
+        if (null === $request) {
+            $request = $this->mockRequest();
         }
 
         $requestStack = new RequestStack();
@@ -231,6 +239,25 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Mock a Contao scoped request.
+     *
+     * @param string|null $scope The desired scope or null if none.
+     *
+     * @return Request
+     */
+    protected function mockRequest($scope = null)
+    {
+        $request = new Request();
+        $request->server->set('REMOTE_ADDR', '123.456.789.0');
+        $request->server->set('SCRIPT_NAME', '/core/index.php');
+        if (null !== $scope) {
+            $request->attributes->set('_scope', $scope);
+        }
+
+        return $request;
+    }
+
+    /**
      * Returns a ContaoFramework instance.
      *
      * @param RequestStack|null    $requestStack
@@ -240,9 +267,13 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @return ContaoFramework The object instance
      */
-    public function mockContaoFramework(RequestStack $requestStack = null, RouterInterface $router = null, array $adapters = [], array $instances = [])
-    {
-        $container = $this->mockContainerWithContaoScopes();
+    public function mockContaoFramework(
+        RequestStack $requestStack = null,
+        RouterInterface $router = null,
+        array $adapters = [],
+        array $instances = []
+    ) {
+        $container = $this->mockContainerWithRequest();
 
         if (null === $requestStack) {
             $requestStack = $container->get('request_stack');
