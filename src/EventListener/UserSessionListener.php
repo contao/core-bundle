@@ -15,6 +15,7 @@ use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\FrontendUser;
 use Contao\User;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class UserSessionListener
 {
@@ -73,7 +75,7 @@ class UserSessionListener
         $session = $user->session;
 
         if (is_array($session)) {
-            $this->getSessionBag()->replace($session);
+            $this->getSessionBag($event->getRequest())->replace($session);
         }
     }
 
@@ -96,7 +98,7 @@ class UserSessionListener
 
         $this->connection
             ->prepare('UPDATE '.$user->getTable().' SET session=? WHERE id=?')
-            ->execute([serialize($this->getSessionBag()->all()), $user->id])
+            ->execute([serialize($this->getSessionBag($event->getRequest())->all()), $user->id])
         ;
     }
 
@@ -113,11 +115,13 @@ class UserSessionListener
     /**
      * Returns the session bag.
      *
+     * @param Request $request
+     *
      * @return AttributeBagInterface
      */
-    private function getSessionBag()
+    private function getSessionBag(Request $request)
     {
-        if ($this->isBackendScope()) {
+        if ($this->isBackendScope($request)) {
             $bag = 'contao_backend';
         } else {
             $bag = 'contao_frontend';

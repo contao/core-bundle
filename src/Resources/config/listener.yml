@@ -141,7 +141,6 @@ services:
             - "@session"
             - "@database_connection"
         calls:
-            - ["setContainer", ["@service_container"]]
             - ["setTokenStorage", ["@security.token_storage"]]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
