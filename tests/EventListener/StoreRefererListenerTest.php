@@ -90,7 +90,7 @@ class StoreRefererListenerTest extends TestCase
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
-            new Request(),
+            $this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND),
             HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
@@ -123,7 +123,7 @@ class StoreRefererListenerTest extends TestCase
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
-            new Request(),
+            $this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND),
             HttpKernelInterface::SUB_REQUEST,
             new Response()
         );
@@ -146,7 +146,7 @@ class StoreRefererListenerTest extends TestCase
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
-            new Request(),
+            $this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND),
             HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
