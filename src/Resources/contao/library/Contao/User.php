@@ -9,13 +9,12 @@
  */
 
 namespace Contao;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
-
 
 /**
  * Authenticates and initializes user objects
@@ -141,6 +140,10 @@ abstract class User extends \System
 	 */
 	protected $arrData = array();
 
+	/**
+	 * Symfony authentication roles
+	 * @var array
+	 */
 	protected $roles = [];
 
 	/** @var ContainerInterface $container */
