@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class StoreRefererListener
 {
@@ -54,7 +55,7 @@ class StoreRefererListener
 
         $request = $event->getRequest();
 
-        if ($this->isBackendScope()) {
+        if ($this->isBackendScope($request)) {
             $this->storeBackendReferer($request);
         } else {
             $this->storeFrontendReferer($request);

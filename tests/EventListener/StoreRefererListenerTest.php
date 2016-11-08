@@ -25,6 +25,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Tests the StoreRefererListener class.
  *
  * @author Yanick Witschi <https:/github.com/toflar>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class StoreRefererListenerTest extends TestCase
 {
@@ -68,14 +69,11 @@ class StoreRefererListenerTest extends TestCase
             ->willReturn($token)
         ;
 
-        $container = $this->mockContainerWithRequest($request);
-
         // Set the current referer URLs
         $session = $this->mockSession();
         $session->set('referer', $currentReferer);
 
         $listener = $this->getListener($session, $tokenStorage);
-        $listener->setContainer($container);
         $listener->onKernelResponse($responseEvent);
 
         $this->assertSame($expectedReferer, $session->get('referer'));
@@ -153,7 +151,6 @@ class StoreRefererListenerTest extends TestCase
             new Response()
         );
 
-        $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
 
         $session
@@ -174,7 +171,6 @@ class StoreRefererListenerTest extends TestCase
         ;
 
         $listener = $this->getListener($session, $tokenStorage);
-        $listener->setContainer($container);
         $listener->onKernelResponse($responseEvent);
     }
 

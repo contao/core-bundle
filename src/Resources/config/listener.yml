@@ -122,7 +122,6 @@ services:
         arguments:
             - "@session"
         calls:
-            - ["setContainer", ["@service_container"]]
             - ["setTokenStorage", ["@security.token_storage"]]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
