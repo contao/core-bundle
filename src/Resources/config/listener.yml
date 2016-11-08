@@ -126,8 +126,6 @@ services:
         class: Contao\CoreBundle\EventListener\ToggleViewListener
         arguments:
             - "@contao.framework"
-        calls:
-            - ["setContainer", ["@service_container"]]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
