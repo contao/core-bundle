@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  * Persists the locale from the accept header or the request in the session.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class LocaleListener
 {
@@ -47,11 +48,11 @@ class LocaleListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->isContaoScope()) {
+        $request = $event->getRequest();
+        if (!$this->isContaoScope($request)) {
             return;
         }
 
-        $request = $event->getRequest();
         $locale = $this->getLocale($request);
 
         $request->attributes->set('_locale', $locale);
