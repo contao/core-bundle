@@ -75,7 +75,7 @@ class ContaoTableProcessor
         $this->updateIp($context, $request);
         $this->updateBrowser($context, $request);
         $this->updateUsername($context);
-        $this->updateSource($context);
+        $this->updateSource($context, $request);
 
         $record['extra']['contao'] = $context;
         unset($record['context']['contao']);
@@ -158,14 +158,15 @@ class ContaoTableProcessor
      * Sets the source.
      *
      * @param ContaoContext $context
+     * @param Request       $request
      */
-    private function updateSource(ContaoContext $context)
+    private function updateSource(ContaoContext $context, Request $request = null)
     {
         if (null !== $context->getSource()) {
             return;
         }
 
-        $context->setSource($this->isBackendScope() ? 'BE' : 'FE');
+        $context->setSource($request && $this->isBackendScope($request) ? 'BE' : 'FE');
     }
 
     /**
