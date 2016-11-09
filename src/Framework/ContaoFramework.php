@@ -19,6 +19,7 @@ use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
 use Contao\TemplateLoader;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -37,7 +38,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class ContaoFramework implements ContaoFrameworkInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
+    use ScopeCheckingTrait;
 
     /**
      * @var bool

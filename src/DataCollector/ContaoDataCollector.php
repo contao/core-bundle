@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\DataCollector;
 
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Framework\ScopeCheckingTrait;
 use Contao\LayoutModel;
 use Contao\Model\Registry;
 use Contao\PageModel;
@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class ContaoDataCollector extends DataCollector
 {
     use FrameworkAwareTrait;
-    use ScopeAwareTrait;
+    use ScopeCheckingTrait;
 
     /**
      * @var array

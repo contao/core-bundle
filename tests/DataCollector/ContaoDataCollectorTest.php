@@ -46,7 +46,6 @@ class ContaoDataCollectorTest extends TestCase
         ];
 
         $collector = new ContaoDataCollector(['contao/core-bundle' => '4.0.0']);
-        $collector->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND));
         $collector->collect(new Request(), new Response());
 
         $this->assertEquals(['ContentText' => 'Contao\ContentText'], $collector->getClassesAliased());
@@ -102,7 +101,6 @@ class ContaoDataCollectorTest extends TestCase
         $objPage->layoutId = 2;
 
         $collector = new ContaoDataCollector([]);
-        $collector->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $collector->setFramework($this->mockContaoFramework(null, null, ['Contao\LayoutModel' => $adapter]));
         $collector->collect(new Request(), new Response());
 

@@ -39,7 +39,6 @@ services:
             - "%kernel.packages%"
         calls:
             - ["setFramework", ["@contao.framework"]]
-            - ["setContainer", ["@service_container"]]
         tags:
             - { name: data_collector, template: "ContaoCoreBundle:Collector:contao", id: "contao" }
 
