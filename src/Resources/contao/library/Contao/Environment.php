@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Reads the environment variables
@@ -23,9 +24,16 @@ namespace Contao;
  *     echo Environment::get('requestUri');
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
+ *             You should not use this class anymore but use the request or request stack directly.
  */
 class Environment
 {
+	/**
+	 * @var Request
+	 */
+	private static $objRequest;
 
 	/**
 	 * Object instance (Singleton)
@@ -45,6 +53,16 @@ class Environment
 	 */
 	protected static $arrCache = array();
 
+	/**
+	 * Gateway function used by LegacyRequestValueSynchronizingListener to push the current (sub-)request.
+	 *
+	 * @param Request $objRequest The request.
+	 */
+	public static function setRequest(Request $objRequest = null)
+	{
+		self::$objRequest = $objRequest;
+		self::reset();
+	}
 
 	/**
 	 * Return an environment variable
@@ -68,7 +86,7 @@ class Environment
 		{
 			$arrChunks = preg_split('/([A-Z][a-z]*)/', $strKey, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 			$strServerKey = strtoupper(implode('_', $arrChunks));
-			static::$arrCache[$strKey] = $_SERVER[$strServerKey];
+			static::$arrCache[$strKey] = self::$objRequest->server->get($strServerKey);
 		}
 
 		return static::$arrCache[$strKey];
@@ -103,7 +121,17 @@ class Environment
 	 */
 	protected static function scriptFilename()
 	{
-		return str_replace('//', '/', strtr((static::$strSapi == 'cgi' || static::$strSapi == 'isapi' || static::$strSapi == 'cgi-fcgi' || static::$strSapi == 'fpm-fcgi') && (@$_SERVER['ORIG_PATH_TRANSLATED'] ?: $_SERVER['PATH_TRANSLATED']) ? (@$_SERVER['ORIG_PATH_TRANSLATED'] ?: $_SERVER['PATH_TRANSLATED']) : (@$_SERVER['ORIG_SCRIPT_FILENAME'] ?: $_SERVER['SCRIPT_FILENAME']), '\\', '/'));
+		if ((static::$strSapi == 'cgi' || static::$strSapi == 'isapi' || static::$strSapi == 'cgi-fcgi' || static::$strSapi == 'fpm-fcgi'))
+		{
+			$script = self::$objRequest->server->get('ORIG_PATH_TRANSLATED', self::$objRequest->server->get('PATH_TRANSLATED'));
+		}
+
+		if (empty($script))
+		{
+			$script = self::$objRequest->server->get('ORIG_SCRIPT_FILENAME', self::$objRequest->server->get('SCRIPT_FILENAME'));
+		}
+
+		return str_replace('//', '/', strtr($script, '\\', '/'));
 	}
 
 
@@ -114,14 +142,7 @@ class Environment
 	 */
 	protected static function scriptName()
 	{
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
-		if ($request === null)
-		{
-			return @$_SERVER['ORIG_SCRIPT_NAME'] ?: $_SERVER['SCRIPT_NAME'];
-		}
-
-		return $request->getScriptName();
+		return self::$objRequest->getScriptName();
 	}
 
 
@@ -154,7 +175,7 @@ class Environment
 		// Fallback to DOCUMENT_ROOT if SCRIPT_FILENAME and SCRIPT_NAME point to different files
 		if (basename($scriptName) != basename($scriptFilename))
 		{
-			return str_replace('//', '/', strtr(realpath($_SERVER['DOCUMENT_ROOT']), '\\', '/'));
+			return str_replace('//', '/', strtr(realpath(self::$objRequest->server->get('DOCUMENT_ROOT')), '\\', '/'));
 		}
 
 		if (substr($scriptFilename, 0, 1) == '/')
@@ -191,12 +212,7 @@ class Environment
 	 */
 	protected static function queryString()
 	{
-		if (!isset($_SERVER['QUERY_STRING']))
-		{
-			return '';
-		}
-
-		return static::encodeRequestString($_SERVER['QUERY_STRING']);
+		return static::encodeRequestString(self::$objRequest->getQueryString());
 	}
 
 
@@ -207,16 +223,7 @@ class Environment
 	 */
 	protected static function requestUri()
 	{
-		if (!empty($_SERVER['REQUEST_URI']))
-		{
-			$strRequest = $_SERVER['REQUEST_URI'];
-		}
-		else
-		{
-			$strRequest = '/' . preg_replace('/^\//', '', static::get('scriptName')) . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-		}
-
-		return static::encodeRequestString($strRequest);
+		return static::encodeRequestString(self::$objRequest->getRequestUri());
 	}
 
 
@@ -224,43 +231,10 @@ class Environment
 	 * Return the first eight accepted languages as array
 	 *
 	 * @return array The languages array
-	 *
-	 * @author Leo Unglaub <https://github.com/LeoUnglaub>
 	 */
 	protected static function httpAcceptLanguage()
 	{
-		$arrAccepted = array();
-		$arrLanguages = array();
-
-		// The implementation differs from the original implementation and also works with .jp browsers
-		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $arrAccepted);
-
-		// Remove all invalid locales
-		foreach ($arrAccepted[1] as $v)
-		{
-			$chunks = explode('-', $v);
-
-			// Language plus dialect, e.g. en-US or fr-FR
-			if (isset($chunks[1]))
-			{
-				$locale = $chunks[0] . '-' . strtoupper($chunks[1]);
-
-				if (preg_match('/^[a-z]{2}(-[A-Z]{2})?$/', $locale))
-				{
-					$arrLanguages[] = $locale;
-				}
-			}
-
-			$locale = $chunks[0];
-
-			// Language only, e.g. en or fr (see #29)
-			if (preg_match('/^[a-z]{2}$/', $locale))
-			{
-				$arrLanguages[] = $locale;
-			}
-		}
-
-		return array_slice(array_unique($arrLanguages), 0, 8);
+		return array_slice(array_map(function($strLanguage) { return strtr($strLanguage, '_', '-'); }, self::$objRequest->getLanguages()), 0, 8);
 	}
 
 
@@ -271,7 +245,7 @@ class Environment
 	 */
 	protected static function httpAcceptEncoding()
 	{
-		return array_values(array_unique(explode(',', strtolower($_SERVER['HTTP_ACCEPT_ENCODING']))));
+		return self::$objRequest->getEncodings();
 	}
 
 
@@ -282,7 +256,7 @@ class Environment
 	 */
 	protected static function httpUserAgent()
 	{
-		$ua = strip_tags($_SERVER['HTTP_USER_AGENT']);
+		$ua = strip_tags(self::$objRequest->headers->get('User-Agent'));
 		$ua = preg_replace('/javascript|vbscri?pt|script|applet|alert|document|write|cookie/i', '', $ua);
 
 		return substr($ua, 0, 255);
@@ -296,21 +270,7 @@ class Environment
 	 */
 	protected static function httpHost()
 	{
-		if (!empty($_SERVER['HTTP_HOST']))
-		{
-			$host = $_SERVER['HTTP_HOST'];
-		}
-		else
-		{
-			$host = $_SERVER['SERVER_NAME'];
-
-			if ($_SERVER['SERVER_PORT'] != 80)
-			{
-				$host .= ':' . $_SERVER['SERVER_PORT'];
-			}
-		}
-
-		return preg_replace('/[^A-Za-z0-9[\].:-]/', '', $host);
+		return preg_replace('/[^A-Za-z0-9[\].:-]/', '', self::$objRequest->getHttpHost());
 	}
 
 
@@ -321,7 +281,7 @@ class Environment
 	 */
 	protected static function httpXForwardedHost()
 	{
-		return preg_replace('/[^A-Za-z0-9[\].:-]/', '', @$_SERVER['HTTP_X_FORWARDED_HOST']);
+		return preg_replace('/[^A-Za-z0-9[\].:-]/', '', self::$objRequest->headers->get('X-Forwarded-For'));
 	}
 
 
@@ -332,7 +292,7 @@ class Environment
 	 */
 	protected static function ssl()
 	{
-		return (@$_SERVER['SSL_SESSION_ID'] || @$_SERVER['HTTPS'] == 'on' || @$_SERVER['HTTPS'] == 1);
+		return self::$objRequest->isSecure();
 	}
 
 
@@ -374,14 +334,7 @@ class Environment
 	 */
 	protected static function ip()
 	{
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
-		if ($request === null)
-		{
-			return '';
-		}
-
-		return $request->getClientIp();
+		return self::$objRequest->getClientIp();
 	}
 
 
@@ -392,12 +345,12 @@ class Environment
 	 */
 	protected static function server()
 	{
-		$strServer = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['LOCAL_ADDR'];
+		$strServer = self::$objRequest->server->get('SERVER_ADDR', self::$objRequest->server->get('LOCAL_ADDR'));
 
 		// Special workaround for Strato users
 		if (empty($strServer))
 		{
-			$strServer = @gethostbyname($_SERVER['SERVER_NAME']);
+			$strServer = @gethostbyname(self::$objRequest->server->get('SERVER_NAME'));
 		}
 
 		return $strServer;
@@ -411,14 +364,7 @@ class Environment
 	 */
 	protected static function path()
 	{
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
-		if ($request === null)
-		{
-			return '';
-		}
-
-		return $request->getBasePath();
+		return self::$objRequest->getBasePath();
 	}
 
 
@@ -502,7 +448,7 @@ class Environment
 	 */
 	protected static function isAjaxRequest()
 	{
-		return @$_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+		return self::$objRequest->isXmlHttpRequest();
 	}
 
 

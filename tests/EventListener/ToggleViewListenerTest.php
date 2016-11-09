@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Test\EventListener;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\Test\TestCase;
+use Contao\Environment;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,11 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 class ToggleViewListenerTest extends TestCase
 {
     /**
+     * @var array
+     */
+    private static $server;
+
+    /**
      * @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject
      */
     private $framework;
@@ -37,7 +43,21 @@ class ToggleViewListenerTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
+        self::$server = $_SERVER;
+
         $_SERVER['HTTP_HOST'] = 'localhost';
+        Environment::setRequest(Request::createFromGlobals());
+        $_SERVER = [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tearDownAfterClass()
+    {
+        $_SERVER = self::$server;
+        parent::tearDownAfterClass();
     }
 
     /**

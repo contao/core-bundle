@@ -13,8 +13,9 @@ namespace Contao\CoreBundle\Test\EventListener;
 use Contao\CoreBundle\EventListener\AddToSearchIndexListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Tests the AddToSearchIndexListener class.
@@ -83,14 +84,14 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $listener = new AddToSearchIndexListener($this->framework);
-        $event = $this->mockPostResponseEvent();
+        $event = $this->mockFilterResponseEvent();
 
         $event
             ->expects($this->never())
             ->method('getResponse')
         ;
 
-        $listener->onKernelTerminate($event);
+        $listener->onKernelResponse($event);
     }
 
     /**
@@ -108,7 +109,7 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $listener = new AddToSearchIndexListener($this->framework);
-        $event = $this->mockPostResponseEvent();
+        $event = $this->mockFilterResponseEvent();
 
         $event
             ->expects($this->once())
@@ -116,22 +117,23 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new Response())
         ;
 
-        $listener->onKernelTerminate($event);
+        $listener->onKernelResponse($event);
     }
 
     /**
      * Returns a PostResponseEvent mock object.
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|PostResponseEvent
+     * @return \PHPUnit_Framework_MockObject_MockObject|FilterResponseEvent
      */
-    private function mockPostResponseEvent()
+    private function mockFilterResponseEvent()
     {
         return $this->getMock(
-            'Symfony\Component\HttpKernel\Event\PostResponseEvent',
+            'Symfony\Component\HttpKernel\Event\FilterResponseEvent',
             ['getResponse'],
             [
                 $this->getMockForAbstractClass('Symfony\Component\HttpKernel\Kernel', ['test', false]),
                 new Request(),
+                HttpKernelInterface::MASTER_REQUEST,
                 new Response(),
             ]
         );
