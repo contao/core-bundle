@@ -292,7 +292,7 @@ class Environment
 	 */
 	protected static function ssl()
 	{
-		return self::$objRequest->server->get('SSL_SESSION_ID') || (self::$objRequest->server->get('HTTPS') == 'on') || (self::$objRequest->server->get('HTTPS') == 1);
+		return self::$objRequest->isSecure();
 	}
 
 
