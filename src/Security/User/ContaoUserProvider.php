@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\FrontendUser;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class ContaoUserProvider implements UserProviderInterface
 {
     use ContainerAwareTrait;
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * @var ContaoFrameworkInterface

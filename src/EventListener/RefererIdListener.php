@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  */
 class RefererIdListener
 {
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * @var CsrfTokenManagerInterface

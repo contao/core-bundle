@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Security;
 
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Contao\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -31,7 +31,7 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthenticatorInterface
 {
     use ContainerAwareTrait;
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * Creates an authentication token.

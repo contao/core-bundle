@@ -39,7 +39,7 @@ use Symfony\Component\Routing\RouterInterface;
 class ContaoFramework implements ContaoFrameworkInterface
 {
     use ContainerAwareTrait;
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * @var bool

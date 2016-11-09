@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class ToggleViewListener
 {
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * @var ContaoFrameworkInterface

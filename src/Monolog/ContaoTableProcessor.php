@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Monolog;
 
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ContaoTableProcessor
 {
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * @var RequestStack

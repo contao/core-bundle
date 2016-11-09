@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait ScopeAwareTrait
 {
     use ContainerAwareTrait;
-    use ScopeCheckingTrait;
+    use ScopeTrait;
 
     /**
      * Checks whether the request is a Contao request.

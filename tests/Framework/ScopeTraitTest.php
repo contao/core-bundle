@@ -11,18 +11,18 @@
 namespace Contao\CoreBundle\Test\Framework;
 
 use Contao\CoreBundle\ContaoCoreBundle;
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * This tests the scope aware trait.
+ * This tests the scope trait.
  *
  * @author Christian Schiffler <https://github.com/discordier>
  */
-class ScopeCheckingTraitTest extends TestCase
+class ScopeTraitTest extends TestCase
 {
     /**
      * Generate test data for testIsScope()
@@ -244,7 +244,7 @@ class ScopeCheckingTraitTest extends TestCase
      */
     private function applyToMock($method, $argument)
     {
-        $mock = $this->getMockForTrait(ScopeCheckingTrait::class);
+        $mock = $this->getMockForTrait(ScopeTrait::class);
 
         return \Closure::bind(function ($argument = null) use ($method) {
             return $this->$method($argument);

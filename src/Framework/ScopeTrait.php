@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Event\KernelEvent;
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Christian Schiffler <https://github.com/discordier>
  */
-trait ScopeCheckingTrait
+trait ScopeTrait
 {
     /**
      * Checks whether the request is a Contao the master request.

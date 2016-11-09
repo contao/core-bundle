@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -24,7 +24,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
  */
 class StoreRefererListener
 {
-    use ScopeCheckingTrait;
+    use ScopeTrait;
     use UserAwareTrait;
 
     /**

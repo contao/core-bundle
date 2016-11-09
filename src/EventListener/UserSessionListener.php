@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\ScopeCheckingTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\FrontendUser;
 use Contao\User;
 use Doctrine\DBAL\Connection;
@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class UserSessionListener
 {
-    use ScopeCheckingTrait;
+    use ScopeTrait;
     use UserAwareTrait;
 
     /**
