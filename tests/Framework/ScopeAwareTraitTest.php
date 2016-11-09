@@ -15,6 +15,7 @@ use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -52,19 +53,25 @@ class ScopeAwareTraitTest extends TestCase
                 true,
                 'isBackendScope',
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
             ],
             'Test frontend scope does not match in isBackendScope() with container fallback' => [
                 false,
                 'isBackendScope',
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
             ],
             'Test no match in isBackendScope() without request and container' => [
                 false,
                 'isBackendScope',
                 null,
                 null
+            ],
+            'Test no match in isBackendScope() without request and empty container' => [
+                false,
+                'isBackendScope',
+                null,
+                $this->mockContainer()
             ],
 
             'Test frontend scope matches in isFrontendScope()' => [
@@ -86,19 +93,25 @@ class ScopeAwareTraitTest extends TestCase
                 true,
                 'isFrontendScope',
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
             ],
             'Test backend scope does not match in isFrontendScope() with container fallback' => [
                 false,
                 'isFrontendScope',
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
             ],
             'Test no match in isFrontendScope() without request and container' => [
                 false,
                 'isFrontendScope',
                 null,
                 null
+            ],
+            'Test no match in isFrontendScope() without request and empty container' => [
+                false,
+                'isFrontendScope',
+                null,
+                $this->mockContainer()
             ],
         ];
     }
@@ -141,17 +154,22 @@ class ScopeAwareTraitTest extends TestCase
             'Test backend scope matches with container fallback' => [
                 true,
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND))
             ],
             'Test frontend scope matches with container fallback' => [
                 true,
                 null,
-                $this->mockContainerWithRequest($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
+                $this->mockContainer($this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND))
             ],
             'Test no match without request and container' => [
                 false,
                 null,
                 null
+            ],
+            'Test no match without request and empty container' => [
+                false,
+                null,
+                $this->mockContainer()
             ],
         ];
     }
@@ -278,6 +296,7 @@ class ScopeAwareTraitTest extends TestCase
      * Test the isContaoMasterRequest() method.
      *
      * @param bool        $expected The expected result.
+     * @param string      $method   The method to invoke.
      * @param KernelEvent $event    The kernel event.
      *
      * @dataProvider isAnyMasterRequestProvider
@@ -330,5 +349,25 @@ class ScopeAwareTraitTest extends TestCase
             $request,
             $master ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
         );
+    }
+
+    /**
+     * Mocks a container with a request.
+     *
+     * @param Request $request
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
+    private function mockContainer($request = null)
+    {
+        $requestStack = new RequestStack();
+        if ($request) {
+            $requestStack->push($request);
+        }
+
+        $container = $this->getMockForAbstractClass(ContainerInterface::class);
+        $container->expects($this->any())->method('get')->with('request_stack')->willReturn($requestStack);
+
+        return $container;
     }
 }
