@@ -110,6 +110,6 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
             throw new \LogicException('The service container has not been set.');
         }
 
-        return !$this->isContaoScope();
+        return !$this->isContaoScope($this->container->get('request_stack')->getCurrentRequest());
     }
 }
