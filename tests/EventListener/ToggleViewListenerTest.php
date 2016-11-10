@@ -24,6 +24,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
  * Tests the ToggleViewListener class.
  *
  * @author Andreas Schempp <https:/github.com/aschempp>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class ToggleViewListenerTest extends TestCase
 {
@@ -98,7 +99,6 @@ class ToggleViewListenerTest extends TestCase
         $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND));
         $listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -119,7 +119,6 @@ class ToggleViewListenerTest extends TestCase
         $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -140,7 +139,6 @@ class ToggleViewListenerTest extends TestCase
         $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
@@ -162,7 +160,6 @@ class ToggleViewListenerTest extends TestCase
         $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
@@ -184,7 +181,6 @@ class ToggleViewListenerTest extends TestCase
         $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
@@ -212,7 +208,6 @@ class ToggleViewListenerTest extends TestCase
         $basePath->setValue($request, '/foo/bar');
 
         $listener = new ToggleViewListener($this->framework);
-        $listener->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
         $listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());

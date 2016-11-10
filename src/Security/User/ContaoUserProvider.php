@@ -12,8 +12,9 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Contao\FrontendUser;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,7 +27,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class ContaoUserProvider implements UserProviderInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
+    use ScopeTrait;
 
     /**
      * @var ContaoFrameworkInterface
@@ -90,7 +92,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isFrontendUsername($username)
     {
-        return 'frontend' === $username && $this->isFrontendScope();
+        return 'frontend' === $username && $this->isFrontendScope($this->container->get('request_stack')->getCurrentRequest());
     }
 
     /**
@@ -102,6 +104,6 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isBackendUsername($username)
     {
-        return 'backend' === $username && $this->isBackendScope();
+        return 'backend' === $username && $this->isBackendScope($this->container->get('request_stack')->getCurrentRequest());
     }
 }

@@ -19,6 +19,7 @@ use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
 use Contao\TemplateLoader;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -37,7 +38,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class ContaoFramework implements ContaoFrameworkInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
+    use ScopeTrait;
 
     /**
      * @var bool
@@ -187,7 +189,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         }
 
         // Define the login status constants in the back end (see #4099, #5279)
-        if (!$this->isFrontendScope()) {
+        if (!($this->request instanceof Request) || !$this->isFrontendScope($this->request)) {
             define('BE_USER_LOGGED_IN', false);
             define('FE_USER_LOGGED_IN', false);
         }
@@ -203,11 +205,15 @@ class ContaoFramework implements ContaoFrameworkInterface
      */
     private function getMode()
     {
-        if ($this->isBackendScope()) {
+        if (!($this->request instanceof Request)) {
+            return null;
+        }
+
+        if ($this->isBackendScope($this->request)) {
             return 'BE';
         }
 
-        if ($this->isFrontendScope()) {
+        if ($this->isFrontendScope($this->request)) {
             return 'FE';
         }
 

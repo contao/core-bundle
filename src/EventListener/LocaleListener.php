@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,10 +20,11 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  * Persists the locale from the accept header or the request in the session.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class LocaleListener
 {
-    use ScopeAwareTrait;
+    use ScopeTrait;
 
     /**
      * @var array
@@ -47,11 +48,11 @@ class LocaleListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->isContaoScope()) {
+        $request = $event->getRequest();
+        if (!$this->isContaoScope($request)) {
             return;
         }
 
-        $request = $event->getRequest();
         $locale = $this->getLocale($request);
 
         $request->attributes->set('_locale', $locale);

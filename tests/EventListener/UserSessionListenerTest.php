@@ -29,6 +29,7 @@ use Symfony\Component\Security\Core\User\User;
  * Tests the UserSessionListener class.
  *
  * @author Yanick Witschi <https:/github.com/toflar>
+ * @author Christian Schiffler <https://github.com/discordier>
  */
 class UserSessionListenerTest extends TestCase
 {
@@ -45,13 +46,13 @@ class UserSessionListenerTest extends TestCase
     /**
      * Tests that the session is replaced upon kernel.request.
      *
-     * @param string $scope
-     * @param string $userClass
-     * @param string $sessionBagName
+     * @param Request $request
+     * @param string  $userClass
+     * @param string  $sessionBagName
      *
      * @dataProvider scopeBagProvider
      */
-    public function testSessionReplacedOnKernelRequest($scope, $userClass, $sessionBagName)
+    public function testSessionReplacedOnKernelRequest($request, $userClass, $sessionBagName)
     {
         $sessionValuesToBeSet = [
             'foo' => 'bar',
@@ -60,7 +61,7 @@ class UserSessionListenerTest extends TestCase
 
         $responseEvent = new GetResponseEvent(
             $this->mockKernel(),
-            new Request(),
+            $request,
             HttpKernelInterface::MASTER_REQUEST
         );
 
@@ -98,7 +99,6 @@ class UserSessionListenerTest extends TestCase
         ;
 
         $listener = $this->getListener($session, null, $tokenStorage);
-        $listener->setContainer($this->mockContainerWithContaoScopes($scope));
         $listener->onKernelRequest($responseEvent);
 
         /** @var AttributeBagInterface $bag */
@@ -110,17 +110,17 @@ class UserSessionListenerTest extends TestCase
     /**
      * Tests that the session is stored upon kernel.response.
      *
-     * @param string $scope
-     * @param string $userClass
-     * @param string $userTable
+     * @param Request $request
+     * @param string  $userClass
+     * @param string  $userTable
      *
      * @dataProvider scopeTableProvider
      */
-    public function testSessionStoredOnKernelResponse($scope, $userClass, $userTable)
+    public function testSessionStoredOnKernelResponse($request, $userClass, $userTable)
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
-            new Request(),
+            $request,
             HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
@@ -169,7 +169,6 @@ class UserSessionListenerTest extends TestCase
         ;
 
         $listener = $this->getListener($this->mockSession(), $connection, $tokenStorage);
-        $listener->setContainer($this->mockContainerWithContaoScopes($scope));
         $listener->onKernelResponse($responseEvent);
     }
 
@@ -434,8 +433,8 @@ class UserSessionListenerTest extends TestCase
     public function scopeBagProvider()
     {
         return [
-            [ContaoCoreBundle::SCOPE_BACKEND, 'Contao\BackendUser', 'contao_backend'],
-            [ContaoCoreBundle::SCOPE_FRONTEND, 'Contao\FrontendUser', 'contao_frontend'],
+            [$this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND), 'Contao\BackendUser', 'contao_backend'],
+            [$this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND), 'Contao\FrontendUser', 'contao_frontend'],
         ];
     }
 
@@ -447,8 +446,8 @@ class UserSessionListenerTest extends TestCase
     public function scopeTableProvider()
     {
         return [
-            [ContaoCoreBundle::SCOPE_BACKEND, 'Contao\BackendUser', 'tl_user'],
-            [ContaoCoreBundle::SCOPE_FRONTEND, 'Contao\FrontendUser', 'tl_member'],
+            [$this->mockRequest(ContaoCoreBundle::SCOPE_BACKEND), 'Contao\BackendUser', 'tl_user'],
+            [$this->mockRequest(ContaoCoreBundle::SCOPE_FRONTEND), 'Contao\FrontendUser', 'tl_member'],
         ];
     }
 

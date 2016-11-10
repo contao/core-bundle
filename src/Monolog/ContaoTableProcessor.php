@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Monolog;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Framework\ScopeTrait;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ContaoTableProcessor
 {
-    use ScopeAwareTrait;
+    use ScopeTrait;
 
     /**
      * @var RequestStack
@@ -75,7 +75,7 @@ class ContaoTableProcessor
         $this->updateIp($context, $request);
         $this->updateBrowser($context, $request);
         $this->updateUsername($context);
-        $this->updateSource($context);
+        $this->updateSource($context, $request);
 
         $record['extra']['contao'] = $context;
         unset($record['context']['contao']);
@@ -158,14 +158,15 @@ class ContaoTableProcessor
      * Sets the source.
      *
      * @param ContaoContext $context
+     * @param Request       $request
      */
-    private function updateSource(ContaoContext $context)
+    private function updateSource(ContaoContext $context, Request $request = null)
     {
         if (null !== $context->getSource()) {
             return;
         }
 
-        $context->setSource($this->isBackendScope() ? 'BE' : 'FE');
+        $context->setSource(($request instanceof Request) && $this->isBackendScope($request) ? 'BE' : 'FE');
     }
 
     /**

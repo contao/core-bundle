@@ -15,7 +15,6 @@ use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Monolog\ContaoTableProcessor;
 use Contao\CoreBundle\Test\TestCase;
 use Monolog\Logger;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -221,16 +220,15 @@ class ContaoTableProcessorTest extends TestCase
     /**
      * Tests that the source is added.
      *
-     * @param ContainerInterface $container
-     * @param string|null        $contextSource
-     * @param string|null        $expectedSource
+     * @param RequestStack $requestStack
+     * @param string|null  $contextSource
+     * @param string|null  $expectedSource
      *
      * @dataProvider sourceProvider
      */
-    public function testSource($container, $contextSource, $expectedSource)
+    public function testSource($requestStack, $contextSource, $expectedSource)
     {
-        $processor = $this->createContaoTableProcessor();
-        $processor->setContainer($container);
+        $processor = $this->createContaoTableProcessor($requestStack);
 
         $result = $processor(
             ['context' => ['contao' => new ContaoContext(__METHOD__, null, null, null, null, $contextSource)]]
@@ -294,13 +292,13 @@ class ContaoTableProcessorTest extends TestCase
             [null, 'BE', 'BE'],
             [null, null, 'FE'],
 
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_FRONTEND), 'FE', 'FE'],
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_FRONTEND), 'BE', 'BE'],
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_FRONTEND), null, 'FE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_FRONTEND), 'FE', 'FE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_FRONTEND), 'BE', 'BE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_FRONTEND), null, 'FE'],
 
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_BACKEND), 'FE', 'FE'],
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_BACKEND), 'BE', 'BE'],
-            [$this->mockContainerWithScope(ContaoCoreBundle::SCOPE_BACKEND), null, 'BE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_BACKEND), 'FE', 'FE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_BACKEND), 'BE', 'BE'],
+            [$this->mockRequestStack(ContaoCoreBundle::SCOPE_BACKEND), null, 'BE'],
         ];
     }
 
@@ -309,25 +307,16 @@ class ContaoTableProcessorTest extends TestCase
      *
      * @param string $scope
      *
-     * @return ContainerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return RequestStack
      */
-    private function mockContainerWithScope($scope)
+    private function mockRequestStack($scope)
     {
         $request = new Request([], [], ['_scope' => $scope]);
 
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
-
-        $container
-            ->expects($this->any())
-            ->method('get')
-            ->with('request_stack')
-            ->willReturn($requestStack)
-        ;
-
-        return $container;
+        return $requestStack;
     }
 
     /**
