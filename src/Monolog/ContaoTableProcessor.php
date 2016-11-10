@@ -166,7 +166,7 @@ class ContaoTableProcessor
             return;
         }
 
-        $context->setSource($request && $this->isBackendScope($request) ? 'BE' : 'FE');
+        $context->setSource(($request instanceof Request) && $this->isBackendScope($request) ? 'BE' : 'FE');
     }
 
     /**
