@@ -14,7 +14,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 
-@trigger_error('Trait Contao\CoreBundle\Framework\ScopeAwareTrait has been deprecated since Contao 4.3 and will get removed in Contao 5.0 - use Contao\CoreBundle\Framework\ScopeCheckingTrait instead', E_USER_DEPRECATED);
+@trigger_error('Trait Contao\CoreBundle\Framework\ScopeAwareTrait has been deprecated since Contao 4.3 and will get removed in Contao 5.0 - use ' . ScopeTrait::class . ' instead', E_USER_DEPRECATED);
 
 /**
  * Provides methods to test the request scope.
