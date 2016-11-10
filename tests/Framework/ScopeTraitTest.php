@@ -251,6 +251,14 @@ class ScopeTraitTest extends TestCase
         }, $mock, $mock)->__invoke($argument);
     }
 
+    /**
+     * Create a kernel event for the passed request with a completely mocked kernel.
+     *
+     * @param bool    $master  Flag if it should be a master request - falso for sub requests.
+     * @param Request $request The request to use.
+     *
+     * @return KernelEvent.
+     */
     private function getEvent($master, $request)
     {
         return new KernelEvent(
