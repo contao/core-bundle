@@ -5,11 +5,17 @@
       <trans-unit id="MOD.content">
         <source>Content</source>
       </trans-unit>
-      <trans-unit id="MOD.article.0">
+      <trans-unit id="MOD.tl_content">
+        <source>Elements</source>
+      </trans-unit>
+     <trans-unit id="MOD.article.0">
         <source>Articles</source>
       </trans-unit>
       <trans-unit id="MOD.article.1">
         <source>Manage articles and content elements</source>
+      </trans-unit>
+       <trans-unit id="MOD.tl_form_field">
+        <source>Fields</source>
       </trans-unit>
       <trans-unit id="MOD.form.0">
         <source>Form generator</source>
@@ -105,7 +111,7 @@
         <source>Change your personal data or set a new password</source>
       </trans-unit>
       <trans-unit id="MOD.tl_style">
-        <source>Style sheets</source>
+        <source>Format definitions</source>
       </trans-unit>
       <trans-unit id="MOD.tl_style_sheet">
         <source>Style sheets</source>
@@ -120,7 +126,7 @@
         <source>Image sizes</source>
       </trans-unit>
       <trans-unit id="MOD.tl_image_size_item">
-        <source>Image size media queries</source>
+        <source>Media queries</source>
       </trans-unit>
       <trans-unit id="MOD.css">
         <source>Style sheets</source>
