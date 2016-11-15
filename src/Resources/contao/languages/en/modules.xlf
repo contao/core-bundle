@@ -6,7 +6,7 @@
         <source>Content</source>
       </trans-unit>
       <trans-unit id="MOD.tl_content">
-        <source>Elements</source>
+        <source>Content elements</source>
       </trans-unit>
      <trans-unit id="MOD.article.0">
         <source>Articles</source>
