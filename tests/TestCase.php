@@ -22,6 +22,7 @@ use Contao\Image\PictureGenerator;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Gd\Imagine as ImagineGd;
 use Psr\Log\NullLogger;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Filesystem\Filesystem;
@@ -458,6 +459,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             $container->getParameter('contao.image.imagine_options')
         );
 
+        $dimensionsCache = new ArrayAdapter();
+
         $container->set('filesystem', $filesystem);
         $container->set('contao.image.imagine', $imagine);
         $container->set('contao.image.imagine_svg', $imagineSvg);
@@ -466,5 +469,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $container->set('contao.image.image_factory', $imageFactory);
         $container->set('contao.image.picture_generator', $pictureGenerator);
         $container->set('contao.image.picture_factory', $pictureFactory);
+        $container->set('contao.image.dimensions_cache', $dimensionsCache);
     }
 }

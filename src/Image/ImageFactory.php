@@ -23,6 +23,7 @@ use Contao\Image\ResizerInterface;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -73,6 +74,11 @@ class ImageFactory implements ImageFactoryInterface
     private $validExtensions;
 
     /**
+     * @var CacheItemPoolInterface
+     */
+    private $dimensionsCache;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions)
@@ -85,6 +91,20 @@ class ImageFactory implements ImageFactoryInterface
         $this->bypassCache = (bool) $bypassCache;
         $this->imagineOptions = $imagineOptions;
         $this->validExtensions = $validExtensions;
+    }
+
+    /**
+     * Sets the cache pool used to cache image dimensions.
+     *
+     * @param CacheItemPoolInterface $dimensionsCache
+     *
+     * @return static
+     */
+    public function setDimensionsCache(CacheItemPoolInterface $dimensionsCache = null)
+    {
+        $this->dimensionsCache = $dimensionsCache;
+
+        return $this;
     }
 
     /**
@@ -110,6 +130,10 @@ class ImageFactory implements ImageFactoryInterface
             }
 
             $image = new Image((string) $path, $imagine, $this->filesystem);
+        }
+
+        if (null === $image->getDimensionsCache()) {
+            $image->setDimensionsCache($this->dimensionsCache);
         }
 
         if ($size instanceof ResizeConfigurationInterface) {

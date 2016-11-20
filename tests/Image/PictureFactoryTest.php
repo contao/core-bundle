@@ -298,7 +298,14 @@ class PictureFactoryTest extends TestCase
             ->willReturn($pictureMock)
         ;
 
-        $pictureFactory = $this->createPictureFactory($pictureGenerator);
+        $imageFactory = $this->getMock('Contao\CoreBundle\Image\ImageFactoryInterface');
+
+        $imageFactory
+            ->method('create')
+            ->will($this->returnArgument(0))
+        ;
+
+        $pictureFactory = $this->createPictureFactory($pictureGenerator, $imageFactory);
         $picture = $pictureFactory->create($imageMock, $pictureConfig);
 
         $this->assertSame($pictureMock, $picture);

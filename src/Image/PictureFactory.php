@@ -90,11 +90,7 @@ class PictureFactory implements PictureFactoryInterface
     {
         $attributes = [];
 
-        if ($path instanceof ImageInterface) {
-            $image = $path;
-        } else {
-            $image = $this->imageFactory->create($path);
-        }
+        $image = $this->imageFactory->create($path);
 
         if (is_array($size) && isset($size[2]) && 1 === substr_count($size[2], '_')) {
             $image->setImportantPart($this->imageFactory->getImportantPartFromLegacyMode($image, $size[2]));

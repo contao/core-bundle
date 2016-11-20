@@ -24,6 +24,7 @@ use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -67,6 +68,8 @@ class ImageFactoryTest extends TestCase
             ->getMock()
         ;
 
+        $dimensionsCache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
+
         $resizer = $this
             ->getMockBuilder('Contao\Image\Resizer')
             ->disableOriginalConstructor()
@@ -78,9 +81,10 @@ class ImageFactoryTest extends TestCase
             ->method('resize')
             ->with(
                 $this->callback(
-                    function ($image) use (&$path) {
+                    function ($image) use (&$path, $dimensionsCache) {
                         /* @var Image $image */
                         $this->assertEquals($path, $image->getPath());
+                        $this->assertSame($dimensionsCache, $image->getDimensionsCache());
 
                         return true;
                     }
@@ -131,7 +135,7 @@ class ImageFactoryTest extends TestCase
             ->willReturn($filesAdapter)
         ;
 
-        $imageFactory = $this->createImageFactory($resizer, null, null, null, $framework);
+        $imageFactory = $this->createImageFactory($resizer, null, null, null, $framework, null, null, null, $dimensionsCache);
         $image = $imageFactory->create($path, [100, 200, ResizeConfiguration::MODE_BOX]);
 
         $this->assertSame($imageMock, $image);
@@ -1002,13 +1006,14 @@ class ImageFactoryTest extends TestCase
      * @param ImagineInterface|null         $imagineSvg
      * @param Filesystem|null               $filesystem
      * @param ContaoFrameworkInterface|null $framework
-     * @param bool                          $bypassCache
-     * @param array                         $imagineOptions
-     * @param string                        $validExtensions
+     * @param bool|null                     $bypassCache
+     * @param array|null                    $imagineOptions
+     * @param string|null                   $validExtensions
+     * @param CacheItemPoolInterface|null   $dimensionsCache
      *
      * @return ImageFactory
      */
-    private function createImageFactory($resizer = null, $imagine = null, $imagineSvg = null, $filesystem = null, $framework = null, $bypassCache = null, $imagineOptions = null, $validExtensions = null)
+    private function createImageFactory($resizer = null, $imagine = null, $imagineSvg = null, $filesystem = null, $framework = null, $bypassCache = null, $imagineOptions = null, $validExtensions = null, $dimensionsCache = null)
     {
         if (null === $resizer) {
             $resizer = $this
@@ -1046,7 +1051,7 @@ class ImageFactoryTest extends TestCase
             $validExtensions = ['jpg', 'svg'];
         }
 
-        return new ImageFactory(
+        $factory = new ImageFactory(
             $resizer,
             $imagine,
             $imagineSvg,
@@ -1056,5 +1061,9 @@ class ImageFactoryTest extends TestCase
             $imagineOptions,
             $validExtensions
         );
+
+        $factory->setDimensionsCache($dimensionsCache);
+
+        return $factory;
     }
 }
