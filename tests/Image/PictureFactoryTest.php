@@ -302,7 +302,8 @@ class PictureFactoryTest extends TestCase
 
         $imageFactory
             ->method('create')
-            ->will($this->returnArgument(0));
+            ->will($this->returnArgument(0))
+        ;
 
         $pictureFactory = $this->createPictureFactory($pictureGenerator, $imageFactory);
         $picture = $pictureFactory->create($imageMock, $pictureConfig);
