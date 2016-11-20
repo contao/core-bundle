@@ -1051,7 +1051,7 @@ class ImageFactoryTest extends TestCase
             $validExtensions = ['jpg', 'svg'];
         }
 
-        return new ImageFactory(
+        $factory = new ImageFactory(
             $resizer,
             $imagine,
             $imagineSvg,
@@ -1059,8 +1059,11 @@ class ImageFactoryTest extends TestCase
             $framework,
             $bypassCache,
             $imagineOptions,
-            $validExtensions,
-            $dimensionsCache
+            $validExtensions
         );
+
+        $factory->setDimensionsCache($dimensionsCache);
+
+        return $factory;
     }
 }

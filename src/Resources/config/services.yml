@@ -172,7 +172,8 @@ services:
             - "%contao.image.bypass_cache%"
             - "%contao.image.imagine_options%"
             - "%contao.image.valid_extensions%"
-            - "@contao.image.dimensions_cache"
+        calls:
+            - ["setDimensionsCache", ["@contao.image.dimensions_cache"]]
 
     contao.image.picture_generator:
         class: Contao\Image\PictureGenerator

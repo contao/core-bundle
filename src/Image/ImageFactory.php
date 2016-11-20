@@ -81,7 +81,7 @@ class ImageFactory implements ImageFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions, CacheItemPoolInterface $dimensionsCache = null)
+    public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions)
     {
         $this->resizer = $resizer;
         $this->imagine = $imagine;
@@ -91,7 +91,20 @@ class ImageFactory implements ImageFactoryInterface
         $this->bypassCache = (bool) $bypassCache;
         $this->imagineOptions = $imagineOptions;
         $this->validExtensions = $validExtensions;
+    }
+
+    /**
+     * Sets the cache pool used to cache image dimensions.
+     *
+     * @param CacheItemPoolInterface $dimensionsCache
+     *
+     * @return static
+     */
+    public function setDimensionsCache(CacheItemPoolInterface $dimensionsCache = null)
+    {
         $this->dimensionsCache = $dimensionsCache;
+
+        return $this;
     }
 
     /**

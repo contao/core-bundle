@@ -16,7 +16,6 @@ use Contao\Image\ImportantPartInterface;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizerInterface;
 use Imagine\Image\ImagineInterface;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -29,17 +28,16 @@ interface ImageFactoryInterface
     /**
      * Constructor.
      *
-     * @param ResizerInterface            $resizer
-     * @param ImagineInterface            $imagine
-     * @param ImagineInterface            $imagineSvg
-     * @param Filesystem                  $filesystem
-     * @param ContaoFrameworkInterface    $framework
-     * @param bool                        $bypassCache
-     * @param array                       $imagineOptions
-     * @param array                       $validExtensions
-     * @param CacheItemPoolInterface|null $dimensionsCache
+     * @param ResizerInterface         $resizer
+     * @param ImagineInterface         $imagine
+     * @param ImagineInterface         $imagineSvg
+     * @param Filesystem               $filesystem
+     * @param ContaoFrameworkInterface $framework
+     * @param bool                     $bypassCache
+     * @param array                    $imagineOptions
+     * @param array                    $validExtensions
      */
-    public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions, CacheItemPoolInterface $dimensionsCache = null);
+    public function __construct(ResizerInterface $resizer, ImagineInterface $imagine, ImagineInterface $imagineSvg, Filesystem $filesystem, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions, array $validExtensions);
 
     /**
      * Creates an Image object.
