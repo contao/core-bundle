@@ -51,12 +51,67 @@ services:
     contao.doctrine.schema_provider:
         alias: contao.doctrine.dca_schema_provider
 
+    contao.image.dimensions_cache:
+        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+        arguments:
+            - ""
+            - 0
+            - "%kernel.cache_dir%/contao/image_dimensions_cache"
+
+    contao.image.image_factory:
+        class: Contao\CoreBundle\Image\ImageFactory
+        arguments:
+            - "@contao.image.resizer"
+            - "@contao.image.imagine"
+            - "@contao.image.imagine_svg"
+            - "@filesystem"
+            - "@contao.framework"
+            - "%contao.image.bypass_cache%"
+            - "%contao.image.imagine_options%"
+            - "%contao.image.valid_extensions%"
+        calls:
+            - ["setDimensionsCache", ["@contao.image.dimensions_cache"]]
+
     contao.image.image_sizes:
         class: Contao\CoreBundle\Image\ImageSizes
         arguments:
             - "@database_connection"
             - "@event_dispatcher"
             - "@contao.framework"
+
+    contao.image.imagine:
+        class: Imagine\Gd\Imagine
+
+    contao.image.imagine_svg:
+        class: Contao\ImagineSvg\Imagine
+
+    contao.image.picture_factory:
+        class: Contao\CoreBundle\Image\PictureFactory
+        arguments:
+            - "@contao.image.picture_generator"
+            - "@contao.image.image_factory"
+            - "@contao.framework"
+            - "%contao.image.bypass_cache%"
+            - "%contao.image.imagine_options%"
+
+    contao.image.picture_generator:
+        class: Contao\Image\PictureGenerator
+        arguments:
+            - "@contao.image.resizer"
+
+    contao.image.resize_calculator:
+        class: Contao\Image\ResizeCalculator
+        public: false
+
+    contao.image.resizer:
+        class: Contao\CoreBundle\Image\LegacyResizer
+        public: false
+        arguments:
+            - "%kernel.root_dir%/../%contao.image.target_path%"
+            - "@contao.image.resize_calculator"
+            - "@filesystem"
+        calls:
+            - ["setFramework", ["@contao.framework"]]
 
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework
@@ -140,61 +195,6 @@ services:
             - "@contao.framework"
         calls:
             - ["setContainer", ["@service_container"]]
-
-    contao.image.imagine:
-        class: Imagine\Gd\Imagine
-
-    contao.image.imagine_svg:
-        class: Contao\ImagineSvg\Imagine
-
-    contao.image.resize_calculator:
-        class: Contao\Image\ResizeCalculator
-        public: false
-
-    contao.image.resizer:
-        class: Contao\CoreBundle\Image\LegacyResizer
-        public: false
-        arguments:
-            - "%kernel.root_dir%/../%contao.image.target_path%"
-            - "@contao.image.resize_calculator"
-            - "@filesystem"
-        calls:
-            - ["setFramework", ["@contao.framework"]]
-
-    contao.image.image_factory:
-        class: Contao\CoreBundle\Image\ImageFactory
-        arguments:
-            - "@contao.image.resizer"
-            - "@contao.image.imagine"
-            - "@contao.image.imagine_svg"
-            - "@filesystem"
-            - "@contao.framework"
-            - "%contao.image.bypass_cache%"
-            - "%contao.image.imagine_options%"
-            - "%contao.image.valid_extensions%"
-        calls:
-            - ["setDimensionsCache", ["@contao.image.dimensions_cache"]]
-
-    contao.image.picture_generator:
-        class: Contao\Image\PictureGenerator
-        arguments:
-            - "@contao.image.resizer"
-
-    contao.image.picture_factory:
-        class: Contao\CoreBundle\Image\PictureFactory
-        arguments:
-            - "@contao.image.picture_generator"
-            - "@contao.image.image_factory"
-            - "@contao.framework"
-            - "%contao.image.bypass_cache%"
-            - "%contao.image.imagine_options%"
-
-    contao.image.dimensions_cache:
-        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
-        arguments:
-            - ""
-            - 0
-            - "%kernel.cache_dir%/contao/image_dimensions_cache"
 
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
