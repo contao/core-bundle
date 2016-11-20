@@ -172,6 +172,7 @@ services:
             - "%contao.image.bypass_cache%"
             - "%contao.image.imagine_options%"
             - "%contao.image.valid_extensions%"
+            - "@contao.image.dimensions_cache"
 
     contao.image.picture_generator:
         class: Contao\Image\PictureGenerator
@@ -186,6 +187,13 @@ services:
             - "@contao.framework"
             - "%contao.image.bypass_cache%"
             - "%contao.image.imagine_options%"
+
+    contao.image.dimensions_cache:
+        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+        arguments:
+            - ""
+            - 0
+            - "%kernel.cache_dir%/contao/image_dimensions_cache"
 
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
