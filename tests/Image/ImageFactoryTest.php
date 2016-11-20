@@ -1006,9 +1006,9 @@ class ImageFactoryTest extends TestCase
      * @param ImagineInterface|null         $imagineSvg
      * @param Filesystem|null               $filesystem
      * @param ContaoFrameworkInterface|null $framework
-     * @param bool                          $bypassCache
-     * @param array                         $imagineOptions
-     * @param string                        $validExtensions
+     * @param bool|null                     $bypassCache
+     * @param array|null                    $imagineOptions
+     * @param string|null                   $validExtensions
      * @param CacheItemPoolInterface|null   $dimensionsCache
      *
      * @return ImageFactory
