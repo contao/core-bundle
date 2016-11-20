@@ -252,7 +252,8 @@ class File extends \System
 						{
 							$dimensions = (new ContaoImage(TL_ROOT . '/' . $this->strFile, System::getContainer()->get('contao.image.imagine_svg')))
 								->setDimensionsCache(System::getContainer()->get('contao.image.dimensions_cache'))
-								->getDimensions();
+								->getDimensions()
+							;
 
 							if (!$dimensions->isRelative() && !$dimensions->isUndefined())
 							{
