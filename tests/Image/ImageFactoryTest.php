@@ -56,6 +56,19 @@ class ImageFactoryTest extends TestCase
     }
 
     /**
+     * Tests the setDimensionsCache() and getDimensionsCache() methods.
+     */
+    public function testSetAndGetDimensionsCache()
+    {
+        $imageFactory = $this->createImageFactory();
+        $cache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
+
+        $this->assertNull($imageFactory->getDimensionsCache());
+        $this->assertSame($imageFactory, $imageFactory->setDimensionsCache($cache));
+        $this->assertSame($cache, $imageFactory->getDimensionsCache());
+    }
+
+    /**
      * Tests the create() method.
      */
     public function testCreate()

@@ -108,6 +108,16 @@ class ImageFactory implements ImageFactoryInterface
     }
 
     /**
+     * Returns the cache pool used to cache image dimensions.
+     *
+     * @return CacheItemPoolInterface|null
+     */
+    public function getDimensionsCache()
+    {
+        return $this->dimensionsCache;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create($path, $size = null, $targetPath = null)
