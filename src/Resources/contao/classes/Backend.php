@@ -489,7 +489,7 @@ abstract class Backend extends \Controller
 				$table = $strTable;
 				$ptable = (\Input::get('act') != 'edit') ? $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] : $strTable;
 				
-				while ($ptable && !in_array($GLOBALS['TL_DCA'][$ptable]['list']['sorting']['mode'], array(5, 6)))
+				while ($ptable && !in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
 				{
 					$objRow = $this->Database->prepare("SELECT * FROM " . $ptable . " WHERE id=?")
 											 ->limit(1)
