@@ -130,7 +130,7 @@ class ImageFactory implements ImageFactoryInterface
 
         if (!is_object($path) || !($path instanceof ImageInterface)) {
             if (null === $importantPart) {
-                $importantPart = $this->createImportantPart($image->getPath());
+                $importantPart = $this->createImportantPart($image);
             }
 
             $image->setImportantPart($importantPart);
@@ -244,17 +244,24 @@ class ImageFactory implements ImageFactoryInterface
     /**
      * Fetches the important part from the database.
      *
-     * @param string $path
+     * @param ImageInterface $image
      *
      * @return ImportantPart|null
      */
-    private function createImportantPart($path)
+    private function createImportantPart(ImageInterface $image)
     {
         /** @var FilesModel $filesModel */
         $filesModel = $this->framework->getAdapter(FilesModel::class);
-        $file = $filesModel->findByPath($path);
+        $file = $filesModel->findByPath($image->getPath());
+        $imageSize = $image->getDimensions()->getSize();
 
-        if (null === $file || !$file->importantPartWidth || !$file->importantPartHeight) {
+        if (
+            null === $file
+            || !$file->importantPartWidth
+            || !$file->importantPartHeight
+            || $file->importantPartX + $file->importantPartWidth > $imageSize->getWidth()
+            || $file->importantPartY + $file->importantPartHeight > $imageSize->getHeight()
+        ) {
             return null;
         }
 
