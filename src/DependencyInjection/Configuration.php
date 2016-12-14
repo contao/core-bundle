@@ -90,7 +90,16 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue($this->debug)
                         ->end()
                         ->scalarNode('target_path')
-                            ->defaultValue('assets/images')
+                            ->defaultValue('%kernel.root_dir%/../assets/images')
+                            ->validate()
+                                ->always(function ($value) {
+                                    if (strpos($value, '/') !== 0 && strpos($value, '%') !== 0) {
+                                        $value = '%kernel.root_dir%/../' . $value;
+                                    }
+
+                                    return $value;
+                                })
+                            ->end()
                         ->end()
                         ->arrayNode('valid_extensions')
                             ->prototype('scalar')->end()

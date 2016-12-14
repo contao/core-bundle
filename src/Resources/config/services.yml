@@ -155,7 +155,7 @@ services:
         class: Contao\CoreBundle\Image\LegacyResizer
         public: false
         arguments:
-            - "%kernel.root_dir%/../%contao.image.target_path%"
+            - "%contao.image.target_path%"
             - "@contao.image.resize_calculator"
             - "@filesystem"
         calls:
