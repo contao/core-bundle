@@ -127,7 +127,21 @@ class XliffFileLoader extends Loader
      */
     private function getNodeByLanguage(\DOMElement $unit, $language)
     {
-        return ('en' === $language) ? $unit->getElementsByTagName('source') : $unit->getElementsByTagName('target');
+        $tagName = 'target';
+        $node = $unit;
+
+        // Use the source tag if the source language matches
+        while ($node = $node->parentNode) {
+            if (
+                'file' === $node->nodeName
+                && strtolower($node->getAttribute('source-language')) === strtolower($language)
+            ) {
+                $tagName = 'source';
+                break;
+            }
+        }
+
+        return $unit->getElementsByTagName($tagName);
     }
 
     /**
