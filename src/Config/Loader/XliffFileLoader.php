@@ -102,7 +102,7 @@ class XliffFileLoader extends Loader
      *
      * @return string
      */
-    private function getPhpFromFileNode($fileNode, $tagName)
+    private function getPhpFromFileNode(\DOMElement $fileNode, $tagName)
     {
         $return = '';
         $units = $fileNode->getElementsByTagName('trans-unit');
