@@ -253,13 +253,15 @@ class ImageFactory implements ImageFactoryInterface
         /** @var FilesModel $filesModel */
         $filesModel = $this->framework->getAdapter(FilesModel::class);
         $file = $filesModel->findByPath($image->getPath());
+
+        if (null === $file || !$file->importantPartWidth || !$file->importantPartHeight) {
+            return null;
+        }
+
         $imageSize = $image->getDimensions()->getSize();
 
         if (
-            null === $file
-            || !$file->importantPartWidth
-            || !$file->importantPartHeight
-            || $file->importantPartX + $file->importantPartWidth > $imageSize->getWidth()
+            $file->importantPartX + $file->importantPartWidth > $imageSize->getWidth()
             || $file->importantPartY + $file->importantPartHeight > $imageSize->getHeight()
         ) {
             return null;
