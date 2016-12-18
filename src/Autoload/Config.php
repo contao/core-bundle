@@ -44,6 +44,16 @@ class Config implements ConfigInterface
     protected $loadAfter = [];
 
     /**
+     * Returns a new configuration
+     *
+     * @return static
+     */
+    public static function create()
+    {
+        return new static();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function create()
