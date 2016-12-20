@@ -433,15 +433,7 @@ class Ajax extends \Backend
 
 			// DropZone file upload
 			case 'fileupload':
-				try
-				{
-					$dc->move();
-				}
-				catch (AjaxRedirectResponseException $e)
-				{
-					// ignore the redirect (see #637)
-				}
-
+				$dc->move(true);
 				throw new NoContentResponseException();
 
 			// HOOK: pass unknown actions to callback functions
