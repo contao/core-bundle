@@ -27,13 +27,20 @@ class Configuration implements ConfigurationInterface
     private $debug;
 
     /**
+     * @var string
+     */
+    private $secret;
+
+    /**
      * Constructor.
      *
-     * @param bool $debug
+     * @param bool   $debug
+     * @param string $secret
      */
-    public function __construct($debug)
+    public function __construct($debug, $secret)
     {
         $this->debug = (bool) $debug;
+        $this->secret = $secret;
     }
 
     /**
@@ -52,8 +59,8 @@ class Configuration implements ConfigurationInterface
                     ->defaultFalse()
                 ->end()
                 ->scalarNode('encryption_key')
-                    ->isRequired()
                     ->cannotBeEmpty()
+                    ->defaultValue($this->secret)
                 ->end()
                 ->scalarNode('url_suffix')
                     ->defaultValue('.html')
