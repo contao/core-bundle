@@ -48,6 +48,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('root_dir')
+                    ->cannotBeEmpty()
+                    ->defaultValue('%kernel.root_dir%/..')
+                ->end()
                 ->booleanNode('prepend_locale')
                     ->defaultFalse()
                 ->end()
