@@ -66,6 +66,5 @@ class ContaoCoreBundleTest extends TestCase
         $this->assertContains('Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass', $classes);
         $this->assertContains('Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass', $classes);
         $this->assertContains('Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass', $classes);
-        $this->assertContains('Contao\CoreBundle\DependencyInjection\Compiler\ContaoRootDirPass', $classes);
     }
 }
