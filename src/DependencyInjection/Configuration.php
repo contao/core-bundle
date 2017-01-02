@@ -49,11 +49,11 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->booleanNode('prepend_locale')
-                    ->defaultFalse()
+                    ->defaultValue('%prepend_locale%')
                 ->end()
                 ->scalarNode('encryption_key')
-                    ->isRequired()
                     ->cannotBeEmpty()
+                    ->defaultValue('%kernel.secret%')
                 ->end()
                 ->scalarNode('url_suffix')
                     ->defaultValue('.html')
