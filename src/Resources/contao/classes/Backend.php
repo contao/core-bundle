@@ -513,7 +513,7 @@ abstract class Backend extends \Controller
 						{
 							$trail[] = ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $objRow->name . '</span>';
 						}
-						elseif ($objRow->headline != '') // inconsistent title handling in contao/news-bundle
+						elseif ($objRow->headline != '') // Inconsistent title handling in contao/news-bundle
 						{
 							$trail[] = ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $objRow->headline . '</span>';
 						}
@@ -534,7 +534,7 @@ abstract class Backend extends \Controller
 					$trail[] = ' &raquo;&nbsp;'. $GLOBALS['TL_LANG']['MOD'][$table];
 				}
 				
-				// Add the beadcrumb trail in reverse order
+				// Add the breadcrumb trail in reverse order
 				foreach (array_reverse($trail) as $breadcrumb)
 				{
 					$this->Template->headline .= $breadcrumb;
