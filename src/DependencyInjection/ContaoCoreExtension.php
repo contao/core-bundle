@@ -50,10 +50,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         // Add the resource to the container
         parent::getConfiguration($config, $container);
 
-        return new Configuration(
-            $container->getParameter('kernel.debug'),
-            $container->getParameter('kernel.secret')
-        );
+        return new Configuration($container->getParameter('kernel.debug'));
     }
 
     /**
