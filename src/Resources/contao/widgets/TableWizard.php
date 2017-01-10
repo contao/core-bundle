@@ -10,8 +10,6 @@
 
 namespace Contao;
 
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
-
 
 /**
  * Provide methods to handle table fields.
@@ -170,18 +168,10 @@ class TableWizard extends \Widget
 	 * @throws \Exception
 	 * @throws \Contao\CoreBundle\Exception\RedirectResponseException
 	 *
-	 * @deprecated Since 4.2 to be removed in 5.0. Use the BackendCsvImportController instead.
+	 * @deprecated Since 4.3 to be removed in 5.0. Use the BackendCsvImportUtil instead.
 	 */
 	public function importTable(DataContainer $dc)
 	{
-		$container = System::getContainer();
-		$request   = $container->get('request_stack')->getCurrentRequest();
-		$uri       = new ControllerReference(
-			'contao.controller.backend_csv_import',
-			[],
-			['table' => $dc->table, 'id' => $dc->id, 'url' => $request->getRequestUri(), 'key' => \Input::get('key')]
-		);
-
-		return $container->get('fragment.handler')->render($uri);
+		return System::getContainer()->get('contao.backend_csv_import')->importTableWizard($dc);
 	}
 }

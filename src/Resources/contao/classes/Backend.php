@@ -12,10 +12,8 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\Database\Result;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 
 /**
@@ -414,40 +412,10 @@ abstract class Backend extends \Controller
 		}
 
 		// Custom action (if key is not defined in config.php the default action will be called)
-		elseif (\Input::get('key'))
+		elseif (\Input::get('key') && isset($arrModule[\Input::get('key')]))
 		{
-			// Use the regular callback (BC)
-			if (isset($arrModule[\Input::get('key')])) {
-				@trigger_error('Using backend module callbacks has been deprecated and will no longer work in Contao 5.0. Use controllers to generate custom module actions.', E_USER_DEPRECATED);
-
-				$className  = $arrModule[\Input::get('key')][0];
-				$methodName = $arrModule[\Input::get('key')][1];
-				$objCallback = System::importStatic($className);
-				$this->Template->main .= $objCallback->$methodName($dc);
-			} elseif (isset($arrModule['controllers'][\Input::get('key')])) {
-				// Use a controller
-				$container = static::getContainer();
-
-				/** @var Request $request */
-				$request    = $container->get('request_stack')->getCurrentRequest();
-				$controller = $arrModule['controllers'][\Input::get('key')][0];
-				$strategy   = ($arrModule['controllers'][\Input::get('key')][1]) ?: 'inline';
-				$parameters = [
-					'id'    => $dc->id,
-					'key'   => \Input::get('key'),
-					'table' => $dc->table,
-					'url'   => $request->getRequestUri(),
-				];
-
-				// Support both, controller references as well as route names
-				if (strpos($controller, ':') !== false) {
-					$uri = new ControllerReference($controller, [], $parameters);
-				} else {
-					$uri = $container->get('router')->generate($controller, $parameters);
-				}
-
-				$this->Template->main .= $container->get('fragment.handler')->render($uri, $strategy);
-			}
+			$objCallback = \System::importStatic($arrModule[\Input::get('key')][0]);
+			$this->Template->main .= $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
 
 			// Add the name of the parent element
 			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
