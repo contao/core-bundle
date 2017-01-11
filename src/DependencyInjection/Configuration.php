@@ -59,11 +59,9 @@ class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue($this->resolveRootDir($this->rootDir.'/..'))
                     ->validate()
-                        ->always(
-                            function ($value) {
-                                return $this->resolveRootDir($value);
-                            }
-                        )
+                        ->always(function ($value) {
+                            return $this->resolveRootDir($value);
+                        })
                     ->end()
                 ->end()
                 ->booleanNode('prepend_locale')
