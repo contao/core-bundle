@@ -335,16 +335,19 @@ class BackendCsvImportController
     {
         $files = $uploader->uploadTo('system/tmp');
 
-        if (empty($files)) {
+        if (count($files) < 1) {
             throw new \RuntimeException($GLOBALS['TL_LANG']['ERR']['all_fields']);
         }
 
-        foreach ($files as $file) {
+        foreach ($files as &$file) {
             $extension = pathinfo($file, PATHINFO_EXTENSION);
 
             if ('csv' !== $extension) {
                 throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $extension));
             }
+
+            // Drop TL_ROOT when we got rid of FileUpload which uses it
+            $file = TL_ROOT.'/'.$file;
         }
 
         return $files;
