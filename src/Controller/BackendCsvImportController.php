@@ -96,7 +96,7 @@ class BackendCsvImportController
     public function importTableWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
-            function ($row) {
+            function ($data, $row) {
                 $data[] = $row;
 
                 return $data;
@@ -118,11 +118,12 @@ class BackendCsvImportController
     public function importOptionWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
-            function ($row) {
+            function ($data, $row) {
                 $data[] = [
-                    'value' => $row[0],
-                    'label' => $row[1],
-                    // TODO should we support group and default?
+                    'value'   => $row[0],
+                    'label'   => $row[1],
+                    'default' => $row[2] ? 1 : '',
+                    'group'   => $row[3] ? 1 : '',
                 ];
 
                 return $data;
