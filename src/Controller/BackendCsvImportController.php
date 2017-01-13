@@ -61,6 +61,8 @@ class BackendCsvImportController
 
     public function importListWizard(DataContainer $dc)
     {
+        $this->framework->initialize();
+
         $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader);
@@ -98,6 +100,8 @@ class BackendCsvImportController
 
     public function importTableWizard(DataContainer $dc)
     {
+        $this->framework->initialize();
+
         $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader, []);
@@ -135,6 +139,8 @@ class BackendCsvImportController
 
     public function importOptionWizard(DataContainer $dc)
     {
+        $this->framework->initialize();
+
         $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader);
@@ -185,8 +191,6 @@ class BackendCsvImportController
      */
     private function prepareTemplate(Request $request, FileUpload $uploader, array $separators = null)
     {
-        $this->framework->initialize();
-
         /** @var BackendTemplate|\stdClass $template */
         $template = new BackendTemplate('be_csv_import');
 
