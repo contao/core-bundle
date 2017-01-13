@@ -18,26 +18,29 @@
         <input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN ?>">
         <input type="hidden" name="MAX_FILE_SIZE" value="'<?= $this->fileMaxSize ?>">
 
-        <div class="tl_tbox">
-            <h3><label for="separator"><?= $GLOBALS['TL_LANG']['MSC']['separator'][0] ?></label></h3>
-            <select name="separator" id="separator" class="tl_select" onfocus="Backend.getScrollOffset()">
-                <?php foreach ($this->separators as $separator): ?>
-                    <option value="<?= $separator['value'] ?>"><?= $separator['label'] ?></option>
-                <?php endforeach; ?>
-            </select>
-            <?php if ($GLOBALS['TL_LANG']['MSC']['separator'][1] != ''): ?>
-                <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['separator'][1] ?></p>
-            <?php endif; ?>
+        <fieldset class="tl_tbox nolegend">
+            <div class="widget w50">
+                <h3><label for="separator"><?= $GLOBALS['TL_LANG']['MSC']['separator'][0] ?></label></h3>
+                <select name="separator" id="separator" class="tl_select" onfocus="Backend.getScrollOffset()">
+                    <?php foreach ($this->separators as $separator): ?>
+                        <option value="<?= $separator['value'] ?>"><?= $separator['label'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if ($GLOBALS['TL_LANG']['MSC']['separator'][1] != ''): ?>
+                    <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['separator'][1] ?></p>
+                <?php endif; ?>
+            </div>
 
-            <h3><?= $GLOBALS['TL_LANG']['MSC']['source'][0] ?></h3>
+            <div class="widget clr">
+                <h3><?= $GLOBALS['TL_LANG']['MSC']['source'][0] ?></h3>
 
-            <?= $this->uploader ?>
+                <?= $this->uploader ?>
 
-            <?php if (isset($GLOBALS['TL_LANG']['MSC']['source'][1])): ?>
-                <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['source'][1] ?></p>
-            <?php endif; ?>
-        </div>
-
+                <?php if (isset($GLOBALS['TL_LANG']['MSC']['source'][1])): ?>
+                    <p class="tl_help tl_tip"><?= $GLOBALS['TL_LANG']['MSC']['source'][1] ?></p>
+                <?php endif; ?>
+            </div>
+        </fieldset>
     </div>
 
     <div class="tl_formbody_submit">
