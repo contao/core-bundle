@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Exception\ResponseException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 
 /**
  * Provide methods to handle table fields.
@@ -168,10 +171,17 @@ class TableWizard extends \Widget
 	 * @throws \Exception
 	 * @throws \Contao\CoreBundle\Exception\RedirectResponseException
 	 *
-	 * @deprecated Since 4.3 to be removed in 5.0. Use the BackendCsvImportUtil instead.
+	 * @deprecated Deprecated since Contao 4.3 to be removed in 5.0. Use the BackendCsvImportController instead.
 	 */
 	public function importTable(DataContainer $dc)
 	{
-		return System::getContainer()->get('contao.backend_csv_import')->importTableWizard($dc);
+		$response = System::getContainer()->get('contao.controller.backend_csv_import')->importTableWizard($dc);
+
+		if ($response instanceof RedirectResponse)
+		{
+			throw new ResponseException($response);
+		}
+
+		return $response->getContent();
 	}
 }

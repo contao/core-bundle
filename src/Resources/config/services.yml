@@ -1,12 +1,4 @@
 services:
-    contao.backend_csv_import:
-        class: Contao\CoreBundle\Util\BackendCsvImportUtil
-        arguments:
-            - "@database_connection"
-            - "@contao.framework"
-            - "@request_stack"
-            - "@security.token_storage"
-
     contao.cache:
         class: Doctrine\Common\Cache\FilesystemCache
         arguments:
@@ -39,6 +31,13 @@ services:
         class: Contao\CoreBundle\Controller\InsertTagsController
         arguments:
             - "@contao.framework"
+
+    contao.controller.backend_csv_import:
+        class: Contao\CoreBundle\Controller\BackendCsvImportController
+        arguments:
+            - "@contao.framework"
+            - "@database_connection"
+            - "@request_stack"
 
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
