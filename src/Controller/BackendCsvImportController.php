@@ -23,6 +23,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Controller to handle import of CSV data in the Contao backend.
+ *
+ * @author Andreas Schempp <https://github.com/aschempp>
+ * @author Kamil Kuzminski <https://github.com/qzminski>
+ */
 class BackendCsvImportController
 {
     const SEPARATOR_COMMA = 'comma';
@@ -59,6 +65,13 @@ class BackendCsvImportController
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * Imports CSV data for list wizard in content element.
+     *
+     * @param DataContainer $dc
+     *
+     * @return Response
+     */
     public function importListWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
@@ -73,6 +86,13 @@ class BackendCsvImportController
         );
     }
 
+    /**
+     * Imports CSV data for table wizard in content element.
+     *
+     * @param DataContainer $dc
+     *
+     * @return Response
+     */
     public function importTableWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
@@ -86,6 +106,13 @@ class BackendCsvImportController
         );
     }
 
+    /**
+     * Imports CSV data for form field options.
+     *
+     * @param DataContainer $dc
+     *
+     * @return Response
+     */
     public function importOptionWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
@@ -103,6 +130,18 @@ class BackendCsvImportController
         );
     }
 
+    /**
+     * Runs the default import routine with a Contao template.
+     *
+     * @param callable    $callback
+     * @param string      $table
+     * @param string      $field
+     * @param int         $id
+     * @param string|null $submitLabel
+     * @param bool        $allowLinebreak
+     *
+     * @return Response
+     */
     protected function importFromTemplate(
         callable $callback,
         $table,
@@ -124,28 +163,29 @@ class BackendCsvImportController
         if ($request->request->get('FORM_SUBMIT') === $this->getFormId($request)) {
             try {
                 $data = $this->fetchData($uploader, $request->request->get('separator'), $callback);
-
-                $this->connection->update(
-                    $table,
-                    [$field => serialize($data)],
-                    ['id' => $id]
-                );
-
-                $response = new RedirectResponse($this->getBackUrl($request));
-                $response->headers->setCookie(new Cookie('BE_PAGE_OFFSET', 0, 0));
-
-                return $response;
-
             } catch (\RuntimeException $e) {
                 $request->getSession()->getFlashBag()->add($e->getMessage());
+
+                return new RedirectResponse($request->getUri(), 303);
             }
+
+            $this->connection->update(
+                $table,
+                [$field => serialize($data)],
+                ['id' => $id]
+            );
+
+            $response = new RedirectResponse($this->getBackUrl($request));
+            $response->headers->setCookie(new Cookie('BE_PAGE_OFFSET', 0, 0));
+
+            return $response;
         }
 
         return new Response($template->parse());
     }
 
     /**
-     * Get the template
+     * Creates the CSV import template.
      *
      * @param Request    $request
      * @param FileUpload $uploader
@@ -170,6 +210,15 @@ class BackendCsvImportController
         return $template;
     }
 
+    /**
+     * Returns an array of data from imported CSV files.
+     *
+     * @param FileUpload $uploader
+     * @param string     $separator
+     * @param callable   $callback
+     *
+     * @return array
+     */
     private function fetchData(FileUpload $uploader, $separator, callable $callback)
     {
         $data = [];
@@ -187,16 +236,37 @@ class BackendCsvImportController
         return $data;
     }
 
+    /**
+     * Returns the form ID for the template.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
     private function getFormId(Request $request)
     {
         return 'tl_csv_import_'.$request->query->get('key');
     }
 
+    /**
+     * Returns the back button and redirect URL.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
     private function getBackUrl(Request $request)
     {
         return str_replace('&key='.$request->query->get('key'), '', $request->getRequestUri());
     }
 
+    /**
+     * Returns an array of separators for the template.
+     *
+     * @param bool $allowLinebreak
+     *
+     * @return array
+     */
     private function getSeparators($allowLinebreak = false)
     {
         $separators = [
@@ -228,6 +298,15 @@ class BackendCsvImportController
         return $separators;
     }
 
+    /**
+     * Converts a separator name/constant into a delimiter character.
+     *
+     * @param string $separator
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
     private function getDelimiter($separator)
     {
         $separators = $this->getSeparators(true);
@@ -239,6 +318,15 @@ class BackendCsvImportController
         return $separators[$separator]['delimiter'];
     }
 
+    /**
+     * Get uploaded files from FileUpload instance.
+     *
+     * @param FileUpload $uploader
+     *
+     * @return array
+     *
+     * @throws \RuntimeException
+     */
     private function getFiles(FileUpload $uploader)
     {
         $files = $uploader->uploadTo('system/tmp');
