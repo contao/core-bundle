@@ -75,8 +75,8 @@ class BackendCsvImportController
     public function importListWizard(DataContainer $dc)
     {
         return $this->importFromTemplate(
-            function ($row) {
-                return $row[0];
+            function ($data, $row) {
+                return array_merge($data, $row);
             },
             $dc->table,
             'listitems',
@@ -97,7 +97,8 @@ class BackendCsvImportController
     {
         return $this->importFromTemplate(
             function ($row) {
-                return $row;
+                $data[] = $row;
+                return $data;
             },
             $dc->table,
             'tableitems',
@@ -117,11 +118,13 @@ class BackendCsvImportController
     {
         return $this->importFromTemplate(
             function ($row) {
-                return [
+                $data[] = [
                     'value' => $row[0],
                     'label' => $row[1],
                     // TODO should we support group and default?
                 ];
+
+                return $data;
             },
             $dc->table,
             'options',
@@ -229,7 +232,7 @@ class BackendCsvImportController
             $fp = fopen($file, 'rb');
 
             while (($row = fgetcsv($fp, 0, $delimiter)) !== false) {
-                $data[] = $callback($row);
+                $data = $callback($data, $row);
             }
         }
 
