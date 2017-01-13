@@ -60,8 +60,8 @@ class BackendCsvImportController
      */
     public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack)
     {
-        $this->framework = $framework;
-        $this->connection = $connection;
+        $this->framework    = $framework;
+        $this->connection   = $connection;
         $this->requestStack = $requestStack;
     }
 
@@ -98,6 +98,7 @@ class BackendCsvImportController
         return $this->importFromTemplate(
             function ($row) {
                 $data[] = $row;
+
                 return $data;
             },
             $dc->table,
@@ -155,7 +156,7 @@ class BackendCsvImportController
     ) {
         $this->framework->initialize();
 
-        $request = $this->requestStack->getCurrentRequest();
+        $request  = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader, $allowLinebreak);
 
@@ -224,8 +225,8 @@ class BackendCsvImportController
      */
     private function fetchData(FileUpload $uploader, $separator, callable $callback)
     {
-        $data = [];
-        $files = $this->getFiles($uploader);
+        $data      = [];
+        $files     = $this->getFiles($uploader);
         $delimiter = $this->getDelimiter($separator);
 
         foreach ($files as $file) {
