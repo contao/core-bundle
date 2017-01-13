@@ -61,110 +61,74 @@ class BackendCsvImportController
 
     public function importListWizard(DataContainer $dc)
     {
-        $this->framework->initialize();
-
-        $request = $this->requestStack->getCurrentRequest();
-        $uploader = new FileUpload();
-        $template = $this->prepareTemplate($request, $uploader);
-
-        $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['lw_import'][0];
-
-        if ($request->request->get('FORM_SUBMIT') === $this->getFormId($request)) {
-            try {
-                $data = $this->fetchData(
-                    $uploader,
-                    $request->request->get('separator'),
-                    function ($row) {
-                        return $row[0];
-                    }
-                );
-
-                $this->connection->update(
-                    $dc->table,
-                    ['listitems' => serialize($data)],
-                    ['id' => $dc->id]
-                );
-
-                $response = new RedirectResponse($this->getBackUrl($request));
-                $response->headers->setCookie(new Cookie('BE_PAGE_OFFSET', 0, 0));
-
-                return $response;
-
-            } catch (\RuntimeException $e) {
-                $request->getSession()->getFlashBag()->add($e->getMessage());
-            }
-        }
-
-        return new Response($template->parse());
+        return $this->importFromTemplate(
+            function ($row) {
+                return $row[0];
+            },
+            $dc->table,
+            'listitems',
+            $dc->id,
+            $GLOBALS['TL_LANG']['MSC']['lw_import'][0],
+            true
+        );
     }
 
     public function importTableWizard(DataContainer $dc)
     {
-        $this->framework->initialize();
-
-        $request = $this->requestStack->getCurrentRequest();
-        $uploader = new FileUpload();
-        $template = $this->prepareTemplate($request, $uploader, []);
-
-        $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['tw_import'][0];
-
-        if ($request->request->get('FORM_SUBMIT') === $this->getFormId($request)) {
-            try {
-                $data = $this->fetchData(
-                    $uploader,
-                    $request->request->get('separator'),
-                    function ($row) {
-                        return $row;
-                    }
-                );
-
-                $this->connection->update(
-                    $dc->table,
-                    ['tableitems' => serialize($data)],
-                    ['id' => $dc->id]
-                );
-
-                $response = new RedirectResponse($this->getBackUrl($request));
-                $response->headers->setCookie(new Cookie('BE_PAGE_OFFSET', 0, 0));
-
-                return $response;
-
-            } catch (\RuntimeException $e) {
-                $request->getSession()->getFlashBag()->add($e->getMessage());
-            }
-        }
-
-        return new Response($template->parse());
+        return $this->importFromTemplate(
+            function ($row) {
+                return $row;
+            },
+            $dc->table,
+            'tableitems',
+            $dc->id,
+            $GLOBALS['TL_LANG']['MSC']['tw_import'][0]
+        );
     }
 
     public function importOptionWizard(DataContainer $dc)
     {
+        return $this->importFromTemplate(
+            function ($row) {
+                return [
+                    'value' => $row[0],
+                    'label' => $row[1],
+                    // TODO should we support group and default?
+                ];
+            },
+            $dc->table,
+            'options',
+            $dc->id,
+            $GLOBALS['TL_LANG']['MSC']['ow_import'][0]
+        );
+    }
+
+    protected function importFromTemplate(
+        callable $callback,
+        $table,
+        $field,
+        $id,
+        $submitLabel = null,
+        $allowLinebreak = false
+    ) {
         $this->framework->initialize();
 
         $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
-        $template = $this->prepareTemplate($request, $uploader);
+        $template = $this->prepareTemplate($request, $uploader, $allowLinebreak);
 
-        $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['ow_import'][0];
+        if (null !== $submitLabel) {
+            $template->submitLabel = $submitLabel;
+        }
 
         if ($request->request->get('FORM_SUBMIT') === $this->getFormId($request)) {
             try {
-                $data = $this->fetchData(
-                    $uploader,
-                    $request->request->get('separator'),
-                    function ($row) {
-                        return [
-                            'value' => $row[0],
-                            'label' => $row[1],
-                            // TODO should we support group and default?
-                        ];
-                    }
-                );
+                $data = $this->fetchData($uploader, $request->request->get('separator'), $callback);
 
                 $this->connection->update(
-                    $dc->table,
-                    ['options' => serialize($data)],
-                    ['id' => $dc->id]
+                    $table,
+                    [$field => serialize($data)],
+                    ['id' => $id]
                 );
 
                 $response = new RedirectResponse($this->getBackUrl($request));
@@ -185,11 +149,11 @@ class BackendCsvImportController
      *
      * @param Request    $request
      * @param FileUpload $uploader
-     * @param array      $separators
+     * @param bool       $allowLinebreak
      *
      * @return Template|\stdClass
      */
-    private function prepareTemplate(Request $request, FileUpload $uploader, array $separators = null)
+    private function prepareTemplate(Request $request, FileUpload $uploader, $allowLinebreak = false)
     {
         /** @var BackendTemplate|\stdClass $template */
         $template = new BackendTemplate('be_csv_import');
@@ -200,7 +164,7 @@ class BackendCsvImportController
         $template->fileMaxSize = $this->framework->getAdapter(Config::class)->get('maxFileSize');
         $template->messages    = $request->getSession()->getFlashBag()->all();
         $template->uploader    = $uploader->generateMarkup();
-        $template->separators  = $this->getSeparators($separators);
+        $template->separators  = $this->getSeparators($allowLinebreak);
         $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['apply'][0];
 
         return $template;
@@ -233,18 +197,13 @@ class BackendCsvImportController
         return str_replace('&key='.$request->query->get('key'), '', $request->getRequestUri());
     }
 
-    private function getSeparators(array $separators = null)
+    private function getSeparators($allowLinebreak = false)
     {
-        $defaults = [
+        $separators = [
             self::SEPARATOR_COMMA     => [
                 'delimiter' => ',',
                 'value'     => self::SEPARATOR_COMMA,
                 'label'     => $GLOBALS['TL_LANG']['MSC']['comma'],
-            ],
-            self::SEPARATOR_LINEBREAK => [
-                'delimiter' => "\n",
-                'value'     => self::SEPARATOR_LINEBREAK,
-                'label'     => $GLOBALS['TL_LANG']['MSC']['linebreak'],
             ],
             self::SEPARATOR_SEMICOLON => [
                 'delimiter' => ';',
@@ -258,12 +217,20 @@ class BackendCsvImportController
             ],
         ];
 
-        return null === $separators ? $defaults : array_intersect_key($defaults, array_flip($separators));
+        if ($allowLinebreak) {
+            $separators[self::SEPARATOR_LINEBREAK] = [
+                'delimiter' => "\n",
+                'value'     => self::SEPARATOR_LINEBREAK,
+                'label'     => $GLOBALS['TL_LANG']['MSC']['linebreak'],
+            ];
+        }
+
+        return $separators;
     }
 
     private function getDelimiter($separator)
     {
-        $separators = $this->getSeparators();
+        $separators = $this->getSeparators(true);
 
         if (!isset($separators[$separator])) {
             throw new \RuntimeException($GLOBALS['TL_LANG']['MSC']['separator'][1]);
