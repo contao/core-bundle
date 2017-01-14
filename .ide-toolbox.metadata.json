@@ -160,7 +160,32 @@
         },
         {
             "name": "contao_languagefiles",
-            "lookup_strings": ["default", "explain"]
+            "lookup_strings": [
+                "default",
+                "explain",
+                "tl_article",
+                "tl_content",
+                "tl_cron",
+                "tl_files",
+                "tl_form",
+                "tl_form_field",
+                "tl_image_size",
+                "tl_image_size_item",
+                "tl_layout",
+                "tl_log",
+                "tl_member",
+                "tl_member_group",
+                "tl_module",
+                "tl_page",
+                "tl_settings",
+                "tl_style",
+                "tl_style_sheet",
+                "tl_templates",
+                "tl_theme",
+                "tl_undo",
+                "tl_user",
+                "tl_user_group"
+            ]
         },
         {
             "name": "contao_model_options",
@@ -174,7 +199,7 @@
                     "type_text": "string|array"
                 },
                 {
-                    "lookup_string": "sorting",
+                    "lookup_string": "order",
                     "type_text": "SQL"
                 },
                 {
@@ -188,6 +213,10 @@
                 {
                     "lookup_string": "return",
                     "type_text": "Model|Collection|Array"
+                },
+                {
+                    "lookup_string": "table",
+                    "type_text": "string"
                 }
             ]
         },
