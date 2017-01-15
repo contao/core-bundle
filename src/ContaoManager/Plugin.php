@@ -10,8 +10,12 @@
 
 namespace Contao\CoreBundle\ContaoManager;
 
+use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -19,8 +23,21 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class Plugin implements RoutingPluginInterface
+class Plugin implements ConfigPluginInterface, RoutingPluginInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function prependConfig(array $configs, ContainerBuilder $container)
+    {
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__.'/../Resources/config')
+        );
+
+        $loader->load('security.yml');
+    }
+
     /**
      * {@inheritdoc}
      */
