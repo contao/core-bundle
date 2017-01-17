@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Test\Contao;
 
 use Contao\Input;
+use Contao\Widget;
 
 /**
  * Tests the Widget class.
@@ -64,6 +65,40 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
 
         // Restore the error reporting level
         error_reporting($errorReporting);
+    }
+
+    public function testValidate()
+    {
+        $widget = $this->getMockBuilder('Contao\Widget')
+            ->disableOriginalConstructor()
+            ->setMethods(['validator', 'getPost', 'generate'])
+            ->getMock();
+
+        $widget->expects($this->exactly(3))
+            ->method('validator')
+            ->withAnyParameters()
+            ->willReturnArgument(0);
+
+        $widget->expects($this->once())
+            ->method('getPost');
+
+        /** @var Widget $widget */
+        $widget->setInputCallback(function() {
+                return 'foobar';
+            })
+            ->validate();
+        $this->assertSame('foobar', $widget->value);
+
+        /** @var Widget $widget */
+        $widget->setInputCallback(function() {
+            return null;
+        })
+            ->validate();
+        $this->assertNull($widget->value);
+
+        /** @var Widget $widget */
+        $widget->setInputCallback(null)
+            ->validate(); // getPost should be called once here
     }
 
     /**

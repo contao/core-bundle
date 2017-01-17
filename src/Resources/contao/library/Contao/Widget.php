@@ -122,10 +122,16 @@ abstract class Widget extends \Controller
 	protected $strLabel;
 
 	/**
-	 * Value
+	 * Value (set after validate())
 	 * @var mixed
 	 */
 	protected $varValue;
+
+	/**
+	 * Input callback
+	 * @var callable
+	 */
+	protected $inputCallback;
 
 	/**
 	 * CSS class
@@ -381,11 +387,11 @@ abstract class Widget extends \Controller
 
 			case 'value':
 				// Encrypt the value
-				if ($this->arrConfiguration['encrypt'])
+				if (isset($this->arrConfiguration['encrypt']) && true === $this->arrConfiguration['encrypt'])
 				{
 					return \Encryption::encrypt($this->varValue);
 				}
-				elseif ($this->varValue == '')
+				elseif ($this->varValue === '')
 				{
 					return $this->getEmptyStringOrNull();
 				}
@@ -746,11 +752,28 @@ abstract class Widget extends \Controller
 
 
 	/**
+	 * By default, Widget will use its getPost() method when validate() is
+	 * called. This method allows you to fetch the value from elsewhere.
+	 *
+	 * @param callable $callable
+	 *
+	 * @return $this
+	 */
+	public function setInputCallback(callable $callback = null)
+	{
+		$this->inputCallback = $callback;
+
+		return $this;
+	}
+
+
+	/**
 	 * Validate the user input and set the value
 	 */
 	public function validate()
 	{
-		$varValue = $this->validator($this->getPost($this->strName));
+        $varValue = (null !== $this->inputCallback ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
+		$varValue = $this->validator($varValue);
 
 		if ($this->hasErrors())
 		{
