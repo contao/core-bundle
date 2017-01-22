@@ -141,6 +141,16 @@ services:
         calls:
             - ["setContainer", ["@service_container"]]
 
+    contao.security.frontend_request_matcher:
+        class: Symfony\Component\HttpFoundation\RequestMatcher
+        calls:
+            - ["matchAttribute", ["_scope", "frontend"]]
+
+    contao.security.backend_request_matcher:
+        class: Symfony\Component\HttpFoundation\RequestMatcher
+        calls:
+            - ["matchAttribute", ["_scope", "backend"]]
+
     contao.image.imagine:
         class: Imagine\Gd\Imagine
 
