@@ -8,7 +8,6 @@ services:
 
     contao.cache.clear_internal:
         class: Contao\CoreBundle\Cache\ContaoCacheClearer
-        public: false
         arguments:
             - "@filesystem"
         tags:
