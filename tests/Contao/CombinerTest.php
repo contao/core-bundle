@@ -89,6 +89,28 @@ class CombinerTest extends TestCase
     }
 
     /**
+     * Tests the object instantiation with a web same as the TL_ROOT.
+     */
+    public function testWebDirSameAsRoot()
+    {
+        $this->container->setParameter('contao.web_dir', self::$rootDir);
+
+        $this->assertInstanceOf('Contao\Combiner', new Combiner());
+    }
+
+    /**
+     * Tests the object instantiation with a web dir parent of TL_ROOT.
+     */
+    public function testWebDirParentOfRoot()
+    {
+        $this->container->setParameter('contao.web_dir', dirname(self::$rootDir));
+
+        $this->setExpectedException('RuntimeException', dirname(self::$rootDir));
+
+        new Combiner();
+    }
+
+    /**
      * Tests the object instantiation with a web dir outside TL_ROOT.
      */
     public function testWebDirOutsideRoot()
