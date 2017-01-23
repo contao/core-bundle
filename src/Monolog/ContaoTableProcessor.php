@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Monolog;
 
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -34,9 +34,9 @@ class ContaoTableProcessor
     private $tokenStorage;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * @var bool
@@ -48,14 +48,14 @@ class ContaoTableProcessor
      *
      * @param RequestStack          $requestStack
      * @param TokenStorageInterface $tokenStorage
-     * @param RequestContext        $requestContext
+     * @param ScopeMatcher          $scopeMatcher
      * @param bool                  $anonymizeIp
      */
-    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, RequestContext $requestContext, $anonymizeIp = true)
+    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, $anonymizeIp = true)
     {
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
         $this->anonymizeIp = $anonymizeIp;
     }
 
@@ -171,7 +171,7 @@ class ContaoTableProcessor
             return;
         }
 
-        $context->setSource($this->requestContext->isBackendRequest($request) ? 'BE' : 'FE');
+        $context->setSource($this->scopeMatcher->isBackendRequest($request) ? 'BE' : 'FE');
     }
 
     /**

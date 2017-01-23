@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendUser;
 use Contao\User;
 use Doctrine\DBAL\Connection;
@@ -52,9 +52,9 @@ class UserSessionListener
     private $authenticationTrustResolver;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * Constructor.
@@ -63,15 +63,15 @@ class UserSessionListener
      * @param Connection                           $connection
      * @param TokenStorageInterface                $tokenStorage
      * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
-     * @param RequestContext                       $requestContext
+     * @param ScopeMatcher                         $scopeMatcher
      */
-    public function __construct(SessionInterface $session, Connection $connection, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver, RequestContext $requestContext)
+    public function __construct(SessionInterface $session, Connection $connection, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver, ScopeMatcher $scopeMatcher)
     {
         $this->session = $session;
         $this->connection = $connection;
         $this->tokenStorage = $tokenStorage;
         $this->authenticationTrustResolver = $authenticationTrustResolver;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -81,7 +81,7 @@ class UserSessionListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->requestContext->isContaoMasterRequest($event)) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
         }
 
@@ -111,7 +111,7 @@ class UserSessionListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->requestContext->isContaoMasterRequest($event)) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
         }
 
@@ -153,7 +153,7 @@ class UserSessionListener
      */
     private function getSessionBag(Request $request)
     {
-        if ($this->requestContext->isBackendRequest($request)) {
+        if ($this->scopeMatcher->isBackendRequest($request)) {
             $name = 'contao_backend';
         } else {
             $name = 'contao_frontend';

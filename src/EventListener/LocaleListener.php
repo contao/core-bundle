@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,9 +24,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class LocaleListener
 {
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * @var array
@@ -36,13 +36,13 @@ class LocaleListener
     /**
      * Constructor.
      *
-     * @param RequestContext $requestContext
-     * @param array          $availableLocales
+     * @param ScopeMatcher $scopeMatcher
+     * @param array        $availableLocales
      */
-    public function __construct(RequestContext $requestContext, $availableLocales)
+    public function __construct(ScopeMatcher $scopeMatcher, $availableLocales)
     {
         $this->availableLocales = $availableLocales;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -52,7 +52,7 @@ class LocaleListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->requestContext->isContaoRequest($event->getRequest())) {
+        if (!$this->scopeMatcher->isContaoRequest($event->getRequest())) {
             return;
         }
 
@@ -114,13 +114,13 @@ class LocaleListener
     /**
      * Creates a new instance with the installed languages.
      *
-     * @param RequestContext $requestContext
-     * @param string         $defaultLocale
-     * @param string         $rootDir
+     * @param ScopeMatcher $scopeMatcher
+     * @param string       $defaultLocale
+     * @param string       $rootDir
      *
      * @return static
      */
-    public static function createWithLocales(RequestContext $requestContext, $defaultLocale, $rootDir)
+    public static function createWithLocales(ScopeMatcher $scopeMatcher, $defaultLocale, $rootDir)
     {
         $dirs = [__DIR__.'/../Resources/contao/languages'];
 
@@ -143,6 +143,6 @@ class LocaleListener
         // The default locale must be the first supported language (see contao/core#6533)
         array_unshift($languages, $defaultLocale);
 
-        return new static($requestContext, array_unique($languages));
+        return new static($scopeMatcher, array_unique($languages));
     }
 }

@@ -63,7 +63,7 @@ services:
             - "@request_stack"
             - "@router"
             - "@session"
-            - "@contao.routing.request_context"
+            - "@contao.routing.scope_matcher"
             - "%contao.root_dir%"
             - "%contao.error_level%"
         calls:
@@ -86,7 +86,7 @@ services:
         arguments:
             - "@request_stack"
             - "@security.token_storage"
-            - "@contao.routing.request_context"
+            - "@contao.routing.scope_matcher"
         tags:
             - { name: monolog.processor }
 
@@ -126,8 +126,8 @@ services:
             - "@contao.framework"
             - "%contao.prepend_locale%"
 
-    contao.routing.request_context:
-        class: Contao\CoreBundle\Routing\RequestContext
+    contao.routing.scope_matcher:
+        class: Contao\CoreBundle\Routing\ScopeMatcher
         arguments:
             - "@contao.routing.backend_matcher"
             - "@contao.routing.frontend_matcher"

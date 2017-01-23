@@ -15,11 +15,11 @@ use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 
 /**
- * Checks the request for a Contao context.
+ * Checks the request for a Contao scope.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class RequestContext
+class ScopeMatcher
 {
     /**
      * @var RequestMatcherInterface

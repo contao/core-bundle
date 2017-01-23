@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -28,20 +28,20 @@ class RefererIdListener
     private $tokenManager;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * Constructor.
      *
      * @param CsrfTokenManagerInterface $tokenManager
-     * @param RequestContext            $requestContext
+     * @param ScopeMatcher              $scopeMatcher
      */
-    public function __construct(CsrfTokenManagerInterface $tokenManager, RequestContext $requestContext)
+    public function __construct(CsrfTokenManagerInterface $tokenManager, ScopeMatcher $scopeMatcher)
     {
         $this->tokenManager = $tokenManager;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -51,7 +51,7 @@ class RefererIdListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->requestContext->isBackendMasterRequest($event)) {
+        if (!$this->scopeMatcher->isBackendMasterRequest($event)) {
             return;
         }
 

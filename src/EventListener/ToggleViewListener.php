@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,20 +31,20 @@ class ToggleViewListener
     private $framework;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param RequestContext           $requestContext
+     * @param ScopeMatcher             $scopeMatcher
      */
-    public function __construct(ContaoFrameworkInterface $framework, RequestContext $requestContext)
+    public function __construct(ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher)
     {
         $this->framework = $framework;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -56,7 +56,7 @@ class ToggleViewListener
     {
         $request = $event->getRequest();
 
-        if (!$this->requestContext->isFrontendMasterRequest($event) || !$request->query->has('toggle_view')) {
+        if (!$this->scopeMatcher->isFrontendMasterRequest($event) || !$request->query->has('toggle_view')) {
             return;
         }
 

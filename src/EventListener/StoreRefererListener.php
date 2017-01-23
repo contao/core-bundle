@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -41,9 +41,9 @@ class StoreRefererListener
     private $authenticationTrustResolver;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * Constructor.
@@ -51,16 +51,17 @@ class StoreRefererListener
      * @param SessionInterface                     $session
      * @param TokenStorageInterface                $tokenStorage
      * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
-     * @param RequestContext                       $requestContext
+     * @param ScopeMatcher                         $scopeMatcher
      *
      * @internal param RequestMatcherInterface $backendMatcher
      */
-    public function __construct(SessionInterface $session, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver, RequestContext $requestContext)
+    public function __construct(SessionInterface $session, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver,
+                                ScopeMatcher $scopeMatcher)
     {
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->authenticationTrustResolver = $authenticationTrustResolver;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -70,7 +71,7 @@ class StoreRefererListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->requestContext->isContaoMasterRequest($event)) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
         }
 
@@ -82,7 +83,7 @@ class StoreRefererListener
 
         $request = $event->getRequest();
 
-        if ($this->requestContext->isBackendRequest($request)) {
+        if ($this->scopeMatcher->isBackendRequest($request)) {
             $this->storeBackendReferer($request);
         } else {
             $this->storeFrontendReferer($request);

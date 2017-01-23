@@ -15,7 +15,7 @@ use Contao\Config;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\IncompleteInstallationException;
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
-use Contao\CoreBundle\Routing\RequestContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
@@ -63,9 +63,9 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     private $session;
 
     /**
-     * @var RequestContext
+     * @var ScopeMatcher
      */
-    private $requestContext;
+    private $scopeMatcher;
 
     /**
      * @var string
@@ -104,16 +104,16 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      * @param RequestStack     $requestStack
      * @param RouterInterface  $router
      * @param SessionInterface $session
-     * @param RequestContext   $requestContext
+     * @param ScopeMatcher     $scopeMatcher
      * @param string           $rootDir
      * @param int              $errorLevel
      */
-    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, RequestContext $requestContext, $rootDir, $errorLevel)
+    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, ScopeMatcher $scopeMatcher, $rootDir, $errorLevel)
     {
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->session = $session;
-        $this->requestContext = $requestContext;
+        $this->scopeMatcher = $scopeMatcher;
         $this->rootDir = $rootDir;
         $this->errorLevel = $errorLevel;
     }
@@ -197,7 +197,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         }
 
         // Define the login status constants in the back end (see #4099, #5279)
-        if (!$this->requestContext->isFrontendRequest($this->request)) {
+        if (!$this->scopeMatcher->isFrontendRequest($this->request)) {
             define('BE_USER_LOGGED_IN', false);
             define('FE_USER_LOGGED_IN', false);
         }
@@ -213,11 +213,11 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function getMode()
     {
-        if ($this->requestContext->isBackendRequest($this->request)) {
+        if ($this->scopeMatcher->isBackendRequest($this->request)) {
             return 'BE';
         }
 
-        if ($this->requestContext->isFrontendRequest($this->request)) {
+        if ($this->scopeMatcher->isFrontendRequest($this->request)) {
             return 'FE';
         }
 
