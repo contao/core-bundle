@@ -44,7 +44,7 @@ class ScopeMatcher
     }
 
     /**
-     * Checks whether the request is a Contao the master request.
+     * Checks whether the request is a Contao master request.
      *
      * @param KernelEvent $event
      *
