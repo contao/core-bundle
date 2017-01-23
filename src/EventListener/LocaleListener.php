@@ -41,8 +41,8 @@ class LocaleListener
      */
     public function __construct(ScopeMatcher $scopeMatcher, $availableLocales)
     {
-        $this->availableLocales = $availableLocales;
         $this->scopeMatcher = $scopeMatcher;
+        $this->availableLocales = $availableLocales;
     }
 
     /**

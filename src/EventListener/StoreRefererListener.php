@@ -52,11 +52,8 @@ class StoreRefererListener
      * @param TokenStorageInterface                $tokenStorage
      * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
      * @param ScopeMatcher                         $scopeMatcher
-     *
-     * @internal param RequestMatcherInterface $backendMatcher
      */
-    public function __construct(SessionInterface $session, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver,
-                                ScopeMatcher $scopeMatcher)
+    public function __construct(SessionInterface $session, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver, ScopeMatcher $scopeMatcher)
     {
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
