@@ -10,9 +10,13 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -98,6 +102,8 @@ class BackendUser extends \User
 	 */
 	protected $arrFilemountIds;
 
+	protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
+
 
 	/**
 	 * Initialize the object
@@ -154,38 +160,37 @@ class BackendUser extends \User
 		return parent::__get($strKey);
 	}
 
-
-	/**
-	 * Redirect to the login screen if authentication fails
-	 *
-	 * @return boolean True if the user could be authenticated
-	 */
 	public function authenticate()
 	{
-		// Do not redirect if authentication is successful
-		if (parent::authenticate())
-		{
-			return true;
+		parent::authenticate();
+
+		\System::loadLanguageFile('default');
+
+		/** @var AuthenticationUtils $authenticationUtils */
+		$authenticationUtils = $this->container->get('security.authentication_utils');
+
+		$error = $authenticationUtils->getLastAuthenticationError();
+
+		if ($error instanceof DisabledException ||
+			$error instanceof AccountExpiredException ||
+			$error instanceof BadCredentialsException
+		) {
+			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+		} elseif ($error instanceof LockedException) {
+			$time = time();
+
+			/** @var TokenStorageInterface $tokenStorage */
+			$tokenStorage = $this->container->get('security.token_storage');
+			$user = $tokenStorage->getToken()->getUser();
+
+			$this->flashBag->set('be_login', sprintf(
+				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
+				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+			));
+		} elseif ($error instanceof \Exception) {
+			throw $error;
 		}
-
-		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
-
-		if ($route == 'contao_backend_login')
-		{
-			return false;
-		}
-
-		$parameters = array();
-
-		// Redirect to the last page visited upon login
-		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
-		{
-			$parameters['referer'] = base64_encode(\Environment::get('request'));
-		}
-
-		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
 	}
-
 
 	/**
 	 * Check whether the current user has a certain access right

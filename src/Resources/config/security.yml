@@ -3,6 +3,13 @@ security:
         contao.security.user_provider:
             id: contao.security.user_provider
 
+    encoders:
+        default:
+            algorithm: bcrypt
+
+        legacy:
+            id: contao.security.legacy_password_encoder
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
@@ -14,12 +21,26 @@ security:
 
         backend:
             pattern: ^/contao
-            stateless: true
-            simple_preauth:
-                authenticator: contao.security.authenticator
+            provider: contao.security.user_provider
+            anonymous: ~
+
+            form_login:
+                login_path: /contao/login
+                check_path: /contao/login
+                default_target_path: /contao
+                username_parameter: username
+                password_parameter: password
+
+            logout:
+                path:   /contao/logout
+                target: /contao/login
 
         frontend:
             pattern: ~
             stateless: true
             simple_preauth:
                 authenticator: contao.security.authenticator
+
+    access_control:
+        - { path: ^/contao/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/contao, roles: ROLE_USER }

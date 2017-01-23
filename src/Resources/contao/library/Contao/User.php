@@ -10,8 +10,11 @@
 
 namespace Contao;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
-
 
 /**
  * Authenticates and initializes user objects
@@ -137,6 +140,18 @@ abstract class User extends \System
 	 */
 	protected $arrData = array();
 
+	/**
+	 * Symfony authentication roles
+	 * @var array
+	 */
+	protected $roles = [];
+
+	/** @var ContainerInterface $container */
+	protected $container;
+
+	/** @var FlashBagInterface $flashBag */
+	protected $flashBag;
+
 
 	/**
 	 * Import the database object
@@ -145,6 +160,9 @@ abstract class User extends \System
 	{
 		parent::__construct();
 		$this->import('Database');
+
+		$this->container = System::getContainer();
+		$this->flashBag = $this->container->get('session')->getFlashBag();
 	}
 
 
@@ -258,58 +276,24 @@ abstract class User extends \System
 	 */
 	public function authenticate()
 	{
-		// Check the cookie hash
-		if ($this->strHash != $this->getSessionHash($this->strCookie))
-		{
-			return false;
+		$container = System::getContainer();
+
+		/** @var AuthorizationCheckerInterface $authorizationChecker */
+		$authorizationChecker = $container->get('security.authorization_checker');
+
+		/** @var TokenStorageInterface $tokenStorage */
+		$tokenStorage = $container->get('security.token_storage');
+
+		if (
+			$authorizationChecker->isGranted($this->roles) &&
+			$this->findBy('username', $tokenStorage->getToken()->getUsername())
+		) {
+			$this->setUserFromDb();
+
+			return true;
 		}
 
-		$objSession = $this->Database->prepare("SELECT * FROM tl_session WHERE hash=?")
-									 ->execute($this->strHash);
-
-		// Try to find the session in the database
-		if ($objSession->numRows < 1)
-		{
-			return false;
-		}
-
-		$time = time();
-		$container = \System::getContainer();
-		$session = $container->get('session');
-
-		// Validate the session
-		if ($objSession->sessionID != $session->getId() || (!$container->getParameter('contao.security.disable_ip_check') && $objSession->ip != $this->strIp) || $objSession->hash != $this->strHash || ($objSession->tstamp + \Config::get('sessionTimeout')) < $time)
-		{
-			return false;
-		}
-
-		$this->intId = $objSession->pid;
-
-		// Load the user object
-		if ($this->findBy('id', $this->intId) == false)
-		{
-			return false;
-		}
-
-		$this->setUserFromDb();
-
-		// Update session
-		$this->Database->prepare("UPDATE tl_session SET tstamp=$time WHERE hash=?")
-					   ->execute($this->strHash);
-
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-
-		// HOOK: post authenticate callback
-		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-			{
-				$this->import($callback[0], 'objAuth', true);
-				$this->objAuth->{$callback[1]}($this);
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 

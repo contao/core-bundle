@@ -23,6 +23,8 @@ use Contao\BackendPreview;
 use Contao\BackendSwitch;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -209,5 +211,15 @@ class BackendController extends Controller
         $controller = new BackendAlerts();
 
         return $controller->run();
+    }
+
+    /**
+     * Symfony will un-authenticate the user automatically by calling this route.
+     * Redirects to the login route (see security.yml for logout.target)
+     *
+     * @Route("/logout", name="contao_backend_logout")
+     */
+    public function logoutAction()
+    {
     }
 }
