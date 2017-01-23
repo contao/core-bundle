@@ -13,7 +13,9 @@ namespace Contao\CoreBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 /**
  * Adds the bundle services to the container.
@@ -68,8 +70,20 @@ class ContaoCoreExtension extends ConfigurableExtension
             $loader->load($file);
         }
 
+        $fs = new Filesystem();
+        $webDirRelative = rtrim($fs->makePathRelative($mergedConfig['web_dir'], $mergedConfig['root_dir']), '/');
+
+        if (strncmp($webDirRelative, '../', 3) === 0 || '..' === $webDirRelative) {
+            throw new InvalidArgumentException(sprintf(
+                'Web dir "%s" is not inside root dir "%s"',
+                $mergedConfig['web_dir'],
+                $mergedConfig['root_dir']
+            ));
+        }
+
         $container->setParameter('contao.root_dir', $mergedConfig['root_dir']);
         $container->setParameter('contao.web_dir', $mergedConfig['web_dir']);
+        $container->setParameter('contao.web_dir_relative', $webDirRelative);
         $container->setParameter('contao.prepend_locale', $mergedConfig['prepend_locale']);
         $container->setParameter('contao.encryption_key', $mergedConfig['encryption_key']);
         $container->setParameter('contao.url_suffix', $mergedConfig['url_suffix']);
