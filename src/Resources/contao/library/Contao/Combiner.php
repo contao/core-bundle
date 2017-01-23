@@ -93,7 +93,7 @@ class Combiner extends \System
 		}
 		else
 		{
-			throw new \InvalidArgumentException(sprintf('Webdir is not inside TL_ROOT "%s"', $strWebDir));
+			throw new \RuntimeException(sprintf('Webdir is not inside TL_ROOT "%s"', $strWebDir));
 		}
 
 		parent::__construct();
