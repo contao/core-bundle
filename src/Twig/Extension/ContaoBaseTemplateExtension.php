@@ -17,11 +17,11 @@ class ContaoBaseTemplateExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('contao_base_template_wrapper', [$this, 'wrapWithBaseTemplate'])
+            new \Twig_SimpleFunction('contao_base_template', [$this, 'contaoBaseTemplate'])
         ];
     }
 
-    public function wrapWithBaseTemplate(array $blocks = [])
+    public function contaoBaseTemplate(array $blocks = [])
     {
         $scope = $this->requestStack->getCurrentRequest()->attributes->get('_scope');
 
@@ -43,7 +43,7 @@ class ContaoBaseTemplateExtension extends \Twig_Extension
 
     public function getName()
     {
-        return 'base_template_wrapper';
+        return 'contao_base_template';
     }
 
 }
