@@ -43,7 +43,7 @@ class InsecureInstallationListener
         }
 
         // The document root is not in a subdirectory
-        if ('' === substr($request->getBasePath(), -4)) {
+        if ('' === $request->getBasePath()) {
             return;
         }
 
