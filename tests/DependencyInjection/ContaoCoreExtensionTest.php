@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Test\DependencyInjection;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
 use Contao\CoreBundle\Test\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -46,6 +47,8 @@ class ContaoCoreExtensionTest extends TestCase
 
         $params = [
             'contao' => [
+                'root_dir' => $this->getRootDir(),
+                'web_dir' => $this->getRootDir().'/web',
                 'encryption_key' => 'foobar',
                 'localconfig' => ['foo' => 'bar'],
             ],
@@ -55,6 +58,33 @@ class ContaoCoreExtensionTest extends TestCase
         $extension->load($params, $container);
 
         $this->assertTrue($container->has('contao.listener.add_to_search_index'));
+        $this->assertEquals($container->getParameter('contao.web_dir_relative'), 'web');
+    }
+
+    /**
+     * Tests adding the bundle services to the container with an invalid web dir.
+     */
+    public function testLoadInvalidWebDir()
+    {
+        $container = new ContainerBuilder(
+            new ParameterBag([
+                'kernel.debug' => false,
+                'kernel.root_dir' => $this->getRootDir().'/app',
+            ])
+        );
+
+        $params = [
+            'contao' => [
+                'root_dir' => $this->getRootDir(),
+                'web_dir' => dirname($this->getRootDir()),
+            ],
+        ];
+
+        $extension = new ContaoCoreExtension();
+
+        $this->setExpectedException(InvalidArgumentException::class);
+
+        $extension->load($params, $container);
     }
 
     /**
