@@ -3,15 +3,18 @@
 namespace Contao\CoreBundle\Twig\Extension;
 
 use Contao\BackendRoute;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContaoBaseTemplateExtension extends \Twig_Extension
 {
-    protected $requestStack;
+    private $requestStack;
+    private $contaoFramework;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, ContaoFrameworkInterface $contaoFramework)
     {
         $this->requestStack = $requestStack;
+        $this->contaoFramework = $contaoFramework;
     }
 
     public function getFunctions()
@@ -29,7 +32,8 @@ class ContaoBaseTemplateExtension extends \Twig_Extension
             return '';
         }
 
-        $backendRoute = new BackendRoute();
+        /** @var BackendRoute $backendRoute */
+        $backendRoute = $this->contaoFramework->createInstance(BackendRoute::class);
         $backendTemplate = $backendRoute->getBaseTemplate();
 
         foreach ($blocks as $key => $content) {
