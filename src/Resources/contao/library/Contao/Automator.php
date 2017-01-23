@@ -243,14 +243,16 @@ class Automator extends \System
 		// Delete the old files
 		if (!$blnReturn)
 		{
-			foreach (scan(TL_ROOT . '/web/share') as $file)
+			$shareDir = \System::getContainer()->getParameter('contao.web_dir_relative') . '/share/';
+
+			foreach (scan(TL_ROOT . '/' . $shareDir) as $file)
 			{
-				if (is_dir(TL_ROOT . '/web/share/' . $file))
+				if (is_dir(TL_ROOT . '/' . $shareDir . $file))
 				{
 					continue; // see #6652
 				}
 
-				$objFile = new \File('web/share/' . $file);
+				$objFile = new \File($shareDir . $file);
 
 				if ($objFile->extension == 'xml' && !in_array($objFile->filename, $arrFeeds))
 				{
@@ -326,7 +328,8 @@ class Automator extends \System
 		// Create the XML file
 		while ($objRoot->next())
 		{
-			$objFile = new \File('web/share/' . $objRoot->sitemapName . '.xml');
+			$shareDir = \System::getContainer()->getParameter('contao.web_dir_relative') . '/share/';
+			$objFile = new \File($shareDir . $objRoot->sitemapName . '.xml');
 
 			$objFile->truncate();
 			$objFile->append('<?xml version="1.0" encoding="UTF-8"?>');

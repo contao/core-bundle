@@ -11,7 +11,6 @@
 namespace Contao;
 
 use Leafo\ScssPhp\Compiler;
-use Symfony\Component\Filesystem\Filesystem;
 
 
 /**
@@ -86,16 +85,7 @@ class Combiner extends \System
 	 */
 	public function __construct()
 	{
-		$fs = new Filesystem();
-		$container = \System::getContainer();
-		$strWebDir = rtrim($fs->makePathRelative($container->getParameter('contao.web_dir'), TL_ROOT), '/');
-
-		if (strncmp($strWebDir, '../', 3) === 0 || $strWebDir == '..')
-		{
-			throw new \RuntimeException(sprintf('Web dir "%s" is not inside TL_ROOT', $container->getParameter('contao.web_dir')));
-		}
-
-		$this->strWebDir = $strWebDir . '/';
+		$this->strWebDir = \System::getContainer()->getParameter('contao.web_dir_relative') . '/';
 
 		parent::__construct();
 	}
