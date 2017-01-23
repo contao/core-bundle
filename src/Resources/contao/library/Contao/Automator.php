@@ -416,19 +416,8 @@ class Automator extends \System
 	 */
 	public function generateInternalCache()
 	{
-		$container = \System::getContainer();
-
-		$command = new ContaoCacheWarmer
-		(
-			$container->get('filesystem'),
-			$container->get('contao.resource_finder'),
-			$container->get('contao.resource_locator'),
-			$container->getParameter('kernel.root_dir'),
-			$container->get('database_connection'),
-			$container->get('contao.framework')
-		);
-
-		$command->warmUp(\System::getContainer()->getParameter('kernel.cache_dir'));
+		$warmer = \System::getContainer()->get('contao.cache.warm_internal');
+		$warmer->warmUp(\System::getContainer()->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
 		$this->log('Generated the internal cache', __METHOD__, TL_CRON);
