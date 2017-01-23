@@ -24,23 +24,23 @@ class ScopeMatcher
     /**
      * @var RequestMatcherInterface
      */
-    private $frontendMatcher;
+    private $backendMatcher;
 
     /**
      * @var RequestMatcherInterface
      */
-    private $backendMatcher;
+    private $frontendMatcher;
 
     /**
      * Constructor.
      *
-     * @param RequestMatcherInterface $frontendMatcher
      * @param RequestMatcherInterface $backendMatcher
+     * @param RequestMatcherInterface $frontendMatcher
      */
-    public function __construct(RequestMatcherInterface $frontendMatcher, RequestMatcherInterface $backendMatcher)
+    public function __construct(RequestMatcherInterface $backendMatcher, RequestMatcherInterface $frontendMatcher)
     {
-        $this->frontendMatcher = $frontendMatcher;
         $this->backendMatcher = $backendMatcher;
+        $this->frontendMatcher = $frontendMatcher;
     }
 
     /**
