@@ -196,8 +196,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function mockScopeMatcher()
     {
         return new ScopeMatcher(
-            new RequestMatcher(null, null, null, null, ['_scope' => 'frontend']),
-            new RequestMatcher(null, null, null, null, ['_scope' => 'backend'])
+            new RequestMatcher(null, null, null, null, ['_scope' => 'backend']),
+            new RequestMatcher(null, null, null, null, ['_scope' => 'frontend'])
         );
     }
 
@@ -262,8 +262,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $container->set(
             'contao.routing.scope_matcher',
             new ScopeMatcher(
-                $container->get('contao.routing.frontend_matcher'),
-                $container->get('contao.routing.backend_matcher')
+                $container->get('contao.routing.backend_matcher'),
+                $container->get('contao.routing.frontend_matcher')
             )
         );
 
