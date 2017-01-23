@@ -35,7 +35,7 @@ class ContaoDataCollector extends DataCollector
     /**
      * Constructor.
      *
-     * @param array          $packages
+     * @param array $packages
      */
     public function __construct(array $packages)
     {
