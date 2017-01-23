@@ -12,7 +12,6 @@ namespace Contao\CoreBundle\Framework;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 
 /**
@@ -109,9 +108,17 @@ trait ScopeAwareTrait
             return false;
         }
 
-        /** @var RequestMatcher $matcher */
-        $matcher = $this->container->get(sprintf('contao.routing.%s_matcher', $scope));
+        $matcher = $this->container->get('contao.routing.scope_matcher');
 
-        return $matcher->matches($request);
+        switch ($scope) {
+            case ContaoCoreBundle::SCOPE_BACKEND:
+                return $matcher->isBackendRequest($request);
+
+            case ContaoCoreBundle::SCOPE_FRONTEND:
+                return $matcher->isFrontendRequest($request);
+
+            default:
+                return false;
+        }
     }
 }

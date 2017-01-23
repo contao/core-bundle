@@ -259,6 +259,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             new RequestMatcher(null, null, null, null, ['_scope' => ContaoCoreBundle::SCOPE_FRONTEND])
         );
 
+        $container->set(
+            'contao.routing.scope_matcher',
+            new ScopeMatcher(
+                $container->get('contao.routing.frontend_matcher'),
+                $container->get('contao.routing.backend_matcher')
+            )
+        );
+
         return $container;
     }
 

@@ -134,11 +134,13 @@ services:
 
     contao.routing.backend_matcher:
         class: Symfony\Component\HttpFoundation\RequestMatcher
+        public: false
         calls:
             - ["matchAttribute", ["_scope", "backend"]]
 
     contao.routing.frontend_matcher:
         class: Symfony\Component\HttpFoundation\RequestMatcher
+        public: false
         calls:
             - ["matchAttribute", ["_scope", "frontend"]]
 
