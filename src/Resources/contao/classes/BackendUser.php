@@ -481,7 +481,7 @@ class BackendUser extends \User
 				$arrModules[$strGroupName]['class'] = ' node-expanded';
 				$arrModules[$strGroupName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['collapseNode']);
 				$arrModules[$strGroupName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strGroupName]) ? $GLOBALS['TL_LANG']['MOD'][$strGroupName][0] : $GLOBALS['TL_LANG']['MOD'][$strGroupName]) != false) ? $label : $strGroupName;
-				$arrModules[$strGroupName]['href'] = \Controller::addToUrl('mtg=' . $strGroupName);
+				$arrModules[$strGroupName]['href'] = $router->generate('contao_backend', ['do' => \Input::get('do'), 'mtg' => $strGroupName]);
 
 				// Do not show the modules if the group is closed
 				if (!$blnShowAll && isset($session['backend_modules'][$strGroupName]) && $session['backend_modules'][$strGroupName] < 1)
