@@ -188,8 +188,10 @@ class Automator extends \System
 	 */
 	public function purgeInternalCache()
 	{
-		$command = new ContaoCacheClearer(\System::getContainer()->get('filesystem'));
-		$command->clear(\System::getContainer()->getParameter('kernel.cache_dir'));
+		$container = \System::getContainer();
+
+		$command = new ContaoCacheClearer($container->get('filesystem'));
+		$command->clear($container->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
 		$this->log('Purged the internal cache', __METHOD__, TL_CRON);
