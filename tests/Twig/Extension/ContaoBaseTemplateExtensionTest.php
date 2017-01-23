@@ -11,6 +11,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ContaoBaseTemplateExtensionTest extends TestCase
 {
+    public function testContaoBaseTemplateScopeRestriction()
+    {
+        $request = new Request();
+        $request->attributes->set('_scope', 'frontend');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $contaoFramework = $this->mockContaoFramework(null, null, [], []);
+
+        $extension = new ContaoBaseTemplateExtension($requestStack, $contaoFramework);
+        $this->assertEmpty($extension->contaoBaseTemplate());
+    }
+
     public function testContaoBaseTemplate()
     {
         $backendRoute = $this->getMockBuilder(BackendRoute::class)
