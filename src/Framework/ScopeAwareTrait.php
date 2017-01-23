@@ -14,14 +14,16 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 
+@trigger_error('Using the Contao\CoreBundle\Framework\ScopeAwareTrait trait has been deprecated and will no longer work in Contao 5.0. Use the contao.routing.scope_matcher service instead.', E_USER_DEPRECATED);
+
 /**
  * Provides methods to test the request scope.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
  *
- * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5.
- *             Use contao.routing.frontend_matcher and contao.routing.backend_matcher services.
+ * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5; use the
+ *             contao.routing.scope_matcher service instead
  */
 trait ScopeAwareTrait
 {
