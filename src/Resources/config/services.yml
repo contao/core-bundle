@@ -39,7 +39,6 @@ services:
             - "%kernel.packages%"
         calls:
             - ["setFramework", ["@contao.framework"]]
-            - ["setContainer", ["@service_container"]]
         tags:
             - { name: data_collector, template: "ContaoCoreBundle:Collector:contao", id: "contao" }
 
@@ -64,6 +63,7 @@ services:
             - "@request_stack"
             - "@router"
             - "@session"
+            - "@contao.routing.request_context"
             - "%contao.root_dir%"
             - "%contao.error_level%"
         calls:
@@ -86,8 +86,7 @@ services:
         arguments:
             - "@request_stack"
             - "@security.token_storage"
-        calls:
-            - ["setContainer", ["@service_container"]]
+            - "@contao.routing.request_context"
         tags:
             - { name: monolog.processor }
 
@@ -127,11 +126,27 @@ services:
             - "@contao.framework"
             - "%contao.prepend_locale%"
 
+    contao.routing.request_context:
+        class: Contao\CoreBundle\Routing\RequestContext
+        arguments:
+            - "@contao.routing.backend_matcher"
+            - "@contao.routing.frontend_matcher"
+
+    contao.routing.backend_matcher:
+        class: Symfony\Component\HttpFoundation\RequestMatcher
+        calls:
+            - ["matchAttribute", ["_scope", "backend"]]
+
+    contao.routing.frontend_matcher:
+        class: Symfony\Component\HttpFoundation\RequestMatcher
+        calls:
+            - ["matchAttribute", ["_scope", "frontend"]]
+
     contao.security.authenticator:
         class: Contao\CoreBundle\Security\ContaoAuthenticator
         public: false
-        calls:
-            - ["setContainer", ["@service_container"]]
+        arguments:
+            - "@contao.framework"
 
     contao.security.user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
@@ -140,16 +155,6 @@ services:
             - "@contao.framework"
         calls:
             - ["setContainer", ["@service_container"]]
-
-    contao.security.frontend_request_matcher:
-        class: Symfony\Component\HttpFoundation\RequestMatcher
-        calls:
-            - ["matchAttribute", ["_scope", "frontend"]]
-
-    contao.security.backend_request_matcher:
-        class: Symfony\Component\HttpFoundation\RequestMatcher
-        calls:
-            - ["matchAttribute", ["_scope", "backend"]]
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine

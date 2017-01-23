@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Framework;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 
 /**
@@ -19,6 +20,9 @@ use Symfony\Component\HttpKernel\Event\KernelEvent;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5.
+ *             Use contao.routing.frontend_matcher and contao.routing.backend_matcher services.
  */
 trait ScopeAwareTrait
 {
@@ -99,16 +103,15 @@ trait ScopeAwareTrait
      */
     private function isScope($scope)
     {
-        if (null === $this->container) {
+        if (null === $this->container
+            || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
+        ) {
             return false;
         }
 
-        $request = $this->container->get('request_stack')->getCurrentRequest();
+        /** @var RequestMatcher $matcher */
+        $matcher = $this->container->get(sprintf('contao.routing.%s_matcher', $scope));
 
-        if (null === $request || !$request->attributes->has('_scope')) {
-            return false;
-        }
-
-        return $request->attributes->get('_scope') === $scope;
+        return $matcher->matches($request);
     }
 }

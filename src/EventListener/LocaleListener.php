@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\RequestContext;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,10 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  */
 class LocaleListener
 {
-    use ScopeAwareTrait;
+    /**
+     * @var RequestContext
+     */
+    private $requestContext;
 
     /**
      * @var array
@@ -33,11 +36,13 @@ class LocaleListener
     /**
      * Constructor.
      *
-     * @param array $availableLocales
+     * @param RequestContext $requestContext
+     * @param array          $availableLocales
      */
-    public function __construct($availableLocales)
+    public function __construct(RequestContext $requestContext, $availableLocales)
     {
         $this->availableLocales = $availableLocales;
+        $this->requestContext = $requestContext;
     }
 
     /**
@@ -47,7 +52,7 @@ class LocaleListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->isContaoScope()) {
+        if (!$this->requestContext->isContaoRequest($event->getRequest())) {
             return;
         }
 
@@ -109,12 +114,13 @@ class LocaleListener
     /**
      * Creates a new instance with the installed languages.
      *
-     * @param string $defaultLocale
-     * @param string $rootDir
+     * @param RequestContext $requestContext
+     * @param string         $defaultLocale
+     * @param string         $rootDir
      *
      * @return static
      */
-    public static function createWithLocales($defaultLocale, $rootDir)
+    public static function createWithLocales(RequestContext $requestContext, $defaultLocale, $rootDir)
     {
         $dirs = [__DIR__.'/../Resources/contao/languages'];
 
@@ -137,6 +143,6 @@ class LocaleListener
         // The default locale must be the first supported language (see contao/core#6533)
         array_unshift($languages, $defaultLocale);
 
-        return new static(array_unique($languages));
+        return new static($requestContext, array_unique($languages));
     }
 }

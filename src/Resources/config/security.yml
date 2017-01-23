@@ -13,13 +13,13 @@ security:
             security: false
 
         backend:
-            request_matcher: contao.security.backend_request_matcher
+            request_matcher: contao.routing.backend_matcher
             stateless: true
             simple_preauth:
                 authenticator: contao.security.authenticator
 
         frontend:
-            request_matcher: contao.security.frontend_request_matcher
+            request_matcher: contao.routing.frontend_matcher
             stateless: true
             simple_preauth:
                 authenticator: contao.security.authenticator

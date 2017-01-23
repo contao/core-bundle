@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Monolog;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\RequestContext;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,8 +23,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ContaoTableProcessor
 {
-    use ScopeAwareTrait;
-
     /**
      * @var RequestStack
      */
@@ -36,6 +34,11 @@ class ContaoTableProcessor
     private $tokenStorage;
 
     /**
+     * @var RequestContext
+     */
+    private $requestContext;
+
+    /**
      * @var bool
      */
     private $anonymizeIp;
@@ -45,12 +48,14 @@ class ContaoTableProcessor
      *
      * @param RequestStack          $requestStack
      * @param TokenStorageInterface $tokenStorage
+     * @param RequestContext        $requestContext
      * @param bool                  $anonymizeIp
      */
-    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, $anonymizeIp = true)
+    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, RequestContext $requestContext, $anonymizeIp = true)
     {
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
+        $this->requestContext = $requestContext;
         $this->anonymizeIp = $anonymizeIp;
     }
 
@@ -75,7 +80,7 @@ class ContaoTableProcessor
         $this->updateIp($context, $request);
         $this->updateBrowser($context, $request);
         $this->updateUsername($context);
-        $this->updateSource($context);
+        $this->updateSource($context, $request);
 
         $record['extra']['contao'] = $context;
         unset($record['context']['contao']);
@@ -158,14 +163,15 @@ class ContaoTableProcessor
      * Sets the source.
      *
      * @param ContaoContext $context
+     * @param Request       $request
      */
-    private function updateSource(ContaoContext $context)
+    private function updateSource(ContaoContext $context, Request $request)
     {
         if (null !== $context->getSource()) {
             return;
         }
 
-        $context->setSource($this->isBackendScope() ? 'BE' : 'FE');
+        $context->setSource($this->requestContext->isBackendRequest($request) ? 'BE' : 'FE');
     }
 
     /**
