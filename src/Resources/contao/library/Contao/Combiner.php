@@ -75,7 +75,7 @@ class Combiner extends \System
 	protected $arrFiles = array();
 
 	/**
-	 * Webdir relative to TL_ROOT
+	 * Web dir relative to TL_ROOT
 	 * @var string
 	 */
 	protected $strWebDir;
@@ -87,17 +87,15 @@ class Combiner extends \System
 	public function __construct()
 	{
 		$fs = new Filesystem();
-		$strWebDir = rtrim($fs->makePathRelative(
-			\System::getContainer()->getParameter('contao.web_dir'),
-			TL_ROOT
-		), '/');
+		$container = \System::getContainer();
+		$strWebDir = rtrim($fs->makePathRelative($container->getParameter('contao.web_dir'), TL_ROOT), '/');
 
-		if (strncmp($strWebDir, '../', 3) === 0 || '..' === $strWebDir)
+		if (strncmp($strWebDir, '../', 3) === 0 || $strWebDir == '..')
 		{
-			throw new \RuntimeException(sprintf('Webdir is not inside TL_ROOT "%s"', \System::getContainer()->getParameter('contao.web_dir')));
+			throw new \RuntimeException(sprintf('Web dir "%s" is not inside TL_ROOT', $container->getParameter('contao.web_dir')));
 		}
 
-		$this->strWebDir = $strWebDir.'/';
+		$this->strWebDir = $strWebDir . '/';
 
 		parent::__construct();
 	}
