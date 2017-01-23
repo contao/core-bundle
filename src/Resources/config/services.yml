@@ -206,8 +206,9 @@ services:
     contao.twig.base_template_wrapper:
         class: Contao\CoreBundle\Twig\Extension\ContaoBaseTemplateExtension
         arguments:
-            - "@request_stack",
+            - "@request_stack"
             - "@contao.framework"
+
         public: false
         tags:
             - { name: twig.extension }
