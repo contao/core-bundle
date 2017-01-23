@@ -38,7 +38,6 @@ class ScopeMatcherTest extends TestCase
         $this->matcher = $this->mockScopeMatcher();
     }
 
-
     /**
      * Tests the object instantiation.
      */
@@ -48,9 +47,11 @@ class ScopeMatcherTest extends TestCase
     }
 
     /**
+     * Tests the request methods.
+     *
      * @dataProvider masterRequestProvider
      */
-    public function testIsContaoRequest($scope, $requestType, $isMaster, $isFrontend, $isBackend)
+    public function testRequestMethods($scope, $requestType, $isMaster, $isFrontend, $isBackend)
     {
         $request = new Request();
         $request->attributes->set('_scope', $scope);
@@ -64,6 +65,11 @@ class ScopeMatcherTest extends TestCase
         $this->assertEquals($isBackend, $this->matcher->isBackendRequest($request));
     }
 
+    /**
+     * Provides the data for the request tests.
+     *
+     * @return array   
+     */
     public function masterRequestProvider()
     {
         return [
