@@ -190,7 +190,7 @@ class Automator extends \System
 	{
 		$container = \System::getContainer();
 
-		$command = new ContaoCacheClearer($container->get('filesystem'));
+		$command = $container->get('contao.cache.clear_internal');
 		$command->clear($container->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
