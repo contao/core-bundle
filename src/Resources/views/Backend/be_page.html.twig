@@ -1,17 +1,9 @@
-{% set _panel = block('panel') %}
-{% set _errors = block('errors') %}
+{% set _main  = block('main') %}
+{% set _headline = block('headline') %}
+{% set _error = block('error') %}
 
-{% if _panel is not empty %}
-    <div class="tl_panel">
-        {{ _panel | raw }}
-    </div>
-{% endif %}
-
-{% if _errors is not empty %}
-    <p class="tl_gerror">{{ _errors | raw }}</p>
-{% endif %}
-
-<div class="tl_listing_container">
-    {% block content %}
-    {% endblock %}
-</div>
+{{ contao_base_template_wrapper({
+    main: _main,
+    error: _error,
+    headline: _headline
+}) | raw }}

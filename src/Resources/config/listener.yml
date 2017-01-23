@@ -149,8 +149,3 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
-
-    contao.listener.custom_backend_view:
-        class: Contao\CoreBundle\EventListener\CustomBackendViewListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
