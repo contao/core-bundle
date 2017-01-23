@@ -43,7 +43,7 @@ class CombinerTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::$rootDir = __DIR__.'/../../tmp';
+        self::$rootDir = $this->getRootDir().'/tmp';
 
         $fs = new Filesystem();
         $fs->mkdir(self::$rootDir);
@@ -75,7 +75,7 @@ class CombinerTest extends TestCase
         define('TL_ASSETS_URL', '');
 
         $this->container = $this->mockContainerWithContaoScopes();
-        $this->container->setParameter('contao.web_dir', self::$rootDir . '/web');
+        $this->container->setParameter('contao.web_dir', self::$rootDir.'/web');
 
         System::setContainer($this->container);
     }
