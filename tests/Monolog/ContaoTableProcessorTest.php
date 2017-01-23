@@ -212,9 +212,9 @@ class ContaoTableProcessorTest extends TestCase
     /**
      * Tests that the source is added.
      *
-     * @param string      $scope
-     * @param string|null $contextSource
-     * @param string|null $expectedSource
+     * @param string $scope
+     * @param string $contextSource
+     * @param string $expectedSource
      *
      * @dataProvider sourceProvider
      */

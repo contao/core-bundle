@@ -49,6 +49,12 @@ class ScopeMatcherTest extends TestCase
     /**
      * Tests the request methods.
      *
+     * @param string $scope
+     * @param string $requestType
+     * @param bool   $isMaster
+     * @param bool   $isFrontend
+     * @param bool   $isBackend
+     *
      * @dataProvider masterRequestProvider
      */
     public function testRequestMethods($scope, $requestType, $isMaster, $isFrontend, $isBackend)
@@ -56,19 +62,22 @@ class ScopeMatcherTest extends TestCase
         $request = new Request();
         $request->attributes->set('_scope', $scope);
 
-        $event = new KernelEvent($this->getMock(KernelInterface::class), $request, $requestType);
+        /** @var KernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
+        $kernel = $this->getMock(KernelInterface::class);
+
+        $event = new KernelEvent($kernel, $request, $requestType);
 
         $this->assertEquals($isMaster, $this->matcher->isContaoMasterRequest($event));
-        $this->assertEquals($isMaster && $isFrontend, $this->matcher->isFrontendMasterRequest($event));
         $this->assertEquals($isMaster && $isBackend, $this->matcher->isBackendMasterRequest($event));
-        $this->assertEquals($isFrontend, $this->matcher->isFrontendRequest($request));
+        $this->assertEquals($isMaster && $isFrontend, $this->matcher->isFrontendMasterRequest($event));
         $this->assertEquals($isBackend, $this->matcher->isBackendRequest($request));
+        $this->assertEquals($isFrontend, $this->matcher->isFrontendRequest($request));
     }
 
     /**
      * Provides the data for the request tests.
      *
-     * @return array   
+     * @return array
      */
     public function masterRequestProvider()
     {

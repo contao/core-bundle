@@ -65,7 +65,7 @@ class ToggleViewListenerTest extends TestCase
     }
 
     /**
-     * Tests that there is no response if request scope is not set.
+     * Tests that there is no response if the request scope is not set.
      */
     public function testWithoutRequestScope()
     {

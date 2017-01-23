@@ -82,6 +82,8 @@ class ScopeMatcher
     /**
      * Checks whether the request is a Contao request.
      *
+     * @param Request $request
+     *
      * @return bool
      */
     public function isContaoRequest(Request $request)
