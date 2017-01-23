@@ -197,7 +197,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         }
 
         // Define the login status constants in the back end (see #4099, #5279)
-        if (!$this->scopeMatcher->isFrontendRequest($this->request)) {
+        if (null === $this->request || !$this->scopeMatcher->isFrontendRequest($this->request)) {
             define('BE_USER_LOGGED_IN', false);
             define('FE_USER_LOGGED_IN', false);
         }
@@ -213,6 +213,10 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function getMode()
     {
+        if (null === $this->request) {
+            return null;
+        }
+
         if ($this->scopeMatcher->isBackendRequest($this->request)) {
             return 'BE';
         }

@@ -163,15 +163,15 @@ class ContaoTableProcessor
      * Sets the source.
      *
      * @param ContaoContext $context
-     * @param Request       $request
+     * @param Request|null  $request
      */
-    private function updateSource(ContaoContext $context, Request $request)
+    private function updateSource(ContaoContext $context, Request $request = null)
     {
         if (null !== $context->getSource()) {
             return;
         }
 
-        $context->setSource($this->scopeMatcher->isBackendRequest($request) ? 'BE' : 'FE');
+        $context->setSource(null !== $request && $this->scopeMatcher->isBackendRequest($request) ? 'BE' : 'FE');
     }
 
     /**
