@@ -190,8 +190,8 @@ class Automator extends \System
 	{
 		$container = \System::getContainer();
 
-		$command = $container->get('contao.cache.clear_internal');
-		$command->clear($container->getParameter('kernel.cache_dir'));
+		$clearer = $container->get('contao.cache.clear_internal');
+		$clearer->clear($container->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
 		$this->log('Purged the internal cache', __METHOD__, TL_CRON);
