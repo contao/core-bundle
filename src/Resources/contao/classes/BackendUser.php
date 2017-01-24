@@ -10,15 +10,11 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Exception\AccountExpiredException;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\Exception\DisabledException;
-use Symfony\Component\Security\Core\Exception\LockedException;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
 /**
@@ -108,7 +104,7 @@ class BackendUser extends User
 	 * Symfony security roles
 	 * @var array
 	 */
-	protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
+	protected $roles = array('ROLE_USER', 'ROLE_ADMIN');
 
 
 	/**
@@ -120,6 +116,19 @@ class BackendUser extends User
 
 		$this->strIp = \Environment::get('ip');
 		$this->strHash = \Input::cookie($this->strCookie);
+	}
+
+	public static function getInstance()
+	{
+		/** @var TokenInterface $token */
+		$token = System::getContainer()->get('security.token_storage')->getToken();
+
+		if ($token !== null && is_a($token->getUser(), get_called_class()))
+		{
+			return $token->getUser();
+		}
+
+		return parent::getInstance();
 	}
 
 
@@ -172,53 +181,31 @@ class BackendUser extends User
 	 */
 	public function authenticate()
 	{
-		\System::loadLanguageFile('default');
+		/** @var TokenInterface $token */
+		$token = System::getContainer()->get('security.token_storage')->getToken();
 
-		$container = \System::getContainer();
-
-		/** @var AuthorizationCheckerInterface $authorizationChecker */
-		$authorizationChecker = $container->get('security.authorization_checker');
-
-		/** @var TokenStorageInterface $tokenStorage */
-		$tokenStorage = $container->get('security.token_storage');
-
-		/** @var AuthenticationUtils $authenticationUtils */
-		$authenticationUtils = $this->container->get('security.authentication_utils');
-
-		if ($authorizationChecker->isGranted($this->roles) && $this->findBy('username', $tokenStorage->getToken()->getUsername()))
+		// Do not redirect if authentication is successful
+		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
 		{
-			$this->setUserFromDb();
+			return true;
 		}
 
-		// TODO: implement HOOK [post authenticate callback]
+		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
 
-		$error = $authenticationUtils->getLastAuthenticationError();
-
-		if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
+		if ($route == 'contao_backend_login')
 		{
-			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+			return false;
 		}
 
-		elseif ($error instanceof LockedException)
+		$parameters = array();
+
+		// Redirect to the last page visited upon login
+		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
 		{
-			$time = time();
-
-			/** @var TokenStorageInterface $tokenStorage */
-			$tokenStorage = $this->container->get('security.token_storage');
-			$user = $tokenStorage->getToken()->getUser();
-
-			$this->flashBag->set('be_login', sprintf(
-				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
-				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
-			));
+			$parameters['referer'] = base64_encode(\Environment::get('request'));
 		}
 
-		elseif ($error instanceof \Exception)
-		{
-			throw $error;
-		}
-
-		// TODO: Redirect to the last page visited upon login
+		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
 	}
 
 
@@ -567,12 +554,36 @@ class BackendUser extends User
 	{
 		if ($this->isAdmin)
 		{
-			return [
+			return array(
 				'ROLE_USER',
 				'ROLE_ADMIN',
-			];
+			);
 		}
 
-		return ['ROLE_USER'];
+		return array('ROLE_USER');
+	}
+
+	public static function loadUserByUsername($username)
+	{
+		$user = new static();
+
+		// Load the user object
+		if ($user->findBy('username', $username) === false)
+		{
+			return null;
+		}
+
+		$user->setUserFromDb();
+
+		// HOOK: post authenticate callback
+		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
+			{
+				System::importStatic($callback[0])->{$callback[1]}($user);
+			}
+		}
+
+		return $user;
 	}
 }
