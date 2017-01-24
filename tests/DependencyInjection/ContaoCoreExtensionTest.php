@@ -58,7 +58,7 @@ class ContaoCoreExtensionTest extends TestCase
     }
 
     /**
-     * Tests the deprecated contao.image.target_path configuration option
+     * Tests the deprecated contao.image.target_path configuration option.
      *
      * @expectedDeprecation Using the contao.image.target_path parameter has been deprecated and will no longer work in Contao 5. Use the contao.image.target_dir parameter instead.
      * @group legacy
