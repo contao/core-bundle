@@ -147,18 +147,19 @@ services:
     contao.security.authenticator:
         class: Contao\CoreBundle\Security\ContaoAuthenticator
         public: false
+        arguments:
+            - "@contao.routing.scope_matcher"
         calls:
             - ["setContainer", ["@service_container"]]
-            - ["setScopeMatcher", ["@contao.routing.scope_matcher"]]
 
     contao.security.user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
         public: false
         arguments:
             - "@contao.framework"
+            - "@contao.routing.scope_matcher"
         calls:
             - ["setContainer", ["@service_container"]]
-            - ["setScopeMatcher", ["@contao.routing.scope_matcher"]]
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine

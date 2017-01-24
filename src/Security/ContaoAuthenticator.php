@@ -38,11 +38,11 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
     protected $scopeMatcher;
 
     /**
-     * Sets the scope matcher.
+     * Constructor.
      *
-     * @param ScopeMatcher|null $scopeMatcher
+     * @param ScopeMatcher $scopeMatcher
      */
-    public function setScopeMatcher(ScopeMatcher $scopeMatcher = null)
+    public function __construct(ScopeMatcher $scopeMatcher)
     {
         $this->scopeMatcher = $scopeMatcher;
     }

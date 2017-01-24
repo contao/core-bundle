@@ -44,19 +44,11 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
+     * @param ScopeMatcher             $scopeMatcher
      */
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher)
     {
         $this->framework = $framework;
-    }
-
-    /**
-     * Sets the scope matcher.
-     *
-     * @param ScopeMatcher|null $scopeMatcher
-     */
-    public function setScopeMatcher(ScopeMatcher $scopeMatcher = null)
-    {
         $this->scopeMatcher = $scopeMatcher;
     }
 
