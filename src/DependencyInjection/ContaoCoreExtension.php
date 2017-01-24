@@ -82,6 +82,9 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.image.valid_extensions', $mergedConfig['image']['valid_extensions']);
         $container->setParameter('contao.image.imagine_options', $mergedConfig['image']['imagine_options']);
         $container->setParameter('contao.security.disable_ip_check', $mergedConfig['security']['disable_ip_check']);
+        $container->setParameter('contao.security.autologin.cookie_lifetime', $mergedConfig['security']['autologin']['cookie_lifetime']);
+        $container->setParameter('contao.security.autologin.cookie_name', $mergedConfig['security']['autologin']['cookie_name']);
+        $container->setParameter('contao.security.autologin.formfield_name', $mergedConfig['security']['autologin']['formfield_name']);
 
         if (isset($mergedConfig['localconfig'])) {
             $container->setParameter('contao.localconfig', $mergedConfig['localconfig']);

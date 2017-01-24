@@ -219,3 +219,11 @@ services:
             - "_contao_fe_attributes"
         calls:
             - ["setName", ["contao_frontend"]]
+
+    contao.security.remember_me:
+        class: Symfony\Component\Security\Http\RememberMe\TokenBasedRememberMeServices
+        arguments:
+            - ["@contao.security.user_provider"]
+            - "%secret%"
+            - "frontend"
+            - { name: '%contao.security.autologin.cookie_name%', remember_me_parameter: '%contao.security.autologin.formfield_name%', lifetime: '%contao.security.autologin.cookie_lifetime%' }
