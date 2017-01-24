@@ -116,7 +116,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue($this->debug)
                         ->end()
                         ->scalarNode('target_path')
-                            ->defaultValue('assets/images')
+                            ->defaultNull()
                         ->end()
                         ->scalarNode('target_dir')
                             ->cannotBeEmpty()
