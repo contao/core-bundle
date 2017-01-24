@@ -170,6 +170,7 @@ class Configuration implements ConfigurationInterface
     private function resolvePath($value)
     {
         $path = Path::canonicalize($value);
+
         if ('\\' === DIRECTORY_SEPARATOR) {
             $path = str_replace('/', '\\', $path);
         }
