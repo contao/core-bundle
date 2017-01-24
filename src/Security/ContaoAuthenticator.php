@@ -10,10 +10,11 @@
 
 namespace Contao\CoreBundle\Security;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Contao\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -29,7 +30,22 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
  */
 class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthenticatorInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
+
+    /**
+     * @var ScopeMatcher
+     */
+    protected $scopeMatcher;
+
+    /**
+     * Sets the scope matcher.
+     *
+     * @param ScopeMatcher|null $scopeMatcher
+     */
+    public function setScopeMatcher(ScopeMatcher $scopeMatcher = null)
+    {
+        $this->scopeMatcher = $scopeMatcher;
+    }
 
     /**
      * Creates an authentication token.
@@ -110,6 +126,8 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
             throw new \LogicException('The service container has not been set.');
         }
 
-        return !$this->isContaoScope();
+        return !$this->scopeMatcher->isContaoRequest(
+            $this->container->get('request_stack')->getCurrentRequest()
+        );
     }
 }

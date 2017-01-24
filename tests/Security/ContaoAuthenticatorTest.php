@@ -59,6 +59,7 @@ class ContaoAuthenticatorTest extends TestCase
     {
         $authenticator = new ContaoAuthenticator();
         $authenticator->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
+        $authenticator->setScopeMatcher($this->mockScopeMatcher());
 
         $provider = $this->mockUserProvider();
 
@@ -87,6 +88,7 @@ class ContaoAuthenticatorTest extends TestCase
     {
         $authenticator = new ContaoAuthenticator();
         $authenticator->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
+        $authenticator->setScopeMatcher($this->mockScopeMatcher());
 
         $authenticator->authenticateToken(
             new PreAuthenticatedToken('foo', 'bar', 'console'), $this->mockUserProvider(), 'console'
