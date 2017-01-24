@@ -507,7 +507,7 @@ class StringUtilTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        StringUtil::stripRootDir($this->getRootDir().'/foo/');
+        StringUtil::stripRootDir($this->getRootDir().'foo/');
     }
 
     /**
