@@ -53,7 +53,12 @@ class BinaryStringTypeTest extends TestCase
     {
         $fieldDefinition = ['fixed' => true];
 
-        $platform = $this->getMock(AbstractPlatform::class);
+        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        $platform = $this
+            ->getMockBuilder(AbstractPlatform::class)
+            ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])
+            ->getMockForAbstractClass()
+        ;
 
         $platform
             ->expects($this->once())
@@ -75,7 +80,12 @@ class BinaryStringTypeTest extends TestCase
     {
         $fieldDefinition = ['false' => true];
 
-        $platform = $this->getMock(AbstractPlatform::class);
+        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        $platform = $this
+            ->getMockBuilder(AbstractPlatform::class)
+            ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])
+            ->getMockForAbstractClass()
+        ;
 
         $platform
             ->expects($this->never())
@@ -103,7 +113,7 @@ class BinaryStringTypeTest extends TestCase
      */
     public function testRequiresSQLCommentHint()
     {
-        $platform = $this->getMock(AbstractPlatform::class);
+        $platform = $this->getMockForAbstractClass(AbstractPlatform::class);
 
         $this->assertTrue($this->type->requiresSQLCommentHint($platform));
     }
