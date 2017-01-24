@@ -60,8 +60,8 @@ class ContaoCoreExtensionTest extends TestCase
     /**
      * Tests the deprecated contao.image.target_path configuration option
      *
-     * @group legacy
      * @expectedDeprecation Using the contao.image.target_path parameter has been deprecated and will no longer work in Contao 5. Use the contao.image.target_dir parameter instead.
+     * @group legacy
      */
     public function testImageTargetPath()
     {
@@ -81,9 +81,15 @@ class ContaoCoreExtensionTest extends TestCase
         );
 
         $extension = new ContaoCoreExtension();
-        $extension->load(['contao' => [
-            'image' => ['target_path' => 'my/custom/dir'],
-        ]], $container);
+
+        $extension->load(
+            [
+                'contao' => [
+                    'image' => ['target_path' => 'my/custom/dir'],
+                ],
+            ],
+            $container
+        );
 
         $this->assertEquals(
             str_replace('/', DIRECTORY_SEPARATOR, $this->getRootDir()).'/my/custom/dir',
