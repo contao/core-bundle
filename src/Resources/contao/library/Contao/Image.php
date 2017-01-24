@@ -418,7 +418,7 @@ class Image
 			. '-t' . $this->fileObj->mtime
 		), 0, 8);
 
-		return str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', System::getContainer()->getParameter('contao.image.target_dir')) . '/' . substr($strCacheKey, -1) . '/' . $this->fileObj->filename . '-' . $strCacheKey . '.' . $this->fileObj->extension;
+		return \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.image.target_dir')) . '/' . substr($strCacheKey, -1) . '/' . $this->fileObj->filename . '-' . $strCacheKey . '.' . $this->fileObj->extension;
 	}
 
 

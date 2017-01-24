@@ -311,7 +311,7 @@ $GLOBALS['TL_PURGE'] = array
 		'images' => array
 		(
 			'callback' => array('Automator', 'purgeImageCache'),
-			'affected' => array(str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', System::getContainer()->getParameter('contao.image.target_dir')))
+			'affected' => array(StringUtil::stripRootDir(System::getContainer()->getParameter('contao.image.target_dir')))
 		),
 		'scripts' => array
 		(
