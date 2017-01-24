@@ -122,12 +122,12 @@ class Image
 		// Check whether the file exists
 		if (!$file->exists())
 		{
-			$webDir = \System::getContainer()->getParameter('contao.web_dir') . '/';
+			$webDir = \System::getContainer()->getParameter('contao.web_dir');
 
 			// Handle public bundle resources
-			if (file_exists($webDir . $file->path))
+			if (file_exists($webDir . '/' . $file->path))
 			{
-				$file = new \File(\StringUtil::stripRootDir($webDir) . $file->path);
+				$file = new \File(\StringUtil::stripRootDir($webDir) . '/' . $file->path);
 			}
 			else
 			{
@@ -383,12 +383,12 @@ class Image
 	public function getResizedPath()
 	{
 		$path = $this->resizedPath;
-		$webDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/';
+		$webDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
 
 		// Strip the web/ prefix (see #337)
-		if (strncmp($path, $webDir, strlen($webDir)) === 0)
+		if (strncmp($path, $webDir . '/', strlen($webDir) + 1) === 0)
 		{
-			$path = substr($path, strlen($webDir));
+			$path = substr($path, strlen($webDir) + 1);
 		}
 
 		return $path;
@@ -697,7 +697,7 @@ class Image
 	public static function getHtml($src, $alt='', $attributes='')
 	{
 		$src = static::getPath($src);
-		$webDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/';
+		$webDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
 
 		if ($src == '')
 		{
@@ -707,10 +707,10 @@ class Image
 		if (!is_file(TL_ROOT . '/' . $src))
 		{
 			// Handle public bundle resources
-			if (file_exists(TL_ROOT . '/' . $webDir . $src))
+			if (file_exists(TL_ROOT . '/' . $webDir . '/' . $src))
 			{
 				@trigger_error('Paths relative to the webdir are deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-				$src = $webDir . $src;
+				$src = $webDir . '/' . $src;
 			}
 			else
 			{
@@ -721,9 +721,9 @@ class Image
 		$objFile = new \File($src);
 
 		// Strip the web/ prefix (see #337)
-		if (strncmp($src, $webDir, strlen($webDir)) === 0)
+		if (strncmp($src, $webDir . '/', strlen($webDir) + 1) === 0)
 		{
-			$src = substr($src, strlen($webDir));
+			$src = substr($src, strlen($webDir) + 1);
 		}
 
 		$static = (strncmp($src, 'assets/', 7) === 0) ? TL_ASSETS_URL : TL_FILES_URL;

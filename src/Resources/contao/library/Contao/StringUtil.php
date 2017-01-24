@@ -1136,7 +1136,7 @@ class StringUtil
 
 		if (strncmp($path, TL_ROOT, $length) !== 0 || strlen($path) <= $length || ($path[$length] !== '/' && $path[$length] !== '\\'))
 		{
-			throw new \InvalidArgumentException(sprintf('Path is not inside the Contao root dir "%s"', $path));
+			throw new \InvalidArgumentException(sprintf('Path "%s" is not inside the Contao root dir', $path));
 		}
 
 		return substr($path, $length + 1);

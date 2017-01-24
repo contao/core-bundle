@@ -2250,13 +2250,13 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				$this->log('File or folder "'.$this->strPath.'/'.$this->varValue.$this->strExtension.'" has been renamed to "'.$this->strPath.'/'.$varValue.$this->strExtension.'"', __METHOD__, TL_FILES);
 			}
 
-			$strWebDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/';
+			$strWebDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
 
 			// Update the symlinks
-			if (is_link(TL_ROOT . '/' . $strWebDir . $this->strPath . '/' . $this->varValue . $this->strExtension))
+			if (is_link(TL_ROOT . '/' . $strWebDir . '/' . $this->strPath . '/' . $this->varValue . $this->strExtension))
 			{
-				$this->Files->delete($strWebDir . $this->strPath . '/' . $this->varValue . $this->strExtension);
-				SymlinkUtil::symlink($this->strPath . '/' . $varValue . $this->strExtension, $strWebDir . $this->strPath . '/' . $varValue . $this->strExtension, TL_ROOT);
+				$this->Files->delete($strWebDir . '/' . $this->strPath . '/' . $this->varValue . $this->strExtension);
+				SymlinkUtil::symlink($this->strPath . '/' . $varValue . $this->strExtension, $strWebDir . '/' . $this->strPath . '/' . $varValue . $this->strExtension, TL_ROOT);
 			}
 
 			// Set the new value so the input field can show it

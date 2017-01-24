@@ -85,7 +85,7 @@ class Combiner extends \System
 	 */
 	public function __construct()
 	{
-		$this->strWebDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/';
+		$this->strWebDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
 
 		parent::__construct();
 	}
@@ -127,10 +127,10 @@ class Combiner extends \System
 		if (!file_exists(TL_ROOT . '/' . $strFile))
 		{
 			// Handle public bundle resources in web/
-			if (file_exists(TL_ROOT . '/' . $this->strWebDir . $strFile))
+			if (file_exists(TL_ROOT . '/' . $this->strWebDir . '/' . $strFile))
 			{
 				@trigger_error('Paths relative to the webdir are deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-				$strFile = $this->strWebDir . $strFile;
+				$strFile = $this->strWebDir . '/' . $strFile;
 			}
 			else
 			{
@@ -221,9 +221,9 @@ class Combiner extends \System
 				$name = $arrFile['name'];
 
 				// Strip the web/ prefix (see #328)
-				if (strncmp($name, $this->strWebDir, strlen($this->strWebDir)) === 0)
+				if (strncmp($name, $this->strWebDir . '/', strlen($this->strWebDir) + 1) === 0)
 				{
-					$name = substr($name, strlen($this->strWebDir));
+					$name = substr($name, strlen($this->strWebDir) + 1);
 				}
 
 				// Add the media query (see #7070)

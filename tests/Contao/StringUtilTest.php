@@ -42,6 +42,7 @@ class StringUtilTest extends TestCase
         if (!defined('TL_ROOT')) {
             define('TL_ROOT', $this->getRootDir());
         }
+
         System::setContainer($this->mockContainerWithContaoScopes());
     }
 
@@ -472,7 +473,7 @@ class StringUtilTest extends TestCase
         $this->assertEquals('', StringUtil::stripRootDir($this->getRootDir().'/'));
         $this->assertEquals('', StringUtil::stripRootDir($this->getRootDir().'\\'));
         $this->assertEquals('foo', StringUtil::stripRootDir($this->getRootDir().'/foo'));
-        $this->assertEquals('foo', StringUtil::stripRootDir($this->getRootDir().'\\foo'));
+        $this->assertEquals('foo', StringUtil::stripRootDir($this->getRootDir().'\foo'));
         $this->assertEquals('foo/', StringUtil::stripRootDir($this->getRootDir().'/foo/'));
         $this->assertEquals('foo\\', StringUtil::stripRootDir($this->getRootDir().'\foo\\'));
         $this->assertEquals('foo/bar', StringUtil::stripRootDir($this->getRootDir().'/foo/bar'));
@@ -506,7 +507,7 @@ class StringUtilTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        StringUtil::stripRootDir($this->getRootDir().'foo/');
+        StringUtil::stripRootDir($this->getRootDir().'/foo/');
     }
 
     /**

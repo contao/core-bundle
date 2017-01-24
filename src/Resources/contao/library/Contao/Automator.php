@@ -243,16 +243,16 @@ class Automator extends \System
 		// Delete the old files
 		if (!$blnReturn)
 		{
-			$shareDir = \System::getContainer()->getParameter('contao.web_dir') . '/share/';
+			$shareDir = \System::getContainer()->getParameter('contao.web_dir') . '/share';
 
 			foreach (scan($shareDir) as $file)
 			{
-				if (is_dir($shareDir . $file))
+				if (is_dir($shareDir . '/' . $file))
 				{
 					continue; // see #6652
 				}
 
-				$objFile = new \File(\StringUtil::stripRootDir($shareDir) . $file);
+				$objFile = new \File(\StringUtil::stripRootDir($shareDir) . '/' . $file);
 
 				if ($objFile->extension == 'xml' && !in_array($objFile->filename, $arrFeeds))
 				{
@@ -328,8 +328,7 @@ class Automator extends \System
 		// Create the XML file
 		while ($objRoot->next())
 		{
-			$shareDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/share/';
-			$objFile = new \File($shareDir . $objRoot->sitemapName . '.xml');
+			$objFile = new \File(\StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/share/' . $objRoot->sitemapName . '.xml');
 
 			$objFile->truncate();
 			$objFile->append('<?xml version="1.0" encoding="UTF-8"?>');
