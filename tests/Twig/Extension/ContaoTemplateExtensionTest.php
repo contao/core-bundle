@@ -61,7 +61,6 @@ class ContaoTemplateExtensionTest extends TestCase
         ]);
 
         $scopeMatcher = $this->mockScopeMatcher();
-
         $extension = new ContaoTemplateExtension($requestStack, $contaoFramework, $scopeMatcher);
 
         $extension->renderContaoBackendTemplate([
@@ -87,7 +86,6 @@ class ContaoTemplateExtensionTest extends TestCase
         $requestStack->push($request);
 
         $contaoFramework = $this->mockContaoFramework(null, null, [], []);
-
         $scopeMatcher = $this->mockScopeMatcher();
 
         $extension = new ContaoTemplateExtension($requestStack, $contaoFramework, $scopeMatcher);
