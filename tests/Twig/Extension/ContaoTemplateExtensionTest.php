@@ -73,6 +73,9 @@ class ContaoTemplateExtensionTest extends TestCase
         $this->assertSame('c', $template->c);
     }
 
+    /**
+     * Tests the getFunctions() method.
+     */
     public function testGetFunctionsContainsRenderBaseTemplateFunction()
     {
         $request = new Request();
