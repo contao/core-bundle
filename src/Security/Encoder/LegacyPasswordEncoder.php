@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 class LegacyPasswordEncoder extends BasePasswordEncoder
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function encodePassword($raw, $salt)
     {
@@ -34,7 +34,7 @@ class LegacyPasswordEncoder extends BasePasswordEncoder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function isPasswordValid($encoded, $raw, $salt)
     {
@@ -42,5 +42,4 @@ class LegacyPasswordEncoder extends BasePasswordEncoder
             !$this->isPasswordTooLong($raw) &&
             $this->comparePasswords($encoded, $this->encodePassword($raw, $salt));
     }
-
 }
