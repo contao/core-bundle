@@ -73,6 +73,26 @@ class ContaoTemplateExtensionTest extends TestCase
         $this->assertSame('c', $template->c);
     }
 
+    public function testGetFunctionsContainsRenderBaseTemplateFunction()
+    {
+        $request = new Request();
+        $request->attributes->set('_scope', 'backend');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $contaoFramework = $this->mockContaoFramework(null, null, [], []);
+
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+        $functions = $extension->getFunctions();
+
+        $renderBaseTemplateFunction = array_filter($functions, function(\Twig_SimpleFunction $function) {
+             return $function->getName() === 'render_contao_backend_template';
+        });
+
+        $this->assertCount(1, $renderBaseTemplateFunction);
+    }
+
     /**
      * Tests the scope restriction.
      */
