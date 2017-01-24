@@ -117,6 +117,15 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('target_path')
                             ->defaultValue('assets/images')
                         ->end()
+                        ->scalarNode('target_dir')
+                            ->cannotBeEmpty()
+                            ->defaultValue($this->resolvePath($this->rootDir.'/../assets/images'))
+                            ->validate()
+                                ->always(function ($value) {
+                                    return $this->resolvePath($value);
+                                })
+                            ->end()
+                        ->end()
                         ->arrayNode('valid_extensions')
                             ->prototype('scalar')->end()
                             ->defaultValue(['jpg', 'jpeg', 'gif', 'png', 'tif', 'tiff', 'bmp', 'svg', 'svgz'])
