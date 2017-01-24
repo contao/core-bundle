@@ -8,11 +8,11 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Routing;
+namespace Contao\CoreBundle\Test\Twig;
 
 use Contao\BackendCustom;
 use Contao\CoreBundle\Test\TestCase;
-use Contao\CoreBundle\Twig\Extension\ContaoBaseTemplateExtension;
+use Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
