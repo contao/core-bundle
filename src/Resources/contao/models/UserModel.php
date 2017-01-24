@@ -10,6 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Framework\ContaoUserAwareTrait;
+use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * Reads and writes users
@@ -160,8 +163,9 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class UserModel extends \Model
+class UserModel extends Model implements AdvancedUserInterface, EncoderAwareInterface, \Serializable
 {
+	use ContaoUserAwareTrait;
 
 	/**
 	 * Table name
@@ -169,4 +173,18 @@ class UserModel extends \Model
 	 */
 	protected static $strTable = 'tl_user';
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getRoles()
+	{
+		if ($this->admin) {
+			return [
+				'ROLE_USER',
+				'ROLE_ADMIN',
+			];
+		}
+
+		return ['ROLE_USER'];
+	}
 }
