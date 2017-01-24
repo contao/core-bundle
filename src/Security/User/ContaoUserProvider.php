@@ -12,8 +12,10 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendUser;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,14 +26,19 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class ContaoUserProvider implements UserProviderInterface
+class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
 
     /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    protected $scopeMatcher;
 
     /**
      * Constructor.
@@ -41,6 +48,16 @@ class ContaoUserProvider implements UserProviderInterface
     public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
+    }
+
+    /**
+     * Sets the scope matcher.
+     *
+     * @param ScopeMatcher|null $scopeMatcher
+     */
+    public function setScopeMatcher(ScopeMatcher $scopeMatcher = null)
+    {
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -90,7 +107,13 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isFrontendUsername($username)
     {
-        return 'frontend' === $username && $this->isFrontendScope();
+        if (null === $this->container
+            || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
+        ) {
+            return false;
+        }
+
+        return 'frontend' === $username && $this->scopeMatcher->isFrontendRequest($request);
     }
 
     /**
@@ -102,6 +125,12 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isBackendUsername($username)
     {
-        return 'backend' === $username && $this->isBackendScope();
+        if (null === $this->container
+            || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
+        ) {
+            return false;
+        }
+
+        return 'backend' === $username && $this->scopeMatcher->isBackendRequest($request);
     }
 }

@@ -63,6 +63,7 @@ class ContaoUserProviderTest extends TestCase
     {
         $provider = new ContaoUserProvider($this->framework);
         $provider->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND));
+        $provider->setScopeMatcher($this->mockScopeMatcher());
 
         $this->assertInstanceOf('Contao\BackendUser', $provider->loadUserByUsername('backend'));
     }
@@ -77,6 +78,7 @@ class ContaoUserProviderTest extends TestCase
     {
         $provider = new ContaoUserProvider($this->framework);
         $provider->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
+        $provider->setScopeMatcher($this->mockScopeMatcher());
 
         $this->assertInstanceOf('Contao\FrontendUser', $provider->loadUserByUsername('frontend'));
     }
@@ -90,6 +92,7 @@ class ContaoUserProviderTest extends TestCase
     {
         $provider = new ContaoUserProvider($this->framework);
         $provider->setContainer($this->mockContainerWithContaoScopes('invalid'));
+        $provider->setScopeMatcher($this->mockScopeMatcher());
 
         $provider->loadUserByUsername('frontend');
     }
