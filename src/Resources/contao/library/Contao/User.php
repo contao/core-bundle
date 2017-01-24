@@ -10,6 +10,10 @@
 
 namespace Contao;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 
@@ -92,7 +96,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends \System
+abstract class User extends System implements AdvancedUserInterface, EncoderAwareInterface, \Serializable
 {
 
 	/**
@@ -137,6 +141,33 @@ abstract class User extends \System
 	 */
 	protected $arrData = array();
 
+	/**
+	 * Symfony authentication roles
+	 * @var array
+	 */
+	protected $roles = [];
+
+	/** @var ContainerInterface $container */
+	protected $container;
+
+	/** @var FlashBagInterface $flashBag */
+	protected $flashBag;
+
+	/**
+	 * @var string
+	 */
+	protected $salt;
+
+	/**
+	 * @var string
+	 */
+	protected $encoder = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $disable;
+
 
 	/**
 	 * Import the database object
@@ -145,6 +176,9 @@ abstract class User extends \System
 	{
 		parent::__construct();
 		$this->import('Database');
+
+		$this->container = System::getContainer();
+		$this->flashBag = $this->container->get('session')->getFlashBag();
 	}
 
 
@@ -717,4 +751,194 @@ abstract class User extends \System
 	 * Set all user properties from a database record
 	 */
 	abstract protected function setUserFromDb();
+
+
+	/**
+	 * @inheritDoc
+	 */
+	abstract public function getRoles();
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getUsername()
+	{
+		return $this->arrData['username'];
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setUsername($username)
+	{
+		$this->arrData['username'] = $username;
+
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getPassword()
+	{
+		return $this->arrData['password'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setPassword($password)
+	{
+		$this->arrData['password'] = $password;
+
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getEncoderName()
+	{
+		if (false === $this->encoder)
+		{
+			$this->selectEncoder();
+		}
+
+		return $this->encoder;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setEncoder($encoder)
+	{
+		$this->encoder = $encoder;
+
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getSalt()
+	{
+		return $this->salt;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setSalt($salt)
+	{
+		$this->salt = $salt;
+
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isAccountNonExpired()
+	{
+		$time = time();
+
+		return ($this->start == '' || $this->start < $time) && ($this->stop == '' || $this->stop > $time);
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isAccountNonLocked()
+	{
+		$time = time();
+
+		return ($this->locked + \Config::get('lockPeriod')) < $time;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isCredentialsNonExpired()
+	{
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isEnabled()
+	{
+		return !$this->disable;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function serialize()
+	{
+		return serialize([
+			$this->id,
+			$this->username,
+			$this->password,
+			$this->salt,
+			!$this->disable
+		]);
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function unserialize($serialized)
+	{
+		list (
+			$this->id,
+			$this->username,
+			$this->password,
+			$this->salt,
+			$this->disable
+		) = unserialize($serialized);
+	}
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public function eraseCredentials() {}
+
+
+	/**
+	 * Selects a matching encoder based on actual password.
+	 */
+	protected function selectEncoder()
+	{
+		if (false === $this->encoder)
+		{
+			if (\Encryption::test($this->arrData['password']))
+			{
+				$this->setEncoder('default');
+			}
+
+			else
+			{
+				list($password, $salt) = explode(':', $this->getPassword());
+
+				$this->setEncoder('legacy');
+				$this->setPassword($password);
+				$this->setSalt($salt);
+			}
+		}
+	}
 }

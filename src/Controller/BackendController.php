@@ -210,4 +210,14 @@ class BackendController extends Controller
 
         return $controller->run();
     }
+
+    /**
+     * Symfony will un-authenticate the user automatically by calling this route.
+     * Redirects to the login route (see security.yml for logout.target)
+     *
+     * @Route("/logout", name="contao_backend_logout")
+     */
+    public function logoutAction()
+    {
+    }
 }

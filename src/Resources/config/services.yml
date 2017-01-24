@@ -232,3 +232,6 @@ services:
             - "@contao.routing.scope_matcher"
         tags:
             - { name: twig.extension }
+
+    contao.security.legacy_password_encoder:
+        class: Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder

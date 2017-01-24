@@ -10,10 +10,15 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -30,7 +35,7 @@ use Symfony\Component\Routing\RouterInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendUser extends \User
+class BackendUser extends User
 {
 
 	/**
@@ -99,6 +104,12 @@ class BackendUser extends \User
 	 */
 	protected $arrFilemountIds;
 
+	/**
+	 * Symfony security roles
+	 * @var array
+	 */
+	protected $roles = ['ROLE_USER', 'ROLE_ADMIN'];
+
 
 	/**
 	 * Initialize the object
@@ -158,33 +169,56 @@ class BackendUser extends \User
 
 	/**
 	 * Redirect to the login screen if authentication fails
-	 *
-	 * @return boolean True if the user could be authenticated
 	 */
 	public function authenticate()
 	{
-		// Do not redirect if authentication is successful
-		if (parent::authenticate())
+		\System::loadLanguageFile('default');
+
+		$container = \System::getContainer();
+
+		/** @var AuthorizationCheckerInterface $authorizationChecker */
+		$authorizationChecker = $container->get('security.authorization_checker');
+
+		/** @var TokenStorageInterface $tokenStorage */
+		$tokenStorage = $container->get('security.token_storage');
+
+		/** @var AuthenticationUtils $authenticationUtils */
+		$authenticationUtils = $this->container->get('security.authentication_utils');
+
+		if ($authorizationChecker->isGranted($this->roles) && $this->findBy('username', $tokenStorage->getToken()->getUsername()))
 		{
-			return true;
+			$this->setUserFromDb();
 		}
 
-		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
+		// TODO: implement HOOK [post authenticate callback]
 
-		if ($route == 'contao_backend_login')
+		$error = $authenticationUtils->getLastAuthenticationError();
+
+		if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
 		{
-			return false;
+			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
 		}
 
-		$parameters = array();
-
-		// Redirect to the last page visited upon login
-		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
+		elseif ($error instanceof LockedException)
 		{
-			$parameters['referer'] = base64_encode(\Environment::get('request'));
+			$time = time();
+
+			/** @var TokenStorageInterface $tokenStorage */
+			$tokenStorage = $this->container->get('security.token_storage');
+			$user = $tokenStorage->getToken()->getUser();
+
+			$this->flashBag->set('be_login', sprintf(
+				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
+				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+			));
 		}
 
-		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
+		elseif ($error instanceof \Exception)
+		{
+			throw $error;
+		}
+
+		// TODO: Redirect to the last page visited upon login
 	}
 
 
@@ -527,5 +561,18 @@ class BackendUser extends \User
 		}
 
 		return $arrModules;
+	}
+
+	public function getRoles()
+	{
+		if ($this->isAdmin)
+		{
+			return [
+				'ROLE_USER',
+				'ROLE_ADMIN',
+			];
+		}
+
+		return ['ROLE_USER'];
 	}
 }

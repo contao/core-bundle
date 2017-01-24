@@ -53,6 +53,12 @@ class FrontendUser extends \User
 	 */
 	protected $arrGroups;
 
+	/**
+	 * Symfony security roles
+	 * @var array
+	 */
+	protected $roles = ['ROLE_MEMBER'];
+
 
 	/**
 	 * Initialize the object
@@ -304,5 +310,13 @@ class FrontendUser extends \User
 				$this->strLoginPage = $objGroup->jumpTo;
 			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getRoles()
+	{
+		return $this->roles;
 	}
 }

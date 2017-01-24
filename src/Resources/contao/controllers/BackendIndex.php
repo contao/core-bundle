@@ -10,7 +10,9 @@
 
 namespace Contao;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 
 /**
@@ -20,6 +22,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BackendIndex extends \Backend
 {
+	/** @var ContainerInterface $container */
+	protected $container;
+
+	/** @var FlashBagInterface $flashBag */
+	protected $flashBag;
 
 	/**
 	 * Initialize the controller
@@ -32,34 +39,14 @@ class BackendIndex extends \Backend
 	 */
 	public function __construct()
 	{
+		$this->container = System::getContainer();
+		$this->flashBag = $this->container->get('session')->getFlashBag();
+
 		$this->import('BackendUser', 'User');
 		parent::__construct();
 
 		// Login
-		if ($this->User->login())
-		{
-			$strUrl = 'contao/main.php';
-
-			// Redirect to the last page visited
-			if (\Input::get('referer', true) != '')
-			{
-				$strUrl = base64_decode(\Input::get('referer', true));
-			}
-
-			$this->redirect($strUrl);
-		}
-
-		// Reload the page if authentication fails
-		elseif (!empty($_POST['username']) && !empty($_POST['password']))
-		{
-			$this->reload();
-		}
-
-		// Reload the page once after a logout to create a new session ID
-		elseif ($this->User->logout())
-		{
-			$this->reload();
-		}
+		$this->User->authenticate();
 
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('tl_user');
@@ -98,6 +85,12 @@ class BackendIndex extends \Backend
 		$objTemplate->feLink = $GLOBALS['TL_LANG']['MSC']['feLink'];
 		$objTemplate->default = $GLOBALS['TL_LANG']['MSC']['default'];
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
+
+		if ($this->flashBag->has('be_login')) {
+			$flashes = $this->flashBag->get('be_login');
+
+			$objTemplate->message = $flashes[0];
+		}
 
 		return $objTemplate->getResponse();
 	}
