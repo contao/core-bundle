@@ -58,6 +58,40 @@ class ContaoCoreExtensionTest extends TestCase
     }
 
     /**
+     * Tests the deprecated contao.image.target_path configuration option
+     *
+     * @group legacy
+     * @expectedDeprecation Using the contao.image.target_path parameter has been deprecated and will no longer work in Contao 5. Use the contao.image.target_dir parameter instead.
+     */
+    public function testImageTargetPath()
+    {
+        $container = new ContainerBuilder(
+            new ParameterBag([
+                'kernel.debug' => false,
+                'kernel.root_dir' => $this->getRootDir().'/app',
+            ])
+        );
+
+        $extension = new ContaoCoreExtension();
+        $extension->load([], $container);
+
+        $this->assertEquals(
+            $this->getRootDir().'/assets/images',
+            $container->getParameter('contao.image.target_dir')
+        );
+
+        $extension = new ContaoCoreExtension();
+        $extension->load(['contao' => [
+            'image' => ['target_path' => 'my/custom/dir'],
+        ]], $container);
+
+        $this->assertEquals(
+            $this->getRootDir().'/my/custom/dir',
+            $container->getParameter('contao.image.target_dir')
+        );
+    }
+
+    /**
      * Tests the getAlias() method.
      */
     public function testGetAlias()
