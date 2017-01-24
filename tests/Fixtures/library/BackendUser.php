@@ -2,7 +2,9 @@
 
 namespace Contao\Fixtures;
 
-class BackendUser extends \Contao\User
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class BackendUser extends \Contao\User implements UserInterface
 {
     public $isAdmin = true;
 
@@ -19,5 +21,36 @@ class BackendUser extends \Contao\User
     public function setUserFromDb()
     {
         // ignore
+    }
+
+    public static function loadUserByUsername()
+    {
+
+    }
+
+    public function getRoles()
+    {
+
+    }
+
+    public function getPassword()
+    {
+
+    }
+
+
+    public function getSalt()
+    {
+
+    }
+
+    public function getUsername()
+    {
+
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }
