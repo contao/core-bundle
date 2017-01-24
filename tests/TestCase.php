@@ -469,7 +469,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $framework = $this->mockContaoFramework();
 
         if ($rootDir) {
+            $container->setParameter('contao.root_dir', $rootDir);
             $container->setParameter('contao.web_dir', $rootDir.'/web');
+            $container->setParameter('contao.image.target_dir', $rootDir.'/assets/images');
         }
 
         $resizer = new LegacyResizer(
