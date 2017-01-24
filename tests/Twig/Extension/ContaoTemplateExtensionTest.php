@@ -60,7 +60,9 @@ class ContaoTemplateExtensionTest extends TestCase
             BackendCustom::class => $backendRoute
         ]);
 
-        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+        $scopeMatcher = $this->mockScopeMatcher();
+
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework, $scopeMatcher);
 
         $extension->renderContaoBackendTemplate([
             'a' => 'a',
@@ -86,7 +88,9 @@ class ContaoTemplateExtensionTest extends TestCase
 
         $contaoFramework = $this->mockContaoFramework(null, null, [], []);
 
-        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+        $scopeMatcher = $this->mockScopeMatcher();
+
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework, $scopeMatcher);
         $functions = $extension->getFunctions();
 
         $renderBaseTemplateFunction = array_filter($functions, function(\Twig_SimpleFunction $function) {
@@ -107,8 +111,10 @@ class ContaoTemplateExtensionTest extends TestCase
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
+        $scopeMatcher = $this->mockScopeMatcher();
+
         $contaoFramework = $this->mockContaoFramework(null, null, [], []);
-        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework, $scopeMatcher);
 
         $this->assertEmpty($extension->renderContaoBackendTemplate());
     }
