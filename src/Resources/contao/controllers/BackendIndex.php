@@ -112,7 +112,8 @@ class BackendIndex extends \Backend
 		$objTemplate->default = $GLOBALS['TL_LANG']['MSC']['default'];
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
 
-		if ($this->flashBag->has('be_login')) {
+		if ($this->flashBag->has('be_login'))
+		{
 			$flashes = $this->flashBag->get('be_login');
 
 			$objTemplate->message = $flashes[0];

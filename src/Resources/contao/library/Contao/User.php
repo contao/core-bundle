@@ -145,7 +145,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Symfony authentication roles
 	 * @var array
 	 */
-	protected $roles = [];
+	protected $roles = array();
 
 	/** @var ContainerInterface $container */
 	protected $container;
@@ -888,13 +888,13 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function serialize()
 	{
-		return serialize([
+		return serialize(array(
 			$this->id,
 			$this->username,
 			$this->password,
 			$this->salt,
 			$this->disable
-		]);
+		));
 	}
 
 
@@ -924,7 +924,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected function selectEncoder()
 	{
-		if (false === $this->encoder)
+		if ($this->encoder === false)
 		{
 			if (\Encryption::test($this->arrData['password']))
 			{

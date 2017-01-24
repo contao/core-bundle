@@ -57,7 +57,7 @@ class FrontendUser extends \User
 	 * Symfony security roles
 	 * @var array
 	 */
-	protected $roles = ['ROLE_MEMBER'];
+	protected $roles = array('ROLE_MEMBER');
 
 
 	/**
