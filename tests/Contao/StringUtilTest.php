@@ -482,41 +482,41 @@ class StringUtilTest extends TestCase
 
     /**
      * Tests the stripRootDir() method.
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testStripRootDirDifferentPath()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         StringUtil::stripRootDir('/foo');
     }
 
     /**
      * Tests the stripRootDir() method.
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testStripRootDirParentPath()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         StringUtil::stripRootDir(dirname($this->getRootDir()).'/');
     }
 
     /**
      * Tests the stripRootDir() method.
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testStripRootDirSuffix()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         StringUtil::stripRootDir($this->getRootDir().'foo/');
     }
 
     /**
      * Tests the stripRootDir() method.
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testStripRootDirNoSlash()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         StringUtil::stripRootDir($this->getRootDir());
     }
 }
