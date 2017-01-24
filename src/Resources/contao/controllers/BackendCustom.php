@@ -19,6 +19,18 @@ class BackendCustom extends BackendMain
 {
 
 	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		// Initialize the template in the constructor so it is available in the getTemplateObject() method
+		$this->Template = new \BackendTemplate('be_main');
+	}
+
+
+	/**
 	 * Return the template object
 	 *
 	 * @return BackendTemplate|object
@@ -38,7 +50,6 @@ class BackendCustom extends BackendMain
 	{
 		$packages = $this->getContainer()->getParameter('kernel.packages');
 
-		$this->Template = new \BackendTemplate('be_main');
 		$this->Template->version = $packages['contao/core-bundle'];
 
 		// Ajax request

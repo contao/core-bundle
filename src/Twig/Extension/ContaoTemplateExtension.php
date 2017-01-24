@@ -70,7 +70,7 @@ class ContaoTemplateExtension extends \Twig_Extension
 
         /** @var BackendCustom $controller */
         $controller = $this->contaoFramework->createInstance(BackendCustom::class);
-        $template = $controller->getBaseTemplate();
+        $template = $controller->getTemplateObject();
 
         foreach ($blocks as $key => $content) {
             $template->{$key} = $content;

@@ -23,8 +23,9 @@ var AjaxRequest =
 	/**
 	 * Toggle the navigation menu
 	 *
-	 * @param {object} el The DOM element
-	 * @param {string} id The ID of the menu item
+	 * @param {object} el  The DOM element
+	 * @param {string} id  The ID of the menu item
+	 * @param {string} url The Ajax URL
 	 *
 	 * @returns {boolean}
 	 */
