@@ -203,12 +203,11 @@ services:
         calls:
             - ["setName", ["contao_frontend"]]
 
-    contao.twig.base_template_wrapper:
+    contao.twig.base_template_extension:
         class: Contao\CoreBundle\Twig\Extension\ContaoBaseTemplateExtension
+        public: false
         arguments:
             - "@request_stack"
             - "@contao.framework"
-
-        public: false
         tags:
             - { name: twig.extension }
