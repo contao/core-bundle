@@ -15,9 +15,8 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineTypesPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
-use Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType;
-use Doctrine\DBAL\Types\Type;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -43,23 +42,9 @@ class ContaoCoreBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function boot()
-    {
-        if (!Type::hasType(BinaryStringType::NAME)) {
-            Type::addType(BinaryStringType::NAME, BinaryStringType::class);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
-
-        if (!Type::hasType(BinaryStringType::NAME)) {
-            Type::addType(BinaryStringType::NAME, BinaryStringType::class);
-        }
 
         $container->addCompilerPass(
             new AddPackagesPass($container->getParameter('kernel.root_dir').'/../vendor/composer/installed.json')
@@ -69,5 +54,6 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(new AddResourcesPathsPass());
         $container->addCompilerPass(new AddImagineClassPass());
         $container->addCompilerPass(new DoctrineMigrationsPass());
+        $container->addCompilerPass(new DoctrineTypesPass());
     }
 }
