@@ -53,7 +53,7 @@ class ContaoBackendUserProvider implements UserProviderInterface
         /** @var BackendUser $adapter */
         $adapter = $this->framework->getAdapter(BackendUser::class);
 
-        if ($user = $adapter->loadUserByUsername($username)) {
+        if (($user = $adapter->loadUserByUsername($username)) instanceof BackendUser) {
             return $user;
         }
 
