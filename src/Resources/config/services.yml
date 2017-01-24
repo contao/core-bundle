@@ -149,6 +149,7 @@ services:
         public: false
         calls:
             - ["setContainer", ["@service_container"]]
+            - ["setScopeMatcher", ["@contao.routing.scope_matcher"]]
 
     contao.security.user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
@@ -157,6 +158,7 @@ services:
             - "@contao.framework"
         calls:
             - ["setContainer", ["@service_container"]]
+            - ["setScopeMatcher", ["@contao.routing.scope_matcher"]]
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine
