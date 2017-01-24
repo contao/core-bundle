@@ -173,6 +173,8 @@ class FrontendCron extends \Frontend
 	 */
 	protected function updateCronTxt($time)
 	{
-		\File::putContent('web/system/cron/cron.txt', $time);
+		$webDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
+
+		\File::putContent($webDir . '/system/cron/cron.txt', $time);
 	}
 }
