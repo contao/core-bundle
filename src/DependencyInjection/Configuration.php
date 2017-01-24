@@ -166,8 +166,6 @@ class Configuration implements ConfigurationInterface
      * @param string $value
      *
      * @return string
-     *
-     * @throws \InvalidArgumentException
      */
     private function resolvePath($value)
     {
