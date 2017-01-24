@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\DependencyInjection;
 use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Webmozart\PathUtil\Path;
 
 /**
  * Adds the Contao configuration structure.
@@ -170,10 +171,9 @@ class Configuration implements ConfigurationInterface
      */
     private function resolvePath($value)
     {
-        $path = realpath($value);
-
-        if (false === $path) {
-            throw new \InvalidArgumentException(sprintf('%s is not a resolvable path', $value));
+        $path = Path::canonicalize($value);
+        if ('\\' === DIRECTORY_SEPARATOR) {
+            $path = str_replace('/', '\\', $path);
         }
 
         return $path;

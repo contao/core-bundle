@@ -63,7 +63,8 @@
         "contao-components/swipe": "^2.0.3",
         "contao-components/tablesort": "^3.4.5",
         "contao-components/tablesorter": "^2.0.5.3",
-        "contao-components/tinymce4": "^4.3.4.1"
+        "contao-components/tinymce4": "^4.3.4.1",
+        "webmozart/path-util": "^2.0"
     },
     "require-dev": {
         "ext-fileinfo": "*",
