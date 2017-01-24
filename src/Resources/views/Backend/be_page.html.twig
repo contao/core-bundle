@@ -1,9 +1,5 @@
-{% set _main  = block('main') %}
-{% set _headline = block('headline') %}
-{% set _error = block('error') %}
-
-{{ contao_base_template({
-    main: _main,
-    error: _error,
-    headline: _headline
+{{ render_contao_backend_template({
+    main: block('main'),
+    error: block('headline'),
+    headline: block('error')
 }) | raw }}

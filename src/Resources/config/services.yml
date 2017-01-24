@@ -203,8 +203,8 @@ services:
         calls:
             - ["setName", ["contao_frontend"]]
 
-    contao.twig.base_template_extension:
-        class: Contao\CoreBundle\Twig\Extension\ContaoBaseTemplateExtension
+    contao.twig.template_extension:
+        class: Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension
         public: false
         arguments:
             - "@request_stack"

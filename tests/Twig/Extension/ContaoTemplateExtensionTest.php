@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2016 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
+namespace Contao\CoreBundle\Test\Routing;
+
+use Contao\BackendCustom;
+use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Twig\Extension\ContaoBaseTemplateExtension;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Tests the ContaoTemplateExtension class.
+ *
+ * @author Jim Schmid <https://github.com/sheeep>
+ */
+class ContaoTemplateExtensionTest extends TestCase
+{
+    /**
+     * Tests the renderContaoBackendTemplate() method.
+     */
+    public function testRenderContaoBackendTemplate()
+    {
+        $backendRoute = $this
+            ->getMockBuilder(BackendCustom::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getTemplateObject', 'run'])
+            ->getMock()
+        ;
+
+        $template = new \stdClass();
+
+        $backendRoute
+            ->expects($this->once())
+            ->method('getTemplateObject')
+            ->willReturn($template)
+        ;
+
+        $backendRoute
+            ->expects($this->once())
+            ->method('run')
+            ->willReturn(new Response())
+        ;
+
+        $request = new Request();
+        $request->attributes->set('_scope', 'backend');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $contaoFramework = $this->mockContaoFramework(null, null, [], [
+            BackendCustom::class => $backendRoute
+        ]);
+
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+
+        $extension->renderContaoBackendTemplate([
+            'a' => 'a',
+            'b' => 'b',
+            'c' => 'c'
+        ]);
+
+        $this->assertSame('a', $template->a);
+        $this->assertSame('b', $template->b);
+        $this->assertSame('c', $template->c);
+    }
+
+    /**
+     * Tests the scope restriction.
+     */
+    public function testScopeRestriction()
+    {
+        $request = new Request();
+        $request->attributes->set('_scope', 'frontend');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $contaoFramework = $this->mockContaoFramework(null, null, [], []);
+        $extension = new ContaoTemplateExtension($requestStack, $contaoFramework);
+
+        $this->assertEmpty($extension->renderContaoBackendTemplate());
+    }
+}
