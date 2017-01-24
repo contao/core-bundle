@@ -76,7 +76,7 @@ class ContaoTemplateExtensionTest extends TestCase
     /**
      * Tests the getFunctions() method.
      */
-    public function testGetFunctionsContainsRenderBaseTemplateFunction()
+    public function testGetFunctions()
     {
         $request = new Request();
         $request->attributes->set('_scope', 'backend');
