@@ -12,10 +12,8 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Framework\ScopeAwareTrait;
 use Contao\FrontendUser;
-use Contao\User;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,36 +23,24 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  * Provides a Contao front end or back end user object.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
- * @author David Greminger <https://github.com/bytehead>
  */
 class ContaoUserProvider implements UserProviderInterface
 {
+    use ScopeAwareTrait;
+
     /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
 
     /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param ScopeMatcher $scopeMatcher
      */
-    public function __construct(ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher, RequestStack $requestStack)
+    public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -64,20 +50,10 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        $this->framework->initialize();
-
         if ($this->isBackendUsername($username)) {
+            $this->framework->initialize();
 
-
-            $user = BackendUser::getInstance();
-
-            if (true === $user->findBy('username', $username)) {
-                return BackendUser::getInstance();
-            }
-
-            throw new UsernameNotFoundException(
-                sprintf('Username "%s" does not exist.', $username)
-            );
+            return BackendUser::getInstance();
         }
 
         if ($this->isFrontendUsername($username)) {
@@ -86,7 +62,7 @@ class ContaoUserProvider implements UserProviderInterface
             return FrontendUser::getInstance();
         }
 
-        throw new UsernameNotFoundException('Can only load user "frontend".');
+        throw new UsernameNotFoundException('Can only load user "frontend" or "backend".');
     }
 
     /**
@@ -94,13 +70,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
-            );
-        }
-
-        return $this->loadUserByUsername($user->getUsername());
+        throw new UnsupportedUserException('Cannot refresh a Contao user.');
     }
 
     /**
@@ -120,7 +90,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isFrontendUsername($username)
     {
-        return 'frontend' === $username && $this->scopeMatcher->isBackendRequest($this->requestStack->getCurrentRequest());
+        return 'frontend' === $username && $this->isFrontendScope();
     }
 
     /**
@@ -132,6 +102,6 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isBackendUsername($username)
     {
-        return $this->scopeMatcher->isBackendRequest($this->requestStack->getCurrentRequest());
+        return 'backend' === $username && $this->isBackendScope();
     }
 }

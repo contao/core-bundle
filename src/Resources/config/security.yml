@@ -3,6 +3,9 @@ security:
         contao.security.user_provider:
             id: contao.security.user_provider
 
+        contao.security.backend_user_provider:
+            id: contao.security.backend_user_provider
+
     encoders:
         default:
             algorithm: bcrypt
@@ -21,7 +24,7 @@ security:
 
         backend:
             request_matcher: contao.routing.backend_matcher
-            provider: contao.security.user_provider
+            provider: contao.security.backend_user_provider
             anonymous: ~
 
             form_login:
