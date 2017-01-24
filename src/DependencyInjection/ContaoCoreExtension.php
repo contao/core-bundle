@@ -68,8 +68,6 @@ class ContaoCoreExtension extends ConfigurableExtension
             $loader->load($file);
         }
 
-        $this->readImageTargetPath($mergedConfig, $container);
-
         $container->setParameter('contao.root_dir', $mergedConfig['root_dir']);
         $container->setParameter('contao.web_dir', $mergedConfig['web_dir']);
         $container->setParameter('contao.prepend_locale', $mergedConfig['prepend_locale']);
@@ -88,6 +86,8 @@ class ContaoCoreExtension extends ConfigurableExtension
         if (isset($mergedConfig['localconfig'])) {
             $container->setParameter('contao.localconfig', $mergedConfig['localconfig']);
         }
+
+        $this->overwriteImageTargetDir($mergedConfig, $container);
     }
 
     /**
@@ -99,7 +99,7 @@ class ContaoCoreExtension extends ConfigurableExtension
      * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5; use the
      *             contao.image.target_dir parameter instead
      */
-    private function readImageTargetPath(array $mergedConfig, ContainerBuilder $container)
+    private function overwriteImageTargetDir(array $mergedConfig, ContainerBuilder $container)
     {
         if (!isset($mergedConfig['image']['target_path'])) {
             return;
