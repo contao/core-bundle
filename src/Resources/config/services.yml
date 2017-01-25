@@ -38,6 +38,7 @@ services:
             - "@contao.framework"
             - "@database_connection"
             - "@request_stack"
+            - "%contao.root_dir%"
 
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector

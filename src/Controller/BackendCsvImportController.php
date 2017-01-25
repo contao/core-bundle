@@ -52,17 +52,24 @@ class BackendCsvImportController
     private $requestStack;
 
     /**
+     * @var string
+     */
+    private $contaoRoot;
+
+    /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
      * @param Connection               $connection
      * @param RequestStack             $requestStack
+     * @param string                   $contaoRoot
      */
-    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack)
+    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack, $contaoRoot)
     {
         $this->framework    = $framework;
         $this->connection   = $connection;
         $this->requestStack = $requestStack;
+        $this->contaoRoot = $contaoRoot;
     }
 
     /**
@@ -347,8 +354,7 @@ class BackendCsvImportController
                 throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $extension));
             }
 
-            // Drop TL_ROOT when we got rid of FileUpload which uses it
-            $file = TL_ROOT.'/'.$file;
+            $file = $this->contaoRoot.'/'.$file;
         }
 
         return $files;
