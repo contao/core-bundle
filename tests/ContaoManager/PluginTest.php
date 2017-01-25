@@ -11,6 +11,10 @@
 namespace Contao\CoreBundle\Test\ContaoManager;
 
 use Contao\CoreBundle\ContaoManager\Plugin;
+use Contao\ManagerPlugin\Bundle\Config\ConfigInterface;
+use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Nelmio\CorsBundle\NelmioCorsBundle;
+use Symfony\Component\Config\Loader\LoaderInterface;
 
 /**
  * Tests the Plugin class.
@@ -59,5 +63,28 @@ class PluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Plugin();
         $plugin->getRouteCollection($resolver, $this->getMock('Symfony\Component\HttpKernel\KernelInterface'));
+    }
+
+    public function testGetBundles()
+    {
+        $parser = $this->getMock(ParserInterface::class);
+        $plugin = new Plugin();
+        $bundles = $plugin->getBundles($parser);
+
+        $this->assertCount(1, $bundles);
+        $this->assertInstanceOf(ConfigInterface::class, $bundles[0]);
+        $this->assertSame(NelmioCorsBundle::class, $bundles[0]->getName());
+    }
+
+    public function testRegisterContainerConfiguration()
+    {
+        $loader = $this->getMock(LoaderInterface::class);
+
+        $loader->expects($this->once())
+            ->method('load')
+            ->with($this->stringEndsWith('Resources/config/cors.yml'));
+
+        $plugin = new Plugin();
+        $plugin->registerContainerConfiguration($loader, []);
     }
 }
