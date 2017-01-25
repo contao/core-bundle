@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BackendCsvImportController
 {
-    const SEPARATOR_COMMA = 'comma';
+    const SEPARATOR_COMMA     = 'comma';
     const SEPARATOR_LINEBREAK = 'linebreak';
     const SEPARATOR_SEMICOLON = 'semicolon';
     const SEPARATOR_TABULATOR = 'tabulator';
@@ -66,8 +66,8 @@ class BackendCsvImportController
      */
     public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack, $contaoRoot)
     {
-        $this->framework    = $framework;
-        $this->connection   = $connection;
+        $this->framework = $framework;
+        $this->connection = $connection;
         $this->requestStack = $requestStack;
         $this->contaoRoot = $contaoRoot;
     }
@@ -164,7 +164,7 @@ class BackendCsvImportController
     ) {
         $this->framework->initialize();
 
-        $request  = $this->requestStack->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader, $allowLinebreak);
 
@@ -210,13 +210,13 @@ class BackendCsvImportController
         /** @var BackendTemplate|\stdClass $template */
         $template = new BackendTemplate('be_csv_import');
 
-        $template->formId      = $this->getFormId($request);
-        $template->backUrl     = $this->getBackUrl($request);
-        $template->action      = $request->getRequestUri();
+        $template->formId = $this->getFormId($request);
+        $template->backUrl = $this->getBackUrl($request);
+        $template->action = $request->getRequestUri();
         $template->fileMaxSize = $this->framework->getAdapter(Config::class)->get('maxFileSize');
-        $template->messages    = $request->getSession()->getFlashBag()->all();
-        $template->uploader    = $uploader->generateMarkup();
-        $template->separators  = $this->getSeparators($allowLinebreak);
+        $template->messages = $request->getSession()->getFlashBag()->all();
+        $template->uploader = $uploader->generateMarkup();
+        $template->separators = $this->getSeparators($allowLinebreak);
         $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['apply'][0];
 
         return $template;
@@ -233,8 +233,8 @@ class BackendCsvImportController
      */
     private function fetchData(FileUpload $uploader, $separator, callable $callback)
     {
-        $data      = [];
-        $files     = $this->getFiles($uploader);
+        $data = [];
+        $files = $this->getFiles($uploader);
         $delimiter = $this->getDelimiter($separator);
 
         foreach ($files as $file) {
