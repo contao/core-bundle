@@ -15,8 +15,7 @@ use Nelmio\CorsBundle\Options\ProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Provides the configuration for integration with the
- * nelmio/cors-bundle.
+ * Provides the configuration for the nelmio/cors-bundle.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
@@ -28,7 +27,7 @@ class WebsiteRootsConfigProvider implements ProviderInterface
     private $connection;
 
     /**
-     * WebsiteRootsProvider constructor.
+     * Constructor.
      *
      * @param Connection $connection
      */
@@ -54,7 +53,7 @@ class WebsiteRootsConfigProvider implements ProviderInterface
         return [
             'allow_methods' => ['HEAD', 'GET'],
             'allow_headers' => ['x-requested-with'],
-            'allow_origin'  => true,
+            'allow_origin' => true,
         ];
     }
 }

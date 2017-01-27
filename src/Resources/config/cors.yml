@@ -1,3 +1,0 @@
-nelmio_cors:
-    paths:
-        '/': # Nonsense configuration as the nelmio compiler pass will abort if not present

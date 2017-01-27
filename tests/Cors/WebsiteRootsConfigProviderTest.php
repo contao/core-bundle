@@ -22,75 +22,105 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WebsiteRootsConfigProviderTest extends \PHPUnit_Framework_TestCase
 {
-    public function testInstanceOf()
+    /**
+     * Tests the object instantiation.
+     */
+    public function testInstantiation()
     {
-        $connection = $this->getMockBuilder(Connection::class)
+        $connection = $this
+            ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
+
         $configProvider = new WebsiteRootsConfigProvider($connection);
 
         $this->assertInstanceOf('Contao\CoreBundle\Cors\WebsiteRootsConfigProvider', $configProvider);
     }
 
+    /**
+     * Tests that no configuration is provided if the host does not match.
+     */
     public function testNoConfigProvidedIfHostDoesNotMatch()
     {
         $request = Request::create('https://foobar.com');
         $request->headers->set('origin', 'http://origin.com');
         $statement = $this->getMock(Statement::class);
 
-        $statement->expects($this->at(1))
+        $statement
+            ->expects($this->at(1))
             ->method('bindValue')
-            ->with('dns', 'origin.com');
+            ->with('dns', 'origin.com')
+        ;
 
-        $statement->expects($this->once())
+        $statement
+            ->expects($this->once())
             ->method('rowCount')
-            ->willReturn(0);
+            ->willReturn(0)
+        ;
 
         $connection = $this->getConnection($statement);
-
         $configProvider = new WebsiteRootsConfigProvider($connection);
-
         $result = $configProvider->getOptions($request);
 
         $this->assertCount(0, $result);
     }
 
-    public function testConfigProvidedIfHostDoesMatch()
+    /**
+     * Tests that a configuration is provided if the host matches.
+     */
+    public function testConfigProvidedIfHostMatches()
     {
         $request = Request::create('https://foobar.com');
         $request->headers->set('origin', 'https://origin.com');
         $statement = $this->getMock(Statement::class);
 
-        $statement->expects($this->at(1))
+        $statement
+            ->expects($this->at(1))
             ->method('bindValue')
-            ->with('dns', 'origin.com');
+            ->with('dns', 'origin.com')
+        ;
 
-        $statement->expects($this->once())
+        $statement
+            ->expects($this->once())
             ->method('rowCount')
-            ->willReturn(1);
+            ->willReturn(1)
+        ;
 
         $connection = $this->getConnection($statement);
-
         $configProvider = new WebsiteRootsConfigProvider($connection);
-
         $result = $configProvider->getOptions($request);
 
-        $this->assertEquals([
-            'allow_methods' => ['HEAD', 'GET'],
-            'allow_headers' => ['x-requested-with'],
-            'allow_origin'  => true
-        ], $result);
+        $this->assertEquals(
+            [
+                'allow_methods' => ['HEAD', 'GET'],
+                'allow_headers' => ['x-requested-with'],
+                'allow_origin' => true
+            ],
+            $result
+        );
     }
 
+    /**
+     * Mocks a database connection object.
+     *
+     * @param string $statement
+     *
+     * @return Connection|\PHPUnit_Framework_MockObject_MockObject
+     */
     private function getConnection($statement)
     {
-        $mock = $this->getMockBuilder(Connection::class)
+        $mock = $this
+            ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
 
-        $mock->expects($this->once())
+        $mock
+            ->expects($this->once())
             ->method('prepare')
-            ->willReturn($statement);
+            ->willReturn($statement)
+        ;
 
         return $mock;
     }
