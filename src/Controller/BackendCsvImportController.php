@@ -204,10 +204,13 @@ class BackendCsvImportController
         /** @var BackendTemplate|object $template */
         $template = new BackendTemplate('be_csv_import');
 
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+
         $template->formId = $this->getFormId($request);
         $template->backUrl = $this->getBackUrl($request);
         $template->action = $request->getRequestUri();
-        $template->fileMaxSize = $this->framework->getAdapter(Config::class)->get('maxFileSize');
+        $template->fileMaxSize = $config->get('maxFileSize');
         $template->messages = $request->getSession()->getFlashBag()->all();
         $template->uploader = $uploader->generateMarkup();
         $template->separators = $this->getSeparators($allowLinebreak);
