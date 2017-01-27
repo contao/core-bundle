@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Controller;
 
 use Contao\BackendTemplate;
 use Contao\Config;
+use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\FileUpload;
@@ -153,12 +154,19 @@ class BackendCsvImportController
      * @param bool        $allowLinebreak
      *
      * @return Response
+     *
+     * @throws InternalServerErrorException
      */
     protected function importFromTemplate(callable $callback, $table, $field, $id, $submitLabel = null, $allowLinebreak = false)
     {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            throw new InternalServerErrorException('No request object given.');
+        }
+
         $this->framework->initialize();
 
-        $request = $this->requestStack->getCurrentRequest();
         $uploader = new FileUpload();
         $template = $this->prepareTemplate($request, $uploader, $allowLinebreak);
 
@@ -211,7 +219,6 @@ class BackendCsvImportController
         $template->backUrl = $this->getBackUrl($request);
         $template->action = $request->getRequestUri();
         $template->fileMaxSize = $config->get('maxFileSize');
-        $template->messages = $request->getSession()->getFlashBag()->all();
         $template->uploader = $uploader->generateMarkup();
         $template->separators = $this->getSeparators($allowLinebreak);
         $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['apply'][0];
