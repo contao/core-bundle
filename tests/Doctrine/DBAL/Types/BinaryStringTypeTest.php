@@ -27,16 +27,21 @@ class BinaryStringTypeTest extends TestCase
      */
     private $type;
 
+    /**
+     * {@inheritdoc}
+     */
     public static function setUpBeforeClass()
     {
         Type::addType(BinaryStringType::NAME, BinaryStringType::class);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         $this->type = Type::getType(BinaryStringType::NAME);
     }
-
 
     /**
      * Tests the object instantiation.
@@ -47,7 +52,7 @@ class BinaryStringTypeTest extends TestCase
     }
 
     /**
-     * Tests getSqlDeclaration returns binary definition for fixed length fields.
+     * Tests that getSqlDeclaration() returns a binary definition for fixed length fields.
      */
     public function testGetSQLDeclarationWithFixedLength()
     {
@@ -74,7 +79,7 @@ class BinaryStringTypeTest extends TestCase
     }
 
     /**
-     * Tests getSqlDeclaration returns blob definition for variable length fields.
+     * Tests that getSqlDeclaration() returns a blob definition for variable length fields.
      */
     public function testGetSQLDeclarationWithVariableLength()
     {
