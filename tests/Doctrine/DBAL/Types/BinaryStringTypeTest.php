@@ -83,7 +83,7 @@ class BinaryStringTypeTest extends TestCase
      */
     public function testGetSQLDeclarationWithVariableLength()
     {
-        $fieldDefinition = ['false' => true];
+        $fieldDefinition = ['fixed' => false];
 
         /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
         $platform = $this
