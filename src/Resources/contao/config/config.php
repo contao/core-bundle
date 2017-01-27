@@ -19,14 +19,14 @@ $GLOBALS['BE_MOD'] = array
 	(
 		'article' => array
 		(
-			'tables' => array('tl_article', 'tl_content'),
-			'table'  => array('contao.controller.backend_csv_import', 'importTableWizard'),
-			'list'   => array('contao.controller.backend_csv_import', 'importListWizard'),
+			'tables'      => array('tl_article', 'tl_content'),
+			'table'       => array('contao.controller.backend_csv_import', 'importTableWizard'),
+			'list'        => array('contao.controller.backend_csv_import', 'importListWizard')
 		),
 		'form' => array
 		(
-			'tables' => array('tl_form', 'tl_form_field'),
-			'option' => array('contao.controller.backend_csv_import', 'importOptionWizard'),
+			'tables'      => array('tl_form', 'tl_form_field'),
+			'option'      => array('contao.controller.backend_csv_import', 'importOptionWizard')
 		)
 	),
 
@@ -49,7 +49,7 @@ $GLOBALS['BE_MOD'] = array
 		(
 			'tables'      => array('tl_templates'),
 			'new_tpl'     => array('tl_templates', 'addNewTemplate'),
-			'compare'     => array('tl_templates', 'compareTemplate'),
+			'compare'     => array('tl_templates', 'compareTemplate')
 		)
 	),
 

@@ -24,14 +24,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Controller to handle import of CSV data in the Contao backend.
+ * Handles importing CSV data in the Contao back end.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Kamil Kuzminski <https://github.com/qzminski>
  */
 class BackendCsvImportController
 {
-    const SEPARATOR_COMMA     = 'comma';
+    const SEPARATOR_COMMA = 'comma';
     const SEPARATOR_LINEBREAK = 'linebreak';
     const SEPARATOR_SEMICOLON = 'semicolon';
     const SEPARATOR_TABULATOR = 'tabulator';
@@ -73,7 +73,7 @@ class BackendCsvImportController
     }
 
     /**
-     * Imports CSV data for list wizard in content element.
+     * Imports CSV data in the list wizard.
      *
      * @param DataContainer $dc
      *
@@ -94,7 +94,7 @@ class BackendCsvImportController
     }
 
     /**
-     * Imports CSV data for table wizard in content element.
+     * Imports CSV data in the table wizard.
      *
      * @param DataContainer $dc
      *
@@ -116,7 +116,7 @@ class BackendCsvImportController
     }
 
     /**
-     * Imports CSV data for form field options.
+     * Imports CSV data in the options wizard.
      *
      * @param DataContainer $dc
      *
@@ -127,10 +127,10 @@ class BackendCsvImportController
         return $this->importFromTemplate(
             function ($data, $row) {
                 $data[] = [
-                    'value'   => $row[0],
-                    'label'   => $row[1],
+                    'value' => $row[0],
+                    'label' => $row[1],
                     'default' => $row[2] ? 1 : '',
-                    'group'   => $row[3] ? 1 : '',
+                    'group' => $row[3] ? 1 : '',
                 ];
 
                 return $data;
@@ -154,14 +154,8 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    protected function importFromTemplate(
-        callable $callback,
-        $table,
-        $field,
-        $id,
-        $submitLabel = null,
-        $allowLinebreak = false
-    ) {
+    protected function importFromTemplate(callable $callback, $table, $field, $id, $submitLabel = null, $allowLinebreak = false)
+    {
         $this->framework->initialize();
 
         $request = $this->requestStack->getCurrentRequest();
@@ -203,11 +197,11 @@ class BackendCsvImportController
      * @param FileUpload $uploader
      * @param bool       $allowLinebreak
      *
-     * @return Template|\stdClass
+     * @return Template|object
      */
     private function prepareTemplate(Request $request, FileUpload $uploader, $allowLinebreak = false)
     {
-        /** @var BackendTemplate|\stdClass $template */
+        /** @var BackendTemplate|object $template */
         $template = new BackendTemplate('be_csv_import');
 
         $template->formId = $this->getFormId($request);
@@ -218,6 +212,10 @@ class BackendCsvImportController
         $template->uploader = $uploader->generateMarkup();
         $template->separators = $this->getSeparators($allowLinebreak);
         $template->submitLabel = $GLOBALS['TL_LANG']['MSC']['apply'][0];
+        $template->backBT = $GLOBALS['TL_LANG']['MSC']['backBT'];
+        $template->backBTTitle = $GLOBALS['TL_LANG']['MSC']['backBTTitle'];
+        $template->separatorLabel = $GLOBALS['TL_LANG']['MSC']['separator'];
+        $template->sourceLabel = $GLOBALS['TL_LANG']['MSC']['source'];
 
         return $template;
     }
@@ -240,7 +238,7 @@ class BackendCsvImportController
         foreach ($files as $file) {
             $fp = fopen($file, 'rb');
 
-            while (($row = fgetcsv($fp, 0, $delimiter)) !== false) {
+            while (false !== ($row = fgetcsv($fp, 0, $delimiter))) {
                 $data = $callback($data, $row);
             }
         }
@@ -282,28 +280,28 @@ class BackendCsvImportController
     private function getSeparators($allowLinebreak = false)
     {
         $separators = [
-            self::SEPARATOR_COMMA     => [
+            self::SEPARATOR_COMMA => [
                 'delimiter' => ',',
-                'value'     => self::SEPARATOR_COMMA,
-                'label'     => $GLOBALS['TL_LANG']['MSC']['comma'],
+                'value' => self::SEPARATOR_COMMA,
+                'label' => $GLOBALS['TL_LANG']['MSC']['comma'],
             ],
             self::SEPARATOR_SEMICOLON => [
                 'delimiter' => ';',
-                'value'     => self::SEPARATOR_SEMICOLON,
-                'label'     => $GLOBALS['TL_LANG']['MSC']['semicolon'],
+                'value' => self::SEPARATOR_SEMICOLON,
+                'label' => $GLOBALS['TL_LANG']['MSC']['semicolon'],
             ],
             self::SEPARATOR_TABULATOR => [
                 'delimiter' => "\t",
-                'value'     => self::SEPARATOR_TABULATOR,
-                'label'     => $GLOBALS['TL_LANG']['MSC']['tabulator'],
+                'value' => self::SEPARATOR_TABULATOR,
+                'label' => $GLOBALS['TL_LANG']['MSC']['tabulator'],
             ],
         ];
 
         if ($allowLinebreak) {
             $separators[self::SEPARATOR_LINEBREAK] = [
                 'delimiter' => "\n",
-                'value'     => self::SEPARATOR_LINEBREAK,
-                'label'     => $GLOBALS['TL_LANG']['MSC']['linebreak'],
+                'value' => self::SEPARATOR_LINEBREAK,
+                'label' => $GLOBALS['TL_LANG']['MSC']['linebreak'],
             ];
         }
 
@@ -331,7 +329,7 @@ class BackendCsvImportController
     }
 
     /**
-     * Get uploaded files from FileUpload instance.
+     * Returns the uploaded files from a FileUpload instance.
      *
      * @param FileUpload $uploader
      *

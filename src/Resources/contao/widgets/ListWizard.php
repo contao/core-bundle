@@ -120,7 +120,7 @@ class ListWizard extends \Widget
 	 * @return string
 	 *
 	 * @throws \Exception
-	 * @throws \Contao\CoreBundle\Exception\RedirectResponseException
+	 * @throws ResponseException
 	 *
 	 * @deprecated Deprecated since Contao 4.3 to be removed in 5.0.
 	 *             Use the contao.controller.backend_csv_import service instead.
