@@ -775,7 +775,11 @@ class File extends \System
 	 */
 	public function sendToBrowser($filename='')
 	{
-		$response = new BinaryFileResponse(TL_ROOT . '/' . $this->strFile);
+        // Make sure no output buffer is active
+		// @see http://ch2.php.net/manual/en/function.fpassthru.php#74080
+		while (@ob_end_clean());
+
+	    $response = new BinaryFileResponse(TL_ROOT . '/' . $this->strFile);
 
 		$response->setContentDisposition
 		(
