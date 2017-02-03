@@ -22,7 +22,7 @@ security:
             pattern: ^/contao/install
             security: false
 
-        backend:
+        contao_backend:
             request_matcher: contao.routing.backend_matcher
             provider: contao.security.backend_user_provider
             anonymous: ~
@@ -38,7 +38,7 @@ security:
                 path: /contao/logout
                 target: /contao/login
 
-        frontend:
+        contao_frontend:
             request_matcher: contao.routing.frontend_matcher
             stateless: true
             simple_preauth:
