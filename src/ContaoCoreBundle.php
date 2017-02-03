@@ -16,6 +16,7 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,5 +65,6 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(new AddImagineClassPass());
         $container->addCompilerPass(new DoctrineMigrationsPass());
         $container->addCompilerPass(new PickerProviderPass());
+        $container->addCompilerPass(new FragmentRegistryPass());
     }
 }

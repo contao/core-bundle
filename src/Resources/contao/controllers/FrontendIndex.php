@@ -10,8 +10,11 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
+use Contao\CoreBundle\Controller\FragmentRegistry\PageTypeInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -281,6 +284,23 @@ class FrontendIndex extends \Frontend
 					break;
 
 				default:
+					$container = \System::getContainer();
+
+					/** @var Request $request */
+					$request = $container->get('request_stack')->getCurrentRequest();
+
+					/** @var FragmentRegistryInterface $fragmentRegistry */
+					$fragmentRegistry = $container->get('contao.fragment_registry');
+
+					try {
+						/** @var PageTypeInterface $pageType */
+						$pageType = $fragmentRegistry->getFragmentByTypeAndName(PageTypeInterface::class, $objPage->type);
+						return $pageType->renderAction($request);
+					} catch (\InvalidArgumentException $e) {
+						// noop
+					}
+
+					/** @var PageRegular $objHandler */
 					$objHandler = new $GLOBALS['TL_PTY'][$objPage->type]();
 
 					// Backwards compatibility

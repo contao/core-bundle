@@ -98,6 +98,9 @@ services:
             - "%contao.image.imagine_options%"
             - "%contao.image.valid_extensions%"
 
+    contao.fragment_registry:
+        class: Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry
+
     contao.image.image_sizes:
         class: Contao\CoreBundle\Image\ImageSizes
         arguments:
