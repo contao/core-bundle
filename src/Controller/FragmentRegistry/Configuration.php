@@ -38,9 +38,7 @@ class Configuration implements ConfigurationInterface
     private $attributes = [];
 
     /**
-     * @param string $renderStrategy
-     *
-     * @return Configuration
+     * {@inheritdoc}
      */
     public function setRenderStrategy($renderStrategy)
     {
@@ -58,9 +56,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array $renderOptions
-     *
-     * @return Configuration
+     * {@inheritdoc}
      */
     public function setRenderOptions($renderOptions)
     {
@@ -78,9 +74,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array $queryParameters
-     *
-     * @return Configuration
+     * {@inheritdoc}
      */
     public function setQueryParameters($queryParameters)
     {
@@ -98,9 +92,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array $attributes
-     *
-     * @return Configuration
+     * {@inheritdoc}
      */
     public function setAttributes($attributes)
     {
