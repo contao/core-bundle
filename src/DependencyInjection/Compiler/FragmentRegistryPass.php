@@ -57,10 +57,10 @@ class FragmentRegistryPass implements CompilerPassInterface
             }
 
             // Resolve the fragment type provider to ask for the types
-            /* @var FragmentTypesProviderInterface $fragmentTypeProvider */
-            $fragmentTypeProvider = $container->resolveServices($fragmentTypeProvider);
+            /* @var $fragmentTypeProviderInstance $fragmentTypeProvider */
+            $fragmentTypeProviderInstance = $container->resolveServices($fragmentTypeProvider);
 
-            foreach ($fragmentTypeProvider->getFragmentTypes() as $fragmentTypeInterface => $tag) {
+            foreach ($fragmentTypeProviderInstance->getFragmentTypes() as $fragmentTypeInterface => $tag) {
 
                 // Register the type
                 $fragmentRegistry->addMethodCall('addFragmentType', [$fragmentTypeInterface]);
@@ -82,6 +82,10 @@ class FragmentRegistryPass implements CompilerPassInterface
                     $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
                 }
             }
+
+            // Set provider to private so it's removed during optimization routine
+            $fragmentTypeProvider->setPublic(false);
+            unset($fragmentTypeProviderInstance);
         }
     }
 
