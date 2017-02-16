@@ -14,14 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Interface for fragments. This is an abstraction layer for the Symfony fragment
- * handler. The Symfony fragment handler requires to register real controllers
- * for every single fragment. In Contao we have different fragment types as well
- * as fragments themselves (types are modules, content elements etc. names are
- * e.g. "text", "headline" etc.). It would be very tedious work to register a
- * controller for every single one of them. This abstraction layer allows you
- * to tag your service, implement the FragmentInterface (or a subclass of it)
- * and the rest is taken care of for you.
+ * Interface for fragments.
+ * See FragmentRegistryInterface for more information.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
