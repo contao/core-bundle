@@ -8,7 +8,9 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry\FragmentType;
+namespace Contao\CoreBundle\Controller\FragmentRegistry;
+
+use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 
 /**
  * Provides the contao core fragment types
@@ -23,8 +25,6 @@ class ContaoCoreFragmentTypesProvider implements FragmentTypesProviderInterface
     public function getFragmentTypes()
     {
         return [
-            ContentElementInterface::class => ContentElementInterface::TAG_NAME,
-            FrontendModuleInterface::class => FrontendModuleInterface::TAG_NAME,
             PageTypeInterface::class => PageTypeInterface::TAG_NAME,
         ];
     }

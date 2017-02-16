@@ -10,8 +10,6 @@
 
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FragmentInterface;
-
 /**
  * Fragment registry interface.
  *

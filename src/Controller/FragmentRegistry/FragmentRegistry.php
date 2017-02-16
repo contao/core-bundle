@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FragmentInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 

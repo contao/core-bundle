@@ -8,8 +8,9 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry\FragmentType;
+namespace Contao\CoreBundle\Controller\PageType;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

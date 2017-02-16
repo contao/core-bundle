@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Controller\PageType;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\PageTypeInterface;
 use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 
