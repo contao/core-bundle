@@ -42,6 +42,11 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragments = [];
 
     /**
+     * @var bool
+     */
+    private $isInitialized = false;
+
+    /**
      * @var FragmentInterface[]
      */
     private $fragmentsPerType = [];
@@ -68,6 +73,8 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragmentType($interfaceClassName)
     {
+        $this->ensureNotInitialized();
+
         $this->types[] = $interfaceClassName;
 
         return $this;
@@ -86,18 +93,9 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment(FragmentInterface $fragment)
     {
+        $this->ensureNotInitialized();
+
         $this->fragments[] = $fragment;
-
-        foreach ($this->getFragmentTypes() as $type) {
-            if (is_a($fragment, $type)) {
-                $this->fragmentsPerType[$type][] = $fragment;
-                $this->fragmentsPerTypeAndName[$type  .'.' . $fragment->getName()] = $fragment;
-
-                return $this;
-            }
-        }
-
-        throw new \InvalidArgumentException('No fragment type is responsible for this fragment!');
     }
 
     /**
@@ -105,6 +103,8 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function getFragments($type = '')
     {
+        $this->initialize();
+
         if ('' === $type) {
             return $this->fragments;
         }
@@ -121,6 +121,8 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function getFragmentByTypeAndName($type, $name)
     {
+        $this->initialize();
+
         if (!isset($this->fragmentsPerTypeAndName[$type . '.' . $name])) {
             throw new \InvalidArgumentException('The fragment name "' . $name . '" does not exist for type "' . $type . '"!');
         }
@@ -149,5 +151,36 @@ class FragmentRegistry implements FragmentRegistryInterface
             ], $query);
 
         return $this->fragmentHandler->render($uri, $strategy, $options);
+    }
+
+    /**
+     * Makes sure an exception is thrown if the registry was already initialized.
+     *
+     * @throws \BadMethodCallException
+     */
+    private function ensureNotInitialized()
+    {
+        if ($this->isInitialized) {
+            throw new \BadMethodCallException('You cannot add types or fragments if the fragment registry was already initialized!');
+        }
+    }
+
+    /**
+     * Initialize fragment types and fragments and fill up cache lookup arrays.
+     */
+    private function initialize()
+    {
+        foreach ($this->fragments as $fragment) {
+            $ref = new \ReflectionClass($fragment);
+
+            foreach ($this->types as $type) {
+                if ($ref->implementsInterface($type)) {
+                    $this->fragmentsPerType[$type][] = $fragment;
+                    $this->fragmentsPerTypeAndName[$type  .'.' . $fragment->getName()] = $fragment;
+                }
+            }
+        }
+
+        $this->isInitialized = true;
     }
 }

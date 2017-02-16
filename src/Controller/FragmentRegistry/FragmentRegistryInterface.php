@@ -50,8 +50,6 @@ interface FragmentRegistryInterface
      * @param FragmentInterface $fragment
      *
      * @return FragmentRegistryInterface
-     *
-     * @throws \InvalidArgumentException If no fragment type is responsible for this fragment.
      */
     public function addFragment(FragmentInterface $fragment);
 
