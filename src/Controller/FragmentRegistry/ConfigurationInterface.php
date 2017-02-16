@@ -8,35 +8,29 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\PageType;
+namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
-use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Abstract class for shared logic for page types.
+ * Interface for fragment configuration.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-abstract class AbstractPageType implements PageTypeInterface
+interface ConfigurationInterface
 {
     /**
-     * {@inheritdoc}
+     * Gets the fragment render strategy. Symfony core provides "inline",
+     * "esi", "ssi" and "hinclude" but everybody can extend the available
+     * renderes by using the service tag "kernel.fragment_renderer".
+     * The passed configuration array contains whatever the triggering code
+     * wants to pass on to your fragment.
+     * See FragmentRegistryInterface::renderFragment()
+     *
+     * @return string
      */
-    abstract public function getName();
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function renderAction(Request $request);
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRenderStrategy(array $configuration)
-    {
-        return 'inline';
-    }
+    public function getRenderStrategy();
 
     /**
      * Gets the render options for the render strategy. Most of the times
@@ -44,16 +38,8 @@ abstract class AbstractPageType implements PageTypeInterface
      * some (e.g. like ESI) do to add e.g. comments to the <esi> tag.
      * The passed configuration array contains whatever the triggering code
      * wants to pass on to your fragment.
-     * See FragmentRegistryInterface::renderFragment()
-     *
-     * @param array $configuration
-     *
-     * @return array
      */
-    public function getRenderOptions(array $configuration)
-    {
-        return [];
-    }
+    public function getRenderOptions();
 
     /**
      * Your fragment likely needs some request query parameters if you use any
@@ -63,20 +49,14 @@ abstract class AbstractPageType implements PageTypeInterface
      * wants to pass on to your fragment.
      * See FragmentRegistryInterface::renderFragment()
      *
-     * @param array $configuration
+     * @return array
+     */
+    public function getQueryParameters();
+
+    /**
+     * Get arbitrary attributes.
      *
      * @return array
      */
-    public function getQueryParameters(array $configuration)
-    {
-        $params = [];
-
-        if (isset($configuration['pageModel'])
-            && $configuration['pageModel'] instanceof PageModel
-        ) {
-            $params['pageId'] = $configuration['pageModel']->id;
-        }
-
-        return $params;
-    }
+    public function getAttributes();
 }

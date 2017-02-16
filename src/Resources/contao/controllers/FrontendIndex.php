@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
+use Contao\CoreBundle\Controller\PageType\PageTypeConfiguration;
 use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -295,7 +296,10 @@ class FrontendIndex extends \Frontend
 					try {
 						// This will throw an exception if the page type does not exist.
 						$fragmentRegistry->getFragmentByTypeAndName(PageTypeInterface::class, $objPage->type);
-						$result = $fragmentRegistry->renderFragment(PageTypeInterface::class, $objPage->type, ['pageModel' => $objPage]);
+						$pageTypeConfiguration = new PageTypeConfiguration();
+						$pageTypeConfiguration->setPageModel($objPage);
+
+						$result = $fragmentRegistry->renderFragment(PageTypeInterface::class, $objPage->type, $pageTypeConfiguration);
 
 						if (null !== $result) {
 							return new Response($result);

@@ -80,12 +80,11 @@ interface FragmentRegistryInterface
      * a render strategy which overrides the one either specified by the
      * type or if the type does not specify one: "inline".
      *
-     * @param string      $type
-     * @param string      $name
-     * @param array       $configuration
-     * @param string|null $forceStrategy
+     * @param string                 $type
+     * @param string                 $name
+     * @param ConfigurationInterface $configuration
      *
      * @return string|null The Response content or null when the Response is streamed
      */
-    public function renderFragment($type, $name, array $configuration, $forceStrategy = null);
+    public function renderFragment($type, $name, ConfigurationInterface $configuration);
 }

@@ -132,24 +132,23 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function renderFragment($type, $name, array $configuration, $forceStrategy = null)
+    public function renderFragment($type, $name, ConfigurationInterface $configuration)
     {
         $typeInstance = $this->getFragmentByTypeAndName($type, $name);
-        $strategy = $typeInstance->getRenderStrategy($configuration) ?: 'inline';
-        $options = $typeInstance->getRenderOptions($configuration) ?: [];
-        $query = $typeInstance->getQueryParameters($configuration) ?: [];
-
-        if (null !== $forceStrategy) {
-            $strategy = $forceStrategy;
-        }
+        $typeInstance->modifyConfiguration($configuration);
 
         $uri = new ControllerReference(
             $this->controller, [
                 '_type' => $type,
                 '_name' => $name,
-            ], $query);
+            ], $configuration->getQueryParameters()
+        );
 
-        return $this->fragmentHandler->render($uri, $strategy, $options);
+        return $this->fragmentHandler->render(
+            $uri,
+            $configuration->getRenderStrategy(),
+            $configuration->getRenderOptions()
+        );
     }
 
     /**
