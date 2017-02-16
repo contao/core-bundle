@@ -100,6 +100,19 @@ services:
 
     contao.fragment_registry:
         class: Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry
+        arguments:
+            - "@fragment.handler"
+            - "contao.fragment_controller:renderAction"
+
+    contao.fragment_registry.type.content:
+        class: Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\ContaoCoreFragmentTypesProvider
+        tags:
+            - { name: contao.fragment_types_provider }
+
+    contao.fragment_controller:
+        class: Contao\CoreBundle\Controller\FragmentController
+        arguments:
+            - "@contao.fragment_registry"
 
     contao.image.image_sizes:
         class: Contao\CoreBundle\Image\ImageSizes

@@ -11,7 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\PageTypeInterface;
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\PageTypeInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -286,19 +286,27 @@ class FrontendIndex extends \Frontend
 				default:
 					$container = \System::getContainer();
 
-					/** @var Request $request */
-					$request = $container->get('request_stack')->getCurrentRequest();
-
 					/** @var FragmentRegistryInterface $fragmentRegistry */
 					$fragmentRegistry = $container->get('contao.fragment_registry');
 
+					// Do not call $fragmentRegistry->renderFragment() directly here because of BC
+					// We first check if there is a type registered and if so, call renderFragment()
+					// which means the new behaviour is only activated for new page types.
+
 					try {
-						/** @var PageTypeInterface $pageType */
-						$pageType = $fragmentRegistry->getFragmentByTypeAndName(PageTypeInterface::class, $objPage->type);
-						return $pageType->renderAction($request);
+						// This will throw an exception if the page type does not exist.
+						$fragmentRegistry->getFragmentByTypeAndName(PageTypeInterface::class, $objPage->type);
+						$result = $fragmentRegistry->renderFragment(PageTypeInterface::class, $objPage->type, ['pageModel' => $objPage]);
+
+						if (null !== $result) {
+							return new Response($result);
+						}
+
 					} catch (\InvalidArgumentException $e) {
-						// noop
+						// noop, continue with legacy page types (BC)
 					}
+
+					@trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
 
 					/** @var PageRegular $objHandler */
 					$objHandler = new $GLOBALS['TL_PTY'][$objPage->type]();
@@ -336,6 +344,8 @@ class FrontendIndex extends \Frontend
 			$GLOBALS['TL_BODY'] = $arrBody;
 			$GLOBALS['TL_MOOTOOLS'] = $arrMootools;
 			$GLOBALS['TL_JQUERY'] = $arrJquery;
+
+			@trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
 
 			/** @var PageError404 $objHandler */
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();

@@ -8,22 +8,31 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\Controller\FragmentRegistry\FragmentType;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Interface for Contao page types.
+ * Interface for Contao frontend modules.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-interface PageTypeInterface extends FragmentInterface
+interface FrontendModuleInterface extends FragmentInterface
 {
+    const TAG_NAME = 'contao.frontend_module';
+
     /**
      * @param Request $request
      *
      * @return Response
      */
     public function renderAction(Request $request);
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function renderBackendAction(Request $request);
 }

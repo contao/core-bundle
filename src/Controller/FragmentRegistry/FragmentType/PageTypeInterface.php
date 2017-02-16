@@ -8,18 +8,20 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\Controller\FragmentRegistry\FragmentType;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Interface for Contao insert tags.
+ * Interface for Contao page types.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-interface InsertTagInterface extends FragmentInterface
+interface PageTypeInterface extends FragmentInterface
 {
+    const TAG_NAME = 'contao.page_type';
+
     /**
      * @param Request $request
      *

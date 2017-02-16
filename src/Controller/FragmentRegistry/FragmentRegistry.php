@@ -10,6 +10,10 @@
 
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FragmentInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
+
 /**
  * Fragment registry.
  *
@@ -17,31 +21,64 @@ namespace Contao\CoreBundle\Controller\FragmentRegistry;
  */
 class FragmentRegistry implements FragmentRegistryInterface
 {
-    const TYPES = [
-        ContentElementInterface::class,
-        FrontendModuleInterface::class,
-        InsertTagInterface::class,
-        PageTypeInterface::class,
-    ];
+    /**
+     * @var FragmentHandler
+     */
+    private $fragmentHandler;
+
+    /**
+     * @var ControllerReference
+     */
+    private $controller;
 
     /**
      * @var array
+     */
+    private $types;
+
+    /**
+     * @var FragmentInterface[]
      */
     private $fragments = [];
 
     /**
-     * @var array
+     * @var FragmentInterface[]
      */
     private $fragmentsPerType = [];
 
     /**
-     * FragmentRegistry constructor.
+     * @var FragmentInterface[]
      */
-    public function __construct()
+    private $fragmentsPerTypeAndName = [];
+
+    /**
+     * FragmentRegistry constructor.
+     *
+     * @param FragmentHandler $fragmentHandler
+     * @param string          $controllerName
+     */
+    public function __construct(FragmentHandler $fragmentHandler, $controllerName)
     {
-        foreach (self::TYPES as $type) {
-            $this->fragmentsPerType[$type] = [];
-        }
+        $this->fragmentHandler = $fragmentHandler;
+        $this->controller = $controllerName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFragmentType($interfaceClassName)
+    {
+        $this->types[] = $interfaceClassName;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFragmentTypes()
+    {
+        return $this->types;
     }
 
     /**
@@ -51,11 +88,16 @@ class FragmentRegistry implements FragmentRegistryInterface
     {
         $this->fragments[] = $fragment;
 
-        foreach (self::TYPES as $type) {
+        foreach ($this->getFragmentTypes() as $type) {
             if (is_a($fragment, $type)) {
                 $this->fragmentsPerType[$type][] = $fragment;
+                $this->fragmentsPerTypeAndName[$type  .'.' . $fragment->getName()] = $fragment;
+
+                return $this;
             }
         }
+
+        throw new \InvalidArgumentException('No fragment type is responsible for this fragment!');
     }
 
     /**
@@ -79,12 +121,33 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function getFragmentByTypeAndName($type, $name)
     {
-        foreach ($this->getFragments($type) as $fragment) {
-            if ($name === $fragment->getName()) {
-                return $fragment;
-            }
+        if (!isset($this->fragmentsPerTypeAndName[$type . '.' . $name])) {
+            throw new \InvalidArgumentException('The fragment name "' . $name . '" does not exist for type "' . $type . '"!');
         }
 
-        throw new \InvalidArgumentException('The fragment name "' . $name . '" does not exist for type "' . $type . '"!');
+        return $this->fragmentsPerTypeAndName[$type . '.' . $name];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderFragment($type, $name, array $configuration, $forceStrategy = null)
+    {
+        $typeInstance = $this->getFragmentByTypeAndName($type, $name);
+        $strategy = $typeInstance->getRenderStrategy($configuration) ?: 'inline';
+        $options = $typeInstance->getRenderOptions($configuration) ?: [];
+        $query = $typeInstance->getQueryParameters($configuration) ?: [];
+
+        if (null !== $forceStrategy) {
+            $strategy = $forceStrategy;
+        }
+
+        $uri = new ControllerReference(
+            $this->controller, [
+                '_type' => $type,
+                '_name' => $name,
+            ], $query);
+
+        return $this->fragmentHandler->render($uri, $strategy, $options);
     }
 }

@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\Controller\FragmentRegistry\FragmentType;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,12 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface ContentElementInterface extends FragmentInterface
 {
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function renderAction(Request $request);
+    const TAG_NAME = 'contao.content_element';
 
     /**
      * @param Request $request

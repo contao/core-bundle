@@ -10,11 +10,8 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\ContentElementInterface;
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\FrontendModuleInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\InsertTagInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\PageTypeInterface;
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FragmentTypesProviderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -27,15 +24,9 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class FragmentRegistryPass implements CompilerPassInterface
 {
-    const TAGS_FOR_INTERFACE = [
-        'contao.content_element' => ContentElementInterface::class,
-        'contao.frontend_module' => FrontendModuleInterface::class,
-        'contao.insert_tag' => InsertTagInterface::class,
-        'contao.page_type' => PageTypeInterface::class,
-    ];
-
     /**
-     * Collect all the fragments and add them to the fragment registry.
+     * Collect all the fragments types provider and add them and their respectively
+     * tagged services to the fragment registry.
      *
      * @param ContainerBuilder $container
      */
@@ -45,30 +36,67 @@ class FragmentRegistryPass implements CompilerPassInterface
             return;
         }
 
-        $definition = $container->findDefinition('contao.fragment_registry');
+        $fragmentRegistry = $container->findDefinition('contao.fragment_registry');
 
-        if (!is_a($definition->getClass(), FragmentRegistryInterface::class, true)) {
+        if (!$this->classImplementsInterface($fragmentRegistry->getClass(), FragmentRegistryInterface::class)) {
             return;
         }
 
-        foreach (self::TAGS_FOR_INTERFACE as $tag => $interface) {
-            $taggedServices = $container->findTaggedServiceIds($tag);
+        // Search type providers
+        $typeProviders = $container->findTaggedServiceIds('contao.fragment_types_provider');
 
-            foreach ($taggedServices as $id => $tags) {
+        foreach ($typeProviders as $id => $tags) {
 
-                $fragment = $container->findDefinition($id);
+            $fragmentTypeProvider = $container->findDefinition($id);
 
-                if (!is_a($fragment->getClass(), $interface, true)) {
-                    throw new LogicException(sprintf('The class "%s" was registered as "%s" but does not implement the interface "%s".',
-                        $fragment->getClass(),
-                        $tag,
-                        $interface
-                    ));
-                }
-
-                $definition->addMethodCall('addFragment', array(new Reference($id)));
+            if (!$this->classImplementsInterface($fragmentTypeProvider->getClass(), FragmentTypesProviderInterface::class)) {
+                throw new LogicException(sprintf('The class "%s" was registered as "contao.fragment_types_provider" but does not implement the interface "%s".',
+                    $fragmentTypeProvider->getClass(),
+                    FragmentTypesProviderInterface::class
+                ));
             }
 
+            // Resolve the fragment type provider to ask for the types
+            /* @var FragmentTypesProviderInterface $fragmentTypeProvider */
+            $fragmentTypeProvider = $container->resolveServices($fragmentTypeProvider);
+
+            foreach ($fragmentTypeProvider->getFragmentTypes() as $fragmentTypeInterface => $tag) {
+
+                // Register the type
+                $fragmentRegistry->addMethodCall('addFragmentType', [$fragmentTypeInterface]);
+
+                $taggedServices = $container->findTaggedServiceIds($tag);
+
+                foreach ($taggedServices as $id => $tags) {
+
+                    $fragment = $container->findDefinition($id);
+
+                    if (!$this->classImplementsInterface($fragment->getClass(), $fragmentTypeInterface)) {
+                        throw new LogicException(sprintf('The class "%s" was registered as "%s" but does not implement the interface "%s".',
+                            $fragment->getClass(),
+                            $tag,
+                            $fragmentTypeInterface
+                        ));
+                    }
+
+                    $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
+                }
+            }
         }
+    }
+
+    /**
+     * Checks if a given class name implements a given interface name.
+     *
+     * @param string $class
+     * @param string $interface
+     *
+     * @return bool
+     */
+    private function classImplementsInterface($class, $interface)
+    {
+        $ref = new \ReflectionClass($class);
+
+        return $ref->implementsInterface($interface);
     }
 }
