@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -32,12 +32,6 @@ class Versions extends \Controller
 	 * @var integer
 	 */
 	protected $intPid;
-
-	/**
-	 * File path
-	 * @var string
-	 */
-	protected $strPath;
 
 	/**
 	 * Edit URL
@@ -71,17 +65,6 @@ class Versions extends \Controller
 
 		$this->strTable = $strTable;
 		$this->intPid = $intPid;
-
-		// Store the path if it is an editable file
-		if ($strTable == 'tl_files')
-		{
-			$objFile = \FilesModel::findByPk($intPid);
-
-			if ($objFile !== null && in_array($objFile->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
-			{
-				$this->strPath = $objFile->path;
-			}
-		}
 	}
 
 
@@ -165,17 +148,23 @@ class Versions extends \Controller
 			return;
 		}
 
-		if ($this->strPath !== null)
+		// Store the content if it is an editable file
+		if ($this->strTable == 'tl_files')
 		{
-			$objFile = new \File($this->strPath);
+			$objModel = \FilesModel::findByPk($this->intPid);
 
-			if ($objFile->extension == 'svgz')
+			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
 			{
-				$objRecord->content = gzdecode($objFile->getContent());
-			}
-			else
-			{
-				$objRecord->content = $objFile->getContent();
+				$objFile = new \File($objModel->path);
+
+				if ($objFile->extension == 'svgz')
+				{
+					$objRecord->content = gzdecode($objFile->getContent());
+				}
+				else
+				{
+					$objRecord->content = $objFile->getContent();
+				}
 			}
 		}
 
@@ -280,12 +269,26 @@ class Versions extends \Controller
 			return;
 		}
 
-		// Restore the content
-		if ($this->strPath !== null)
+		// Restore the content if it is an editable file
+		if ($this->strTable == 'tl_files')
 		{
-			$objFile = new \File($this->strPath);
-			$objFile->write($data['content']);
-			$objFile->close();
+			$objModel = \FilesModel::findByPk($this->intPid);
+
+			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
+			{
+				$objFile = new \File($objModel->path);
+
+				if ($objFile->extension == 'svgz')
+				{
+					$objFile->write(gzencode($data['content']));
+				}
+				else
+				{
+					$objFile->write($data['content']);
+				}
+
+				$objFile->close();
+			}
 		}
 
 		// Get the currently available fields
