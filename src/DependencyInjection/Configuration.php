@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -64,7 +64,7 @@ class Configuration implements ConfigurationInterface
                     ->validate()
                         ->ifTrue(function ($v) {
                             return preg_match(
-                                '@^(app|assets|contao|plugins|share|system|templates|vendor|web)(/|$)@',
+                                '@^(app|assets|bin|contao|plugins|share|system|templates|var|vendor|web)(/|$)@',
                                 $v
                             );
                         })

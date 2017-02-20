@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -321,7 +321,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     /**
      * Returns the DCA files.
      *
-     * @return Finder|SplFileInfo[]
+     * @return Finder|SplFileInfo[]|array
      */
     private function findDcaFiles()
     {
@@ -337,7 +337,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
      *
      * @param string $language
      *
-     * @return Finder|SplFileInfo[]
+     * @return Finder|SplFileInfo[]|array
      */
     private function findLanguageFiles($language)
     {
@@ -351,7 +351,7 @@ class ContaoCacheWarmer implements CacheWarmerInterface
     /**
      * Returns the template files.
      *
-     * @return Finder|SplFileInfo[]
+     * @return Finder|SplFileInfo[]|array
      */
     private function findTemplateFiles()
     {

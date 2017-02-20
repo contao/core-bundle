@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -836,8 +836,8 @@ class InsertTags extends \Controller
 
 							$picture = array
 							(
-								'img' => $picture->getImg(TL_ROOT),
-								'sources' => $picture->getSources(TL_ROOT)
+								'img' => $picture->getImg(TL_ROOT, TL_FILES_URL),
+								'sources' => $picture->getSources(TL_ROOT, TL_FILES_URL)
 							);
 
 							$picture['alt'] = $alt;
