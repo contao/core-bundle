@@ -85,6 +85,7 @@ class InstallCommandTest extends TestCase
         $this->assertContains(' * system/cache', $display);
         $this->assertContains(' * system/config', $display);
         $this->assertContains(' * system/tmp', $display);
+        $this->assertFileExists($this->getRootDir().'/files/public/.public');
     }
 
     /**
