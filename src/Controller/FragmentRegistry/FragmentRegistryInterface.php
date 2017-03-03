@@ -11,39 +11,16 @@
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
 /**
- * Fragment registry interface.
- *
- * This is an abstraction layer for the Symfony fragment handler.
- * The Symfony fragment handler requires to register real controllers for
- * every single fragment. In Contao we have different fragment types as well
- * as fragments themselves (types are modules, content elements etc. names are
- * e.g. "text", "headline" etc.). It would be very tedious work to register a
- * controller for every single one of them. This abstraction layer allows you
- * to tag your service, implement the FragmentInterface (or a subclass of it)
- * and the rest is taken care of for you.
+ * Fragment registry.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
 interface FragmentRegistryInterface
 {
     /**
-     * Adds a fragment type.
-     *
-     * @param string $interfaceClassName
-     *
-     * @return FragmentRegistryInterface
-     */
-    public function addFragmentType($interfaceClassName);
-
-    /**
-     * Get all fragments types.
-     *
-     * @return array
-     */
-    public function getFragmentTypes();
-
-    /**
      * Adds a fragment.
+     * If a fragment with the same identifier already exists, it will override
+     * the old one.
      *
      * @param FragmentInterface $fragment
      *
@@ -52,39 +29,47 @@ interface FragmentRegistryInterface
     public function addFragment(FragmentInterface $fragment);
 
     /**
-     * Get all fragments, optionally all of a given type.
+     * Gets an array of fragments that implement a given array of interfaces.
+     * If you specify multiple interfaces, only fragments implementing ALL of
+     * them are returned.
      *
-     * @param string $type
+     * @param array $mustImplementInterfaces
      *
      * @return FragmentInterface[]
-     *
-     * @throws \InvalidArgumentException If type does not exist.
      */
-    public function getFragments($type = '');
+    public function getFragments(array $mustImplementInterfaces);
 
     /**
-     * Get a fragment by type and name.
+     * Gets a fragment by its identifier.
      *
-     * @param string $type
-     * @param string $name
+     * @param string $identifier
      *
-     * @return FragmentInterface
-     *
-     * @throws \InvalidArgumentException If type or name do not exist.
+     * @return FragmentInterface|null
      */
-    public function getFragmentByTypeAndName($type, $name);
+    public function getFragment($identifier);
 
     /**
-     * Render a fragment based on its type and name, optionally passing
-     * configuration to the fragment type and also optionally forcing
-     * a render strategy which overrides the one either specified by the
-     * type or if the type does not specify one: "inline".
+     * Renders a fragment optionally passing on arbitrary configuration. It can
+     * be anything, from a simple array to an object implementing interfaces
+     * (which is recommended). The fragment is asked if it supports() the
+     * configuration and if not, an \InvalidArgumentException is raised.
+     * Otherwise a string (response content according to the render
+     * strategy) or null (when the response is streamed) is returned.
+     * By default, any fragment is rendered using the "inline" strategy for
+     * maximum compatibility. Of course, other strategies such as "esi" or
+     * "hinclude"
+     * (or your own one) are the interesting ones. The fragment can implement
+     * the StrategyProvidingInterface and define its own default. You can then
+     * still override it by passing on the strategy as third argument to this
+     * method.
      *
-     * @param string                 $type
-     * @param string                 $name
-     * @param ConfigurationInterface $configuration
+     * @param FragmentInterface       $fragment
+     * @param mixed                   $configuration
+     * @param RenderStrategyInterface $overridingRenderStrategy
      *
-     * @return string|null The Response content or null when the Response is streamed
+     * @return null|string
+     *
+     * @throws \InvalidArgumentException
      */
-    public function renderFragment($type, $name, ConfigurationInterface $configuration);
+    public function renderFragment(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null);
 }

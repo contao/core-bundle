@@ -26,14 +26,9 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragmentHandler;
 
     /**
-     * @var ControllerReference
+     * @var string
      */
-    private $controller;
-
-    /**
-     * @var array
-     */
-    private $types;
+    private $controllerName;
 
     /**
      * @var FragmentInterface[]
@@ -46,14 +41,12 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $isInitialized = false;
 
     /**
-     * @var FragmentInterface[]
+     * An array with interface as key and
+     * fragments as values.
+     *
+     * @var array
      */
-    private $fragmentsPerType = [];
-
-    /**
-     * @var FragmentInterface[]
-     */
-    private $fragmentsPerTypeAndName = [];
+    private $interfacesToFragmentCache = [];
 
     /**
      * FragmentRegistry constructor.
@@ -64,27 +57,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     public function __construct(FragmentHandler $fragmentHandler, $controllerName)
     {
         $this->fragmentHandler = $fragmentHandler;
-        $this->controller = $controllerName;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addFragmentType($interfaceClassName)
-    {
-        $this->ensureNotInitialized();
-
-        $this->types[] = $interfaceClassName;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFragmentTypes()
-    {
-        return $this->types;
+        $this->controllerName = $controllerName;
     }
 
     /**
@@ -92,90 +65,100 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment(FragmentInterface $fragment)
     {
-        $this->ensureNotInitialized();
+        if ($this->isInitialized) {
+            throw new \BadMethodCallException('You cannot add fragments if the fragment registry was already initialized!');
+        }
 
-        $this->fragments[] = $fragment;
+        // Overrides existing fragments with same identifier
+        $this->fragments[$fragment->getIdentifier()] = $fragment;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFragments($type = '')
+    public function getFragments(array $mustImplementInterfaces)
     {
         $this->initialize();
 
-        if ('' === $type) {
-            return $this->fragments;
+        $matches = [];
+
+        foreach ($mustImplementInterfaces as $mustImplementInterface) {
+            if (isset($this->interfacesToFragmentCache[$mustImplementInterface])) {
+                $matches = array_merge($matches, $this->interfacesToFragmentCache[$mustImplementInterface]);
+            }
         }
 
-        if (!isset($this->fragmentsPerType[$type])) {
-            throw new \InvalidArgumentException('The fragment type "' . $type . '" does not exist!');
-        }
-
-        return $this->fragmentsPerType[$type];
+        return array_unique($matches);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFragmentByTypeAndName($type, $name)
+    public function getFragment($identifier)
     {
         $this->initialize();
 
-        if (!isset($this->fragmentsPerTypeAndName[$type . '.' . $name])) {
-            throw new \InvalidArgumentException('The fragment name "' . $name . '" does not exist for type "' . $type . '"!');
-        }
-
-        return $this->fragmentsPerTypeAndName[$type . '.' . $name];
+        return $this->fragments[$identifier];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function renderFragment($type, $name, ConfigurationInterface $configuration)
+    public function renderFragment(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
     {
-        $typeInstance = $this->getFragmentByTypeAndName($type, $name);
-        $typeInstance->modifyConfiguration($configuration);
+        if (!$fragment->supportsConfiguration($configuration)) {
+            throw new \InvalidArgumentException(
+                sprintf('The fragment "%s" does not support the given configuration.', $fragment->getIdentifier())
+            );
+        }
+
+        $renderStrategy = 'inline';
+        $renderOptions = [];
+        $queryParameters = [];
+
+        if ($fragment instanceof RenderStrategyInterface) {
+            $renderStrategy = $fragment->getRenderStrategy($configuration);
+            $renderOptions = $fragment->getRenderOptions($configuration);
+        }
+
+        if (null !== $overridingRenderStrategy) {
+            $renderStrategy = $overridingRenderStrategy->getRenderStrategy($configuration);
+            $renderOptions = $overridingRenderStrategy->getRenderOptions($configuration);
+        }
+
+        if ($fragment instanceof QueryParameterProviderInterface) {
+            $queryParameters = $fragment->getQueryParameters($configuration);
+        }
 
         $uri = new ControllerReference(
-            $this->controller, [
-                '_type' => $type,
-                '_name' => $name,
-            ], $configuration->getQueryParameters()
+            $this->controllerName, [
+                '_fragment_identifier' => $fragment->getIdentifier(),
+            ], $queryParameters
         );
 
         return $this->fragmentHandler->render(
             $uri,
-            $configuration->getRenderStrategy(),
-            $configuration->getRenderOptions()
+            $renderStrategy,
+            $renderOptions
         );
     }
 
     /**
-     * Makes sure an exception is thrown if the registry was already initialized.
-     *
-     * @throws \BadMethodCallException
-     */
-    private function ensureNotInitialized()
-    {
-        if ($this->isInitialized) {
-            throw new \BadMethodCallException('You cannot add types or fragments if the fragment registry was already initialized!');
-        }
-    }
-
-    /**
-     * Initialize fragment types and fragments and fill up cache lookup arrays.
+     * Initialize fragments.
      */
     private function initialize()
     {
         foreach ($this->fragments as $fragment) {
             $ref = new \ReflectionClass($fragment);
 
-            foreach ($this->types as $type) {
-                if ($ref->implementsInterface($type)) {
-                    $this->fragmentsPerType[$type][] = $fragment;
-                    $this->fragmentsPerTypeAndName[$type  .'.' . $fragment->getName()] = $fragment;
+            foreach ($ref->getInterfaceNames() as $interfaceName) {
+                if (!isset($this->interfacesToFragmentCache[$interfaceName])) {
+                    $this->interfacesToFragmentCache[$interfaceName] = [];
                 }
+
+                $this->interfacesToFragmentCache[$interfaceName][] = $fragment;
             }
         }
 

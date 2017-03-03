@@ -10,11 +10,17 @@
 
 namespace Contao\CoreBundle\Controller\PageType;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentInterface;
+use Contao\PageModel;
 
 /**
- * Interface PageTypeInterface
+ * Class PageTypeConfiguration
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-interface PageTypeInterface extends FragmentInterface {}
+interface PageTypeConfigurationInterface
+{
+    /**
+     * @return PageModel
+     */
+    public function getPageModel();
+}

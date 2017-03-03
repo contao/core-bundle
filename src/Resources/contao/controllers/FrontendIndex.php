@@ -289,24 +289,17 @@ class FrontendIndex extends \Frontend
 					/** @var FragmentRegistryInterface $fragmentRegistry */
 					$fragmentRegistry = $container->get('contao.fragment_registry');
 
-					// Do not call $fragmentRegistry->renderFragment() directly here because of BC
-					// We first check if there is a type registered and if so, call renderFragment()
-					// which means the new behaviour is only activated for new page types.
+					$fragment = $fragmentRegistry->getFragment($objPage->type);
 
-					try {
-						// This will throw an exception if the page type does not exist.
-						$fragmentRegistry->getFragmentByTypeAndName(PageTypeInterface::class, $objPage->type);
-						$pageTypeConfiguration = new PageTypeConfiguration();
-						$pageTypeConfiguration->setPageModel($objPage);
+					if (null !== $fragment) {
+						$config = new PageTypeConfiguration();
+						$config->setPageModel($objPage);
 
-						$result = $fragmentRegistry->renderFragment(PageTypeInterface::class, $objPage->type, $pageTypeConfiguration);
+						$result = $fragmentRegistry->renderFragment($fragment, $config);
 
 						if (null !== $result) {
 							return new Response($result);
 						}
-
-					} catch (\InvalidArgumentException $e) {
-						// noop, continue with legacy page types (BC)
 					}
 
 					@trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);

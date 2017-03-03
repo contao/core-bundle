@@ -10,8 +10,8 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentInterface;
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FragmentTypesProviderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -25,8 +25,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class FragmentRegistryPass implements CompilerPassInterface
 {
     /**
-     * Collect all the fragments types provider and add them and their respectively
-     * tagged services to the fragment registry.
+     * Collect all the fragment and add them to the fragment registry.
      *
      * @param ContainerBuilder $container
      */
@@ -42,50 +41,20 @@ class FragmentRegistryPass implements CompilerPassInterface
             return;
         }
 
-        // Search type providers
-        $typeProviders = $container->findTaggedServiceIds('contao.fragment_types_provider');
+        $fragments = $container->findTaggedServiceIds('contao.fragment');
 
-        foreach ($typeProviders as $id => $tags) {
+        foreach ($fragments as $id => $tags) {
 
-            $fragmentTypeProvider = $container->findDefinition($id);
+            $fragment = $container->findDefinition($id);
 
-            if (!$this->classImplementsInterface($fragmentTypeProvider->getClass(), FragmentTypesProviderInterface::class)) {
-                throw new LogicException(sprintf('The class "%s" was registered as "contao.fragment_types_provider" but does not implement the interface "%s".',
-                    $fragmentTypeProvider->getClass(),
-                    FragmentTypesProviderInterface::class
+            if (!$this->classImplementsInterface($fragment->getClass(), FragmentInterface::class)) {
+                throw new LogicException(sprintf('The fragment class "%s" was registered as "contao.fragment" but does not implement the interface "%s".',
+                    $fragment->getClass(),
+                    FragmentInterface::class
                 ));
             }
 
-            // Resolve the fragment type provider to ask for the types
-            /* @var $fragmentTypeProviderInstance $fragmentTypeProvider */
-            $fragmentTypeProviderInstance = $container->resolveServices($fragmentTypeProvider);
-
-            foreach ($fragmentTypeProviderInstance->getFragmentTypes() as $fragmentTypeInterface => $tag) {
-
-                // Register the type
-                $fragmentRegistry->addMethodCall('addFragmentType', [$fragmentTypeInterface]);
-
-                $taggedServices = $container->findTaggedServiceIds($tag);
-
-                foreach ($taggedServices as $id => $tags) {
-
-                    $fragment = $container->findDefinition($id);
-
-                    if (!$this->classImplementsInterface($fragment->getClass(), $fragmentTypeInterface)) {
-                        throw new LogicException(sprintf('The class "%s" was registered as "%s" but does not implement the interface "%s".',
-                            $fragment->getClass(),
-                            $tag,
-                            $fragmentTypeInterface
-                        ));
-                    }
-
-                    $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
-                }
-            }
-
-            // Set provider to private so it's removed during optimization routine
-            $fragmentTypeProvider->setPublic(false);
-            unset($fragmentTypeProviderInstance);
+            $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
         }
     }
 

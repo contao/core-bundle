@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Controller\PageType;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\Configuration;
 use Contao\PageModel;
 
 /**
@@ -18,15 +17,15 @@ use Contao\PageModel;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class PageTypeConfiguration extends Configuration
+class PageTypeConfiguration implements PageTypeConfigurationInterface
 {
     /**
-     * @var PageModel|null
+     * @var PageModel
      */
     private $pageModel;
 
     /**
-     * @return PageModel|null
+     * @return PageModel
      */
     public function getPageModel()
     {
@@ -43,22 +42,5 @@ class PageTypeConfiguration extends Configuration
         $this->pageModel = $pageModel;
 
         return $this;
-    }
-
-    /**
-     * Add pageId to query parameters by default if page model
-     * was set.
-     *
-     * @return array
-     */
-    public function getQueryParameters()
-    {
-        $params = parent::getQueryParameters();
-
-        if ($this->pageModel instanceof PageModel) {
-            $params['pageId'] = $this->pageModel->id;
-        }
-
-        return $params;
     }
 }

@@ -10,9 +10,6 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\ContentElementInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentType\FrontendModuleInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -310,24 +307,6 @@ abstract class Controller extends \System
 				return '';
 			}
 
-			$container = System::getContainer();
-
-			/** @var FragmentRegistryInterface $fragmentRegistry */
-			$fragmentRegistry = $container->get('contao.fragment_registry');
-
-			// Do not call $fragmentRegistry->renderFragment() directly here because of BC
-			// We first check if there is a type registered and if so, call renderFragment()
-			// which means the new behaviour is only activated for new front end modules.
-
-			try {
-				// This will throw an exception if the front end modules does not exist.
-				$fragmentRegistry->getFragmentByTypeAndName(FrontendModuleInterface::class, $objRow->type);
-
-				return $fragmentRegistry->renderFragment(FrontendModuleInterface::class, $objRow->type,  ['moduleModel' => $objRow]);
-			} catch (\InvalidArgumentException $e) {
-				// noop, continue with legacy front end modules (BC)
-			}
-
 			$strClass = \Module::findClass($objRow->type);
 
 			// Return if the class does not exist
@@ -485,24 +464,6 @@ abstract class Controller extends \System
 		if (!static::isVisibleElement($objRow))
 		{
 			return '';
-		}
-
-		$container = System::getContainer();
-
-		/** @var FragmentRegistryInterface $fragmentRegistry */
-		$fragmentRegistry = $container->get('contao.fragment_registry');
-
-		// Do not call $fragmentRegistry->renderFragment() directly here because of BC
-		// We first check if there is a type registered and if so, call renderFragment()
-		// which means the new behaviour is only activated for new content elements.
-
-		try {
-			// This will throw an exception if the content element does not exist.
-			$fragmentRegistry->getFragmentByTypeAndName(ContentElementInterface::class, $objRow->type);
-
-			return $fragmentRegistry->renderFragment(ContentElementInterface::class, $objRow->type,  ['contentModel' => $objRow]);
-		} catch (\InvalidArgumentException $e) {
-			// noop, continue with legacy content elements (BC)
 		}
 
 		$strClass = \ContentElement::findClass($objRow->type);

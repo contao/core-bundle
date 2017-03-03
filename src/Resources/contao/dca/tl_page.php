@@ -238,7 +238,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 			(
 				array('tl_page', 'checkRootType')
 			),
-			'sql'                     => "varchar(32) NOT NULL default ''"
+			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
 		'pageTitle' => array
 		(
@@ -1329,8 +1329,8 @@ class tl_page extends Backend
 		/** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
 		$fragmentRegistry = $container->get('contao.fragment_registry');
 
-		foreach ($fragmentRegistry->getFragments(\Contao\CoreBundle\Controller\PageType\PageTypeInterface::class) as $pageType) {
-			$arrOptions[] = $pageType->getName();
+		foreach ($fragmentRegistry->getFragments([\Contao\CoreBundle\Controller\PageType\PageTypeInterface::class]) as $fragment) {
+			$arrOptions[] = $fragment->getIdentifier();
 		}
 
 		return $arrOptions;

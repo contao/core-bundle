@@ -47,15 +47,12 @@ class FragmentController
      */
     public function renderAction(Request $request)
     {
-        $type = $request->attributes->get('_type');
-        $name = $request->attributes->get('_name');
+        $fragment = $this->fragmentRegistry->getFragment($request->attributes->get('_fragment_identifier'));
 
-        try {
-            $type = $this->fragmentRegistry->getFragmentByTypeAndName($type, $name);
-        } catch (\InvalidArgumentException $e) {
+        if (null === $fragment) {
             throw new BadRequestHttpException('This fragment could not be rendered.');
         }
 
-        return $type->renderAction($request);
+        return $fragment->renderAction($request);
     }
 }

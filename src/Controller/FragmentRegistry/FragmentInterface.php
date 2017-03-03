@@ -22,20 +22,28 @@ use Symfony\Component\HttpFoundation\Response;
 interface FragmentInterface
 {
     /**
-     * Gets the name of the fragment. Should be unique accross the whole
-     * system so use something that ideally includes your vendor name like
-     * "contao.text".
+     * Gets the identifier of the fragment. Should be unique across the whole
+     * system so use something that ideally includes your vendor name and maybe
+     * group them by "type". Examples:
+     *
+     * - contao.frontend_module.text
+     * - contao.content_element.image
+     * - company.content_element.improved_image
+     * - company.products.list_view
      *
      * @return string
      */
-    public function getName();
+    public function getIdentifier();
 
     /**
-     * Allows the fragment to apply changes on the configuration.
+     * Checks if the fragment supports a given configuration by the consumer
+     * that wants to render the fragment.
      *
-     * @param ConfigurationInterface $configuration
+     * @param mixed $configuration
+     *
+     * @return bool
      */
-    public function modifyConfiguration(ConfigurationInterface $configuration);
+    public function supportsConfiguration($configuration);
 
     /**
      * The render action.
