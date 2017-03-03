@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentInterface;
+use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry;
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -53,6 +54,11 @@ class FragmentRegistryPass implements CompilerPassInterface
                     FragmentInterface::class
                 ));
             }
+
+            // Mark all fragments as lazy so they are lazy loaded using
+            // the proxy manager (which is why we need to require it in the
+            // composer.json (otherwise the lazy definition will just be ignored)
+            $fragment->setLazy(true);
 
             $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
         }

@@ -33,7 +33,7 @@ interface FragmentInterface
      *
      * @return string
      */
-    public function getIdentifier();
+    public static function getIdentifier();
 
     /**
      * Checks if the fragment supports a given configuration by the consumer

@@ -36,17 +36,9 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragments = [];
 
     /**
-     * @var bool
-     */
-    private $isInitialized = false;
-
-    /**
-     * An array with interface as key and
-     * fragments as values.
-     *
      * @var array
      */
-    private $interfacesToFragmentCache = [];
+    private $cache = [];
 
     /**
      * FragmentRegistry constructor.
@@ -65,12 +57,12 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment(FragmentInterface $fragment)
     {
-        if ($this->isInitialized) {
+        if (0 !== count($this->cache)) {
             throw new \BadMethodCallException('You cannot add fragments if the fragment registry was already initialized!');
         }
 
         // Overrides existing fragments with same identifier
-        $this->fragments[$fragment->getIdentifier()] = $fragment;
+        $this->fragments[$fragment::getIdentifier()] = $fragment;
 
         return $this;
     }
@@ -80,17 +72,34 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function getFragments(array $mustImplementInterfaces)
     {
-        $this->initialize();
+        sort($mustImplementInterfaces);
+
+        $key = md5(implode(',', $mustImplementInterfaces));
+
+        if (isset($this->cache[$key])) {
+
+            return $this->cache[$key];
+        }
 
         $matches = [];
+        $visitedFragmentClassNames = [];
+        foreach ($this->fragments as $fragment) {
+            $ref = new \ReflectionClass($fragment);
 
-        foreach ($mustImplementInterfaces as $mustImplementInterface) {
-            if (isset($this->interfacesToFragmentCache[$mustImplementInterface])) {
-                $matches = array_merge($matches, $this->interfacesToFragmentCache[$mustImplementInterface]);
+            foreach ($mustImplementInterfaces as $mustImplementInterface) {
+                if (!$ref->implementsInterface($mustImplementInterface)) {
+                    continue 2;
+                }
+
+                if (!isset($visitedFragmentClassNames[$ref->getName()])) {
+                    $matches[] = $fragment;
+                    $visitedFragmentClassNames[$ref->getName()] = null;
+                }
+
             }
         }
 
-        return array_unique($matches);
+        return $matches;
     }
 
     /**
@@ -98,8 +107,6 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function getFragment($identifier)
     {
-        $this->initialize();
-
         return $this->fragments[$identifier];
     }
 
@@ -110,7 +117,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     {
         if (!$fragment->supportsConfiguration($configuration)) {
             throw new \InvalidArgumentException(
-                sprintf('The fragment "%s" does not support the given configuration.', $fragment->getIdentifier())
+                sprintf('The fragment "%s" does not support the given configuration.', $fragment::getIdentifier())
             );
         }
 
@@ -134,7 +141,7 @@ class FragmentRegistry implements FragmentRegistryInterface
 
         $uri = new ControllerReference(
             $this->controllerName, [
-                '_fragment_identifier' => $fragment->getIdentifier(),
+                '_fragment_identifier' => $fragment::getIdentifier(),
             ], $queryParameters
         );
 
@@ -143,25 +150,5 @@ class FragmentRegistry implements FragmentRegistryInterface
             $renderStrategy,
             $renderOptions
         );
-    }
-
-    /**
-     * Initialize fragments.
-     */
-    private function initialize()
-    {
-        foreach ($this->fragments as $fragment) {
-            $ref = new \ReflectionClass($fragment);
-
-            foreach ($ref->getInterfaceNames() as $interfaceName) {
-                if (!isset($this->interfacesToFragmentCache[$interfaceName])) {
-                    $this->interfacesToFragmentCache[$interfaceName] = [];
-                }
-
-                $this->interfacesToFragmentCache[$interfaceName][] = $fragment;
-            }
-        }
-
-        $this->isInitialized = true;
     }
 }
