@@ -296,6 +296,9 @@ class FrontendIndex extends \Frontend
 						$config->setPageModel($objPage);
 
 						// TODO force rendering inline (it never makes sense to render it differently here)
+						// $strategy = new RenderStrategy()
+						// $strategy->setRenderStrategy('inline');
+
 						$result = $fragmentRegistry->renderFragment($fragment, $config);
 
 						if (null !== $result) {

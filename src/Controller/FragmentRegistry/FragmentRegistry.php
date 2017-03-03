@@ -121,20 +121,9 @@ class FragmentRegistry implements FragmentRegistryInterface
             );
         }
 
-        $renderStrategy = 'inline';
-        $renderOptions = [];
+        $renderStrategy = $this->determineRenderStrategy($fragment, $configuration, $overridingRenderStrategy);
+
         $queryParameters = [];
-
-        if ($fragment instanceof RenderStrategyInterface) {
-            $renderStrategy = $fragment->getRenderStrategy($configuration);
-            $renderOptions = $fragment->getRenderOptions($configuration);
-        }
-
-        if (null !== $overridingRenderStrategy) {
-            $renderStrategy = $overridingRenderStrategy->getRenderStrategy($configuration);
-            $renderOptions = $overridingRenderStrategy->getRenderOptions($configuration);
-        }
-
         if ($fragment instanceof QueryParameterProviderInterface) {
             $queryParameters = $fragment->getQueryParameters($configuration);
         }
@@ -147,8 +136,34 @@ class FragmentRegistry implements FragmentRegistryInterface
 
         return $this->fragmentHandler->render(
             $uri,
-            $renderStrategy,
-            $renderOptions
+            $renderStrategy->getRenderStrategy(),
+            $renderStrategy->getRenderOptions()
         );
+    }
+
+    /**
+     * Determines the render strategy.
+     *
+     * @param FragmentInterface            $fragment
+     * @param null                         $configuration
+     * @param RenderStrategyInterface|null $overridingRenderStrategy
+     *
+     * @return RenderStrategy
+     */
+    private function determineRenderStrategy(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
+    {
+        $strategy = new RenderStrategy();
+
+        if ($fragment instanceof RenderStrategyInterface) {
+            $strategy->setRenderStrategy($fragment->getRenderStrategy($configuration));
+            $strategy->setRenderOptions($fragment->getRenderOptions($configuration));
+        }
+
+        if (null !== $overridingRenderStrategy) {
+            $strategy->setRenderStrategy($overridingRenderStrategy->getRenderStrategy($configuration));
+            $strategy->setRenderOptions($overridingRenderStrategy->getRenderOptions($configuration));
+        }
+
+        return $strategy;
     }
 }
