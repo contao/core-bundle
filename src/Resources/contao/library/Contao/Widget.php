@@ -1380,6 +1380,19 @@ abstract class Widget extends \Controller
 			}
 		}
 
+		if (is_array($arrAttributes['sql']) && !isset($arrAttributes['sql']['columnDefinition']))
+		{
+			if (isset($arrAttributes['sql']['length']) && !isset($arrAttributes['maxlength']))
+			{
+				$arrAttributes['maxlength'] = $arrAttributes['sql']['length'];
+			}
+
+			if (isset($arrAttributes['sql']['unique']) && !isset($arrAttributes['unique']))
+			{
+				$arrAttributes['unique'] = $arrAttributes['sql']['unique'];
+			}
+		}
+
 		$arrAttributes['value'] = \StringUtil::deserialize($varValue);
 
 		// Convert timestamps
