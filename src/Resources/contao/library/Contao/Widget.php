@@ -1387,9 +1387,9 @@ abstract class Widget extends \Controller
 				$arrAttributes['maxlength'] = $arrAttributes['sql']['length'];
 			}
 
-			if (isset($arrAttributes['sql']['unique']) && !isset($arrAttributes['unique']))
+			if (isset($arrAttributes['sql']['customSchemaOptions']['unique']) && !isset($arrAttributes['unique']))
 			{
-				$arrAttributes['unique'] = $arrAttributes['sql']['unique'];
+				$arrAttributes['unique'] = $arrAttributes['sql']['customSchemaOptions']['unique'];
 			}
 		}
 
@@ -1464,12 +1464,12 @@ abstract class Widget extends \Controller
 				$sql = $sql['columnDefinition'];
 			}
 			else {
-				if (isset($sql['options']['default']))
+				if (isset($sql['default']))
 				{
-					return $sql['options']['default'];
+					return $sql['default'];
 				}
 
-				if ($sql['nullable'])
+				if (isset($sql['notnull']) && !$sql['notnull'])
 				{
 					return null;
 				}
