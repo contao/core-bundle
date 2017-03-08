@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Doctrine\DBAL\Types\Type;
 use Patchwork\Utf8;
 
 
@@ -1438,9 +1439,35 @@ abstract class Widget extends \Controller
 	 */
 	public static function getEmptyValueByFieldType($sql)
 	{
-		if ($sql == '')
+		if (empty($sql))
 		{
 			return '';
+		}
+
+		if (is_array($sql))
+		{
+			if (isset($sql['columnDefinition']))
+			{
+				$sql = $sql['columnDefinition'];
+			}
+			else {
+				if (isset($sql['options']['default']))
+				{
+					return $sql['options']['default'];
+				}
+
+				if ($sql['nullable'])
+				{
+					return null;
+				}
+
+				if (in_array($sql['type'], array(Type::BIGINT, Type::DECIMAL, Type::INTEGER, Type::SMALLINT, Type::FLOAT)))
+				{
+					return 0;
+				}
+
+				return '';
+			}
 		}
 
 		if (stripos($sql, 'NOT NULL') === false)
