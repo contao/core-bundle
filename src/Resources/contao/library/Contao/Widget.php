@@ -1524,20 +1524,12 @@ abstract class Widget extends \Controller
 	 */
 	public static function getEmptyStringOrNullByFieldType($sql)
 	{
-		if ($sql == '')
+		if (empty($sql))
 		{
 			return '';
 		}
 
-		// Strip the field type definition
-		list(, $def) = explode(' ', $sql, 2);
-
-		if (strpos($def, 'NULL') !== false && strpos($def, 'NOT NULL') === false)
-		{
-			return null;
-		}
-
-		return '';
+		return static::getEmptyValueByFieldType($sql) === null ? null : '';
 	}
 
 
