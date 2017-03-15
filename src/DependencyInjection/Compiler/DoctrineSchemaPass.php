@@ -13,12 +13,11 @@ namespace Contao\CoreBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 /**
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class DoctrineMigrationsPass implements CompilerPassInterface
+class DoctrineSchemaPass implements CompilerPassInterface
 {
     const DIFF_COMMAND_ID = 'console.command.contao_corebundle_command_doctrinemigrationsdiffcommand';
 
@@ -27,25 +26,14 @@ class DoctrineMigrationsPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$this->hasMigrationsBundle($container)) {
-            return;
-        }
-
         if ($this->hasOrm($container)) {
-            // Use Doctrine mapping (enhanced by our listeners) for schema if ORM is installed
-            $provider = new Definition(
-                'Doctrine\DBAL\Migrations\Provider\OrmSchemaProvider',
-                [$container->findDefinition('doctrine.orm.entity_manager')]
-            );
-        } else {
-            // Migrations schema provider must implement interface (only available if bundle is installed)
-            $provider = new DefinitionDecorator('contao.doctrine.dca_schema_provider');
-            $provider->setClass('Contao\CoreBundle\Doctrine\Schema\MigrationsSchemaProvider');
-
-            $this->registerDiffCommand($container, $provider);
+            $provider = $container->getDefinition('contao.doctrine.schema_provider');
+            $provider->addArgument($container->getDefinition('doctrine.orm.entity_manager'));
         }
 
-        $container->setDefinition('contao.doctrine.schema_provider', $provider);
+        if ($this->hasMigrationsBundle($container)) {
+            $this->overrideMigrationsDiffCommand($container);
+        }
     }
 
     /**
@@ -80,10 +68,12 @@ class DoctrineMigrationsPass implements CompilerPassInterface
      * Registers the custom doctrine:schema:diff command that works without ORM.
      *
      * @param ContainerBuilder $container
-     * @param Definition       $provider
      */
-    private function registerDiffCommand(ContainerBuilder $container, Definition $provider)
+    private function overrideMigrationsDiffCommand(ContainerBuilder $container)
     {
+        $provider = new Definition('Contao\CoreBundle\Doctrine\Schema\MigrationsSchemaProvider');
+        $provider->addArgument($container->getDefinition('service_container'));
+
         $command = new Definition('Contao\CoreBundle\Command\DoctrineMigrationsDiffCommand');
         $command->setArguments([$provider]);
         $command->addTag('console.command');

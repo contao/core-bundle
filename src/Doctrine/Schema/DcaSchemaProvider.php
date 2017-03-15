@@ -10,9 +10,12 @@
 
 namespace Contao\CoreBundle\Doctrine\Schema;
 
+use Contao\Database\Installer;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,13 +29,20 @@ class DcaSchemaProvider
     private $container;
 
     /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
      * Constructor.
      *
      * @param ContainerInterface $container
+     * @param EntityManager      $entityManager
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager = null)
     {
         $this->container = $container;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -42,6 +52,10 @@ class DcaSchemaProvider
      */
     public function createSchema()
     {
+        if (null !== $this->entityManager) {
+            return $this->getSchemaFromOrm();
+        }
+
         $schema = new Schema();
 
         $this->appendToSchema($schema);
@@ -265,6 +279,7 @@ class DcaSchemaProvider
         $framework = $this->container->get('contao.framework');
         $framework->initialize();
 
+        /** @var Installer $installer */
         $installer = $framework->createInstance('Contao\Database\Installer');
 
         $sqlTarget = $installer->getFromDca();
@@ -286,5 +301,23 @@ class DcaSchemaProvider
         }
 
         return $sqlTarget;
+    }
+
+    /**
+     * Creates a Schema instance from Doctrine ORM metadata.
+     *
+     * @return Schema
+     */
+    private function getSchemaFromOrm()
+    {
+        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
+
+        if (empty($metadata)) {
+            return new Schema();
+        }
+
+        $tool = new SchemaTool($this->entityManager);
+
+        return $tool->getSchemaFromMetadata($metadata);
     }
 }
