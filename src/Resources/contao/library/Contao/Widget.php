@@ -1463,7 +1463,8 @@ abstract class Widget extends \Controller
 			{
 				$sql = $sql['columnDefinition'];
 			}
-			else {
+			else
+			{
 				if (isset($sql['default']))
 				{
 					return $sql['default'];
