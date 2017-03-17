@@ -176,7 +176,7 @@ class FrontendTemplate extends \Template
 			
 			foreach ($this->positions as $position)
 			{
-				if (isset($position[$key]))
+				if (isset($position[$key]['template']))
 				{
 					$template = $position[$key]['template'];
 				}
