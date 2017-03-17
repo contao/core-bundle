@@ -194,7 +194,7 @@ trait TemplateInheritance
 				{
 					echo $this->arrBlocks[$name];
 					ob_start();
-					$this->intBufferLevel++;
+					++$this->intBufferLevel;
 				}
 			}
 		}
@@ -247,7 +247,7 @@ trait TemplateInheritance
 				else
 				{
 					ob_end_clean();
-					$this->intBufferLevel--;
+					--$this->intBufferLevel;
 				}
 			}
 		}
