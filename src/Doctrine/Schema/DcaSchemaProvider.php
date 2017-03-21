@@ -10,13 +10,14 @@
 
 namespace Contao\CoreBundle\Doctrine\Schema;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Database\Installer;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @author Andreas Schempp <https://github.com/aschempp>
@@ -24,25 +25,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DcaSchemaProvider
 {
     /**
-     * @var ContainerInterface
+     * @var ContaoFrameworkInterface
      */
-    private $container;
+    private $framework;
 
     /**
-     * @var EntityManager
+     * @var Registry
      */
-    private $entityManager;
+    private $doctrine;
 
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container
-     * @param EntityManager      $entityManager
+     * @param ContaoFrameworkInterface $framework
+     * @param Registry                 $doctrine
      */
-    public function __construct(ContainerInterface $container, EntityManager $entityManager = null)
+    public function __construct(ContaoFrameworkInterface $framework, Registry $doctrine = null)
     {
-        $this->container = $container;
-        $this->entityManager = $entityManager;
+        $this->framework = $framework;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -52,10 +53,40 @@ class DcaSchemaProvider
      */
     public function createSchema()
     {
-        if (null !== $this->entityManager) {
-            return $this->getSchemaFromOrm();
+        if (0 !== count($this->doctrine->getManagerNames())) {
+            return $this->createSchemaFromOrm();
         }
 
+        return $this->createSchemaFromDca();
+    }
+
+    /**
+     * Creates a Schema instance from Doctrine ORM metadata.
+     *
+     * @return Schema
+     */
+    private function createSchemaFromOrm()
+    {
+        /** @var EntityManagerInterface $manager */
+        $manager = $this->doctrine->getManager();
+        $metadata = $manager->getMetadataFactory()->getAllMetadata();
+
+        if (empty($metadata)) {
+            return $this->createSchemaFromDca();
+        }
+
+        $tool = new SchemaTool($manager);
+
+        return $tool->getSchemaFromMetadata($metadata);
+    }
+
+    /**
+     * Creates a Schema instance and adds DCA metadata.
+     *
+     * @return Schema
+     */
+    private function createSchemaFromDca()
+    {
         $schema = new Schema();
 
         $this->appendToSchema($schema);
@@ -127,7 +158,7 @@ class DcaSchemaProvider
 
         $this->setLengthAndPrecisionByType($type, $dbType, $length, $scale, $precision, $fixed);
 
-        $type = $this->container->get('database_connection')->getDatabasePlatform()->getDoctrineTypeMapping($type);
+        $type = $this->doctrine->getConnection()->getDatabasePlatform()->getDoctrineTypeMapping($type);
         $length = (0 === (int) $length) ? null : (int) $length;
 
         if (preg_match('/default (\'[^\']*\'|\d+)/', $def, $match)) {
@@ -276,11 +307,10 @@ class DcaSchemaProvider
      */
     private function getSqlDefinitions()
     {
-        $framework = $this->container->get('contao.framework');
-        $framework->initialize();
+        $this->framework->initialize();
 
         /** @var Installer $installer */
-        $installer = $framework->createInstance('Contao\Database\Installer');
+        $installer = $this->framework->createInstance('Contao\Database\Installer');
 
         $sqlTarget = $installer->getFromDca();
         $sqlLegacy = $installer->getFromFile();
@@ -301,23 +331,5 @@ class DcaSchemaProvider
         }
 
         return $sqlTarget;
-    }
-
-    /**
-     * Creates a Schema instance from Doctrine ORM metadata.
-     *
-     * @return Schema
-     */
-    private function getSchemaFromOrm()
-    {
-        $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        if (empty($metadata)) {
-            return new Schema();
-        }
-
-        $tool = new SchemaTool($this->entityManager);
-
-        return $tool->getSchemaFromMetadata($metadata);
     }
 }

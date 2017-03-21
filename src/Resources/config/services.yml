@@ -44,7 +44,8 @@ services:
     contao.doctrine.schema_provider:
         class: Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider
         arguments:
-            - "@service_container"
+            - "@contao.framework"
+            - "@doctrine"
 
     contao.image.image_sizes:
         class: Contao\CoreBundle\Image\ImageSizes

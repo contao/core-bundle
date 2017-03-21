@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Test\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineSchemaPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\Test\TestCase;
 use Doctrine\ORM\EntityManager;
@@ -25,14 +25,14 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  *
  * @author Andreas Schempp <http://github.com/aschempp>
  */
-class DoctrineSchemaPassTest extends TestCase
+class DoctrineMigrationsPassTest extends TestCase
 {
     /**
      * Tests the object instantiation.
      */
     public function testInstantiation()
     {
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
 
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\DoctrineSchemaPass', $pass);
     }
@@ -44,11 +44,11 @@ class DoctrineSchemaPassTest extends TestCase
     {
         $container = $this->createContainerBuilder(['Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle']);
 
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
         $pass->process($container);
 
-        $this->assertTrue($container->hasDefinition(DoctrineSchemaPass::DIFF_COMMAND_ID));
-        $this->assertFalse($container->getDefinition(DoctrineSchemaPass::DIFF_COMMAND_ID)->isSynthetic());
+        $this->assertTrue($container->hasDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID));
+        $this->assertFalse($container->getDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID)->isSynthetic());
     }
 
     /**
@@ -58,11 +58,11 @@ class DoctrineSchemaPassTest extends TestCase
     {
         $container = $this->createContainerBuilder();
 
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
         $pass->process($container);
 
-        $this->assertTrue($container->hasDefinition(DoctrineSchemaPass::DIFF_COMMAND_ID));
-        $this->assertTrue($container->getDefinition(DoctrineSchemaPass::DIFF_COMMAND_ID)->isSynthetic());
+        $this->assertTrue($container->hasDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID));
+        $this->assertTrue($container->getDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID)->isSynthetic());
     }
 
     /**
@@ -73,7 +73,7 @@ class DoctrineSchemaPassTest extends TestCase
         $container = $this->createContainerBuilder();
         $container->setDefinition('doctrine.orm.entity_manager', new Definition(EntityManager::class));
 
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition('contao.doctrine.schema_provider'));
@@ -92,7 +92,7 @@ class DoctrineSchemaPassTest extends TestCase
     {
         $container = $this->createContainerBuilder();
 
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition('contao.doctrine.schema_provider'));
@@ -109,7 +109,7 @@ class DoctrineSchemaPassTest extends TestCase
     {
         $container = $this->createContainerBuilder(['Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle']);
 
-        $pass = new DoctrineSchemaPass();
+        $pass = new DoctrineMigrationsPass();
         $pass->process($container);
 
         $this->assertFalse($container->hasParameter('console.command.ids'));
@@ -121,7 +121,7 @@ class DoctrineSchemaPassTest extends TestCase
         $this->assertTrue($container->hasParameter('console.command.ids'));
 
         $this->assertContains(
-            DoctrineSchemaPass::DIFF_COMMAND_ID,
+            DoctrineMigrationsPass::DIFF_COMMAND_ID,
             $container->getParameter('console.command.ids')
         );
     }
