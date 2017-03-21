@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Test\DependencyInjection\Compiler;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\Test\TestCase;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,7 +33,7 @@ class DoctrineMigrationsPassTest extends TestCase
     {
         $pass = new DoctrineMigrationsPass();
 
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\DoctrineSchemaPass', $pass);
+        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass', $pass);
     }
 
     /**
@@ -63,43 +62,6 @@ class DoctrineMigrationsPassTest extends TestCase
 
         $this->assertTrue($container->hasDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID));
         $this->assertTrue($container->getDefinition(DoctrineMigrationsPass::DIFF_COMMAND_ID)->isSynthetic());
-    }
-
-    /**
-     * Tests the pass with ORM.
-     */
-    public function testWithOrm()
-    {
-        $container = $this->createContainerBuilder();
-        $container->setDefinition('doctrine.orm.entity_manager', new Definition(EntityManager::class));
-
-        $pass = new DoctrineMigrationsPass();
-        $pass->process($container);
-
-        $this->assertTrue($container->hasDefinition('contao.doctrine.schema_provider'));
-
-        $arguments = $container->getDefinition('contao.doctrine.schema_provider')->getArguments();
-
-        $this->assertCount(2, $arguments);
-        $this->assertInstanceOf(Definition::class, $arguments[1]);
-        $this->assertEquals(EntityManager::class, $arguments[1]->getClass());
-    }
-
-    /**
-     * Tests the pass without ORM.
-     */
-    public function testWithoutOrm()
-    {
-        $container = $this->createContainerBuilder();
-
-        $pass = new DoctrineMigrationsPass();
-        $pass->process($container);
-
-        $this->assertTrue($container->hasDefinition('contao.doctrine.schema_provider'));
-
-        $arguments = $container->getDefinition('contao.doctrine.schema_provider')->getArguments();
-
-        $this->assertCount(1, $arguments);
     }
 
     /**
