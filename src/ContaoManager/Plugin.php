@@ -29,6 +29,7 @@ use Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Terminal42\HeaderReplay\HeaderReplayBundle;
 
 /**
  * Plugin for the Contao Manager.
@@ -43,7 +44,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(KnpMenuBundle::class),
+            BundleConfig::create(HeaderReplayBundle::class),
             BundleConfig::create(KnpTimeBundle::class),
             BundleConfig::create(ContaoCoreBundle::class)
                 ->setReplace(['core'])
