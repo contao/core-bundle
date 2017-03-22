@@ -52,7 +52,29 @@ class PhpFileLoader extends Loader
             $code = substr($code, 0, -2);
         }
 
-        return rtrim($code)."\n";
+        // declare() statements
+        $lines = explode("\n", $code);
+        $codeNew = '';
+        $processed = false;
+
+        foreach ($lines as $line) {
+            if ('' === $line || $processed) {
+                $codeNew .= $line . "\n";
+                continue;
+            }
+
+            // Until now, every line was empty which means this is the first
+            // one that's not so it must be the declare statement if it's there
+            // as this one has to be the first statement right after <?php
+            if (preg_match('/^declare\([^)]+\);$/', $line)) {
+                $processed = true;
+            } else {
+                $codeNew .= $line . "\n";
+                $processed = true;
+            }
+        }
+
+        return rtrim($codeNew)."\n";
     }
 
     /**
