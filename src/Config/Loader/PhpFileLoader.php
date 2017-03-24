@@ -32,6 +32,46 @@ class PhpFileLoader extends Loader
     {
         $code = rtrim(file_get_contents($file));
 
+        // declare() statements
+        $codeNew = '';
+        $tokens = token_get_all($code);
+        $collect = false;
+        $declarePart = '';
+
+        foreach ($tokens as $k => $token) {
+            if (is_array($token)) {
+                if (T_DECLARE === $token[0]) {
+                    $collect = true;
+                }
+
+                if ($collect) {
+                    $declarePart .= $token[1];
+                } else {
+                    $codeNew .= $token[1];
+                }
+
+            } else {
+                if ($collect && ';' === $token) {
+                    $declarePart = preg_replace('/([\s]*,)?strict_types[\s]*=[\s]*1([\s]*,)?/', '', $declarePart);
+
+                    if (!preg_match('/declare\([\s]*\)/', $declarePart)) {
+                        $codeNew .= $declarePart . ';';
+                    }
+
+                    $collect = false;
+                    continue;
+                }
+
+                if ($collect) {
+                    $declarePart .= $token;
+                } else {
+                    $codeNew .= $token;
+                }
+            }
+        }
+
+        $code = $codeNew;
+
         // Opening tag
         if (0 === strncmp($code, '<?php', 5)) {
             $code = substr($code, 5);
@@ -52,29 +92,7 @@ class PhpFileLoader extends Loader
             $code = substr($code, 0, -2);
         }
 
-        // declare() statements
-        $lines = explode("\n", $code);
-        $codeNew = '';
-        $processed = false;
-
-        foreach ($lines as $line) {
-            if ('' === $line || $processed) {
-                $codeNew .= $line . "\n";
-                continue;
-            }
-
-            // Until now, every line was empty which means this is the first
-            // one that's not so it must be the declare statement if it's there
-            // as this one has to be the first statement right after <?php
-            if (preg_match('/^declare\([^)]+\);$/', $line)) {
-                $processed = true;
-            } else {
-                $codeNew .= $line . "\n";
-                $processed = true;
-            }
-        }
-
-        return rtrim($codeNew)."\n";
+        return rtrim($code)."\n";
     }
 
     /**

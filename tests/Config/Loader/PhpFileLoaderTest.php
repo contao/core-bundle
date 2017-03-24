@@ -105,9 +105,14 @@ EOF;
         );
     }
 
-    public function testLoadWithDeclareStatements()
+    /**
+     * @param string $file
+     * @dataProvider loadWithDeclareStatementsStrictType
+     */
+    public function testLoadWithDeclareStatementsStrictType($file)
     {
         $content = <<<'EOF'
+
 
 
 
@@ -131,7 +136,93 @@ EOF;
 
         $this->assertEquals(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_declare.php')
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/' . $file . '.php')
         );
+    }
+
+    public function testLoadWithDeclareStatementsCommentsAreIgnored()
+    {
+        $content = <<<'EOF'
+
+
+/**
+ * I am a declare(strict_types=1) comment
+ */
+
+
+
+$GLOBALS['TL_DCA']['tl_test'] = [
+    'config' => [
+        'dataContainer' => 'DC_Table',
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
+        ],
+    ],
+];
+
+EOF;
+
+        $this->assertEquals(
+            $content,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_declare3.php')
+        );
+    }
+
+    /**
+     * @param string $file
+     * @dataProvider loadWithDeclareStatementsMultipleDefined
+     */
+    public function testLoadWithDeclareStatementsMultipleDefined($file)
+    {
+        $content = <<<'EOF'
+
+
+declare(ticks=1);
+
+$GLOBALS['TL_DCA']['tl_test'] = [
+    'config' => [
+        'dataContainer' => 'DC_Table',
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
+        ],
+    ],
+];
+
+EOF;
+
+        $this->assertEquals(
+            $content,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/' . $file . '.php')
+        );
+    }
+
+    public function loadWithDeclareStatementsStrictType()
+    {
+        return [
+            ['tl_test_with_declare1'],
+            ['tl_test_with_declare2'],
+        ];
+    }
+
+    public function loadWithDeclareStatementsMultipleDefined()
+    {
+        return [
+            ['tl_test_with_declare4'],
+            ['tl_test_with_declare5'],
+        ];
     }
 }
