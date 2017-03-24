@@ -52,9 +52,10 @@ class PhpFileLoader extends Loader
 
             } else {
                 if ($collect && ';' === $token) {
-                    $declarePart = preg_replace('/([\s]*,)?strict_types[\s]*=[\s]*1([\s]*,)?/', '', $declarePart);
+                    $declarePart = preg_replace('/(,\s*)?strict_types\s*=\s*1(\s*,)?/', '', $declarePart);
 
-                    if (!preg_match('/declare\([\s]*\)/', $declarePart)) {
+                    if (!preg_match('/declare\(\s*\)/', $declarePart)) {
+                        $declarePart = preg_replace('/\s+/', '', $declarePart);
                         $codeNew .= $declarePart . ';';
                     }
 

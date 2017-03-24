@@ -223,6 +223,7 @@ EOF;
         return [
             ['tl_test_with_declare4'],
             ['tl_test_with_declare5'],
+            ['tl_test_with_declare6'],
         ];
     }
 }
