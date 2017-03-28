@@ -18,6 +18,7 @@ use Contao\Widget;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Yanick Witschi <https://github.com/toflar>
  *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
@@ -67,38 +68,51 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
         error_reporting($errorReporting);
     }
 
+    /**
+     * Tests the validate() method.
+     */
     public function testValidate()
     {
-        $widget = $this->getMockBuilder('Contao\Widget')
+        $widget = $this
+            ->getMockBuilder('Contao\Widget')
             ->disableOriginalConstructor()
             ->setMethods(['validator', 'getPost', 'generate'])
-            ->getMock();
+            ->getMock()
+        ;
 
-        $widget->expects($this->exactly(3))
+        $widget
+            ->expects($this->exactly(3))
             ->method('validator')
             ->withAnyParameters()
-            ->willReturnArgument(0);
+            ->willReturnArgument(0)
+        ;
 
-        $widget->expects($this->once())
-            ->method('getPost');
+        $widget
+            ->expects($this->once())
+            ->method('getPost')
+        ;
 
         /** @var Widget $widget */
-        $widget->setInputCallback(function() {
-                return 'foobar';
-            })
-            ->validate();
+        $widget
+            ->setInputCallback(function () { return 'foobar'; })
+            ->validate()
+        ;
+
         $this->assertSame('foobar', $widget->value);
 
         /** @var Widget $widget */
-        $widget->setInputCallback(function() {
-            return null;
-        })
-            ->validate();
+        $widget
+            ->setInputCallback(function () { return null; })
+            ->validate()
+        ;
+
         $this->assertNull($widget->value);
 
         /** @var Widget $widget */
-        $widget->setInputCallback(null)
-            ->validate(); // getPost should be called once here
+        $widget
+            ->setInputCallback(null)
+            ->validate() // getPost() should be called once here
+        ;
     }
 
     /**
