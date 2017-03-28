@@ -293,7 +293,6 @@ abstract class Template extends \Controller
 
 		$this->compile();
 
-		header('Vary: User-Agent', false);
 		header('Content-Type: ' . $this->strContentType . '; charset=' . \Config::get('characterSet'));
 
 		echo $this->strBuffer;
@@ -314,7 +313,6 @@ abstract class Template extends \Controller
 
 		$response = new Response($this->strBuffer);
 
-		$response->headers->set('Vary', 'User-Agent', false);
 		$response->headers->set('Content-Type', $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		return $response;
