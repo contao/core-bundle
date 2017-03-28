@@ -310,3 +310,9 @@ $GLOBALS['TL_DCA']['tl_example'] = array
 );
 
 ```
+
+### langconfig.php
+
+Using the `langconfig.php` file has been deprecated and will no longer work 
+in Contao 5.0. Create one or more language files in `app/Resources/contao/languages` 
+instead.
