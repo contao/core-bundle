@@ -122,7 +122,7 @@ abstract class Widget extends \Controller
 	protected $strLabel;
 
 	/**
-	 * Value (set after validate())
+	 * Value
 	 * @var mixed
 	 */
 	protected $varValue;
@@ -387,7 +387,7 @@ abstract class Widget extends \Controller
 
 			case 'value':
 				// Encrypt the value
-				if (isset($this->arrConfiguration['encrypt']) && true === $this->arrConfiguration['encrypt'])
+				if (isset($this->arrConfiguration['encrypt']) && $this->arrConfiguration['encrypt'])
 				{
 					return \Encryption::encrypt($this->varValue);
 				}
