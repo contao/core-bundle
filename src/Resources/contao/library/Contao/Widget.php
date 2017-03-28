@@ -771,7 +771,7 @@ abstract class Widget extends \Controller
 	 */
 	public function validate()
 	{
-        $varValue = (is_callable($this->inputCallback) ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
+		$varValue = (is_callable($this->inputCallback) ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
 		$varValue = $this->validator($varValue);
 
 		if ($this->hasErrors())
