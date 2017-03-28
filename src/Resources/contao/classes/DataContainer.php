@@ -273,8 +273,11 @@ abstract class DataContainer extends \Backend
 			$this->varValue = \StringUtil::insertTagToSrc($this->varValue);
 		}
 
-		// Use raw request if set globally
-		if (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData']) && $GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData'] === true)
+		// Use raw request if set globally but allow opting out setting useRawRequestData to false explicitly
+		$useRawGlobally = isset($GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData']) && $GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData'] === true;
+		$notRawForField = isset($arrData['eval']['useRawRequestData']) && $arrData['eval']['useRawRequestData'] === false;
+
+		if ($useRawGlobally && !$notRawForField)
 		{
 			$arrData['eval']['useRawRequestData'] = true;
 		}
