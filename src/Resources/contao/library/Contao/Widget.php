@@ -752,14 +752,13 @@ abstract class Widget extends \Controller
 
 
 	/**
-	 * By default, Widget will use its getPost() method when validate() is
-	 * called. This method allows you to fetch the value from elsewhere.
+	 * Set a callback to fetch the widget input instead of using getPost()
 	 *
-	 * @param callable $callable
+	 * @param callable $callable The callback
 	 *
-	 * @return $this
+	 * @return $this The widget object
 	 */
-	public function setInputCallback(callable $callback = null)
+	public function setInputCallback(callable $callback=null)
 	{
 		$this->inputCallback = $callback;
 
@@ -772,7 +771,7 @@ abstract class Widget extends \Controller
 	 */
 	public function validate()
 	{
-        $varValue = (null !== $this->inputCallback ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
+        $varValue = (is_callable($this->inputCallback) ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
 		$varValue = $this->validator($varValue);
 
 		if ($this->hasErrors())
