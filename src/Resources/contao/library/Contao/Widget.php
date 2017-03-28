@@ -265,22 +265,6 @@ abstract class Widget extends \Controller
 				$this->strPrefix = $varValue;
 				break;
 
-			case 'useRawRequestData':
-				if ($varValue === true)
-				{
-					/** @var Request $request */
-					$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-					$this->setInputCallback(function() use ($request) {
-						return $request->request->get($this->name);
-					});
-				}
-				else
-				{
-					$this->setInputCallback(null);
-				}
-
-				break;
-
 			case 'template':
 				$this->strTemplate = $varValue;
 				break;
@@ -811,6 +795,13 @@ abstract class Widget extends \Controller
 	 */
 	protected function getPost($strKey)
 	{
+		if ($this->useRawRequestData === true)
+		{
+			/** @var Request $request */
+			$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+			return $request->request->get($strKey);
+		}
+
 		$strMethod = $this->allowHtml ? 'postHtml' : 'post';
 
 		if ($this->preserveTags)
