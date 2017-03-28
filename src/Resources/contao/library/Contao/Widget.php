@@ -266,11 +266,19 @@ abstract class Widget extends \Controller
 				break;
 
 			case 'useRawRequestData':
-				/** @var Request $request */
-				$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-				$this->setInputCallback(function() use ($request) {
-					return $request->request->get($this->name);
-				});
+				if ($varValue === true)
+				{
+					/** @var Request $request */
+					$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+					$this->setInputCallback(function() use ($request) {
+						return $request->request->get($this->name);
+					});
+				}
+				else
+				{
+					$this->setInputCallback(null);
+				}
+
 				break;
 
 			case 'template':
