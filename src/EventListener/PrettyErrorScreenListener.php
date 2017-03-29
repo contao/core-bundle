@@ -100,6 +100,8 @@ class PrettyErrorScreenListener
         if (!$event->isMasterRequest() || 'html' !== $event->getRequest()->getRequestFormat()) {
             return;
         }
+        
+        $this->framework->initialize();
 
         $this->handleException($event);
     }
