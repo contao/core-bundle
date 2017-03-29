@@ -342,6 +342,7 @@ abstract class Widget extends \Controller
 			case 'trailingSlash':
 			case 'spaceToUnderscore':
 			case 'doNotTrim':
+			case 'useRawRequestData':
 				$this->arrConfiguration[$strKey] = $varValue ? true : false;
 				break;
 
