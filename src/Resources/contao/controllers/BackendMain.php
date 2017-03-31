@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
+use Contao\CoreBundle\Menu\PickerMenuBuilder;
 use Knp\Bundle\TimeBundle\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -184,11 +185,21 @@ class BackendMain extends \Backend
 		/** @var SessionInterface $objSession */
 		$objSession = \System::getContainer()->get('session');
 
-		// File picker reference
+		// File picker reference (backwards compatibility)
 		if (\Input::get('popup') && \Input::get('act') != 'show' && (\Input::get('do') == 'page' && $this->User->hasAccess('page', 'modules') || \Input::get('do') == 'files' && $this->User->hasAccess('files', 'modules')) && $objSession->get('filePickerRef'))
 		{
 			$this->Template->managerHref = ampersand($objSession->get('filePickerRef'));
 			$this->Template->manager = (strpos($objSession->get('filePickerRef'), 'contao/page?') !== false) ? $GLOBALS['TL_LANG']['MSC']['pagePickerHome'] : $GLOBALS['TL_LANG']['MSC']['filePickerHome'];
+		}
+
+		if (\Input::get('popup') && \Input::get('switch'))
+		{
+			/** @var PickerMenuBuilder $objPickerMenu */
+			$objPickerMenu = \System::getContainer()->get('contao.menu.picker_menu');
+			$objPickerMenu->setPagePickerLabel($GLOBALS['TL_LANG']['MSC']['pagePicker']);
+			$objPickerMenu->setFilePickerLabel($GLOBALS['TL_LANG']['MSC']['filePicker']);
+
+			$this->Template->pickerMenu = $objPickerMenu->createMenu($this->User);
 		}
 
 		// Website title

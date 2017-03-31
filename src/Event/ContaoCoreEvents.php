@@ -19,6 +19,15 @@ namespace Contao\CoreBundle\Event;
 final class ContaoCoreEvents
 {
     /**
+     * The contao.build_picker_menu event is triggered when the picker menu is generated.
+     *
+     * @var string
+     *
+     * @see BuildPickerMenuEvent
+     */
+    const BUILD_PICKER_MENU = 'contao.build_picker_menu';
+
+    /**
      * The contao.image_sizes_all event is triggered when the image sizes are generated.
      *
      * @var string

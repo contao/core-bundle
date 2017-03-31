@@ -76,9 +76,9 @@
 
     <div id="main">
       <h1 class="main_headline"><?= $this->headline ?></h1>
-      <?php if ($this->managerHref): ?>
+      <?php if ($this->pickerMenu): ?>
         <div id="manager">
-          <a href="<?= $this->managerHref ?>" class="close" title="<?= StringUtil::specialchars($this->manager) ?>"><?= $this->manager ?></a>
+          <?= $this->pickerMenu ?>
         </div>
       <?php endif; ?>
       <?php if ($this->error): ?>

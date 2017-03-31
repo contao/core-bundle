@@ -1171,17 +1171,40 @@ ul.sortable button[disabled]:hover {
 	background:rgba(255,255,255,.7);
 }
 #manager {
-	padding:7px 12px;
-	background:#f9f9f9;
+	padding:9px 6px 0;
 	border-bottom:1px solid #ddd;
 }
-#manager .open {
-	padding:3px 15px 3px 21px;
-	background:url("icons/manager.svg") left center no-repeat;
+#manager.legacy {
+	padding:6px 0;
+	background-color:#f9f9f9;
 }
-#manager .close {
-	padding:3px 15px 3px 21px;
-	background:url("icons/back.svg") left center no-repeat;
+#manager li {
+	display:inline-block;
+	padding:8px 0;
+	background-color:#f9f9f9;
+	border:1px solid #ddd;
+	border-radius:2px 2px 0 0;
+	position:relative;
+	top:1px;
+}
+#manager li.active {
+	background-color:#f3f3f3;
+	border-bottom-color:#f3f3f3;
+}
+#manager a {
+	padding:3px 12px 3px 32px;
+	background:url("icons/manager.svg") 12px center no-repeat;
+}
+#manager a.filemounts {
+	background-image:url("icons/filemounts.svg");
+	background-size:14px;
+}
+#manager a.pagemounts {
+	background-image:url("icons/pagemounts.svg");
+	background-size:16px;
+}
+#manager a.close {
+	background-image:url("icons/back.svg");
 }
 .ace_editor {
 	padding:3px;

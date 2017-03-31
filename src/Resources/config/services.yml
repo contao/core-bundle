@@ -80,6 +80,25 @@ services:
         calls:
             - ["setContainer", ["@service_container"]]
 
+    contao.menu.matcher:
+        class: Knp\Menu\Matcher\Matcher
+        public: false
+
+    contao.menu.picker_menu:
+        class: Contao\CoreBundle\Menu\PickerMenuBuilder
+        arguments:
+            - "@request_stack"
+            - "@router"
+            - "@event_dispatcher"
+            - "@knp_menu.factory"
+            - "@contao.menu.renderer"
+
+    contao.menu.renderer:
+        class: Knp\Menu\Renderer\ListRenderer
+        public: false
+        arguments:
+            - "@contao.menu.matcher"
+
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
         public: false
