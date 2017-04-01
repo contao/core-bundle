@@ -12,6 +12,7 @@ namespace Contao;
 
 use MatthiasMullie\Minify;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\VarDumper\VarDumper;
 
 
 /**
@@ -236,22 +237,21 @@ abstract class Template extends \Controller
 
 
 	/**
-	 * Print all template variables to the screen using print_r
+	 * Here for BC only.
 	 */
 	public function showTemplateVars()
 	{
-		echo "<pre>\n";
-		print_r($this->arrData);
-		echo "</pre>\n";
+		$this->dumpTemplateVars();
 	}
 
 
 	/**
-	 * Print all template variables to the screen using var_dump
+	 * Print all template variables to the screen using the Symfony VarDumper
+	 * component
 	 */
 	public function dumpTemplateVars()
 	{
-		dump($this->arrData);
+		VarDumper::dump($this->arrData);
 	}
 
 
