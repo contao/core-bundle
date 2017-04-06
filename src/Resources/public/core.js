@@ -941,7 +941,7 @@ var Backend =
 				alert('Could not find the SimpleModal frame');
 				return;
 			}
-			ul = frm.document.getElementById(opt.id);
+			ul = frm.document.getElementById('tl_select');
 			inp = ul.getElementsByTagName('input');
 			for (i=0; i<inp.length; i++) {
 				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
@@ -986,14 +986,14 @@ var Backend =
 	 * @param {object} win        The window object
 	 */
 	openModalBrowser: function(field_name, url, type, win) {
-		var file = '/file',
+		var act = 'files',
 			swtch = (type == 'file' ? '&amp;switch=1' : ''),
 			isLink = (url.indexOf('{{link_url::') != -1);
 		if (type == 'file' && (url == '' || isLink)) {
-			file = '/page';
+			act = 'page';
 		}
 		if (isLink) {
-			url = url.replace(/^\{\{link_url::([0-9]+)}}$/, '$1');
+			url = url.replace(/^{{link_url::([0-9]+)}}$/, '$1');
 		}
 		var M = new SimpleModal({
 			'width': 768,
@@ -1015,7 +1015,7 @@ var Backend =
 			}
 			inp = frm.document.getElementById('tl_select').getElementsByTagName('input');
 			for (i=0; i<inp.length; i++) {
-				if (inp[i].checked && !inp[i].id.match(/^reset_/)) {
+				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
 					val = inp[i].get('value');
 					break;
 				}
@@ -1028,7 +1028,7 @@ var Backend =
 		});
 		M.show({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'contents': '<iframe src="' + document.location.pathname + file + '?table=tl_content&amp;field=singleSRC&amp;value=' + url + swtch + '" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
+			'contents': '<iframe src="' + document.location.pathname + '?do=' + act + '&amp;target=tl_content.singleSRC&amp;value=' + url + swtch + '&amp;popup=1" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
 			'model': 'modal'
 		});
 	},
@@ -2341,7 +2341,7 @@ var Backend =
 				startIndex = checkboxes.indexOf(start);
 				from = Math.min(thisIndex, startIndex);
 				to = Math.max(thisIndex, startIndex);
-				status = checkboxes[startIndex].checked ? true : false;
+				status = !!checkboxes[startIndex].checked;
 
 				for (from; from<=to; from++) {
 					checkboxes[from].checked = status;

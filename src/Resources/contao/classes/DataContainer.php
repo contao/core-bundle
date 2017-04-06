@@ -108,6 +108,24 @@ abstract class DataContainer extends \Backend
 	 */
 	protected $blnUploadable = false;
 
+	/**
+	 * The picker table
+	 * @var string
+	 */
+	protected $strPickerTable;
+
+	/**
+	 * The picker field
+	 * @var string
+	 */
+	protected $strPickerField;
+
+	/**
+	 * The picker value
+	 * @var array
+	 */
+	protected $arrPickerValue = array();
+
 
 	/**
 	 * Set an object property

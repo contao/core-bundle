@@ -27,6 +27,11 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 			array('tl_files', 'addBreadcrumb'),
 			array('tl_files', 'checkImportantPart')
 		),
+		'picker' => array
+		(
+			'insertTag' => 'file',
+			'callback' => 'reloadFiletree'
+		),
 		'sql' => array
 		(
 			'keys' => array

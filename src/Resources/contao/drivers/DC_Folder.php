@@ -178,6 +178,26 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes']));
 		}
 
+		// Configure the picker
+		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		{
+			if (!isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
+			{
+				throw new InternalServerErrorException('Table "' . $this->strTable . '" is not pickable.');
+			}
+
+			list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
+
+			\Controller::loadDataContainer($this->strPickerTable);
+
+			if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
+			{
+				throw new InternalServerErrorException('Field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
+			}
+
+			$this->setPickerValue();
+		}
+
 		// Call onload_callback (e.g. to check permissions)
 		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['onload_callback']))
 		{
@@ -420,7 +440,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$clsNew = 'header_new_folder';
 		$lblNew = $GLOBALS['TL_LANG'][$this->strTable]['new'][0];
 		$ttlNew = $GLOBALS['TL_LANG'][$this->strTable]['new'][1];
-		$hrfNew = '&amp;act=paste&amp;mode=create';
+		$hrfNew = 'act=paste&amp;mode=create';
 
 		if (isset($GLOBALS['TL_DCA'][$this->strTable]['list']['new']))
 		{
@@ -428,6 +448,26 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$lblNew = $GLOBALS['TL_DCA'][$this->strTable]['list']['new']['label'][0];
 			$ttlNew = $GLOBALS['TL_DCA'][$this->strTable]['list']['new']['label'][1];
 			$hrfNew = $GLOBALS['TL_DCA'][$this->strTable]['list']['new']['href'];
+		}
+
+		$strClass = '';
+		$strPicker = '';
+
+		// Add the picker attributes
+		if ($this->strPickerField)
+		{
+			$strClass = ' picker unselectable';
+			$strPicker .= ' id="tl_select"';
+
+			if (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['insertTag']))
+			{
+				$strPicker .= ' data-inserttag="' . $GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['insertTag'] . '"';
+			}
+
+			if (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['callback']))
+			{
+				$strPicker .= ' data-callback="' . $GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['callback'] . '"';
+			}
 		}
 
 		$imagePasteInto = \Image::getHtml('pasteinto.svg', $GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][0]);
@@ -460,7 +500,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 <label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">
 </div>' : '').'
 
-<ul class="tl_listing">
+<ul class="tl_listing'.$strClass.'"'.$strPicker.'>
   <li class="tl_folder_top cf"><div class="tl_left">'.\Image::getHtml('filemounts.svg').' '.$GLOBALS['TL_LANG']['MSC']['filetree'].'</div> <div class="tl_right">'.(($blnClipboard && empty($this->arrFilemounts) && !is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] !== false) ? '<a href="'.$this->addToUrl('&amp;act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.\Config::get('uploadPath').(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1]).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a>' : '&nbsp;').'</div></li>'.$return.'
 </ul>
 
@@ -2692,6 +2732,22 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					$return .= ' <a href="'.$this->addToUrl('&amp;act=move&amp;mode=2&amp;pid='.$currentEncoded).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $currentEncoded)).'">'.\Image::getHtml('new.svg', $GLOBALS['TL_LANG'][$this->strTable]['move'][0]).'</a>';
 				}
+
+				if ($this->strPickerField)
+				{
+					$strDisabled = $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['filesOnly'] ? ' disabled' : '';
+
+					switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+					{
+						case 'checkbox':
+							$return .= ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($currentEncoded).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($currentEncoded, $this->arrPickerValue).$strDisabled.'>';
+							break;
+
+						case 'radio':
+							$return .= ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.md5($currentEncoded).'" class="tl_tree_radio" value="'.\StringUtil::specialchars($currentEncoded).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($currentEncoded, $this->arrPickerValue).$strDisabled.'>';
+							break;
+					}
+				}
 			}
 
 			$return .= '</div><div style="clear:both"></div></li>';
@@ -2790,6 +2846,22 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			else
 			{
 				$_buttons = (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'popupWidth'=>$popupWidth, 'popupHeight'=>$popupHeight, 'fileNameEncoded'=>$strFileNameEncoded), $this->strTable);
+
+				if ($this->strPickerField)
+				{
+					$strDisabled = ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['files'] || $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['filesOnly']) ? '' : ' disabled';
+
+					switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+					{
+						case 'checkbox':
+							$_buttons .= ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($currentEncoded).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($currentEncoded, $this->arrPickerValue).$strDisabled.'>';
+							break;
+
+						case 'radio':
+							$_buttons .= ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.md5($currentEncoded).'" class="tl_tree_radio" value="'.\StringUtil::specialchars($currentEncoded).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($currentEncoded, $this->arrPickerValue).$strDisabled.'>';
+							break;
+					}
+				}
 			}
 
 			$return .= $_buttons . '</div><div style="clear:both"></div></li>';
@@ -3070,5 +3142,47 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		while ($path != '.');
 
 		return true;
+	}
+
+
+	/**
+	 * Set the picker value
+	 */
+	protected function setPickerValue()
+	{
+		$varValue = \Input::get('value');
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$varValue = array_filter(explode(',', $varValue));
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$this->arrPickerValue = $varValue;
+
+		// TinyMCE will pass the path instead of the ID
+		if (strpos($varValue[0], \Config::get('uploadPath') . '/') === 0)
+		{
+			return;
+		}
+
+		// Ignore the numeric IDs when in switch mode (TinyMCE)
+		if (\Input::get('switch'))
+		{
+			return;
+		}
+
+		$objFiles = \FilesModel::findMultipleByIds($varValue);
+
+		if ($objFiles !== null)
+		{
+			$this->arrPickerValue = array_values($objFiles->fetchEach('path'));
+		}
 	}
 }
