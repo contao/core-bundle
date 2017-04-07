@@ -39,6 +39,11 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		(
 			array('tl_page', 'purgeSearchIndex')
 		),
+		'picker' => array
+		(
+			'insertTag' => 'link_url',
+			'callback' => 'reloadPagetree'
+		),
 		'sql' => array
 		(
 			'keys' => array
