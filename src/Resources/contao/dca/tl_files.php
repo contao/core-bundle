@@ -29,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		),
 		'picker' => array
 		(
-			'callback' => 'reloadFiletree'
+			'data-callback' => 'reloadFiletree'
 		),
 		'sql' => array
 		(

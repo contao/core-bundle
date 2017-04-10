@@ -3573,18 +3573,17 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Add the picker attributes
 		if ($this->strPickerField)
 		{
-			$strClass = ' picker unselectable';
 			$strPicker .= ' id="tl_select"';
 
-			if (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['insertTag']))
+			if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
 			{
-				$strPicker .= ' data-inserttag="' . $GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['insertTag'] . '"';
+				foreach ($GLOBALS['TL_DCA'][$this->strTable]['config']['picker'] as $strAttribute=>$strValue)
+				{
+					$strPicker .= sprintf(' %s="%s"', $strAttribute, $strValue);
+				}
 			}
 
-			if (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['callback']))
-			{
-				$strPicker .= ' data-callback="' . $GLOBALS['TL_DCA'][$this->strTable]['config']['picker']['callback'] . '"';
-			}
+			$strClass = ' picker unselectable';
 		}
 
 		$return .= ((\Input::get('act') == 'select') ? '

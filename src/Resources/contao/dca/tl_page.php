@@ -41,8 +41,8 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		),
 		'picker' => array
 		(
-			'insertTag' => 'link_url',
-			'callback' => 'reloadPagetree'
+			'data-inserttag' => 'link_url',
+			'data-callback' => 'reloadPagetree'
 		),
 		'sql' => array
 		(
