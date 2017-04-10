@@ -1187,7 +1187,7 @@ ul.sortable button[disabled]:hover {
 	position:relative;
 	top:1px;
 }
-#manager li.active {
+#manager li.current {
 	background-color:#f3f3f3;
 	border-bottom-color:#f3f3f3;
 }

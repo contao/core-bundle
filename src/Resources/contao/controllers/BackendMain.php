@@ -194,12 +194,7 @@ class BackendMain extends \Backend
 
 		if (\Input::get('popup') && \Input::get('switch'))
 		{
-			/** @var PickerMenuBuilder $objPickerMenu */
-			$objPickerMenu = \System::getContainer()->get('contao.menu.picker_menu');
-			$objPickerMenu->setPagePickerLabel($GLOBALS['TL_LANG']['MSC']['pagePicker']);
-			$objPickerMenu->setFilePickerLabel($GLOBALS['TL_LANG']['MSC']['filePicker']);
-
-			$this->Template->pickerMenu = $objPickerMenu->createMenu($this->User);
+			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu')->createMenu();
 		}
 
 		// Website title
