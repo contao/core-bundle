@@ -22,6 +22,11 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'dataContainer'               => 'Table',
 		'ctable'                      => array('tl_article'),
 		'enableVersioning'            => true,
+		'picker' => array
+		(
+			'data-inserttag' => 'link_url',
+			'data-callback' => 'reloadPagetree'
+		),
 		'onload_callback' => array
 		(
 			array('tl_page', 'checkPermission'),
@@ -38,11 +43,6 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'ondelete_callback' => array
 		(
 			array('tl_page', 'purgeSearchIndex')
-		),
-		'picker' => array
-		(
-			'data-inserttag' => 'link_url',
-			'data-callback' => 'reloadPagetree'
 		),
 		'sql' => array
 		(

@@ -199,13 +199,8 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$this->arrModule = $arrModule;
 
 		// Configure the picker
-		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		if (isset($_GET['target']) && isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
 		{
-			if (!isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
-			{
-				throw new InternalServerErrorException('Table "' . $this->strTable . '" is not pickable.');
-			}
-
 			list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
 
 			\Controller::loadDataContainer($this->strPickerTable);
@@ -4137,6 +4132,25 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			return $return;
 		}
 
+		$strClass = '';
+		$strPicker = '';
+
+		// Add the picker attributes
+		if ($this->strPickerField)
+		{
+			$strPicker .= ' id="tl_select"';
+
+			if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
+			{
+				foreach ($GLOBALS['TL_DCA'][$this->strTable]['config']['picker'] as $strAttribute=>$strValue)
+				{
+					$strPicker .= sprintf(' %s="%s"', $strAttribute, $strValue);
+				}
+			}
+
+			$strClass = ' picker unselectable';
+		}
+
 		$return .= ((\Input::get('act') == 'select') ? '
 
 <form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
@@ -4148,7 +4162,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
   <p>'.$GLOBALS['TL_LANG']['MSC']['selectNewPosition'].'</p>
 </div>' : '').'
 
-<div class="tl_listing_container parent_view">
+<div class="tl_listing_container parent_view'.$strClass.'"'.$strPicker.'>
 
 <div class="tl_header click2edit toggle_select hover-div">';
 
@@ -4516,6 +4530,21 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notSortable'])
 							{
 								$return .= ' <button type="button" class="drag-handle" title="' . \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['cut'][1], $row[$i]['id'])) . '">' . \Image::getHtml('drag.svg') . '</button>';
+							}
+						}
+
+						// Picker
+						if ($this->strPickerField)
+						{
+							switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+							{
+								case 'checkbox':
+									$return .= ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$row[$i]['id'].'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($row[$i]['id']).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($row[$i]['id'], $this->arrPickerValue).'>';
+									break;
+
+								case 'radio':
+									$return .= ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$row[$i]['id'].'" class="tl_tree_radio" value="'.\StringUtil::specialchars($row[$i]['id']).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($row[$i]['id'], $this->arrPickerValue).'>';
+									break;
 							}
 						}
 					}

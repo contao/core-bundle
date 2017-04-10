@@ -179,13 +179,8 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		}
 
 		// Configure the picker
-		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		if (isset($_GET['target']) && isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
 		{
-			if (!isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
-			{
-				throw new InternalServerErrorException('Table "' . $this->strTable . '" is not pickable.');
-			}
-
 			list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
 
 			\Controller::loadDataContainer($this->strPickerTable);

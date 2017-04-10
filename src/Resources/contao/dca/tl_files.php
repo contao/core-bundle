@@ -21,15 +21,15 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		'dataContainer'               => 'Folder',
 		'enableVersioning'            => true,
 		'databaseAssisted'            => true,
+		'picker' => array
+		(
+			'data-callback' => 'reloadFiletree'
+		),
 		'onload_callback' => array
 		(
 			array('tl_files', 'checkPermission'),
 			array('tl_files', 'addBreadcrumb'),
 			array('tl_files', 'checkImportantPart')
-		),
-		'picker' => array
-		(
-			'data-callback' => 'reloadFiletree'
 		),
 		'sql' => array
 		(
