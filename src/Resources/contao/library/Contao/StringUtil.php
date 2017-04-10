@@ -1115,4 +1115,27 @@ class StringUtil
 
 		return $arrFragments;
 	}
+
+
+	/**
+	 * Locale aware string transliteration
+	 *
+	 * @param $strString
+	 * @param $strLocale
+	 *
+	 * @return string
+	 */
+	public static function toAscii($strString, $strLocale)
+	{
+		$locale = setlocale(LC_ALL, $strLocale);
+		$strString = Utf8::toAscii($strString);
+
+		// Reset the locale
+		if ($locale)
+		{
+			setlocale(LC_ALL, $locale);
+		}
+
+		return $strString;
+	}
 }
