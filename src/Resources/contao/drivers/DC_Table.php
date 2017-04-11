@@ -4801,6 +4801,26 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		else
 		{
 			$result = $objRow->fetchAllAssoc();
+
+			$strClass = '';
+			$strPicker = '';
+
+			// Add the picker attributes
+			if ($this->strPickerField)
+			{
+				$strPicker .= ' id="tl_select"';
+
+				if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
+				{
+					foreach ($GLOBALS['TL_DCA'][$this->strTable]['config']['picker'] as $strAttribute=>$strValue)
+					{
+						$strPicker .= sprintf(' %s="%s"', $strAttribute, $strValue);
+					}
+				}
+
+				$strClass = ' picker unselectable';
+			}
+
 			$return .= ((\Input::get('act') == 'select') ? '
 
 <form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
@@ -4814,7 +4834,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">
 </div>' : '').'
 
-<table class="tl_listing' . ($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['showColumns'] ? ' showColumns' : '') . '">';
+<table class="tl_listing' . ($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['showColumns'] ? ' showColumns' : '') . $strClass . '"' . $strPicker . '>';
 
 			// Automatically add the "order by" field as last column if we do not have group headers
 			if ($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['showColumns'])
@@ -5026,10 +5046,27 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					$return .= '<td class="tl_file_list">' . $label . '</td>';
 				}
 
+				$picker = '';
+
+				// Picker
+				if ($this->strPickerField)
+				{
+					switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+					{
+						case 'checkbox':
+							$picker = ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$row['id'].'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($row['id']).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($row['id'], $this->arrPickerValue).'>';
+							break;
+
+						case 'radio':
+							$picker = ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$row['id'].'" class="tl_tree_radio" value="'.\StringUtil::specialchars($row['id']).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($row['id'], $this->arrPickerValue).'>';
+							break;
+					}
+				}
+
 				// Buttons ($row, $table, $root, $blnCircularReference, $childs, $previous, $next)
 				$return .= ((\Input::get('act') == 'select') ? '
     <td class="tl_file_list tl_right_nowrap"><input type="checkbox" name="IDS[]" id="ids_'.$row['id'].'" class="tl_tree_checkbox" value="'.$row['id'].'"></td>' : '
-    <td class="tl_file_list tl_right_nowrap">'.$this->generateButtons($row, $this->strTable, $this->root).'</td>') . '
+    <td class="tl_file_list tl_right_nowrap">'.$this->generateButtons($row, $this->strTable, $this->root).$picker.'</td>') . '
   </tr>';
 			}
 
