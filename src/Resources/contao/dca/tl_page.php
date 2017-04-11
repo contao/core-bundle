@@ -22,11 +22,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'dataContainer'               => 'Table',
 		'ctable'                      => array('tl_article'),
 		'enableVersioning'            => true,
-		'picker' => array
-		(
-			'data-inserttag' => 'link_url',
-			'data-callback' => 'reloadPagetree'
-		),
+		'pickable'                    => true,
 		'onload_callback' => array
 		(
 			array('tl_page', 'checkPermission'),

@@ -990,41 +990,18 @@ var Backend =
 	 * @param {object} win        The window object
 	 */
 	openModalBrowser: function(field_name, url, type, win) {
-		var M = new SimpleModal({
+		Backend.openModalSelector({
 			'width': 768,
-			'btn_ok': Contao.lang.close,
-			'draggable': false,
-			'overlayOpacity': .5,
-			'onShow': function() { document.body.setStyle('overflow', 'hidden'); },
-			'onHide': function() { document.body.setStyle('overflow', 'auto'); }
-		});
-		M.addButton(Contao.lang.close, 'btn', function() {
-			this.hide();
-		});
-		M.addButton(Contao.lang.apply, 'btn primary', function() {
-			var frm = window.frames['simple-modal-iframe'],
-				val, inp, i;
-			if (frm === undefined) {
-				alert('Could not find the SimpleModal frame');
-				return;
-			}
-			inp = frm.document.getElementById('tl_select').getElementsByTagName('input');
-			for (i=0; i<inp.length; i++) {
-				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
-					val = inp[i].get('value');
-					break;
-				}
-			}
-			if (!isNaN(val)) {
-				val = '{{link_url::' + val + '}}';
-			}
-			win.document.getElementById(field_name).value = val;
-			this.hide();
-		});
-		M.show({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'contents': '<iframe src="' + document.location.pathname + '/picker?target=tl_content.singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
-			'model': 'modal'
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=tl_content.singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1',
+			'callback': function(table, value) {
+				new Request.Contao({
+					evalScripts: false,
+					onSuccess: function(txt, json) {
+						win.document.getElementById(field_name).value = json.content;
+					}
+				}).post({'action':'processPickerSelection', 'table':table, 'value':value.join(','), 'REQUEST_TOKEN':Contao.request_token});
+			}
 		});
 	},
 

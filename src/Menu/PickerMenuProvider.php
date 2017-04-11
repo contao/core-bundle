@@ -99,10 +99,10 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
     {
         switch ($table) {
             case 'tl_page':
-                return json_encode(['content' => sprintf('{{link_url::%s}}', $value)]);
+                return sprintf('{{link_url::%s}}', $value);
 
             case 'tl_files':
-                return json_encode(['content' => $value]);
+                return $value;
 
             default:
                 return null;

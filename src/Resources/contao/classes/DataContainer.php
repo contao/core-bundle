@@ -879,7 +879,7 @@ abstract class DataContainer extends \Backend
 	 */
 	protected function initPicker()
 	{
-		if (!isset($_GET['target']) || !isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']) || \Input::get('act') == 'select' || \Input::get('act') == 'paste')
+		if (!isset($_GET['target']) || empty($GLOBALS['TL_DCA'][$this->strTable]['config']['pickable']) || \Input::get('act') == 'select' || \Input::get('act') == 'paste')
 		{
 			return;
 		}
@@ -927,22 +927,12 @@ abstract class DataContainer extends \Backend
 	 */
 	protected function getPickerAttributes()
 	{
-		if (!$this->strPickerField)
+		if ($this->strPickerField)
 		{
-			return '';
+			return ' id="tl_select" data-table="' . $this->strTable . '"';
 		}
 
-		$strAttributes = ' id="tl_select" data-table="' . $this->strTable . '"';
-
-		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
-		{
-			foreach ($GLOBALS['TL_DCA'][$this->strTable]['config']['picker'] as $strAttribute=>$strValue)
-			{
-				$strAttributes .= sprintf(' %s="%s"', $strAttribute, $strValue);
-			}
-		}
-
-		return $strAttributes;
+		return '';
 	}
 
 
