@@ -684,10 +684,7 @@ class tl_style extends Backend
 	 */
 	public function filePicker(DataContainer $dc)
 	{
-		$objRouter = \System::getContainer()->get('router');
-		$strHref = $objRouter->generate('contao_backend', array('do'=>'files', 'target'=>$dc->table.'.'.$dc->field, 'value'=>$dc->value, 'popup'=>1));
-
-		return ' <a href="'.$strHref.'" title="'.StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['label'][0])).'\',\'url\':this.href,\'id\':\''.$dc->field.'\',\'tag\':\'ctrl_'.$dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '').'\',\'self\':this});return false">' . Image::getHtml('pickfile.svg', $GLOBALS['TL_LANG']['MSC']['filepicker']) . '</a>';
+		return ' <a href="'.ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'files', 'target'=>$dc->table.'.'.$dc->field, 'value'=>$dc->value, 'popup'=>1))).'" title="'.StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['filepicker'])).'" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\''.StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['label'][0])).'\',\'url\':this.href,\'id\':\''.$dc->field.'\',\'tag\':\'ctrl_'.$dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '').'\',\'self\':this});return false">' . Image::getHtml('pickfile.svg', $GLOBALS['TL_LANG']['MSC']['filepicker']) . '</a>';
 	}
 
 

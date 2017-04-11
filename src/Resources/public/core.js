@@ -986,15 +986,6 @@ var Backend =
 	 * @param {object} win        The window object
 	 */
 	openModalBrowser: function(field_name, url, type, win) {
-		var act = 'files',
-			swtch = (type == 'file' ? '&amp;switch=1' : ''),
-			isLink = (url.indexOf('{{link_url::') != -1);
-		if (type == 'file' && (url == '' || isLink)) {
-			act = 'page';
-		}
-		if (isLink) {
-			url = url.replace(/^{{link_url::([0-9]+)}}$/, '$1');
-		}
 		var M = new SimpleModal({
 			'width': 768,
 			'btn_ok': Contao.lang.close,
@@ -1028,7 +1019,7 @@ var Backend =
 		});
 		M.show({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'contents': '<iframe src="' + document.location.pathname + '?do=' + act + '&amp;target=tl_content.singleSRC&amp;value=' + url + swtch + '&amp;popup=1" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
+			'contents': '<iframe src="' + document.location.pathname + '/picker?target=tl_content.singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
 			'model': 'modal'
 		});
 	},

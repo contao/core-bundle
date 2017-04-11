@@ -1579,11 +1579,7 @@ class tl_content extends Backend
 	 */
 	public function pagePicker(DataContainer $dc)
 	{
-		$objRouter = \System::getContainer()->get('router');
-		// FIXME: page and file must not be hardcoded
-		$strHref = $objRouter->generate('contao_backend', array('do'=>(($dc->value == '' || strpos($dc->value, '{{link_url::') !== false) ? 'page' : 'files'), 'target'=>$dc->table.'.'.$dc->field, 'value'=>str_replace(array('{{link_url::', '}}'), '', $dc->value), 'popup'=>1, 'switch'=>1));
-
-		return ' <a href="' . $strHref . '" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['label'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.svg', $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>';
+		return ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', array('target'=>$dc->table.'.'.$dc->field, 'value'=>$dc->value, 'popup'=>1, 'switch'=>1))) . '" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':768,\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['label'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.svg', $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>';
 	}
 
 

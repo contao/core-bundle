@@ -84,13 +84,25 @@ services:
         class: Knp\Menu\Matcher\Matcher
         public: false
 
-    contao.menu.picker_menu:
+    contao.menu.picker_menu_builder:
         class: Contao\CoreBundle\Menu\PickerMenuBuilder
         arguments:
-            - "@request_stack"
-            - "@event_dispatcher"
             - "@knp_menu.factory"
             - "@contao.menu.renderer"
+            - "@router"
+        tags:
+            - { name: knp_menu.menu_builder, method: createMenu, alias: picker }
+
+    contao.menu.picker_menu_provider:
+        class: Contao\CoreBundle\Menu\PickerMenuProvider
+        public: false
+        arguments:
+            - "@router"
+            - "@security.token_storage"
+            - "@request_stack"
+            - "%contao.upload_path%"
+        tags:
+            - { name: contao.picker_menu_provider }
 
     contao.menu.renderer:
         class: Knp\Menu\Renderer\ListRenderer

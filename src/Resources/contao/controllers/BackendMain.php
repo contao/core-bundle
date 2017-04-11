@@ -12,7 +12,6 @@ namespace Contao;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
-use Contao\CoreBundle\Menu\PickerMenuBuilder;
 use Knp\Bundle\TimeBundle\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -192,9 +191,10 @@ class BackendMain extends \Backend
 			$this->Template->manager = (strpos($objSession->get('filePickerRef'), 'contao/page?') !== false) ? $GLOBALS['TL_LANG']['MSC']['pagePickerHome'] : $GLOBALS['TL_LANG']['MSC']['filePickerHome'];
 		}
 
+		// Picker menu
 		if (\Input::get('popup') && \Input::get('switch'))
 		{
-			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu')->createMenu();
+			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu_builder')->createMenu();
 		}
 
 		// Website title

@@ -8,20 +8,19 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\EventListener;
+namespace Contao\CoreBundle\Menu;
 
 use Contao\BackendUser;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Abstract class for menu listeners.
+ * Abstract class for menu providers.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class AbstractBuildMenuListener
+abstract class AbstractMenuProvider
 {
     /**
      * @var RouterInterface
@@ -93,28 +92,15 @@ abstract class AbstractBuildMenuListener
     }
 
     /**
-     * Generates a Contao compatible route.
+     * Generates a route.
      *
-     * @param string  $name
-     * @param string  $do
-     *
-     * @param Request $request
+     * @param string $name
+     * @param array  $params
      *
      * @return bool|string
      */
-    protected function route($name, $do, Request $request)
+    protected function route($name, array $params = [])
     {
-        $params = [
-            'do' => $do,
-            'target' => $request->query->get('target'),
-            'value' => $request->query->get('value'),
-            'popup' => $request->query->get('popup'),
-            'switch' => $request->query->get('switch'),
-        ];
-
-        $url = $this->router->generate($name, $params);
-        $url = substr($url, strlen($request->getBasePath()) + 1);
-
-        return $url;
+        return $this->router->generate($name, $params);
     }
 }

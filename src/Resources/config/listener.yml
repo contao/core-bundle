@@ -40,15 +40,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
-    contao.listener.build_picker_menu:
-        class: Contao\CoreBundle\EventListener\BuildPickerMenuListener
-        arguments:
-            - "@router"
-            - "@security.token_storage"
-            - "@request_stack"
-        tags:
-            - { name: kernel.event_listener, event: contao.build_picker_menu, method: onCreateMenu }
-
     contao.listener.bypass_maintenance:
         class: Contao\CoreBundle\EventListener\BypassMaintenanceListener
         arguments:

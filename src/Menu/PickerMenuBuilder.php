@@ -10,12 +10,9 @@
 
 namespace Contao\CoreBundle\Menu;
 
-use Contao\CoreBundle\Event\BuildPickerMenuEvent;
-use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\Renderer\RendererInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Creates the picker menu.
@@ -24,16 +21,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class PickerMenuBuilder
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
     /**
      * @var FactoryInterface
      */
@@ -45,23 +32,41 @@ class PickerMenuBuilder
     private $renderer;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var PickerMenuProviderInterface[]
+     */
+    private $providers = [];
+
+    /**
      * Constructor.
      *
-     * @param RequestStack             $requestStack
-     * @param EventDispatcherInterface $dispatcher
-     * @param FactoryInterface         $factory
-     * @param RendererInterface        $renderer
+     * @param FactoryInterface  $factory
+     * @param RendererInterface $renderer
+     * @param RouterInterface   $router
      */
-    public function __construct(RequestStack $requestStack, EventDispatcherInterface $dispatcher, FactoryInterface $factory, RendererInterface $renderer)
+    public function __construct(FactoryInterface $factory, RendererInterface $renderer, RouterInterface $router)
     {
-        $this->requestStack = $requestStack;
-        $this->dispatcher = $dispatcher;
         $this->factory = $factory;
         $this->renderer = $renderer;
+        $this->router = $router;
     }
 
     /**
-     * Creates the file menu.
+     * Adds a picker menu provider.
+     *
+     * @param PickerMenuProviderInterface $provider
+     */
+    public function addProvider(PickerMenuProviderInterface $provider)
+    {
+        $this->providers[] = $provider;
+    }
+
+    /**
+     * Creates the menu.
      *
      * @return string
      *
@@ -69,19 +74,39 @@ class PickerMenuBuilder
      */
     public function createMenu()
     {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (null === $request) {
-            throw new \RuntimeException('No request object given');
-        }
-
         $menu = $this->factory->createItem('picker');
 
-        $this->dispatcher->dispatch(
-            ContaoCoreEvents::BUILD_PICKER_MENU,
-            new BuildPickerMenuEvent($this->factory, $menu)
-        );
+        foreach ($this->providers as $provider) {
+            $provider->createMenu($menu, $this->factory);
+        }
 
         return $this->renderer->render($menu);
+    }
+
+    /**
+     * Returns the picker URL.
+     *
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getPickerUrl(array $params = [])
+    {
+        if (!isset($params['do'])) {
+            $params = array_merge(['do' => null], $params);
+        }
+
+        foreach ($this->providers as $provider) {
+            if (null !== ($url = $provider->getPickerUrl($params))) {
+                return $url;
+            }
+        }
+
+        // Fall back to the page picker
+        if (null === $params['do']) {
+            $params['do'] = 'page';
+        }
+
+        return $this->router->generate('contao_backend', $params);
     }
 }

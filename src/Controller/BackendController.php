@@ -23,6 +23,8 @@ use Contao\BackendPreview;
 use Contao\BackendSwitch;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -209,5 +211,21 @@ class BackendController extends Controller
         $controller = new BackendAlerts();
 
         return $controller->run();
+    }
+
+    /**
+     * Handles the picker redirect.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @Route("/picker", name="contao_backend_picker")
+     */
+    public function pickerAction(Request $request)
+    {
+        $pickerBuilder = $this->container->get('contao.menu.picker_menu_builder');
+
+        return new RedirectResponse($pickerBuilder->getPickerUrl($request->query->all()));
     }
 }
