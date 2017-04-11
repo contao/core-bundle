@@ -109,4 +109,23 @@ class PickerMenuBuilder
 
         return $this->router->generate('contao_backend', $params);
     }
+
+    /**
+     * Processes the selected value.
+     *
+     * @param $table
+     * @param $value
+     *
+     * @return string
+     */
+    public function processSelection($table, $value)
+    {
+        foreach ($this->providers as $provider) {
+            if (null !== ($processed = $provider->processSelection($table, $value))) {
+                return $processed;
+            }
+        }
+
+        return json_encode(['content' => $value]);
+    }
 }

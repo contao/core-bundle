@@ -33,7 +33,17 @@ interface PickerMenuProviderInterface
      *
      * @param array $params
      *
-     * @return string
+     * @return string|null
      */
     public function getPickerUrl(array $params = []);
+
+    /**
+     * Processes the selected value.
+     *
+     * @param $table
+     * @param $value
+     *
+     * @return string|null
+     */
+    public function processSelection($table, $value);
 }

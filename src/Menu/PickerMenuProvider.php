@@ -55,7 +55,7 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
         }
 
         $user = $this->getUser();
-        $params = $request->query->all();
+        $params = $this->getParametersFromRequest($request);
 
         if ($user->hasAccess('page', 'modules')) {
             $this->addPagePickerItem($menu, $factory, $params);
@@ -90,6 +90,23 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
         }
 
         return $this->route('contao_backend', $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processSelection($table, $value)
+    {
+        switch ($table) {
+            case 'tl_page':
+                return json_encode(['content' => sprintf('{{link_url::%s}}', $value)]);
+
+            case 'tl_files':
+                return json_encode(['content' => $value]);
+
+            default:
+                return null;
+        }
     }
 
     /**

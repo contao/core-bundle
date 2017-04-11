@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Menu;
 
 use Contao\BackendUser;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -36,6 +37,11 @@ abstract class AbstractMenuProvider
      * @var RequestStack
      */
     protected $requestStack;
+
+    /**
+     * @var array
+     */
+    private $keys = ['do', 'target', 'value', 'popup', 'switch'];
 
     /**
      * Constructor.
@@ -102,5 +108,25 @@ abstract class AbstractMenuProvider
     protected function route($name, array $params = [])
     {
         return $this->router->generate($name, $params);
+    }
+
+    /**
+     * Retrieves the parameters from the request.
+     *
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getParametersFromRequest(Request $request)
+    {
+        $params = [];
+
+        foreach ($this->keys as $key) {
+            if ($request->query->has($key)) {
+                $params[$key] = $request->query->get($key);
+            }
+        }
+
+        return $params;
     }
 }

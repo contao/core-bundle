@@ -432,6 +432,10 @@ class Ajax extends \Backend
 				throw new NoContentResponseException();
 
 			// DropZone file upload
+			case 'processPickerSelection':
+				throw new ResponseException(new Response(\System::getContainer()->get('contao.menu.picker_menu_builder')->processSelection(\Input::post('table'), \Input::post('value'))));
+
+			// DropZone file upload
 			case 'fileupload':
 				$dc->move(true);
 				throw new InternalServerErrorHttpException();

@@ -451,7 +451,7 @@ abstract class DataContainer extends \Backend
 			// Support single fields as well (see #5240)
 			$strKey = $arrData['eval']['multiple'] ? $this->strField . '_0' : $this->strField;
 
-			$wizard .= ' ' . \Image::getHtml('pickcolor.svg', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '"') . '
+			$wizard .= ' ' . \Image::getHtml('pickcolor.svg', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '" style="cursor:pointer"') . '
   <script>
     window.addEvent("domready", function() {
       new MooRainbow("moo_' . $this->strField . '", {
@@ -461,6 +461,45 @@ abstract class DataContainer extends \Backend
         onComplete: function(color) {
           $("ctrl_' . $strKey . '").value = color.hex.replace("#", "");
         }
+      });
+    });
+  </script>';
+		}
+
+		// Page picker
+		if ($arrData['eval']['dcaPicker'])
+		{
+			$params = array();
+
+			if (isset($arrData['eval']['dcaPickerDo'])) {
+				$params['do'] = $arrData['eval']['dcaPickerDo'];
+			}
+
+			$params['target'] = $this->strTable.'.'.$this->strField;
+			$params['value'] = $this->varValue;
+			$params['popup'] = 1;
+
+			if (!isset($arrData['eval']['dcaPickerDo'])) {
+				$params['switch'] = 1;
+			}
+
+			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((isset($arrData['eval']['dcaPickerIcon']) ? $arrData['eval']['dcaPickerIcon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+  <script>
+    $("pp_' . $this->strField . '").addEvent("click", function(e) {
+      e.preventDefault();
+      Backend.openModalSelector({
+        "width": 768,
+        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+        "url": this.href,
+        "callback": function(table, value) {
+          new Request.Contao({
+            evalScripts: false,
+            onSuccess: function(txt, json) {
+              $("ctrl_' . $this->strInputName . '").value = json.content;
+              this.set("href", this.get("href").replace(/&value=[^&]*/, "&value=" + json.content));
+            }.bind(this)
+          }).post({"action":"processPickerSelection", "table":table, "value":value.join(","), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
+        }.bind(this)
       });
     });
   </script>';
@@ -893,7 +932,7 @@ abstract class DataContainer extends \Backend
 			return '';
 		}
 
-		$strAttributes = ' id="tl_select"';
+		$strAttributes = ' id="tl_select" data-table="' . $this->strTable . '"';
 
 		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
 		{

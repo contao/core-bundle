@@ -948,13 +948,17 @@ var Backend =
 					val.push(inp[i].get('value'));
 				}
 			}
-			if (opt.tag && (field = $(opt.tag))) {
+			if (opt.callback) {
+				opt.callback(ul.get('data-table'), val);
+			} else if (opt.tag && (field = $(opt.tag))) {
+				console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
 				field.value = val.join(',');
 				if (it = ul.get('data-inserttag')) {
 					field.value = '{{' + it + '::' + field.value + '}}';
 				}
 				opt.self.set('href', opt.self.get('href').replace(/&value=[^&]*/, '&value=' + val.join(',')));
 			} else if (opt.id && (field = $('ctrl_' + opt.id)) && (act = ul.get('data-callback'))) {
+				console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
 				field.value = val.join("\t");
 				new Request.Contao({
 					field: field,
