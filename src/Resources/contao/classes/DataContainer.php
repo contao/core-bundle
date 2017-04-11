@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\InternalServerErrorException;
 
 
 /**
@@ -830,6 +831,106 @@ abstract class DataContainer extends \Backend
 
 		return $return;
 	}
+
+
+	/**
+	 * Initialize the picker
+	 *
+	 * @throws InternalServerErrorException
+	 */
+	protected function initPicker()
+	{
+		if (!isset($_GET['target']) || !isset($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']) || \Input::get('act') == 'select' || \Input::get('act') == 'paste')
+		{
+			return;
+		}
+
+		list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
+
+		\Controller::loadDataContainer($this->strPickerTable);
+
+		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
+		{
+			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
+		}
+
+		$this->setPickerValue();
+	}
+
+
+	/**
+	 * Set the picker value
+	 */
+	protected function setPickerValue()
+	{
+		$varValue = \Input::get('value');
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$varValue = array_filter(explode(',', $varValue));
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$this->arrPickerValue = $varValue;
+	}
+
+
+	/**
+	 * Return the picker attributes
+	 *
+	 * @return string
+	 */
+	protected function getPickerAttributes()
+	{
+		if (!$this->strPickerField)
+		{
+			return '';
+		}
+
+		$strAttributes = ' id="tl_select"';
+
+		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['picker']))
+		{
+			foreach ($GLOBALS['TL_DCA'][$this->strTable]['config']['picker'] as $strAttribute=>$strValue)
+			{
+				$strAttributes .= sprintf(' %s="%s"', $strAttribute, $strValue);
+			}
+		}
+
+		return $strAttributes;
+	}
+
+
+	/**
+	 * Return the picker input field markup
+	 *
+	 * @param string $value
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	protected function getPickerInputField($value, $attributes='')
+	{
+		$id = is_numeric($value) ? $value : md5($value);
+
+		switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+		{
+			case 'checkbox':
+				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+
+			case 'radio':
+				return ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+		}
+
+		return '';
+	}
+
 
 	/**
 	 * Return the name of the current palette

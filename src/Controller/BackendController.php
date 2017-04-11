@@ -218,7 +218,7 @@ class BackendController extends Controller
      *
      * @param Request $request
      *
-     * @return Response
+     * @return RedirectResponse
      *
      * @Route("/picker", name="contao_backend_picker")
      */
