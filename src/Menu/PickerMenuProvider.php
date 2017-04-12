@@ -48,21 +48,39 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
      */
     public function createMenu(ItemInterface $menu, FactoryInterface $factory)
     {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (null === $request) {
-            return;
-        }
-
         $user = $this->getUser();
-        $params = $this->getParametersFromRequest($request);
 
         if ($user->hasAccess('page', 'modules')) {
-            $this->addPagePickerItem($menu, $factory, $params);
+            $this->addMenuItem($menu, $factory, 'page', 'pagePicker', 'pagemounts');
         }
 
         if ($user->hasAccess('files', 'modules')) {
-            $this->addFilePickerItem($menu, $factory, $params);
+            $this->addMenuItem($menu, $factory, 'files', 'filePicker', 'filemounts');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedTable($table)
+    {
+        return in_array($table, ['tl_page', 'tl_files', 'tl_article']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processSelection($table, $value)
+    {
+        switch ($table) {
+            case 'tl_page':
+                return sprintf('{{link_url::%s}}', $value);
+
+            case 'tl_files':
+                return $value;
+
+            default:
+                return null;
         }
     }
 
@@ -90,68 +108,5 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
         }
 
         return $this->route('contao_backend', $params);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processSelection($table, $value)
-    {
-        switch ($table) {
-            case 'tl_page':
-                return sprintf('{{link_url::%s}}', $value);
-
-            case 'tl_files':
-                return $value;
-
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * Adds the page picker item.
-     *
-     * @param ItemInterface    $menu
-     * @param FactoryInterface $factory
-     * @param array            $params
-     */
-    private function addPagePickerItem(ItemInterface $menu, FactoryInterface $factory, array $params)
-    {
-        $item = $factory->createItem(
-            $this->getLabel('pagePicker'),
-            ['uri' => $this->route('contao_backend', array_merge($params, ['do' => 'page']))]
-        );
-
-        $item->setLinkAttribute('class', 'pagemounts');
-
-        if (isset($params['do']) && 'page' === $params['do']) {
-            $item->setCurrent(true);
-        }
-
-        $menu->addChild($item);
-    }
-
-    /**
-     * Adds the file picker item.
-     *
-     * @param ItemInterface    $menu
-     * @param FactoryInterface $factory
-     * @param array            $params
-     */
-    private function addFilePickerItem(ItemInterface $menu, FactoryInterface $factory, array $params)
-    {
-        $item = $factory->createItem(
-            $this->getLabel('filePicker'),
-            ['uri' => $this->route('contao_backend', array_merge($params, ['do' => 'files']))]
-        );
-
-        $item->setLinkAttribute('class', 'filemounts');
-
-        if (isset($params['do']) && 'files' === $params['do']) {
-            $item->setCurrent(true);
-        }
-
-        $menu->addChild($item);
     }
 }

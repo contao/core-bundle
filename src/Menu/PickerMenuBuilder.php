@@ -84,6 +84,43 @@ class PickerMenuBuilder
     }
 
     /**
+     * Checks if a table is supported.
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function isSupportedTable($table)
+    {
+        foreach ($this->providers as $provider) {
+            if (true === $provider->isSupportedTable($table)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Processes the selected value.
+     *
+     * @param $table
+     * @param $value
+     *
+     * @return string
+     */
+    public function processSelection($table, $value)
+    {
+        foreach ($this->providers as $provider) {
+            if (null !== ($processed = $provider->processSelection($table, $value))) {
+                return $processed;
+            }
+        }
+
+        return json_encode(['content' => $value]);
+    }
+
+    /**
      * Returns the picker URL.
      *
      * @param array $params
@@ -108,24 +145,5 @@ class PickerMenuBuilder
         }
 
         return $this->router->generate('contao_backend', $params);
-    }
-
-    /**
-     * Processes the selected value.
-     *
-     * @param $table
-     * @param $value
-     *
-     * @return string
-     */
-    public function processSelection($table, $value)
-    {
-        foreach ($this->providers as $provider) {
-            if (null !== ($processed = $provider->processSelection($table, $value))) {
-                return $processed;
-            }
-        }
-
-        return json_encode(['content' => $value]);
     }
 }

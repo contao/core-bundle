@@ -29,6 +29,25 @@ interface PickerMenuProviderInterface
     public function createMenu(ItemInterface $menu, FactoryInterface $factory);
 
     /**
+     * Checks if a table is supported.
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function isSupportedTable($table);
+
+    /**
+     * Processes the selected value.
+     *
+     * @param string $table
+     * @param string $value
+     *
+     * @return string|null
+     */
+    public function processSelection($table, $value);
+
+    /**
      * Returns the picker URL.
      *
      * @param array $params
@@ -36,14 +55,4 @@ interface PickerMenuProviderInterface
      * @return string|null
      */
     public function getPickerUrl(array $params = []);
-
-    /**
-     * Processes the selected value.
-     *
-     * @param $table
-     * @param $value
-     *
-     * @return string|null
-     */
-    public function processSelection($table, $value);
 }

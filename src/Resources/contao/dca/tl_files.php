@@ -21,7 +21,6 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		'dataContainer'               => 'Folder',
 		'enableVersioning'            => true,
 		'databaseAssisted'            => true,
-		'pickable'                    => true,
 		'onload_callback' => array
 		(
 			array('tl_files', 'checkPermission'),

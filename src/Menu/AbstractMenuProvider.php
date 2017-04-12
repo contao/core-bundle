@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\Menu;
 
 use Contao\BackendUser;
+use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -128,5 +130,35 @@ abstract class AbstractMenuProvider
         }
 
         return $params;
+    }
+
+    /**
+     * Adds a menu item.
+     *
+     * @param ItemInterface    $menu
+     * @param FactoryInterface $factory
+     * @param string           $do
+     * @param string           $label
+     * @param string           $class
+     */
+    protected function addMenuItem(ItemInterface $menu, FactoryInterface $factory, $do, $label, $class)
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return;
+        }
+
+        $params = $this->getParametersFromRequest($request);
+
+        $item = $factory->createItem(
+            $this->getLabel($label),
+            ['uri' => $this->route('contao_backend', array_merge($params, ['do' => $do]))]
+        );
+
+        $item->setLinkAttribute('class', $class);
+        $item->setCurrent(isset($params['do']) && $do === $params['do']);
+
+        $menu->addChild($item);
     }
 }
