@@ -886,7 +886,7 @@ abstract class DataContainer extends \Backend
 
 		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
 
-		if (!$menuBuilder->isSupportedTable($this->strTable))
+		if (!$menuBuilder->supports($this->strTable))
 		{
 			return;
 		}

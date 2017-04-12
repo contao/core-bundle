@@ -69,8 +69,6 @@ class PickerMenuBuilder
      * Creates the menu.
      *
      * @return string
-     *
-     * @throws \RuntimeException
      */
     public function createMenu()
     {
@@ -90,10 +88,10 @@ class PickerMenuBuilder
      *
      * @return bool
      */
-    public function isSupportedTable($table)
+    public function supports($table)
     {
         foreach ($this->providers as $provider) {
-            if (true === $provider->isSupportedTable($table)) {
+            if ($provider->supports($table)) {
                 return true;
             }
         }
@@ -112,12 +110,12 @@ class PickerMenuBuilder
     public function processSelection($table, $value)
     {
         foreach ($this->providers as $provider) {
-            if (null !== ($processed = $provider->processSelection($table, $value))) {
-                return $processed;
+            if ($provider->supports($table)) {
+                return $provider->processSelection($value);
             }
         }
 
-        return json_encode(['content' => $value]);
+        return $value;
     }
 
     /**
@@ -129,21 +127,14 @@ class PickerMenuBuilder
      */
     public function getPickerUrl(array $params = [])
     {
-        if (!isset($params['do'])) {
-            $params = array_merge(['do' => null], $params);
-        }
-
-        foreach ($this->providers as $provider) {
-            if (null !== ($url = $provider->getPickerUrl($params))) {
-                return $url;
+        if (isset($params['value'])) {
+            foreach ($this->providers as $provider) {
+                if ($provider->canHandle($params['value'])) {
+                    return $provider->getPickerUrl($params);
+                }
             }
         }
 
-        // Fall back to the page picker
-        if (null === $params['do']) {
-            $params['do'] = 'page';
-        }
-
-        return $this->router->generate('contao_backend', $params);
+        return $this->router->generate('contao_backend', array_merge(['do' => 'page'], $params));
     }
 }

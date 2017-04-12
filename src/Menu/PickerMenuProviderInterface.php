@@ -21,7 +21,7 @@ use Knp\Menu\ItemInterface;
 interface PickerMenuProviderInterface
 {
     /**
-     * Adds items to the menu.
+     * Creates the menu.
      *
      * @param ItemInterface    $menu
      * @param FactoryInterface $factory
@@ -35,24 +35,32 @@ interface PickerMenuProviderInterface
      *
      * @return bool
      */
-    public function isSupportedTable($table);
+    public function supports($table);
 
     /**
      * Processes the selected value.
      *
-     * @param string $table
      * @param string $value
      *
-     * @return string|null
+     * @return string
      */
-    public function processSelection($table, $value);
+    public function processSelection($value);
+
+    /**
+     * Checks if a value can be handled.
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    public function canHandle($value);
 
     /**
      * Returns the picker URL.
      *
      * @param array $params
      *
-     * @return string|null
+     * @return string
      */
     public function getPickerUrl(array $params = []);
 }
