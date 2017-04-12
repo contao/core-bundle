@@ -1195,12 +1195,16 @@ ul.sortable button[disabled]:hover {
 	padding:3px 12px 3px 32px;
 	background:url("icons/manager.svg") 12px center no-repeat;
 }
+#manager a.pagemounts {
+	background-image:url("icons/pagemounts.svg");
+	background-size:16px;
+}
 #manager a.filemounts {
 	background-image:url("icons/filemounts.svg");
 	background-size:14px;
 }
-#manager a.pagemounts {
-	background-image:url("icons/pagemounts.svg");
+#manager a.articles {
+	background-image:url("icons/articles.svg");
 	background-size:16px;
 }
 #manager a.close {

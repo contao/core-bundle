@@ -57,6 +57,10 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
         if ($user->hasAccess('files', 'modules')) {
             $this->addMenuItem($menu, $factory, 'files', 'filePicker', 'filemounts');
         }
+
+        if ($user->hasAccess('article', 'modules')) {
+            $this->addMenuItem($menu, $factory, 'article', 'articlePicker', 'articles');
+        }
     }
 
     /**
@@ -78,6 +82,9 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
 
             case 'tl_files':
                 return $value;
+
+            case 'tl_article':
+                return sprintf('{{article_url::%s}}', $value);
 
             default:
                 return null;
@@ -101,6 +108,11 @@ class PickerMenuProvider extends AbstractMenuProvider implements PickerMenuProvi
 
             case 0 === strpos($params['value'], $this->uploadPath.'/'):
                 $params['do'] = 'files';
+                break;
+
+            case false !== strpos($params['value'], '{{article_url::'):
+                $params['do'] = 'article';
+                $params['value'] = str_replace(['{{article_url::', '}}'], '', $params['value']);
                 break;
 
             default:
