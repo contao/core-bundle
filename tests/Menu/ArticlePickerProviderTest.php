@@ -14,6 +14,7 @@ use Contao\CoreBundle\Menu\ArticlePickerProvider;
 use Contao\CoreBundle\Menu\PickerMenuProviderInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Knp\Menu\MenuFactory;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests the ArticlePickerProvider class.
@@ -86,8 +87,18 @@ class ArticlePickerProviderTest extends TestCase
      */
     public function testCanHandle()
     {
-        $this->assertTrue($this->provider->canHandle('{{article_url::2}}'));
-        $this->assertFalse($this->provider->canHandle('files/test/foo.jpg'));
+        $request = new Request();
+        $request->query->set('value', '{{article_url::2}}');
+
+        $this->assertTrue($this->provider->canHandle($request));
+
+        $request->query->set('value', 'files/test/foo.jpg');
+
+        $this->assertFalse($this->provider->canHandle($request));
+
+        $request->query->remove('value');
+
+        $this->assertFalse($this->provider->canHandle($request));
     }
 
     /**
@@ -95,9 +106,9 @@ class ArticlePickerProviderTest extends TestCase
      */
     public function testGetPickerUrl()
     {
-        $this->assertEquals(
-            'contao_backend:value=42:do=article',
-            $this->provider->getPickerUrl(['value' => '{{article_url::42}}'])
-        );
+        $request = new Request();
+        $request->query->set('value', '{{article_url::42}}');
+
+        $this->assertEquals('contao_backend:value=42:do=article', $this->provider->getPickerUrl($request));
     }
 }

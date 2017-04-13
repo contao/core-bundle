@@ -10,24 +10,21 @@
 
 namespace Contao\CoreBundle\Menu;
 
-use Knp\Menu\FactoryInterface;
-use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Provides data for the picker menu.
+ * Creates the picker menu.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-interface PickerMenuProviderInterface
+interface PickerMenuBuilderInterface
 {
     /**
      * Creates the menu.
      *
-     * @param ItemInterface    $menu
-     * @param FactoryInterface $factory
+     * @return string
      */
-    public function createMenu(ItemInterface $menu, FactoryInterface $factory);
+    public function createMenu();
 
     /**
      * Checks if a table is supported.
@@ -41,20 +38,12 @@ interface PickerMenuProviderInterface
     /**
      * Processes the selected value.
      *
-     * @param string $value
+     * @param $table
+     * @param $value
      *
      * @return string
      */
-    public function processSelection($value);
-
-    /**
-     * Checks if a value can be handled.
-     *
-     * @param Request $request
-     *
-     * @return bool
-     */
-    public function canHandle(Request $request);
+    public function processSelection($table, $value);
 
     /**
      * Returns the picker URL.

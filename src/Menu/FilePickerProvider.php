@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -74,16 +75,17 @@ class FilePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
     /**
      * {@inheritdoc}
      */
-    public function canHandle($value)
+    public function canHandle(Request $request)
     {
-        return 0 === strpos($value, $this->uploadPath.'/');
+        return $request->query->has('value') && 0 === strpos($request->query->get('value'), $this->uploadPath.'/');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPickerUrl(array $params = [])
+    public function getPickerUrl(Request $request)
     {
+        $params = $request->query->all();
         $params['do'] = 'files';
 
         return $this->route('contao_backend', $params);

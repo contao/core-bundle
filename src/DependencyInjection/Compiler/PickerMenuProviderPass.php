@@ -11,8 +11,8 @@
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Registers the picker menu providers.
@@ -21,6 +21,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class PickerMenuProviderPass implements CompilerPassInterface
 {
+    use PriorityTaggedServiceTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -31,10 +33,10 @@ class PickerMenuProviderPass implements CompilerPassInterface
         }
 
         $definition = $container->findDefinition('contao.menu.picker_menu_builder');
-        $services = $container->findTaggedServiceIds('contao.picker_menu_provider');
+        $references = $this->findAndSortTaggedServices('contao.picker_menu_provider', $container);
 
-        foreach ($services as $id => $tags) {
-            $definition->addMethodCall('addProvider', [new Reference($id)]);
+        foreach ($references as $reference) {
+            $definition->addMethodCall('addProvider', [$reference]);
         }
     }
 }

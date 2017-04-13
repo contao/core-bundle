@@ -12,10 +12,12 @@ namespace Contao\CoreBundle\Tests\Menu;
 
 use Contao\CoreBundle\Menu\PagePickerProvider;
 use Contao\CoreBundle\Menu\PickerMenuBuilder;
+use Contao\CoreBundle\Menu\PickerMenuBuilderInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Knp\Menu\Matcher\Matcher;
 use Knp\Menu\MenuFactory;
 use Knp\Menu\Renderer\ListRenderer;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -26,7 +28,7 @@ use Symfony\Component\Routing\RouterInterface;
 class PickerMenuBuilderTest extends TestCase
 {
     /**
-     * @var PickerMenuBuilder
+     * @var PickerMenuBuilderInterface
      */
     private $menuBuilder;
 
@@ -111,16 +113,19 @@ EOF;
      */
     public function testGetPickerUrl()
     {
-        $this->assertEquals(
-            'contao_backend:value=42:do=page',
-            $this->menuBuilder->getPickerUrl(['value' => '{{link_url::42}}'])
-        );
+        $request = new Request();
+        $request->query->set('value', '{{link_url::42}}');
+
+        $this->assertEquals('contao_backend:value=42:do=page', $this->menuBuilder->getPickerUrl($request));
+
+        $request = new Request();
+        $request->query->set('value', '{{news_url::42}}');
 
         $this->assertEquals(
             'contao_backend:do=page:value={{news_url::42}}',
-            $this->menuBuilder->getPickerUrl(['value' => '{{news_url::42}}'])
+            $this->menuBuilder->getPickerUrl($request)
         );
 
-        $this->assertEquals('contao_backend:do=page', $this->menuBuilder->getPickerUrl());
+        $this->assertEquals('contao_backend:do=page', $this->menuBuilder->getPickerUrl(new Request()));
     }
 }

@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Provides the article picker.
@@ -51,16 +52,17 @@ class ArticlePickerProvider extends AbstractMenuProvider implements PickerMenuPr
     /**
      * {@inheritdoc}
      */
-    public function canHandle($value)
+    public function canHandle(Request $request)
     {
-        return false !== strpos($value, '{{article_url::');
+        return $request->query->has('value') && false !== strpos($request->query->get('value'), '{{article_url::');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPickerUrl(array $params = [])
+    public function getPickerUrl(Request $request)
     {
+        $params = $request->query->all();
         $params['do'] = 'article';
         $params['value'] = str_replace(['{{article_url::', '}}'], '', $params['value']);
 

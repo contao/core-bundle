@@ -14,6 +14,7 @@ use Contao\CoreBundle\Menu\FilePickerProvider;
 use Contao\CoreBundle\Menu\PickerMenuProviderInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Knp\Menu\MenuFactory;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests the FilePickerProvider class.
@@ -78,7 +79,7 @@ class FilePickerProviderTest extends TestCase
      */
     public function testProcessSelection()
     {
-        $this->assertEquals('files/test/foo.jpg', $this->provider->processSelection('files/test/foo.jpg'));
+        $this->assertEquals('files/foo.jpg', $this->provider->processSelection('files/foo.jpg'));
     }
 
     /**
@@ -86,8 +87,18 @@ class FilePickerProviderTest extends TestCase
      */
     public function testCanHandle()
     {
-        $this->assertTrue($this->provider->canHandle('files/test/foo.jpg'));
-        $this->assertFalse($this->provider->canHandle('{{link_url::2}}'));
+        $request = new Request();
+        $request->query->set('value', 'files/foo.jpg');
+
+        $this->assertTrue($this->provider->canHandle($request));
+
+        $request->query->set('value', '{{link_url::2}}');
+
+        $this->assertFalse($this->provider->canHandle($request));
+
+        $request->query->remove('value');
+
+        $this->assertFalse($this->provider->canHandle($request));
     }
 
     /**
@@ -95,9 +106,9 @@ class FilePickerProviderTest extends TestCase
      */
     public function testGetPickerUrl()
     {
-        $this->assertEquals(
-            'contao_backend:value=files/test/foo.jpg:do=files',
-            $this->provider->getPickerUrl(['value' => 'files/test/foo.jpg'])
-        );
+        $request = new Request();
+        $request->query->set('value', 'files/foo.jpg');
+
+        $this->assertEquals('contao_backend:value=files/foo.jpg:do=files', $this->provider->getPickerUrl($request));
     }
 }

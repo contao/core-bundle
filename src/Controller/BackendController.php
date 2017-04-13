@@ -226,6 +226,6 @@ class BackendController extends Controller
     {
         $pickerBuilder = $this->container->get('contao.menu.picker_menu_builder');
 
-        return new RedirectResponse($pickerBuilder->getPickerUrl($request->query->all()));
+        return new RedirectResponse($pickerBuilder->getPickerUrl($request));
     }
 }

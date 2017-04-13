@@ -582,6 +582,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
-        return new $class($router, $tokenStorage, $requestStack, 'files/test');
+        return new $class($router, $tokenStorage, $requestStack, 'files');
     }
 }

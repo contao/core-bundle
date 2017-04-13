@@ -11,9 +11,10 @@
 namespace Contao\CoreBundle\Tests\Controller;
 
 use Contao\CoreBundle\Controller\BackendController;
-use Contao\CoreBundle\Menu\PickerMenuBuilder;
+use Contao\CoreBundle\Menu\PickerMenuBuilderInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -70,7 +71,7 @@ class BackendControllerTest extends TestCase
     public function testPickerAction()
     {
         $pickerBuilder = $this
-            ->getMockBuilder(PickerMenuBuilder::class)
+            ->getMockBuilder(PickerMenuBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -87,9 +88,6 @@ class BackendControllerTest extends TestCase
         $controller = new BackendController();
         $controller->setContainer($container);
 
-        $this->assertInstanceOf(
-            'Symfony\Component\HttpFoundation\RedirectResponse',
-            $controller->pickerAction(new Request())
-        );
+        $this->assertInstanceOf(RedirectResponse::class, $controller->pickerAction(new Request()));
     }
 }

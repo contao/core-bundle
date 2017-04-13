@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\Renderer\RendererInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\RouterInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class PickerMenuBuilder
+class PickerMenuBuilder implements PickerMenuBuilderInterface
 {
     /**
      * @var FactoryInterface
@@ -66,9 +67,7 @@ class PickerMenuBuilder
     }
 
     /**
-     * Creates the menu.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function createMenu()
     {
@@ -82,11 +81,7 @@ class PickerMenuBuilder
     }
 
     /**
-     * Checks if a table is supported.
-     *
-     * @param string $table
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function supports($table)
     {
@@ -100,12 +95,7 @@ class PickerMenuBuilder
     }
 
     /**
-     * Processes the selected value.
-     *
-     * @param $table
-     * @param $value
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function processSelection($table, $value)
     {
@@ -119,22 +109,16 @@ class PickerMenuBuilder
     }
 
     /**
-     * Returns the picker URL.
-     *
-     * @param array $params
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getPickerUrl(array $params = [])
+    public function getPickerUrl(Request $request)
     {
-        if (isset($params['value'])) {
-            foreach ($this->providers as $provider) {
-                if ($provider->canHandle($params['value'])) {
-                    return $provider->getPickerUrl($params);
-                }
+        foreach ($this->providers as $provider) {
+            if ($provider->canHandle($request)) {
+                return $provider->getPickerUrl($request);
             }
         }
 
-        return $this->router->generate('contao_backend', array_merge(['do' => 'page'], $params));
+        return $this->router->generate('contao_backend', array_merge(['do' => 'page'], $request->query->all()));
     }
 }
