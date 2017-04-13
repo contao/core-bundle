@@ -84,22 +84,6 @@ abstract class AbstractMenuProvider
     }
 
     /**
-     * Returns a label.
-     *
-     * @param $key
-     *
-     * @return string
-     */
-    protected function getLabel($key)
-    {
-        if (isset($GLOBALS['TL_LANG']['MSC'][$key])) {
-            return $GLOBALS['TL_LANG']['MSC'][$key];
-        }
-
-        return $key;
-    }
-
-    /**
      * Generates a route.
      *
      * @param string $name
@@ -113,13 +97,44 @@ abstract class AbstractMenuProvider
     }
 
     /**
-     * Retrieves the parameters from the request.
+     * Adds a menu item.
+     *
+     * @param ItemInterface    $menu
+     * @param FactoryInterface $factory
+     * @param string           $do
+     * @param string           $key
+     * @param string           $class
+     */
+    protected function addMenuItem(ItemInterface $menu, FactoryInterface $factory, $do, $key, $class)
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return;
+        }
+
+        $params = $this->getParametersFromRequest($request);
+
+        $item = $factory->createItem(
+            $key,
+            ['uri' => $this->route('contao_backend', array_merge($params, ['do' => $do]))]
+        );
+
+        $item->setLabel($this->getLabel($key));
+        $item->setLinkAttribute('class', $class);
+        $item->setCurrent(isset($params['do']) && $do === $params['do']);
+
+        $menu->addChild($item);
+    }
+
+    /**
+     * Returns the filtered request parameters-
      *
      * @param Request $request
      *
      * @return array
      */
-    protected function getParametersFromRequest(Request $request)
+    private function getParametersFromRequest(Request $request)
     {
         $params = [];
 
@@ -133,32 +148,18 @@ abstract class AbstractMenuProvider
     }
 
     /**
-     * Adds a menu item.
+     * Returns a label.
      *
-     * @param ItemInterface    $menu
-     * @param FactoryInterface $factory
-     * @param string           $do
-     * @param string           $label
-     * @param string           $class
+     * @param $key
+     *
+     * @return string
      */
-    protected function addMenuItem(ItemInterface $menu, FactoryInterface $factory, $do, $label, $class)
+    private function getLabel($key)
     {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (null === $request) {
-            return;
+        if (isset($GLOBALS['TL_LANG']['MSC'][$key])) {
+            return $GLOBALS['TL_LANG']['MSC'][$key];
         }
 
-        $params = $this->getParametersFromRequest($request);
-
-        $item = $factory->createItem(
-            $this->getLabel($label),
-            ['uri' => $this->route('contao_backend', array_merge($params, ['do' => $do]))]
-        );
-
-        $item->setLinkAttribute('class', $class);
-        $item->setCurrent(isset($params['do']) && $do === $params['do']);
-
-        $menu->addChild($item);
+        return $key;
     }
 }
