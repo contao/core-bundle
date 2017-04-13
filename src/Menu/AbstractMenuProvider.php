@@ -128,7 +128,7 @@ abstract class AbstractMenuProvider
     }
 
     /**
-     * Returns the filtered request parameters-
+     * Returns the filtered request parameters.
      *
      * @param Request $request
      *
