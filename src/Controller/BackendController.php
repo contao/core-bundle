@@ -24,6 +24,7 @@ use Contao\BackendSwitch;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Handles the Contao backend routes.
@@ -49,6 +50,18 @@ class BackendController extends Controller
         $controller = new BackendMain();
 
         return $controller->run();
+    }
+
+    /**
+     * Redirect route for the main backend controller
+     *
+     * @return RedirectResponse
+     *
+     * @Route("/", name="contao_backend_alias")
+     */
+    public function indexAction()
+    {
+        return $this->redirectToRoute('contao_backend', [], 301);
     }
 
     /**
