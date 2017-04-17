@@ -203,6 +203,20 @@ class ClassLoader
 			}
 		}
 
+		if ($class == 'Database_Statement')
+		{
+			trigger_error('Class Database_Statement is deprecated, use \\Contao\\Database\\Statement instead', E_USER_DEPRECATED);
+
+			return 'Contao\\Database\\Statement';
+		}
+
+		if ($class == 'Database_Result')
+		{
+			trigger_error('Class Database_Result is deprecated, use \\Contao\\Database\\Result instead', E_USER_DEPRECATED);
+
+			return 'Contao\\Database\\Result';
+		}
+
 		return null;
 	}
 

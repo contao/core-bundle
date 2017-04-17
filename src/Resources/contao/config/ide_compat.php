@@ -98,6 +98,8 @@ namespace {
 	class Config extends \Contao\Config {}
 	abstract class Controller extends \Contao\Controller {}
 	class Database extends \Contao\Database {}
+	class Database_Result extends \Contao\Database\Result {}
+	class Database_Statement extends \Contao\Database\Statement {}
 	class Date extends \Contao\Date {}
 	class Dbafs extends \Contao\Dbafs {}
 	class DcaExtractor extends \Contao\DcaExtractor {}
