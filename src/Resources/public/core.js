@@ -478,7 +478,7 @@ var AjaxRequest =
 		// Backwards compatibility
 		if (image.get('data-state') === null) {
 			published = (image.src.indexOf('invisible') == -1);
-			console.warn('Using a visibility toggle without a "data-state" attribute is deprecated. Please adjust your Contao DCA file.');
+			window.console && console.warn('Using a visibility toggle without a "data-state" attribute is deprecated. Please adjust your Contao DCA file.');
 		}
 
 		// Find the icon depending on the view (tree view, list view, parent view)
@@ -512,11 +512,11 @@ var AjaxRequest =
 					// Backwards compatibility
 					if (icon === null) {
 						icon = img.src.replace(/(.*)\/([a-z0-9]+)_?\.(gif|png|jpe?g|svg)$/, '$1/$2.$3');
-						console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
+						window.console && console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
 					}
 					if (icond === null) {
 						icond = img.src.replace(/(.*)\/([a-z0-9]+)_?\.(gif|png|jpe?g|svg)$/, '$1/$2_.$3');
-						console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
+						window.console && console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
 					}
 
 					// Prepend the theme path
@@ -546,12 +546,12 @@ var AjaxRequest =
 					if (icon === null) {
 						index = img.src.replace(/.*_([0-9])\.(gif|png|jpe?g|svg)/, '$1');
 						icon = img.src.replace(/_[0-9]\.(gif|png|jpe?g|svg)/, ((index.toInt() == 1) ? '' : '_' + (index.toInt() - 1)) + '.$1').split(/[\\/]/).pop();
-						console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
+						window.console && console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
 					}
 					if (icond === null) {
 						index = img.src.replace(/.*_([0-9])\.(gif|png|jpe?g|svg)/, '$1');
 						icond = img.src.replace(/(_[0-9])?\.(gif|png|jpe?g|svg)/, ((index == img.src) ? '_1' : '_' + (index.toInt() + 1)) + '.$2').split(/[\\/]/).pop();
-						console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
+						window.console && console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
 					}
 
 					// Prepend the theme path
@@ -583,11 +583,11 @@ var AjaxRequest =
 				// Backwards compatibility
 				if (icon === null) {
 					icon = img.getStyle('background-image').replace(/(.*)\/([a-z0-9]+)_?\.(gif|png|jpe?g|svg)\);?$/, '$1/$2.$2');
-					console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
+					window.console && console.warn('Using a row icon without a "data-icon" attribute is deprecated. Please adjust your Contao DCA file.');
 				}
 				if (icond === null) {
 					icond = img.getStyle('background-image').replace(/(.*)\/([a-z0-9]+)_?\.(gif|png|jpe?g|svg)\);?$/, '$1/$2_.$3');
-					console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
+					window.console && console.warn('Using a row icon without a "data-icon-disabled" attribute is deprecated. Please adjust your Contao DCA file.');
 				}
 
 				// Prepend the theme path
@@ -638,7 +638,7 @@ var AjaxRequest =
 		// Backwards compatibility
 		if (image.get('data-state') === null) {
 			featured = (image.src.indexOf('featured_') == -1);
-			console.warn('Using a featured toggle without a "data-state" attribute is deprecated. Please adjust your Contao DCA file.');
+			window.console && console.warn('Using a featured toggle without a "data-state" attribute is deprecated. Please adjust your Contao DCA file.');
 		}
 
 		// Send the request
@@ -951,14 +951,14 @@ var Backend =
 			if (opt.callback) {
 				opt.callback(ul.get('data-table'), val);
 			} else if (opt.tag && (field = $(opt.tag))) {
-				console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
+				window.console && console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
 				field.value = val.join(',');
 				if (it = ul.get('data-inserttag')) {
 					field.value = '{{' + it + '::' + field.value + '}}';
 				}
 				opt.self.set('href', opt.self.get('href').replace(/&value=[^&]*/, '&value=' + val.join(',')));
 			} else if (opt.id && (field = $('ctrl_' + opt.id)) && (act = ul.get('data-callback'))) {
-				console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
+				window.console && console.warn('Using the modal selector without a callback function is deprecated. Please adjust your Contao DCA file.');
 				field.value = val.join("\t");
 				new Request.Contao({
 					field: field,
