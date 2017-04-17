@@ -430,7 +430,7 @@ class Environment
 	 */
 	protected static function script()
 	{
-		return preg_replace('/^' . preg_quote(static::get('path'), '/') . '\/?/', '', static::get('scriptName'));
+		return preg_replace('/^' . preg_quote(static::get('path'), '/') . '\/?/', '', pathinfo(static::get('scriptFilename'), PATHINFO_BASENAME) ?: static::get('scriptName'));
 	}
 
 
