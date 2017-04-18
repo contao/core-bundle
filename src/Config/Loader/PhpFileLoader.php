@@ -38,7 +38,7 @@ class PhpFileLoader extends Loader
         $collect = false;
         $declarePart = '';
 
-        foreach ($tokens as $k => $token) {
+        foreach ($tokens as $token) {
             if (is_array($token)) {
                 if (T_DECLARE === $token[0]) {
                     $collect = true;
