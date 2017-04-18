@@ -916,6 +916,7 @@ var Backend =
 	openModalSelector: function(options) {
 		var opt = options || {},
 			max = (window.getSize().y - 192).toInt();
+		if (!opt.id) opt.id = 'tl_select';
 		if (!opt.height || opt.height > max) opt.height = max;
 		var M = new SimpleModal({
 			'width': opt.width,
@@ -941,7 +942,7 @@ var Backend =
 				alert('Could not find the SimpleModal frame');
 				return;
 			}
-			ul = frm.document.getElementById('tl_select');
+			ul = frm.document.getElementById(opt.id);
 			inp = ul.getElementsByTagName('input');
 			for (i=0; i<inp.length; i++) {
 				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
