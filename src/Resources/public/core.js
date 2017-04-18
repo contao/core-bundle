@@ -993,7 +993,7 @@ var Backend =
 		Backend.openModalSelector({
 			'width': 768,
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=tl_content.singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=tl_content..singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1',
 			'callback': function(table, value) {
 				new Request.Contao({
 					evalScripts: false,
