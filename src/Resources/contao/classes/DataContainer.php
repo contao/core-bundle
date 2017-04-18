@@ -122,6 +122,12 @@ abstract class DataContainer extends \Backend
 	protected $strPickerField;
 
 	/**
+	 * The picker ID
+	 * @var integer
+	 */
+	protected $intPickerId;
+
+	/**
 	 * The picker value
 	 * @var array
 	 */
@@ -466,7 +472,7 @@ abstract class DataContainer extends \Backend
   </script>';
 		}
 
-		// Page picker
+		// DCA picker
 		if (isset($arrData['eval']['dcaPicker']) && (is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
 		{
 			$params = array();
@@ -475,7 +481,7 @@ abstract class DataContainer extends \Backend
 				$params['do'] = $arrData['eval']['dcaPicker']['do'];
 			}
 
-			$params['target'] = $this->strTable.'.'.$this->strField;
+			$params['target'] = $this->strTable.'.'.$this->strField.'.'.$this->intId;
 			$params['value'] = $this->varValue;
 			$params['popup'] = 1;
 
@@ -891,7 +897,8 @@ abstract class DataContainer extends \Backend
 			return;
 		}
 
-		list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
+		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
+		$this->intPickerId = (int) $this->intPickerId;
 
 		\Controller::loadDataContainer($this->strPickerTable);
 
@@ -901,6 +908,45 @@ abstract class DataContainer extends \Backend
 		}
 
 		$this->setPickerValue();
+
+		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
+		$objDca = new $strDriver($this->strPickerTable);
+		$objDca->id = $this->intPickerId;
+		$objDca->field = $this->strPickerField;
+
+		// Set the active record
+		if ($this->intPickerId && $this->Database->tableExists($this->strPickerTable))
+		{
+			/** @var Model $strModel */
+			$strModel = \Model::getClassFromTable($this->strPickerTable);
+
+			if (class_exists($strModel))
+			{
+				$objModel = $strModel::findByPk($this->intPickerId);
+
+				if ($objModel !== null)
+				{
+					$objDca->activeRecord = $objModel;
+				}
+			}
+		}
+
+		// Call the load_callback
+		if (is_array($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->arrPickerValue = $this->{$callback[0]}->{$callback[1]}($this->arrPickerValue, $objDca);
+				}
+				elseif (is_callable($callback))
+				{
+					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
+				}
+			}
+		}
 	}
 
 
