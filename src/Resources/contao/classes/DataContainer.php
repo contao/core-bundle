@@ -116,6 +116,12 @@ abstract class DataContainer extends \Backend
 	protected $strPickerTable;
 
 	/**
+	 * The picker id
+	 * @var int
+	 */
+	protected $intPickerId;
+
+	/**
 	 * The picker field
 	 * @var string
 	 */
@@ -475,7 +481,7 @@ abstract class DataContainer extends \Backend
 				$params['do'] = $arrData['eval']['dcaPicker']['do'];
 			}
 
-			$params['target'] = $this->strTable.'.'.$this->strField;
+			$params['target'] = $this->strTable.'.'.$this->intId.'.'.$this->strField;
 			$params['value'] = $this->varValue;
 			$params['popup'] = 1;
 
@@ -891,16 +897,56 @@ abstract class DataContainer extends \Backend
 			return;
 		}
 
-		list($this->strPickerTable, $this->strPickerField) = explode('.', \Input::get('target'), 2);
+		list($this->strPickerTable, $this->intPickerId, $this->strPickerField) = explode('.', \Input::get('target'), 3);
+		$this->intPickerId = (int) $this->intPickerId;
 
 		\Controller::loadDataContainer($this->strPickerTable);
+
+		$this->setPickerValue();
+
+		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
+		$objDca = new $strDriver($this->strPickerTable);
+		$objDca->intId = $this->intPickerId;
+		$objDca->field = $this->strPickerField;
+
+		// Set the active record
+		if ($this->intPickerId && $this->Database->tableExists($this->strPickerTable))
+		{
+			/** @var Model $strModel */
+			$strModel = \Model::getClassFromTable($this->strPickerTable);
+
+			if (class_exists($strModel))
+			{
+				$objModel = $strModel::findByPk($this->intPickerId);
+
+				if ($objModel !== null)
+				{
+					$objDca->activeRecord = $objModel;
+				}
+			}
+		}
+
+		// Call the load_callback
+		if (is_array($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->arrPickerValue = $this->{$callback[0]}->{$callback[1]}($this->arrPickerValue, $objDca);
+				}
+				elseif (is_callable($callback))
+				{
+					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
+				}
+			}
+		}
 
 		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
 		{
 			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
-
-		$this->setPickerValue();
 	}
 
 
