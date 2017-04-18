@@ -467,11 +467,11 @@ abstract class DataContainer extends \Backend
 		}
 
 		// Page picker
-		if (isset($arrData['eval']['dcaPicker']))
+		if (isset($arrData['eval']['dcaPicker']) && (is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
 		{
 			$params = array();
 
-			if (isset($arrData['eval']['dcaPicker']['do'])) {
+			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['do'])) {
 				$params['do'] = $arrData['eval']['dcaPicker']['do'];
 			}
 
@@ -479,11 +479,11 @@ abstract class DataContainer extends \Backend
 			$params['value'] = $this->varValue;
 			$params['popup'] = 1;
 
-			if (!isset($arrData['eval']['dcaPicker']['do'])) {
+			if (!is_array($arrData['eval']['dcaPicker']) || !isset($arrData['eval']['dcaPicker']['do'])) {
 				$params['switch'] = 1;
 			}
 
-			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((isset($arrData['eval']['dcaPicker']['icon']) ? $arrData['eval']['dcaPicker']['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['icon']) ? $arrData['eval']['dcaPicker']['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
   <script>
     $("pp_' . $this->strField . '").addEvent("click", function(e) {
       e.preventDefault();
