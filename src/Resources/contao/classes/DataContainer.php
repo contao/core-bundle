@@ -902,11 +902,6 @@ abstract class DataContainer extends \Backend
 
 		\Controller::loadDataContainer($this->strPickerTable);
 
-		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
-		{
-			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
-		}
-
 		$this->setPickerValue();
 
 		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
@@ -946,6 +941,11 @@ abstract class DataContainer extends \Backend
 					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
 				}
 			}
+		}
+
+		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
+		{
+			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
 	}
 
