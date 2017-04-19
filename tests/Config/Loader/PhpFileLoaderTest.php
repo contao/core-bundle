@@ -66,13 +66,18 @@ class PhpFileLoaderTest extends TestCase
      */
     public function testLoad()
     {
+        $expects = <<<'EOF'
+
+$GLOBALS['TL_TEST'] = true;
+
+EOF;
+
         $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
+            $expects,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php')
         );
 
-        $content = <<<'EOF'
-
+        $expects = <<<'EOF'
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
@@ -93,14 +98,83 @@ $GLOBALS['TL_DCA']['tl_test'] = [
 EOF;
 
         $this->assertEquals(
-            $content,
+            $expects,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
         );
+    }
+
+    /**
+     * Test loading a file with a custom namespace.
+     */
+    public function testLoadNamespace()
+    {
+        $expects = <<<'EOF'
+
+namespace Foo\Bar {
+//namespace Foo\Bar;
+
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+}
+
+EOF;
 
         $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
+            $expects,
             $this->loader->load(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php'
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_namespace.php',
+                PhpFileLoader::NAMESPACED
+            )
+        );
+    }
+
+    /**
+     * Test loading a file with a declare statement.
+     */
+    public function testLoadDeclare()
+    {
+        $expects = <<<'EOF'
+
+/**
+ * I am a declare(strict_types=1) comment
+ */
+
+//declare(strict_types=1);
+
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+
+EOF;
+
+        $this->assertEquals(
+            $expects,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_declare.php')
+        );
+
+        $expects = <<<'EOF'
+
+//declare(strict_types  =   1,ticks = 1);
+
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+
+EOF;
+
+        $this->assertEquals(
+            $expects,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_declare2.php')
+        );
+
+        $expects = <<<'EOF'
+
+namespace {
+$GLOBALS['TL_TEST'] = true;
+}
+
+EOF;
+
+        $this->assertEquals(
+            $expects,
+            $this->loader->load(
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
+                PhpFileLoader::NAMESPACED
             )
         );
     }
