@@ -32,6 +32,34 @@ class PhpFileLoader extends Loader
      */
     public function load($file, $type = null)
     {
+        list($code, $namespace) = $this->parseFile($file);
+
+        $code = $this->stripLegacyCheck($code);
+
+        if (false !== $namespace && self::NAMESPACED === $type) {
+            $code = sprintf("\nnamespace %s {%s}\n", $namespace, $code);
+        }
+
+        return $code;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supports($resource, $type = null)
+    {
+        return 'php' === pathinfo($resource, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Parses a file and returns the code and namespace.
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    private function parseFile($file)
+    {
         $code = '';
         $namespace = '';
         $stream = new \PHP_Token_Stream($file);
@@ -48,7 +76,7 @@ class PhpFileLoader extends Loader
                         $namespace = false;
                         $code .= $token;
                     } else {
-                        $namespace = $token->getName().' ';
+                        $namespace = $token->getName();
                         $code .= '//'.$token;
                     }
                     break;
@@ -62,19 +90,7 @@ class PhpFileLoader extends Loader
             }
         }
 
-        if (false !== $namespace && self::NAMESPACED === $type) {
-            return sprintf("\nnamespace %s{%s}\n", $namespace, $this->stripLegacyCheck($code));
-        }
-
-        return $this->stripLegacyCheck($code);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($resource, $type = null)
-    {
-        return 'php' === pathinfo($resource, PATHINFO_EXTENSION);
+        return [$code, $namespace];
     }
 
     /**

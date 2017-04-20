@@ -125,6 +125,22 @@ EOF;
                 PhpFileLoader::NAMESPACED
             )
         );
+
+        $expects = <<<'EOF'
+
+namespace  {
+$GLOBALS['TL_TEST'] = true;
+}
+
+EOF;
+
+        $this->assertEquals(
+            $expects,
+            $this->loader->load(
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
+                PhpFileLoader::NAMESPACED
+            )
+        );
     }
 
     /**
@@ -160,22 +176,6 @@ EOF;
         $this->assertEquals(
             $expects,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_declare2.php')
-        );
-
-        $expects = <<<'EOF'
-
-namespace {
-$GLOBALS['TL_TEST'] = true;
-}
-
-EOF;
-
-        $this->assertEquals(
-            $expects,
-            $this->loader->load(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
-                PhpFileLoader::NAMESPACED
-            )
         );
     }
 }
