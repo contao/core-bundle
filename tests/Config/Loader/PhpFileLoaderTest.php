@@ -17,6 +17,8 @@ use Contao\CoreBundle\Test\TestCase;
  * Tests the PhpFileLoader class.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ * @author Yanick Witschi <https://github.com/Toflar>
+ * @author Leo Feyer <https://github.com/leofeyer>
  */
 class PhpFileLoaderTest extends TestCase
 {
