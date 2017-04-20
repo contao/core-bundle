@@ -66,13 +66,18 @@ class PhpFileLoaderTest extends TestCase
      */
     public function testLoad()
     {
+        $expects = <<<'EOF'
+
+$GLOBALS['TL_TEST'] = true;
+
+EOF;
+
         $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
+            $expects,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php')
         );
 
         $content = <<<'EOF'
-
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
@@ -96,25 +101,56 @@ EOF;
             $content,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
         );
+    }
+
+    /**
+     * Test loading a file with a custom namespace.
+     */
+    public function testLoadNamespace()
+    {
+        $expects = <<<'EOF'
+
+namespace Foo\Bar {
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+}
+
+EOF;
 
         $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
+            $expects,
             $this->loader->load(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php'
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_namespace.php',
+                PhpFileLoader::NAMESPACED
+            )
+        );
+
+        $expects = <<<'EOF'
+
+namespace  {
+$GLOBALS['TL_TEST'] = true;
+}
+
+EOF;
+
+        $this->assertEquals(
+            $expects,
+            $this->loader->load(
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
+                PhpFileLoader::NAMESPACED
             )
         );
     }
 
     /**
+     * Tests loading a file with a declare(strict_types=1) statement.
+     *
      * @param string $file
+     *
      * @dataProvider loadWithDeclareStatementsStrictType
      */
     public function testLoadWithDeclareStatementsStrictType($file)
     {
         $content = <<<'EOF'
-
-
-
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
@@ -140,10 +176,14 @@ EOF;
         );
     }
 
+    /**
+     * Tests loading a file with a declare(strict_types=1) statement and a comment.
+     *
+     * @dataProvider loadWithDeclareStatementsStrictType
+     */
     public function testLoadWithDeclareStatementsCommentsAreIgnored()
     {
         $content = <<<'EOF'
-
 
 /**
  * I am a declare(strict_types=1) comment
@@ -176,13 +216,15 @@ EOF;
     }
 
     /**
+     * Tests loading a file with a declare(strict_types=1,ticks=1) statement.
+     *
      * @param string $file
+     *
      * @dataProvider loadWithDeclareStatementsMultipleDefined
      */
     public function testLoadWithDeclareStatementsMultipleDefined($file)
     {
         $content = <<<'EOF'
-
 
 declare(ticks=1);
 
@@ -210,6 +252,11 @@ EOF;
         );
     }
 
+    /**
+     * Provides the data for the declare(strict_types=1) tests.
+     *
+     * @return array
+     */
     public function loadWithDeclareStatementsStrictType()
     {
         return [
@@ -218,6 +265,11 @@ EOF;
         ];
     }
 
+    /**
+     * Provides the data for the declare(strict_types=1,ticks=1) tests.
+     *
+     * @return array
+     */
     public function loadWithDeclareStatementsMultipleDefined()
     {
         return [
