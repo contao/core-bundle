@@ -20,6 +20,8 @@ use Symfony\Component\Config\Loader\Loader;
  */
 class PhpFileLoader extends Loader
 {
+    const NAMESPACED = 'namespaced';
+
     /**
      * Reads the contents of a PHP file stripping the opening and closing PHP tags.
      *
@@ -30,29 +32,15 @@ class PhpFileLoader extends Loader
      */
     public function load($file, $type = null)
     {
-        $code = rtrim(file_get_contents($file));
+        list($code, $namespace) = $this->parseFile($file);
 
-        // Opening tag
-        if (0 === strncmp($code, '<?php', 5)) {
-            $code = substr($code, 5);
+        $code = $this->stripLegacyCheck($code);
+
+        if (false !== $namespace && self::NAMESPACED === $type) {
+            $code = sprintf("\nnamespace %s {%s}\n", $namespace, $code);
         }
 
-        // Access check
-        $code = str_replace(
-            [
-                " if (!defined('TL_ROOT')) die('You cannot access this file directly!');",
-                " if (!defined('TL_ROOT')) die('You can not access this file directly!');",
-            ],
-            '',
-            $code
-        );
-
-        // Closing tag
-        if (substr($code, -2) === '?>') {
-            $code = substr($code, 0, -2);
-        }
-
-        return rtrim($code)."\n";
+        return $code;
     }
 
     /**
@@ -61,5 +49,68 @@ class PhpFileLoader extends Loader
     public function supports($resource, $type = null)
     {
         return 'php' === pathinfo($resource, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Parses a file and returns the code and namespace.
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    private function parseFile($file)
+    {
+        $code = '';
+        $namespace = '';
+        $stream = new \PHP_Token_Stream($file);
+
+        foreach ($stream as $token) {
+            switch (true) {
+                case $token instanceof \PHP_Token_OPEN_TAG:
+                case $token instanceof \PHP_Token_CLOSE_TAG:
+                    // remove
+                    break;
+
+                case $token instanceof \PHP_Token_NAMESPACE:
+                    if ('{' === $token->getName()) {
+                        $namespace = false;
+                        $code .= $token;
+                    } else {
+                        $namespace = $token->getName();
+                        $code .= '//'.$token;
+                    }
+                    break;
+
+                case $token instanceof \PHP_Token_DECLARE:
+                    $code .= '//'.$token;
+                    break;
+
+                default:
+                    $code .= $token;
+            }
+        }
+
+        return [$code, $namespace];
+    }
+
+    /**
+     * Strips the legacy check from the code.
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    private function stripLegacyCheck($code)
+    {
+        $code = str_replace(
+            [
+                "if (!defined('TL_ROOT')) die('You cannot access this file directly!');",
+                "if (!defined('TL_ROOT')) die('You can not access this file directly!');",
+            ],
+            '',
+            $code
+        );
+
+        return "\n".trim($code)."\n";
     }
 }
