@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -145,7 +145,7 @@ class MergeHttpHeadersListener
         foreach ($this->getHeaders() as $header) {
             list($name, $content) = explode(':', $header, 2);
 
-            if ('cli' !== PHP_SAPI) {
+            if ('cli' !== PHP_SAPI && !headers_sent()) {
                 header_remove($name);
             }
 

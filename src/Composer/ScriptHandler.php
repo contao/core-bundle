@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -147,14 +147,14 @@ class ScriptHandler
         $io = $event->getIO();
 
         switch (true) {
-            case $io->isVerbose():
-                return ' -v';
+            case $io->isDebug():
+                return ' -vvv';
 
             case $io->isVeryVerbose():
                 return ' -vv';
 
-            case $io->isDebug():
-                return ' -vvv';
+            case $io->isVerbose():
+                return ' -v';
 
             default:
                 return '';

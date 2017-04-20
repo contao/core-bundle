@@ -1,7 +1,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -892,7 +892,7 @@ var Backend =
 	 */
 	openModalIframe: function(options) {
 		var opt = options || {};
-		var max = (window.getSize().y - 186).toInt();
+		var max = (window.getSize().y - 137).toInt();
 		if (!opt.height || opt.height > max) opt.height = max;
 		var M = new SimpleModal({
 			'width': opt.width,
@@ -915,7 +915,7 @@ var Backend =
 	 */
 	openModalSelector: function(options) {
 		var opt = options || {},
-			max = (window.getSize().y - 186).toInt();
+			max = (window.getSize().y - 192).toInt();
 		if (!opt.height || opt.height > max) opt.height = max;
 		var M = new SimpleModal({
 			'width': opt.width,
@@ -926,24 +926,27 @@ var Backend =
 			'onHide': function() { document.body.setStyle('overflow', 'auto'); }
 		});
 		M.addButton(Contao.lang.close, 'btn', function() {
+			if (this.buttons[0].hasClass('btn-disabled')) {
+				return;
+			}
 			this.hide();
 		});
 		M.addButton(Contao.lang.apply, 'btn primary', function() {
+			if (this.buttons[1].hasClass('btn-disabled')) {
+				return;
+			}
 			var frm = window.frames['simple-modal-iframe'],
 				val = [], ul, inp, field, act, it, i;
 			if (frm === undefined) {
 				alert('Could not find the SimpleModal frame');
 				return;
 			}
-			if (frm.document.location.href.indexOf('/contao?') != -1) {
-				alert(Contao.lang.picker);
-				return; // see #5704
-			}
 			ul = frm.document.getElementById(opt.id);
 			inp = ul.getElementsByTagName('input');
 			for (i=0; i<inp.length; i++) {
-				if (!inp[i].checked || inp[i].id.match(/^check_all_/)) continue;
-				if (!inp[i].id.match(/^reset_/)) val.push(inp[i].get('value'));
+				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
+					val.push(inp[i].get('value'));
+				}
 			}
 			if (opt.tag && (field = $(opt.tag))) {
 				field.value = val.join(',');
@@ -1025,7 +1028,7 @@ var Backend =
 		});
 		M.show({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'contents': '<iframe src="' + document.location.pathname + file + '?table=tl_content&amp;field=singleSRC&amp;value=' + url + swtch + '" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-180).toInt() + '" frameborder="0"></iframe>',
+			'contents': '<iframe src="' + document.location.pathname + file + '?table=tl_content&amp;field=singleSRC&amp;value=' + url + swtch + '" name="simple-modal-iframe" width="100%" height="' + (window.getSize().y-192).toInt() + '" frameborder="0"></iframe>',
 			'model': 'modal'
 		});
 	},

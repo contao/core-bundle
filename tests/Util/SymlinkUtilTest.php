@@ -3,14 +3,14 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Util;
+namespace Contao\CoreBundle\Tests\Util;
 
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\CoreBundle\Util\SymlinkUtil;
 
 /**

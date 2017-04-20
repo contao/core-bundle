@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -592,7 +592,7 @@ abstract class Frontend extends \Controller
 		$strText = $this->replaceInsertTags($strText, false);
 		$strText = strip_tags($strText);
 		$strText = str_replace("\n", ' ', $strText);
-		$strText = \StringUtil::substr($strText, 180);
+		$strText = \StringUtil::substr($strText, 160);
 
 		return trim($strText);
 	}

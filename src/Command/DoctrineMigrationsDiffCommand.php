@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -25,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DoctrineMigrationsDiffCommand extends DiffCommand
 {
+    const COMMAND_ID = 'console.command.contao_corebundle_command_doctrinemigrationsdiffcommand';
+
     /**
      * {@inheritdoc}
      */

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -149,11 +149,20 @@ abstract class System
 	{
 		$strKey = $strKey ?: $strClass;
 
+		if (is_object($strKey))
+		{
+			$strKey = get_class($strClass);
+		}
+
 		if ($blnForce || !isset($this->arrObjects[$strKey]))
 		{
 			$container = static::getContainer();
 
-			if (!class_exists($strClass) && $container->has($strClass))
+			if (is_object($strClass))
+			{
+				$this->arrObjects[$strKey] = $strClass;
+			}
+			elseif (!class_exists($strClass) && $container->has($strClass))
 			{
 				$this->arrObjects[$strKey] = $container->get($strClass);
 			}
@@ -182,11 +191,20 @@ abstract class System
 	{
 		$strKey = $strKey ?: $strClass;
 
+		if (is_object($strKey))
+		{
+			$strKey = get_class($strClass);
+		}
+
 		if ($blnForce || !isset(static::$arrStaticObjects[$strKey]))
 		{
 			$container = static::getContainer();
 
-			if (!class_exists($strClass) && $container->has($strClass))
+			if (is_object($strClass))
+			{
+				static::$arrStaticObjects[$strKey] = $strClass;
+			}
+			elseif (!class_exists($strClass) && $container->has($strClass))
 			{
 				static::$arrStaticObjects[$strKey] = $container->get($strClass);
 			}
@@ -238,7 +256,7 @@ abstract class System
 	 */
 	public static function log($strText, $strFunction, $strCategory)
 	{
-		trigger_error('Using System::log() has been deprecated and will no longer work in Contao 5.0. Use the logger service instead', E_USER_DEPRECATED);
+		@trigger_error('Using System::log() has been deprecated and will no longer work in Contao 5.0. Use the logger service instead', E_USER_DEPRECATED);
 
 		$level = TL_ERROR === $strCategory ? LogLevel::ERROR : LogLevel::INFO;
 		$logger = static::getContainer()->get('monolog.logger.contao');

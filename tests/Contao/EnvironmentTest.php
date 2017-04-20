@@ -3,14 +3,14 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Contao;
+namespace Contao\CoreBundle\Tests\Contao;
 
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\Environment;
 use Contao\System;
 
@@ -19,15 +19,17 @@ use Contao\System;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  *
- * @group legacy
+ * @group contao3
  */
 class EnvironmentTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public static function setupBeforeClass()
+    protected function setUp()
     {
+        parent::setUp();
+
         Environment::reset();
         Environment::set('path', '/core');
 
@@ -131,7 +133,7 @@ class EnvironmentTest extends TestCase
             'SCRIPT_FILENAME' => $this->getRootDir().'/core/index.php',
             'SERVER_PROTOCOL' => 'HTTP/1.1',
             'QUERY_STRING' => 'do=test',
-            'REQUEST_URI' => '/core/en/academy.html?do=test',
+            'REQUEST_URI' => 'http://localhost/core/en/academy.html?do=test', // see #8661
             'SCRIPT_NAME' => '/core/index.php',
             'PHP_SELF' => '/core/index.php',
             'GATEWAY_INTERFACE' => 'CGI/1.1',

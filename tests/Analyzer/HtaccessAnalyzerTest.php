@@ -3,15 +3,15 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Analyzer;
+namespace Contao\CoreBundle\Tests\Analyzer;
 
 use Contao\CoreBundle\Analyzer\HtaccessAnalyzer;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**

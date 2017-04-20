@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -173,6 +173,14 @@ class FrontendTemplate extends \Template
 		if ($template === null)
 		{
 			$template = 'block_section';
+			
+			foreach ($this->positions as $position)
+			{
+				if (isset($position[$key]['template']))
+				{
+					$template = $position[$key]['template'];
+				}
+			}
 		}
 
 		include $this->getTemplate($template, $this->strFormat);

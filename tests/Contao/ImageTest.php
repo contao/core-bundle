@@ -3,14 +3,14 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Contao;
+namespace Contao\CoreBundle\Tests\Contao;
 
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\File;
 use Contao\Image;
 use Contao\System;
@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
- * @group legacy
+ * @group contao3
  */
 class ImageTest extends TestCase
 {
@@ -728,7 +728,6 @@ class ImageTest extends TestCase
     public function getComputeResizeDataWithImportantPart()
     {
         return [
-
             'No dimensions zoom 0' => [
                 [null, null, 100, 100, null, 0, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
                 [

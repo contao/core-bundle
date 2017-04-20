@@ -3,16 +3,16 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Monolog;
+namespace Contao\CoreBundle\Tests\Monolog;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Monolog\ContaoTableHandler;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Statement;
 use Monolog\Logger;
@@ -48,6 +48,9 @@ class ContaoTableHandlerTest extends TestCase
 
     /**
      * Tests the handle() method.
+     *
+     * @expectedDeprecation Using the addLogEntry hook has been deprecated %s.
+     * @group legacy
      */
     public function testHandle()
     {
@@ -94,7 +97,31 @@ class ContaoTableHandlerTest extends TestCase
             ->willReturnCallback(function ($key) use ($connection) {
                 switch ($key) {
                     case 'contao.framework':
-                        return $this->mockContaoFramework();
+                        $system = $this
+                            ->getMockBuilder('Contao\System')
+                            ->disableOriginalConstructor()
+                            ->getMockForAbstractClass()
+                        ;
+
+                        $framework = $this
+                            ->getMockBuilder('Contao\CoreBundle\Framework\ContaoFramework')
+                            ->disableOriginalConstructor()
+                            ->getMock()
+                        ;
+
+                        $framework
+                            ->expects($this->any())
+                            ->method('isInitialized')
+                            ->willReturn(true)
+                        ;
+
+                        $framework
+                            ->expects($this->any())
+                            ->method('getAdapter')
+                            ->willReturn($system)
+                        ;
+
+                        return $framework;
 
                     case 'doctrine.dbal.default_connection':
                         return $connection;
@@ -102,10 +129,20 @@ class ContaoTableHandlerTest extends TestCase
             })
         ;
 
+        $GLOBALS['TL_HOOKS']['addLogEntry'][] = [get_class($this), 'addLogEntry'];
+
         $handler = new ContaoTableHandler();
         $handler->setContainer($container);
 
         $this->assertFalse($handler->handle($record));
+    }
+
+    /**
+     * Dummy method to test the addLogEntry hook.
+     */
+    public function addLogEntry()
+    {
+        // ignore
     }
 
     /**

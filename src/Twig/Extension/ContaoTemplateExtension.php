@@ -1,9 +1,9 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -57,7 +57,7 @@ class ContaoTemplateExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('render_contao_backend_template', [$this, 'renderContaoBackendTemplate'])
+            new \Twig_SimpleFunction('render_contao_backend_template', [$this, 'renderContaoBackendTemplate']),
         ];
     }
 

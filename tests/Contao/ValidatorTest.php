@@ -3,12 +3,12 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Contao;
+namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\Idna;
 use Contao\StringUtil;
@@ -19,7 +19,7 @@ use Contao\Validator;
  *
  * @author Christian Schiffler <https://github.com/discordier>
  *
- * @group legacy
+ * @group contao3
  */
 class ValidatorTest extends \PHPUnit_Framework_TestCase
 {

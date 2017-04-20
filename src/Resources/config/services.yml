@@ -8,7 +8,6 @@ services:
 
     contao.cache.clear_internal:
         class: Contao\CoreBundle\Cache\ContaoCacheClearer
-        public: false
         arguments:
             - "@filesystem"
         tags:
@@ -16,7 +15,6 @@ services:
 
     contao.cache.warm_internal:
         class: Contao\CoreBundle\Cache\ContaoCacheWarmer
-        public: false
         arguments:
             - "@filesystem"
             - "@contao.resource_finder"
@@ -27,10 +25,25 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
+    contao.controller.backend_csv_import:
+        class: Contao\CoreBundle\Controller\BackendCsvImportController
+        arguments:
+            - "@contao.framework"
+            - "@database_connection"
+            - "@request_stack"
+            - "%contao.root_dir%"
+
     contao.controller.insert_tags:
         class: Contao\CoreBundle\Controller\InsertTagsController
         arguments:
             - "@contao.framework"
+
+    contao.cors_website_roots_config_provider:
+        class: Contao\CoreBundle\Cors\WebsiteRootsConfigProvider
+        arguments:
+            - "@database_connection"
+        tags:
+            - { name: nelmio_cors.options_provider }
 
     contao.data_collector:
         class: Contao\CoreBundle\DataCollector\ContaoDataCollector
@@ -42,13 +55,11 @@ services:
         tags:
             - { name: data_collector, template: "ContaoCoreBundle:Collector:contao", id: "contao" }
 
-    contao.doctrine.dca_schema_provider:
+    contao.doctrine.schema_provider:
         class: Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider
         arguments:
-            - "@service_container"
-
-    contao.doctrine.schema_provider:
-        alias: contao.doctrine.dca_schema_provider
+            - "@contao.framework"
+            - "@doctrine"
 
     contao.image.image_sizes:
         class: Contao\CoreBundle\Image\ImageSizes

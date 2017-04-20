@@ -1,17 +1,17 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Twig;
+namespace Contao\CoreBundle\Tests\Twig;
 
 use Contao\BackendCustom;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -57,7 +57,7 @@ class ContaoTemplateExtensionTest extends TestCase
         $requestStack->push($request);
 
         $framework = $this->mockContaoFramework(null, null, [], [
-            BackendCustom::class => $backendRoute
+            BackendCustom::class => $backendRoute,
         ]);
 
         $scopeMatcher = $this->mockScopeMatcher();
@@ -66,7 +66,7 @@ class ContaoTemplateExtensionTest extends TestCase
         $extension->renderContaoBackendTemplate([
             'a' => 'a',
             'b' => 'b',
-            'c' => 'c'
+            'c' => 'c',
         ]);
 
         $this->assertSame('a', $template->a);
@@ -91,8 +91,8 @@ class ContaoTemplateExtensionTest extends TestCase
         $extension = new ContaoTemplateExtension($requestStack, $framework, $scopeMatcher);
         $functions = $extension->getFunctions();
 
-        $renderBaseTemplateFunction = array_filter($functions, function(\Twig_SimpleFunction $function) {
-             return $function->getName() === 'render_contao_backend_template';
+        $renderBaseTemplateFunction = array_filter($functions, function (\Twig_SimpleFunction $function) {
+            return $function->getName() === 'render_contao_backend_template';
         });
 
         $this->assertCount(1, $renderBaseTemplateFunction);

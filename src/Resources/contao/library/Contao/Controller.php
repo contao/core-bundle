@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -987,7 +987,7 @@ abstract class Controller extends \System
 		$query = $query->without(array_merge(array('rt', 'ref'), $arrUnset));
 
 		// Merge the request string to be added
-		$query = $query->merge(new Query(str_replace('&amp;', '&', $strRequest)));
+		$query = $query->merge(str_replace('&amp;', '&', $strRequest));
 
 		// Add the referer ID
 		if (isset($_GET['ref']) || ($strRequest != '' && $blnAddRef))
@@ -995,7 +995,15 @@ abstract class Controller extends \System
 			$query = $query->merge('ref=' . TL_REFERER_ID);
 		}
 
-		return TL_SCRIPT . $query->getUriComponent();
+		$uri = $query->getUriComponent();
+
+		// The query parser automatically converts %2B to +, so re-convert it here
+		if (strpos($strRequest, '%2B') !== false)
+		{
+			$uri = str_replace('+', '%2B', $uri);
+		}
+
+		return TL_SCRIPT . $uri;
 	}
 
 
@@ -1004,20 +1012,7 @@ abstract class Controller extends \System
 	 */
 	public static function reload()
 	{
-		if (headers_sent())
-		{
-			exit;
-		}
-
-		$strLocation = \Environment::get('uri');
-
-		// Ajax request
-		if (\Environment::get('isAjaxRequest'))
-		{
-			throw new AjaxRedirectResponseException($strLocation);
-		}
-
-		throw new RedirectResponseException($strLocation);
+		static::redirect(\Environment::get('uri'));
 	}
 
 
@@ -1052,6 +1047,7 @@ abstract class Controller extends \System
 		throw new RedirectResponseException($strLocation, $intStatus);
 	}
 
+
 	/**
 	 * Replace the old back end paths
 	 *
@@ -1083,6 +1079,7 @@ abstract class Controller extends \System
 
 		return str_replace(array_keys($arrMapper), array_values($arrMapper), $strContext);
 	}
+
 
 	/**
 	 * Generate a front end URL
@@ -1291,12 +1288,12 @@ abstract class Controller extends \System
 	 * Redirect to a front end page
 	 *
 	 * @param integer $intPage    The page ID
-	 * @param mixed   $varArticle An optional article alias
+	 * @param string  $strArticle An optional article alias
 	 * @param boolean $blnReturn  If true, return the URL and don't redirect
 	 *
 	 * @return string The URL of the target page
 	 */
-	protected function redirectToFrontendPage($intPage, $varArticle=null, $blnReturn=false)
+	protected function redirectToFrontendPage($intPage, $strArticle=null, $blnReturn=false)
 	{
 		if (($intPage = intval($intPage)) <= 0)
 		{
@@ -1305,12 +1302,20 @@ abstract class Controller extends \System
 
 		$objPage = \PageModel::findWithDetails($intPage);
 
-		if ($varArticle !== null)
+		if ($objPage === null)
 		{
-			$varArticle = '/articles/' . $varArticle;
+			return '';
 		}
 
-		$strUrl = $objPage->getFrontendUrl($varArticle);
+		$strParams = null;
+
+		// Add the /article/ fragment (see #673)
+		if ($strArticle !== null && ($objArticle = \ArticleModel::findByAlias($strArticle)) !== null)
+		{
+			$strParams = '/articles/' . (($objArticle->inColumn != 'main') ? $objArticle->inColumn . ':' : '') . $strArticle;
+		}
+
+		$strUrl = $objPage->getFrontendUrl($strParams);
 
 		// Make sure the URL is absolute (see #4332)
 		if (strncmp($strUrl, 'http://', 7) !== 0 && strncmp($strUrl, 'https://', 8) !== 0)
@@ -1503,7 +1508,7 @@ abstract class Controller extends \System
 			if ($size[0] > $intMaxWidth || (!$size[0] && !$size[1] && $imgSize[0] > $intMaxWidth))
 			{
 				// See #2268 (thanks to Thyon)
-				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : $imgSize[1] / $imgSize[0];
+				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : (($imgSize[0] && $imgSize[1]) ? $imgSize[1] / $imgSize[0] : 0);
 
 				$size[0] = $intMaxWidth;
 				$size[1] = floor($intMaxWidth * $ratio);
