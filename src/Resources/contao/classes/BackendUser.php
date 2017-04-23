@@ -557,6 +557,7 @@ class BackendUser extends User
 			return array(
 				'ROLE_USER',
 				'ROLE_ADMIN',
+                'ROLE_ALLOWED_TO_SWITCH',
 			);
 		}
 

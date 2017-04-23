@@ -178,6 +178,15 @@ services:
         arguments:
             - "@contao.framework"
 
+    contao.security.switch_user_button_generator:
+        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
+        arguments:
+            - "@security.authorization_checker"
+            - "@router"
+            - "@database_connection"
+            - "@templating"
+            - "@security.token_storage"
+
     contao.image.imagine:
         class: Imagine\Gd\Imagine
 

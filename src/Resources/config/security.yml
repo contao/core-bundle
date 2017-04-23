@@ -26,6 +26,7 @@ security:
             request_matcher: contao.routing.backend_matcher
             provider: contao.security.backend_user_provider
             anonymous: ~
+            switch_user: true
 
             form_login:
                 login_path: /contao/login

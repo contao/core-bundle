@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_user']['su'],
 				'href'                => 'key=su',
 				'icon'                => 'su.svg',
-				'button_callback'     => array('tl_user', 'switchUser')
+				'button_callback'     => array('contao.security.switch_user_button_generator', 'generateSwitchUserButton')
 			)
 		)
 	),
@@ -634,9 +634,14 @@ class tl_user extends Backend
 	 * @return string
 	 *
 	 * @throws Exception
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 *             Use the switch_user_button_generator service instead.
 	 */
 	public function switchUser($row, $href, $label, $title, $icon)
 	{
+		@trigger_error('Using tl_user::switchUser() has been deprecated and will no longer work in Contao 5.0. Use the switch_user_button_generator service instead', E_USER_DEPRECATED);
+
 		if (!$this->User->isAdmin)
 		{
 			return '';

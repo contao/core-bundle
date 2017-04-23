@@ -15,6 +15,8 @@ use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
 use Knp\Bundle\TimeBundle\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
 /**
@@ -207,6 +209,7 @@ class BackendMain extends \Backend
 		$this->Template->previewTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['fePreviewTitle']);
 		$this->Template->pageOffset = \Input::cookie('BE_PAGE_OFFSET');
 		$this->Template->logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
+		$this->Template->logoutLink = \System::getContainer()->get('contao.security.switch_user_button_generator')->generateSwitchUserLogoutButton();
 		$this->Template->logoutTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logoutBTTitle']);
 		$this->Template->backendModules = $GLOBALS['TL_LANG']['MSC']['backendModules'];
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['user'] . ' ' . $GLOBALS['TL_USERNAME'];
