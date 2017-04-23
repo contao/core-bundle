@@ -640,7 +640,7 @@ class tl_user extends Backend
 	 */
 	public function switchUser($row, $href, $label, $title, $icon)
 	{
-		@trigger_error('Using tl_user::switchUser() has been deprecated and will no longer work in Contao 5.0. Use the switch_user_button_generator service instead', E_USER_DEPRECATED);
+		@trigger_error('Using tl_user->switchUser() has been deprecated and will no longer work in Contao 5.0. Use the switch_user_button_generator service instead', E_USER_DEPRECATED);
 
 		if (!$this->User->isAdmin)
 		{

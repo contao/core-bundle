@@ -60,15 +60,4 @@ class SwitchUserButtonGenerator
             'image' => Image::getHtml($icon, $label),
         ]);
     }
-
-    public function generateSwitchUserLogoutButton()
-    {
-        if ($this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            return $this->router->generate('contao_backend', [
-                '_switch_user' => '_exit',
-            ]);
-        }
-
-        return $this->router->generate('contao_backend_logout');
-    }
 }

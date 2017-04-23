@@ -199,6 +199,20 @@ class BackendMain extends \Backend
 			$this->Template->websiteTitle = \Config::get('websiteTitle');
 		}
 
+		/** @var AuthorizationCheckerInterface $authorizationChecker */
+		$authorizationChecker = \System::getContainer()->get('security.authorization_checker');
+
+		/** @var RouterInterface $router */
+		$router = \System::getContainer()->get('router');
+
+		$logoutLink = $router->generate('contao_backend_logout');
+
+		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+			$logoutLink = $router->generate('contao_backend', [
+				'_switch_user' => '_exit',
+			]);
+		}
+
 		$this->Template->theme = \Backend::getTheme();
 		$this->Template->base = \Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
@@ -209,7 +223,7 @@ class BackendMain extends \Backend
 		$this->Template->previewTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['fePreviewTitle']);
 		$this->Template->pageOffset = \Input::cookie('BE_PAGE_OFFSET');
 		$this->Template->logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
-		$this->Template->logoutLink = \System::getContainer()->get('contao.security.switch_user_button_generator')->generateSwitchUserLogoutButton();
+		$this->Template->logoutLink = $logoutLink;
 		$this->Template->logoutTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logoutBTTitle']);
 		$this->Template->backendModules = $GLOBALS['TL_LANG']['MSC']['backendModules'];
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['user'] . ' ' . $GLOBALS['TL_USERNAME'];
