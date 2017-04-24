@@ -3,7 +3,7 @@
 <head>
 
   <meta charset="<?= $this->charset ?>">
-  <title><?= $this->title ?> - Contao Open Source CMS <?= VERSION ?></title>
+  <title><?= $this->title ?> - Contao Open Source CMS</title>
   <base href="<?= $this->base ?>">
   <meta name="generator" content="Contao Open Source CMS">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,shrink-to-fit=no">
@@ -28,7 +28,7 @@
   <div id="container" class="cf">
     <div id="main">
       <?php if ($this->managerHref || $this->switchHref): ?>
-        <div id="manager">
+        <div id="manager" class="legacy">
           <?php if ($this->switchHref): ?>
             <a href="<?= $this->switchHref ?>" class="open"><?= $this->switch ?></a>
           <?php endif; ?>
