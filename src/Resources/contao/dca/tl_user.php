@@ -642,30 +642,7 @@ class tl_user extends Backend
 	{
 		@trigger_error('Using tl_user->switchUser() has been deprecated and will no longer work in Contao 5.0. Use the switch_user_button_generator service instead', E_USER_DEPRECATED);
 
-		if (!$this->User->isAdmin)
-		{
-			return '';
-		}
-
-		if (Input::get('key') == 'su' && Input::get('id'))
-		{
-			$objUser = $this->Database->prepare("SELECT id, username FROM tl_user WHERE id=?")
-									  ->execute(Input::get('id'));
-
-			if (!$objUser->numRows)
-			{
-				throw new Exception('Invalid user ID ' . Input::get('id'));
-			}
-
-			$this->Database->prepare("UPDATE tl_session SET pid=?, su=1 WHERE hash=?")
-						   ->execute($objUser->id, $this->getSessionHash('BE_USER_AUTH'));
-
-			$this->log('User "' . $this->User->username . '" has switched to user "' . $objUser->username . '"', __METHOD__, TL_ACCESS);
-
-			$this->redirect('contao/main.php');
-		}
-
-		return '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'">'.Image::getHtml($icon, $label).'</a> ';
+		return System::getContainer()->get('contao.security.switch_user_button_generator')->generateSwitchUserButton($row, $href, $label, $title, $icon);
 	}
 
 
