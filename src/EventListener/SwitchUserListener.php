@@ -30,7 +30,7 @@ class SwitchUserListener
         $this->logger->info('User {from_name} has switched to user {to_name}.', [
             'from_name' => $user->username,
             'to_name' => $targetUser->username,
-            'contao' => new ContaoContext(__METHOD__, ContaoContext::GENERAL)
+            'contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)
         ]);
     }
 }
