@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Monolog;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -85,7 +86,7 @@ class ContaoTableProcessor
         $record['extra']['contao'] = $context;
         unset($record['context']['contao']);
 
-        return $record;
+        return (new PsrLogMessageProcessor())($record);
     }
 
     /**

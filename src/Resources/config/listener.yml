@@ -148,7 +148,8 @@ services:
     contao.security.switch_user_listener:
         class: Contao\CoreBundle\EventListener\SwitchUserListener
         arguments:
-            - "@monolog.logger.contao"
+            - "@logger"
             - "@security.token_storage"
         tags:
             - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
+            - { name: monolog.logger, channel: contao }
