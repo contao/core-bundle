@@ -83,4 +83,43 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ['web'],
         ];
     }
+
+    /**
+     * Tests the image target path is converted if relative.
+     *
+     * @param string $sourcePath
+     * @param string $expectedPath
+     *
+     * @dataProvider convertImageTargetPathProvider
+     */
+    public function testConvertsImageTargetPath($sourcePath, $expectedPath)
+    {
+        $processor = new Processor();
+
+        $config = $processor->processConfiguration($this->configuration, [
+            'contao' => [
+                'encryption_key' => 's3cr3t',
+                'image' => [
+                    'target_path' => $sourcePath,
+                ],
+            ],
+        ]);
+
+        $this->assertEquals($expectedPath, $config['image']['target_path']);
+    }
+
+    /**
+     * Provides the data for the testConvertsImageTargetPath() method.
+     *
+     * @return array
+     */
+    public function convertImageTargetPathProvider()
+    {
+        return [
+            ['foo/bar', '%kernel.root_dir%/../foo/bar'],
+            ['/foo/bar', '/foo/bar'],
+            ['%kernel.root_dir%/../foo/bar', '%kernel.root_dir%/../foo/bar'],
+            ['%contao.root_dir%/foo/bar', '%contao.root_dir%/foo/bar'],
+        ];
+    }
 }
