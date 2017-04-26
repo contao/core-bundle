@@ -531,7 +531,13 @@ abstract class Controller extends \System
 
 		$objRow->typePrefix = 'ce_';
 		$objRow->form = $objRow->id;
-		$objElement = new \Form($objRow, $strColumn);
+
+		$class = Module::findClass('form');
+		if (!class_exists($class)) {
+			throw new \RuntimeException('Class for module of type \'form\' could not be found.');
+		}
+		$objElement = new $class($objRow, $strColumn);
+
 		$strBuffer = $objElement->generate();
 
 		// HOOK: add custom logic
