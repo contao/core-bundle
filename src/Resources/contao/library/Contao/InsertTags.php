@@ -576,7 +576,7 @@ class InsertTags extends \Controller
 
 					$strUrl = ampersand($strRequest);
 					$strGlue = (strpos($strUrl, '?') === false) ? '?' : '&amp;';
-					
+
 					\System::loadLanguageFile('default');
 
 					if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
