@@ -56,15 +56,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('root_dir')
-                    ->cannotBeEmpty()
-                    ->defaultValue($this->resolvePath($this->rootDir.'/..'))
-                    ->validate()
-                        ->always(function ($value) {
-                            return $this->resolvePath($value);
-                        })
-                    ->end()
-                ->end()
                 ->scalarNode('web_dir')
                     ->cannotBeEmpty()
                     ->defaultValue($this->resolvePath($this->rootDir.'/../web'))
