@@ -2,7 +2,7 @@
 
 ### DEV
  
- * Add the kernel.project_dir parameter (see #758).
+ * Use the kernel.project_dir parameter (see #758).
  * Disable the "publish" checkbox if a parent folder is public (see #712).
  * Improve the findByIdOrAlias() method (see #729).
  * Make sure that all modules can have a custom template (see #704).
