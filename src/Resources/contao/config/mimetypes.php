@@ -95,14 +95,14 @@ $GLOBALS['TL_MIME'] =
 	// Images
 	'bmp'   => ['image/bmp', 'iconBMP.svg'],
 	'gif'   => ['image/gif', 'iconGIF.svg'],
-	'jpeg'  => ['image/jpeg', 'iconJPG.svg'],
+	'jpeg'  => ['image/jpeg', 'iconJPEG.svg'],
 	'jpg'   => ['image/jpeg', 'iconJPG.svg'],
-	'jpe'   => ['image/jpeg', 'iconJPG.svg'],
+	'jpe'   => ['image/jpeg', 'iconJPE.svg'],
 	'png'   => ['image/png', 'iconPNG.svg'],
-	'tiff'  => ['image/tiff', 'iconTIF.svg'],
+	'tiff'  => ['image/tiff', 'iconTIFF.svg'],
 	'tif'   => ['image/tiff', 'iconTIF.svg'],
-	'svg'   => ['image/svg+xml', 'iconPLAIN.svg'],
-	'svgz'  => ['image/svg+xml', 'iconPLAIN.svg'],
+	'svg'   => ['image/svg+xml', 'iconSVG.svg'],
+	'svgz'  => ['image/svg+xml', 'iconSVGZ.svg'],
 
 	// Mailbox files
 	'eml'   => ['message/rfc822', 'iconPLAIN.svg'],
