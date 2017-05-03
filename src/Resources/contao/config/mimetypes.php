@@ -105,7 +105,7 @@ $GLOBALS['TL_MIME'] =
 	'svgz'  => ['image/svg+xml', 'iconSVGZ.svg'],
 
 	// Mailbox files
-	'eml'   => ['message/rfc822', 'iconPLAIN.svg'],
+	'eml'   => ['message/rfc822', 'iconEML.svg'],
 
 	// Text files
 	'asp'   => ['text/asp', 'iconPLAIN.svg'],
