@@ -124,14 +124,14 @@ $GLOBALS['TL_MIME'] =
 	'xsl'   => ['text/xml', 'iconXSL.svg'],
 
 	// Videos
-	'mp4'   => ['video/mp4', 'iconVIDEO.svg'],
-	'm4v'   => ['video/x-m4v', 'iconVIDEO.svg'],
-	'mov'   => ['video/mov', 'iconVIDEO.svg'],
-	'wmv'   => ['video/wmv', 'iconVIDEO.svg'],
-	'webm'  => ['video/webm', 'iconVIDEO.svg'],
-	'qt'    => ['video/quicktime', 'iconVIDEO.svg'],
-	'rv'    => ['video/vnd.rn-realvideo', 'iconVIDEO.svg'],
-	'avi'   => ['video/x-msvideo', 'iconVIDEO.svg'],
-	'ogv'   => ['video/ogg', 'iconVIDEO.svg'],
-	'movie' => ['video/x-sgi-movie', 'iconVIDEO.svg']
+	'mp4'   => ['video/mp4', 'iconMP4.svg'],
+	'm4v'   => ['video/x-m4v', 'iconM4V.svg'],
+	'mov'   => ['video/mov', 'iconMOV.svg'],
+	'wmv'   => ['video/wmv', 'iconWMV.svg'],
+	'webm'  => ['video/webm', 'iconWEBM.svg'],
+	'qt'    => ['video/quicktime', 'iconQT.svg'],
+	'rv'    => ['video/vnd.rn-realvideo', 'iconRV.svg'],
+	'avi'   => ['video/x-msvideo', 'iconAVI.svg'],
+	'ogv'   => ['video/ogg', 'iconOGV.svg'],
+	'movie' => ['video/x-sgi-movie', 'iconMOVIE.svg']
 ];
