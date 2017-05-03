@@ -45,7 +45,7 @@ class ContaoCoreBundle extends Bundle
      */
     public function registerCommands(Application $application)
     {
-        // All core-bundle commands are registered as services
+        // disable automatic command registration
     }
 
     /**
