@@ -2,7 +2,7 @@
 
 ### DEV
 
- * Warn if another user has edited a record when saving it (see contao/core#8412).
+ * Warn if another user has edited a record when saving it (see #809).
  * Optimize the element preview height (see #810).
  * Use the file meta data by default when adding an image (see #807).
  * Use the kernel.project_dir parameter (see #758).
