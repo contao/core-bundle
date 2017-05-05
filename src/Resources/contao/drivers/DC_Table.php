@@ -1863,7 +1863,19 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			}
 		}
 
+		/** @var SessionInterface $objSessionBag */
+		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
+
 		$objVersions->initialize();
+		$intLatestVersion = $objVersions->getLatestVersion();
+
+		// Store the current version number (see #8412)
+		if ($intLatestVersion !== null && empty($_POST))
+		{
+			$arrRecords = $objSessionBag->get('edit_records', array());
+			$arrRecords[$this->strTable][$this->intId] = $objVersions->getLatestVersion();
+			$objSessionBag->set('edit_records', $arrRecords);
+		}
 
 		// Build an array from boxes and rows
 		$this->strPalette = $this->getPalette();
@@ -1902,9 +1914,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					unset($boxes[$k]);
 				}
 			}
-
-			/** @var SessionInterface $objSessionBag */
-			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
 			$class = 'tl_tbox';
 			$fs = $objSessionBag->get('fieldset_states');
@@ -2170,6 +2179,16 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				$this->Database->prepare("UPDATE " . $this->strTable . " SET tstamp=? WHERE id=?")
 							   ->execute(time(), $this->intId);
+			}
+
+			$arrRecords = $objSessionBag->get('edit_records', array());
+			$intLatestVersion = $objVersions->getLatestVersion();
+
+			// Show a warning if the record has been saved by another user (see #8412)
+			if ($intLatestVersion !== null && isset($arrRecords[$this->strTable][$this->intId]) && $intLatestVersion > ($arrRecords[$this->strTable][$this->intId] + 1))
+			{
+				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['versionWarning'], ($intLatestVersion - 1), $arrRecords[$this->strTable][$this->intId]));
+				$this->reload();
 			}
 
 			// Redirect
