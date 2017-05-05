@@ -392,6 +392,9 @@ input[type=search]::-webkit-search-decoration {
 .maintenance_inactive .tl_tbox {
 	padding:6px 2% 14px;
 }
+.maintenance_inactive .tl_message {
+	margin-top:0;
+}
 .maintenance_inactive h2.sub_headline {
 	margin:18px 2% 3px;
 }
@@ -400,11 +403,11 @@ input[type=search]::-webkit-search-decoration {
 	padding:0 2% 24px;
 	border:0;
 }
-#tl_maintenance_mode .tl_tbox {
-	padding-top:4px;
+#tl_maintenance_mode .tl_message {
+	margin-bottom:12px;
 }
 #tl_maintenance_index .tl_tbox {
-	margin-top:-13px;
+	margin-top:-12px;
 }
 
 /* Picker search */
