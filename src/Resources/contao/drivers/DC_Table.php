@@ -1863,19 +1863,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			}
 		}
 
-		/** @var SessionInterface $objSessionBag */
-		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
-
 		$objVersions->initialize();
-		$intLatestVersion = $objVersions->getLatestVersion();
-
-		// Store the current version number (see #8412)
-		if ($intLatestVersion !== null && empty($_POST))
-		{
-			$arrRecords = $objSessionBag->get('edit_records', array());
-			$arrRecords[$this->strTable][$this->intId] = $objVersions->getLatestVersion();
-			$objSessionBag->set('edit_records', $arrRecords);
-		}
 
 		// Build an array from boxes and rows
 		$this->strPalette = $this->getPalette();
@@ -1914,6 +1902,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					unset($boxes[$k]);
 				}
 			}
+
+			/** @var SessionInterface $objSessionBag */
+			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
 			$class = 'tl_tbox';
 			$fs = $objSessionBag->get('fieldset_states');
@@ -2107,6 +2098,15 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>
 </form>';
 
+		$strVersionField = '';
+
+		// Store the current version number (see #8412)
+		if (($intLatestVersion = $objVersions->getLatestVersion()) !== null)
+		{
+			$strVersionField = '
+<input type="hidden" name="VERSION_NUMBER" value="'.$intLatestVersion.'">';
+		}
+
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
 		$return = $version . '
 <div id="tl_buttons">' . (\Input::get('nb') ? '&nbsp;' : '
@@ -2116,7 +2116,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <form action="'.ampersand(\Environment::get('request'), true).'" id="'.$this->strTable.'" class="tl_form" method="post" enctype="' . ($this->blnUploadable ? 'multipart/form-data' : 'application/x-www-form-urlencoded') . '"'.(!empty($this->onsubmit) ? ' onsubmit="'.implode(' ', $this->onsubmit).'"' : '').'>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="'.$this->strTable.'">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
+<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">'.$strVersionField.'
 <input type="hidden" name="FORM_FIELDS[]" value="'.\StringUtil::specialchars($this->strPalette).'">'.($this->noReload ? '
 
 <p class="tl_error">'.$GLOBALS['TL_LANG']['ERR']['general'].'</p>' : '').$return;
@@ -2181,13 +2181,10 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							   ->execute(time(), $this->intId);
 			}
 
-			$arrRecords = $objSessionBag->get('edit_records', array());
-			$intLatestVersion = $objVersions->getLatestVersion();
-
 			// Show a warning if the record has been saved by another user (see #8412)
-			if ($intLatestVersion !== null && isset($arrRecords[$this->strTable][$this->intId]) && $intLatestVersion > ($arrRecords[$this->strTable][$this->intId] + 1))
+			if ($intLatestVersion !== null && isset($_POST['VERSION_NUMBER']) && $intLatestVersion > \Input::post('VERSION_NUMBER'))
 			{
-				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['versionWarning'], ($intLatestVersion - 1), $arrRecords[$this->strTable][$this->intId]));
+				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['versionWarning'], $intLatestVersion, \Input::post('VERSION_NUMBER')));
 				$this->reload();
 			}
 
