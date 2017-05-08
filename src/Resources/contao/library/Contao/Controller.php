@@ -975,7 +975,7 @@ abstract class Controller extends \System
 		$query = $query->without(array_merge(array('rt', 'ref'), $arrUnset));
 
 		// Merge the request string to be added
-		$query = $query->merge(new Query(str_replace('&amp;', '&', $strRequest)));
+		$query = $query->merge(str_replace('&amp;', '&', $strRequest));
 
 		// Add the referer ID
 		if (isset($_GET['ref']) || ($strRequest != '' && $blnAddRef))
@@ -983,7 +983,15 @@ abstract class Controller extends \System
 			$query = $query->merge('ref=' . TL_REFERER_ID);
 		}
 
-		return TL_SCRIPT . $query->getUriComponent();
+		$uri = $query->getUriComponent();
+
+		// The query parser automatically converts %2B to +, so re-convert it here
+		if (strpos($strRequest, '%2B') !== false)
+		{
+			$uri = str_replace('+', '%2B', $uri);
+		}
+
+		return TL_SCRIPT . ampersand($uri);
 	}
 
 
@@ -992,20 +1000,7 @@ abstract class Controller extends \System
 	 */
 	public static function reload()
 	{
-		if (headers_sent())
-		{
-			exit;
-		}
-
-		$strLocation = \Environment::get('uri');
-
-		// Ajax request
-		if (\Environment::get('isAjaxRequest'))
-		{
-			throw new AjaxRedirectResponseException($strLocation);
-		}
-
-		throw new RedirectResponseException($strLocation);
+		static::redirect(\Environment::get('uri'));
 	}
 
 
@@ -1040,6 +1035,7 @@ abstract class Controller extends \System
 		throw new RedirectResponseException($strLocation, $intStatus);
 	}
 
+
 	/**
 	 * Replace the old back end paths
 	 *
@@ -1071,6 +1067,7 @@ abstract class Controller extends \System
 
 		return str_replace(array_keys($arrMapper), array_values($arrMapper), $strContext);
 	}
+
 
 	/**
 	 * Generate a front end URL
@@ -1496,10 +1493,10 @@ abstract class Controller extends \System
 				}
 			}
 
-			if ($size[0] > $intMaxWidth || (!$size[0] && !$size[1] && $imgSize[0] > $intMaxWidth))
+			if ($size[0] > $intMaxWidth || (!$size[0] && !$size[1] && (!$imgSize[0] || $imgSize[0] > $intMaxWidth)))
 			{
 				// See #2268 (thanks to Thyon)
-				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : $imgSize[1] / $imgSize[0];
+				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : (($imgSize[0] && $imgSize[1]) ? $imgSize[1] / $imgSize[0] : 0);
 
 				$size[0] = $intMaxWidth;
 				$size[1] = floor($intMaxWidth * $ratio);
@@ -1893,8 +1890,6 @@ abstract class Controller extends \System
 	 * Remove old XML files from the share directory
 	 *
 	 * @param boolean $blnReturn If true, only return the finds and don't delete
-	 *
-	 * @return array An array of old XML files
 	 *
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
 	 *             Use Automator::purgeXmlFiles() instead.

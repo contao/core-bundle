@@ -1,5 +1,44 @@
 # Contao core bundle change log
 
+### 4.3.9 (2017-04-25)
+
+ * Revert the Punycode library changes (see contao/core#8693).
+
+### 4.3.8 (2017-04-24)
+
+ * Inline small images in protected folders in the file manager (see #636).
+ * Correctly encode the URL in the DataContainer::switchToEdit() method (see #762).
+ * Fix the parent view drag and drop in Firefox (see #666).
+ * Correctly display the search results in the extended tree view (see #739).
+ * Update the Punycode library to version 2 (see #748).
+ * Fix the "delete file" button for non-admin users (see #764).
+ * Prevent endless loops in the book navigation module (see contao/core#8665).
+ * Limit the maximum size of dimensionless SVGs in the back end (see contao/core#8684).
+ * Correctly support 64 character template names everywhere (see contao/core#6819).
+ * Remove the UTF-8 BOM when combining files (see contao/core#8689).
+ * Correctly move folders with an "@" in their name (see contao/core#8674).
+ * Correctly redirect to the last page visited upon login (see contao/core#8632).
+
+### 4.3.7 (2017-03-23)
+
+ * Check the database connection in the WebsiteRootsConfigProvider class.
+ * Fix the %2B conversion in the Controller::addToUrl() method.
+
+### 4.3.6 (2017-03-22)
+
+ * Correctly initialize custom entry points (see #713).
+ * Correctly parse Doctrine SQL arrays in DCA files (see #721).
+ * Also apply the tree view filter settings to the child table (see #716).
+ * Also delete the symlink if a public folder is deleted (see #710).
+ * Use the selected template for custom sections (see #703).
+ * Handle absolute URLs in Environment::requestUri() (see contao/core#8661).
+ * Correctly store numbers with leading zero in the Config class (see contao/core#4035).
+ * Delete an old search entry if the new URL is more canonical (see contao/core#8647).
+ * Also make Folder::$dirname an absolute path again (see contao/core#8325).
+ * Reduce the meta description length to 160 characters (see #706).
+ * Do not add empty author tags to an Atom feed (see contao/news-bundle#9).
+ * Fix the position of the sort hint if the widget is not the first one (see #722).
+
 ### 4.3.5 (2017-02-14)
 
  * Skip the incomplete installation test in the install tool.

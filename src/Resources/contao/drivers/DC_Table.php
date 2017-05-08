@@ -3501,7 +3501,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		{
 			$fld = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? 'pid' : 'id';
 
-			$objRoot = $this->Database->prepare("SELECT $fld FROM {$this->strTable} WHERE " . implode(' AND ', $this->procedure))
+			$objRoot = $this->Database->prepare("SELECT DISTINCT $fld FROM {$this->strTable} WHERE " . implode(' AND ', $this->procedure))
 									  ->execute($this->values);
 
 			if ($objRoot->numRows < 1)
@@ -3970,8 +3970,20 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Add the records of the table itself
 		if ($table != $this->strTable)
 		{
-			$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))
-										->execute($id);
+			// Also apply the filter settings to the child table (see #716)
+			if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6 && !empty($this->procedure))
+			{
+				$arrValues = $this->values;
+				array_unshift($arrValues, $id);
+
+				$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=? AND " . (implode(' AND ', $this->procedure)) . ($blnHasSorting ? " ORDER BY sorting" : ''))
+											->execute($arrValues);
+			}
+			else
+			{
+				$objChilds = $this->Database->prepare("SELECT id FROM " . $this->strTable . " WHERE pid=?" . ($blnHasSorting ? " ORDER BY sorting" : ''))
+											->execute($id);
+			}
 
 			if ($objChilds->numRows)
 			{
