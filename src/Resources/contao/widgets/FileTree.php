@@ -169,21 +169,21 @@ class FileTree extends \Widget
 			// Only files can be selected
 			if ($this->filesOnly && is_dir(TL_ROOT . '/' . $objFile->path))
 			{
-				$this->addError('Please select only files.'); // FIXME
+				$this->addError($GLOBALS['TL_LANG']['ERR']['filesOnly']);
 				break;
 			}
 
 			// Only folders can be selected
 			if ($this->files === false && !is_dir(TL_ROOT . '/' . $objFile->path))
 			{
-				$this->addError('Please select only folders.'); // FIXME
+				$this->addError($GLOBALS['TL_LANG']['ERR']['foldersOnly']);
 				break;
 			}
 
 			// Only files within a custom path can be selected
 			if ($this->path && strpos($objFile->path, $this->path . '/') !== 0)
 			{
-				$this->addError('You can only select files within "' . $this->path . '".'); // FIXME
+				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['pathOnly'], $this->path));
 				break;
 			}
 
@@ -195,7 +195,7 @@ class FileTree extends \Widget
 
 				if (!in_array($objFile->extension, $extensions))
 				{
-					$this->addError('You can only select "' . $this->extensions . '" files.'); // FIXME
+					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['extensionsOnly'], $this->extensions));
 					break;
 				}
 			}
