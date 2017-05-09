@@ -18,6 +18,10 @@ namespace Contao;
  * @property boolean $multiple
  * @property boolean $isGallery
  * @property boolean $isDownloads
+ * @property boolean $files
+ * @property boolean $filesOnly
+ * @property string  $path
+ * @property string  $extensions
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -85,6 +89,13 @@ class FileTree extends \Widget
 	 */
 	protected function validator($varInput)
 	{
+		$this->checkValue($varInput);
+
+		if ($this->hasErrors())
+		{
+			return '';
+		}
+
 		// Store the order value
 		if ($this->orderField != '')
 		{
@@ -121,6 +132,73 @@ class FileTree extends \Widget
 			$arrValue = array_filter(explode(',', $varInput));
 
 			return $this->multiple ? array_map('StringUtil::uuidToBin', $arrValue) : \StringUtil::uuidToBin($arrValue[0]);
+		}
+	}
+
+
+	/**
+	 * Check the selected value
+	 *
+	 * @param mixed $varInput
+	 */
+	protected function checkValue($varInput)
+	{
+		if ($varInput == '')
+		{
+			return;
+		}
+
+		if (strpos($varInput, ',') === false)
+		{
+			$arrUuids = array($varInput);
+		}
+		else
+		{
+			$arrUuids = array_filter(explode(',', $varInput));
+		}
+
+		$objFiles = \FilesModel::findMultipleByUuids($arrUuids);
+
+		if ($objFiles === null)
+		{
+			return;
+		}
+
+		foreach ($objFiles as $objFile)
+		{
+			// Only files can be selected
+			if ($this->filesOnly && is_dir(TL_ROOT . '/' . $objFile->path))
+			{
+				$this->addError('Please select only files.'); // FIXME
+				break;
+			}
+
+			// Only folders can be selected
+			if ($this->files === false && !is_dir(TL_ROOT . '/' . $objFile->path))
+			{
+				$this->addError('Please select only folders.'); // FIXME
+				break;
+			}
+
+			// Only files within a custom path can be selected
+			if ($this->path && strpos($objFile->path, $this->path . '/') !== 0)
+			{
+				$this->addError('You can only select files within "' . $this->path . '".'); // FIXME
+				break;
+			}
+
+			// Only certain file types can be selected
+			if ($this->extensions)
+			{
+				$extensions = \StringUtil::trimsplit(',', $this->extensions);
+				$objFile = is_dir(TL_ROOT . '/' . $objFile->path) ? new \Folder($objFile->path) : new \File($objFile->path);
+
+				if (!in_array($objFile->extension, $extensions))
+				{
+					$this->addError('You can only select "' . $this->extensions . '" files.'); // FIXME
+					break;
+				}
+			}
 		}
 	}
 
