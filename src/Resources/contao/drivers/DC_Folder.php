@@ -178,6 +178,8 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$this->strTable = $strTable;
 		$this->blnIsDbAssisted = $GLOBALS['TL_DCA'][$strTable]['config']['databaseAssisted'];
 
+		$this->initPicker();
+
 		// Check for valid file types
 		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'])
 		{
@@ -2662,6 +2664,15 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
+				elseif (!empty($this->arrValidFileTypes) && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				{
+					$objFile =  new \File($currentFolder . '/' . $file);
+
+					if (!in_array($objFile->extension, $this->arrValidFileTypes))
+					{
+						--$countFiles;
+					}
+				}
 			}
 
 			if (!empty($arrFound) && $countFiles < 1 && !in_array($currentFolder, $arrFound))
@@ -3123,9 +3134,22 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 		$arrEval = $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval'];
 
+		// Only folders can be selected
 		if (isset($arrEval['files']) && $arrEval['files'] === false)
 		{
 			$this->blnHideFiles = true;
+		}
+
+		// Only files within a custom path can be selected
+		if (isset($arrEval['path']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = array($arrEval['path']);
+		}
+
+		// Only certain file types can be selected
+		if (isset($arrEval['extensions']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'] = $arrEval['extensions'];
 		}
 
 		return true;
