@@ -892,6 +892,8 @@ abstract class DataContainer extends \Backend
 	/**
 	 * Initialize the picker
 	 *
+	 * @return boolean
+	 *
 	 * @throws InternalServerErrorException
 	 */
 	protected function initPicker()
@@ -900,7 +902,7 @@ abstract class DataContainer extends \Backend
 
 		if (!$menuBuilder->supportsTable($this->strTable))
 		{
-			return;
+			return false;
 		}
 
 		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
@@ -953,6 +955,8 @@ abstract class DataContainer extends \Backend
 		{
 			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
+
+		return true;
 	}
 
 

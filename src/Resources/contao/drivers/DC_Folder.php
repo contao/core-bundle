@@ -82,6 +82,12 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	 */
 	protected $blnIsDbAssisted = false;
 
+	/**
+	 * Hide files
+	 * @var boolean
+	 */
+	protected $blnHideFiles = false;
+
 
 	/**
 	 * Initialize the object
@@ -2652,6 +2658,10 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
+				elseif ($this->blnHideFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				{
+					--$countFiles;
+				}
 			}
 
 			if (!empty($arrFound) && $countFiles < 1 && !in_array($currentFolder, $arrFound))
@@ -2727,6 +2737,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				$return .= $this->generateTree($folders[$f], ($intMargin + $intSpacing), false, $protected, $arrClipboard, $arrFound);
 				$return .= '</ul></li>';
 			}
+		}
+
+		if ($this->blnHideFiles)
+		{
+			return $return;
 		}
 
 		// Process files
@@ -3089,6 +3104,29 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$path = dirname($path);
 		}
 		while ($path != '.');
+
+		return true;
+	}
+
+
+	/**
+	 * Initialize the picker
+	 *
+	 * @return boolean
+	 */
+	protected function initPicker()
+	{
+		if (parent::initPicker() === false)
+		{
+			return false;
+		}
+
+		$arrEval = $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval'];
+
+		if (isset($arrEval['files']) && $arrEval['files'] === false)
+		{
+			$this->blnHideFiles = true;
+		}
 
 		return true;
 	}
