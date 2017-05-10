@@ -312,7 +312,6 @@ abstract class Template extends \Controller
 		$this->compile();
 
 		$response = new Response($this->strBuffer);
-
 		$response->headers->set('Content-Type', $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		return $response;
