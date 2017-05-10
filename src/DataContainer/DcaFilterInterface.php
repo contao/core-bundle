@@ -21,6 +21,9 @@ interface DcaFilterInterface
      * Returns the filter array.
      *
      * @return array
+     *
+     * @see DataContainer::setDcaFilter()
+     * @see DC_Folder::setDcaFilter()
      */
     public function getDcaFilter();
 }
