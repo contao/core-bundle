@@ -222,7 +222,14 @@ class FileTree extends \Widget implements DcaFilterInterface
 			if ($this->extensions)
 			{
 				$extensions = \StringUtil::trimsplit(',', $this->extensions);
-				$objFile = is_dir(TL_ROOT . '/' . $objFile->path) ? new \Folder($objFile->path) : new \File($objFile->path);
+
+				if (is_dir(TL_ROOT . '/' . $objFile->path))
+				{
+					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['extensionsOnly'], $this->extensions));
+					break;
+				}
+
+				$objFile = new \File($objFile->path);
 
 				if (!in_array($objFile->extension, $extensions))
 				{
