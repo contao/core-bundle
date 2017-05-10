@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\DataContainer\DcaFilterInterface;
+
 
 /**
  * Provide methods to handle input field "file tree".
@@ -25,7 +27,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileTree extends \Widget
+class FileTree extends \Widget implements DcaFilterInterface
 {
 
 	/**
@@ -77,6 +79,35 @@ class FileTree extends \Widget
 			$tmp = \StringUtil::deserialize($objRow->{$this->orderField});
 			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getDcaFilter()
+	{
+		$arrFilters = array();
+
+		// Only folders can be selected
+		if ($this->files === false)
+		{
+			$arrFilters['hideFiles'] = true;
+		}
+
+		// Only files within a custom path can be selected
+		if ($this->path)
+		{
+			$arrFilters['root'] = array($this->path);
+		}
+
+		// Only certain file types can be selected
+		if ($this->extensions)
+		{
+			$arrFilters['extensions'] = $this->extensions;
+		}
+
+		return $arrFilters;
 	}
 
 

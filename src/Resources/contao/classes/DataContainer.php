@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 
@@ -956,6 +957,17 @@ abstract class DataContainer extends \Backend
 			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
 
+		/** @var Widget $strClass */
+		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
+
+		/** @var Widget $objWidget */
+		$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
+
+		if ($objWidget instanceof DcaFilterInterface)
+		{
+			$this->setDcaFilter($objWidget->getDcaFilter());
+		}
+
 		return true;
 	}
 
@@ -980,6 +992,20 @@ abstract class DataContainer extends \Backend
 		}
 
 		$this->arrPickerValue = $varValue;
+	}
+
+
+	/**
+	 * Set the DCA filter
+	 *
+	 * @param array $arrFilter
+	 */
+	protected function setDcaFilter($arrFilter)
+	{
+		if (isset($arrFilter['root']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
+		}
 	}
 
 

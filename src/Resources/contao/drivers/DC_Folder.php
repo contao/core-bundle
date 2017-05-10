@@ -3121,38 +3121,23 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 
 	/**
-	 * Initialize the picker
+	 * Set the DCA filter
 	 *
-	 * @return boolean
+	 * @param array $arrFilter
 	 */
-	protected function initPicker()
+	protected function setDcaFilter($arrFilter)
 	{
-		if (parent::initPicker() === false)
-		{
-			return false;
-		}
+		parent::setDcaFilter($arrFilter);
 
-		$arrEval = $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval'];
-
-		// Only folders can be selected
-		if (isset($arrEval['files']) && $arrEval['files'] === false)
+		if (isset($arrFilter['hideFiles']) && $arrFilter['hideFiles'] === true)
 		{
 			$this->blnHideFiles = true;
 		}
 
-		// Only files within a custom path can be selected
-		if (isset($arrEval['path']))
+		if (isset($arrFilter['extensions']))
 		{
-			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = array($arrEval['path']);
+			$GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'] = $arrFilter['extensions'];
 		}
-
-		// Only certain file types can be selected
-		if (isset($arrEval['extensions']))
-		{
-			$GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'] = $arrEval['extensions'];
-		}
-
-		return true;
 	}
 
 
