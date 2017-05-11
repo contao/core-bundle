@@ -178,17 +178,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$this->strTable = $strTable;
 		$this->blnIsDbAssisted = $GLOBALS['TL_DCA'][$strTable]['config']['databaseAssisted'];
 
-		// Initialize the picker
-		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
-		{
-			list($table) = explode('.', \Input::get('target'), 2);
-
-			if ($this->strTable != $table)
-			{
-				$this->initPicker();
-			}
-		}
-
 		// Check for valid file types
 		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'])
 		{
@@ -209,6 +198,17 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					$callback($this);
 				}
+			}
+		}
+
+		// Initialize the picker
+		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		{
+			list($table) = explode('.', \Input::get('target'), 2);
+
+			if ($this->strTable != $table)
+			{
+				$this->initPicker();
 			}
 		}
 
@@ -3134,7 +3134,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 		if (isset($arrFilter['extensions']))
 		{
-			$GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'] = $arrFilter['extensions'];
+			$this->arrValidFileTypes = $arrFilter['extensions'];
 		}
 	}
 
