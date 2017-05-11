@@ -178,14 +178,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$this->strTable = $strTable;
 		$this->blnIsDbAssisted = $GLOBALS['TL_DCA'][$strTable]['config']['databaseAssisted'];
 
-		$this->initPicker();
-
-		// Check for valid file types
-		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'])
-		{
-			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes']));
-		}
-
 		// Initialize the picker
 		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
 		{
@@ -195,6 +187,12 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			{
 				$this->initPicker();
 			}
+		}
+
+		// Check for valid file types
+		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes'])
+		{
+			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes']));
 		}
 
 		// Call onload_callback (e.g. to check permissions)

@@ -219,17 +219,10 @@ class FileTree extends \Widget implements DcaFilterInterface
 			}
 
 			// Only certain file types can be selected
-			if ($this->extensions)
+			if ($this->extensions && !is_dir(TL_ROOT . '/' . $objFile->path))
 			{
-				$extensions = \StringUtil::trimsplit(',', $this->extensions);
-
-				if (is_dir(TL_ROOT . '/' . $objFile->path))
-				{
-					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['extensionsOnly'], $this->extensions));
-					break;
-				}
-
 				$objFile = new \File($objFile->path);
+				$extensions = \StringUtil::trimsplit(',', $this->extensions);
 
 				if (!in_array($objFile->extension, $extensions))
 				{
