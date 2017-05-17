@@ -396,6 +396,9 @@ abstract class Backend extends \Controller
 			$dc = new $dataContainer($strTable, $arrModule);
 		}
 
+		// Wrap the existing headline
+		$this->Template->headline = '<span>' . $this->Template->headline . '</span>';
+
 		// AJAX request
 		if ($_POST && \Environment::get('isAjaxRequest'))
 		{
@@ -428,17 +431,17 @@ abstract class Backend extends \Controller
 
 					if ($objRow->title != '')
 					{
-						$this->Template->headline .= ' » ' . $objRow->title;
+						$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
 					}
 					elseif ($objRow->name != '')
 					{
-						$this->Template->headline .= ' » ' . $objRow->name;
+						$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
 					}
 				}
 			}
 
 			// Add the name of the submodule
-			$this->Template->headline .= ' » ' . sprintf($GLOBALS['TL_LANG'][$strTable][\Input::get('key')][1], \Input::get('id'));
+			$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][\Input::get('key')][1], \Input::get('id')) . '</span>';
 		}
 
 		// Default action
@@ -479,7 +482,6 @@ abstract class Backend extends \Controller
 					break;
 			}
 
-
 			// Add the name of the parent elements
 			if ($strTable && in_array($strTable, $arrTables) && $strTable != $arrTables[0])
 			{
@@ -488,68 +490,73 @@ abstract class Backend extends \Controller
 				$pid = $dc->id;
 				$table = $strTable;
 				$ptable = (\Input::get('act') != 'edit') ? $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] : $strTable;
-				
+
 				while ($ptable && !in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
 				{
 					$objRow = $this->Database->prepare("SELECT * FROM " . $ptable . " WHERE id=?")
 											 ->limit(1)
 											 ->execute($pid);
-					
+
 					// Add only parent tables to the trail
 					if ($table != $ptable)
 					{
 						// Add table name
 						if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 						{
-							$trail[] =' &raquo;&nbsp;<span style="white-space:pre;">'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
+							$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
 						}
-						
+
 						// Add object title or name
 						if ($objRow->title != '')
 						{
-							$trail[] = ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $objRow->title . '</span>';
+							$trail[] = ' › <span>' . $objRow->title . '</span>';
 						}
 						elseif ($objRow->name != '')
 						{
-							$trail[] = ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $objRow->name . '</span>';
+							$trail[] = ' › <span>' . $objRow->name . '</span>';
 						}
-						elseif ($objRow->headline != '') // Inconsistent title handling in contao/news-bundle
+						elseif ($objRow->headline != '')
 						{
-							$trail[] = ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $objRow->headline . '</span>';
+							$trail[] = ' › <span>' . $objRow->headline . '</span>';
 						}
-						
+
 					}
-						
+
 					$this->loadDataContainer($ptable);
-					
+
 					// Next parent table
 					$pid = $objRow->pid;
 					$table = $ptable;
 					$ptable = ($GLOBALS['TL_DCA'][$ptable]['config']['dynamicPtable']) ? $objRow->ptable : $GLOBALS['TL_DCA'][$ptable]['config']['ptable'];
 				}
-				
+
 				// Add the last parent table
 				if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 				{
-					$trail[] = ' &raquo;&nbsp;'. $GLOBALS['TL_LANG']['MOD'][$table];
+					$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
 				}
-				
+
 				// Add the breadcrumb trail in reverse order
 				foreach (array_reverse($trail) as $breadcrumb)
 				{
 					$this->Template->headline .= $breadcrumb;
 				}
-			
 			}
-			
+
 			// Add the current action
 			if (\Input::get('act') == 'editAll')
 			{
-				$action = $GLOBALS['TL_LANG']['MSC']['all'][0];
+				if (isset($GLOBALS['TL_LANG']['MSC']['all'][0]))
+				{
+					$this->Template->headline .= ' › <span>' . $GLOBALS['TL_LANG']['MSC']['all'][0] . '</span>';
+				}
 			}
 			elseif (\Input::get('act') == 'overrideAll')
 			{
-				$action = $GLOBALS['TL_LANG']['MSC']['all_override'][0];
+				if (isset($GLOBALS['TL_LANG']['MSC']['all_override'][0]))
+				{
+					$this->Template->headline .= ' › <span>' . $GLOBALS['TL_LANG']['MSC']['all_override'][0] . '</span>';
+				}
 			}
 			else
 			{
@@ -560,36 +567,38 @@ abstract class Backend extends \Controller
 						// Handle new folders (see #7980)
 						if (strpos(\Input::get('id'), '__new__') !== false)
 						{
-							$action = dirname(\Input::get('id')) . ' &rsaquo; ' . $GLOBALS['TL_LANG'][$strTable]['new'][1];
+							$this->Template->headline .= ' › <span>' . dirname(\Input::get('id')) . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['new'][1] . '</span>';
 						}
 						else
 						{
-							$action = \Input::get('id');
+							$this->Template->headline .= ' › <span>' . \Input::get('id') . '</span>';
 						}
 					}
-					elseif (is_array($GLOBALS['TL_LANG'][$strTable][$act]))
+					elseif (isset($GLOBALS['TL_LANG'][$strTable][$act][1]))
 					{
-						$action = sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('id'));
+						$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('id')) . '</span>';
 					}
 				}
 				elseif (\Input::get('pid'))
 				{
 					if (\Input::get('do') == 'files' || \Input::get('do') == 'tpl_editor')
 					{
-						$action = \Input::get('pid');
+						if (\Input::get('act') == 'move')
+						{
+							$this->Template->headline .= ' › <span>' . \Input::get('pid') . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['move'][1] . '</span>';
+						}
+						else
+						{
+							$this->Template->headline .= ' › <span>' . \Input::get('pid') . '</span>';
+						}
 					}
-					elseif (is_array($GLOBALS['TL_LANG'][$strTable][$act]))
+					elseif (isset($GLOBALS['TL_LANG'][$strTable][$act][1]))
 					{
-						$action = sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('pid'));
+						$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('pid')) . '</span>';
 					}
 				}
 			}
-			
-			if ($action)
-			{
-				$this->Template->headline .= ' &rsaquo;&nbsp;<span style="color:#999;white-space:pre;">' . $action . '</span>';
-			}
-			
+
 			return $dc->$act();
 		}
 

@@ -5,17 +5,11 @@
       <trans-unit id="MOD.content">
         <source>Content</source>
       </trans-unit>
-      <trans-unit id="MOD.tl_content">
-        <source>Content elements</source>
-      </trans-unit>
-     <trans-unit id="MOD.article.0">
+      <trans-unit id="MOD.article.0">
         <source>Articles</source>
       </trans-unit>
       <trans-unit id="MOD.article.1">
         <source>Manage articles and content elements</source>
-      </trans-unit>
-       <trans-unit id="MOD.tl_form_field">
-        <source>Fields</source>
       </trans-unit>
       <trans-unit id="MOD.form.0">
         <source>Form generator</source>
@@ -110,23 +104,29 @@
       <trans-unit id="MOD.login.1">
         <source>Change your personal data or set a new password</source>
       </trans-unit>
-      <trans-unit id="MOD.tl_style">
-        <source>Format definitions</source>
+      <trans-unit id="MOD.tl_content">
+        <source>Content elements</source>
       </trans-unit>
-      <trans-unit id="MOD.tl_style_sheet">
-        <source>Style sheets</source>
-      </trans-unit>
-      <trans-unit id="MOD.tl_module">
-        <source>Front end modules</source>
-      </trans-unit>
-      <trans-unit id="MOD.tl_layout">
-        <source>Page layouts</source>
+      <trans-unit id="MOD.tl_form_field">
+        <source>Fields</source>
       </trans-unit>
       <trans-unit id="MOD.tl_image_size">
         <source>Image sizes</source>
       </trans-unit>
       <trans-unit id="MOD.tl_image_size_item">
         <source>Media queries</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_layout">
+        <source>Page layouts</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_module">
+        <source>Front end modules</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_style">
+        <source>Format definitions</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_style_sheet">
+        <source>Style sheets</source>
       </trans-unit>
       <trans-unit id="MOD.css">
         <source>Style sheets</source>
