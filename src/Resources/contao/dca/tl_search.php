@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -59,7 +59,7 @@ $GLOBALS['TL_DCA']['tl_search'] = array
 		),
 		'filesize' => array
 		(
-			'sql'                     => "double unsigned NOT NULL default '0'"
+			'sql'                     => "double NOT NULL default '0'" // see doctrine/dbal#1018
 		),
 		'checksum' => array
 		(

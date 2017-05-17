@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\Database\Result;
 
 
 /**
@@ -32,12 +33,6 @@ class Versions extends \Controller
 	 * @var integer
 	 */
 	protected $intPid;
-
-	/**
-	 * File path
-	 * @var string
-	 */
-	protected $strPath;
 
 	/**
 	 * Edit URL
@@ -71,17 +66,6 @@ class Versions extends \Controller
 
 		$this->strTable = $strTable;
 		$this->intPid = $intPid;
-
-		// Store the path if it is an editable file
-		if ($strTable == 'tl_files')
-		{
-			$objFile = \FilesModel::findByPk($intPid);
-
-			if ($objFile !== null && in_array($objFile->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
-			{
-				$this->strPath = $objFile->path;
-			}
-		}
 	}
 
 
@@ -115,6 +99,26 @@ class Versions extends \Controller
 	public function setUserId($intUserId)
 	{
 		$this->intUserId = $intUserId;
+	}
+
+
+	/**
+	 * Returns the latest version
+	 *
+	 * @return integer|null
+	 */
+	public function getLatestVersion()
+	{
+		if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['enableVersioning'])
+		{
+			return null;
+		}
+
+		$objVersion = $this->Database->prepare("SELECT MAX(version) AS version FROM tl_version WHERE fromTable=? AND pid=?")
+									 ->limit(1)
+									 ->execute($this->strTable, $this->intPid);
+
+		return (int) $objVersion->version;
 	}
 
 
@@ -165,17 +169,23 @@ class Versions extends \Controller
 			return;
 		}
 
-		if ($this->strPath !== null)
+		// Store the content if it is an editable file
+		if ($this->strTable == 'tl_files')
 		{
-			$objFile = new \File($this->strPath);
+			$objModel = \FilesModel::findByPk($this->intPid);
 
-			if ($objFile->extension == 'svgz')
+			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
 			{
-				$objRecord->content = gzdecode($objFile->getContent());
-			}
-			else
-			{
-				$objRecord->content = $objFile->getContent();
+				$objFile = new \File($objModel->path);
+
+				if ($objFile->extension == 'svgz')
+				{
+					$objRecord->content = gzdecode($objFile->getContent());
+				}
+				else
+				{
+					$objRecord->content = $objFile->getContent();
+				}
 			}
 		}
 
@@ -205,7 +215,7 @@ class Versions extends \Controller
 		}
 		elseif (!empty($objRecord->headline))
 		{
-			$chunks = deserialize($objRecord->headline);
+			$chunks = \StringUtil::deserialize($objRecord->headline);
 
 			if (is_array($chunks) && isset($chunks['value']))
 			{
@@ -280,12 +290,26 @@ class Versions extends \Controller
 			return;
 		}
 
-		// Restore the content
-		if ($this->strPath !== null)
+		// Restore the content if it is an editable file
+		if ($this->strTable == 'tl_files')
 		{
-			$objFile = new \File($this->strPath);
-			$objFile->write($data['content']);
-			$objFile->close();
+			$objModel = \FilesModel::findByPk($this->intPid);
+
+			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
+			{
+				$objFile = new \File($objModel->path);
+
+				if ($objFile->extension == 'svgz')
+				{
+					$objFile->write(gzencode($data['content']));
+				}
+				else
+				{
+					$objFile->write($data['content']);
+				}
+
+				$objFile->close();
+			}
 		}
 
 		// Get the currently available fields
@@ -362,6 +386,7 @@ class Versions extends \Controller
 		$intTo = 0;
 		$intFrom = 0;
 
+		/** @var Result|object $objVersions */
 		$objVersions = $this->Database->prepare("SELECT * FROM tl_version WHERE pid=? AND fromTable=? ORDER BY version DESC")
 									  ->execute($this->intPid, $this->strTable);
 
@@ -569,7 +594,7 @@ class Versions extends \Controller
 <select name="version" class="tl_select">'.$versions.'
 </select>
 <button type="submit" name="showVersion" id="showVersion" class="tl_submit">'.$GLOBALS['TL_LANG']['MSC']['restore'].'</button>
-<a href="'.\Backend::addToUrl('versions=1&amp;popup=1').'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['showDifferences']).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['MSC']['recordOfTable'], $this->intPid, $this->strTable))).'\',\'url\':this.href});return false">'.\Image::getHtml('diff.svg').'</a>
+<a href="'.\Backend::addToUrl('versions=1&amp;popup=1').'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['showDifferences']).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['MSC']['recordOfTable'], $this->intPid, $this->strTable))).'\',\'url\':this.href});return false">'.\Image::getHtml('diff.svg').'</a>
 </div>
 </form>
 

@@ -1,7 +1,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -30,7 +30,7 @@ var Theme = {
 				items[i].setStyle('background-color', (state ? '#ebfdd7' : ''));
 			}
 		}
-		console.info('The Theme.hoverRow() function has been deprecated in Contao 4 and will be removed in Contao 5. Assign the CSS class "hover-row" instead.');
+		window.console && console.warn('The Theme.hoverRow() function has been deprecated in Contao 4 and will be removed in Contao 5. Assign the CSS class "hover-row" instead.');
 	},
 
 	/**
@@ -47,7 +47,7 @@ var Theme = {
 			el.removeAttribute('data-visited');
 		}
 		$(el).setStyle('background-color', (state ? '#ebfdd7' : ''));
-		console.info('The Theme.hoverDiv() function has been deprecated in Contao 4 and will be removed in Contao 5. Assign the CSS class "hover-div" instead.');
+		window.console && console.warn('The Theme.hoverDiv() function has been deprecated in Contao 4 and will be removed in Contao 5. Assign the CSS class "hover-div" instead.');
 	},
 
 	/**
@@ -151,7 +151,7 @@ var Theme = {
 			}
 
 			// Single line height
-			var line = dummy.clientHeight;
+			var line = Math.max(dummy.clientHeight, 30);
 
 			// Respond to the "input" event
 			el.addEvent('input', function() {
@@ -159,7 +159,7 @@ var Theme = {
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
 					.replace(/\n|\r\n/g, '<br>X'));
-				var height = Math.max(line, dummy.getSize().y) + 2;
+				var height = Math.max(line, dummy.getSize().y + 2);
 				if (this.clientHeight != height) this.tween('height', height);
 			}).set('tween', { 'duration':100 }).setStyle('height', line + 'px');
 
@@ -174,9 +174,18 @@ var Theme = {
 	 */
 	setupMenuToggle: function() {
 		var burger = $('burger');
-		burger && burger.addEvent('click', function() {
-			document.body.toggleClass('show-navigation');
-		});
+		if (!burger) return;
+
+		burger
+			.addEvent('click', function(e) {
+				document.body.toggleClass('show-navigation');
+			})
+			.addEvent('keydown', function(e) {
+				if (e.event.keyCode == 27) {
+					document.body.toggleClass('show-navigation');
+				}
+			})
+		;
 	},
 
 	/**
@@ -211,6 +220,53 @@ var Theme = {
 				}
 			})
 		;
+	},
+
+	/**
+	 * Set up the split button toggle
+	 */
+	setupSplitButtonToggle: function() {
+		var toggle = $('sbtog');
+		if (!toggle) return;
+
+		var ul = toggle.getParent('.split-button').getElement('ul'),
+			tab, timer;
+
+		toggle.addEvent('click', function(e) {
+			tab = false;
+			ul.toggleClass('invisible');
+			toggle.toggleClass('active');
+			e.stopPropagation();
+		});
+
+		$(document.body).addEvent('click', function() {
+			tab = false;
+			ul.addClass('invisible');
+			toggle.removeClass('active');
+		});
+
+		$(document.body).addEvent('keydown', function(e) {
+			tab = (e.event.keyCode == 9);
+		});
+
+		[toggle].append(ul.getElements('button')).each(function(el) {
+			el.addEvent('focus', function() {
+				if (!tab) return;
+				ul.removeClass('invisible');
+				toggle.addClass('active');
+				clearTimeout(timer);
+			});
+
+			el.addEvent('blur', function() {
+				if (!tab) return;
+				timer = setTimeout(function() {
+					ul.addClass('invisible');
+					toggle.removeClass('active');
+				}, 100);
+			});
+		});
+
+		toggle.set('tabindex', '-1');
 	}
 };
 
@@ -221,6 +277,7 @@ window.addEvent('domready', function() {
 	Theme.setupTextareaResizing();
 	Theme.setupMenuToggle();
 	Theme.hideMenuOnScroll();
+	Theme.setupSplitButtonToggle();
 });
 
 // Respond to Ajax changes

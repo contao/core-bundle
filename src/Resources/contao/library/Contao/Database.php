@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -75,7 +75,7 @@ class Database
 
 			$arrParams = array
 			(
-				'driver'    => \System::getContainer()->getParameter('database_driver'),
+				'driver'    => 'pdo_mysql',
 				'host'      => $arrConfig['dbHost'],
 				'port'      => $arrConfig['dbPort'],
 				'user'      => $arrConfig['dbUser'],

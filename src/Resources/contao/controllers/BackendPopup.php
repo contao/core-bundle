@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -127,12 +127,12 @@ class BackendPopup extends \Backend
 			if ($objFile->isImage)
 			{
 				$objTemplate->isImage = true;
-				$objTemplate->width = $objFile->width;
-				$objTemplate->height = $objFile->height;
+				$objTemplate->width = $objFile->viewWidth;
+				$objTemplate->height = $objFile->viewHeight;
 				$objTemplate->src = $this->urlEncode($this->strFile);
+				$objTemplate->dataUri = $objFile->dataUri;
 			}
 
-			$objTemplate->dataUri = $objFile->dataUri;
 			$objTemplate->href = ampersand(\Environment::get('request'), true) . '&amp;download=1';
 			$objTemplate->filesize = $this->getReadableSize($objFile->filesize) . ' (' . number_format($objFile->filesize, 0, $GLOBALS['TL_LANG']['MSC']['decimalSeparator'], $GLOBALS['TL_LANG']['MSC']['thousandsSeparator']) . ' Byte)';
 		}

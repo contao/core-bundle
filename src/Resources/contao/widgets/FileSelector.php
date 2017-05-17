@@ -3,13 +3,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
+use Contao\Image\ResizeConfiguration;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
 
@@ -287,7 +288,7 @@ class FileSelector extends \Widget
 		}
 
 		// Return the tree
-		return '<ul class="tl_listing tree_view picker_selector'.(($this->strClass != '') ? ' ' . $this->strClass : '').'" id="'.$this->strId.'">
+		return '<ul class="tl_listing tree_view picker_selector'.(($this->strClass != '') ? ' ' . $this->strClass : '').'" id="'.$this->strId.'" data-callback="reloadFiletree">
     <li class="tl_folder_top"><div class="tl_left">'.\Image::getHtml($GLOBALS['TL_DCA']['tl_files']['list']['sorting']['icon'] ?: 'filemounts.svg').' '.(\Config::get('websiteTitle') ?: 'Contao Open Source CMS').'</div> <div class="tl_right">&nbsp;</div><div style="clear:both"></div></li><li class="parent" id="'.$this->strId.'_parent"><ul>'.$tree.$strReset.'
   </ul></li></ul>';
 	}
@@ -449,7 +450,7 @@ class FileSelector extends \Widget
 		for ($f=0, $c=count($folders); $f<$c; $f++)
 		{
 			$content = scan($folders[$f]);
-			$currentFolder = str_replace(TL_ROOT . '/', '', $folders[$f]);
+			$currentFolder = \StringUtil::stripRootDir($folders[$f]);
 			$countFiles = count($content);
 
 			// Check whether there are subfolders or files
@@ -477,7 +478,7 @@ class FileSelector extends \Widget
 			$tid = md5($folders[$f]);
 			$folderAttribute = 'style="margin-left:20px"';
 			$session[$node][$tid] = is_numeric($session[$node][$tid]) ? $session[$node][$tid] : 0;
-			$currentFolder = str_replace(TL_ROOT . '/', '', $folders[$f]);
+			$currentFolder = \StringUtil::stripRootDir($folders[$f]);
 			$blnIsOpen = (!empty($arrFound) || $session[$node][$tid] == 1 || count(preg_grep('/^' . preg_quote($currentFolder, '/') . '\//', $this->varValue)) > 0);
 			$return .= "\n    " . '<li class="'.$folderClass.' toggle_select hover-div"><div class="tl_left" style="padding-left:'.$intMargin.'px">';
 
@@ -536,7 +537,7 @@ class FileSelector extends \Widget
 			for ($h=0, $c=count($files); $h<$c; $h++)
 			{
 				$thumbnail = '';
-				$currentFile = str_replace(TL_ROOT . '/', '', $files[$h]);
+				$currentFile = \StringUtil::stripRootDir($files[$h]);
 				$currentEncoded = $this->urlEncode($currentFile);
 
 				$objFile = new \File($currentFile);
@@ -565,13 +566,12 @@ class FileSelector extends \Widget
 				// Generate thumbnail
 				if ($objFile->isImage && $objFile->viewHeight > 0 && \Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
 				{
-					$imageObj = \Image::create($currentEncoded, array(400, (($objFile->height && $objFile->height < 50) ? $objFile->height : 50), 'box'));
-					$importantPart = $imageObj->getImportantPart();
-					$thumbnail .= '<br>' . \Image::getHtml($imageObj->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px -19px"');
+					$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -19px"');
+					$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
 
-					if ($importantPart['x'] > 0 || $importantPart['y'] > 0 || $importantPart['width'] < $objFile->width || $importantPart['height'] < $objFile->height)
+					if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
 					{
-						$thumbnail .= ' ' . \Image::getHtml($imageObj->setZoomLevel(100)->setTargetWidth(320)->setTargetHeight((($objFile->height && $objFile->height < 40) ? $objFile->height : 40))->executeResize()->getResizedPath(), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
+						$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
 					}
 				}
 
@@ -622,13 +622,19 @@ class FileSelector extends \Widget
 		}
 
 		// TinyMCE will pass the path instead of the ID
-		if (strncmp($this->varValue[0], \Config::get('uploadPath') . '/', strlen(\Config::get('uploadPath')) + 1) === 0)
+		if (strpos($this->varValue[0], \Config::get('uploadPath') . '/') === 0)
 		{
 			return;
 		}
 
 		// Ignore the numeric IDs when in switch mode (TinyMCE)
 		if (\Input::get('switch'))
+		{
+			return;
+		}
+
+		// Return if the custom path is not within the upload path (see #8562)
+		if ($this->path != '' && strpos($this->path, \Config::get('uploadPath') . '/') !== 0)
 		{
 			return;
 		}

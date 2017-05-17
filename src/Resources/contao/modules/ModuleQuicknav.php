@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -80,12 +80,6 @@ class ModuleQuicknav extends \Module
 		{
 			$objRootPage = \PageModel::findWithDetails($this->rootPage);
 
-			// Set the language
-			if (\Config::get('addLanguageToUrl') && $objRootPage->rootLanguage != $objPage->rootLanguage)
-			{
-				$lang = $objRootPage->rootLanguage;
-			}
-
 			// Set the domain
 			if ($objRootPage->rootId != $objPage->rootId && $objRootPage->domain != '' && $objRootPage->domain != $objPage->domain)
 			{
@@ -98,7 +92,7 @@ class ModuleQuicknav extends \Module
 		$this->Template->button = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['go']);
 		$this->Template->title = $this->customLabel ?: $GLOBALS['TL_LANG']['MSC']['quicknav'];
 		$this->Template->request = ampersand(\Environment::get('request'), true);
-		$this->Template->items = $this->getQuicknavPages($this->rootPage, 1, $host, $lang);
+		$this->Template->items = $this->getQuicknavPages($this->rootPage, 1, $host);
 	}
 
 
@@ -108,11 +102,10 @@ class ModuleQuicknav extends \Module
 	 * @param integer $pid
 	 * @param integer $level
 	 * @param string  $host
-	 * @param string  $language
 	 *
 	 * @return array
 	 */
-	protected function getQuicknavPages($pid, $level=1, $host=null, $language=null)
+	protected function getQuicknavPages($pid, $level=1, $host=null)
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
@@ -147,8 +140,8 @@ class ModuleQuicknav extends \Module
 				$objSubpage->domain = $host;
 			}
 
-			// Do not show protected pages unless a back end or front end user is logged in
-			if (!$objSubpage->protected || (!is_array($_groups) && FE_USER_LOGGED_IN) || BE_USER_LOGGED_IN || (is_array($_groups) && array_intersect($_groups, $groups)) || $this->showProtected)
+			// Do not show protected pages unless a front end user is logged in
+			if (!$objSubpage->protected || (is_array($_groups) && array_intersect($_groups, $groups)) || $this->showProtected)
 			{
 				// Do not skip the current page here! (see #4523)
 
@@ -160,7 +153,8 @@ class ModuleQuicknav extends \Module
 						'level' => ($level - 2),
 						'title' => \StringUtil::specialchars(\StringUtil::stripInsertTags($objSubpage->pageTitle ?: $objSubpage->title)),
 						'href' => $objSubpage->getFrontendUrl(),
-						'link' => \StringUtil::stripInsertTags($objSubpage->title)
+						'link' => \StringUtil::stripInsertTags($objSubpage->title),
+						'active' => ($objPage->id == $objSubpage->id || $objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo)
 					);
 
 					// Subpages

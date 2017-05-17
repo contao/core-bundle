@@ -3,13 +3,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
+use Contao\CoreBundle\Exception\InternalServerErrorHttpException;
 use Contao\CoreBundle\Exception\NoContentResponseException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Symfony\Component\HttpFoundation\Response;
@@ -343,6 +344,8 @@ class Ajax extends \Backend
 					{
 						foreach ($varValue as $k=>$v)
 						{
+							$v = rawurldecode($v);
+
 							if (\Dbafs::shouldBeSynchronized($v))
 							{
 								$objFile = \FilesModel::findByPath($v);
@@ -430,10 +433,14 @@ class Ajax extends \Backend
 
 				throw new NoContentResponseException();
 
+			// DCA picker
+			case 'processPickerSelection':
+				throw new ResponseException(new Response(\System::getContainer()->get('contao.menu.picker_menu_builder')->processSelection(\Input::post('table'), \Input::post('value'))));
+
 			// DropZone file upload
 			case 'fileupload':
-				$dc->move();
-				throw new NoContentResponseException();
+				$dc->move(true);
+				throw new InternalServerErrorHttpException();
 
 			// HOOK: pass unknown actions to callback functions
 			default:

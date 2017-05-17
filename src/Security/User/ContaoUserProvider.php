@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -12,9 +12,11 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendUser;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Contao\User;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,9 +27,14 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class ContaoUserProvider implements UserProviderInterface
+class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
+
+    /**
+     * @var ScopeMatcher
+     */
+    protected $scopeMatcher;
 
     /**
      * @var ContaoFrameworkInterface
@@ -37,13 +44,13 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * Constructor.
      *
-     * @param ContainerInterface
-     * @param ContaoFrameworkInterface
+     * @param ContaoFrameworkInterface $framework
+     * @param ScopeMatcher             $scopeMatcher
      */
-    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher)
     {
-        $this->container = $container;
         $this->framework = $framework;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -81,7 +88,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return is_subclass_of($class, 'Contao\User');
+        return is_subclass_of($class, User::class);
     }
 
     /**
@@ -93,7 +100,13 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isFrontendUsername($username)
     {
-        return 'frontend' === $username && $this->isFrontendScope();
+        if (null === $this->container
+            || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
+        ) {
+            return false;
+        }
+
+        return 'frontend' === $username && $this->scopeMatcher->isFrontendRequest($request);
     }
 
     /**
@@ -105,6 +118,12 @@ class ContaoUserProvider implements UserProviderInterface
      */
     private function isBackendUsername($username)
     {
-        return 'backend' === $username && $this->isBackendScope();
+        if (null === $this->container
+            || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
+        ) {
+            return false;
+        }
+
+        return 'backend' === $username && $this->scopeMatcher->isBackendRequest($request);
     }
 }

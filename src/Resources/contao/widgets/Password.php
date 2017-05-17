@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -46,14 +46,14 @@ class Password extends \Widget
 
 
 	/**
-	 * Always decode entities
+	 * Always use raw request data.
 	 *
 	 * @param array $arrAttributes
 	 */
 	public function __construct($arrAttributes=null)
 	{
 		parent::__construct($arrAttributes);
-		$this->decodeEntities = true;
+		$this->useRawRequestData = true;
 	}
 
 

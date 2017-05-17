@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -120,7 +120,11 @@ class TextField extends \Widget
 			// Convert to Punycode format (see #5571)
 			if ($this->rgxp == 'url')
 			{
-				$varInput = \Idna::encodeUrl($varInput);
+				try
+				{
+					$varInput = \Idna::encodeUrl($varInput);
+				}
+				catch (\InvalidArgumentException $e) {}
 			}
 			elseif ($this->rgxp == 'email' || $this->rgxp == 'friendly')
 			{
@@ -146,7 +150,11 @@ class TextField extends \Widget
 			// Hide the Punycode format (see #2750)
 			if ($this->rgxp == 'url')
 			{
-				$this->varValue = \Idna::decode($this->varValue);
+				try
+				{
+					$this->varValue = \Idna::decodeUrl($this->varValue);
+				}
+				catch (\InvalidArgumentException $e) {}
 			}
 			elseif ($this->rgxp == 'email' || $this->rgxp == 'friendly')
 			{
@@ -187,9 +195,9 @@ class TextField extends \Widget
 									$this->getAttributes());
 		}
 
-		return sprintf('<div id="ctrl_%s"%s>%s</div>%s',
+		return sprintf('<div id="ctrl_%s" class="tl_text_field%s">%s</div>%s',
 						$this->strId,
-						(($this->strClass != '') ? ' class="' . $this->strClass . '"' : ''),
+						(($this->strClass != '') ? ' ' . $this->strClass : ''),
 						implode(' ', $arrFields),
 						$this->wizard);
 	}

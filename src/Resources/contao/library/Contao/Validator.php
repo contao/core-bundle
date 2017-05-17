@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -165,7 +165,13 @@ class Validator
 	 */
 	public static function isUrl($varValue)
 	{
-		return preg_match('/^[\w\/.*+?$#%:,;{}()[\]@&!=~|-]+$/u', \Idna::encodeUrl($varValue));
+		try
+		{
+			$varValue = \Idna::encodeUrl($varValue);
+		}
+		catch (\InvalidArgumentException $e) {}
+
+		return preg_match('/^[\w\/.*+?$#%:,;{}()[\]@&!=~|-]+$/u', $varValue);
 	}
 
 

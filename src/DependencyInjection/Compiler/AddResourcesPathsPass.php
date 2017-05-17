@@ -3,13 +3,14 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
+use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -38,10 +39,10 @@ class AddResourcesPathsPass implements CompilerPassInterface
     private function getResourcesPath(ContainerBuilder $container)
     {
         $paths = [];
-        $rootDir = dirname($container->getParameter('kernel.root_dir'));
+        $rootDir = $container->getParameter('kernel.project_dir');
 
         foreach ($container->getParameter('kernel.bundles') as $name => $class) {
-            if ('Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle' === $class) {
+            if (ContaoModuleBundle::class === $class) {
                 $paths[] = sprintf('%s/system/modules/%s', $rootDir, $name);
             } elseif (null !== ($path = $this->getResourcesPathFromClassName($class))) {
                 $paths[] = $path;

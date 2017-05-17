@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -24,6 +24,12 @@ class ContentImage extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_image';
+
+	/**
+	 * Files model
+	 * @var FilesModel
+	 */
+	protected $objFilesModel;
 
 
 	/**
@@ -46,6 +52,7 @@ class ContentImage extends \ContentElement
 		}
 
 		$this->singleSRC = $objFile->path;
+		$this->objFilesModel = $objFile;
 
 		return parent::generate();
 	}
@@ -56,6 +63,6 @@ class ContentImage extends \ContentElement
 	 */
 	protected function compile()
 	{
-		$this->addImageToTemplate($this->Template, $this->arrData);
+		$this->addImageToTemplate($this->Template, $this->arrData, null, null, $this->objFilesModel);
 	}
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -35,10 +35,18 @@ class SymlinkUtil
 
         $fs = new Filesystem();
 
+        if (!$fs->isAbsolutePath($target)) {
+            $target = $rootDir.'/'.$target;
+        }
+
+        if (!$fs->isAbsolutePath($link)) {
+            $link = $rootDir.'/'.$link;
+        }
+
         if ('\\' === DIRECTORY_SEPARATOR) {
-            $fs->symlink($rootDir.'/'.$target, $rootDir.'/'.$link);
+            $fs->symlink($target, $link);
         } else {
-            $fs->symlink(rtrim($fs->makePathRelative($target, dirname($link)), '/'), $rootDir.'/'.$link);
+            $fs->symlink(rtrim($fs->makePathRelative($target, dirname($link)), '/'), $link);
         }
     }
 

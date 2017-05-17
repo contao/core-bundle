@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -119,6 +119,11 @@ class ModuleBooknav extends \Module
 		$arrLookup = array_keys($this->arrPages);
 		$intCurrent = array_search($objPage->id, $arrLookup);
 
+		if ($intCurrent === false)
+		{
+			return; // see #8665
+		}
+
 		// HOOK: add pagination info
 		$this->Template->currentPage = $intCurrent;
 		$this->Template->pageCount = count($arrLookup);
@@ -197,8 +202,8 @@ class ModuleBooknav extends \Module
 		{
 			$_groups = \StringUtil::deserialize($objPage->groups);
 
-			// Do not show protected pages unless a back end or front end user is logged in
-			if (!$objPage->protected || BE_USER_LOGGED_IN || (is_array($_groups) && count(array_intersect($groups, $_groups))) || $this->showProtected)
+			// Do not show protected pages unless a front end user is logged in
+			if (!$objPage->protected || (is_array($_groups) && count(array_intersect($groups, $_groups))) || $this->showProtected)
 			{
 				$this->arrPages[$objPage->id] = $objPage;
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -15,9 +15,13 @@ use Contao\Config;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\IncompleteInstallationException;
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
+use Contao\TemplateLoader;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -32,16 +36,21 @@ use Symfony\Component\Routing\RouterInterface;
  * @author Dominik Tomasi <https://github.com/dtomasi>
  * @author Andreas Schempp <https://github.com/aschempp>
  *
- * @internal Do not instantiate this class in your code. Use the "contao.framework" service instead.
+ * @internal Do not instantiate this class in your code; use the "contao.framework" service instead
  */
-class ContaoFramework implements ContaoFrameworkInterface
+class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterface
 {
-    use ScopeAwareTrait;
+    use ContainerAwareTrait;
 
     /**
      * @var bool
      */
     private static $initialized = false;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
     /**
      * @var RouterInterface
@@ -54,6 +63,11 @@ class ContaoFramework implements ContaoFrameworkInterface
     private $session;
 
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * @var string
      */
     private $rootDir;
@@ -62,11 +76,6 @@ class ContaoFramework implements ContaoFrameworkInterface
      * @var int
      */
     private $errorLevel;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
 
     /**
      * @var Request
@@ -95,21 +104,18 @@ class ContaoFramework implements ContaoFrameworkInterface
      * @param RequestStack     $requestStack
      * @param RouterInterface  $router
      * @param SessionInterface $session
+     * @param ScopeMatcher     $scopeMatcher
      * @param string           $rootDir
      * @param int              $errorLevel
      */
-    public function __construct(
-        RequestStack $requestStack,
-        RouterInterface $router,
-        SessionInterface $session,
-        $rootDir,
-        $errorLevel
-    ) {
+    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, ScopeMatcher $scopeMatcher, $rootDir, $errorLevel)
+    {
+        $this->requestStack = $requestStack;
         $this->router = $router;
         $this->session = $session;
-        $this->rootDir = dirname($rootDir);
+        $this->scopeMatcher = $scopeMatcher;
+        $this->rootDir = $rootDir;
         $this->errorLevel = $errorLevel;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -150,7 +156,7 @@ class ContaoFramework implements ContaoFrameworkInterface
      */
     public function createInstance($class, $args = [])
     {
-        if (in_array('getInstance', get_class_methods($class))) {
+        if (in_array('getInstance', get_class_methods($class), true)) {
             return call_user_func_array([$class, 'getInstance'], $args);
         }
 
@@ -174,7 +180,7 @@ class ContaoFramework implements ContaoFrameworkInterface
     /**
      * Sets the Contao constants.
      *
-     * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
+     * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0
      */
     private function setConstants()
     {
@@ -191,7 +197,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         }
 
         // Define the login status constants in the back end (see #4099, #5279)
-        if (!$this->isFrontendScope()) {
+        if (null === $this->request || !$this->scopeMatcher->isFrontendRequest($this->request)) {
             define('BE_USER_LOGGED_IN', false);
             define('FE_USER_LOGGED_IN', false);
         }
@@ -207,11 +213,15 @@ class ContaoFramework implements ContaoFrameworkInterface
      */
     private function getMode()
     {
-        if ($this->isBackendScope()) {
+        if (null === $this->request) {
+            return null;
+        }
+
+        if ($this->scopeMatcher->isBackendRequest($this->request)) {
             return 'BE';
         }
 
-        if ($this->isFrontendScope()) {
+        if ($this->scopeMatcher->isFrontendRequest($this->request)) {
             return 'FE';
         }
 
@@ -283,7 +293,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         System::setContainer($this->container);
 
         /** @var Config $config */
-        $config = $this->getAdapter('Contao\Config');
+        $config = $this->getAdapter(Config::class);
 
         // Preload the configuration (see #5872)
         $config->preload();
@@ -300,6 +310,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         $this->validateInstallation();
 
         Input::initialize();
+        TemplateLoader::initialize();
 
         $this->setTimezone();
         $this->triggerInitializeSystemHook();
@@ -366,12 +377,12 @@ class ContaoFramework implements ContaoFrameworkInterface
      */
     private function validateInstallation()
     {
-        if (null === $this->request) {
+        if (null === $this->request || 'contao_install' === $this->request->attributes->get('_route')) {
             return;
         }
 
         /** @var Config $config */
-        $config = $this->getAdapter('Contao\Config');
+        $config = $this->getAdapter(Config::class);
 
         // Show the "incomplete installation" message
         if (!$config->isComplete()) {
@@ -387,7 +398,7 @@ class ContaoFramework implements ContaoFrameworkInterface
     private function setTimezone()
     {
         /** @var Config $config */
-        $config = $this->getAdapter('Contao\Config');
+        $config = $this->getAdapter(Config::class);
 
         $this->iniSet('date.timezone', $config->get('timeZone'));
         date_default_timezone_set($config->get('timeZone'));
@@ -405,6 +416,7 @@ class ContaoFramework implements ContaoFrameworkInterface
         }
 
         if (file_exists($this->rootDir.'/system/config/initconfig.php')) {
+            @trigger_error('Using the initconfig.php file has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
             include $this->rootDir.'/system/config/initconfig.php';
         }
     }
@@ -417,7 +429,7 @@ class ContaoFramework implements ContaoFrameworkInterface
     private function handleRequestToken()
     {
         /** @var RequestToken $requestToken */
-        $requestToken = $this->getAdapter('Contao\RequestToken');
+        $requestToken = $this->getAdapter(RequestToken::class);
 
         // Deprecated since Contao 4.0, to be removed in Contao 5.0
         if (!defined('REQUEST_TOKEN')) {

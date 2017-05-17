@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -756,6 +756,12 @@ class Updater extends \Controller
 				$this->loadDataContainer($strTable);
 			}
 			catch (\Exception $e)
+			{
+				continue;
+			}
+
+			// Make sure the table exists (see #8304)
+			if (!$this->Database->tableExists($strTable, null, true))
 			{
 				continue;
 			}

@@ -3,15 +3,13 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
-use Contao\CoreBundle\Cache\ContaoCacheClearer;
-use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Command\SymlinksCommand;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -45,7 +43,7 @@ class Automator extends \System
 		$objDatabase->execute("TRUNCATE TABLE tl_search");
 		$objDatabase->execute("TRUNCATE TABLE tl_search_index");
 
-		$strCachePath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', \System::getContainer()->getParameter('kernel.cache_dir'));
+		$strCachePath = \StringUtil::stripRootDir(\System::getContainer()->getParameter('kernel.cache_dir'));
 
 		// Purge the cache folder
 		$objFolder = new \Folder($strCachePath . '/contao/search');
@@ -106,7 +104,7 @@ class Automator extends \System
 	 */
 	public function purgeImageCache()
 	{
-		$strTargetPath = \System::getContainer()->getParameter('contao.image.target_path');
+		$strTargetPath = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.image.target_dir'));
 
 		// Walk through the subfolders
 		foreach (scan(TL_ROOT . '/' . $strTargetPath) as $dir)
@@ -153,12 +151,14 @@ class Automator extends \System
 
 	/**
 	 * Purge the page cache
+	 *
+	 * @todo Replace this with a more sophisticated invalidation routine
 	 */
 	public function purgePageCache()
 	{
-		$strCacheDir = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', \System::getContainer()->getParameter('kernel.cache_dir'));
+		$strCacheDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('kernel.cache_dir'));
 
-		$objFolder = new \Folder($strCacheDir . '/contao/html');
+		$objFolder = new \Folder($strCacheDir . '/http_cache');
 		$objFolder->purge();
 
 		// Add a log entry
@@ -171,7 +171,7 @@ class Automator extends \System
 	 */
 	public function purgeSearchCache()
 	{
-		$strCacheDir = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', \System::getContainer()->getParameter('kernel.cache_dir'));
+		$strCacheDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('kernel.cache_dir'));
 
 		$objFolder = new \Folder($strCacheDir . '/contao/search');
 		$objFolder->purge();
@@ -186,8 +186,10 @@ class Automator extends \System
 	 */
 	public function purgeInternalCache()
 	{
-		$command = new ContaoCacheClearer(\System::getContainer()->get('filesystem'));
-		$command->clear(\System::getContainer()->getParameter('kernel.cache_dir'));
+		$container = \System::getContainer();
+
+		$clearer = $container->get('contao.cache.clear_internal');
+		$clearer->clear($container->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
 		$this->log('Purged the internal cache', __METHOD__, TL_CRON);
@@ -241,14 +243,16 @@ class Automator extends \System
 		// Delete the old files
 		if (!$blnReturn)
 		{
-			foreach (scan(TL_ROOT . '/web/share') as $file)
+			$shareDir = \System::getContainer()->getParameter('contao.web_dir') . '/share';
+
+			foreach (scan($shareDir) as $file)
 			{
-				if (is_dir(TL_ROOT . '/web/share/' . $file))
+				if (is_dir($shareDir . '/' . $file))
 				{
 					continue; // see #6652
 				}
 
-				$objFile = new \File('web/share/' . $file);
+				$objFile = new \File(\StringUtil::stripRootDir($shareDir) . '/' . $file);
 
 				if ($objFile->extension == 'xml' && !in_array($objFile->filename, $arrFeeds))
 				{
@@ -324,7 +328,7 @@ class Automator extends \System
 		// Create the XML file
 		while ($objRoot->next())
 		{
-			$objFile = new \File('web/share/' . $objRoot->sitemapName . '.xml');
+			$objFile = new \File(\StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir')) . '/share/' . $objRoot->sitemapName . '.xml');
 
 			$objFile->truncate();
 			$objFile->append('<?xml version="1.0" encoding="UTF-8"?>');
@@ -393,12 +397,19 @@ class Automator extends \System
 	 */
 	public function generateSymlinks()
 	{
-		$container = \System::getContainer();
-
 		$command = new SymlinksCommand();
-		$command->setContainer($container);
+		$command->setContainer(\System::getContainer());
+		$status = $command->run(new ArgvInput(array()), new NullOutput());
 
-		$command->run(new ArgvInput(array()), new NullOutput());
+		// Add a log entry
+		if ($status > 0)
+		{
+			$this->log('The symlinks could not be regenerated', __METHOD__, TL_ERROR);
+		}
+		else
+		{
+			$this->log('Regenerated the symlinks', __METHOD__, TL_CRON);
+		}
 	}
 
 
@@ -409,17 +420,8 @@ class Automator extends \System
 	{
 		$container = \System::getContainer();
 
-		$command = new ContaoCacheWarmer
-		(
-			$container->get('filesystem'),
-			$container->get('contao.resource_finder'),
-			$container->get('contao.resource_locator'),
-			$container->getParameter('kernel.root_dir'),
-			$container->get('database_connection'),
-			$container->get('contao.framework')
-		);
-
-		$command->warmUp(\System::getContainer()->getParameter('kernel.cache_dir'));
+		$warmer = $container->get('contao.cache.warm_internal');
+		$warmer->warmUp($container->getParameter('kernel.cache_dir'));
 
 		// Add a log entry
 		$this->log('Generated the internal cache', __METHOD__, TL_CRON);

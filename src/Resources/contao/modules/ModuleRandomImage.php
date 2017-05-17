@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -62,9 +62,6 @@ class ModuleRandomImage extends \Module
 	 */
 	protected function compile()
 	{
-		/** @var PageModel $objPage */
-		global $objPage;
-
 		$images = array();
 		$objFiles = $this->objFiles;
 
@@ -87,23 +84,14 @@ class ModuleRandomImage extends \Module
 					continue;
 				}
 
-				$arrMeta = $this->getMetaData($objFiles->meta, $objPage->language);
-
-				// Use the file name as title if none is given
-				if ($arrMeta['title'] == '')
-				{
-					$arrMeta['title'] = \StringUtil::specialchars($objFile->basename);
-				}
-
 				// Add the image
 				$images[$objFiles->path] = array
 				(
-					'id'        => $objFiles->id,
-					'name'      => $objFile->basename,
-					'singleSRC' => $objFiles->path,
-					'alt'       => $arrMeta['title'],
-					'imageUrl'  => $arrMeta['link'],
-					'caption'   => $arrMeta['caption']
+					'id'         => $objFiles->id,
+					'name'       => $objFile->basename,
+					'singleSRC'  => $objFiles->path,
+					'title'      => \StringUtil::specialchars($objFile->basename),
+					'filesModel' => $objFiles->current()
 				);
 			}
 
@@ -132,23 +120,14 @@ class ModuleRandomImage extends \Module
 						continue;
 					}
 
-					$arrMeta = $this->getMetaData($objSubfiles->meta, $objPage->language);
-
-					// Use the file name as title if none is given
-					if ($arrMeta['title'] == '')
-					{
-						$arrMeta['title'] = \StringUtil::specialchars($objFile->basename);
-					}
-
 					// Add the image
 					$images[$objSubfiles->path] = array
 					(
-						'id'        => $objSubfiles->id,
-						'name'      => $objFile->basename,
-						'singleSRC' => $objSubfiles->path,
-						'alt'       => $arrMeta['title'],
-						'imageUrl'  => $arrMeta['link'],
-						'caption'   => $arrMeta['caption']
+						'id'         => $objSubfiles->id,
+						'name'       => $objFile->basename,
+						'singleSRC'  => $objSubfiles->path,
+						'title'      => \StringUtil::specialchars($objFile->basename),
+						'filesModel' => $objSubfiles->current()
 					);
 				}
 			}
@@ -177,6 +156,6 @@ class ModuleRandomImage extends \Module
 			$arrImage['caption'] = $arrImage['title'];
 		}
 
-		$this->addImageToTemplate($this->Template, $arrImage);
+		$this->addImageToTemplate($this->Template, $arrImage, null, null, $arrImage['filesModel']);
 	}
 }

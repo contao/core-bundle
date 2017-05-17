@@ -3,20 +3,22 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Config\Loader;
+namespace Contao\CoreBundle\Tests\Config\Loader;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 
 /**
  * Tests the PhpFileLoader class.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ * @author Yanick Witschi <https://github.com/Toflar>
+ * @author Leo Feyer <https://github.com/leofeyer>
  */
 class PhpFileLoaderTest extends TestCase
 {
@@ -66,12 +68,129 @@ class PhpFileLoaderTest extends TestCase
      */
     public function testLoad()
     {
-        $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
+        $expects = <<<'EOF'
+
+$GLOBALS['TL_TEST'] = true;
+
+EOF;
+
+        $this->assertSame(
+            $expects,
             $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php')
         );
 
         $content = <<<'EOF'
+
+$GLOBALS['TL_DCA']['tl_test'] = [
+    'config' => [
+        'dataContainer' => 'DC_Table',
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
+        ],
+    ],
+];
+
+EOF;
+
+        $this->assertSame(
+            $content,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
+        );
+    }
+
+    /**
+     * Test loading a file with a custom namespace.
+     */
+    public function testLoadNamespace()
+    {
+        $expects = <<<'EOF'
+
+namespace Foo\Bar {
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+}
+
+EOF;
+
+        $this->assertSame(
+            $expects,
+            $this->loader->load(
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_namespace.php',
+                'namespaced'
+            )
+        );
+
+        $expects = <<<'EOF'
+
+namespace  {
+$GLOBALS['TL_TEST'] = true;
+}
+
+EOF;
+
+        $this->assertSame(
+            $expects,
+            $this->loader->load(
+                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
+                'namespaced'
+            )
+        );
+    }
+
+    /**
+     * Tests loading a file with a declare(strict_types=1) statement.
+     *
+     * @param string $file
+     *
+     * @dataProvider loadWithDeclareStatementsStrictType
+     */
+    public function testLoadWithDeclareStatementsStrictType($file)
+    {
+        $content = <<<'EOF'
+
+$GLOBALS['TL_DCA']['tl_test'] = [
+    'config' => [
+        'dataContainer' => 'DC_Table',
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
+        ],
+    ],
+];
+
+EOF;
+
+        $this->assertSame(
+            $content,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php')
+        );
+    }
+
+    /**
+     * Tests loading a file with a declare(strict_types=1) statement and a comment.
+     *
+     * @dataProvider loadWithDeclareStatementsStrictType
+     */
+    public function testLoadWithDeclareStatementsCommentsAreIgnored()
+    {
+        $content = <<<'EOF'
+
+/**
+ * I am a declare(strict_types=1) comment
+ */
+
 
 
 $GLOBALS['TL_DCA']['tl_test'] = [
@@ -92,14 +211,73 @@ $GLOBALS['TL_DCA']['tl_test'] = [
 
 EOF;
 
-        $this->assertEquals(
+        $this->assertSame(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_declare3.php')
         );
+    }
 
-        $this->assertEquals(
-            "\n\n\$GLOBALS['TL_TEST'] = true;\n",
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php')
+    /**
+     * Tests loading a file with a declare(strict_types=1,ticks=1) statement.
+     *
+     * @param string $file
+     *
+     * @dataProvider loadWithDeclareStatementsMultipleDefined
+     */
+    public function testLoadWithDeclareStatementsMultipleDefined($file)
+    {
+        $content = <<<'EOF'
+
+declare(ticks=1);
+
+$GLOBALS['TL_DCA']['tl_test'] = [
+    'config' => [
+        'dataContainer' => 'DC_Table',
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
+        ],
+    ],
+];
+
+EOF;
+
+        $this->assertSame(
+            $content,
+            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php')
         );
+    }
+
+    /**
+     * Provides the data for the declare(strict_types=1) tests.
+     *
+     * @return array
+     */
+    public function loadWithDeclareStatementsStrictType()
+    {
+        return [
+            ['tl_test_with_declare1'],
+            ['tl_test_with_declare2'],
+        ];
+    }
+
+    /**
+     * Provides the data for the declare(strict_types=1,ticks=1) tests.
+     *
+     * @return array
+     */
+    public function loadWithDeclareStatementsMultipleDefined()
+    {
+        return [
+            ['tl_test_with_declare4'],
+            ['tl_test_with_declare5'],
+            ['tl_test_with_declare6'],
+        ];
     }
 }

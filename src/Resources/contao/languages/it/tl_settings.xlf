@@ -49,14 +49,6 @@
         <source>Please select the server time zone.</source>
         <target>Seleziona il tuo fuso orario.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.websitePath.0">
-        <source>Relative path to the Contao directory</source>
-        <target>Percorso relativo della cartella di Contao</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.websitePath.1">
-        <source>The relative path to the Contao directory is usually set automatically by the install tool.</source>
-        <target>Inserisci il percorso relativo della cartella che contiene i file di Contao (es: se entri nel backend di Contao dall'indirizzo &lt;em&gt;www.tuodominio.com/tuositoweb/contao&lt;/em&gt; il percorso relativo sarà &lt;em&gt;/tuositoweb&lt;/em&gt;).</target>
-      </trans-unit>
       <trans-unit id="tl_settings.characterSet.0">
         <source>Character set</source>
         <target>Charset</target>
@@ -120,14 +112,6 @@
       <trans-unit id="tl_settings.doNotCollapse.1">
         <source>Do not collapse elements in the back end preview.</source>
         <target>Non chiudere gli elementi e le altre risorse una volta visti in anteprima nel backend.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.0">
-        <source>Cache mode</source>
-        <target>Modalità cache</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.1">
-        <source>Here you can select the cache mode.</source>
-        <target>Selezionare la modalità cache</target>
       </trans-unit>
       <trans-unit id="tl_settings.sslProxyDomain.0">
         <source>SSL proxy domain</source>
@@ -209,14 +193,6 @@
         <source>Here you can enter a comma separated list of downloadable file types.</source>
         <target>Inserisci una lista separata da virgole delle estensioni dei file che è possibile scaricare. Per motivi di sicurezza lo scaricamento dei file è limitato alla cartella dei files e alle sottocartelle.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.0">
-        <source>Image file types</source>
-        <target>Estensoni file immagine</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.1">
-        <source>Here you can enter a comma separated list of file types that can be handled by the image class.</source>
-        <target>Inserisci una lista separata da virgole delle estensioni delle immagini supportate. Non includere tipi di file che non possono essere gestiti da Contao o da tuoi script.</target>
-      </trans-unit>
       <trans-unit id="tl_settings.editableFiles.0">
         <source>Editable file types</source>
         <target>Tipi di file modificabili</target>
@@ -240,14 +216,6 @@
       <trans-unit id="tl_settings.maxImageWidth.1">
         <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
         <target>E' possibile definire la larghezza massima delle immagini e dei file multimediali. Se la larghezza dell'elemento contenuto eccede questo valore verrà ridotta automaticamente.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.0">
-        <source>JPG thumbnail quality</source>
-        <target>Qualità delle miniature</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.1">
-        <source>Here you can enter the JPG thumbnail quality in percent.</source>
-        <target>Inserire la qualità delle miniature in percentuale (si applica solo alle immagini di tipo jpeg)</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>
@@ -421,14 +389,6 @@
         <source>Search engine settings</source>
         <target>Impostazione motore di ricerca interno</target>
       </trans-unit>
-      <trans-unit id="tl_settings.modules_legend">
-        <source>Inactive extensions</source>
-        <target>Moduli disattivati</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cron_legend">
-        <source>Command scheduler</source>
-        <target>Comando di scheduler</target>
-      </trans-unit>
       <trans-unit id="tl_settings.timeout_legend">
         <source>Timeout values</source>
         <target>Valori di timeout</target>
@@ -437,29 +397,9 @@
         <source>Default access rights</source>
         <target>Diritti di accesso predefiniti</target>
       </trans-unit>
-      <trans-unit id="tl_settings.static_legend">
-        <source>Static resources</source>
-        <target>Risorse statiche</target>
-      </trans-unit>
       <trans-unit id="tl_settings.edit">
         <source>Edit the local configuration</source>
         <target>Modifica la configurazione locale</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.both">
-        <source>Use the server and the browser cache</source>
-        <target>Usa sia la cache del server che quella del browser</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.server">
-        <source>Use only the server cache</source>
-        <target>Usa solo la cache del server</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.browser">
-        <source>Use only the browser cache</source>
-        <target>Usa solo la cache del browser</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.none">
-        <source>Disable caching</source>
-        <target>Disabilita caching</target>
       </trans-unit>
     </body>
   </file>

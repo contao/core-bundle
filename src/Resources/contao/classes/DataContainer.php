@@ -3,14 +3,17 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
+use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\Image\ResizeConfiguration;
 
 
 /**
@@ -23,6 +26,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
  * @property string  $inputName
  * @property string  $palette
  * @property object  $activeRecord
+ * @property array   $rootIds
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -66,6 +70,12 @@ abstract class DataContainer extends \Backend
 	protected $strPalette;
 
 	/**
+	 * IDs of all root records
+	 * @var array
+	 */
+	protected $root;
+
+	/**
 	 * WHERE clause of the database query
 	 * @var array
 	 */
@@ -100,6 +110,30 @@ abstract class DataContainer extends \Backend
 	 * @var boolean
 	 */
 	protected $blnUploadable = false;
+
+	/**
+	 * The picker table
+	 * @var string
+	 */
+	protected $strPickerTable;
+
+	/**
+	 * The picker field
+	 * @var string
+	 */
+	protected $strPickerField;
+
+	/**
+	 * The picker ID
+	 * @var integer
+	 */
+	protected $intPickerId;
+
+	/**
+	 * The picker value
+	 * @var array
+	 */
+	protected $arrPickerValue = array();
 
 
 	/**
@@ -198,7 +232,7 @@ abstract class DataContainer extends \Backend
 		// Add the help wizard
 		if ($arrData['eval']['helpwizard'])
 		{
-			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'width\':735,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
+			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
 		}
 
 		// Add a custom xlabel
@@ -264,6 +298,15 @@ abstract class DataContainer extends \Backend
 		if (isset($arrData['eval']['rte']) && strncmp($arrData['eval']['rte'], 'tiny', 4) === 0)
 		{
 			$this->varValue = \StringUtil::insertTagToSrc($this->varValue);
+		}
+
+		// Use raw request if set globally but allow opting out setting useRawRequestData to false explicitly
+		$useRawGlobally = isset($GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData']) && $GLOBALS['TL_DCA'][$this->strTable]['config']['useRawRequestData'] === true;
+		$notRawForField = isset($arrData['eval']['useRawRequestData']) && $arrData['eval']['useRawRequestData'] === false;
+
+		if ($useRawGlobally && !$notRawForField)
+		{
+			$arrData['eval']['useRawRequestData'] = true;
 		}
 
 		/** @var Widget $objWidget */
@@ -382,16 +425,24 @@ abstract class DataContainer extends \Backend
 			switch ($rgxp)
 			{
 				case 'datim':
-					$time = ",\n      timePicker:true";
+					$time = ",\n        timePicker: true";
 					break;
 
 				case 'time':
-					$time = ",\n      pickOnly:\"time\"";
+					$time = ",\n        pickOnly: \"time\"";
 					break;
 
 				default:
 					$time = '';
 					break;
+			}
+
+			$strOnSelect = '';
+
+			// Trigger the auto-submit function (see #8603)
+			if ($arrData['eval']['submitOnChange'])
+			{
+				$strOnSelect = ",\n        onSelect: function() { Backend.autoSubmit(\"" . $this->strTable . "\"); }";
 			}
 
 			$wizard .= ' ' . \Image::getHtml('assets/datepicker/images/icon.svg', '', 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['datepicker']).'" id="toggle_' . $objWidget->id . '" style="cursor:pointer"') . '
@@ -403,7 +454,7 @@ abstract class DataContainer extends \Backend
         format: "' . $format . '",
         positionOffset: {x:-211,y:-209}' . $time . ',
         pickerClass: "datepicker_bootstrap",
-        useFadeInOut: !Browser.ie,
+        useFadeInOut: !Browser.ie' . $strOnSelect . ',
         startDay: ' . $GLOBALS['TL_LANG']['MSC']['weekOffset'] . ',
         titleFormat: "' . $GLOBALS['TL_LANG']['MSC']['titleFormat'] . '"
       });
@@ -417,16 +468,58 @@ abstract class DataContainer extends \Backend
 			// Support single fields as well (see #5240)
 			$strKey = $arrData['eval']['multiple'] ? $this->strField . '_0' : $this->strField;
 
-			$wizard .= ' ' . \Image::getHtml('pickcolor.svg', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '"') . '
+			$wizard .= ' ' . \Image::getHtml('pickcolor.svg', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '" style="cursor:pointer"') . '
   <script>
     window.addEvent("domready", function() {
+      var cl = $("ctrl_' . $strKey . '").value.hexToRgb(true) || [255, 0, 0];
       new MooRainbow("moo_' . $this->strField . '", {
         id: "ctrl_' . $strKey . '",
-        startColor: ((cl = $("ctrl_' . $strKey . '").value.hexToRgb(true)) ? cl : [255, 0, 0]),
+        startColor: cl,
         imgPath: "assets/colorpicker/images/",
         onComplete: function(color) {
           $("ctrl_' . $strKey . '").value = color.hex.replace("#", "");
         }
+      });
+    });
+  </script>';
+		}
+
+		// DCA picker
+		if (isset($arrData['eval']['dcaPicker']) && (is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
+		{
+			$params = array();
+
+			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['do']))
+			{
+				$params['do'] = $arrData['eval']['dcaPicker']['do'];
+			}
+
+			$params['context'] = 'link';
+			$params['target'] = $this->strTable.'.'.$this->strField.'.'.$this->intId;
+			$params['value'] = $this->varValue;
+			$params['popup'] = 1;
+
+			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['context']))
+			{
+				$params['context'] = $arrData['eval']['dcaPicker']['context'];
+			}
+
+			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['icon']) ? $arrData['eval']['dcaPicker']['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+  <script>
+    $("pp_' . $this->strField . '").addEvent("click", function(e) {
+      e.preventDefault();
+      Backend.openModalSelector({
+        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+        "url": this.href,
+        "callback": function(table, value) {
+          new Request.Contao({
+            evalScripts: false,
+            onSuccess: function(txt, json) {
+              $("ctrl_' . $this->strInputName . '").value = (json.tag || json.content);
+              this.set("href", this.get("href").replace(/&value=[^&]*/, "&value=" + (json.tag || json.content)));
+            }.bind(this)
+          }).post({"action":"processPickerSelection", "table":table, "value":value.join(","), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
+        }.bind(this)
       });
     });
   </script>';
@@ -457,6 +550,11 @@ abstract class DataContainer extends \Backend
 			$this->blnUploadable = true;
 		}
 
+		if ($arrData['inputType'] != 'password')
+		{
+			$arrData['eval']['tl_class'] .= ' widget';
+		}
+
 		// Mark floated single checkboxes
 		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && strpos($arrData['eval']['tl_class'], 'w50') !== false)
 		{
@@ -467,12 +565,6 @@ abstract class DataContainer extends \Backend
 			$arrData['eval']['tl_class'] .= ' inline';
 		}
 
-		// No 2-column layout in "edit all" mode
-		if (\Input::get('act') == 'editAll' || \Input::get('act') == 'overrideAll')
-		{
-			$arrData['eval']['tl_class'] = str_replace(array('w50', 'clr', 'wizard', 'long', 'm12', 'cbx'), '', $arrData['eval']['tl_class']);
-		}
-
 		$updateMode = '';
 
 		// Replace the textarea with an RTE instance
@@ -481,8 +573,9 @@ abstract class DataContainer extends \Backend
 			list ($file, $type) = explode('|', $arrData['eval']['rte'], 2);
 
 			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate("be_$file");
+			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
+			$objTemplate->type = $type;
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
@@ -497,7 +590,7 @@ abstract class DataContainer extends \Backend
 		{
 			$updateMode = '
 </div>
-<div>
+<div class="widget">
   <fieldset class="tl_radio_container">
   <legend>' . $GLOBALS['TL_LANG']['MSC']['updateMode'] . '</legend>
     <input type="radio" name="'.$this->strInputName.'_update" id="opt_'.$this->strInputName.'_update_1" class="tl_radio" value="add" onfocus="Backend.getScrollOffset()"> <label for="opt_'.$this->strInputName.'_update_1">' . $GLOBALS['TL_LANG']['MSC']['updateAdd'] . '</label><br>
@@ -521,7 +614,7 @@ abstract class DataContainer extends \Backend
 				{
 					if ($objFile->width > 699 || $objFile->height > 524 || !$objFile->width || !$objFile->height)
 					{
-						$image = rawurldecode(\Image::get($objFile->path, 699, 524, 'box'));
+						$image = rawurldecode(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(699, 524, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT));
 					}
 					else
 					{
@@ -547,12 +640,14 @@ abstract class DataContainer extends \Backend
 					{
 						$strPreview .= '<p class="tl_help tl_tip">' . $GLOBALS['TL_LANG'][$this->strTable]['edit_preview_help'] . '</p>';
 					}
+
+					$strPreview = '<div class="widget">' . $strPreview . '</div>';
 				}
 			}
 		}
 
 		return $strPreview . '
-<div' . ($arrData['eval']['tl_class'] ? ' class="' . $arrData['eval']['tl_class'] . '"' : '') . '>' . $objWidget->parse() . $updateMode . (!$objWidget->hasErrors() ? $this->help($strHelpClass) : '') . '
+<div' . ($arrData['eval']['tl_class'] ? ' class="' . trim($arrData['eval']['tl_class']) . '"' : '') . '>' . $objWidget->parse() . $updateMode . (!$objWidget->hasErrors() ? $this->help($strHelpClass) : '') . '
 </div>';
 	}
 
@@ -629,7 +724,7 @@ abstract class DataContainer extends \Backend
 
 		$strUrl = TL_SCRIPT . '?' . implode('&', $arrKeys);
 
-		return $strUrl . (!empty($arrKeys) ? '&' : '') . (\Input::get('table') ? 'table='.\Input::get('table').'&amp;' : '').'act=edit&amp;id='.$id;
+		return $strUrl . (!empty($arrKeys) ? '&' : '') . (\Input::get('table') ? 'table='.\Input::get('table').'&amp;' : '').'act=edit&amp;id='.rawurlencode($id);
 	}
 
 
@@ -692,11 +787,11 @@ abstract class DataContainer extends \Backend
 			{
 				if ($k == 'show')
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 				}
 				else
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].(\Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 				}
 
 				continue;
@@ -716,10 +811,11 @@ abstract class DataContainer extends \Backend
 				if ($dir == 'up')
 				{
 					$return .= ((is_numeric($strPrevious) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strPrevious).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('up_.svg')).' ';
-					continue;
 				}
-
-				$return .= ((is_numeric($strNext) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strNext).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('down_.svg')).' ';
+				else
+				{
+					$return .= ((is_numeric($strNext) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.intval($strNext).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('down_.svg')).' ';
+				}
 			}
 		}
 
@@ -794,6 +890,167 @@ abstract class DataContainer extends \Backend
 
 		return $return;
 	}
+
+
+	/**
+	 * Initialize the picker
+	 *
+	 * @return boolean
+	 *
+	 * @throws InternalServerErrorException
+	 */
+	protected function initPicker()
+	{
+		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
+
+		if (!$menuBuilder->supportsTable($this->strTable))
+		{
+			return false;
+		}
+
+		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
+		$this->intPickerId = (int) $this->intPickerId;
+
+		\Controller::loadDataContainer($this->strPickerTable);
+
+		$this->setPickerValue();
+
+		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
+		$objDca = new $strDriver($this->strPickerTable);
+		$objDca->id = $this->intPickerId;
+		$objDca->field = $this->strPickerField;
+
+		// Set the active record
+		if ($this->intPickerId && $this->Database->tableExists($this->strPickerTable))
+		{
+			/** @var Model $strModel */
+			$strModel = \Model::getClassFromTable($this->strPickerTable);
+
+			if (class_exists($strModel))
+			{
+				$objModel = $strModel::findByPk($this->intPickerId);
+
+				if ($objModel !== null)
+				{
+					$objDca->activeRecord = $objModel;
+				}
+			}
+		}
+
+		// Call the load_callback
+		if (is_array($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->arrPickerValue = $this->{$callback[0]}->{$callback[1]}($this->arrPickerValue, $objDca);
+				}
+				elseif (is_callable($callback))
+				{
+					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
+				}
+			}
+		}
+
+		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
+		{
+			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
+		}
+
+		/** @var Widget $strClass */
+		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
+
+		/** @var Widget $objWidget */
+		$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
+
+		if ($objWidget instanceof DcaFilterInterface)
+		{
+			$this->setDcaFilter($objWidget->getDcaFilter());
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Set the picker value
+	 */
+	protected function setPickerValue()
+	{
+		$varValue = \Input::get('value');
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$varValue = array_filter(explode(',', $varValue));
+
+		if (empty($varValue))
+		{
+			return;
+		}
+
+		$this->arrPickerValue = $varValue;
+	}
+
+
+	/**
+	 * Set the DCA filter
+	 *
+	 * @param array $arrFilter
+	 */
+	protected function setDcaFilter($arrFilter)
+	{
+		if (isset($arrFilter['root']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
+		}
+	}
+
+
+	/**
+	 * Return the picker attributes
+	 *
+	 * @return string
+	 */
+	protected function getPickerAttributes()
+	{
+		if ($this->strPickerField)
+		{
+			return ' id="tl_select" data-table="' . $this->strTable . '"';
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * Return the picker input field markup
+	 *
+	 * @param string $value
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	protected function getPickerInputField($value, $attributes='')
+	{
+		$id = is_numeric($value) ? $value : md5($value);
+
+		switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+		{
+			case 'checkbox':
+				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+
+			case 'radio':
+				return ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+		}
+
+		return '';
+	}
+
 
 	/**
 	 * Return the name of the current palette

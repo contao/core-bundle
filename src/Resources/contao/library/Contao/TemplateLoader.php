@@ -3,12 +3,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
+
+use Symfony\Component\Filesystem\Filesystem;
 
 
 /**
@@ -92,12 +94,10 @@ class TemplateLoader
 	 * @param string $custom   The custom templates folder (defaults to "templates")
 	 *
 	 * @return string The path to the template file
-	 *
-	 * @throws \Exception If $template does not exist
 	 */
 	public static function getPath($template, $format, $custom='templates')
 	{
-		$file = $template .  '.' . $format;
+		$file = $template . '.' . $format;
 
 		// Check the theme folder first
 		if (file_exists(TL_ROOT . '/' . $custom . '/' . $file))
@@ -114,13 +114,7 @@ class TemplateLoader
 			}
 		}
 
-		// Load the default template
-		if (isset(self::$files[$template]))
-		{
-			return TL_ROOT . '/' . self::$files[$template] . '/' . $file;
-		}
-
-		throw new \Exception('Could not find template "' . $template . '"');
+		return static::getDefaultPath($template, $format);
 	}
 
 
@@ -136,13 +130,57 @@ class TemplateLoader
 	 */
 	public static function getDefaultPath($template, $format)
 	{
-		$file = $template .  '.' . $format;
+		$file = $template . '.' . $format;
 
 		if (isset(self::$files[$template]))
 		{
 			return TL_ROOT . '/' . self::$files[$template] . '/' . $file;
 		}
 
+		$strPath = null;
+
+		try
+		{
+			// Search for the template if it is not in the lookup array (last match wins)
+			foreach (\System::getContainer()->get('contao.resource_finder')->findIn('templates')->name($file) as $file)
+			{
+				$strPath = $file->getPathname();
+			}
+		}
+		catch (\InvalidArgumentException $e) {}
+
+		if ($strPath !== null)
+		{
+			return $strPath;
+		}
+
 		throw new \Exception('Could not find template "' . $template . '"');
+	}
+
+
+	/**
+	 * Find the templates in the Contao resource folders.
+	 */
+	public static function initialize()
+	{
+		$objFilesystem = new Filesystem();
+		$strCacheDir = \System::getContainer()->getParameter('kernel.cache_dir');
+
+		// Try to load from cache
+		if (file_exists($strCacheDir . '/contao/config/templates.php'))
+		{
+			self::addFiles(include $strCacheDir . '/contao/config/templates.php');
+		}
+		else
+		{
+			try
+			{
+				foreach (\System::getContainer()->get('contao.resource_finder')->findIn('templates')->name('*.html5') as $file)
+				{
+					self::addFile($file->getBasename('.html5'), rtrim($objFilesystem->makePathRelative($file->getPath(), TL_ROOT), '/'));
+				}
+			}
+			catch (\InvalidArgumentException $e) {}
+		}
 	}
 }

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -51,7 +51,7 @@ class ContentText extends \ContentElement
 			if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
 			{
 				$this->singleSRC = $objModel->path;
-				$this->addImageToTemplate($this->Template, $this->arrData);
+				$this->addImageToTemplate($this->Template, $this->arrData, null, null, $objModel);
 			}
 		}
 	}

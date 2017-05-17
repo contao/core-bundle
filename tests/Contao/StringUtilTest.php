@@ -3,14 +3,14 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Contao;
+namespace Contao\CoreBundle\Tests\Contao;
 
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\StringUtil;
 use Contao\System;
 
@@ -19,6 +19,9 @@ use Contao\System;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  * @author Martin Auswöger <martin@auswoeger.com>
+ * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @group contao3
  */
 class StringUtilTest extends TestCase
 {
@@ -37,7 +40,30 @@ class StringUtilTest extends TestCase
      */
     protected function setUp()
     {
+        if (!defined('TL_ROOT')) {
+            define('TL_ROOT', $this->getRootDir());
+        }
+
         System::setContainer($this->mockContainerWithContaoScopes());
+    }
+
+    /**
+     * Tests the generateAlias() method.
+     */
+    public function testGenerateAlias()
+    {
+        $GLOBALS['TL_CONFIG']['characterSet'] = 'UTF-8';
+
+        $this->assertSame('foo', StringUtil::generateAlias('foo'));
+        $this->assertSame('foo', StringUtil::generateAlias('FOO'));
+        $this->assertSame('foo-bar', StringUtil::generateAlias('foo bar'));
+        $this->assertSame('foo-bar', StringUtil::generateAlias('%foo&bar~'));
+        $this->assertSame('foo-bar', StringUtil::generateAlias('foo&amp;bar'));
+        $this->assertSame('foo-bar', StringUtil::generateAlias('foo-{{link::12}}-bar'));
+        $this->assertSame('foo-bar', StringUtil::generateAlias('föö-bär'));
+        $this->assertSame('id-123', StringUtil::generateAlias('123'));
+        $this->assertSame('123foo', StringUtil::generateAlias('123foo'));
+        $this->assertSame('foo123', StringUtil::generateAlias('foo123'));
     }
 
     /**
@@ -51,7 +77,7 @@ class StringUtilTest extends TestCase
      */
     public function testParseSimpleTokens($string, array $tokens, $expected)
     {
-        $this->assertEquals($expected, StringUtil::parseSimpleTokens($string, $tokens));
+        $this->assertSame($expected, StringUtil::parseSimpleTokens($string, $tokens));
     }
 
     /**
@@ -65,7 +91,7 @@ class StringUtilTest extends TestCase
      */
     public function testParseSimpleTokensCorrectNewlines($string, array $tokens, $expected)
     {
-        $this->assertEquals($expected, StringUtil::parseSimpleTokens($string, $tokens));
+        $this->assertSame($expected, StringUtil::parseSimpleTokens($string, $tokens));
     }
 
     /**
@@ -78,7 +104,7 @@ class StringUtilTest extends TestCase
      */
     public function testParseSimpleTokensDoesntExecutePhp($string)
     {
-        $this->assertEquals($string, StringUtil::parseSimpleTokens($string, []));
+        $this->assertSame($string, StringUtil::parseSimpleTokens($string, []));
     }
 
     /**
@@ -91,7 +117,7 @@ class StringUtilTest extends TestCase
      */
     public function testParseSimpleTokensDoesntExecutePhpInToken(array $tokens)
     {
-        $this->assertEquals($tokens['foo'], StringUtil::parseSimpleTokens('##foo##', $tokens));
+        $this->assertSame($tokens['foo'], StringUtil::parseSimpleTokens('##foo##', $tokens));
     }
 
     /**
@@ -100,7 +126,7 @@ class StringUtilTest extends TestCase
      */
     public function testParseSimpleTokensDoesntExecutePhpInCombinedToken()
     {
-        $this->assertEquals('This is <?php echo "I am evil";?> evil', StringUtil::parseSimpleTokens('This is ##open####open2####close## evil', [
+        $this->assertSame('This is <?php echo "I am evil";?> evil', StringUtil::parseSimpleTokens('This is ##open####open2####close## evil', [
             'open' => '<',
             'open2' => '?php echo "I am evil";',
             'close' => '?>',
@@ -113,11 +139,11 @@ class StringUtilTest extends TestCase
      * @param $string
      *
      * @dataProvider parseSimpleTokensInvalidComparison
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function testParseSimpleTokensInvalidComparison($string)
     {
+        $this->expectException('InvalidArgumentException');
+
         StringUtil::parseSimpleTokens($string, ['foo' => 'bar']);
     }
 
@@ -390,7 +416,7 @@ class StringUtilTest extends TestCase
             ],
             '(<%)' => [
                 'This <% var_dump() ?> is a test.',
-                version_compare(PHP_VERSION, '7.0.0', '>=') || !in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true']),
+                version_compare(PHP_VERSION, '7.0.0', '>=') || !in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 'This <script language="php"> var_dump() </script> is a test.',
@@ -425,7 +451,7 @@ class StringUtilTest extends TestCase
             ],
             '(<%)' => [
                 ['foo' => 'This <% var_dump() ?> is a test.'],
-                version_compare(PHP_VERSION, '7.0.0', '>=') || !in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true']),
+                version_compare(PHP_VERSION, '7.0.0', '>=') || !in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 ['foo' => 'This <script language="php"> var_dump() </script> is a test.'],
@@ -457,5 +483,60 @@ class StringUtilTest extends TestCase
             'Unknown operator (====)' => ['{if foo===="bar"}{endif}'],
             'Unknown operator (<==)' => ['{if foo<=="bar"}{endif}'],
         ];
+    }
+
+    /**
+     * Tests the stripRootDir() method.
+     */
+    public function testStripRootDir()
+    {
+        $this->assertSame('', StringUtil::stripRootDir($this->getRootDir().'/'));
+        $this->assertSame('', StringUtil::stripRootDir($this->getRootDir().'\\'));
+        $this->assertSame('foo', StringUtil::stripRootDir($this->getRootDir().'/foo'));
+        $this->assertSame('foo', StringUtil::stripRootDir($this->getRootDir().'\foo'));
+        $this->assertSame('foo/', StringUtil::stripRootDir($this->getRootDir().'/foo/'));
+        $this->assertSame('foo\\', StringUtil::stripRootDir($this->getRootDir().'\foo\\'));
+        $this->assertSame('foo/bar', StringUtil::stripRootDir($this->getRootDir().'/foo/bar'));
+        $this->assertSame('foo\bar', StringUtil::stripRootDir($this->getRootDir().'\foo\bar'));
+    }
+
+    /**
+     * Tests the stripRootDir() method.
+     */
+    public function testStripRootDirDifferentPath()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        StringUtil::stripRootDir('/foo');
+    }
+
+    /**
+     * Tests the stripRootDir() method.
+     */
+    public function testStripRootDirParentPath()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        StringUtil::stripRootDir(dirname($this->getRootDir()).'/');
+    }
+
+    /**
+     * Tests the stripRootDir() method.
+     */
+    public function testStripRootDirSuffix()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        StringUtil::stripRootDir($this->getRootDir().'foo/');
+    }
+
+    /**
+     * Tests the stripRootDir() method.
+     */
+    public function testStripRootDirNoSlash()
+    {
+        $this->expectException('InvalidArgumentException');
+
+        StringUtil::stripRootDir($this->getRootDir());
     }
 }

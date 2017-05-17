@@ -3,15 +3,15 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Command;
+namespace Contao\CoreBundle\Tests\Command;
 
 use Contao\CoreBundle\Command\FilesyncCommand;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\LockHandler;
 
@@ -30,6 +30,7 @@ class FilesyncCommandTest extends TestCase
         $command = new FilesyncCommand('contao:filesync');
 
         $this->assertInstanceOf('Contao\CoreBundle\Command\FilesyncCommand', $command);
+        $this->assertSame('contao:filesync', $command->getName());
     }
 
     /**
@@ -43,7 +44,7 @@ class FilesyncCommandTest extends TestCase
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
 
-        $this->assertEquals(0, $code);
+        $this->assertSame(0, $code);
         $this->assertContains('Synchronization complete (see sync.log).', $tester->getDisplay());
     }
 
@@ -61,7 +62,7 @@ class FilesyncCommandTest extends TestCase
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
 
-        $this->assertEquals(1, $code);
+        $this->assertSame(1, $code);
         $this->assertContains('The command is already running in another process.', $tester->getDisplay());
 
         $lock->release();

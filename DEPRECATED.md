@@ -1,6 +1,53 @@
 Deprecated features
 ===================
 
+### Image service
+
+The `Image` and `Picture` classes have been deprecated in favor of the image
+service. Here are two examples of how to use the service:
+
+```php
+// Old syntax
+$image = Image::get($objSubfiles->path, 80, 60, 'center_center');
+
+// New syntax
+$container = System::getContainer();
+$rootDir = $container->getParameter('kernel.project_dir');
+
+$image = $container
+    ->get('contao.image.image_factory')
+    ->create($rootDir.'/'.$objSubfiles->path, [80, 60, 'center_center'])
+    ->getUrl($rootDir)
+;
+```
+
+```php
+// Old syntax
+$image = Image::create($path, [400, 50, 'box'])
+    ->executeResize()
+    ->getResizedPath()
+;
+
+// New syntax
+$container = System::getContainer();
+$rootDir = $container->getParameter('kernel.project_dir');
+
+$image = $container
+    ->get('contao.image.image_factory')
+    ->create(
+        $rootDir.'/'.$path,
+        (new ResizeConfiguration())
+            ->setWidth(400)
+            ->setHeight(50)
+            ->setMode(ResizeConfiguration::MODE_BOX)
+    )
+    ->getUrl($rootDir)
+;
+```
+
+For more information see: https://github.com/contao/image/blob/master/README.md
+
+
 ### FORM_FIELDS
 
 Using the `FORM_FIELDS` mechanism to determine which form fields have been
@@ -159,26 +206,33 @@ You can use the static helper methods such as `System::loadLanguageFile()` or
 The constants `TL_ROOT`, `TL_MODE`, `TL_START`, `TL_SCRIPT` and `TL_REFERER_ID`
 have been deprecated and will be removed in Contao 5.0.
 
-Use the `kernel.root_dir` instead of `TL_ROOT`:
+Use the `kernel.project_dir` instead of `TL_ROOT`:
 
 ```php
-$rootDir = dirname(System::getContainer()->getParameter('kernel.root_dir'));
+$rootDir = System::getContainer()->getParameter('kernel.project_dir');
 ```
 
-Use the `ScopeAwareTrait` trait instead of using `TL_MODE`:
+Use the `ScopeMatcher` service instead of using `TL_MODE`:
 
 ```php
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class Test {
-    use ScopeAwareTrait;
+    private $requestStack;
+    private $scopeMatcher;
+ 
+    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher) {    
+        $this->requestStack = $requestStack;
+        $this->scopeMatcher = $scopeMatcher;
+    }
 
     public function isBackend() {
-        return $this->isBackendScope();
+        return $this->scopeMatcher->isBackendRequest($this->requestStack->getCurrentRequest());
     }
 
     public function isFrontend() {
-        return $this->isFrontendScope();
+        return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
     }
 }
 ```

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -121,7 +121,7 @@ class FormCheckBox extends \Widget
 		// Check for a valid option (see #4383)
 		if (!empty($varInput) && !$this->isValidOption($varInput))
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalid'], (is_array($varInput) ? implode(', ', $varInput) : $varInput)));
+			$this->addError($GLOBALS['TL_LANG']['ERR']['invalid']);
 		}
 
 		// Add class "error"
@@ -199,15 +199,19 @@ class FormCheckBox extends \Widget
 			}
 			else
 			{
-				$arrOptions[] = array
+				$arrOptions[] = array_replace
 				(
-					'type'       => 'option',
-					'name'       => $this->strName . ((count($this->arrOptions) > 1) ? '[]' : ''),
-					'id'         => $this->strId . '_' . $i,
-					'value'      => $arrOption['value'],
-					'checked'    => $this->isChecked($arrOption),
-					'attributes' => $this->getAttributes(),
-					'label'      => $arrOption['label']
+					$arrOption,
+					array
+					(
+						'type'       => 'option',
+						'name'       => $this->strName . ((count($this->arrOptions) > 1) ? '[]' : ''),
+						'id'         => $this->strId . '_' . $i,
+						'value'      => $arrOption['value'],
+						'checked'    => $this->isChecked($arrOption),
+						'attributes' => $this->getAttributes(),
+						'label'      => $arrOption['label']
+					)
 				);
 			}
 		}

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -135,8 +135,8 @@ class ArticleModel extends \Model
 	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
 	{
 		$t = static::$strTable;
-		$arrColumns = array("($t.id=? OR $t.alias=?)");
-		$arrValues = array((is_numeric($varId) ? $varId : 0), $varId);
+		$arrColumns = !is_numeric($varId) ? array("$t.alias=?") : array("$t.id=?");
+		$arrValues = array($varId);
 
 		if ($intPid)
 		{
@@ -160,8 +160,8 @@ class ArticleModel extends \Model
 	public static function findPublishedByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
 	{
 		$t = static::$strTable;
-		$arrColumns = array("($t.id=? OR $t.alias=?)");
-		$arrValues = array((is_numeric($varId) ? $varId : 0), $varId);
+		$arrColumns = !is_numeric($varId) ? array("$t.alias=?") : array("$t.id=?");
+		$arrValues = array($varId);
 
 		if ($intPid)
 		{

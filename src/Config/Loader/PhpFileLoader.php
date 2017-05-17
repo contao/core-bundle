@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -17,6 +17,7 @@ use Symfony\Component\Config\Loader\Loader;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Yanick Witschi <https://github.com/Toflar>
  */
 class PhpFileLoader extends Loader
 {
@@ -30,29 +31,15 @@ class PhpFileLoader extends Loader
      */
     public function load($file, $type = null)
     {
-        $code = rtrim(file_get_contents($file));
+        list($code, $namespace) = $this->parseFile($file);
 
-        // Opening tag
-        if (strncmp($code, '<?php', 5) === 0) {
-            $code = substr($code, 5);
+        $code = $this->stripLegacyCheck($code);
+
+        if (false !== $namespace && 'namespaced' === $type) {
+            $code = sprintf("\nnamespace %s {%s}\n", $namespace, $code);
         }
 
-        // Access check
-        $code = str_replace(
-            [
-                " if (!defined('TL_ROOT')) die('You cannot access this file directly!');",
-                " if (!defined('TL_ROOT')) die('You can not access this file directly!');",
-            ],
-            '',
-            $code
-        );
-
-        // Closing tag
-        if (substr($code, -2) == '?>') {
-            $code = substr($code, 0, -2);
-        }
-
-        return rtrim($code)."\n";
+        return $code;
     }
 
     /**
@@ -61,5 +48,96 @@ class PhpFileLoader extends Loader
     public function supports($resource, $type = null)
     {
         return 'php' === pathinfo($resource, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Parses a file and returns the code and namespace.
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    private function parseFile($file)
+    {
+        $code = '';
+        $namespace = '';
+        $buffer = false;
+        $stream = new \PHP_Token_Stream($file);
+
+        foreach ($stream as $token) {
+            switch (true) {
+                case $token instanceof \PHP_Token_OPEN_TAG:
+                case $token instanceof \PHP_Token_CLOSE_TAG:
+                    // remove
+                    break;
+
+                case false !== $buffer:
+                    $buffer .= $token;
+
+                    if (';' === (string) $token) {
+                        $code .= $this->handleDeclare($buffer);
+                        $buffer = false;
+                    }
+                    break;
+
+                case $token instanceof \PHP_Token_NAMESPACE:
+                    if ('{' === $token->getName()) {
+                        $namespace = false;
+                        $code .= $token;
+                    } else {
+                        $namespace = $token->getName();
+                        $stream->seek($token->getEndTokenId());
+                    }
+                    break;
+
+                case $token instanceof \PHP_Token_DECLARE:
+                    $buffer = (string) $token;
+                    break;
+
+                default:
+                    $code .= $token;
+            }
+        }
+
+        return [$code, $namespace];
+    }
+
+    /**
+     * Handles the declare() statement.
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    private function handleDeclare($code)
+    {
+        $code = preg_replace('/(,\s*)?strict_types\s*=\s*1(\s*,)?/', '', $code);
+
+        if (preg_match('/declare\(\s*\)/', $code)) {
+            return '';
+        }
+
+        return str_replace(' ', '', $code);
+    }
+
+    /**
+     * Strips the legacy check from the code.
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    private function stripLegacyCheck($code)
+    {
+        $code = str_replace(
+            [
+                "if (!defined('TL_ROOT')) die('You cannot access this file directly!');",
+                "if (!defined('TL_ROOT')) die('You can not access this file directly!');",
+            ],
+            '',
+            $code
+        );
+
+        return "\n".trim($code)."\n";
     }
 }

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -317,17 +317,7 @@ class Config
 	 */
 	public static function isComplete()
 	{
-		if (!static::$blnHasLcf)
-		{
-			return false;
-		}
-
-		if (!static::has('licenseAccepted'))
-		{
-			return false;
-		}
-
-		return true;
+		return static::$blnHasLcf !== null && static::has('licenseAccepted');
 	}
 
 
@@ -498,6 +488,14 @@ class Config
 			return;
 		}
 
+		if ($container->hasParameter('contao.localconfig') && is_array($params = $container->getParameter('contao.localconfig')))
+		{
+			foreach ($params as $key=>$value)
+			{
+				$GLOBALS['TL_CONFIG'][$key] = $value;
+			}
+		}
+
 		$arrMap = array
 		(
 			'dbHost'           => 'database_host',
@@ -525,6 +523,16 @@ class Config
 				$GLOBALS['TL_CONFIG'][$strKey] = $container->getParameter($strParam);
 			}
 		}
+
+		if ($container->hasParameter('contao.image.valid_extensions'))
+		{
+			$GLOBALS['TL_CONFIG']['validImageTypes'] = implode(',', $container->getParameter('contao.image.valid_extensions'));
+		}
+
+		if ($container->hasParameter('contao.image.imagine_options'))
+		{
+			$GLOBALS['TL_CONFIG']['jpgQuality'] = $container->getParameter('contao.image.imagine_options')['jpeg_quality'];
+		}
 	}
 
 
@@ -537,7 +545,7 @@ class Config
 	 */
 	protected function escape($varValue)
 	{
-		if (is_numeric($varValue) && !preg_match('/e|^00+/', $varValue) && $varValue < PHP_INT_MAX)
+		if (is_numeric($varValue) && !preg_match('/e|^[+-]?0[^.]/', $varValue) && $varValue < PHP_INT_MAX)
 		{
 			return $varValue;
 		}

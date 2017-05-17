@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -130,7 +130,7 @@ class Dbafs
 			// Add the relative path
 			foreach ($objFiles as $objFile)
 			{
-				$strRelpath = str_replace(TL_ROOT . '/', '', $objFile->getPathname());
+				$strRelpath = \StringUtil::stripRootDir($objFile->getPathname());
 
 				if ($objFile->isDir())
 				{
@@ -268,7 +268,7 @@ class Dbafs
 			{
 				while ($objFiles->next())
 				{
-					$objFiles->path = preg_replace('@^' . $strSource . '/@', $strDestination . '/', $objFiles->path);
+					$objFiles->path = preg_replace('@^' . preg_quote($strSource, '@') . '/@', $strDestination . '/', $objFiles->path);
 					$objFiles->save();
 				}
 			}
@@ -514,7 +514,7 @@ class Dbafs
 		// Create or update the database entries
 		foreach ($objFiles as $objFile)
 		{
-			$strRelpath = str_replace(TL_ROOT . '/', '', $objFile->getPathname());
+			$strRelpath = \StringUtil::stripRootDir($objFile->getPathname());
 
 			// Get all subfiles in a single query
 			if ($objFile->isDir())

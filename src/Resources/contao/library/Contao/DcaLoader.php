@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -106,6 +106,7 @@ class DcaLoader extends \Controller
 		// Local configuration file
 		if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
 		{
+			@trigger_error('Using the dcaconfig.php file has been deprecated and will no longer work in Contao 5.0. Create one or more DCA files in app/Resources/contao/dca instead.', E_USER_DEPRECATED);
 			include TL_ROOT . '/system/config/dcaconfig.php';
 		}
 	}

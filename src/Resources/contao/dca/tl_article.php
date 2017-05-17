@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -32,6 +32,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 		'onload_callback' => array
 		(
 			array('tl_article', 'checkPermission'),
+			array('tl_article', 'addCustomLayoutSectionReferences'),
 			array('tl_page', 'addBreadcrumb')
 		),
 		'sql' => array
@@ -186,7 +187,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
-			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255),
+			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'alias' => array
@@ -195,7 +196,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
-			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50 clr'),
 			'save_callback' => array
 			(
 				array('tl_article', 'generateAlias')
@@ -223,6 +224,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'default'                 => 'main',
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_article', 'getActiveLayoutSections'),
+			'eval'                    => array('tl_class'=>'w50'),
 			'reference'               => &$GLOBALS['TL_LANG']['COLS'],
 			'sql'                     => "varchar(32) NOT NULL default ''"
 		),
@@ -232,7 +234,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
-			'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true),
+			'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true, 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
 		'showTeaser' => array
@@ -674,17 +676,23 @@ class tl_article extends Backend
 
 			while ($objLayout->next())
 			{
-				$arrCustom = StringUtil::trimsplit(',', $objLayout->sections);
+				$arrCustom = StringUtil::deserialize($objLayout->sections);
 
 				// Add the custom layout sections
 				if (!empty($arrCustom) && is_array($arrCustom))
 				{
-					$arrSections = array_merge($arrSections, $arrCustom);
+					foreach ($arrCustom as $v)
+					{
+						if (!empty($v['id']))
+						{
+							$arrSections[] = $v['id'];
+						}
+					}
 				}
 			}
 		}
 
-		return array_values(array_unique($arrSections));
+		return Backend::convertLayoutSectionIdsToAssociativeArray($arrSections);
 	}
 
 

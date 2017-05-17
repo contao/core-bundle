@@ -1,7 +1,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -32,10 +32,25 @@ body {
 	background-size:30px 30px;
 	background-position:0 0,15px 15px;
 }
+#preview .checkerbox,#preview .checkerbox img {
+	max-width:100%;
+	height:auto !important;
+}
 #download {
 	margin:12px 18px;
 }
 #download img {
 	position:relative;
 	top:-1px;
+}
+
+@media (max-width:459px) {
+	.tl_help_table {
+		margin-left:0;
+		margin-right:0;
+	}
+	#preview {
+		margin-left:12px;
+		margin-right:12px;
+	}
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -80,6 +80,22 @@ class ContaoContext
         $this->ip = $ip;
         $this->browser = $browser;
         $this->source = $source;
+    }
+
+    /**
+     * Returns a JSON representation of the object.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return json_encode([
+            'func' => $this->func,
+            'action' => $this->action,
+            'username' => $this->username,
+            'ip' => $this->ip,
+            'browser' => $this->browser,
+        ]);
     }
 
     /**
@@ -190,23 +206,5 @@ class ContaoContext
     public function setSource($source)
     {
         $this->source = (string) $source;
-    }
-
-    /**
-     * Returns a JSON representation of the object.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return json_encode(
-            [
-                'func' => $this->func,
-                'action' => $this->action,
-                'username' => $this->username,
-                'ip' => $this->ip,
-                'browser' => $this->browser,
-            ]
-        );
     }
 }

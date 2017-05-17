@@ -3,17 +3,16 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Command;
+namespace Contao\CoreBundle\Tests\Command;
 
 use Contao\CoreBundle\Command\AutomatorCommand;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\LockHandler;
 
@@ -32,6 +31,7 @@ class AutomatorCommandTest extends TestCase
         $command = new AutomatorCommand('contao:automator');
 
         $this->assertInstanceOf('Contao\CoreBundle\Command\AutomatorCommand', $command);
+        $this->assertSame('contao:automator', $command->getName());
     }
 
     /**
@@ -44,14 +44,11 @@ class AutomatorCommandTest extends TestCase
         $command->setFramework($this->mockContaoFramework());
 
         $tester = new CommandTester($command);
-
-        /** @var QuestionHelper $helper */
-        $helper = $command->getHelper('question');
-        $helper->setInputStream($this->getStreamFromInput("\n"));
+        $tester->setInputs(["\n"]);
 
         $code = $tester->execute(['command' => $command->getName()]);
 
-        $this->assertEquals(0, $code);
+        $this->assertSame(0, $code);
         $this->assertContains('Please select a task:', $tester->getDisplay());
         $this->assertContains('[10]', $tester->getDisplay());
     }
@@ -80,14 +77,11 @@ class AutomatorCommandTest extends TestCase
         $command->setFramework($this->mockContaoFramework());
 
         $tester = new CommandTester($command);
-
-        /** @var QuestionHelper $helper */
-        $helper = $command->getHelper('question');
-        $helper->setInputStream($this->getStreamFromInput("\n"));
+        $tester->setInputs(["\n"]);
 
         $code = $tester->execute(['command' => $command->getName()]);
 
-        $this->assertEquals(1, $code);
+        $this->assertSame(1, $code);
         $this->assertContains('The command is already running in another process.', $tester->getDisplay());
 
         $lock->release();
@@ -109,7 +103,7 @@ class AutomatorCommandTest extends TestCase
             'task' => 'purgeTempFolder',
         ]);
 
-        $this->assertEquals(0, $code);
+        $this->assertSame(0, $code);
     }
 
     /**
@@ -122,14 +116,11 @@ class AutomatorCommandTest extends TestCase
         $command->setFramework($this->mockContaoFramework());
 
         $tester = new CommandTester($command);
-
-        /** @var QuestionHelper $helper */
-        $helper = $command->getHelper('question');
-        $helper->setInputStream($this->getStreamFromInput("4800\n"));
+        $tester->setInputs(["4800\n"]);
 
         $code = $tester->execute(['command' => $command->getName()]);
 
-        $this->assertEquals(1, $code);
+        $this->assertSame(1, $code);
         $this->assertContains('Value "4800" is invalid (see help contao:automator)', $tester->getDisplay());
     }
 
@@ -149,24 +140,8 @@ class AutomatorCommandTest extends TestCase
             'task' => 'fooBar',
         ]);
 
-        $this->assertEquals(1, $code);
+        $this->assertSame(1, $code);
         $this->assertContains('Invalid task "fooBar" (see help contao:automator)', $tester->getDisplay());
-    }
-
-    /**
-     * Converts a string into a stream.
-     *
-     * @param string $input
-     *
-     * @return resource
-     */
-    private function getStreamFromInput($input)
-    {
-        $stream = fopen('php://memory', 'r+', false);
-        fputs($stream, $input);
-        rewind($stream);
-
-        return $stream;
     }
 
     /**

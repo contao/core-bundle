@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -136,7 +136,7 @@ class ModuleSearch extends \Module
 				return;
 			}
 
-			$strCachePath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', \System::getContainer()->getParameter('kernel.cache_dir'));
+			$strCachePath = \StringUtil::stripRootDir(\System::getContainer()->getParameter('kernel.cache_dir'));
 
 			$arrResult = null;
 			$strChecksum = md5($strKeywords . $strQueryType . $intRootId . $blnFuzzy);
@@ -178,7 +178,7 @@ class ModuleSearch extends \Module
 			$query_endtime = microtime(true);
 
 			// Sort out protected pages
-			if (\Config::get('indexProtected') && !BE_USER_LOGGED_IN)
+			if (\Config::get('indexProtected'))
 			{
 				$this->import('FrontendUser', 'User');
 

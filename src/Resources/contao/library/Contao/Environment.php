@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -209,7 +209,8 @@ class Environment
 	{
 		if (!empty($_SERVER['REQUEST_URI']))
 		{
-			$strRequest = $_SERVER['REQUEST_URI'];
+			$arrComponents = parse_url($_SERVER['REQUEST_URI']);
+			$strRequest = $arrComponents['path'] . (isset($arrComponents['query']) ? '?' . $arrComponents['query'] : '');
 		}
 		else
 		{
@@ -332,7 +333,14 @@ class Environment
 	 */
 	protected static function ssl()
 	{
-		return (@$_SERVER['SSL_SESSION_ID'] || @$_SERVER['HTTPS'] == 'on' || @$_SERVER['HTTPS'] == 1);
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		if ($request === null)
+		{
+			return false;
+		}
+
+		return $request->isSecure();
 	}
 
 

@@ -49,14 +49,6 @@
         <source>Please select the server time zone.</source>
         <target>Angiv din tidszone.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.websitePath.0">
-        <source>Relative path to the Contao directory</source>
-        <target>Relativ sti til TYPOlight-mappen</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.websitePath.1">
-        <source>The relative path to the Contao directory is usually set automatically by the install tool.</source>
-        <target>Angiv den relative sti til mappen med TYPOlight-filerne (f.eks. hvis tilgår TYPOlights backend via &lt;em&gt;www.ditdomæne.dk/ditwebsted/typolight&lt;/em&gt; bliver den relative sti &lt;em&gt;&gt;/ditwebsted&lt;/em&gt;).</target>
-      </trans-unit>
       <trans-unit id="tl_settings.characterSet.0">
         <source>Character set</source>
         <target>Tegnsæt</target>
@@ -120,14 +112,6 @@
       <trans-unit id="tl_settings.doNotCollapse.1">
         <source>Do not collapse elements in the back end preview.</source>
         <target>Sammenfold ikke indholdselementer og andre ressourcer, når de vises som eksempel i back end.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.0">
-        <source>Cache mode</source>
-        <target>Cache tilstand</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.1">
-        <source>Here you can select the cache mode.</source>
-        <target>Her kan du vælge cache tilstand.</target>
       </trans-unit>
       <trans-unit id="tl_settings.sslProxyDomain.0">
         <source>SSL proxy domain</source>
@@ -208,14 +192,6 @@
         <source>Here you can enter a comma separated list of downloadable file types.</source>
         <target>Angiv en kommasepareret liste over filendelser for de filtyper, der skal kunne hentes. Af sikkerhedsgrunde er fil-downloads begrænsede til fil-mappen og dens undermapper.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.0">
-        <source>Image file types</source>
-        <target>Gyldige filtyper for billeder</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.1">
-        <source>Here you can enter a comma separated list of file types that can be handled by the image class.</source>
-        <target>Angiv venligst en kommasepareret liste over filendelser for understøttede filetyper. Inkluder ikke filtyper som ikke kan håndteres af TYPOlight eller dine egne scripts.</target>
-      </trans-unit>
       <trans-unit id="tl_settings.editableFiles.0">
         <source>Editable file types</source>
         <target>Redigerbare filtyper</target>
@@ -239,14 +215,6 @@
       <trans-unit id="tl_settings.maxImageWidth.1">
         <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
         <target>Her kan du definere den maksimale billedbredde og bredde af mediefiler. Hvis bredden af et indholdselement overskriver denne værdi, vil det blive skaleret ned automatisk.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.0">
-        <source>JPG thumbnail quality</source>
-        <target>Miniaturebilleders kvalitet</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.1">
-        <source>Here you can enter the JPG thumbnail quality in percent.</source>
-        <target>Angiv miniaturebilledernes kvalitet i procent (gælder kun for JPG).</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>
@@ -420,14 +388,6 @@
         <source>Search engine settings</source>
         <target>Indstillinger for søgemaskiner</target>
       </trans-unit>
-      <trans-unit id="tl_settings.modules_legend">
-        <source>Inactive extensions</source>
-        <target>Inaktive udvidelser</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cron_legend">
-        <source>Command scheduler</source>
-        <target>Kommando planlægning</target>
-      </trans-unit>
       <trans-unit id="tl_settings.timeout_legend">
         <source>Timeout values</source>
         <target>Timeout værdier</target>
@@ -436,29 +396,9 @@
         <source>Default access rights</source>
         <target>Standard adgangsrettigheder</target>
       </trans-unit>
-      <trans-unit id="tl_settings.static_legend">
-        <source>Static resources</source>
-        <target>Statiske resourcer</target>
-      </trans-unit>
       <trans-unit id="tl_settings.edit">
         <source>Edit the local configuration</source>
         <target>Ændr lokal konfiguration</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.both">
-        <source>Use the server and the browser cache</source>
-        <target>Brug serverens og browserens cache</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.server">
-        <source>Use only the server cache</source>
-        <target>Brug kun serverens cache</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.browser">
-        <source>Use only the browser cache</source>
-        <target>Brug kun browserens cache</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.none">
-        <source>Disable caching</source>
-        <target>Deaktiver caching</target>
       </trans-unit>
     </body>
   </file>

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Patchwork\Utf8;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -50,13 +51,16 @@ class BackendPassword extends \Backend
 	 */
 	public function run()
 	{
+		/** @var Request $request */
+		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_password');
 
 		if (\Input::post('FORM_SUBMIT') == 'tl_password')
 		{
-			$pw = \Input::postUnsafeRaw('password');
-			$cnf = \Input::postUnsafeRaw('confirm');
+			$pw = $request->request->get('password');
+			$cnf = $request->request->get('confirm');
 
 			// The passwords do not match
 			if ($pw != $cnf)

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -54,7 +54,7 @@ class CommandSchedulerListener
         }
 
         /** @var FrontendCron $controller */
-        $controller = $this->framework->createInstance('Contao\FrontendCron');
+        $controller = $this->framework->createInstance(FrontendCron::class);
         $controller->run();
     }
 
@@ -66,11 +66,12 @@ class CommandSchedulerListener
     private function canRunController()
     {
         /** @var Config $config */
-        $config = $this->framework->getAdapter('Contao\Config');
+        $config = $this->framework->getAdapter(Config::class);
 
         return $config->isComplete()
             && !$config->get('disableCron')
-            && $this->connection->getSchemaManager()->tablesExist('tl_cron')
+            && $this->connection->isConnected()
+            && $this->connection->getSchemaManager()->tablesExist(['tl_cron'])
         ;
     }
 }

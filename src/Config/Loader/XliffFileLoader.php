@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -38,7 +38,7 @@ class XliffFileLoader extends Loader
      */
     public function __construct($rootDir, $addToGlobals = false)
     {
-        $this->rootDir = dirname($rootDir);
+        $this->rootDir = $rootDir;
         $this->addToGlobals = $addToGlobals;
     }
 
@@ -76,13 +76,42 @@ class XliffFileLoader extends Loader
         $xml = $this->getDomDocumentFromFile($name);
 
         $return = "\n// ".str_replace(strtr($this->rootDir, '\\', '/').'/', '', strtr($name, '\\', '/'))."\n";
-        $units = $xml->getElementsByTagName('trans-unit');
+        $fileNodes = $xml->getElementsByTagName('file');
+        $language = strtolower($language);
+
+        /** @var \DOMElement[] $fileNodes */
+        foreach ($fileNodes as $fileNode) {
+            $tagName = 'target';
+
+            // Use the source tag if the source language matches
+            if (strtolower($fileNode->getAttribute('source-language')) === $language) {
+                $tagName = 'source';
+            }
+
+            $return .= $this->getPhpFromFileNode($fileNode, $tagName);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Converts an XLIFF file node into PHP code.
+     *
+     * @param \DOMElement $fileNode
+     * @param string      $tagName
+     *
+     * @return string
+     */
+    private function getPhpFromFileNode(\DOMElement $fileNode, $tagName)
+    {
+        $return = '';
+        $units = $fileNode->getElementsByTagName('trans-unit');
 
         /** @var \DOMElement[] $units */
         foreach ($units as $unit) {
-            $node = $this->getNodeByLanguage($unit, $language);
+            $node = $unit->getElementsByTagName($tagName);
 
-            if ($node === null || $node->item(0) === null) {
+            if (null === $node || null === $node->item(0)) {
                 continue;
             }
 
@@ -115,19 +144,6 @@ class XliffFileLoader extends Loader
         $xml->loadXML(file_get_contents($name));
 
         return $xml;
-    }
-
-    /**
-     * Returns a DOM node list depending on the language.
-     *
-     * @param \DOMElement $unit
-     * @param string      $language
-     *
-     * @return \DOMNodeList
-     */
-    private function getNodeByLanguage(\DOMElement $unit, $language)
-    {
-        return ('en' === $language) ? $unit->getElementsByTagName('source') : $unit->getElementsByTagName('target');
     }
 
     /**
@@ -167,9 +183,9 @@ class XliffFileLoader extends Loader
      * @param array $chunks
      * @param mixed $value
      *
-     * @return string
-     *
      * @throws \OutOfBoundsException
+     *
+     * @return string
      */
     private function getStringRepresentation(array $chunks, $value)
     {
@@ -235,12 +251,12 @@ class XliffFileLoader extends Loader
      */
     private function quoteKey($key)
     {
-        if ($key === '0') {
+        if ('0' === $key) {
             return 0;
         }
 
         if (is_numeric($key)) {
-            return intval($key);
+            return (int) $key;
         }
 
         return "'".str_replace("'", "\\'", $key)."'";
@@ -257,7 +273,7 @@ class XliffFileLoader extends Loader
     {
         $value = str_replace("\n", '\n', $value);
 
-        if (strpos($value, '\n') !== false) {
+        if (false !== strpos($value, '\n')) {
             return '"'.str_replace(['$', '"'], ['\\$', '\\"'], $value).'"';
         }
 

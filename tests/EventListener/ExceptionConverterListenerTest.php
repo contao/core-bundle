@@ -3,12 +3,12 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\EventListener;
+namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\EventListener\ExceptionConverterListener;
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -20,8 +20,8 @@ use Contao\CoreBundle\Exception\NoActivePageFoundException;
 use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\Test\Fixtures\Exception\DerivedPageNotFoundException;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\Fixtures\Exception\DerivedPageNotFoundException;
+use Contao\CoreBundle\Tests\TestCase;
 use Lexik\Bundle\MaintenanceBundle\Exception\ServiceUnavailableException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -104,7 +104,11 @@ class ExceptionConverterListenerTest extends TestCase
         $exception = $event->getException();
 
         $this->assertInstanceOf('Contao\CoreBundle\Exception\InternalServerErrorHttpException', $exception);
-        $this->assertInstanceOf('Contao\CoreBundle\Exception\IncompleteInstallationException', $exception->getPrevious());
+
+        $this->assertInstanceOf(
+            'Contao\CoreBundle\Exception\IncompleteInstallationException',
+            $exception->getPrevious()
+        );
     }
 
     /**
@@ -251,7 +255,11 @@ class ExceptionConverterListenerTest extends TestCase
         $exception = $event->getException();
 
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException', $exception);
-        $this->assertInstanceOf('Lexik\Bundle\MaintenanceBundle\Exception\ServiceUnavailableException', $exception->getPrevious());
+
+        $this->assertInstanceOf(
+            'Lexik\Bundle\MaintenanceBundle\Exception\ServiceUnavailableException',
+            $exception->getPrevious()
+        );
     }
 
     /**

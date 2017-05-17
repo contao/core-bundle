@@ -3,12 +3,15 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
+
+use Contao\CoreBundle\Exception\ResponseException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 /**
@@ -80,81 +83,13 @@ class TableWizard extends \Widget
 	public function generate()
 	{
 		$arrColButtons = array('ccopy', 'cmovel', 'cmover', 'cdelete');
-		$arrRowButtons = array('rcopy', 'rdrag', 'rup', 'rdown', 'rdelete');
-
-		$strCommand = 'cmd_' . $this->strField;
-
-		// Change the order
-		if (\Input::get($strCommand) && is_numeric(\Input::get('cid')) && \Input::get('id') == $this->currentRecord)
-		{
-			$this->import('Database');
-
-			switch (\Input::get($strCommand))
-			{
-					case 'ccopy':
-					for ($i=0, $c=count($this->varValue); $i<$c; $i++)
-					{
-						$this->varValue[$i] = array_duplicate($this->varValue[$i], \Input::get('cid'));
-					}
-					break;
-
-				case 'cmovel':
-					for ($i=0, $c=count($this->varValue); $i<$c; $i++)
-					{
-						$this->varValue[$i] = array_move_up($this->varValue[$i], \Input::get('cid'));
-					}
-					break;
-
-				case 'cmover':
-					for ($i=0, $c=count($this->varValue); $i<$c; $i++)
-					{
-						$this->varValue[$i] = array_move_down($this->varValue[$i], \Input::get('cid'));
-					}
-					break;
-
-				case 'cdelete':
-					for ($i=0, $c=count($this->varValue); $i<$c; $i++)
-					{
-						$this->varValue[$i] = array_delete($this->varValue[$i], \Input::get('cid'));
-					}
-					break;
-
-				case 'rcopy':
-					$this->varValue = array_duplicate($this->varValue, \Input::get('cid'));
-					break;
-
-				case 'rup':
-					$this->varValue = array_move_up($this->varValue, \Input::get('cid'));
-					break;
-
-				case 'rdown':
-					$this->varValue = array_move_down($this->varValue, \Input::get('cid'));
-					break;
-
-				case 'rdelete':
-					$this->varValue = array_delete($this->varValue, \Input::get('cid'));
-					break;
-			}
-
-			$this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "=? WHERE id=?")
-						   ->execute(serialize($this->varValue), $this->currentRecord);
-
-			$this->redirect(preg_replace('/&(amp;)?cid=[^&]*/i', '', preg_replace('/&(amp;)?' . preg_quote($strCommand, '/') . '=[^&]*/i', '', \Environment::get('request'))));
-		}
+		$arrRowButtons = array('rcopy', 'rdelete', 'rdrag');
 
 		// Make sure there is at least an empty array
 		if (!is_array($this->varValue) || empty($this->varValue))
 		{
 			$this->varValue = array(array(''));
 		}
-
-		// Initialize the tab index
-		if (!\Cache::has('tabindex'))
-		{
-			\Cache::set('tabindex', 1);
-		}
-
-		$tabindex = \Cache::get('tabindex');
 
 		// Begin the table
 		$return = '<div id="tl_tablewizard">
@@ -166,12 +101,12 @@ class TableWizard extends \Widget
 		for ($i=0, $c=count($this->varValue[0]); $i<$c; $i++)
 		{
 			$return .= '
-      <td style="text-align:center; white-space:nowrap">';
+      <td>';
 
 			// Add column buttons
 			foreach ($arrColButtons as $button)
 			{
-				$return .= '<a href="'.$this->addToUrl('&amp;'.$strCommand.'='.$button.'&amp;cid='.$i.'&amp;id='.$this->currentRecord).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['tw_'.$button]).'" onclick="Backend.tableWizard(this,\''.$button.'\',\'ctrl_'.$this->strId.'\');return false">'.\Image::getHtml(substr($button, 1).'.svg', $GLOBALS['TL_LANG']['MSC']['tw_'.$button], 'class="tl_tablewizard_img"').'</a> ';
+				$return .= ' <button type="button" data-command="' . $button . '" class="tl_tablewizard_img" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['tw_'.$button]) . '">' . \Image::getHtml(substr($button, 1).'.svg') . '</button>';
 			}
 
 			$return .= '</td>';
@@ -181,7 +116,7 @@ class TableWizard extends \Widget
       <td></td>
     </tr>
   </thead>
-  <tbody class="sortable" data-tabindex="'.$tabindex.'">';
+  <tbody class="sortable">';
 
 		// Add rows
 		for ($i=0, $c=count($this->varValue); $i<$c; $i++)
@@ -193,24 +128,22 @@ class TableWizard extends \Widget
 			for ($j=0, $d=count($this->varValue[$i]); $j<$d; $j++)
 			{
 				$return .= '
-      <td class="tcontainer"><textarea name="'.$this->strId.'['.$i.']['.$j.']" class="tl_textarea noresize" tabindex="'.$tabindex++.'" rows="'.$this->intRows.'" cols="'.$this->intCols.'"'.$this->getAttributes().'>'.\StringUtil::specialchars($this->varValue[$i][$j]).'</textarea></td>';
+      <td class="tcontainer"><textarea name="'.$this->strId.'['.$i.']['.$j.']" class="tl_textarea noresize" rows="'.$this->intRows.'" cols="'.$this->intCols.'"'.$this->getAttributes().'>'.\StringUtil::specialchars($this->varValue[$i][$j]).'</textarea></td>';
 			}
 
 			$return .= '
-      <td style="white-space:nowrap">';
+      <td>';
 
 			// Add row buttons
 			foreach ($arrRowButtons as $button)
 			{
-				$class = ($button == 'rup' || $button == 'rdown') ? ' class="button-move"' : '';
-
 				if ($button == 'rdrag')
 				{
-					$return .= \Image::getHtml('drag.svg', '', 'class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '"');
+					$return .= ' <button type="button" class="drag-handle" title="' . sprintf($GLOBALS['TL_LANG']['MSC']['move']) . '">' . \Image::getHtml('drag.svg') . '</button>';
 				}
 				else
 				{
-					$return .= '<a href="'.$this->addToUrl('&amp;'.$strCommand.'='.$button.'&amp;cid='.$i.'&amp;id='.$this->currentRecord).'"' . $class . ' title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['tw_'.$button]).'" onclick="Backend.tableWizard(this,\''.$button.'\',\'ctrl_'.$this->strId.'\');return false">'.\Image::getHtml(substr($button, 1).'.svg', $GLOBALS['TL_LANG']['MSC']['tw_'.$button], 'class="tl_tablewizard_img"').'</a> ';
+					$return .= ' <button type="button" data-command="' . $button . '" class="tl_tablewizard_img" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['tw_'.$button]) . '">' . \Image::getHtml(substr($button, 1).'.svg') . '</button>';
 				}
 			}
 
@@ -218,14 +151,11 @@ class TableWizard extends \Widget
     </tr>';
 		}
 
-		// Store the tab index
-		\Cache::set('tabindex', $tabindex);
-
 		$return .= '
   </tbody>
   </table>
   </div>
-  <script>Backend.tableWizardResize()</script>';
+  <script>Backend.tableWizard("ctrl_'.$this->strId.'")</script>';
 
 		return $return;
 	}
@@ -237,109 +167,22 @@ class TableWizard extends \Widget
 	 * @param DataContainer $dc
 	 *
 	 * @return string
+	 *
+	 * @throws \Exception
+	 * @throws ResponseException
+	 *
+	 * @deprecated Deprecated since Contao 4.3 to be removed in 5.0.
+	 *             Use the contao.controller.backend_csv_import service instead.
 	 */
 	public function importTable(DataContainer $dc)
 	{
-		if (\Input::get('key') != 'table')
+		$response = System::getContainer()->get('contao.controller.backend_csv_import')->importTableWizard($dc);
+
+		if ($response instanceof RedirectResponse)
 		{
-			return '';
+			throw new ResponseException($response);
 		}
 
-		/** @var FileUpload $objUploader */
-		$objUploader = new \FileUpload();
-
-		// Import CSS
-		if (\Input::post('FORM_SUBMIT') == 'tl_table_import')
-		{
-			$arrUploaded = $objUploader->uploadTo('system/tmp');
-
-			if (empty($arrUploaded))
-			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['all_fields']);
-				$this->reload();
-			}
-
-			$this->import('Database');
-			$arrTable = array();
-
-			foreach ($arrUploaded as $strCsvFile)
-			{
-				$objFile = new \File($strCsvFile);
-
-				if ($objFile->extension != 'csv')
-				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
-					continue;
-				}
-
-				// Get separator
-				switch (\Input::post('separator'))
-				{
-					case 'semicolon':
-						$strSeparator = ';';
-						break;
-
-					case 'tabulator':
-						$strSeparator = "\t";
-						break;
-
-					default:
-						$strSeparator = ',';
-						break;
-				}
-
-				$resFile = $objFile->handle;
-
-				while(($arrRow = @fgetcsv($resFile, null, $strSeparator)) !== false)
-				{
-					$arrTable[] = $arrRow;
-				}
-			}
-
-			$objVersions = new \Versions($dc->table, \Input::get('id'));
-			$objVersions->create();
-
-			$this->Database->prepare("UPDATE " . $dc->table . " SET tableitems=? WHERE id=?")
-						   ->execute(serialize($arrTable), \Input::get('id'));
-
-			\System::setCookie('BE_PAGE_OFFSET', 0, 0);
-			$this->redirect(str_replace('&key=table', '', \Environment::get('request')));
-		}
-
-		// Return form
-		return '
-<div id="tl_buttons">
-<a href="'.ampersand(str_replace('&key=table', '', \Environment::get('request'))).'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
-</div>
-'.\Message::generate().'
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_table_import" class="tl_form" method="post" enctype="multipart/form-data">
-<div class="tl_formbody_edit">
-<input type="hidden" name="FORM_SUBMIT" value="tl_table_import">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
-
-<fieldset class="tl_tbox nolegend">
-<div>
-  <h3><label for="separator">'.$GLOBALS['TL_LANG']['MSC']['separator'][0].'</label></h3>
-  <select name="separator" id="separator" class="tl_select" onfocus="Backend.getScrollOffset()">
-    <option value="comma">'.$GLOBALS['TL_LANG']['MSC']['comma'].'</option>
-    <option value="semicolon">'.$GLOBALS['TL_LANG']['MSC']['semicolon'].'</option>
-    <option value="tabulator">'.$GLOBALS['TL_LANG']['MSC']['tabulator'].'</option>
-  </select>'.(($GLOBALS['TL_LANG']['MSC']['separator'][1] != '') ? '
-  <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['MSC']['separator'][1].'</p>' : '').'
-  <h3>'.$GLOBALS['TL_LANG']['MSC']['source'][0].'</h3>'.$objUploader->generateMarkup().(isset($GLOBALS['TL_LANG']['MSC']['source'][1]) ? '
-  <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['MSC']['source'][1].'</p>' : '').'
-</div>
-</fieldset>
-
-</div>
-
-<div class="tl_formbody_submit">
-
-<div class="tl_submit_container">
-  <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['MSC']['tw_import'][0].'</button>
-</div>
-
-</div>
-</form>';
+		return $response->getContent();
 	}
 }

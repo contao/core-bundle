@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Command;
 
 use Contao\CoreBundle\Analyzer\HtaccessAnalyzer;
 use Contao\CoreBundle\Util\SymlinkUtil;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Symlinks the public resources into the /web directory.
+ * Symlinks the public resources into the web directory.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Yanick Witschi <https://github.com/toflar>
@@ -43,13 +44,26 @@ class SymlinksCommand extends AbstractLockedCommand
     private $rootDir;
 
     /**
+     * @var string
+     */
+    private $webDir;
+
+    /**
+     * @var int
+     */
+    private $statusCode = 0;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
             ->setName('contao:symlinks')
-            ->setDescription('Symlinks the public resources into the /web directory.')
+            ->setDefinition([
+                new InputArgument('target', InputArgument::OPTIONAL, 'The target directory', 'web'),
+            ])
+            ->setDescription('Symlinks the public resources into the web directory.')
         ;
     }
 
@@ -59,7 +73,8 @@ class SymlinksCommand extends AbstractLockedCommand
     protected function executeLocked(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->rootDir = dirname($this->getContainer()->getParameter('kernel.root_dir'));
+        $this->rootDir = $this->getContainer()->getParameter('kernel.project_dir');
+        $this->webDir = rtrim($input->getArgument('target'), '/');
 
         $this->generateSymlinks();
 
@@ -68,11 +83,11 @@ class SymlinksCommand extends AbstractLockedCommand
             $this->io->table(['', 'Symlink', 'Target / Error'], $this->rows);
         }
 
-        return 0;
+        return $this->statusCode;
     }
 
     /**
-     * Generates the symlinks in the web/ directory.
+     * Generates the symlinks in the web directory.
      */
     private function generateSymlinks()
     {
@@ -80,18 +95,20 @@ class SymlinksCommand extends AbstractLockedCommand
         $uploadPath = $this->getContainer()->getParameter('contao.upload_path');
 
         // Remove the base folders in the document root
-        $fs->remove($this->rootDir.'/web/'.$uploadPath);
-        $fs->remove($this->rootDir.'/web/system/modules');
-        $fs->remove($this->rootDir.'/web/vendor');
+        $fs->remove($this->rootDir.'/'.$this->webDir.'/'.$uploadPath);
+        $fs->remove($this->rootDir.'/'.$this->webDir.'/system/modules');
+        $fs->remove($this->rootDir.'/'.$this->webDir.'/vendor');
 
         $this->symlinkFiles($uploadPath);
         $this->symlinkModules();
         $this->symlinkThemes();
 
         // Symlink the assets and themes directory
-        $this->symlink('assets', 'web/assets');
-        $this->symlink('system/themes', 'web/system/themes');
-        $this->symlink('app/logs', 'system/logs');
+        $this->symlink('assets', $this->webDir.'/assets');
+        $this->symlink('system/themes', $this->webDir.'/system/themes');
+
+        // Symlinks the logs directory
+        $this->symlink($this->getRelativePath($this->getContainer()->getParameter('kernel.logs_dir')), 'system/logs');
     }
 
     /**
@@ -131,7 +148,7 @@ class SymlinksCommand extends AbstractLockedCommand
         $themes = $this->getContainer()->get('contao.resource_finder')->findIn('themes')->depth(0)->directories();
 
         foreach ($themes as $theme) {
-            $path = str_replace(strtr($this->rootDir, '\\', '/').'/', '', strtr($theme->getPathname(), '\\', '/'));
+            $path = $this->getRelativePath($theme->getPathname());
 
             if (0 === strpos($path, 'system/modules/')) {
                 continue;
@@ -153,7 +170,7 @@ class SymlinksCommand extends AbstractLockedCommand
 
         foreach ($files as $file) {
             $path = rtrim($prepend.'/'.$file->getRelativePath(), '/');
-            $this->symlink($path, 'web/'.$path);
+            $this->symlink($path, $this->webDir.'/'.$path);
         }
     }
 
@@ -183,6 +200,8 @@ class SymlinksCommand extends AbstractLockedCommand
                 $target,
             ];
         } catch (\Exception $e) {
+            $this->statusCode = 1;
+
             $this->rows[] = [
                 sprintf(
                     '<fg=red;options=bold>%s</>',
@@ -239,27 +258,43 @@ class SymlinksCommand extends AbstractLockedCommand
         foreach ($files as $key => $file) {
             $path = rtrim(strtr($prepend.'/'.$file->getRelativePath(), '\\', '/'), '/');
 
-            $chunks = explode('/', $path);
-            array_pop($chunks);
+            if (!empty($parents)) {
+                $parent = dirname($path);
 
-            $parent = implode('/', $chunks);
+                while (false !== strpos($parent, '/')) {
+                    if (in_array($parent, $parents, true)) {
+                        $this->rows[] = [
+                            sprintf(
+                                '<fg=yellow;options=bold>%s</>',
+                                '\\' === DIRECTORY_SEPARATOR ? 'WARNING' : '!'
+                            ),
+                            $this->webDir.'/'.$path,
+                            sprintf('<comment>Skipped because %s will be symlinked.</comment>', $parent),
+                        ];
 
-            if (in_array($parent, $parents)) {
-                $this->rows[] = [
-                    sprintf(
-                        '<fg=yellow;options=bold>%s</>',
-                        '\\' === DIRECTORY_SEPARATOR ? 'WARNING' : '!'
-                    ),
-                    'web/'.$path,
-                    sprintf('<comment>Skipped because %s will be symlinked.</comment>', $parent),
-                ];
+                        unset($files[$key]);
+                        break;
+                    }
 
-                unset($files[$key]);
+                    $parent = dirname($parent);
+                }
             }
 
             $parents[] = $path;
         }
 
         return array_values($files);
+    }
+
+    /**
+     * Returns the path relative to the root directory.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getRelativePath($path)
+    {
+        return str_replace(strtr($this->rootDir, '\\', '/').'/', '', strtr($path, '\\', '/'));
     }
 }

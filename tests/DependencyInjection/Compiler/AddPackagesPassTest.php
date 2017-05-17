@@ -3,15 +3,15 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\DependencyInjection\Compiler;
+namespace Contao\CoreBundle\Tests\DependencyInjection\Compiler;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -50,8 +50,8 @@ class AddPackagesPassTest extends TestCase
         $this->assertArrayHasKey('contao/test-bundle2', $packages);
         $this->assertArrayNotHasKey('contao/test-bundle3', $packages);
 
-        $this->assertEquals('1.0.0', $packages['contao/test-bundle1']);
-        $this->assertEquals('dev-develop', $packages['contao/test-bundle2']);
+        $this->assertSame('1.0.0', $packages['contao/test-bundle1']);
+        $this->assertSame('dev-develop', $packages['contao/test-bundle2']);
     }
 
     /**

@@ -49,14 +49,6 @@
         <source>Please select the server time zone.</source>
         <target>لطفا منطقه زمانی سرور را انتخاب نمایید.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.websitePath.0">
-        <source>Relative path to the Contao directory</source>
-        <target>مسیر نسبی پوشه کانتائو</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.websitePath.1">
-        <source>The relative path to the Contao directory is usually set automatically by the install tool.</source>
-        <target>مسیر نسبی پوشه کانتائو معمولاً به صورت خودکار توسط ابزار نصب تنظیم می‌شود.</target>
-      </trans-unit>
       <trans-unit id="tl_settings.characterSet.0">
         <source>Character set</source>
         <target>مجموعه نویسه</target>
@@ -120,14 +112,6 @@
       <trans-unit id="tl_settings.doNotCollapse.1">
         <source>Do not collapse elements in the back end preview.</source>
         <target>عنصر‌ها را در پیش‌نمایش بخش مدیریت جمع نمی‌کند.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.0">
-        <source>Cache mode</source>
-        <target>حال نهانگاه</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.1">
-        <source>Here you can select the cache mode.</source>
-        <target>اینجا می‌توانید نوع نهان‌گاه را انتخاب نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_settings.sslProxyDomain.0">
         <source>SSL proxy domain</source>
@@ -209,14 +193,6 @@
         <source>Here you can enter a comma separated list of downloadable file types.</source>
         <target>اینجا باید فهرست جدا شده با کامل از گونه‌های پرونده قابل دانلود را وارد نمایید.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.0">
-        <source>Image file types</source>
-        <target>گونه‌های پرونده تصویر</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.1">
-        <source>Here you can enter a comma separated list of file types that can be handled by the image class.</source>
-        <target>اینجا می‌توانید فهرست جداشده با کاما از گونه‌های پرونده که می‌تواند توسط کلاس تصویر به کار گرفته شود را وارد نمایید.</target>
-      </trans-unit>
       <trans-unit id="tl_settings.editableFiles.0">
         <source>Editable file types</source>
         <target>گونه‌های پرونده قابل ویرایش</target>
@@ -240,14 +216,6 @@
       <trans-unit id="tl_settings.maxImageWidth.1">
         <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
         <target>اگر عرض تصویر یا ویدیو از این مقدار بیشتر باشد، به صورت خودکار تنظیم خواهد شد.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.0">
-        <source>JPG thumbnail quality</source>
-        <target>کیفیت تصویر بندانگشتی JPG</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.1">
-        <source>Here you can enter the JPG thumbnail quality in percent.</source>
-        <target>اینجا می‌توانید کیفیت تصویر بندانگشتی JPG را به صورت درصد وارد نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>
@@ -421,14 +389,6 @@
         <source>Search engine settings</source>
         <target>تنظیمات موتور جستجو</target>
       </trans-unit>
-      <trans-unit id="tl_settings.modules_legend">
-        <source>Inactive extensions</source>
-        <target>افزونه‌های غیرفعال</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cron_legend">
-        <source>Command scheduler</source>
-        <target>زمان‌بندی دستور</target>
-      </trans-unit>
       <trans-unit id="tl_settings.timeout_legend">
         <source>Timeout values</source>
         <target>مقادیر انقضاء</target>
@@ -437,29 +397,9 @@
         <source>Default access rights</source>
         <target>سطوح دسترسی پیش‌فرض</target>
       </trans-unit>
-      <trans-unit id="tl_settings.static_legend">
-        <source>Static resources</source>
-        <target>منابع استاتیک</target>
-      </trans-unit>
       <trans-unit id="tl_settings.edit">
         <source>Edit the local configuration</source>
         <target>ویرایش پیکربندی محلی</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.both">
-        <source>Use the server and the browser cache</source>
-        <target>استفاده از نهانگاه سرور و مرورگر</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.server">
-        <source>Use only the server cache</source>
-        <target>استفاده فقط از نهانگاه سرور</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.browser">
-        <source>Use only the browser cache</source>
-        <target>استفاده فقط از نهانگاه مرورگر</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.none">
-        <source>Disable caching</source>
-        <target>غیرفعال کردن نهانگاه</target>
       </trans-unit>
     </body>
   </file>

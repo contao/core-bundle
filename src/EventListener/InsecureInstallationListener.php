@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -38,12 +38,12 @@ class InsecureInstallationListener
         $request = $event->getRequest();
 
         // Skip the check on localhost
-        if (in_array($request->getClientIp(), $this->localIps)) {
+        if (in_array($request->getClientIp(), $this->localIps, true)) {
             return;
         }
 
-        // The document root does not contain /web
-        if ('/web' !== substr($request->getBasePath(), -4)) {
+        // The document root is not in a subdirectory
+        if ('' === $request->getBasePath()) {
             return;
         }
 

@@ -1,6 +1,21 @@
 API changes
 ===========
 
+Version 4.* to 4.3
+------------------
+
+### Image upscaling
+
+The image service no longer supports upscaling images for reasons of bandwidth
+and storage consumption. Images should be upscaled via CSS if needed.
+
+
+### Form template
+
+The form template `form.html5` has been renamed to `form_wrapper.html5`, so it
+can be overridden with a custom template in the form settings.
+
+
 Version 3.* to 4.0
 ------------------
 
@@ -163,14 +178,15 @@ into the following templates:
 The following templates have been renamed to match the content element or
 module key:
 
- * `ce_accordion`       -> `ce_accordionSingle`
- * `ce_accordion_start` -> `ce_accordionStart`
- * `ce_accordion_stop`  -> `ce_accordionStop`
- * `ce_slider_start`    -> `ce_sliderStart`
- * `ce_slider_stop`     -> `ce_sliderStop`
- * `mod_article_list`   -> `mod_articlelist`
- * `mod_article_nav`    -> `mod_articlenav`
- * `mod_random_image`   -> `mod_randomImage`
+ * `ce_accordion`        -> `ce_accordionSingle`
+ * `ce_accordion_start`  -> `ce_accordionStart`
+ * `ce_accordion_stop`   -> `ce_accordionStop`
+ * `ce_slider_start`     -> `ce_sliderStart`
+ * `ce_slider_stop`      -> `ce_sliderStop`
+ * `mod_article_list`    -> `mod_articlelist`
+ * `mod_article_nav`     -> `mod_articlenav`
+ * `mod_random_image`    -> `mod_randomImage`
+ * `mod_change_password` -> `mod_changePassword`
 
 The following templates have been consolidated:
 

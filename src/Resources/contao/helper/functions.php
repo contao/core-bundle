@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -29,7 +29,19 @@ function log_message($strMessage, $strLog=null)
 		$strLog = 'prod-' . date('Y-m-d') . '.log';
 	}
 
-	error_log(sprintf("[%s] %s\n", date('d-M-Y H:i:s'), $strMessage), 3, TL_ROOT . '/app/logs/' . $strLog);
+	$strLogsDir = null;
+
+	if (($container = System::getContainer()) !== null)
+	{
+		$strLogsDir = $container->getParameter('kernel.logs_dir');
+	}
+
+	if (!$strLogsDir)
+	{
+		$strLogsDir = TL_ROOT . '/var/logs';
+	}
+
+	error_log(sprintf("[%s] %s\n", date('d-M-Y H:i:s'), $strMessage), 3, $strLogsDir . '/' . $strLog);
 }
 
 
@@ -441,9 +453,13 @@ function array_insert(&$arrCurrent, $intIndex, $arrNew)
  * @param integer $intIndex
  *
  * @return array
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
  */
 function array_duplicate($arrStack, $intIndex)
 {
+	@trigger_error('Using array_duplicate() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 	$arrBuffer = $arrStack;
 	$arrStack = array();
 
@@ -468,9 +484,13 @@ function array_duplicate($arrStack, $intIndex)
  * @param integer $intIndex
  *
  * @return array
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
  */
 function array_move_up($arrStack, $intIndex)
 {
+	@trigger_error('Using array_move_up() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 	if ($intIndex > 0)
 	{
 		$arrBuffer = $arrStack[$intIndex];
@@ -494,9 +514,13 @@ function array_move_up($arrStack, $intIndex)
  * @param integer $intIndex
  *
  * @return array
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
  */
 function array_move_down($arrStack, $intIndex)
 {
+	@trigger_error('Using array_move_down() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 	if (($intIndex+1) < count($arrStack))
 	{
 		$arrBuffer = $arrStack[$intIndex];
@@ -520,9 +544,13 @@ function array_move_down($arrStack, $intIndex)
  * @param integer $intIndex
  *
  * @return array
+ *
+ * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.0.
  */
 function array_delete($arrStack, $intIndex)
 {
+	@trigger_error('Using array_delete() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 	unset($arrStack[$intIndex]);
 
 	return array_values($arrStack);

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -12,6 +12,7 @@ namespace Contao;
 
 use MatthiasMullie\Minify;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\VarDumper\VarDumper;
 
 
 /**
@@ -237,21 +238,24 @@ abstract class Template extends \Controller
 
 	/**
 	 * Print all template variables to the screen using print_r
+	 *
+	 * @deprecated Deprecated since Contao 4.3, to be removed in Contao 5.
+	 *             Use Template::dumpTemplateVars() instead.
 	 */
 	public function showTemplateVars()
 	{
-		echo "<pre>\n";
-		print_r($this->arrData);
-		echo "</pre>\n";
+		@trigger_error('Using Template::showTemplateVars() has been deprecated and will no longer work in Contao 5.0. Use Template::dumpTemplateVars() instead.', E_USER_DEPRECATED);
+
+		$this->dumpTemplateVars();
 	}
 
 
 	/**
-	 * Print all template variables to the screen using var_dump
+	 * Print all template variables to the screen using the Symfony VarDumper component
 	 */
 	public function dumpTemplateVars()
 	{
-		dump($this->arrData);
+		VarDumper::dump($this->arrData);
 	}
 
 
@@ -293,7 +297,6 @@ abstract class Template extends \Controller
 
 		$this->compile();
 
-		header('Vary: User-Agent', false);
 		header('Content-Type: ' . $this->strContentType . '; charset=' . \Config::get('characterSet'));
 
 		echo $this->strBuffer;
@@ -313,8 +316,6 @@ abstract class Template extends \Controller
 		$this->compile();
 
 		$response = new Response($this->strBuffer);
-
-		$response->headers->set('Vary', 'User-Agent', false);
 		$response->headers->set('Content-Type', $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		return $response;

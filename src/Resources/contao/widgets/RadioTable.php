@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -78,7 +78,7 @@ class RadioTable extends \Widget
 
 		if (!empty($varValue) && !$this->isValidOption($varValue))
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalid'], (is_array($varValue) ? implode(', ', $varValue) : $varValue)));
+			$this->addError($GLOBALS['TL_LANG']['ERR']['invalid']);
 		}
 
 		parent::validate();
@@ -92,7 +92,7 @@ class RadioTable extends \Widget
 	 */
 	public function generate()
 	{
-		if (!is_array($this->arrOptions) || empty($this->arrOptions))
+		if (empty($this->arrOptions) || !is_array($this->arrOptions))
 		{
 			return '';
 		}

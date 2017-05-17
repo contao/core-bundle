@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -23,7 +23,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\ImageSizesEvent
+     * @see ImageSizesEvent
      */
     const IMAGE_SIZES_ALL = 'contao.image_sizes_all';
 
@@ -32,7 +32,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\ImageSizesEvent
+     * @see ImageSizesEvent
      */
     const IMAGE_SIZES_USER = 'contao.image_sizes_user';
 
@@ -41,7 +41,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\PreviewUrlCreateEvent
+     * @see PreviewUrlCreateEvent
      */
     const PREVIEW_URL_CREATE = 'contao.preview_url_create';
 
@@ -50,7 +50,7 @@ final class ContaoCoreEvents
      *
      * @var string
      *
-     * @see Contao\CoreBundle\Event\PreviewUrlConvertEvent
+     * @see PreviewUrlConvertEvent
      */
     const PREVIEW_URL_CONVERT = 'contao.preview_url_convert';
 }

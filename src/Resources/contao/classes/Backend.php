@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,7 +11,10 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\Database\Result;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -267,7 +270,7 @@ abstract class Backend extends \Controller
 			}
 			catch (\Exception $e) {}
 
-			$strRelpath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $file);
+			$strRelpath = \StringUtil::stripRootDir($file);
 
 			if (!unlink($file))
 			{
@@ -418,7 +421,18 @@ abstract class Backend extends \Controller
 		elseif (\Input::get('key') && isset($arrModule[\Input::get('key')]))
 		{
 			$objCallback = \System::importStatic($arrModule[\Input::get('key')][0]);
-			$this->Template->main .= $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
+			$response = $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
+
+			if ($response instanceof RedirectResponse)
+			{
+				throw new ResponseException($response);
+			}
+			elseif ($response instanceof Response)
+			{
+				$response = $response->getContent();
+			}
+
+			$this->Template->main .= $response;
 
 			// Add the name of the parent element
 			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
@@ -664,9 +678,13 @@ abstract class Backend extends \Controller
 	 * @param string  $strUuid
 	 * @param string  $strPtable
 	 * @param integer $intPid
+	 *
+	 * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5.0.
 	 */
 	public static function addFileMetaInformationToRequest($strUuid, $strPtable, $intPid)
 	{
+		@trigger_error('Using Backend::addFileMetaInformationToRequest() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 		$objFile = \FilesModel::findByUuid($strUuid);
 
 		if ($objFile === null)
@@ -724,9 +742,14 @@ abstract class Backend extends \Controller
 
 		if (isset($arrMeta[$strLanguage]))
 		{
-			if (\Input::post('alt') == '' && !empty($arrMeta[$strLanguage]['title']))
+			if (\Input::post('title') == '' && !empty($arrMeta[$strLanguage]['title']))
 			{
-				\Input::setPost('alt', $arrMeta[$strLanguage]['title']);
+				\Input::setPost('title', $arrMeta[$strLanguage]['title']);
+			}
+
+			if (\Input::post('alt') == '' && !empty($arrMeta[$strLanguage]['alt']))
+			{
+				\Input::setPost('alt', $arrMeta[$strLanguage]['alt']);
 			}
 
 			if (\Input::post('caption') == '' && !empty($arrMeta[$strLanguage]['caption']))
@@ -1020,6 +1043,54 @@ abstract class Backend extends \Controller
 <ul id="tl_breadcrumb">
   <li>' . implode(' &gt; </li><li>', $arrLinks) . '</li>
 </ul>';
+	}
+
+
+	/**
+	 * Convert an array of layout section IDs to an associative array with IDs and labels
+	 *
+	 * @param array $arrSections
+	 *
+	 * @return array
+	 */
+	public static function convertLayoutSectionIdsToAssociativeArray($arrSections)
+	{
+		$arrSections = array_flip(array_values(array_unique($arrSections)));
+
+		foreach (array_keys($arrSections) as $k)
+		{
+			$arrSections[$k] = $GLOBALS['TL_LANG']['COLS'][$k];
+		}
+
+		asort($arrSections);
+
+		return $arrSections;
+	}
+
+
+	/**
+	 * Add the custom layout section references
+	 */
+	public function addCustomLayoutSectionReferences()
+	{
+		$objLayout = $this->Database->getInstance()->query("SELECT sections FROM tl_layout WHERE sections!=''");
+
+		while ($objLayout->next())
+		{
+			$arrCustom = \StringUtil::deserialize($objLayout->sections);
+
+			// Add the custom layout sections
+			if (!empty($arrCustom) && is_array($arrCustom))
+			{
+				foreach ($arrCustom as $v)
+				{
+					if (!empty($v['id']))
+					{
+						$GLOBALS['TL_LANG']['COLS'][$v['id']] = $v['title'];
+					}
+				}
+			}
+		}
 	}
 
 

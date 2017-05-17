@@ -3,14 +3,16 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Contao;
+namespace Contao\CoreBundle\Tests\Contao;
 
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\GdImage;
+use Contao\System;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -19,10 +21,12 @@ use Symfony\Component\Filesystem\Filesystem;
  * @author Martin Auswöger <https://github.com/ausi>
  * @author Yanick Witschi <https://github.com/Toflar>
  *
+ * @group contao3
+ *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class GdImageTest extends \PHPUnit_Framework_TestCase
+class GdImageTest extends TestCase
 {
     /**
      * @var string
@@ -57,6 +61,7 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         define('TL_ROOT', self::$rootDir);
+        System::setContainer($this->mockContainerWithContaoScopes());
     }
 
     /**
@@ -80,10 +85,20 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInternalType('resource', $image->getResource());
         $this->assertTrue(imageistruecolor($image->getResource()));
-        $this->assertEquals(100, imagesx($image->getResource()));
-        $this->assertEquals(100, imagesy($image->getResource()));
-        $this->assertEquals(127, imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 0, 0))['alpha'], 'Image should be transparent');
-        $this->assertEquals(127, imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 99, 99))['alpha'], 'Image should be transparent');
+        $this->assertSame(100, imagesx($image->getResource()));
+        $this->assertSame(100, imagesy($image->getResource()));
+
+        $this->assertSame(
+            127,
+            imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 0, 0))['alpha'],
+            'Image should be transparent'
+        );
+
+        $this->assertSame(
+            127,
+            imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 99, 99))['alpha'],
+            'Image should be transparent'
+        );
     }
 
     /**
@@ -105,17 +120,17 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
         $image = GdImage::fromFile(new \File('test.'.$type));
 
         $this->assertInternalType('resource', $image->getResource());
-        $this->assertEquals(100, imagesx($image->getResource()));
-        $this->assertEquals(100, imagesy($image->getResource()));
+        $this->assertSame(100, imagesx($image->getResource()));
+        $this->assertSame(100, imagesy($image->getResource()));
     }
 
     /**
      * Tests the fromFile() method with an invalid type.
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function testFromFileInvalidType()
     {
+        $this->expectException('InvalidArgumentException');
+
         GdImage::fromFile(new \File('test.xyz'));
     }
 
@@ -129,15 +144,15 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
     public function testSaveToFile($type)
     {
         $file = self::$rootDir.'/test.'.$type;
-        $image = GdImage::fromDimensions(100, 100);
 
+        $image = GdImage::fromDimensions(100, 100);
         $image->saveToFile($file);
 
         $this->assertFileExists($file);
 
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
 
-        $this->assertEquals('image/'.$type, $finfo->file($file));
+        $this->assertSame('image/'.$type, $finfo->file($file));
     }
 
     /**
@@ -155,43 +170,43 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
 
         $image->copyTo($target, 10, 10, 80, 80);
 
-        $this->assertEquals(
+        $this->assertSame(
             ['red' => 0, 'green' => 0, 'blue' => 0, 'alpha' => 0],
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 50, 50)),
             'Center should be black'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             ['red' => 0, 'green' => 0, 'blue' => 0, 'alpha' => 0],
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 10, 10)),
             '10 pixel from left top should be black'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             ['red' => 0, 'green' => 0, 'blue' => 0, 'alpha' => 0],
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 89, 89)),
             '10 pixel from right bottom should be black'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 0, 0))['alpha'],
             'Left top pixel should be transparent'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 99, 99))['alpha'],
             'Bottom right pixel should be transparent'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 9, 9))['alpha'],
             '9 pixel from left top should be transparent'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($target->getResource(), imagecolorat($target->getResource(), 90, 90))['alpha'],
             '9 pixel from bottom right should be transparent'
@@ -218,13 +233,13 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('resource', $image->getResource());
         $this->assertFalse(imageistruecolor($image->getResource()));
 
-        $this->assertEquals(
+        $this->assertSame(
             ['red' => 0, 'green' => 0, 'blue' => 0, 'alpha' => 0],
             imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 0, 0)),
             'Left top pixel should be black'
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 75, 75))['alpha'],
             'Bottom right quater should be transparent'
@@ -253,9 +268,9 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInternalType('resource', $image->getResource());
         $this->assertFalse(imageistruecolor($image->getResource()));
-        $this->assertEquals(256, imagecolorstotal($image->getResource()));
+        $this->assertSame(256, imagecolorstotal($image->getResource()));
 
-        $this->assertEquals(
+        $this->assertSame(
             127,
             imagecolorsforindex($image->getResource(), imagecolorat($image->getResource(), 99, 99))['alpha'],
             'Bottom right pixel should be transparent'
@@ -277,9 +292,9 @@ class GdImageTest extends \PHPUnit_Framework_TestCase
 
         $image = new GdImage($image);
 
-        $this->assertEquals(4, $image->countColors());
-        $this->assertEquals(4, $image->countColors(256));
-        $this->assertEquals(2, $image->countColors(1));
+        $this->assertSame(4, $image->countColors());
+        $this->assertSame(4, $image->countColors(256));
+        $this->assertSame(2, $image->countColors(1));
     }
 
     /**

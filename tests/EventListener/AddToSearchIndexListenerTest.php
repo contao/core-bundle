@@ -3,28 +3,31 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\EventListener;
+namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\EventListener\AddToSearchIndexListener;
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Contao\CoreBundle\Framework\ContaoFramework;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Tests the AddToSearchIndexListener class.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
+class AddToSearchIndexListenerTest extends TestCase
 {
     /**
-     * @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject
+     * @var ContaoFrameworkInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $framework;
 
@@ -35,27 +38,21 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->framework = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\ContaoFramework')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $this->framework = $this->createMock(ContaoFrameworkInterface::class);
 
         $frontendAdapter = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\Adapter')
-            ->setMethods(['indexPageIfApplicable'])
+            ->getMockBuilder(Adapter::class)
             ->disableOriginalConstructor()
+            ->setMethods(['indexPageIfApplicable'])
             ->getMock()
         ;
 
         $frontendAdapter
-            ->expects($this->any())
             ->method('indexPageIfApplicable')
             ->willReturn(null)
         ;
 
         $this->framework
-            ->expects($this->any())
             ->method('getAdapter')
             ->willReturn($frontendAdapter)
         ;
@@ -77,7 +74,6 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
     public function testWithoutContaoFramework()
     {
         $this->framework
-            ->expects($this->any())
             ->method('isInitialized')
             ->willReturn(false)
         ;
@@ -102,7 +98,6 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
     public function testWithContaoFramework()
     {
         $this->framework
-            ->expects($this->any())
             ->method('isInitialized')
             ->willReturn(true)
         ;
@@ -120,20 +115,50 @@ class AddToSearchIndexListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests that the listener does nothing if the request is a fragment.
+     */
+    public function testWithFragment()
+    {
+        $this->framework
+            ->method('isInitialized')
+            ->willReturn(true)
+        ;
+
+        $listener = new AddToSearchIndexListener($this->framework);
+        $event = $this->mockPostResponseEvent('_fragment/foo/bar');
+
+        $event
+            ->expects($this->never())
+            ->method('getResponse')
+        ;
+
+        $listener->onKernelTerminate($event);
+    }
+
+    /**
      * Returns a PostResponseEvent mock object.
+     *
+     * @param string|null $requestUri
      *
      * @return \PHPUnit_Framework_MockObject_MockObject|PostResponseEvent
      */
-    private function mockPostResponseEvent()
+    private function mockPostResponseEvent($requestUri = null)
     {
-        return $this->getMock(
-            'Symfony\Component\HttpKernel\Event\PostResponseEvent',
-            ['getResponse'],
-            [
-                $this->getMockForAbstractClass('Symfony\Component\HttpKernel\Kernel', ['test', false]),
-                new Request(),
+        $request = new Request();
+
+        if (null !== $requestUri) {
+            $request->server->set('REQUEST_URI', $requestUri);
+        }
+
+        return $this
+            ->getMockBuilder(PostResponseEvent::class)
+            ->setConstructorArgs([
+                $this->createMock(KernelInterface::class),
+                $request,
                 new Response(),
-            ]
-        );
+            ])
+            ->setMethods(['getResponse'])
+            ->getMock()
+        ;
     }
 }

@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -205,6 +205,7 @@ namespace {
 	class Password extends \Contao\Password {}
 	class RadioButton extends \Contao\RadioButton {}
 	class RadioTable extends \Contao\RadioTable {}
+	class SectionWizard extends \Contao\SectionWizard {}
 	class SelectMenu extends \Contao\SelectMenu {}
 	class TableWizard extends \Contao\TableWizard {}
 	class TextArea extends \Contao\TextArea {}

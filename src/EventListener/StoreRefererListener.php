@@ -3,17 +3,19 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Stores the referer in the session.
@@ -23,22 +25,39 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
  */
 class StoreRefererListener
 {
-    use ScopeAwareTrait;
-    use UserAwareTrait;
-
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
     /**
      * @var SessionInterface
      */
     private $session;
 
     /**
+     * @var AuthenticationTrustResolverInterface
+     */
+    private $authenticationTrustResolver;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * Constructor.
      *
-     * @param SessionInterface $session
+     * @param SessionInterface                     $session
+     * @param TokenStorageInterface                $tokenStorage
+     * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
+     * @param ScopeMatcher                         $scopeMatcher
      */
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, TokenStorageInterface $tokenStorage, AuthenticationTrustResolverInterface $authenticationTrustResolver, ScopeMatcher $scopeMatcher)
     {
         $this->session = $session;
+        $this->tokenStorage = $tokenStorage;
+        $this->authenticationTrustResolver = $authenticationTrustResolver;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -48,13 +67,19 @@ class StoreRefererListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->hasUser() || !$this->isContaoMasterRequest($event)) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
+            return;
+        }
+
+        $token = $this->tokenStorage->getToken();
+
+        if (null === $token || $this->authenticationTrustResolver->isAnonymous($token)) {
             return;
         }
 
         $request = $event->getRequest();
 
-        if ($this->isBackendScope()) {
+        if ($this->scopeMatcher->isBackendRequest($request)) {
             $this->storeBackendReferer($request);
         } else {
             $this->storeFrontendReferer($request);
@@ -170,7 +195,7 @@ class StoreRefererListener
             && !$request->query->has('id')
             && isset($referer['current'])
             && 'contao_frontend' === $request->attributes->get('_route')
-            && $referer['current'] !== $this->getRelativeRequestUri($request)
+            && $this->getRelativeRequestUri($request) !== $referer['current']
             && !$request->isXmlHttpRequest()
         ;
     }

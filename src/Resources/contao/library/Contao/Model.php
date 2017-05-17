@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -682,7 +682,14 @@ abstract class Model
 	 */
 	public function detach($blnKeepClone=true)
 	{
-		\Model\Registry::getInstance()->unregister($this);
+		$registry = \Model\Registry::getInstance();
+
+		if (!$registry->isRegistered($this))
+		{
+			return;
+		}
+
+		$registry->unregister($this);
 
 		if ($blnKeepClone)
 		{
@@ -800,8 +807,10 @@ abstract class Model
 	 */
 	public static function findByIdOrAlias($varId, array $arrOptions=array())
 	{
+		$isAlias = !is_numeric($varId);
+
 		// Try to load from the registry
-		if (is_numeric($varId) && empty($arrOptions))
+		if (!$isAlias && empty($arrOptions))
 		{
 			$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $varId);
 
@@ -818,8 +827,8 @@ abstract class Model
 			array
 			(
 				'limit'  => 1,
-				'column' => array("($t.id=? OR $t.alias=?)"),
-				'value'  => array((is_numeric($varId) ? $varId : 0), $varId),
+				'column' => $isAlias ? array("$t.alias=?") : array("$t.id=?"),
+				'value'  => $varId,
 				'return' => 'Model'
 			),
 
@@ -1031,7 +1040,7 @@ abstract class Model
 	 *
 	 * @param array $arrOptions The options array
 	 *
-	 * @return static|Model\Collection|null A model, model collection or null if the result is empty
+	 * @return Model|Model[]|Model\Collection|null A model, model collection or null if the result is empty
 	 */
 	protected static function find(array $arrOptions)
 	{
@@ -1083,7 +1092,7 @@ abstract class Model
 
 		if ($objResult->numRows < 1)
 		{
-			return null;
+			return $arrOptions['return'] == 'Array' ? array() : null;
 		}
 
 		$objResult = static::postFind($objResult);
@@ -1099,6 +1108,10 @@ abstract class Model
 			}
 
 			return static::createModelFromDbResult($objResult);
+		}
+		else if ($arrOptions['return'] == 'Array')
+		{
+			return static::createCollectionFromDbResult($objResult, static::$strTable)->getModels();
 		}
 		else
 		{

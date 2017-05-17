@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Framework;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  *
- * @internal Do not instantiate this class in your code. Use ContaoFramework::getAdapter() instead.
+ * @internal Do not instantiate this class in your code; use ContaoFramework::getAdapter() instead
  */
 class Adapter
 {

@@ -49,14 +49,6 @@
         <source>Please select the server time zone.</source>
         <target>Por favor selecciona tu zona horaria.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.websitePath.0">
-        <source>Relative path to the Contao directory</source>
-        <target>Ruta relativa al directorio TYPOlight</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.websitePath.1">
-        <source>The relative path to the Contao directory is usually set automatically by the install tool.</source>
-        <target>Por favor introduce la ruta relativa al directorio que contiene los archivos TYPOlight (por ejemplo si accedes al back de TYPOlight mediante &lt;em&gt;www.tudominio.com/tuweb/typolight&lt;/em&gt; la ruta relativa sería &lt;em&gt;/tuweb&lt;/em&gt;).</target>
-      </trans-unit>
       <trans-unit id="tl_settings.characterSet.0">
         <source>Character set</source>
         <target>Juegos caracteres</target>
@@ -120,14 +112,6 @@
       <trans-unit id="tl_settings.doNotCollapse.1">
         <source>Do not collapse elements in the back end preview.</source>
         <target>No desplegar los elementos de contenido y otros recursos cuando se previsualicen en el back end.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.0">
-        <source>Cache mode</source>
-        <target>Modalidad de cache</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cacheMode.1">
-        <source>Here you can select the cache mode.</source>
-        <target>Puede indicar la modalidad del cache.</target>
       </trans-unit>
       <trans-unit id="tl_settings.sslProxyDomain.0">
         <source>SSL proxy domain</source>
@@ -209,14 +193,6 @@
         <source>Here you can enter a comma separated list of downloadable file types.</source>
         <target>Por favor introduce una lista de extensiones (separados por coma) de los tipos de archivos permitidos para descargar. Por razones de seguridad, la descarga de archivos esta limitado a la carpeta files y sus subcarpetas.</target>
       </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.0">
-        <source>Image file types</source>
-        <target>Tipos de imágenes válidas</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.validImageTypes.1">
-        <source>Here you can enter a comma separated list of file types that can be handled by the image class.</source>
-        <target>Por favor introduce una lista de extensiones (separadas por coma) de imágenes aceptadas. No incluir aquellas que no puedan ser utilizadas por TYPOlight o tus propios scripts.</target>
-      </trans-unit>
       <trans-unit id="tl_settings.editableFiles.0">
         <source>Editable file types</source>
         <target>Tipos de archivos editables</target>
@@ -240,14 +216,6 @@
       <trans-unit id="tl_settings.maxImageWidth.1">
         <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
         <target>Aquí puedes definir el ancho máximo de imágenes y archivos media. Si algún elemento supera este valor, será redimensionado automáticamente.</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.0">
-        <source>JPG thumbnail quality</source>
-        <target>Calidad de la Miniatura</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.jpgQuality.1">
-        <source>Here you can enter the JPG thumbnail quality in percent.</source>
-        <target>Por favor escribe la calidad de la miniatura en porcentaje (se aplica a JPGs únicamente)</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>
@@ -421,14 +389,6 @@
         <source>Search engine settings</source>
         <target>Ajustes de motor de búsqueda</target>
       </trans-unit>
-      <trans-unit id="tl_settings.modules_legend">
-        <source>Inactive extensions</source>
-        <target>Extensiones inactivas</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.cron_legend">
-        <source>Command scheduler</source>
-        <target>Planificador de comandos</target>
-      </trans-unit>
       <trans-unit id="tl_settings.timeout_legend">
         <source>Timeout values</source>
         <target>Valores de tiemout</target>
@@ -437,29 +397,9 @@
         <source>Default access rights</source>
         <target>Privilegios de acceso por defecto</target>
       </trans-unit>
-      <trans-unit id="tl_settings.static_legend">
-        <source>Static resources</source>
-        <target>Recursos estáticos</target>
-      </trans-unit>
       <trans-unit id="tl_settings.edit">
         <source>Edit the local configuration</source>
         <target>Editar la configuración local</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.both">
-        <source>Use the server and the browser cache</source>
-        <target>Utilizar el cache del servidor y del navegador</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.server">
-        <source>Use only the server cache</source>
-        <target>Utilizar sólo el cache del servidor</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.browser">
-        <source>Use only the browser cache</source>
-        <target>Utilizar sólo el cache del navegador</target>
-      </trans-unit>
-      <trans-unit id="tl_settings.none">
-        <source>Disable caching</source>
-        <target>Deshabilitar el cache</target>
       </trans-unit>
     </body>
   </file>

@@ -3,13 +3,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 
@@ -45,7 +46,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property string  $password
  * @property boolean $pwChange
  * @property boolean $admin
- * @property string  $groups
+ * @property array   $groups
  * @property string  $inherit
  * @property string  $modules
  * @property string  $themes
@@ -297,7 +298,7 @@ abstract class User extends \System
 		$this->Database->prepare("UPDATE tl_session SET tstamp=$time WHERE hash=?")
 					   ->execute($this->strHash);
 
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
+		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
 
 		// HOOK: post authenticate callback
 		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
@@ -320,6 +321,9 @@ abstract class User extends \System
 	 */
 	public function login()
 	{
+		/** @var Request $request */
+		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
 		\System::loadLanguageFile('default');
 
 		// Do not continue if username or password are missing
@@ -339,7 +343,7 @@ abstract class User extends \System
 				foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
 				{
 					$this->import($callback[0], 'objImport', true);
-					$blnLoaded = $this->objImport->{$callback[1]}(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this->strTable);
+					$blnLoaded = $this->objImport->{$callback[1]}(\Input::post('username', true), $request->request->get('password'), $this->strTable);
 
 					// Load successfull
 					if ($blnLoaded === true)
@@ -399,17 +403,17 @@ abstract class User extends \System
 		// The password has been generated with crypt()
 		if (\Encryption::test($this->password))
 		{
-			$blnAuthenticated = \Encryption::verify(\Input::postUnsafeRaw('password'), $this->password);
+			$blnAuthenticated = \Encryption::verify($request->request->get('password'), $this->password);
 		}
 		else
 		{
 			list($strPassword, $strSalt) = explode(':', $this->password);
-			$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1(\Input::postUnsafeRaw('password'))) : ($strPassword === sha1($strSalt . \Input::postUnsafeRaw('password')));
+			$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1($request->request->get('password'))) : ($strPassword === sha1($strSalt . $request->request->get('password')));
 
 			// Store a SHA-512 encrpyted version of the password
 			if ($blnAuthenticated)
 			{
-				$this->password = \Encryption::hash(\Input::postUnsafeRaw('password'));
+				$this->password = \Encryption::hash($request->request->get('password'));
 			}
 		}
 
@@ -419,7 +423,7 @@ abstract class User extends \System
 			foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback)
 			{
 				$this->import($callback[0], 'objAuth', true);
-				$blnAuthenticated = $this->objAuth->{$callback[1]}(\Input::post('username', true), \Input::postUnsafeRaw('password'), $this);
+				$blnAuthenticated = $this->objAuth->{$callback[1]}(\Input::post('username', true), $request->request->get('password'), $this);
 
 				// Authentication successfull
 				if ($blnAuthenticated === true)
@@ -615,7 +619,7 @@ abstract class User extends \System
 					   ->execute($this->intId, $time, $this->strCookie, \System::getContainer()->get('session')->getId(), $this->strIp, $this->strHash);
 
 		// Set the authentication cookie
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, false, true);
+		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
 	}
 
 
@@ -653,7 +657,7 @@ abstract class User extends \System
 					   ->execute($this->strHash);
 
 		// Remove cookie and hash
-		$this->setCookie($this->strCookie, $this->strHash, ($time - 86400), null, null, false, true);
+		$this->setCookie($this->strCookie, $this->strHash, ($time - 86400), null, null, \Environment::get('ssl'), true);
 		$this->strHash = '';
 
 		\System::getContainer()->get('session')->invalidate();

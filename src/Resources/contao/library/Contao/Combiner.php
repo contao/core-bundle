@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,6 +11,8 @@
 namespace Contao;
 
 use Leafo\ScssPhp\Compiler;
+use Leafo\ScssPhp\Formatter\Compressed;
+use Leafo\ScssPhp\Formatter\Expanded;
 
 
 /**
@@ -73,12 +75,20 @@ class Combiner extends \System
 	 */
 	protected $arrFiles = array();
 
+	/**
+	 * Web dir relative to TL_ROOT
+	 * @var string
+	 */
+	protected $strWebDir;
+
 
 	/**
 	 * Public constructor required
 	 */
 	public function __construct()
 	{
+		$this->strWebDir = \StringUtil::stripRootDir(\System::getContainer()->getParameter('contao.web_dir'));
+
 		parent::__construct();
 	}
 
@@ -115,24 +125,25 @@ class Combiner extends \System
 			throw new \LogicException('You cannot mix different file types. Create another Combiner object instead.');
 		}
 
-		// Prevent duplicates
-		if (isset($this->arrFiles[$strFile]))
-		{
-			return;
-		}
-
 		// Check the source file
 		if (!file_exists(TL_ROOT . '/' . $strFile))
 		{
-			// Handle public bundle resources
-			if (file_exists(TL_ROOT . '/web/' . $strFile))
+			// Handle public bundle resources in web/
+			if (file_exists(TL_ROOT . '/' . $this->strWebDir . '/' . $strFile))
 			{
-				$strFile = 'web/' . $strFile;
+				@trigger_error('Paths relative to the webdir are deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+				$strFile = $this->strWebDir . '/' . $strFile;
 			}
 			else
 			{
 				return;
 			}
+		}
+
+		// Prevent duplicates
+		if (isset($this->arrFiles[$strFile]))
+		{
+			return;
 		}
 
 		// Default version
@@ -183,6 +194,55 @@ class Combiner extends \System
 
 
 	/**
+	 * Generates the files and returns the URLs.
+	 *
+	 * @return array The file URLs
+	 */
+	public function getFileUrls()
+	{
+		$return = array();
+		$strTarget = substr($this->strMode, 1);
+
+		foreach ($this->arrFiles as $arrFile)
+		{
+			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
+
+			// Compile SCSS/LESS files into temporary files
+			if ($arrFile['extension'] == self::SCSS || $arrFile['extension'] == self::LESS)
+			{
+				$strPath = 'assets/' . $strTarget . '/' . str_replace('/', '_', $arrFile['name']) . $this->strMode;
+
+				$objFile = new \File($strPath);
+				$objFile->write($this->handleScssLess($content, $arrFile));
+				$objFile->close();
+
+				$return[] = $strPath;
+			}
+			else
+			{
+				$name = $arrFile['name'];
+
+				// Strip the web/ prefix (see #328)
+				if (strncmp($name, $this->strWebDir . '/', strlen($this->strWebDir) + 1) === 0)
+				{
+					$name = substr($name, strlen($this->strWebDir) + 1);
+				}
+
+				// Add the media query (see #7070)
+				if ($arrFile['media'] != '' && $arrFile['media'] != 'all' && strpos($content, '@media') === false)
+				{
+					$name .= '" media="' . $arrFile['media'];
+				}
+
+				$return[] = $name;
+			}
+		}
+
+		return $return;
+	}
+
+
+	/**
 	 * Generate the combined file and return its path
 	 *
 	 * @param string $strUrl An optional URL to prepend
@@ -191,6 +251,44 @@ class Combiner extends \System
 	 */
 	public function getCombinedFile($strUrl=null)
 	{
+		if (\Config::get('debugMode'))
+		{
+			return $this->getDebugMarkup();
+		}
+
+		return $this->getCombinedFileUrl($strUrl);
+	}
+
+
+	/**
+	 * Generates the debug markup.
+	 *
+	 * @return string The debug markup
+	 */
+	protected function getDebugMarkup()
+	{
+		$return = $this->getFileUrls();
+
+		if ($this->strMode == self::JS)
+		{
+			return implode('"></script><script src="', $return);
+		}
+		else
+		{
+			return implode('"><link rel="stylesheet" href="', $return);
+		}
+	}
+
+
+	/**
+	 * Generate the combined file and return its path
+	 *
+	 * @param string $strUrl An optional URL to prepend
+	 *
+	 * @return string The path to the combined file
+	 */
+	protected function getCombinedFileUrl($strUrl=null)
+	{
 		if ($strUrl === null)
 		{
 			$strUrl = TL_ASSETS_URL;
@@ -198,56 +296,6 @@ class Combiner extends \System
 
 		$strTarget = substr($this->strMode, 1);
 		$strKey = substr(md5($this->strKey), 0, 12);
-
-		// Do not combine the files in debug mode (see #6450)
-		if (\Config::get('debugMode'))
-		{
-			$return = array();
-
-			foreach ($this->arrFiles as $arrFile)
-			{
-				$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
-
-				// Compile SCSS/LESS files into temporary files
-				if ($arrFile['extension'] == self::SCSS || $arrFile['extension'] == self::LESS)
-				{
-					$strPath = 'assets/' . $strTarget . '/' . str_replace('/', '_', $arrFile['name']) . $this->strMode;
-
-					$objFile = new \File($strPath);
-					$objFile->write($this->handleScssLess($content, $arrFile));
-					$objFile->close();
-
-					$return[] = $strPath;
-				}
-				else
-				{
-					$name = $arrFile['name'];
-
-					// Strip the web/ prefix (see #328)
-					if (strncmp($name, 'web/', 4) === 0)
-					{
-						$name = substr($name, 4);
-					}
-
-					// Add the media query (see #7070)
-					if ($arrFile['media'] != '' && $arrFile['media'] != 'all' && strpos($content, '@media') === false)
-					{
-						$name .= '" media="' . $arrFile['media'];
-					}
-
-					$return[] = $name;
-				}
-			}
-
-			if ($this->strMode == self::JS)
-			{
-				return implode('"></script><script src="', $return);
-			}
-			else
-			{
-				return implode('"><link rel="stylesheet" href="', $return);
-			}
-		}
 
 		// Load the existing file
 		if (file_exists(TL_ROOT . '/assets/' . $strTarget . '/' . $strKey . $this->strMode))
@@ -262,6 +310,12 @@ class Combiner extends \System
 		foreach ($this->arrFiles as $arrFile)
 		{
 			$content = file_get_contents(TL_ROOT . '/' . $arrFile['name']);
+
+			// Remove UTF-8 BOM
+			if (strncmp($content, "\xEF\xBB\xBF", 3) === 0)
+			{
+				$content = substr($content, 3);
+			}
 
 			// HOOK: modify the file content
 			if (isset($GLOBALS['TL_HOOKS']['getCombinedFile']) && is_array($GLOBALS['TL_HOOKS']['getCombinedFile']))
@@ -340,7 +394,7 @@ class Combiner extends \System
 				TL_ROOT . '/vendor/contao-components/compass/css'
 			));
 
-			$objCompiler->setFormatter((\Config::get('debugMode') ? 'Leafo\ScssPhp\Formatter\Expanded' : 'Leafo\ScssPhp\Formatter\Compressed'));
+			$objCompiler->setFormatter((\Config::get('debugMode') ? Expanded::class : Compressed::class));
 
 			return $this->fixPaths($objCompiler->compile($content), $arrFile);
 		}

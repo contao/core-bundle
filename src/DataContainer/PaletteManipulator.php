@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -84,17 +84,12 @@ class PaletteManipulator
      * @param string|array|\Closure|null $fallback
      * @param string                     $fallbackPosition
      *
-     * @return static
-     *
      * @throws PalettePositionException
+     *
+     * @return static
      */
-    public function addField(
-        $name,
-        $parent,
-        $position = self::POSITION_AFTER,
-        $fallback = null,
-        $fallbackPosition = self::POSITION_APPEND
-    ) {
+    public function addField($name, $parent, $position = self::POSITION_AFTER, $fallback = null, $fallbackPosition = self::POSITION_APPEND)
+    {
         $this->validatePosition($position);
 
         if (self::POSITION_BEFORE === $fallbackPosition || self::POSITION_AFTER === $fallbackPosition) {

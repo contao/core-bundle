@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -58,7 +58,7 @@ class SyncExclude extends \RecursiveFilterIterator
 			return false;
 		}
 
-		$strRelpath = str_replace(TL_ROOT . '/', '', $this->current()->getPathname());
+		$strRelpath = \StringUtil::stripRootDir($this->current()->getPathname());
 
 		// The resource is an exempt folder
 		if (in_array($strRelpath, $this->arrExempt))

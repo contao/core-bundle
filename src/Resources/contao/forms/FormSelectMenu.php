@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -133,7 +133,7 @@ class FormSelectMenu extends \Widget
 		// Check for a valid option (see #4383)
 		if (!empty($varInput) && !$this->isValidOption($varInput))
 		{
-			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['invalid'], (is_array($varInput) ? implode(', ', $varInput) : $varInput)));
+			$this->addError($GLOBALS['TL_LANG']['ERR']['invalid']);
 		}
 
 		// Add class "error"
@@ -224,7 +224,7 @@ class FormSelectMenu extends \Widget
 		$blnHasGroups = false;
 
 		// Add empty option if there are none
-		if (empty($this->arrOptions))
+		if (empty($this->arrOptions) || !is_array($this->arrOptions))
 		{
 			$this->arrOptions = array(array('value' => '', 'label' => '-'));
 		}
@@ -252,12 +252,16 @@ class FormSelectMenu extends \Widget
 			}
 			else
 			{
-				$arrOptions[] = array
+				$arrOptions[] = array_replace
 				(
-					'type'     => 'option',
-					'value'    => $arrOption['value'],
-					'selected' => $this->isSelected($arrOption),
-					'label'    => $arrOption['label'],
+					$arrOption,
+					array
+					(
+						'type'     => 'option',
+						'value'    => $arrOption['value'],
+						'selected' => $this->isSelected($arrOption),
+						'label'    => $arrOption['label'],
+					)
 				);
 			}
 		}
@@ -296,7 +300,7 @@ class FormSelectMenu extends \Widget
 		}
 
 		// Add empty option if there are none
-		if (empty($this->arrOptions))
+		if (empty($this->arrOptions) || !is_array($this->arrOptions))
 		{
 			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
 		}

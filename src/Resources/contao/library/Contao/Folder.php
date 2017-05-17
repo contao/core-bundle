@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -388,7 +388,7 @@ class Folder extends \System
 		{
 			if (strncmp($i->getFilename(), '.', 1) !== 0)
 			{
-				$arrFiles[] = str_replace(TL_ROOT . '/' . $this->strFolder . '/', '', $i->getPathname());
+				$arrFiles[] = substr($i->getPathname(), strlen(TL_ROOT . '/' . $this->strFolder . '/'));
 			}
 		}
 
@@ -457,7 +457,7 @@ class Folder extends \System
 
 		if (isset($matches[1]))
 		{
-			$return['dirname'] = $matches[1];
+			$return['dirname'] = TL_ROOT . '/' . $matches[1]; // see #8325
 		}
 
 		if (isset($matches[2]))

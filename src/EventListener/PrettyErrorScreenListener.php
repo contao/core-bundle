@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -12,6 +12,13 @@ namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
 use Contao\Config;
+use Contao\CoreBundle\Exception\ForwardPageNotFoundException;
+use Contao\CoreBundle\Exception\IncompleteInstallationException;
+use Contao\CoreBundle\Exception\InsecureInstallationException;
+use Contao\CoreBundle\Exception\InvalidRequestTokenException;
+use Contao\CoreBundle\Exception\NoActivePageFoundException;
+use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
+use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\PageError404;
@@ -63,13 +70,13 @@ class PrettyErrorScreenListener
      * @var array
      */
     private $mapper = [
-        'Contao\CoreBundle\Exception\ForwardPageNotFoundException' => 'forward_page_not_found',
-        'Contao\CoreBundle\Exception\IncompleteInstallationException' => 'incomplete_installation',
-        'Contao\CoreBundle\Exception\InsecureInstallationException' => 'insecure_installation',
-        'Contao\CoreBundle\Exception\InvalidRequestTokenException' => 'invalid_request_token',
-        'Contao\CoreBundle\Exception\NoActivePageFoundException' => 'no_active_page_found',
-        'Contao\CoreBundle\Exception\NoLayoutSpecifiedException' => 'no_layout_specified',
-        'Contao\CoreBundle\Exception\NoRootPageFoundException' => 'no_root_page_found',
+        ForwardPageNotFoundException::class => 'forward_page_not_found',
+        IncompleteInstallationException::class => 'incomplete_installation',
+        InsecureInstallationException::class => 'insecure_installation',
+        InvalidRequestTokenException::class => 'invalid_request_token',
+        NoActivePageFoundException::class => 'no_active_page_found',
+        NoLayoutSpecifiedException::class => 'no_layout_specified',
+        NoRootPageFoundException::class => 'no_root_page_found',
     ];
 
     /**
@@ -81,13 +88,8 @@ class PrettyErrorScreenListener
      * @param TokenStorageInterface    $tokenStorage
      * @param LoggerInterface|null     $logger
      */
-    public function __construct(
-        $prettyErrorScreens,
-        \Twig_Environment $twig,
-        ContaoFrameworkInterface $framework,
-        TokenStorageInterface $tokenStorage,
-        LoggerInterface $logger = null
-    ) {
+    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
+    {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
         $this->framework = $framework;
@@ -185,6 +187,8 @@ class PrettyErrorScreenListener
      */
     private function getResponseFromPageHandler($type)
     {
+        $this->framework->initialize();
+
         $type = 'error_'.$type;
 
         if (!isset($GLOBALS['TL_PTY'][$type]) || !class_exists($GLOBALS['TL_PTY'][$type])) {
@@ -258,50 +262,14 @@ class PrettyErrorScreenListener
         $parameters = $this->getTemplateParameters($view, $statusCode, $event);
 
         if (null === $parameters) {
-            $event->setResponse($this->getErrorTemplate());
+            $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
         } else {
             try {
                 $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
             } catch (\Twig_Error $e) {
-                $event->setResponse($this->getErrorTemplate());
+                $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
             }
         }
-    }
-
-    /**
-     * Renders the error template and returns the response object.
-     *
-     * @return Response
-     */
-    private function getErrorTemplate()
-    {
-        $parameters = [
-            'statusCode' => 500,
-            'statusName' => 'Internal Server Error',
-            'error' => [
-                'error' => 'An error occurred',
-                'matter' => 'What\'s the matter?',
-                'errorOccurred' => 'An error occurred while executing this script. Something does not work properly. '
-                    .'Additionally an error occurred while trying to display the error message.',
-                'howToFix' => 'How can I fix the issue?',
-                'errorFixOne' => 'Search the <code>app/logs</code> folder for the current log file and find the '
-                    .'associated error message (usually the last one).',
-                'more' => 'Tell me more, please',
-                'errorExplain' => 'The script execution stopped, because something does not work properly. The '
-                    .'actual error message is hidden by this notice for security reasons and can be '
-                    .'found in the current log file (see above). If you do not understand the error message or do '
-                    .'not know how to fix the problem, search the '
-                    .'<a href="https://contao.org/faq.html">Contao FAQs</a> or visit the '
-                    .'<a href="https://contao.org/support.html">Contao support page</a>.',
-                'hint' => 'To customize this notice, create a custom Twig template overriding %s.',
-            ],
-            'template' => '@ContaoCore/Error/error.html.twig',
-            'base' => '',
-            'adminEmail' => '',
-            'exception' => '',
-        ];
-
-        return new Response($this->twig->render('@ContaoCore/Error/error.html.twig', $parameters), 500);
     }
 
     /**
@@ -320,7 +288,7 @@ class PrettyErrorScreenListener
         }
 
         /** @var Config $config */
-        $config = $this->framework->getAdapter('Contao\Config');
+        $config = $this->framework->getAdapter(Config::class);
 
         $encoded = StringUtil::encodeEmail($config->get('adminEmail'));
 

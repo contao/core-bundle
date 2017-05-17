@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -15,8 +15,8 @@ namespace Contao\CoreBundle;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  *
- * @deprecated Deprecated since Contao 4.1, to be removed in Contao 5.
- *             Use the Contao\CoreBundle\Framework\ContaoFrameworkInterface interface instead.
+ * @deprecated Deprecated since Contao 4.1, to be removed in Contao 5; use the
+ *             Contao\CoreBundle\Framework\ContaoFrameworkInterface interface instead
  */
 interface ContaoFrameworkInterface
 {

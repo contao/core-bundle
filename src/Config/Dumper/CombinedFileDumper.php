@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -22,6 +22,11 @@ use Symfony\Component\Filesystem\Filesystem;
 class CombinedFileDumper implements DumperInterface
 {
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * @var LoaderInterface
      */
     private $loader;
@@ -32,14 +37,14 @@ class CombinedFileDumper implements DumperInterface
     private $cacheDir;
 
     /**
-     * @var Filesystem
+     * @var bool
      */
-    private $filesystem;
+    private $addNamespace;
 
     /**
      * @var string
      */
-    private $header = '<?php '; // add one space to prevent the "unexpected $end" error
+    private $header = "<?php\n"; // add a line-break to prevent the "unexpected $end" error
 
     /**
      * Constructor.
@@ -47,12 +52,14 @@ class CombinedFileDumper implements DumperInterface
      * @param Filesystem      $filesystem
      * @param LoaderInterface $loader
      * @param string          $cacheDir
+     * @param bool            $addNamespace
      */
-    public function __construct(Filesystem $filesystem, LoaderInterface $loader, $cacheDir)
+    public function __construct(Filesystem $filesystem, LoaderInterface $loader, $cacheDir, $addNamespace = false)
     {
         $this->filesystem = $filesystem;
         $this->loader = $loader;
         $this->cacheDir = $cacheDir;
+        $this->addNamespace = $addNamespace;
     }
 
     /**
@@ -64,7 +71,7 @@ class CombinedFileDumper implements DumperInterface
      */
     public function setHeader($header)
     {
-        if (strpos($header, '<?php') !== 0) {
+        if (0 !== strpos($header, '<?php')) {
             throw new \InvalidArgumentException('The file header must start with an opening PHP tag.');
         }
 
@@ -76,8 +83,8 @@ class CombinedFileDumper implements DumperInterface
      */
     public function dump($files, $cacheFile, array $options = [])
     {
-        $type = isset($options['type']) ? $options['type'] : null;
         $buffer = $this->header;
+        $type = isset($options['type']) ? $options['type'] : null;
 
         foreach ((array) $files as $file) {
             $buffer .= $this->loader->load($file, $type);

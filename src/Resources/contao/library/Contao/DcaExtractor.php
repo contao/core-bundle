@@ -3,14 +3,12 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
-
-use Symfony\Component\Finder\SplFileInfo;
 
 
 /**
@@ -306,7 +304,19 @@ class DcaExtractor extends \Controller
 		// Fields
 		foreach ($this->arrFields as $k=>$v)
 		{
-			$return['TABLE_FIELDS'][$k] = '`' . $k . '` ' . $v;
+			if (is_array($v))
+			{
+				if (!isset($v['name']))
+				{
+					$v['name'] = $k;
+				}
+
+				$return['SCHEMA_FIELDS'][$k] = $v;
+			}
+			else
+			{
+				$return['TABLE_FIELDS'][$k] = '`' . $k . '` ' . $v;
+			}
 		}
 
 		$quote = function ($item) { return '`' . $item . '`'; };
@@ -387,6 +397,12 @@ class DcaExtractor extends \Controller
 
 		// Return if the DC type is "File"
 		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['dataContainer'] == 'File')
+		{
+			return;
+		}
+
+		// Return if the DC type is "Folder" and the DC is not database assisted
+		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['dataContainer'] == 'Folder' && empty($GLOBALS['TL_DCA'][$this->strTable]['config']['databaseAssisted']))
 		{
 			return;
 		}

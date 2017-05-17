@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -144,7 +144,7 @@ class FormTextArea extends \Widget
 				break;
 
 			case 'value':
-				return \StringUtil::specialchars(str_replace('\n', "\n", $this->varValue));
+				return \StringUtil::specialchars(str_replace('\n', "\n", $this->varValue), false, true);
 				break;
 
 			default:

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,9 +11,9 @@
 namespace Contao\CoreBundle\Image;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ImageSizesEvent;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -52,11 +52,8 @@ class ImageSizes
      * @param EventDispatcherInterface $eventDispatcher
      * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(
-        Connection $connection,
-        EventDispatcherInterface $eventDispatcher,
-        ContaoFrameworkInterface $framework
-    ) {
+    public function __construct(Connection $connection, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
+    {
         $this->connection = $connection;
         $this->eventDispatcher = $eventDispatcher;
         $this->framework = $framework;
@@ -89,10 +86,18 @@ class ImageSizes
     {
         $this->loadOptions();
 
-        $event = new ImageSizesEvent(
-            $user->isAdmin ? $this->options : $this->filterOptions(\StringUtil::deserialize($user->imageSizes, true)),
-            $user
-        );
+        if ($user->isAdmin) {
+            $event = new ImageSizesEvent($this->options, $user);
+        } else {
+            $options = array_map(
+                function ($val) {
+                    return is_numeric($val) ? (int) $val : $val;
+                },
+                \StringUtil::deserialize($user->imageSizes, true)
+            );
+
+            $event = new ImageSizesEvent($this->filterOptions($options), $user);
+        }
 
         $this->eventDispatcher->dispatch(ContaoCoreEvents::IMAGE_SIZES_USER, $event);
 
@@ -164,7 +169,7 @@ class ImageSizes
     private function filterImageSizes(array $sizes, array $allowedSizes, array &$filteredSizes, $group)
     {
         foreach ($sizes as $key => $size) {
-            if (in_array($key, $allowedSizes)) {
+            if (in_array($key, $allowedSizes, true)) {
                 $filteredSizes[$group][$key] = $size;
             }
         }
@@ -181,7 +186,7 @@ class ImageSizes
     private function filterResizeModes(array $sizes, array $allowedSizes, array &$filteredSizes, $group)
     {
         foreach ($sizes as $size) {
-            if (in_array($size, $allowedSizes)) {
+            if (in_array($size, $allowedSizes, true)) {
                 $filteredSizes[$group][] = $size;
             }
         }

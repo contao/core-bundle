@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -31,6 +31,7 @@ use Patchwork\Utf8;
  * @property string  $subject
  * @property boolean $storeValues
  * @property string  $targetTable
+ * @property string  $customTpl
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -59,13 +60,7 @@ class Form extends \Hybrid
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'form';
-
-	/**
-	 * Form usages during same request
-	 * @var array
-	 */
-	static protected $arrFormUsages = array();
+	protected $strTemplate = 'form_wrapper';
 
 
 	/**
@@ -86,6 +81,11 @@ class Form extends \Hybrid
 			$objTemplate->href = 'contao/main.php?do=form&amp;table=tl_form_field&amp;id=' . $this->id;
 
 			return $objTemplate->parse();
+		}
+
+		if ($this->customTpl != '' && TL_MODE == 'FE')
+		{
+			$this->strTemplate = $this->customTpl;
 		}
 
 		return parent::generate();
@@ -280,28 +280,10 @@ class Form extends \Hybrid
 			$strAttributes .= ' class="' . $arrAttributes[1] . '"';
 		}
 
-		$formId = $arrAttributes[0] ?: 'f'.$this->id;
-
-		// Count up form usages
-		if (isset(static::$arrFormUsages[$formId]))
-		{
-			static::$arrFormUsages[$formId]++;
-		}
-		else
-		{
-			static::$arrFormUsages[$formId] = 1;
-		}
-
-		// Adjust form id
-		if (static::$arrFormUsages[$formId] > 1)
-		{
-			$formId .= '_' . static::$arrFormUsages[$formId];
-		}
-
 		$this->Template->hasError = $doNotSubmit;
 		$this->Template->attributes = $strAttributes;
 		$this->Template->enctype = $hasUpload ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-		$this->Template->formId = $formId;
+		$this->Template->formId = $arrAttributes[0] ?: 'f'.$this->id;
 		$this->Template->action = \Environment::get('indexFreeRequest');
 		$this->Template->maxFileSize = $hasUpload ? $this->objModel->getMaxUploadFileSize() : false;
 		$this->Template->novalidate = $this->novalidate ? ' novalidate' : '';
@@ -456,7 +438,7 @@ class Form extends \Hybrid
 					// Add a link to the uploaded file
 					if ($file['uploaded'])
 					{
-						$uploaded .= "\n" . \Environment::get('base') . str_replace(TL_ROOT . '/', '', dirname($file['tmp_name'])) . '/' . rawurlencode($file['name']);
+						$uploaded .= "\n" . \Environment::get('base') . \StringUtil::stripRootDir(dirname($file['tmp_name'])) . '/' . rawurlencode($file['name']);
 						continue;
 					}
 
@@ -512,7 +494,7 @@ class Form extends \Hybrid
 				{
 					if ($v['uploaded'])
 					{
-						$arrSet[$k] = str_replace(TL_ROOT . '/', '', $v['tmp_name']);
+						$arrSet[$k] = \StringUtil::stripRootDir($v['tmp_name']);
 					}
 				}
 			}

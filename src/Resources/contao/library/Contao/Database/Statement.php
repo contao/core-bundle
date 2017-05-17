@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -284,7 +284,7 @@ class Statement
 		$this->statement = $this->resConnection->executeQuery($this->strQuery);
 
 		// No result set available
-		if (strncasecmp($this->strQuery, 'SELECT', 6) !== 0 && strncasecmp($this->strQuery, 'SHOW', 4) !== 0)
+		if ($this->statement->columnCount() < 1)
 		{
 			return $this;
 		}

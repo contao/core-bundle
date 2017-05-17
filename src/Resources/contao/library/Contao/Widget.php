@@ -3,14 +3,16 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao;
 
+use Doctrine\DBAL\Types\Type;
 use Patchwork\Utf8;
+use Symfony\Component\HttpFoundation\Request;
 
 
 /**
@@ -82,6 +84,7 @@ use Patchwork\Utf8;
  * @property string                  $slabel            The submit button label
  * @property boolean                 $preserveTags      Preserve HTML tags
  * @property boolean                 $decodeEntities    Decode HTML entities
+ * @property boolean                 useRawRequestData  Use the raw request data from the Symfony request
  * @property integer                 $minlength         The minimum length
  * @property integer                 $maxlength         The maximum length
  * @property integer                 $minval            The minimum value
@@ -126,6 +129,12 @@ abstract class Widget extends \Controller
 	 * @var mixed
 	 */
 	protected $varValue;
+
+	/**
+	 * Input callback
+	 * @var callable
+	 */
+	protected $inputCallback;
 
 	/**
 	 * CSS class
@@ -333,6 +342,7 @@ abstract class Widget extends \Controller
 			case 'trailingSlash':
 			case 'spaceToUnderscore':
 			case 'doNotTrim':
+			case 'useRawRequestData':
 				$this->arrConfiguration[$strKey] = $varValue ? true : false;
 				break;
 
@@ -381,11 +391,11 @@ abstract class Widget extends \Controller
 
 			case 'value':
 				// Encrypt the value
-				if ($this->arrConfiguration['encrypt'])
+				if (isset($this->arrConfiguration['encrypt']) && $this->arrConfiguration['encrypt'])
 				{
 					return \Encryption::encrypt($this->varValue);
 				}
-				elseif ($this->varValue == '')
+				elseif ($this->varValue === '')
 				{
 					return $this->getEmptyStringOrNull();
 				}
@@ -746,11 +756,27 @@ abstract class Widget extends \Controller
 
 
 	/**
+	 * Set a callback to fetch the widget input instead of using getPost()
+	 *
+	 * @param callable|null $callback The callback
+	 *
+	 * @return $this The widget object
+	 */
+	public function setInputCallback(callable $callback=null)
+	{
+		$this->inputCallback = $callback;
+
+		return $this;
+	}
+
+
+	/**
 	 * Validate the user input and set the value
 	 */
 	public function validate()
 	{
-		$varValue = $this->validator($this->getPost($this->strName));
+		$varValue = (is_callable($this->inputCallback) ? call_user_func($this->inputCallback) : $this->getPost($this->strName));
+		$varValue = $this->validator($varValue);
 
 		if ($this->hasErrors())
 		{
@@ -770,6 +796,14 @@ abstract class Widget extends \Controller
 	 */
 	protected function getPost($strKey)
 	{
+		if ($this->useRawRequestData === true)
+		{
+			/** @var Request $request */
+			$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
+			return $request->request->get($strKey);
+		}
+
 		$strMethod = $this->allowHtml ? 'postHtml' : 'post';
 
 		if ($this->preserveTags)
@@ -910,7 +944,7 @@ abstract class Widget extends \Controller
 					}
 					break;
 
-				// Do not allow any characters that are usually encoded by class Input [=<>()#/])
+				// Do not allow any characters that are usually encoded by class Input ([#<>()\=])
 				case 'extnd':
 					if (!\Validator::isExtendedAlphanumeric(html_entity_decode($varInput)))
 					{
@@ -1379,6 +1413,19 @@ abstract class Widget extends \Controller
 			}
 		}
 
+		if (is_array($arrAttributes['sql']) && !isset($arrAttributes['sql']['columnDefinition']))
+		{
+			if (isset($arrAttributes['sql']['length']) && !isset($arrAttributes['maxlength']))
+			{
+				$arrAttributes['maxlength'] = $arrAttributes['sql']['length'];
+			}
+
+			if (isset($arrAttributes['sql']['customSchemaOptions']['unique']) && !isset($arrAttributes['unique']))
+			{
+				$arrAttributes['unique'] = $arrAttributes['sql']['customSchemaOptions']['unique'];
+			}
+		}
+
 		$arrAttributes['value'] = \StringUtil::deserialize($varValue);
 
 		// Convert timestamps
@@ -1401,6 +1448,12 @@ abstract class Widget extends \Controller
 			{
 				$arrAttributes = static::importStatic($callback[0])->{$callback[1]}($arrAttributes, $objDca);
 			}
+		}
+
+		// Warn if someone uses the "encrypt" flag (see #8589)
+		if (isset($arrAttributes['encrypt']))
+		{
+			@trigger_error('Using the "encrypt" flag' . (!empty($strTable) && !empty($strField) ? ' on ' . $strTable . '.' . $strField : '') . ' has been deprecated and will no longer work in Contao 5.0. Use the load and save callbacks with a third-party library such as OpenSSL or phpseclib instead.', E_USER_DEPRECATED);
 		}
 
 		return $arrAttributes;
@@ -1432,9 +1485,36 @@ abstract class Widget extends \Controller
 	 */
 	public static function getEmptyValueByFieldType($sql)
 	{
-		if ($sql == '')
+		if (empty($sql))
 		{
 			return '';
+		}
+
+		if (is_array($sql))
+		{
+			if (isset($sql['columnDefinition']))
+			{
+				$sql = $sql['columnDefinition'];
+			}
+			else
+			{
+				if (isset($sql['default']))
+				{
+					return $sql['default'];
+				}
+
+				if (isset($sql['notnull']) && !$sql['notnull'])
+				{
+					return null;
+				}
+
+				if (in_array($sql['type'], array(Type::BIGINT, Type::DECIMAL, Type::INTEGER, Type::SMALLINT, Type::FLOAT)))
+				{
+					return 0;
+				}
+
+				return '';
+			}
 		}
 
 		if (stripos($sql, 'NOT NULL') === false)
@@ -1478,20 +1558,12 @@ abstract class Widget extends \Controller
 	 */
 	public static function getEmptyStringOrNullByFieldType($sql)
 	{
-		if ($sql == '')
+		if (empty($sql))
 		{
 			return '';
 		}
 
-		// Strip the field type definition
-		list(, $def) = explode(' ', $sql, 2);
-
-		if (strpos($def, 'NULL') !== false && strpos($def, 'NOT NULL') === false)
-		{
-			return null;
-		}
-
-		return '';
+		return static::getEmptyValueByFieldType($sql) === null ? null : '';
 	}
 
 

@@ -3,18 +3,21 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\PickerMenuProviderPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
-use Patchwork\Utf8\Bootup;
+use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -40,9 +43,9 @@ class ContaoCoreBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function boot()
+    public function registerCommands(Application $application)
     {
-        Bootup::initAll();
+        // disable automatic command registration
     }
 
     /**
@@ -58,5 +61,8 @@ class ContaoCoreBundle extends Bundle
 
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
+        $container->addCompilerPass(new AddImagineClassPass());
+        $container->addCompilerPass(new DoctrineMigrationsPass());
+        $container->addCompilerPass(new PickerMenuProviderPass());
     }
 }

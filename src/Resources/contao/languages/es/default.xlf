@@ -246,8 +246,8 @@
         <target>El archivo &quot;%s&quot; no esta disponible para descarga</target>
       </trans-unit>
       <trans-unit id="ERR.invalid">
-        <source>Invalid option: %s</source>
-        <target>Opción no valida: %s</target>
+        <source>Invalid option value!</source>
+        <target>Valor de opción no válido!</target>
       </trans-unit>
       <trans-unit id="ERR.fileNotFoundSync">
         <source>No database entry found for %s. Please synchronize the file system.</source>
@@ -998,6 +998,10 @@
         <target>Habilitar/deshabilitar el módulo</target>
       </trans-unit>
       <trans-unit id="MSC.aw_title">
+        <source>Title</source>
+        <target>Título</target>
+      </trans-unit>
+      <trans-unit id="MSC.aw_alt">
         <source>Alternate text</source>
         <target>Texto alternativo</target>
       </trans-unit>
@@ -1016,6 +1020,22 @@
       <trans-unit id="MSC.aw_new">
         <source>Add language</source>
         <target>Añadir idoma</target>
+      </trans-unit>
+      <trans-unit id="MSC.sw_title">
+        <source>Title</source>
+        <target>Título</target>
+      </trans-unit>
+      <trans-unit id="MSC.sw_id">
+        <source>ID</source>
+        <target>ID</target>
+      </trans-unit>
+      <trans-unit id="MSC.sw_template">
+        <source>Template</source>
+        <target>Template</target>
+      </trans-unit>
+      <trans-unit id="MSC.sw_position">
+        <source>Position</source>
+        <target>Posición</target>
       </trans-unit>
       <trans-unit id="MSC.image_sizes">
         <source>Predefined dimensions</source>
@@ -1230,8 +1250,8 @@
         <target>Cerrado</target>
       </trans-unit>
       <trans-unit id="MSC.move">
-        <source>Move the item via drag and drop</source>
-        <target>Mover el elemento a través de arrastrar y soltar</target>
+        <source>Move the item via drag and drop or the up and down keys</source>
+        <target>Mover el elemento mediante arrastrar y soltar o las teclas de arriba y abajo</target>
       </trans-unit>
       <trans-unit id="MSC.move_up.0">
         <source>Move up</source>
@@ -1336,8 +1356,8 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
         <target>Vista previa de la web en una nueva ventana</target>
       </trans-unit>
       <trans-unit id="MSC.feUser">
-        <source>Front end user</source>
-        <target>Usuario del front end</target>
+        <source>Member</source>
+        <target>Miembro</target>
       </trans-unit>
       <trans-unit id="MSC.backToTop">
         <source>Back to top</source>
@@ -1354,6 +1374,10 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
       <trans-unit id="MSC.homeTitle">
         <source>Back to the back end start page</source>
         <target>Volver a la página de inicio del Back End</target>
+      </trans-unit>
+      <trans-unit id="MSC.burgerTitle">
+        <source>Toggle navigation</source>
+        <target>Navegación de palanca</target>
       </trans-unit>
       <trans-unit id="MSC.user">
         <source>User</source>
@@ -1466,6 +1490,10 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
       <trans-unit id="MSC.saveNcreate">
         <source>Save and new</source>
         <target>Guardar y nuevo</target>
+      </trans-unit>
+      <trans-unit id="MSC.saveNduplicate">
+        <source>Save and duplicate</source>
+        <target>Guardar y duplicar</target>
       </trans-unit>
       <trans-unit id="MSC.continue">
         <source>Continue</source>
@@ -1839,9 +1867,9 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
         <source>Help wizard</source>
         <target>Asistente de ayuda</target>
       </trans-unit>
-      <trans-unit id="MSC.noCookies">
-        <source>You have to allow cookies to use Contao.</source>
-        <target>Debe permitir el uso de cookies para utilizar Contao.</target>
+      <trans-unit id="MSC.jsDisabled">
+        <source>It seems that you have disabled JavaScript in your browser. The Contao back end will not work properly without JavaScript.</source>
+        <target>Parece que ha inhabilitado JavaScript en su navegador. El back-end de Contao no funcionará correctamente sin JavaScript.</target>
       </trans-unit>
       <trans-unit id="MSC.copyOf">
         <source>%s (copy)</source>
@@ -2077,9 +2105,11 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
       </trans-unit>
       <trans-unit id="MSC.fileExceeds">
         <source>Image %s is too big to be resized automatically.</source>
+        <target>La imagen %s es demasiado grande para ser redimensionada automáticamente.</target>
       </trans-unit>
       <trans-unit id="MSC.fileResized">
         <source>Image %s was scaled down to the maximum dimensions.</source>
+        <target>La imagen %s se redujo a las dimensiones máximas.</target>
       </trans-unit>
       <trans-unit id="MSC.searchLabel">
         <source>Search</source>
@@ -2115,6 +2145,7 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
       </trans-unit>
       <trans-unit id="MSC.printAsPdf">
         <source>Save article as PDF</source>
+        <target>Guardar artículo en PDF</target>
       </trans-unit>
       <trans-unit id="MSC.facebookShare">
         <source>Share on Facebook</source>
@@ -2307,6 +2338,30 @@ Este e-mail ha sido generado por Contao. No puedes contestar directamente.
       <trans-unit id="COLS.footer">
         <source>Footer</source>
         <target>Pie de página</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.top">
+        <source>Before the wrapper</source>
+        <target>Antes del contenedor</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.before">
+        <source>After the page header</source>
+        <target>Despues del encabezado</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.main">
+        <source>Inside the main column</source>
+        <target>En la columna principal</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.after">
+        <source>Before the page footer</source>
+        <target>Antes del pie de página (footer)</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.bottom">
+        <source>After the wrapper</source>
+        <target>Despues del contenedor</target>
+      </trans-unit>
+      <trans-unit id="SECTIONS.manual">
+        <source>Manual output</source>
+        <target>Output manual</target>
       </trans-unit>
     </body>
   </file>

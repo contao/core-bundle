@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -27,7 +27,7 @@ class AjaxRedirectResponseException extends ResponseException
      * @param int             $status
      * @param \Exception|null $previous
      */
-    public function __construct($location, $status = 204, \Exception $previous = null)
+    public function __construct($location, $status = 302, \Exception $previous = null)
     {
         parent::__construct(new Response($location, $status, ['X-Ajax-Location' => $location]), $previous);
     }

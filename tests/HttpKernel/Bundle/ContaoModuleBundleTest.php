@@ -3,15 +3,15 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\HttpKernel\Bundle;
+namespace Contao\CoreBundle\Tests\HttpKernel\Bundle;
 
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 
 /**
  * Tests the ContaoModuleBundle class.
@@ -48,7 +48,7 @@ class ContaoModuleBundleTest extends TestCase
      */
     public function testGetPath()
     {
-        $this->assertEquals(
+        $this->assertSame(
             $this->getRootDir().'/system/modules/foobar',
             $this->bundle->getPath()
         );
@@ -56,11 +56,11 @@ class ContaoModuleBundleTest extends TestCase
 
     /**
      * Tests that an exception is thrown if the module folder does not exist.
-     *
-     * @expectedException \LogicException
      */
-    public function testModuleFolderExists()
+    public function testModuleFolderDoesNotExist()
     {
+        $this->expectException('LogicException');
+
         $this->bundle = new ContaoModuleBundle('invalid', $this->getRootDir().'/app');
     }
 }

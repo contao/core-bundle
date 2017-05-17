@@ -3,14 +3,15 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Command;
+namespace Contao\CoreBundle\Tests\Command;
 
 use Contao\CoreBundle\Command\VersionCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -19,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class VersionCommandTest extends \PHPUnit_Framework_TestCase
+class VersionCommandTest extends TestCase
 {
     /**
      * Tests the object instantiation.
@@ -29,6 +30,7 @@ class VersionCommandTest extends \PHPUnit_Framework_TestCase
         $command = new VersionCommand('contao:version');
 
         $this->assertInstanceOf('Contao\CoreBundle\Command\VersionCommand', $command);
+        $this->assertSame('contao:version', $command->getName());
     }
 
     /**
@@ -45,7 +47,7 @@ class VersionCommandTest extends \PHPUnit_Framework_TestCase
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
 
-        $this->assertEquals(0, $code);
+        $this->assertSame(0, $code);
         $this->assertContains('4.0.2', $tester->getDisplay());
     }
 
@@ -63,7 +65,7 @@ class VersionCommandTest extends \PHPUnit_Framework_TestCase
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
 
-        $this->assertEquals(1, $code);
-        $this->assertEquals('', $tester->getDisplay());
+        $this->assertSame(1, $code);
+        $this->assertSame('', $tester->getDisplay());
     }
 }
