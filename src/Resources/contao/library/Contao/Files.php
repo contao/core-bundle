@@ -303,7 +303,7 @@ class Files
 	{
 		$this->validate($strFile);
 
-		return is_writeable(TL_ROOT . '/' . $strFile);
+		return is_writeable($strFile);
 	}
 
 
