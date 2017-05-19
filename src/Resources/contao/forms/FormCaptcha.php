@@ -46,7 +46,7 @@ class FormCaptcha extends \Widget
 	 *
 	 * @var array
 	 */
-	protected $arrCaptcha;
+	protected $arrCaptcha = array();
 
 	/**
 	 * The CSS class prefix
@@ -151,7 +151,7 @@ class FormCaptcha extends \Widget
 	 */
 	protected function generateCaptcha()
 	{
-		if ($this->arrCaptcha !== null) {
+		if ($this->arrCaptcha) {
 			return;
 		}
 
