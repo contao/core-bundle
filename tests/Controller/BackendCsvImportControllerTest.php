@@ -40,7 +40,7 @@ class BackendCsvImportControllerTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-        unset($GLOBALS['TL_LANG']['MSC']);
+        unset($GLOBALS['TL_LANG']);
     }
 
     /**

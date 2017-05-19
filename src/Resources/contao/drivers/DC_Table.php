@@ -2212,8 +2212,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			// Show a warning if the record has been saved by another user (see #8412)
 			if ($intLatestVersion !== null && isset($_POST['VERSION_NUMBER']) && $intLatestVersion > \Input::post('VERSION_NUMBER'))
 			{
-				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['versionWarning'], $intLatestVersion, \Input::post('VERSION_NUMBER')));
-				$this->reload();
+				/** @var SessionInterface $objSession */
+				$objSession = \System::getContainer()->get('session');
+
+				$objSession->set('versionConflictUrl', \Environment::get('request'));
+
+				$this->redirect(\System::getContainer()->get('router')->generate('contao_backend_conflict', array('table'=>$this->strTable, 'id'=>$this->intId, 'mine'=>\Input::post('VERSION_NUMBER'), 'theirs'=>$intLatestVersion)));
 			}
 
 			// Redirect

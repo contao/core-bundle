@@ -50,6 +50,7 @@ class PrettyErrorScreenListenerTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['XPT'] = [];
     }
 
