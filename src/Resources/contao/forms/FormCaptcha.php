@@ -44,7 +44,7 @@ class FormCaptcha extends \Widget
 	/**
 	 * Captcha values
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $arrCaptcha;
 
