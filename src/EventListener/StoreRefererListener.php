@@ -93,7 +93,7 @@ class StoreRefererListener
      */
     private function storeBackendReferer(Request $request)
     {
-        if (!$this->canModifyBackendSession($request)) {
+        if ('contao_backend' !== $request->attributes->get('_route') || !$this->canModifyBackendSession($request)) {
             return;
         }
 
