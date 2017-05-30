@@ -66,7 +66,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->booleanNode('prepend_locale')
-                    ->defaultFalse()
+                    ->defaultValue('%prepend_locale%')
                 ->end()
                 ->scalarNode('encryption_key')
                     ->cannotBeEmpty()
