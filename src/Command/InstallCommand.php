@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Installs the required Contao directories.
@@ -96,6 +97,7 @@ class InstallCommand extends AbstractLockedCommand
         $this->webDir = rtrim($input->getArgument('target'), '/');
 
         $this->addEmptyDirs();
+        $this->setupUploadDir();
         $this->addIgnoredDirs();
 
         if (!empty($this->rows)) {
@@ -116,8 +118,27 @@ class InstallCommand extends AbstractLockedCommand
         foreach ($this->emptyDirs as $path) {
             $this->addEmptyDir($this->rootDir.'/'.sprintf($path, $this->webDir));
         }
+    }
 
-        $this->addEmptyDir($this->rootDir.'/'.$this->getContainer()->getParameter('contao.upload_path'));
+    /**
+     * Sets up the upload directory (upload_path - "files" by default)
+     */
+    private function setupUploadDir()
+    {
+        $uploadPath = $this->rootDir.'/'.$this->getContainer()->getParameter('contao.upload_path');
+
+        $this->addEmptyDir($uploadPath);
+
+        // Add best practice folder "public" if not empty
+        $files = Finder::create()
+                    ->ignoreDotFiles(true)
+                    ->in($uploadPath)
+                    ->count();
+
+        if (0 === $files) {
+            $this->addEmptyDir($uploadPath . '/public');
+            $this->fs->dumpFile($uploadPath . '/public/.public', '');
+        }
     }
 
     /**
