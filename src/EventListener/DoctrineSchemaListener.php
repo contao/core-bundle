@@ -78,7 +78,8 @@ class DoctrineSchemaListener
                     $data['unique'],
                     $data['primary'],
                     $data['flags'],
-                    $data['options'])
+                    isset($data['options']) ? $data['options'] : null
+                )
             );
 
             $event->preventDefault();
