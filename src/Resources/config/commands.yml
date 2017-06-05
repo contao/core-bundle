@@ -22,5 +22,10 @@ services:
     contao.command.user_password_command:
         class: Contao\CoreBundle\Command\UserPasswordCommand
 
+    contao.command.user_password_command:
+        class: Contao\CoreBundle\Command\UserPasswordCommand
+        tags:
+            -  { name: console.command }
+
     contao.command.version:
         class: Contao\CoreBundle\Command\VersionCommand

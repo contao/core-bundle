@@ -1,22 +1,5 @@
 # Contao core bundle change log
 
-### DEV
-
- * Only execute the command scheduler upon the "contao_backend" and "contao_frontend" routes (see #736).
- * Correctly set the important part in "edit multiple" mode (see #839).
- * Remove the broken alias transliteration see (#848).
-
-### 4.4.0-RC1 (2017-05-23)
-
- * Tweak the back end template.
- * Add the "allowed member groups" setting (see contao/core#8528).
- * Hide the CAPTCHA field by default by adding a honeypot field (see #832).
- * Add the "href" parameter to the article list (see #694).
- * Show both paths and UUIDs in the "show" view (see #793).
- * Do not romanize file names anymore.
- * Improve the back end breadcrumb menu (see #623).
- * Correctly render the image thumbnails (see #817).
- * Use the "file" insert tag in the file picker where applicable (see contao/core#8578).
  * Update the Punycode library to version 2 (see #748).
  * Always add custom meta fields to the templates (see #717).
 
