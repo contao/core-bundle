@@ -2243,6 +2243,10 @@ Diese E-Mail wurde von Contao generiert. Sie können nicht darauf antworten.
         <source>You have to add a root page in the site structure to store file meta information.</source>
         <target>Sie müssen einen Startpunkt in der Seitenstruktur anlegen, um Meta-Informationen zu speichern.</target>
       </trans-unit>
+      <trans-unit id="MSC.breadcrumbAriaLabel">
+        <source>Current location in the shortened list view</source>
+        <target>Aktueller Standort in der verkürzten Listenansicht</target>
+      </trans-unit>
       <trans-unit id="UNITS.0">
         <source>Byte</source>
         <target>Byte</target>
