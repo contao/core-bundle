@@ -311,8 +311,10 @@ $GLOBALS['TL_DCA']['tl_example'] = array
 
 ```
 
-### langconfig.php
+### langconfig.php, dcaconfig.php and initconfig.php
 
-Using the `langconfig.php` file has been deprecated and will no longer work 
-in Contao 5.0. Create one or more language files in `app/Resources/contao/languages` 
-instead.
+Using these files has been deprecated and will no longer work in Contao 5.0.
+
+Language changes can be put into `app/Resources/contao/languages`, DCA changes in 
+`app/Resources/contao/dca`. Instead of using the `initconfig.php` you could simply 
+subscribe your function to a Symfony event, e.g. `kernel.request`.
