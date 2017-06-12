@@ -45,6 +45,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
     {
         return [
             BundleConfig::create(HeaderReplayBundle::class),
+            BundleConfig::create(KnpMenuBundle::class),
             BundleConfig::create(KnpTimeBundle::class),
             BundleConfig::create(ContaoCoreBundle::class)
                 ->setReplace(['core'])
