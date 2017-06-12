@@ -45,7 +45,7 @@ class BackendSessionListenerTest extends TestCase
 
         $listener->onReplay($event);
 
-        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+        $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
     public function testOnReplayWithNoAuthCookie()
@@ -61,7 +61,7 @@ class BackendSessionListenerTest extends TestCase
         $listener->onReplay($event);
 
         $this->assertNotNull($request->getSession());
-        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+        $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
     public function testOnReplayWithNoValidCookie()
@@ -79,7 +79,7 @@ class BackendSessionListenerTest extends TestCase
 
         $this->assertNotNull($request->getSession());
         $this->assertTrue($request->cookies->has('BE_USER_AUTH'));
-        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+        $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
     public function testOnReplay()
@@ -98,6 +98,6 @@ class BackendSessionListenerTest extends TestCase
 
         $this->assertNotNull($request->getSession());
         $this->assertTrue($request->cookies->has('BE_USER_AUTH'));
-        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+        $this->assertArrayHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 }
