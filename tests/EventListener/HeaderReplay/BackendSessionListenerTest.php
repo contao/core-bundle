@@ -1,0 +1,103 @@
+<?php
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
+namespace Contao\CoreBundle\Tests\EventListener\HeaderReplay;
+
+use Contao\CoreBundle\EventListener\HeaderReplay\BackendSessionListener;
+use Contao\CoreBundle\Tests\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
+use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
+
+/**
+ * Tests the BackendSessionListener class.
+ *
+ * @author Yanick Witschi <https://github.com/toflar>
+ */
+class BackendSessionListenerTest extends TestCase
+{
+    /**
+     * Tests the object instantiation.
+     */
+    public function testInstantiation()
+    {
+        $listener = new BackendSessionListener(false);
+
+        $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\BackendSessionListener', $listener);
+    }
+
+    public function testOnReplayWithNoSession()
+    {
+        $listener = new BackendSessionListener(false);
+
+        $request = new Request();
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+    }
+
+    public function testOnReplayWithNoAuthCookie()
+    {
+        $listener = new BackendSessionListener(false);
+
+        $session = new Session();
+        $request = new Request();
+        $request->setSession($session);
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertNotNull($request->getSession());
+        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+    }
+
+    public function testOnReplayWithNoValidCookie()
+    {
+        $listener = new BackendSessionListener(false);
+
+        $session = new Session();
+        $request = new Request();
+        $request->cookies->set('BE_USER_AUTH', 'foobar');
+        $request->setSession($session);
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertNotNull($request->getSession());
+        $this->assertTrue($request->cookies->has('BE_USER_AUTH'));
+        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+    }
+
+    public function testOnReplay()
+    {
+        $listener = new BackendSessionListener(false);
+
+        $session = new Session();
+        $session->setId('foobar-id');
+        $request = new Request();
+        $request->cookies->set('BE_USER_AUTH', 'f6d5c422c903288859fb5ccf03c8af8b0fb4b70a');
+        $request->setSession($session);
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertNotNull($request->getSession());
+        $this->assertTrue($request->cookies->has('BE_USER_AUTH'));
+        $this->assertArrayNotHasKey(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME, $event->getHeaders()->all());
+    }
+}
