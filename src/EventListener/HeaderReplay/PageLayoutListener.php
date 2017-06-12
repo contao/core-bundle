@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\EventListener\HeaderReplay;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Environment;
 use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 
@@ -23,6 +24,11 @@ use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 class PageLayoutListener
 {
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
@@ -30,10 +36,12 @@ class PageLayoutListener
     /**
      * PageLayoutListener constructor.
      *
+     * @param ScopeMatcher             $scopeMatcher
      * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ScopeMatcher $scopeMatcher, ContaoFrameworkInterface $framework)
     {
+        $this->scopeMatcher = $scopeMatcher;
         $this->framework = $framework;
     }
 
@@ -43,6 +51,10 @@ class PageLayoutListener
     public function onReplay(HeaderReplayEvent $event)
     {
         $request = $event->getRequest();
+
+        if (!$this->scopeMatcher->isFrontendRequest($request)) {
+            return;
+        }
 
         $this->framework->initialize();
 

@@ -30,9 +30,23 @@ class PageLayoutListenerTest extends TestCase
      */
     public function testInstantiation()
     {
-        $listener = new PageLayoutListener($this->mockContaoFramework());
+        $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\PageLayoutListener', $listener);
+    }
+
+    public function testOnReplayWithNoFrontendScope()
+    {
+        $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
+
+        $request = new Request();
+
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertArrayNotHasKey('contao-page-layout', $event->getHeaders()->all());
     }
 
     /**
@@ -67,8 +81,9 @@ class PageLayoutListenerTest extends TestCase
             Environment::class => $envAdapter
         ]);
 
-        $listener = new PageLayoutListener($framework);
+        $listener = new PageLayoutListener($this->mockScopeMatcher(), $framework);
         $request = new Request();
+        $request->attributes->set('_scope', 'frontend');
 
         if (null !== $tlViewCookie) {
             $request->cookies->set('TL_VIEW', $tlViewCookie);

@@ -11,8 +11,10 @@
 namespace Contao\CoreBundle\Tests\EventListener\HeaderReplay;
 
 use Contao\CoreBundle\EventListener\HeaderReplay\BackendSessionListener;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
@@ -30,14 +32,14 @@ class BackendSessionListenerTest extends TestCase
      */
     public function testInstantiation()
     {
-        $listener = new BackendSessionListener(false);
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\BackendSessionListener', $listener);
     }
 
-    public function testOnReplayWithNoSession()
+    public function testOnReplayWithNoBackendScope()
     {
-        $listener = new BackendSessionListener(false);
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
 
         $request = new Request();
         $headers = new ResponseHeaderBag();
@@ -48,12 +50,27 @@ class BackendSessionListenerTest extends TestCase
         $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
+    public function testOnReplayWithNoSession()
+    {
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
+
+        $request = new Request();
+        $request->attributes->set('_scope', 'backend');
+        $headers = new ResponseHeaderBag();
+        $event = new HeaderReplayEvent($request, $headers);
+
+        $listener->onReplay($event);
+
+        $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
+    }
+
     public function testOnReplayWithNoAuthCookie()
     {
-        $listener = new BackendSessionListener(false);
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
 
         $session = new Session();
         $request = new Request();
+        $request->attributes->set('_scope', 'backend');
         $request->setSession($session);
         $headers = new ResponseHeaderBag();
         $event = new HeaderReplayEvent($request, $headers);
@@ -66,10 +83,11 @@ class BackendSessionListenerTest extends TestCase
 
     public function testOnReplayWithNoValidCookie()
     {
-        $listener = new BackendSessionListener(false);
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
 
         $session = new Session();
         $request = new Request();
+        $request->attributes->set('_scope', 'backend');
         $request->cookies->set('BE_USER_AUTH', 'foobar');
         $request->setSession($session);
         $headers = new ResponseHeaderBag();
@@ -84,11 +102,12 @@ class BackendSessionListenerTest extends TestCase
 
     public function testOnReplay()
     {
-        $listener = new BackendSessionListener(false);
+        $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
 
         $session = new Session();
         $session->setId('foobar-id');
         $request = new Request();
+        $request->attributes->set('_scope', 'backend');
         $request->cookies->set('BE_USER_AUTH', 'f6d5c422c903288859fb5ccf03c8af8b0fb4b70a');
         $request->setSession($session);
         $headers = new ResponseHeaderBag();

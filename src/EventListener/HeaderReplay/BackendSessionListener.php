@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener\HeaderReplay;
 
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
@@ -22,6 +23,11 @@ use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
 class BackendSessionListener
 {
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * @var bool
      */
     private $disableIpCheck;
@@ -29,10 +35,12 @@ class BackendSessionListener
     /**
      * BackendSessionListener constructor.
      *
-     * @param bool $disableIpCheck
+     * @param ScopeMatcher $scopeMatcher
+     * @param bool         $disableIpCheck
      */
-    public function __construct($disableIpCheck)
+    public function __construct(ScopeMatcher $scopeMatcher, $disableIpCheck)
     {
+        $this->scopeMatcher = $scopeMatcher;
         $this->disableIpCheck = $disableIpCheck;
     }
 
@@ -43,7 +51,10 @@ class BackendSessionListener
     {
         $request = $event->getRequest();
 
-        if (null === $request->getSession() || !$this->hasAuthenticatedBackendUser($request)) {
+        if (!$this->scopeMatcher->isBackendRequest($request)
+            || null === $request->getSession()
+            || !$this->hasAuthenticatedBackendUser($request)
+        ) {
             return;
         }
 
