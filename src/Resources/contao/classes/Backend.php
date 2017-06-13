@@ -1099,9 +1099,9 @@ abstract class Backend extends \Controller
 			$params['context'] = $config['context'];
 		}
 
-		return ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $field . '">' . \Image::getHtml((is_array($config) && isset($config['icon']) ? $config['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+		return ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($config) && isset($config['icon']) ? $config['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
   <script>
-    $("pp_' . $field . '").addEvent("click", function(e) {
+    $("pp_' . $inputName . '").addEvent("click", function(e) {
       e.preventDefault();
       Backend.openModalSelector({
         "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
