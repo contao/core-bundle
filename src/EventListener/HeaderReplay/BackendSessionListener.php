@@ -45,6 +45,10 @@ class BackendSessionListener
     }
 
     /**
+     * Sets the "force no cache" header on the replay response to disable
+     * reverse proxy caching if a back end user is logged in (front end
+     * preview mode).
+     *
      * @param HeaderReplayEvent $event
      */
     public function onReplay(HeaderReplayEvent $event)

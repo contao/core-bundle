@@ -372,7 +372,7 @@ class FrontendTemplate extends \Template
 		}
 
 		// Vary on page layout
-		$response->setVary(['Contao-Page-Layout'], false);
+		$response->setVary(array('Contao-Page-Layout'), false);
 		$response->headers->set('Contao-Page-Layout', $objPage->isMobile ? 'mobile' : 'desktop');
 
 		// Do not cache the response if a user is logged in or the page is protected

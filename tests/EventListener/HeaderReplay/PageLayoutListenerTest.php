@@ -35,6 +35,9 @@ class PageLayoutListenerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\PageLayoutListener', $listener);
     }
 
+    /**
+     * Tests that no header is added when not a Contao front end scope.
+     */
     public function testOnReplayWithNoFrontendScope()
     {
         $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
@@ -50,6 +53,9 @@ class PageLayoutListenerTest extends TestCase
     }
 
     /**
+     * Tests all combinations of user agent result, TL_VIEW cookie value and checks
+     * if the header value is set correctly.
+     *
      * @param bool        $agentIsMobile
      * @param string|null $tlViewCookie
      * @param string      $expectedHeaderValue
@@ -97,6 +103,11 @@ class PageLayoutListenerTest extends TestCase
         $this->assertSame($expectedHeaderValue, $event->getHeaders()->get('Contao-Page-Layout'));
     }
 
+    /**
+     * Data provider for the testOnReplayWithNoFrontendScope test.
+     *
+     * @return array
+     */
     public function onReplayProvider()
     {
         return [

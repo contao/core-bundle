@@ -37,6 +37,9 @@ class BackendSessionListenerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\BackendSessionListener', $listener);
     }
 
+    /**
+     * Tests no header is added when not in Contao back end scope.
+     */
     public function testOnReplayWithNoBackendScope()
     {
         $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
@@ -50,6 +53,9 @@ class BackendSessionListenerTest extends TestCase
         $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
+    /**
+     * Tests no header is added when the request has no session.
+     */
     public function testOnReplayWithNoSession()
     {
         $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
@@ -64,6 +70,10 @@ class BackendSessionListenerTest extends TestCase
         $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
+    /**
+     * Tests no header is added when the request has no back end user authentication
+     * cookie.
+     */
     public function testOnReplayWithNoAuthCookie()
     {
         $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
@@ -81,6 +91,9 @@ class BackendSessionListenerTest extends TestCase
         $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
+    /**
+     * Tests no header is added if the auth cookie has an invalid value.
+     */
     public function testOnReplayWithNoValidCookie()
     {
         $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
@@ -100,6 +113,10 @@ class BackendSessionListenerTest extends TestCase
         $this->assertArrayNotHasKey(strtolower(HeaderReplayListener::FORCE_NO_CACHE_HEADER_NAME), $event->getHeaders()->all());
     }
 
+    /**
+     * Tests that the header is correctly added when scope and auth cookie are
+     * correct.
+     */
     public function testOnReplay()
     {
         $listener = new BackendSessionListener($this->mockScopeMatcher(), false);
