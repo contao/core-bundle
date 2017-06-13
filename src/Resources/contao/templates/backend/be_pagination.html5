@@ -1,5 +1,6 @@
 
 <nav class="pagination <?= $this->class ?>" role="navigation" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['paginationAriaLabel'] ?>">
+  <a href="<?= $this->request ?>#skipNavigation" class="invisible"><?= \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']); ?></a>
 
   <p><?= $this->total ?></p>
     
