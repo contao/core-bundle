@@ -1601,6 +1601,23 @@ class tl_content extends Backend
 
 
 	/**
+	 * Return the link picker wizard
+	 *
+	 * @param DataContainer $dc
+	 *
+	 * @return string
+	 *
+	 * @deprecated Deprecated since Contao 4.4. Use the dcaPicker eval attribute instead.
+	 */
+	public function pagePicker(DataContainer $dc)
+	{
+		trigger_error('The '.__METHOD__.' is deprecated since Contao 4.4, use the dcaPicker eval attribute instead.', E_USER_DEPRECATED);
+
+		return \Backend::getDcaPickerWizard(true, $dc->table, $dc->field, $dc->id, $dc->value, $dc->inputName);
+	}
+
+
+	/**
 	 * Return the delete content element button
 	 *
 	 * @param array  $row
