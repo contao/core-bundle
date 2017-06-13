@@ -16,8 +16,7 @@ use Contao\Environment;
 use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 
 /**
- * Extracts the page layout for proper Vary handling based
- * on the terminal42/header-replay-bundle.
+ * Adds the Contao-Page-Layout header based on the terminal42/header-replay-bundle.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
@@ -34,7 +33,7 @@ class PageLayoutListener
     private $framework;
 
     /**
-     * PageLayoutListener constructor.
+     * Constructor.
      *
      * @param ScopeMatcher             $scopeMatcher
      * @param ContaoFrameworkInterface $framework
@@ -46,12 +45,10 @@ class PageLayoutListener
     }
 
     /**
-     * Adds the "Contao-Page-Layout" header to the replay response based
-     * on either the TL_VIEW cookie (if present) or the current browser
-     * user agent string so that the reverse proxy gains the ability to
-     * vary on it. This is needed so that the reverse proxy generates two
-     * entries for the same URL when you are using mobile and desktop page
-     * layouts.
+     * Adds the "Contao-Page-Layout" header to the replay response based on either the TL_VIEW cookie
+     * or the current browser user agent string, so that the reverse proxy gains the ability to vary on
+     * it. This is needed so that the reverse proxy generates two entries for the same URL when you are
+     * using mobile and desktop page layouts.
      *
      * @param HeaderReplayEvent $event
      */
@@ -67,7 +64,11 @@ class PageLayoutListener
             $mobile = 'mobile' === $request->cookies->get('TL_VIEW');
         } else {
             $this->framework->initialize();
-            $mobile = $this->framework->getAdapter(Environment::class)->get('agent')->mobile;
+
+            /** @var Environment $environment */
+            $environment = $this->framework->getAdapter(Environment::class);
+
+            $mobile = $environment->get('agent')->mobile;
         }
 
         $headers = $event->getHeaders();

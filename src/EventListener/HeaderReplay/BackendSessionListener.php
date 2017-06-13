@@ -33,7 +33,7 @@ class BackendSessionListener
     private $disableIpCheck;
 
     /**
-     * BackendSessionListener constructor.
+     * Constructor.
      *
      * @param ScopeMatcher $scopeMatcher
      * @param bool         $disableIpCheck
@@ -45,9 +45,8 @@ class BackendSessionListener
     }
 
     /**
-     * Sets the "force no cache" header on the replay response to disable
-     * reverse proxy caching if a back end user is logged in (front end
-     * preview mode).
+     * Sets the "force no cache" header on the replay response to disable reverse proxy
+     * caching if a back end user is logged in (front end preview mode).
      *
      * @param HeaderReplayEvent $event
      */

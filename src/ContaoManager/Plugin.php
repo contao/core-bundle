@@ -44,9 +44,9 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(HeaderReplayBundle::class),
             BundleConfig::create(KnpMenuBundle::class),
             BundleConfig::create(KnpTimeBundle::class),
+            BundleConfig::create(HeaderReplayBundle::class),
             BundleConfig::create(ContaoCoreBundle::class)
                 ->setReplace(['core'])
                 ->setLoadAfter(

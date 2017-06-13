@@ -36,25 +36,21 @@ class PageLayoutListenerTest extends TestCase
     }
 
     /**
-     * Tests that no header is added when not a Contao front end scope.
+     * Tests that no header is added outside the Contao front end scope.
      */
     public function testOnReplayWithNoFrontendScope()
     {
+        $event = new HeaderReplayEvent(new Request(), new ResponseHeaderBag());
+
         $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
-
-        $request = new Request();
-
-        $headers = new ResponseHeaderBag();
-        $event = new HeaderReplayEvent($request, $headers);
-
         $listener->onReplay($event);
 
         $this->assertArrayNotHasKey('contao-page-layout', $event->getHeaders()->all());
     }
 
     /**
-     * Tests all combinations of user agent result, TL_VIEW cookie value and checks
-     * if the header value is set correctly.
+     * Tests all combinations of user agent result, TL_VIEW cookie value and checks if the
+     * header value is set correctly.
      *
      * @param bool        $agentIsMobile
      * @param string|null $tlViewCookie
@@ -77,17 +73,13 @@ class PageLayoutListenerTest extends TestCase
                 switch ($key) {
                     case 'agent':
                         return (object) ['mobile' => $agentIsMobile];
+
                     default:
                         return null;
                 }
             })
         ;
 
-        $framework = $this->mockContaoFramework(null, null, [
-            Environment::class => $envAdapter
-        ]);
-
-        $listener = new PageLayoutListener($this->mockScopeMatcher(), $framework);
         $request = new Request();
         $request->attributes->set('_scope', 'frontend');
 
@@ -95,8 +87,12 @@ class PageLayoutListenerTest extends TestCase
             $request->cookies->set('TL_VIEW', $tlViewCookie);
         }
 
-        $headers = new ResponseHeaderBag();
-        $event = new HeaderReplayEvent($request, $headers);
+        $event = new HeaderReplayEvent($request, new ResponseHeaderBag());
+
+        $listener = new PageLayoutListener(
+            $this->mockScopeMatcher(),
+            $this->mockContaoFramework(null, null, [Environment::class => $envAdapter])
+        );
 
         $listener->onReplay($event);
 
@@ -104,7 +100,7 @@ class PageLayoutListenerTest extends TestCase
     }
 
     /**
-     * Data provider for the testOnReplayWithNoFrontendScope test.
+     * Provides the data for the testOnReplayWithNoFrontendScope test.
      *
      * @return array
      */
