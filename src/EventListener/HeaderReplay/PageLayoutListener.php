@@ -56,18 +56,11 @@ class PageLayoutListener
             return;
         }
 
-        $this->framework->initialize();
-
-        $mobile = $this->framework->getAdapter(Environment::class)->get('agent')->mobile;
-
         if ($request->cookies->has('TL_VIEW')) {
-            switch ($request->cookies->get('TL_VIEW')) {
-                case 'mobile':
-                    $mobile = true;
-                    break;
-                case 'desktop':
-                    $mobile = false;
-            }
+            $mobile = 'mobile' === $request->cookies->get('TL_VIEW');
+        } else {
+            $this->framework->initialize();
+            $mobile = $this->framework->getAdapter(Environment::class)->get('agent')->mobile;
         }
 
         $headers = $event->getHeaders();
