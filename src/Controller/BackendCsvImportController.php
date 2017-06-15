@@ -17,7 +17,6 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\FileUpload;
 use Contao\Message;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -131,8 +130,8 @@ class BackendCsvImportController
                 $data[] = [
                     'value' => $row[0],
                     'label' => $row[1],
-                    'default' => $row[2] ? 1 : '',
-                    'group' => $row[3] ? 1 : '',
+                    'default' => !empty($row[2]) ? 1 : '',
+                    'group' => !empty($row[3]) ? 1 : '',
                 ];
 
                 return $data;
@@ -154,9 +153,9 @@ class BackendCsvImportController
      * @param string|null $submitLabel
      * @param bool        $allowLinebreak
      *
-     * @return Response
-     *
      * @throws InternalServerErrorException
+     *
+     * @return Response
      */
     private function importFromTemplate(callable $callback, $table, $field, $id, $submitLabel = null, $allowLinebreak = false)
     {
@@ -206,7 +205,7 @@ class BackendCsvImportController
      * @param FileUpload $uploader
      * @param bool       $allowLinebreak
      *
-     * @return Template|object
+     * @return BackendTemplate|object
      */
     private function prepareTemplate(Request $request, FileUpload $uploader, $allowLinebreak = false)
     {
@@ -324,9 +323,9 @@ class BackendCsvImportController
      *
      * @param string $separator
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     private function getDelimiter($separator)
     {
@@ -344,9 +343,9 @@ class BackendCsvImportController
      *
      * @param FileUpload $uploader
      *
-     * @return array
-     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     private function getFiles(FileUpload $uploader)
     {

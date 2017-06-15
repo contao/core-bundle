@@ -247,7 +247,7 @@
       </trans-unit>
       <trans-unit id="tl_form_field.url.1">
         <source>Checks whether the input is a valid URL.</source>
-        <target>Провери да ли је унешен исправан формат URL-а.</target>
+        <target>Провери да ли је унешен исправан формат URL.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.placeholder.0">
         <source>Placeholder</source>
@@ -326,8 +326,7 @@
         <target>Користи почетни директоријум</target>
       </trans-unit>
       <trans-unit id="tl_form_field.useHomeDir.1">
-        <source>Store the file in the home directory if there is an authenticated user.</source>
-        <target>Сачувај фајл у почетни директоријум ако је корисник аутентификован.</target>
+        <source>Store the file in the home directory if there is an authenticated member.</source>
       </trans-unit>
       <trans-unit id="tl_form_field.doNotOverwrite.0">
         <source>Preserve existing files</source>
@@ -552,6 +551,9 @@
       <trans-unit id="tl_form_field.toggle.1">
         <source>Toggle the visibility of field ID %s</source>
         <target>Промени видљивост поља ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_form_field.option.1">
+        <source>Import options from a CSV file</source>
       </trans-unit>
     </body>
   </file>

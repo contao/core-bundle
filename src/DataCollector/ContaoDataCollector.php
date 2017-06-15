@@ -10,10 +10,10 @@
 
 namespace Contao\CoreBundle\DataCollector;
 
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\LayoutModel;
 use Contao\Model\Registry;
-use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class ContaoDataCollector extends DataCollector
+class ContaoDataCollector extends DataCollector implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
@@ -179,7 +179,7 @@ class ContaoDataCollector extends DataCollector
     private function addSummaryData()
     {
         $framework = false;
-        $modelCount = '0';
+        $modelCount = 0;
 
         if (isset($GLOBALS['TL_DEBUG'])) {
             $framework = true;
@@ -236,7 +236,6 @@ class ContaoDataCollector extends DataCollector
      */
     private function getLayout()
     {
-        /* @var PageModel $objPage */
         global $objPage;
 
         if (null === $objPage) {

@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\DependencyInjection;
 
+use Contao\CoreBundle\Menu\PickerMenuProviderInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -50,7 +51,7 @@ class ContaoCoreExtension extends ConfigurableExtension
 
         return new Configuration(
             $container->getParameter('kernel.debug'),
-            $container->getParameter('kernel.root_dir')
+            $container->getParameter('kernel.project_dir')
         );
     }
 
@@ -68,7 +69,6 @@ class ContaoCoreExtension extends ConfigurableExtension
             $loader->load($file);
         }
 
-        $container->setParameter('contao.root_dir', $mergedConfig['root_dir']);
         $container->setParameter('contao.web_dir', $mergedConfig['web_dir']);
         $container->setParameter('contao.prepend_locale', $mergedConfig['prepend_locale']);
         $container->setParameter('contao.encryption_key', $mergedConfig['encryption_key']);
@@ -88,6 +88,11 @@ class ContaoCoreExtension extends ConfigurableExtension
         }
 
         $this->overwriteImageTargetDir($mergedConfig, $container);
+
+        $container
+            ->registerForAutoconfiguration(PickerMenuProviderInterface::class)
+            ->addTag('contao.picker_menu_provider')
+        ;
     }
 
     /**
@@ -104,7 +109,7 @@ class ContaoCoreExtension extends ConfigurableExtension
 
         $container->setParameter(
             'contao.image.target_dir',
-            $mergedConfig['root_dir'].'/'.$mergedConfig['image']['target_path']
+            $container->getParameter('kernel.project_dir').'/'.$mergedConfig['image']['target_path']
         );
 
         @trigger_error('Using the contao.image.target_path parameter has been deprecated and will no longer work in Contao 5. Use the contao.image.target_dir parameter instead.', E_USER_DEPRECATED);

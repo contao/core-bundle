@@ -35,7 +35,6 @@ class InstallCommandTest extends TestCase
         $fs->remove($this->getRootDir().'/assets/images');
         $fs->remove($this->getRootDir().'/assets/images_test');
         $fs->remove($this->getRootDir().'/assets/js');
-        $fs->remove($this->getRootDir().'/files');
         $fs->remove($this->getRootDir().'/files_test');
         $fs->remove($this->getRootDir().'/system/cache');
         $fs->remove($this->getRootDir().'/system/config');
@@ -54,7 +53,7 @@ class InstallCommandTest extends TestCase
         $command = new InstallCommand('contao:install');
 
         $this->assertInstanceOf('Contao\CoreBundle\Command\InstallCommand', $command);
-        $this->assertEquals('contao:install', $command->getName());
+        $this->assertSame('contao:install', $command->getName());
     }
 
     /**
@@ -63,8 +62,8 @@ class InstallCommandTest extends TestCase
     public function testInstallation()
     {
         $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', $this->getRootDir());
         $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
-        $container->setParameter('contao.root_dir', $this->getRootDir());
         $container->setParameter('contao.upload_path', 'files');
         $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images');
 
@@ -75,8 +74,7 @@ class InstallCommandTest extends TestCase
         $code = $tester->execute([]);
         $display = $tester->getDisplay();
 
-        $this->assertEquals(0, $code);
-        $this->assertContains(' * files', $display);
+        $this->assertSame(0, $code);
         $this->assertContains(' * templates', $display);
         $this->assertContains(' * web/system', $display);
         $this->assertContains(' * assets/css', $display);
@@ -93,8 +91,8 @@ class InstallCommandTest extends TestCase
     public function testInstallationWithCustomPaths()
     {
         $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', $this->getRootDir());
         $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
-        $container->setParameter('contao.root_dir', $this->getRootDir());
         $container->setParameter('contao.upload_path', 'files_test');
         $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images_test');
 
@@ -105,7 +103,7 @@ class InstallCommandTest extends TestCase
         $code = $tester->execute([]);
         $display = $tester->getDisplay();
 
-        $this->assertEquals(0, $code);
+        $this->assertSame(0, $code);
         $this->assertContains(' * files_test', $display);
         $this->assertContains(' * assets/images_test', $display);
     }
@@ -123,7 +121,7 @@ class InstallCommandTest extends TestCase
 
         $code = $tester->execute([]);
 
-        $this->assertEquals(1, $code);
+        $this->assertSame(1, $code);
         $this->assertContains('The command is already running in another process.', $tester->getDisplay());
 
         $lock->release();

@@ -10,9 +10,12 @@
 
 namespace Contao\CoreBundle\Tests\Menu;
 
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Menu\FilePickerProvider;
-use Contao\CoreBundle\Menu\PickerMenuProviderInterface;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\FilesModel;
+use Contao\StringUtil;
 use Knp\Menu\MenuFactory;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 class FilePickerProviderTest extends TestCase
 {
     /**
-     * @var PickerMenuProviderInterface
+     * @var FilePickerProvider
      */
     private $provider;
 
@@ -35,7 +38,50 @@ class FilePickerProviderTest extends TestCase
     {
         parent::setUp();
 
+        $model = $this->createMock(FilesModel::class);
+
+        $model
+            ->method('__get')
+            ->willReturnCallback(function ($key) {
+                switch ($key) {
+                    case 'uuid':
+                        return StringUtil::uuidToBin('632cce39-cea3-11e6-87f4-ac87a32709d5');
+
+                    case 'path':
+                        return 'files/foo.jpg';
+
+                    default:
+                        return null;
+                }
+            })
+        ;
+
+        $adapter = $this
+            ->getMockBuilder(Adapter::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findByPath', 'findByUuid'])
+            ->getMock()
+        ;
+
+        $adapter
+            ->method('findByPath')
+            ->willReturn($model)
+        ;
+
+        $adapter
+            ->method('findByUuid')
+            ->willReturn($model)
+        ;
+
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->method('getAdapter')
+            ->willReturn($adapter)
+        ;
+
         $this->provider = $this->mockPickerProvider(FilePickerProvider::class);
+        $this->provider->setFramework($framework);
     }
 
     /**
@@ -61,8 +107,8 @@ class FilePickerProviderTest extends TestCase
         $filePicker = $menu->getChild('filePicker');
 
         $this->assertNotNull($filePicker);
-        $this->assertEquals('filemounts', $filePicker->getLinkAttribute('class'));
-        $this->assertEquals('contao_backend:do=files', $filePicker->getUri());
+        $this->assertSame('filemounts', $filePicker->getLinkAttribute('class'));
+        $this->assertSame('contao_backend:do=files', $filePicker->getUri());
     }
 
     /**
@@ -70,8 +116,18 @@ class FilePickerProviderTest extends TestCase
      */
     public function testSupports()
     {
-        $this->assertTrue($this->provider->supports('tl_files'));
-        $this->assertFalse($this->provider->supports('tl_page'));
+        $this->assertFalse($this->provider->supports('page'));
+        $this->assertTrue($this->provider->supports('file'));
+        $this->assertTrue($this->provider->supports('link'));
+    }
+
+    /**
+     * Tests the supportsTable() method.
+     */
+    public function testSupportsTable()
+    {
+        $this->assertTrue($this->provider->supportsTable('tl_files'));
+        $this->assertFalse($this->provider->supportsTable('tl_page'));
     }
 
     /**
@@ -79,7 +135,13 @@ class FilePickerProviderTest extends TestCase
      */
     public function testProcessSelection()
     {
-        $this->assertEquals('files/foo.jpg', $this->provider->processSelection('files/foo.jpg'));
+        $this->assertSame(
+            json_encode([
+                'content' => 'files/foo.jpg',
+                'tag' => '{{file::632cce39-cea3-11e6-87f4-ac87a32709d5}}',
+            ]),
+            $this->provider->processSelection('files/foo.jpg')
+        );
     }
 
     /**
@@ -89,6 +151,10 @@ class FilePickerProviderTest extends TestCase
     {
         $request = new Request();
         $request->query->set('value', 'files/foo.jpg');
+
+        $this->assertTrue($this->provider->canHandle($request));
+
+        $request->query->set('value', '{{file::632cce39-cea3-11e6-87f4-ac87a32709d5}}');
 
         $this->assertTrue($this->provider->canHandle($request));
 
@@ -109,6 +175,10 @@ class FilePickerProviderTest extends TestCase
         $request = new Request();
         $request->query->set('value', 'files/foo.jpg');
 
-        $this->assertEquals('contao_backend:value=files/foo.jpg:do=files', $this->provider->getPickerUrl($request));
+        $this->assertSame('contao_backend:value=files/foo.jpg:do=files', $this->provider->getPickerUrl($request));
+
+        $request->query->set('value', '{{file::632cce39-cea3-11e6-87f4-ac87a32709d5}}');
+
+        $this->assertSame('contao_backend:value=files/foo.jpg:do=files', $this->provider->getPickerUrl($request));
     }
 }

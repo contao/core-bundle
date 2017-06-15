@@ -11,19 +11,22 @@
 namespace Contao\CoreBundle\Tests;
 
 use Contao\BackendUser;
+use Contao\Config;
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Image\LegacyResizer;
 use Contao\CoreBundle\Image\ImageFactory;
+use Contao\CoreBundle\Image\LegacyResizer;
 use Contao\CoreBundle\Image\PictureFactory;
 use Contao\CoreBundle\Menu\PickerMenuProviderInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
-use Contao\Image\ResizeCalculator;
+use Contao\FilesModel;
 use Contao\Image\PictureGenerator;
+use Contao\Image\ResizeCalculator;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
+use Contao\RequestToken;
 use Imagine\Gd\Imagine as ImagineGd;
 use Imagine\Image\ImageInterface;
 use Psr\Log\NullLogger;
@@ -48,7 +51,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Returns the path to the fixtures directory.
@@ -57,7 +60,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     public function getRootDir()
     {
-        return __DIR__.'/Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 
     /**
@@ -71,48 +74,89 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Returns a ContaoFramework instance.
+     *
+     * @param RequestStack|null    $requestStack
+     * @param RouterInterface|null $router
+     * @param array                $adapters
+     * @param array                $instances
+     *
+     * @return ContaoFramework|\PHPUnit_Framework_MockObject_MockObject The object instance
+     */
+    public function mockContaoFramework(RequestStack $requestStack = null, RouterInterface $router = null, array $adapters = [], array $instances = [])
+    {
+        $container = $this->mockContainerWithContaoScopes();
+
+        if (null === $requestStack) {
+            $requestStack = $container->get('request_stack');
+        }
+
+        if (null === $router) {
+            $router = $this->mockRouter('/index.html');
+        }
+
+        if (!isset($adapters[Config::class])) {
+            $adapters[Config::class] = $this->mockConfigAdapter();
+        }
+
+        if (!isset($adapters[RequestToken::class])) {
+            $adapters[RequestToken::class] = $this->mockRequestTokenAdapter();
+        }
+
+        if (!isset($adapters[FilesModel::class])) {
+            $adapters[FilesModel::class] = $this->mockFilesModelAdapter();
+        }
+
+        /* @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject $framework */
+        $framework = $this
+            ->getMockBuilder(ContaoFramework::class)
+            ->setConstructorArgs([
+                $requestStack,
+                $router,
+                $this->mockSession(),
+                $this->mockScopeMatcher(),
+                $this->getRootDir(),
+                error_reporting(),
+            ])
+            ->setMethods(['getAdapter', 'createInstance'])
+            ->getMock()
+        ;
+
+        $framework
+            ->method('getAdapter')
+            ->willReturnCallback(function ($key) use ($adapters) {
+                return $adapters[$key];
+            })
+        ;
+
+        $framework
+            ->method('createInstance')
+            ->willReturnCallback(function ($key) use ($instances) {
+                return $instances[$key];
+            })
+        ;
+
+        $framework->setContainer($container);
+
+        return $framework;
+    }
+
+    /**
      * Mocks a Contao kernel.
      *
      * @return Kernel|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function mockKernel()
     {
-        $kernel = $this->getMock(
-            'Symfony\Component\HttpKernel\Kernel',
-            [
-                // KernelInterface
-                'registerBundles',
-                'registerContainerConfiguration',
-                'boot',
-                'shutdown',
-                'getBundles',
-                'isClassInActiveBundle',
-                'getBundle',
-                'locateResource',
-                'getName',
-                'getEnvironment',
-                'isDebug',
-                'getRootDir',
-                'getContainer',
-                'getStartTime',
-                'getCacheDir',
-                'getLogDir',
-                'getCharset',
-
-                // HttpKernelInterface
-                'handle',
-
-                // Serializable
-                'serialize',
-                'unserialize',
-            ],
-            ['test', false]
-        );
+        $kernel = $this
+            ->getMockBuilder(Kernel::class)
+            ->setConstructorArgs(['test', false])
+            ->getMock()
+        ;
 
         $container = $this->mockContainerWithContaoScopes();
 
         $kernel
-            ->expects($this->any())
             ->method('getContainer')
             ->willReturn($container)
         ;
@@ -129,10 +173,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockRouter($url)
     {
-        $router = $this->getMock('Symfony\Component\Routing\RouterInterface');
+        $router = $this->createMock(RouterInterface::class);
 
         $router
-            ->expects($this->any())
             ->method('generate')
             ->willReturn($url)
         ;
@@ -147,20 +190,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockTokenManager()
     {
-        $tokenManager = $this
-            ->getMockBuilder('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface')
-            ->setMethods(['getToken'])
-            ->getMockForAbstractClass()
-        ;
+        $tokenManager = $this->createMock(CsrfTokenManagerInterface::class);
 
         $tokenManager
-            ->expects($this->any())
             ->method('getToken')
             ->willReturn(new CsrfToken('_csrf', 'testValue'))
         ;
 
         $tokenManager
-            ->expects($this->any())
             ->method('refreshToken')
             ->willReturn(new CsrfToken('_csrf', 'testValue'))
         ;
@@ -210,15 +247,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @param string|null $scope
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Container
+     * @return Container|\PHPUnit_Framework_MockObject_MockObject
      */
     protected function mockContainerWithContaoScopes($scope = null)
     {
         $container = new Container();
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
         $container->setParameter('kernel.cache_dir', $this->getCacheDir());
+        $container->setParameter('kernel.project_dir', $this->getRootDir());
+        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
         $container->setParameter('kernel.debug', false);
-        $container->setParameter('contao.root_dir', $this->getRootDir());
         $container->setParameter('contao.web_dir', $this->getRootDir().'/web');
         $container->setParameter('contao.image.bypass_cache', false);
         $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images');
@@ -274,76 +311,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Returns a ContaoFramework instance.
-     *
-     * @param RequestStack|null    $requestStack
-     * @param RouterInterface|null $router
-     * @param array                $adapters
-     * @param array                $instances
-     *
-     * @return ContaoFramework|\PHPUnit_Framework_MockObject_MockObject The object instance
-     */
-    public function mockContaoFramework(RequestStack $requestStack = null, RouterInterface $router = null, array $adapters = [], array $instances = [])
-    {
-        $container = $this->mockContainerWithContaoScopes();
-
-        if (null === $requestStack) {
-            $requestStack = $container->get('request_stack');
-        }
-
-        if (null === $router) {
-            $router = $this->mockRouter('/index.html');
-        }
-
-        if (!isset($adapters['Contao\Config'])) {
-            $adapters['Contao\Config'] = $this->mockConfigAdapter();
-        }
-
-        if (!isset($adapters['Contao\RequestToken'])) {
-            $adapters['Contao\RequestToken'] = $this->mockRequestTokenAdapter();
-        }
-
-        if (!isset($adapters['Contao\FilesModel'])) {
-            $adapters['Contao\FilesModel'] = $this->mockFilesModelAdapter();
-        }
-
-        /** @var ContaoFramework|\PHPUnit_Framework_MockObject_MockObject $framework */
-        $framework = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\ContaoFramework')
-            ->setConstructorArgs([
-                $requestStack,
-                $router,
-                $this->mockSession(),
-                $this->mockScopeMatcher(),
-                $this->getRootDir(),
-                error_reporting(),
-            ])
-            ->setMethods(['getAdapter', 'createInstance'])
-            ->getMock()
-        ;
-
-        $framework
-            ->expects($this->any())
-            ->method('getAdapter')
-            ->willReturnCallback(function ($key) use ($adapters) {
-                return $adapters[$key];
-            })
-        ;
-
-        $framework
-            ->expects($this->any())
-            ->method('createInstance')
-            ->willReturnCallback(function ($key) use ($instances) {
-                return $instances[$key];
-            })
-        ;
-
-        $framework->setContainer($container);
-
-        return $framework;
-    }
-
-    /**
      * Mocks a config adapter.
      *
      * @param int|null $minPasswordLength
@@ -353,32 +320,28 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function mockConfigAdapter($minPasswordLength = null)
     {
         $configAdapter = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\Adapter')
-            ->setMethods(['isComplete', 'preload', 'getInstance', 'get'])
+            ->getMockBuilder(Adapter::class)
             ->disableOriginalConstructor()
+            ->setMethods(['isComplete', 'preload', 'getInstance', 'get'])
             ->getMock()
         ;
 
         $configAdapter
-            ->expects($this->any())
             ->method('isComplete')
             ->willReturn(true)
         ;
 
         $configAdapter
-            ->expects($this->any())
             ->method('preload')
             ->willReturn(null)
         ;
 
         $configAdapter
-            ->expects($this->any())
             ->method('getInstance')
             ->willReturn(null)
         ;
 
         $configAdapter
-            ->expects($this->any())
             ->method('get')
             ->willReturnCallback(function ($key) use ($minPasswordLength) {
                 switch ($key) {
@@ -415,20 +378,18 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function mockRequestTokenAdapter()
     {
         $rtAdapter = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\Adapter')
-            ->setMethods(['get', 'validate'])
+            ->getMockBuilder(Adapter::class)
             ->disableOriginalConstructor()
+            ->setMethods(['get', 'validate'])
             ->getMock()
         ;
 
         $rtAdapter
-            ->expects($this->any())
             ->method('get')
             ->willReturn('foobar')
         ;
 
         $rtAdapter
-            ->expects($this->any())
             ->method('validate')
             ->willReturn(true)
         ;
@@ -443,15 +404,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockFilesModelAdapter()
     {
-        $adapter = $this
-            ->getMockBuilder('Contao\CoreBundle\Framework\Adapter')
-            ->setMethods(['__call'])
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
         $adapter
-            ->expects($this->any())
             ->method('__call')
             ->willReturn(null)
         ;
@@ -474,16 +429,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $framework = $this->mockContaoFramework();
 
         if ($rootDir) {
-            $container->setParameter('contao.root_dir', $rootDir);
             $container->setParameter('contao.web_dir', $rootDir.'/web');
             $container->setParameter('contao.image.target_dir', $rootDir.'/assets/images');
         }
 
-        $resizer = new LegacyResizer(
-            $container->getParameter('contao.image.target_dir'),
-            $calculator
-        );
-
+        $resizer = new LegacyResizer($container->getParameter('contao.image.target_dir'), $calculator);
         $resizer->setFramework($framework);
 
         $imageFactory = new ImageFactory(
@@ -530,10 +480,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockPickerProvider($class)
     {
-        $router = $this->getMock(RouterInterface::class);
+        $router = $this->createMock(RouterInterface::class);
 
         $router
-            ->expects($this->any())
             ->method('generate')
             ->willReturnCallback(function ($name, $params) {
                 $url = $name;
@@ -548,29 +497,26 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $user = $this
             ->getMockBuilder(BackendUser::class)
-            ->setMethods(['hasAccess'])
             ->disableOriginalConstructor()
+            ->setMethods(['hasAccess', 'getUser', 'getToken'])
             ->getMock()
         ;
 
         $user
-            ->expects($this->any())
             ->method('hasAccess')
             ->willReturn(true)
         ;
 
-        $token = $this->getMock(TokenInterface::class);
+        $token = $this->createMock(TokenInterface::class);
 
         $token
-            ->expects($this->any())
             ->method('getUser')
             ->willReturn($user)
         ;
 
-        $tokenStorage = $this->getMock(TokenStorageInterface::class);
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $tokenStorage
-            ->expects($this->any())
             ->method('getToken')
             ->willReturn($token)
         ;
@@ -580,6 +526,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
-        return new $class($router, $tokenStorage, $requestStack, 'files');
+        return new $class($router, $requestStack, $tokenStorage, 'files');
     }
 }

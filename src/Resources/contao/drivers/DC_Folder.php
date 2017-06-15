@@ -82,6 +82,12 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	 */
 	protected $blnIsDbAssisted = false;
 
+	/**
+	 * Hide files
+	 * @var boolean
+	 */
+	protected $blnHideFiles = false;
+
 
 	/**
 	 * Initialize the object
@@ -178,8 +184,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($GLOBALS['TL_DCA'][$this->strTable]['config']['validFileTypes']));
 		}
 
-		$this->initPicker();
-
 		// Call onload_callback (e.g. to check permissions)
 		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['onload_callback']))
 		{
@@ -194,6 +198,17 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					$callback($this);
 				}
+			}
+		}
+
+		// Initialize the picker
+		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		{
+			list($table) = explode('.', \Input::get('target'), 2);
+
+			if ($this->strTable != $table)
+			{
+				$this->initPicker();
 			}
 		}
 
@@ -587,7 +602,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$objSession->set('CLIPBOARD', $arrClipboard);
 
 		$this->Files->mkdir($strFolder . '/__new__');
-		$this->redirect(html_entity_decode($this->switchToEdit($this->urlEncode($strFolder) . '/__new__')));
+		$this->redirect(html_entity_decode($this->switchToEdit($strFolder . '/__new__')));
 	}
 
 
@@ -2181,7 +2196,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 
 			$this->import('Files');
-			$varValue = Utf8::toAscii($varValue);
 
 			// Trigger the save_callback
 			if (is_array($arrData['save_callback']))
@@ -2643,6 +2657,19 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
+				elseif ($this->blnHideFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				{
+					--$countFiles;
+				}
+				elseif (!empty($this->arrValidFileTypes) && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				{
+					$objFile =  new \File($currentFolder . '/' . $file);
+
+					if (!in_array($objFile->extension, $this->arrValidFileTypes))
+					{
+						--$countFiles;
+					}
+				}
 			}
 
 			if (!empty($arrFound) && $countFiles < 1 && !in_array($currentFolder, $arrFound))
@@ -2694,7 +2721,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				// Do not display buttons for mounted folders
 				if ($this->User->isAdmin || !in_array($currentFolder, $this->User->filemounts))
 				{
-					$return .= (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'popupWidth'=>600, 'popupHeight'=>160, 'fileNameEncoded'=>$strFolderNameEncoded), $this->strTable);
+					$return .= (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'fileNameEncoded'=>$strFolderNameEncoded), $this->strTable);
 				}
 
 				// Upload button
@@ -2720,12 +2747,15 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
+		if ($this->blnHideFiles)
+		{
+			return $return;
+		}
+
 		// Process files
 		for ($h=0, $c=count($files); $h<$c; $h++)
 		{
 			$thumbnail = '';
-			$popupWidth = 600;
-			$popupHeight = 192;
 			$currentFile = \StringUtil::stripRootDir($files[$h]);
 
 			$objFile = new \File($currentFile);
@@ -2757,27 +2787,16 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			{
 				if ($objFile->viewHeight > 0)
 				{
-					if ($objFile->width && $objFile->height)
-					{
-						$popupWidth = ($objFile->width > 600) ? ($objFile->width + 61) : 661;
-						$popupHeight = ($objFile->height + 236);
-					}
-					else
-					{
-						$popupWidth = 661;
-						$popupHeight = 625 / $objFile->viewWidth * $objFile->viewHeight + 236;
-					}
-
 					if (\Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
 					{
 						// Inline the image if no preview image will be generated (see #636)
-						if ($objFile->height !== null && $objFile->height <= 50 || $objFile->width !== null && $objFile->width <= 400)
+						if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 400)
 						{
 							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" style="margin:0 0 2px -19px">';
 						}
 						else
 						{
-							$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, 'box'))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -19px"');
+							$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -19px"');
 						}
 
 						$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
@@ -2787,10 +2806,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 							$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
 						}
 					}
-				}
-				else
-				{
-					$popupHeight = 386; // dimensionless SVGs are rendered at 300x150px, so the popup needs to be 150px + 236px high
 				}
 			}
 
@@ -2813,7 +2828,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 			else
 			{
-				$_buttons = (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'popupWidth'=>$popupWidth, 'popupHeight'=>$popupHeight, 'fileNameEncoded'=>$strFileNameEncoded), $this->strTable);
+				$_buttons = (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'fileNameEncoded'=>$strFileNameEncoded), $this->strTable);
 
 				if ($this->strPickerField)
 				{
@@ -3103,18 +3118,39 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 
 	/**
+	 * Set the DCA filter
+	 *
+	 * @param array $arrFilter
+	 */
+	protected function setDcaFilter($arrFilter)
+	{
+		parent::setDcaFilter($arrFilter);
+
+		if (isset($arrFilter['hideFiles']) && $arrFilter['hideFiles'] === true)
+		{
+			$this->blnHideFiles = true;
+		}
+
+		if (isset($arrFilter['extensions']))
+		{
+			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($arrFilter['extensions']));
+		}
+	}
+
+
+	/**
 	 * Set the picker value
 	 */
 	protected function setPickerValue()
 	{
-		$varValue = \Input::get('value');
+		$varValue = \Input::get('value', true);
 
 		if (empty($varValue))
 		{
 			return;
 		}
 
-		$varValue = array_filter(explode(',', $varValue));
+		$varValue = array_map(array($this, 'urlEncode'), array_filter(explode(',', $varValue)));
 
 		if (empty($varValue))
 		{
@@ -3129,17 +3165,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			return;
 		}
 
-		// Ignore the numeric IDs when in switch mode (TinyMCE)
-		if (\Input::get('switch'))
-		{
-			return;
-		}
-
 		$objFiles = \FilesModel::findMultipleByIds($varValue);
 
 		if ($objFiles !== null)
 		{
-			$this->arrPickerValue = array_values($objFiles->fetchEach('path'));
+			$this->arrPickerValue = array_map(array($this, 'urlEncode'), array_values($objFiles->fetchEach('path')));
 		}
 	}
 }

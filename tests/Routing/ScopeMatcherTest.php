@@ -62,16 +62,13 @@ class ScopeMatcherTest extends TestCase
         $request = new Request();
         $request->attributes->set('_scope', $scope);
 
-        /** @var KernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
-        $kernel = $this->getMock(KernelInterface::class);
+        $event = new KernelEvent($this->createMock(KernelInterface::class), $request, $requestType);
 
-        $event = new KernelEvent($kernel, $request, $requestType);
-
-        $this->assertEquals($isMaster, $this->matcher->isContaoMasterRequest($event));
-        $this->assertEquals($isMaster && $isBackend, $this->matcher->isBackendMasterRequest($event));
-        $this->assertEquals($isMaster && $isFrontend, $this->matcher->isFrontendMasterRequest($event));
-        $this->assertEquals($isBackend, $this->matcher->isBackendRequest($request));
-        $this->assertEquals($isFrontend, $this->matcher->isFrontendRequest($request));
+        $this->assertSame($isMaster, $this->matcher->isContaoMasterRequest($event));
+        $this->assertSame($isMaster && $isBackend, $this->matcher->isBackendMasterRequest($event));
+        $this->assertSame($isMaster && $isFrontend, $this->matcher->isFrontendMasterRequest($event));
+        $this->assertSame($isBackend, $this->matcher->isBackendRequest($request));
+        $this->assertSame($isFrontend, $this->matcher->isFrontendRequest($request));
     }
 
     /**

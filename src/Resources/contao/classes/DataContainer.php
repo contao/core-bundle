@@ -10,8 +10,10 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\Image\ResizeConfiguration;
 
 
 /**
@@ -230,7 +232,7 @@ abstract class DataContainer extends \Backend
 		// Add the help wizard
 		if ($arrData['eval']['helpwizard'])
 		{
-			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'width\':735,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
+			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
 		}
 
 		// Add a custom xlabel
@@ -469,9 +471,10 @@ abstract class DataContainer extends \Backend
 			$wizard .= ' ' . \Image::getHtml('pickcolor.svg', $GLOBALS['TL_LANG']['MSC']['colorpicker'], 'title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['colorpicker']).'" id="moo_' . $this->strField . '" style="cursor:pointer"') . '
   <script>
     window.addEvent("domready", function() {
+      var cl = $("ctrl_' . $strKey . '").value.hexToRgb(true) || [255, 0, 0];
       new MooRainbow("moo_' . $this->strField . '", {
         id: "ctrl_' . $strKey . '",
-        startColor: ((cl = $("ctrl_' . $strKey . '").value.hexToRgb(true)) ? cl : [255, 0, 0]),
+        startColor: cl,
         imgPath: "assets/colorpicker/images/",
         onComplete: function(color) {
           $("ctrl_' . $strKey . '").value = color.hex.replace("#", "");
@@ -486,16 +489,19 @@ abstract class DataContainer extends \Backend
 		{
 			$params = array();
 
-			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['do'])) {
+			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['do']))
+			{
 				$params['do'] = $arrData['eval']['dcaPicker']['do'];
 			}
 
+			$params['context'] = 'link';
 			$params['target'] = $this->strTable.'.'.$this->strField.'.'.$this->intId;
 			$params['value'] = $this->varValue;
 			$params['popup'] = 1;
 
-			if (!is_array($arrData['eval']['dcaPicker']) || !isset($arrData['eval']['dcaPicker']['do'])) {
-				$params['switch'] = 1;
+			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['context']))
+			{
+				$params['context'] = $arrData['eval']['dcaPicker']['context'];
 			}
 
 			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['icon']) ? $arrData['eval']['dcaPicker']['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
@@ -503,15 +509,14 @@ abstract class DataContainer extends \Backend
     $("pp_' . $this->strField . '").addEvent("click", function(e) {
       e.preventDefault();
       Backend.openModalSelector({
-        "width": 768,
         "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
         "url": this.href,
         "callback": function(table, value) {
           new Request.Contao({
             evalScripts: false,
             onSuccess: function(txt, json) {
-              $("ctrl_' . $this->strInputName . '").value = json.content;
-              this.set("href", this.get("href").replace(/&value=[^&]*/, "&value=" + json.content));
+              $("ctrl_' . $this->strInputName . '").value = (json.tag || json.content);
+              this.set("href", this.get("href").replace(/&value=[^&]*/, "&value=" + (json.tag || json.content)));
             }.bind(this)
           }).post({"action":"processPickerSelection", "table":table, "value":value.join(","), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
         }.bind(this)
@@ -609,7 +614,7 @@ abstract class DataContainer extends \Backend
 				{
 					if ($objFile->width > 699 || $objFile->height > 524 || !$objFile->width || !$objFile->height)
 					{
-						$image = rawurldecode(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(699, 524, 'box'))->getUrl(TL_ROOT));
+						$image = rawurldecode(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(699, 524, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT));
 					}
 					else
 					{
@@ -782,7 +787,7 @@ abstract class DataContainer extends \Backend
 			{
 				if ($k == 'show')
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'width\':768,\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 				}
 				else
 				{
@@ -890,20 +895,17 @@ abstract class DataContainer extends \Backend
 	/**
 	 * Initialize the picker
 	 *
+	 * @return boolean
+	 *
 	 * @throws InternalServerErrorException
 	 */
 	protected function initPicker()
 	{
-		if (!isset($_GET['target']) || \Input::get('act') == 'select' || \Input::get('act') == 'paste')
-		{
-			return;
-		}
-
 		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
 
-		if (!$menuBuilder->supports($this->strTable))
+		if (!$menuBuilder->supportsTable($this->strTable))
 		{
-			return;
+			return false;
 		}
 
 		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
@@ -956,6 +958,19 @@ abstract class DataContainer extends \Backend
 		{
 			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
+
+		/** @var Widget $strClass */
+		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
+
+		/** @var Widget $objWidget */
+		$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
+
+		if ($objWidget instanceof DcaFilterInterface)
+		{
+			$this->setDcaFilter($objWidget->getDcaFilter());
+		}
+
+		return true;
 	}
 
 
@@ -979,6 +994,20 @@ abstract class DataContainer extends \Backend
 		}
 
 		$this->arrPickerValue = $varValue;
+	}
+
+
+	/**
+	 * Set the DCA filter
+	 *
+	 * @param array $arrFilter
+	 */
+	protected function setDcaFilter($arrFilter)
+	{
+		if (isset($arrFilter['root']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
+		}
 	}
 
 

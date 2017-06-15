@@ -58,7 +58,7 @@ class BinaryStringTypeTest extends TestCase
     {
         $fieldDefinition = ['fixed' => true];
 
-        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        /* @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
         $platform = $this
             ->getMockBuilder(AbstractPlatform::class)
             ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])
@@ -85,7 +85,7 @@ class BinaryStringTypeTest extends TestCase
     {
         $fieldDefinition = ['fixed' => false];
 
-        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        /* @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
         $platform = $this
             ->getMockBuilder(AbstractPlatform::class)
             ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])
@@ -110,7 +110,7 @@ class BinaryStringTypeTest extends TestCase
      */
     public function testName()
     {
-        $this->assertEquals(BinaryStringType::NAME, $this->type->getName());
+        $this->assertSame(BinaryStringType::NAME, $this->type->getName());
     }
 
     /**

@@ -50,30 +50,6 @@ var AjaxRequest =
 			return false;
 		}
 
-		new Request.Contao({
-			url: url,
-			evalScripts: true,
-			onRequest: AjaxRequest.displayBox(Contao.lang.loading + ' …'),
-			onSuccess: function(txt) {
-				var li = new Element('li', {
-					'id': id,
-					'class': 'tl_parent',
-					'html': txt
-				}).inject(parent, 'after');
-
-				// Update the referer ID
-				li.getElements('a').each(function(el) {
-					el.href = el.href.replace(/&ref=[a-f0-9]+/, '&ref=' + Contao.referer_id);
-				});
-
-				parent.removeClass('node-collapsed').addClass('node-expanded');
-				AjaxRequest.hideBox();
-
-				// HOOK
-				window.fireEvent('ajax_change');
-   			}
-		}).post({'action':'loadNavigation', 'id':id, 'state':1, 'REQUEST_TOKEN':Contao.request_token});
-
 		return false;
 	},
 
@@ -414,6 +390,7 @@ var AjaxRequest =
 			onSuccess: function(txt, json) {
 				var div = new Element('div', {
 					'id': id,
+					'class': 'subpal',
 					'html': txt,
 					'styles': {
 						'display': 'block'
@@ -870,7 +847,9 @@ var Backend =
 	 * @param {object} options An optional options object
 	 */
 	openModalImage: function(options) {
-		var opt = options || {};
+		var opt = options || {},
+			maxWidth = (window.getSize().x - 20).toInt();
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
 		var M = new SimpleModal({
 			'width': opt.width,
 			'hideFooter': true,
@@ -891,9 +870,11 @@ var Backend =
 	 * @param {object} options An optional options object
 	 */
 	openModalIframe: function(options) {
-		var opt = options || {};
-		var max = (window.getSize().y - 137).toInt();
-		if (!opt.height || opt.height > max) opt.height = max;
+		var opt = options || {},
+			maxWidth = (window.getSize().x - 20).toInt(),
+			maxHeight = (window.getSize().y - 137).toInt();
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
+		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
 			'width': opt.width,
 			'hideFooter': true,
@@ -915,9 +896,11 @@ var Backend =
 	 */
 	openModalSelector: function(options) {
 		var opt = options || {},
-			max = (window.getSize().y - 192).toInt();
+			maxWidth = (window.getSize().x - 20).toInt(),
+			maxHeight = (window.getSize().y - 192).toInt();
 		if (!opt.id) opt.id = 'tl_select';
-		if (!opt.height || opt.height > max) opt.height = max;
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
+		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
 			'width': opt.width,
 			'btn_ok': Contao.lang.close,
@@ -985,16 +968,16 @@ var Backend =
 	/**
 	 * Open a TinyMCE file browser in a modal window
 	 *
-	 * @param {string} field_name The field name
-	 * @param {string} url        The URL
-	 * @param {string} type       The picker type
-	 * @param {object} win        The window object
+	 * @param {string} field_name  The field name
+	 * @param {string} url         The URL
+	 * @param {string} type        The picker type
+	 * @param {object} win         The window object
+	 * @param {string} [reference] An optional reference field
 	 */
-	openModalBrowser: function(field_name, url, type, win) {
+	openModalBrowser: function(field_name, url, type, win, reference) {
 		Backend.openModalSelector({
-			'width': 768,
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=tl_content.singleSRC&amp;value=' + url + (type == 'file' ? '&amp;switch=1' : '&amp;do=files') + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=' + (reference || 'tl_content.singleSRC') + '&amp;value=' + url + (type == 'file' ? '&amp;context=link' : '&amp;do=files&amp;context=file') + '&amp;popup=1',
 			'callback': function(table, value) {
 				new Request.Contao({
 					evalScripts: false,
@@ -1050,7 +1033,7 @@ var Backend =
 		var hgt = 0;
 
 		$$('div.limit_height').each(function(div) {
-			var toggler, size, style;
+			var toggler, button, size, style;
 
 			if (hgt === 0) {
 				hgt = div.className.replace(/[^0-9]*/, '').toInt();
@@ -1059,46 +1042,28 @@ var Backend =
 			// Return if there is no height value
 			if (!hgt) return;
 
-			toggler = new Element('img', {
-				'class': 'limit_toggler',
-				'alt': '',
-				'title': Contao.lang.expand,
-				'width': 20,
-				'height': 24,
-				'data-state': 0
+			toggler = new Element('div', {
+				'class': 'limit_toggler'
 			});
+
+			button = new Element('button', {
+				'html': '<span>...</span>',
+				'class': 'unselectable',
+				'data-state': 0
+			}).inject(toggler);
 
 			size = div.getCoordinates();
-
-			new Tips.Contao(toggler, {
-				offset: {x:0, y:30}
-			});
-
 			div.setStyle('height', hgt);
 
 			// Disable the function if the preview height is below the max-height
 			if (size.height <= hgt) {
-				toggler.src = Backend.themePath + 'icons/expand_.svg';
-				toggler.inject(div, 'after');
 				return;
 			}
 
-			toggler.src = Backend.themePath + 'icons/expand.svg';
-			toggler.setStyle('cursor', 'pointer');
-
-			toggler.addEvent('click', function() {
+			button.addEvent('click', function() {
 				style = toggler.getPrevious('div').getStyle('height').toInt();
 				toggler.getPrevious('div').setStyle('height', ((style > hgt) ? hgt : ''));
-
-				if (toggler.get('data-state') == 0) {
-					toggler.src = Backend.themePath + 'icons/collapse.svg';
-					toggler.set('data-state', 1);
-					toggler.store('tip:title', Contao.lang.collapse);
-				} else {
-					toggler.src = Backend.themePath + 'icons/expand.svg';
-					toggler.set('data-state', 0);
-					toggler.store('tip:title', Contao.lang.expand);
-				}
+				button.set('data-state', button.get('data-state') ? 0 : 1);
 			});
 
 			toggler.inject(div, 'after');
@@ -2323,7 +2288,7 @@ var Backend =
 			clickEvent = function(e) {
 				var input = this.getElement('input[type="checkbox"],input[type="radio"]');
 
-				if (!input) {
+				if (!input || input.get('disabled')) {
 					return;
 				}
 

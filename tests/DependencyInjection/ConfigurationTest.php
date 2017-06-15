@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Tests\DependencyInjection;
 
 use Contao\CoreBundle\DependencyInjection\Configuration;
 use Contao\CoreBundle\Tests\TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationTest extends TestCase
@@ -50,7 +51,6 @@ class ConfigurationTest extends TestCase
     {
         $params = [
             'contao' => [
-                'root_dir' => $this->getRootDir().'/foo',
                 'web_dir' => $this->getRootDir().'/foo/../web',
                 'image' => [
                     'target_dir' => $this->getRootDir().'/foo/../assets/images',
@@ -60,10 +60,9 @@ class ConfigurationTest extends TestCase
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
 
-        $this->assertEquals(strtr($this->getRootDir().'/foo', '/', DIRECTORY_SEPARATOR), $configuration['root_dir']);
-        $this->assertEquals(strtr($this->getRootDir().'/web', '/', DIRECTORY_SEPARATOR), $configuration['web_dir']);
+        $this->assertSame(strtr($this->getRootDir().'/web', '/', DIRECTORY_SEPARATOR), $configuration['web_dir']);
 
-        $this->assertEquals(
+        $this->assertSame(
             strtr($this->getRootDir().'/assets/images', '/', DIRECTORY_SEPARATOR),
             $configuration['image']['target_dir']
         );
@@ -75,7 +74,6 @@ class ConfigurationTest extends TestCase
      * @param string $uploadPath
      *
      * @dataProvider invalidUploadPathProvider
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
     public function testInvalidUploadPath($uploadPath)
     {
@@ -85,6 +83,8 @@ class ConfigurationTest extends TestCase
                 'upload_path' => $uploadPath,
             ],
         ];
+
+        $this->expectException(InvalidConfigurationException::class);
 
         (new Processor())->processConfiguration($this->configuration, $params);
     }

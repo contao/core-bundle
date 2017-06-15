@@ -194,9 +194,9 @@ class BackendMain extends \Backend
 		}
 
 		// Picker menu
-		if (\Input::get('popup') && \Input::get('switch'))
+		if (\Input::get('popup') && \Input::get('context'))
 		{
-			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu_builder')->createMenu();
+			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu_builder')->createMenu(\Input::get('context'));
 		}
 
 		// Website title
@@ -222,7 +222,7 @@ class BackendMain extends \Backend
 		$this->Template->theme = \Backend::getTheme();
 		$this->Template->base = \Environment::get('base');
 		$this->Template->language = $GLOBALS['TL_LANGUAGE'];
-		$this->Template->title = \StringUtil::specialchars($this->Template->title);
+		$this->Template->title = \StringUtil::specialchars(strip_tags($this->Template->title));
 		$this->Template->charset = \Config::get('characterSet');
 		$this->Template->account = $GLOBALS['TL_LANG']['MOD']['login'][1];
 		$this->Template->preview = $GLOBALS['TL_LANG']['MSC']['fePreview'];

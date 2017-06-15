@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Tests\Menu;
 
+use Contao\CoreBundle\Menu\FilePickerProvider;
 use Contao\CoreBundle\Menu\PagePickerProvider;
 use Contao\CoreBundle\Menu\PickerMenuBuilder;
 use Contao\CoreBundle\Menu\PickerMenuBuilderInterface;
@@ -41,10 +42,9 @@ class PickerMenuBuilderTest extends TestCase
 
         $factory = new MenuFactory();
         $renderer = new ListRenderer(new Matcher());
-        $router = $this->getMock(RouterInterface::class);
+        $router = $this->createMock(RouterInterface::class);
 
         $router
-            ->expects($this->any())
             ->method('generate')
             ->willReturnCallback(function ($name, $params) {
                 $url = $name;
@@ -57,8 +57,13 @@ class PickerMenuBuilderTest extends TestCase
             })
         ;
 
+        /** @var FilePickerProvider $filePickerProvider */
+        $filePickerProvider = $this->mockPickerProvider(FilePickerProvider::class);
+        $filePickerProvider->setFramework($this->mockContaoFramework());
+
         $menuBuilder = new PickerMenuBuilder($factory, $renderer, $router);
         $menuBuilder->addProvider($this->mockPickerProvider(PagePickerProvider::class));
+        $menuBuilder->addProvider($filePickerProvider);
 
         $this->menuBuilder = $menuBuilder;
     }
@@ -78,25 +83,30 @@ class PickerMenuBuilderTest extends TestCase
     {
         $GLOBALS['TL_LANG']['MSC']['pagePicker'] = 'Pages';
 
-        $menu = <<<EOF
+        $menu = <<<'EOF'
 <ul>
-  <li class="first last">
+  <li class="first">
     <a href="contao_backend:do=page" class="pagemounts">Pages</a>
+  </li>
+  <li class="last">
+    <a href="contao_backend:do=files" class="filemounts">filePicker</a>
   </li>
 </ul>
 
 EOF;
 
-        $this->assertEquals($menu, $this->menuBuilder->createMenu());
+        $this->assertSame($menu, $this->menuBuilder->createMenu('link'));
+        $this->assertSame('', $this->menuBuilder->createMenu('page'));
     }
 
     /**
-     * Tests the supports() method.
+     * Tests the supportsTable() method.
      */
-    public function testSupports()
+    public function testSupportsTable()
     {
-        $this->assertTrue($this->menuBuilder->supports('tl_page'));
-        $this->assertFalse($this->menuBuilder->supports('tl_files'));
+        $this->assertTrue($this->menuBuilder->supportsTable('tl_page'));
+        $this->assertTrue($this->menuBuilder->supportsTable('tl_files'));
+        $this->assertFalse($this->menuBuilder->supportsTable('tl_member'));
     }
 
     /**
@@ -104,8 +114,9 @@ EOF;
      */
     public function testProcessSelection()
     {
-        $this->assertEquals('foo', $this->menuBuilder->processSelection('tl_files', 'foo'));
-        $this->assertEquals('{{link_url::2}}', $this->menuBuilder->processSelection('tl_page', 2));
+        $this->assertSame('foo', $this->menuBuilder->processSelection('tl_files', 'foo'));
+        $this->assertSame('{{link_url::2}}', $this->menuBuilder->processSelection('tl_page', 2));
+        $this->assertSame('bar', $this->menuBuilder->processSelection('tl_member', 'bar'));
     }
 
     /**
@@ -116,16 +127,16 @@ EOF;
         $request = new Request();
         $request->query->set('value', '{{link_url::42}}');
 
-        $this->assertEquals('contao_backend:value=42:do=page', $this->menuBuilder->getPickerUrl($request));
+        $this->assertSame('contao_backend:value=42:do=page', $this->menuBuilder->getPickerUrl($request));
 
         $request = new Request();
         $request->query->set('value', '{{news_url::42}}');
 
-        $this->assertEquals(
+        $this->assertSame(
             'contao_backend:do=page:value={{news_url::42}}',
             $this->menuBuilder->getPickerUrl($request)
         );
 
-        $this->assertEquals('contao_backend:do=page', $this->menuBuilder->getPickerUrl(new Request()));
+        $this->assertSame('contao_backend:do=page', $this->menuBuilder->getPickerUrl(new Request()));
     }
 }

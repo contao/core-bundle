@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\Input;
 use Contao\Widget;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Widget class.
@@ -20,11 +21,12 @@ use Contao\Widget;
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Yanick Witschi <https://github.com/toflar>
  *
+ * @group contao3
+ *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
- * @group contao3
  */
-class WidgetTest extends \PHPUnit_Framework_TestCase
+class WidgetTest extends TestCase
 {
     /**
      * Includes the helper functions if they have not yet been included.
@@ -52,8 +54,8 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $widget = $this->getMock('Contao\Widget');
-        $class = new \ReflectionClass('Contao\Widget');
+        $widget = $this->createMock(Widget::class);
+        $class = new \ReflectionClass(Widget::class);
         $method = $class->getMethod('getPost');
 
         $method->setAccessible(true);
@@ -62,7 +64,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
         Input::resetCache();
         Input::initialize();
 
-        $this->assertEquals($expected, $method->invoke($widget, $key));
+        $this->assertSame($expected, $method->invoke($widget, $key));
 
         // Restore the error reporting level
         error_reporting($errorReporting);
@@ -73,11 +75,12 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidate()
     {
+        /* @var Widget|\PHPUnit_Framework_MockObject_MockObject $widget */
         $widget = $this
-            ->getMockBuilder('Contao\Widget')
+            ->getMockBuilder(Widget::class)
             ->disableOriginalConstructor()
-            ->setMethods(['validator', 'getPost', 'generate'])
-            ->getMock()
+            ->setMethods(['validator', 'getPost'])
+            ->getMockForAbstractClass()
         ;
 
         $widget
@@ -92,7 +95,6 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
             ->method('getPost')
         ;
 
-        /* @var Widget $widget */
         $widget
             ->setInputCallback(function () { return 'foobar'; })
             ->validate()
@@ -100,7 +102,6 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('foobar', $widget->value);
 
-        /* @var Widget $widget */
         $widget
             ->setInputCallback(function () { return null; })
             ->validate()
@@ -108,7 +109,6 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($widget->value);
 
-        /* @var Widget $widget */
         $widget
             ->setInputCallback(null)
             ->validate() // getPost() should be called once here
@@ -131,10 +131,10 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
                 ['k1' => ['k2' => ['k3' => 'bar']]],
                 'bar',
             ],
-            ['foo[0]', 'foo', ['k1' => 'bar'], ''],
+            ['foo[0]', 'foo', ['k1' => 'bar'], null],
             ['foo[k1][0]', 'foo', ['k1' => 'bar'], 'bar'],
-            ['foo', 'nofoo', 'bar', ''],
-            ['', 'foo', 'bar', ''],
+            ['foo', 'nofoo', 'bar', null],
+            ['', 'foo', 'bar', null],
             ['', '', 'bar', 'bar'],
             ['[0]', '', ['bar'], 'bar'],
         ];

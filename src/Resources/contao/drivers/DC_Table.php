@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\CoreBundle\Exception\ResponseException;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -198,8 +199,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$this->root = null;
 		$this->arrModule = $arrModule;
 
-		$this->initPicker();
-
 		// Call onload_callback (e.g. to check permissions)
 		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['config']['onload_callback']))
 		{
@@ -214,6 +213,17 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				{
 					$callback($this);
 				}
+			}
+		}
+
+		// Initialize the picker
+		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
+		{
+			list($table) = explode('.', \Input::get('target'), 2);
+
+			if ($this->strTable != $table)
+			{
+				$this->initPicker();
 			}
 		}
 
@@ -494,28 +504,49 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				{
 					foreach ($value as $kk=>$vv)
 					{
-						$value[$kk] = $vv ? \StringUtil::binToUuid($vv) : '';
+						if (($objFile = \FilesModel::findByUuid($vv)) instanceof FilesModel)
+						{
+							$value[$kk] = $objFile->path . ' (' . \StringUtil::binToUuid($vv) . ')';
+						}
+						else
+						{
+							$value[$kk] = '';
+						}
 					}
 
-					$row[$i] = implode(', ', $value);
+					$row[$i] = implode('<br>', $value);
 				}
 				else
 				{
-					$row[$i] = $value ? \StringUtil::binToUuid($value) : '';
+					if (($objFile = \FilesModel::findByUuid($value)) instanceof FilesModel)
+					{
+						$row[$i] = $objFile->path . ' (' . \StringUtil::binToUuid($value) . ')';
+					}
+					else
+					{
+						$row[$i] = '';
+					}
 				}
 			}
 			elseif (is_array($value))
 			{
-				foreach ($value as $kk=>$vv)
+				if (count($value) == 2 && isset($value['value']) && isset($value['unit']))
 				{
-					if (is_array($vv))
-					{
-						$vals = array_values($vv);
-						$value[$kk] = $vals[0].' ('.$vals[1].')';
-					}
+					$row[$i] = trim($value['value'] . $value['unit']);
 				}
+				else
+				{
+					foreach ($value as $kk=>$vv)
+					{
+						if (is_array($vv))
+						{
+							$vals = array_values($vv);
+							$value[$kk] = array_shift($vals).' ('.implode(', ', array_filter($vals)).')';
+						}
+					}
 
-				$row[$i] = implode(', ', $value);
+					$row[$i] = implode('<br>', $value);
+				}
 			}
 			elseif ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$i]['eval']['rgxp'] == 'date')
 			{
@@ -972,35 +1003,29 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$this->set['tstamp'] = ($blnDoNotRedirect ? time() : 0);
 
 			// Mark the new record with "copy of" (see #2938)
-			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields']['headline']))
+			foreach (array_keys($GLOBALS['TL_DCA'][$this->strTable]['fields']) as $strKey)
 			{
-				$headline = \StringUtil::deserialize($this->set['headline']);
+				if (in_array($strKey, array('headline', 'name', 'subject', 'title')))
+				{
+					if ($strKey == 'headline')
+					{
+						$headline = \StringUtil::deserialize($this->set['headline']);
 
-				if (!empty($headline) && is_array($headline) && $headline['value'] != '')
-				{
-					$headline['value'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $headline['value']);
-					$this->set['headline'] = serialize($headline);
-				}
-			}
-			elseif (isset($GLOBALS['TL_DCA'][$this->strTable]['fields']['name']))
-			{
-				if ($this->set['name'] != '')
-				{
-					$this->set['name'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set['name']);
-				}
-			}
-			elseif (isset($GLOBALS['TL_DCA'][$this->strTable]['fields']['subject']))
-			{
-				if ($this->set['subject'] != '')
-				{
-					$this->set['subject'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set['subject']);
-				}
-			}
-			elseif (isset($GLOBALS['TL_DCA'][$this->strTable]['fields']['title']))
-			{
-				if ($this->set['title'] != '')
-				{
-					$this->set['title'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set['title']);
+						if (!empty($headline) && is_array($headline) && $headline['value'] != '')
+						{
+							$headline['value'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $headline['value']);
+							$this->set['headline'] = serialize($headline);
+						}
+					}
+					else
+					{
+						if ($this->set[$strKey] != '')
+						{
+							$this->set[$strKey] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set[$strKey]);
+						}
+					}
+
+					break;
 				}
 			}
 
@@ -1950,7 +1975,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 							if (count($arrAjax) > 1)
 							{
-								$current = "\n" . '<div id="'.$thisId.'">' . $arrAjax[$thisId] . '</div>';
+								$current = "\n" . '<div id="'.$thisId.'" class="subpal">' . $arrAjax[$thisId] . '</div>';
 								unset($arrAjax[$thisId]);
 								end($arrAjax);
 								$thisId = key($arrAjax);
@@ -1968,7 +1993,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						$thisId = 'sub_' . substr($vv, 1, -1);
 						$arrAjax[$thisId] = '';
 						$blnAjax = ($ajaxId == $thisId && \Environment::get('isAjaxRequest')) ? true : $blnAjax;
-						$return .= "\n" . '<div id="'.$thisId.'">';
+						$return .= "\n" . '<div id="'.$thisId.'" class="subpal">';
 
 						continue;
 					}
@@ -2035,7 +2060,11 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable'])
 				{
 					$arrButtons['saveNcreate'] = '<button type="submit" name="saveNcreate" id="saveNcreate" class="tl_submit" accesskey="n">'.$GLOBALS['TL_LANG']['MSC']['saveNcreate'].'</button>';
-					$arrButtons['saveNduplicate'] = '<button type="submit" name="saveNduplicate" id="saveNduplicate" class="tl_submit" accesskey="d">'.$GLOBALS['TL_LANG']['MSC']['saveNduplicate'].'</button>';
+
+					if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notCopyable'])
+					{
+						$arrButtons['saveNduplicate'] = '<button type="submit" name="saveNduplicate" id="saveNduplicate" class="tl_submit" accesskey="d">'.$GLOBALS['TL_LANG']['MSC']['saveNduplicate'].'</button>';
+					}
 				}
 
 				if ($GLOBALS['TL_DCA'][$this->strTable]['config']['switchToEdit'])
@@ -2098,6 +2127,15 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>
 </form>';
 
+		$strVersionField = '';
+
+		// Store the current version number (see #8412)
+		if (($intLatestVersion = $objVersions->getLatestVersion()) !== null)
+		{
+			$strVersionField = '
+<input type="hidden" name="VERSION_NUMBER" value="'.$intLatestVersion.'">';
+		}
+
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
 		$return = $version . '
 <div id="tl_buttons">' . (\Input::get('nb') ? '&nbsp;' : '
@@ -2107,7 +2145,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <form action="'.ampersand(\Environment::get('request'), true).'" id="'.$this->strTable.'" class="tl_form" method="post" enctype="' . ($this->blnUploadable ? 'multipart/form-data' : 'application/x-www-form-urlencoded') . '"'.(!empty($this->onsubmit) ? ' onsubmit="'.implode(' ', $this->onsubmit).'"' : '').'>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="'.$this->strTable.'">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
+<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">'.$strVersionField.'
 <input type="hidden" name="FORM_FIELDS[]" value="'.\StringUtil::specialchars($this->strPalette).'">'.($this->noReload ? '
 
 <p class="tl_error">'.$GLOBALS['TL_LANG']['ERR']['general'].'</p>' : '').$return;
@@ -2170,6 +2208,27 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				$this->Database->prepare("UPDATE " . $this->strTable . " SET tstamp=? WHERE id=?")
 							   ->execute(time(), $this->intId);
+			}
+
+			// Show a warning if the record has been saved by another user (see #8412)
+			if ($intLatestVersion !== null && isset($_POST['VERSION_NUMBER']) && $intLatestVersion > \Input::post('VERSION_NUMBER'))
+			{
+				/** @var BackendTemplate|object $objTemplate */
+				$objTemplate = new \BackendTemplate('be_conflict');
+
+				$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
+				$objTemplate->title = StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['versionConflict']);
+				$objTemplate->theme = \Backend::getTheme();
+				$objTemplate->charset = \Config::get('characterSet');
+				$objTemplate->base = \Environment::get('base');
+				$objTemplate->h1 = $GLOBALS['TL_LANG']['MSC']['versionConflict'];
+				$objTemplate->explain1 = sprintf($GLOBALS['TL_LANG']['MSC']['versionConflict1'], $intLatestVersion, \Input::post('VERSION_NUMBER'));
+				$objTemplate->explain2 = sprintf($GLOBALS['TL_LANG']['MSC']['versionConflict2'], $intLatestVersion + 1, $intLatestVersion);
+				$objTemplate->diff = $objVersions->compare(true);
+				$objTemplate->href = \Environment::get('request');
+				$objTemplate->button = $GLOBALS['TL_LANG']['MSC']['continue'];
+
+				throw new ResponseException($objTemplate->getResponse());
 			}
 
 			// Redirect
@@ -2259,7 +2318,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				// Parent view
 				elseif ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4)
 				{
-					$strUrl .= $this->Database->fieldExists('sorting', $this->strTable) ? '&amp;act=copy&amp;mode=1&amp;pid=' . $this->intId . '&amp;id=' . $this->intId : '&amp;act=copy&amp;mode=2&amp;pid=' . $this->intId . '&amp;id=' . $this->intId;
+					$strUrl .= $this->Database->fieldExists('sorting', $this->strTable) ? '&amp;act=copy&amp;mode=1&amp;pid=' . $this->intId . '&amp;id=' . $this->intId : '&amp;act=copy&amp;mode=2&amp;pid=' . CURRENT_ID . '&amp;id=' . $this->intId;
 				}
 
 				// List view
@@ -2421,7 +2480,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					{
 						$thisId = 'sub_' . substr($v, 1, -1) . '_' . $id;
 						$blnAjax = ($ajaxId == $thisId && \Environment::get('isAjaxRequest')) ? true : false;
-						$return .= "\n  " . '<div id="'.$thisId.'">';
+						$return .= "\n  " . '<div id="'.$thisId.'" class="subpal">';
 
 						continue;
 					}

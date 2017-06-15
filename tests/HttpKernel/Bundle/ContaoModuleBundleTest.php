@@ -48,7 +48,7 @@ class ContaoModuleBundleTest extends TestCase
      */
     public function testGetPath()
     {
-        $this->assertEquals(
+        $this->assertSame(
             $this->getRootDir().'/system/modules/foobar',
             $this->bundle->getPath()
         );
@@ -56,11 +56,11 @@ class ContaoModuleBundleTest extends TestCase
 
     /**
      * Tests that an exception is thrown if the module folder does not exist.
-     *
-     * @expectedException \LogicException
      */
-    public function testModuleFolderExists()
+    public function testModuleFolderDoesNotExist()
     {
+        $this->expectException('LogicException');
+
         $this->bundle = new ContaoModuleBundle('invalid', $this->getRootDir().'/app');
     }
 }

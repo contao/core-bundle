@@ -22,9 +22,10 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  *
+ * @group contao3
+ *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
- * @group contao3
  */
 class CombinerTest extends TestCase
 {
@@ -102,7 +103,7 @@ class CombinerTest extends TestCase
         $combiner->add('file1.css');
         $combiner->addMultiple(['file2.css', 'file3.css']);
 
-        $this->assertEquals([
+        $this->assertSame([
             'file1.css',
             'file2.css" media="screen',
             'file3.css" media="screen',
@@ -112,7 +113,7 @@ class CombinerTest extends TestCase
 
         $this->assertRegExp('/^assets\/css\/[a-z0-9]+\.css$/', $combinedFile);
 
-        $this->assertEquals(
+        $this->assertSame(
             "file1 { background: url(\"../../foo.bar\") }\n@media screen{\nweb/file2\n}\n@media screen{\nfile3\n}\n",
             file_get_contents(static::$rootDir.'/'.$combinedFile)
         );
@@ -121,7 +122,7 @@ class CombinerTest extends TestCase
 
         $markup = $combiner->getCombinedFile();
 
-        $this->assertEquals(
+        $this->assertSame(
             'file1.css"><link rel="stylesheet" href="file2.css" media="screen"><link rel="stylesheet" href="file3.css" media="screen',
             $markup
         );
@@ -140,7 +141,7 @@ class CombinerTest extends TestCase
         $combiner->add('file1.scss');
         $combiner->add('file2.scss');
 
-        $this->assertEquals([
+        $this->assertSame([
             'assets/css/file1.scss.css',
             'assets/css/file2.scss.css',
         ], $combiner->getFileUrls());
@@ -149,7 +150,7 @@ class CombinerTest extends TestCase
 
         $this->assertRegExp('/^assets\/css\/[a-z0-9]+\.css$/', $combinedFile);
 
-        $this->assertEquals(
+        $this->assertSame(
             "body{color:red}\nbody{color:green}\n",
             file_get_contents(static::$rootDir.'/'.$combinedFile)
         );
@@ -158,7 +159,7 @@ class CombinerTest extends TestCase
 
         $markup = $combiner->getCombinedFile();
 
-        $this->assertEquals(
+        $this->assertSame(
             'assets/css/file1.scss.css"><link rel="stylesheet" href="assets/css/file2.scss.css',
             $markup
         );
@@ -176,7 +177,7 @@ class CombinerTest extends TestCase
         $combiner->add('file1.js');
         $combiner->add('file2.js');
 
-        $this->assertEquals([
+        $this->assertSame([
             'file1.js',
             'file2.js',
         ], $combiner->getFileUrls());
@@ -185,7 +186,7 @@ class CombinerTest extends TestCase
 
         $this->assertRegExp('/^assets\/js\/[a-z0-9]+\.js$/', $combinedFile);
 
-        $this->assertEquals(
+        $this->assertSame(
             "file1();\nfile2();\n",
             file_get_contents(static::$rootDir.'/'.$combinedFile)
         );
@@ -194,7 +195,7 @@ class CombinerTest extends TestCase
 
         $markup = $combiner->getCombinedFile();
 
-        $this->assertEquals(
+        $this->assertSame(
             'file1.js"></script><script src="file2.js',
             $markup
         );

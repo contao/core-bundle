@@ -21,12 +21,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  * Provide methods to manage back end users.
  *
  * @property boolean $isAdmin
- * @property string  $groups
+ * @property array   $groups
  * @property array   $pagemounts
  * @property array   $filemounts
  * @property array   $filemountIds
  * @property string  $fop
- * @property string  $alexf
+ * @property array   $alexf
  * @property array   $imageSizes
  *
  * @author Leo Feyer <https://github.com/leofeyer>
@@ -212,8 +212,8 @@ class BackendUser extends User
 	/**
 	 * Check whether the current user has a certain access right
 	 *
-	 * @param string       $field
-	 * @param array|string $array
+	 * @param array|string $field
+	 * @param string       $array
 	 *
 	 * @return boolean
 	 */
@@ -391,7 +391,7 @@ class BackendUser extends User
 
 		// Inherit permissions
 		$always = array('alexf');
-		$depends = array('modules', 'themes', 'pagemounts', 'alpty', 'filemounts', 'fop', 'forms', 'formp', 'imageSizes');
+		$depends = array('modules', 'themes', 'pagemounts', 'alpty', 'filemounts', 'fop', 'forms', 'formp', 'imageSizes', 'amg');
 
 		// HOOK: Take custom permissions
 		if (!empty($GLOBALS['TL_PERMISSIONS']) && is_array($GLOBALS['TL_PERMISSIONS']))
@@ -504,33 +504,33 @@ class BackendUser extends User
 				$arrModules[$strGroupName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strGroupName]) ? $GLOBALS['TL_LANG']['MOD'][$strGroupName][0] : $GLOBALS['TL_LANG']['MOD'][$strGroupName]) != false) ? $label : $strGroupName;
 				$arrModules[$strGroupName]['href'] = $router->generate('contao_backend', array('do'=>\Input::get('do'), 'mtg'=>$strGroupName, 'ref'=>TL_REFERER_ID));
 				$arrModules[$strGroupName]['ajaxUrl'] = $router->generate('contao_backend');
+				$arrModules[$strGroupName]['isClosed'] = false;
 
 				// Do not show the modules if the group is closed
 				if (!$blnShowAll && isset($session['backend_modules'][$strGroupName]) && $session['backend_modules'][$strGroupName] < 1)
 				{
-					$arrModules[$strGroupName]['modules'] = false;
 					$arrModules[$strGroupName]['class'] = ' node-collapsed';
 					$arrModules[$strGroupName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['expandNode']);
+					$arrModules[$strGroupName]['isClosed'] = true;
 				}
-				else
-				{
-					foreach ($arrGroupModules as $strModuleName=>$arrModuleConfig)
-					{
-						// Check access
-						if ($strModuleName == 'undo' || $this->hasAccess($strModuleName, 'modules'))
-						{
-							$arrModules[$strGroupName]['modules'][$strModuleName] = $arrModuleConfig;
-							$arrModules[$strGroupName]['modules'][$strModuleName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MOD'][$strModuleName][1]);
-							$arrModules[$strGroupName]['modules'][$strModuleName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strModuleName]) ? $GLOBALS['TL_LANG']['MOD'][$strModuleName][0] : $GLOBALS['TL_LANG']['MOD'][$strModuleName]) != false) ? $label : $strModuleName;
-							$arrModules[$strGroupName]['modules'][$strModuleName]['class'] = 'navigation ' . $strModuleName;
-							$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', array('do'=>$strModuleName, 'ref'=>TL_REFERER_ID));
 
-							// Mark the active module and its group
-							if (\Input::get('do') == $strModuleName)
-							{
-								$arrModules[$strGroupName]['class'] .= ' trail';
-								$arrModules[$strGroupName]['modules'][$strModuleName]['class'] .= ' active';
-							}
+				foreach ($arrGroupModules as $strModuleName=>$arrModuleConfig)
+				{
+					// Check access
+					if ($strModuleName == 'undo' || $this->hasAccess($strModuleName, 'modules'))
+					{
+						$arrModules[$strGroupName]['modules'][$strModuleName] = $arrModuleConfig;
+						$arrModules[$strGroupName]['modules'][$strModuleName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MOD'][$strModuleName][1]);
+						$arrModules[$strGroupName]['modules'][$strModuleName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strModuleName]) ? $GLOBALS['TL_LANG']['MOD'][$strModuleName][0] : $GLOBALS['TL_LANG']['MOD'][$strModuleName]) != false) ? $label : $strModuleName;
+						$arrModules[$strGroupName]['modules'][$strModuleName]['class'] = 'navigation ' . $strModuleName;
+						$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', array('do'=>$strModuleName, 'ref'=>TL_REFERER_ID));
+						$arrModules[$strGroupName]['modules'][$strModuleName]['isActive'] = false;
+
+						// Mark the active module and its group
+						if (\Input::get('do') == $strModuleName)
+						{
+							$arrModules[$strGroupName]['class'] .= ' trail';
+							$arrModules[$strGroupName]['modules'][$strModuleName]['isActive'] = true;
 						}
 					}
 				}

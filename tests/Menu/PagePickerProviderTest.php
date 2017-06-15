@@ -61,8 +61,8 @@ class PagePickerProviderTest extends TestCase
         $pagePicker = $menu->getChild('pagePicker');
 
         $this->assertNotNull($pagePicker);
-        $this->assertEquals('pagemounts', $pagePicker->getLinkAttribute('class'));
-        $this->assertEquals('contao_backend:do=page', $pagePicker->getUri());
+        $this->assertSame('pagemounts', $pagePicker->getLinkAttribute('class'));
+        $this->assertSame('contao_backend:do=page', $pagePicker->getUri());
     }
 
     /**
@@ -70,8 +70,18 @@ class PagePickerProviderTest extends TestCase
      */
     public function testSupports()
     {
-        $this->assertTrue($this->provider->supports('tl_page'));
-        $this->assertFalse($this->provider->supports('tl_files'));
+        $this->assertTrue($this->provider->supports('page'));
+        $this->assertFalse($this->provider->supports('file'));
+        $this->assertTrue($this->provider->supports('link'));
+    }
+
+    /**
+     * Tests the supportsTable() method.
+     */
+    public function testSupportsTable()
+    {
+        $this->assertTrue($this->provider->supportsTable('tl_page'));
+        $this->assertFalse($this->provider->supportsTable('tl_files'));
     }
 
     /**
@@ -79,7 +89,7 @@ class PagePickerProviderTest extends TestCase
      */
     public function testProcessSelection()
     {
-        $this->assertEquals('{{link_url::2}}', $this->provider->processSelection(2));
+        $this->assertSame('{{link_url::2}}', $this->provider->processSelection(2));
     }
 
     /**
@@ -109,6 +119,6 @@ class PagePickerProviderTest extends TestCase
         $request = new Request();
         $request->query->set('value', '{{link_url::42}}');
 
-        $this->assertEquals('contao_backend:value=42:do=page', $this->provider->getPickerUrl($request));
+        $this->assertSame('contao_backend:value=42:do=page', $this->provider->getPickerUrl($request));
     }
 }

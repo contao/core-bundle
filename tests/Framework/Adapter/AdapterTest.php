@@ -11,13 +11,15 @@
 namespace Contao\CoreBundle\Tests\Framework\Adapter;
 
 use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Tests\Fixtures\Adapter\LegacyClass;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Adapter class.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class AdapterTest extends \PHPUnit_Framework_TestCase
+class AdapterTest extends TestCase
 {
     /**
      * Tests the object instantiation.
@@ -34,19 +36,19 @@ class AdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testMagicCall()
     {
-        $adapter = new Adapter('Contao\CoreBundle\Tests\Fixtures\Adapter\LegacyClass');
+        $adapter = new Adapter(LegacyClass::class);
 
-        $this->assertEquals(['staticMethod', 1, 2], $adapter->staticMethod(1, 2));
+        $this->assertSame(['staticMethod', 1, 2], $adapter->staticMethod(1, 2));
     }
 
     /**
      * Tests the __call method of a non-existent function.
-     *
-     * @expectedException \PHPUnit_Framework_Error
      */
     public function testMagicCallMissingMethod()
     {
-        $adapter = new Adapter('Contao\CoreBundle\Tests\Fixtures\Adapter\LegacyClass');
+        $adapter = new Adapter(LegacyClass::class);
+
+        $this->expectException('PHPUnit_Framework_Error');
 
         $adapter->missingMethod();
     }
