@@ -87,7 +87,6 @@ class PrettyErrorScreenListener
      * @param ContaoFrameworkInterface $framework
      * @param TokenStorageInterface    $tokenStorage
      * @param LoggerInterface|null     $logger
-     * @param bool                     $debug
      */
     public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
     {
