@@ -67,11 +67,6 @@ class PrettyErrorScreenListener
     private $logger;
 
     /**
-     * @var bool
-     */
-    private $debug;
-
-    /**
      * @var array
      */
     private $mapper = [
@@ -94,14 +89,13 @@ class PrettyErrorScreenListener
      * @param LoggerInterface|null     $logger
      * @param bool                     $debug
      */
-    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null, $debug = false)
+    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
     {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
         $this->framework = $framework;
         $this->tokenStorage = $tokenStorage;
         $this->logger = $logger;
-        $this->debug = $debug;
     }
 
     /**
@@ -111,16 +105,15 @@ class PrettyErrorScreenListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        if (false === $this->prettyErrorScreens) {
+            return;
+        }
+
         if (!$event->isMasterRequest() || 'html' !== $event->getRequest()->getRequestFormat()) {
             return;
         }
 
-        // Don't show pretty error screen if the app is in debug mode
-        if (false === $this->debug) {
-            $this->handleException($event);
-        }
-
-        return;
+        $this->handleException($event);
     }
 
     /**

@@ -68,8 +68,7 @@ class PrettyErrorScreenListenerTest extends TestCase
             $twig,
             $this->mockContaoFramework(),
             $this->mockTokenStorage(),
-            $logger,
-            false
+            $logger
         );
     }
 
