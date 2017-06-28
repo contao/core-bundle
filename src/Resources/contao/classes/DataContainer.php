@@ -876,12 +876,11 @@ abstract class DataContainer extends \Backend
 	{
 		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
 
-		if (!$menuBuilder->supportsTable($this->strTable))
+		if (!$menuBuilder->supportsTable($this->strTable) || empty($this->strPickerTable) || empty($this->strPickerField) || empty($this->intPickerId))
 		{
 			return false;
 		}
 
-		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
 		$this->intPickerId = (int) $this->intPickerId;
 
 		\Controller::loadDataContainer($this->strPickerTable);

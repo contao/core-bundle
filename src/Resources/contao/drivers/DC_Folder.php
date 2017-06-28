@@ -204,12 +204,9 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		// Initialize the picker
 		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
 		{
-			list($table) = explode('.', \Input::get('target'), 2);
-
-			if ($this->strTable != $table)
-			{
-				$this->initPicker();
-			}
+			list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
+			\Input::setGet('target', null);
+			$this->initPicker();
 		}
 
 		// Get all filemounts (root folders)
