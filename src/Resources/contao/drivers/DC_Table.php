@@ -217,12 +217,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 
 		// Initialize the picker
-		if (isset($_GET['target']) && \Input::get('act') != 'select' && \Input::get('act') != 'paste')
-		{
-			list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
-			\Input::setGet('target', null);
-			$this->initPicker();
-		}
+		$this->initPicker();
 
 		// Get the IDs of all root records (tree view)
 		if ($this->treeView)
