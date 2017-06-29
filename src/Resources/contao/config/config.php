@@ -215,6 +215,7 @@ $GLOBALS['BE_FFL'] = array
 	'inputUnit'      => 'InputUnit',
 	'trbl'           => 'TrblField',
 	'chmod'          => 'ChmodTable',
+	'articleTree'    => 'ArticleTree',
 	'pageTree'       => 'PageTree',
 	'pageSelector'   => 'PageSelector',
 	'fileTree'       => 'FileTree',
