@@ -41,7 +41,7 @@ class WebsiteRootsConfigProvider implements ProviderInterface
      */
     public function getOptions(Request $request)
     {
-        if (!$this->isCors($request) || !$this->canRunDbQuery()) {
+        if (!$this->isCorsRequest($request) || !$this->canRunDbQuery()) {
             return [];
         }
 
@@ -67,9 +67,11 @@ class WebsiteRootsConfigProvider implements ProviderInterface
      *
      * @return bool
      */
-    private function isCors(Request $request)
+    private function isCorsRequest(Request $request)
     {
-        return $request->headers->has('Origin') && $request->headers->get('Origin') !== $request->getSchemeAndHttpHost();
+        return $request->headers->has('Origin')
+            && $request->headers->get('Origin') !== $request->getSchemeAndHttpHost()
+        ;
     }
 
     /**
