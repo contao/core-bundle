@@ -3,7 +3,7 @@
   <a href="<?= $this->request ?>#skipNavigation" class="invisible"><?= \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']); ?></a>
 
   <p><?= $this->total ?></p>
-    
+
   <ul>
     <?php if ($this->hasFirst): ?>
       <li class="first"><a href="<?= $this->first['href'] ?>" class="first" title="<?= $this->first['title'] ?>"><?= $this->first['link'] ?></a></li>
