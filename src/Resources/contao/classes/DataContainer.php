@@ -1043,9 +1043,14 @@ class DataContainer extends \Backend
 	/**
 	 * Return the name of the current palette
 	 *
+	 * This method is not abstract, because you can use this class as a concrete
+	 * class if you need to pass a DataContainer object as callback argument.
+	 *
 	 * @return string
 	 *
 	 * @throws \Exception
+	 *
+	 * @see initPicker()
 	 */
 	public function getPalette()
 	{
@@ -1055,9 +1060,16 @@ class DataContainer extends \Backend
 	/**
 	 * Save the current value
 	 *
+	 * This method is not abstract, because you can use this class as a concrete
+	 * class if you need to pass a DataContainer object as callback argument.
+	 *
+	 * @param mixed $varValue
+	 *
 	 * @throws \Exception
+	 *
+	 * @see initPicker()
 	 */
-	protected function save()
+	protected function save($varValue)
 	{
 		throw new \LogicException('You must override the save() method in the concrete data container class.');
 	}
