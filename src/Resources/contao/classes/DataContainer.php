@@ -137,6 +137,12 @@ abstract class DataContainer extends \Backend
 	protected $arrPickerValue = array();
 
 	/**
+	 * The picker field type
+	 * @var string
+	 */
+	protected $strPickerFieldType;
+
+	/**
 	 * True if a new version has to be created
 	 * @var boolean
 	 */
@@ -995,6 +1001,11 @@ abstract class DataContainer extends \Backend
 		{
 			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
 		}
+
+		if (isset($arrFilter['fieldType']))
+		{
+			$this->strPickerFieldType = $arrFilter['fieldType'];
+		}
 	}
 
 
@@ -1026,7 +1037,7 @@ abstract class DataContainer extends \Backend
 	{
 		$id = is_numeric($value) ? $value : md5($value);
 
-		switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+		switch ($this->strPickerFieldType)
 		{
 			case 'checkbox':
 				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';

@@ -16,6 +16,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 /**
  * Provide methods to handle input field "file tree".
  *
+ * @property string  $fieldType
  * @property string  $orderField
  * @property boolean $multiple
  * @property boolean $isGallery
@@ -105,6 +106,11 @@ class FileTree extends \Widget implements DcaFilterInterface
 		if ($this->extensions)
 		{
 			$arrFilters['extensions'] = $this->extensions;
+		}
+
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
 		}
 
 		return $arrFilters;

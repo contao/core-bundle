@@ -16,6 +16,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 /**
  * Provide methods to handle input field "page tree".
  *
+ * @property string  $fieldType
  * @property string  $orderField
  * @property boolean $multiple
  * @property array   $rootNodes
@@ -104,6 +105,11 @@ class PageTree extends \Widget implements DcaFilterInterface
 			{
 				$arrFilters['root'] = $this->eliminateNestedPages($this->rootNodes);
 			}
+		}
+
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
 		}
 
 		return $arrFilters;
