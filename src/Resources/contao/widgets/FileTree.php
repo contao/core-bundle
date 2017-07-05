@@ -90,10 +90,16 @@ class FileTree extends \Widget implements DcaFilterInterface
 	{
 		$arrFilters = array();
 
-		// Only folders can be selected
-		if ($this->files === false)
+		// Show files in file tree
+		if ($this->files)
 		{
-			$arrFilters['hideFiles'] = true;
+			$arrFilters['files'] = true;
+		}
+
+		// Allow only to select files but not folders
+		if ($this->filesOnly)
+		{
+			$arrFilters['filesOnly'] = true;
 		}
 
 		// Only files within a custom path can be selected

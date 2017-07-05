@@ -77,10 +77,16 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	protected $blnIsDbAssisted = false;
 
 	/**
-	 * Hide files
+	 * Show files
 	 * @var boolean
 	 */
-	protected $blnHideFiles = false;
+	protected $blnShowFiles = false;
+
+	/**
+	 * Only select files
+	 * @var boolean
+	 */
+	protected $blnFilesOnly = false;
 
 
 	/**
@@ -2571,7 +2577,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
-				elseif ($this->blnHideFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				elseif (!$this->blnShowFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
 				{
 					--$countFiles;
 				}
@@ -2646,7 +2652,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				if ($this->strPickerField)
 				{
-					$return .= $this->getPickerInputField($currentEncoded, $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['filesOnly'] ? ' disabled' : '');
+					$return .= $this->getPickerInputField($currentEncoded, $this->blnFilesOnly ? ' disabled' : '');
 				}
 			}
 
@@ -2661,7 +2667,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
-		if ($this->blnHideFiles)
+		if (!$this->blnShowFiles)
 		{
 			return $return;
 		}
@@ -2751,7 +2757,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				if ($this->strPickerField)
 				{
-					$_buttons .= $this->getPickerInputField($currentEncoded, ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['files'] || $GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['filesOnly']) ? '' : ' disabled');
+					$_buttons .= $this->getPickerInputField($currentEncoded);
 				}
 			}
 
@@ -3044,9 +3050,14 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	{
 		parent::setDcaFilter($arrFilter);
 
-		if (isset($arrFilter['hideFiles']) && $arrFilter['hideFiles'] === true)
+		if (isset($arrFilter['files']) && $arrFilter['files'] === true)
 		{
-			$this->blnHideFiles = true;
+			$this->blnShowFiles = true;
+		}
+
+		if (isset($arrFilter['filesOnly']) && $arrFilter['filesOnly'] === true)
+		{
+			$this->blnFilesOnly = true;
 		}
 
 		if (isset($arrFilter['extensions']))
