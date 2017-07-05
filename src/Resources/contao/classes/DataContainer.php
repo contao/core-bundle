@@ -31,7 +31,7 @@ use Imagine\Gd\Imagine;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class DataContainer extends \Backend
+class DataContainer extends \Backend
 {
 
 	/**
@@ -902,8 +902,9 @@ abstract class DataContainer extends \Backend
 
 		$this->setPickerValue();
 
-		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
-		$objDca = new $strDriver($this->strPickerTable);
+		// Create a DataContainer object (see #886)
+		$objDca = new \DataContainer();
+		$objDca->table = $this->strPickerTable;
 		$objDca->id = $this->intPickerId;
 		$objDca->field = $this->strPickerField;
 
@@ -1043,15 +1044,21 @@ abstract class DataContainer extends \Backend
 	 * Return the name of the current palette
 	 *
 	 * @return string
+	 *
+	 * @throws \Exception
 	 */
-	abstract public function getPalette();
+	public function getPalette()
+	{
+		throw new \LogicException('You must override the getPalette() method in the concrete data container class.');
+	}
 
 	/**
 	 * Save the current value
 	 *
-	 * @param mixed $varValue
-	 *
 	 * @throws \Exception
 	 */
-	abstract protected function save($varValue);
+	protected function save()
+	{
+		throw new \LogicException('You must override the save() method in the concrete data container class.');
+	}
 }
