@@ -3250,9 +3250,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						}
 					}
 
-					if ($trigger != '')
+					if ($trigger)
 					{
-						if ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$name]['inputType'] == 'checkbox' && !$GLOBALS['TL_DCA'][$this->strTable]['fields'][$name]['eval']['multiple'] && $trigger != 0)
+						if ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$name]['inputType'] == 'checkbox' && !$GLOBALS['TL_DCA'][$this->strTable]['fields'][$name]['eval']['multiple'])
 						{
 							$sValues[] = $name;
 
