@@ -484,7 +484,7 @@ class BackendUser extends \User
 				$arrModules[$strGroupName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strGroupName]) ? $GLOBALS['TL_LANG']['MOD'][$strGroupName][0] : $GLOBALS['TL_LANG']['MOD'][$strGroupName]) != false) ? $label : $strGroupName;
 				$arrModules[$strGroupName]['href'] = $router->generate('contao_backend', array('do'=>\Input::get('do'), 'mtg'=>$strGroupName, 'ref'=>TL_REFERER_ID));
 				$arrModules[$strGroupName]['ajaxUrl'] = $router->generate('contao_backend');
-				$arrModules[$strGroupName]['icon'] = 'modPlus.gif';
+				$arrModules[$strGroupName]['icon'] = 'modPlus.gif'; // backwards compatibility with e.g. EasyThemes
 
 				foreach ($arrGroupModules as $strModuleName=>$arrModuleConfig)
 				{
