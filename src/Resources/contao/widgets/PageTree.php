@@ -16,10 +16,10 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 /**
  * Provide methods to handle input field "page tree".
  *
- * @property string  $fieldType
  * @property string  $orderField
  * @property boolean $multiple
  * @property array   $rootNodes
+ * @property string  $fieldType
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
