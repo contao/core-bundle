@@ -198,7 +198,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
-			'eval'                    => array('mandatory'=>true, 'rte'=>'tinyMCE', 'helpwizard'=>true),
+			'eval'                    => array('mandatory'=>true, 'rte'=>'tinyMCE', 'dcaPicker'=>true, 'fieldType'=>'radio', 'filesOnly'=>true, 'helpwizard'=>true),
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
 		),

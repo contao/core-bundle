@@ -968,16 +968,16 @@ var Backend =
 	/**
 	 * Open a TinyMCE file browser in a modal window
 	 *
-	 * @param {string} field_name  The field name
-	 * @param {string} url         The URL
-	 * @param {string} type        The picker type
-	 * @param {object} win         The window object
-	 * @param {string} [reference] An optional reference field
+	 * @param {string} field_name The field name
+	 * @param {string} url        The URL
+	 * @param {string} type       The picker type
+	 * @param {object} win        The window object
+	 * @param {string} reference  table.field.id.do
 	 */
 	openModalBrowser: function(field_name, url, type, win, reference) {
 		Backend.openModalSelector({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?' + (type == 'file' ? 'do=page&amp;context=link' : 'do=files&amp;context=file') + '&amp;target=' + (reference || 'tl_content.singleSRC') + '&amp;value=' + url + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?' + (type == 'file' ? 'do=page&amp;context=link' : 'do=files&amp;context=file') + '&amp;target=' + reference + '&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {
 				new Request.Contao({
 					evalScripts: false,

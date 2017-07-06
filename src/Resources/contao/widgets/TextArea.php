@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\DataContainer\DcaFilterInterface;
+
 
 /**
  * Provide methods to handle textareas.
@@ -19,10 +21,14 @@ namespace Contao;
  * @property boolean $rte
  * @property integer $rows
  * @property integer $cols
+ * @property string  $dcaPicker
+ * @property boolean $files
+ * @property boolean $filesOnly
+ * @property string  $fieldType
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class TextArea extends \Widget
+class TextArea extends \Widget implements DcaFilterInterface
 {
 
 	/**
@@ -97,6 +103,39 @@ class TextArea extends \Widget
 				parent::__set($strKey, $varValue);
 				break;
 		}
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getDcaFilter()
+	{
+		if (!$this->dcaPicker)
+		{
+			return array();
+		}
+
+		$arrFilters = array();
+
+		// Show files in file tree
+		if ($this->files)
+		{
+			$arrFilters['files'] = true;
+		}
+
+		// Only files can be selected
+		if ($this->filesOnly)
+		{
+			$arrFilters['filesOnly'] = true;
+		}
+
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
+		}
+
+		return $arrFilters;
 	}
 
 

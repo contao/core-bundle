@@ -131,6 +131,12 @@ abstract class DataContainer extends \Backend
 	protected $intPickerId;
 
 	/**
+	 * The picker do
+	 * @var string
+	 */
+	protected $strPickerDo;
+
+	/**
 	 * The picker value
 	 * @var array
 	 */
@@ -562,6 +568,7 @@ abstract class DataContainer extends \Backend
 			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
 			$objTemplate->type = $type;
+			$objTemplate->reference = $this->strTable.'.'.$this->strField.'.'.$this->intId.'.'.\Input::get('do');
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
@@ -901,17 +908,47 @@ abstract class DataContainer extends \Backend
 			return false;
 		}
 
-		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
+		list($this->strPickerTable, $this->strPickerField, $this->intPickerId, $this->strPickerDo) = explode('.', \Input::get('target'));
 		$this->intPickerId = (int) $this->intPickerId;
 
-		\Controller::loadDataContainer($this->strPickerTable);
+		$objDca = $this->getDataContainer();
 
+		// The field should exist at this point after the loadDataContainer hook and the onload_callback have been executed
 		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
 		{
 			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
 		}
 
+		// Set the active record
+		if ($this->intPickerId && $this->Database->tableExists($this->strPickerTable))
+		{
+			/** @var Model $strModel */
+			$strModel = \Model::getClassFromTable($this->strPickerTable);
+
+			if (class_exists($strModel) && ($objModel = $strModel::findByPk($this->intPickerId)) !== null)
+			{
+				$objDca->activeRecord = $objModel;
+			}
+		}
+
 		$this->setPickerValue();
+
+		// Call the load_callback
+		if (is_array($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->arrPickerValue = $this->{$callback[0]}->{$callback[1]}($this->arrPickerValue, $objDca);
+				}
+				elseif (is_callable($callback))
+				{
+					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
+				}
+			}
+		}
 
 		/** @var Widget $strClass */
 		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
@@ -1027,4 +1064,38 @@ abstract class DataContainer extends \Backend
 	 * @throws \Exception
 	 */
 	abstract protected function save($varValue);
+
+
+	/**
+	 * Create a data container object in the picker environment
+	 *
+	 * @return DataContainer
+	 */
+	private function getDataContainer()
+	{
+		$do = \Input::get('do');
+		$id = \Input::get('id');
+		$act = \Input::get('act');
+		$rt = \Input::get('rt');
+
+		\Input::setGet('do', $this->strPickerDo);
+		\Input::setGet('id', $this->intPickerId);
+		\Input::setGet('act', 'edit');
+		\Input::setGet('rt', REQUEST_TOKEN);
+
+		\Controller::loadDataContainer($this->strPickerTable);
+
+		$strDriver = 'DC_'.$GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
+
+		$objDca = new $strDriver($this->strPickerTable);
+		$objDca->id = $this->intPickerId;
+		$objDca->field = $this->strPickerField;
+
+		\Input::setGet('do', $do);
+		\Input::setGet('id', $id);
+		\Input::setGet('act', $act);
+		\Input::setGet('rt', $rt);
+
+		return $objDca;
+	}
 }
