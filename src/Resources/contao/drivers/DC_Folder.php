@@ -2667,7 +2667,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
-		if (!$this->blnFiles)
+		if (!$this->blnFiles && !$this->blnFilesOnly)
 		{
 			return $return;
 		}
