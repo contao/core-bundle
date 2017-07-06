@@ -80,7 +80,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	 * Show files
 	 * @var boolean
 	 */
-	protected $blnShowFiles = false;
+	protected $blnFiles = false;
 
 	/**
 	 * Only select files
@@ -2577,7 +2577,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
-				elseif (!$this->blnShowFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				elseif (!$this->blnFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
 				{
 					--$countFiles;
 				}
@@ -2667,7 +2667,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
-		if (!$this->blnShowFiles)
+		if (!$this->blnFiles)
 		{
 			return $return;
 		}
@@ -3052,7 +3052,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 		if (isset($arrFilter['files']) && $arrFilter['files'] === true)
 		{
-			$this->blnShowFiles = true;
+			$this->blnFiles = true;
 		}
 
 		if (isset($arrFilter['filesOnly']) && $arrFilter['filesOnly'] === true)
