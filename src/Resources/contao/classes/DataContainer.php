@@ -568,7 +568,7 @@ abstract class DataContainer extends \Backend
 			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
 			$objTemplate->type = $type;
-			$objTemplate->reference = $this->strTable.'.'.$this->strField.'.'.$this->intId.'.'.\Input::get('do');
+			$objTemplate->reference = \Input::get('do').'.'.$this->strTable.'.'.$this->strField.'.'.$this->intId;
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
@@ -908,7 +908,7 @@ abstract class DataContainer extends \Backend
 			return false;
 		}
 
-		list($this->strPickerTable, $this->strPickerField, $this->intPickerId, $this->strPickerDo) = explode('.', \Input::get('target'));
+		list($this->strPickerDo, $this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'));
 		$this->intPickerId = (int) $this->intPickerId;
 
 		$objDca = $this->getDataContainer();
