@@ -16,7 +16,6 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 /**
  * Provide methods to handle input field "file tree".
  *
- * @property string  $fieldType
  * @property string  $orderField
  * @property boolean $multiple
  * @property boolean $isGallery
@@ -25,6 +24,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
  * @property boolean $filesOnly
  * @property string  $path
  * @property string  $extensions
+ * @property string  $fieldType
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -96,7 +96,7 @@ class FileTree extends \Widget implements DcaFilterInterface
 			$arrFilters['files'] = true;
 		}
 
-		// Allow only to select files but not folders
+		// Only files can be selected
 		if ($this->filesOnly)
 		{
 			$arrFilters['filesOnly'] = true;
