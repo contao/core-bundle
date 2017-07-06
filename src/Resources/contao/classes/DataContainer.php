@@ -1074,11 +1074,13 @@ abstract class DataContainer extends \Backend
 	private function getDataContainer()
 	{
 		$do = \Input::get('do');
+		$table = \Input::get('table');
 		$id = \Input::get('id');
 		$act = \Input::get('act');
 		$rt = \Input::get('rt');
 
 		\Input::setGet('do', $this->strPickerDo);
+		\Input::setGet('table', $this->strPickerTable);
 		\Input::setGet('id', $this->intPickerId);
 		\Input::setGet('act', 'edit');
 		\Input::setGet('rt', REQUEST_TOKEN);
@@ -1092,6 +1094,7 @@ abstract class DataContainer extends \Backend
 		$objDca->field = $this->strPickerField;
 
 		\Input::setGet('do', $do);
+		\Input::setGet('table', $table);
 		\Input::setGet('id', $id);
 		\Input::setGet('act', $act);
 		\Input::setGet('rt', $rt);
