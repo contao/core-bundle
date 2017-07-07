@@ -81,7 +81,7 @@ class PageTree extends \Widget implements DcaFilterInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDcaFilter(DataContainer $dc)
+	public function getDcaFilter()
 	{
 		$arrFilters = array();
 

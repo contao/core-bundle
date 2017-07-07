@@ -19,8 +19,6 @@ namespace Contao;
  * @property boolean $rte
  * @property integer $rows
  * @property integer $cols
- * @property string  $dcaPicker
- * @property string  $fieldType
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */

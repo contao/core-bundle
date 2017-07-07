@@ -965,7 +965,7 @@ abstract class DataContainer extends \Backend
 			/** @var DcaFilterInterface $objWidget */
 			$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
 
-			$this->setDcaFilter($objWidget->getDcaFilter($this));
+			$this->setDcaFilter($objWidget->getDcaFilter());
 		}
 
 		return true;
