@@ -407,7 +407,7 @@ class FileTree extends \Widget implements DcaFilterInterface
 		}
 
 		$return .= '</ul>
-    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'files', 'context'=>'file', 'target'=>'files.'.$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', array_keys($arrSet)), 'popup'=>1))) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'files', 'context'=>'file', 'target'=>\Input::get('do').'.'.$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', array_keys($arrSet)), 'popup'=>1))) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
     <script>
       $("ft_' . $this->strName . '").addEvent("click", function(e) {
         e.preventDefault();

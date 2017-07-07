@@ -1080,6 +1080,8 @@ abstract class DataContainer extends \Backend
 	 */
 	private function getDataContainer()
 	{
+		$this->validatePickerParams();
+
 		$do = \Input::get('do');
 		$table = \Input::get('table');
 		$id = \Input::get('id');
@@ -1107,5 +1109,52 @@ abstract class DataContainer extends \Backend
 		\Input::setGet('rt', $rt);
 
 		return $objDca;
+	}
+
+
+	/**
+	 * Validate the picker parameters
+	 *
+	 * @throws \RuntimeException
+	 */
+	private function validatePickerParams()
+	{
+		$arrModule = array();
+
+		foreach ($GLOBALS['BE_MOD'] as &$arrGroup)
+		{
+			if (isset($arrGroup[$this->strPickerDo]))
+			{
+				$arrModule =& $arrGroup[$this->strPickerDo];
+				break;
+			}
+		}
+
+		$this->import('BackendUser', 'User');
+
+		// Dynamically add the "personal data" module (see #4193)
+		if ($this->strPickerDo == 'login')
+		{
+			$arrModule = array('tables'=>array('tl_user'), 'callback'=>'ModuleUser');
+		}
+
+		// Check whether the current user has access to the current module
+		elseif ($this->strPickerDo != 'undo' && !$this->User->hasAccess($this->strPickerDo, 'modules'))
+		{
+			throw new AccessDeniedException('Back end module "' . $this->strPickerDo . '" is not allowed for user "' . $this->User->username . '".');
+		}
+
+		// The module does not exist
+		if (empty($arrModule))
+		{
+			throw new \InvalidArgumentException('Back end module "' . $this->strPickerDo . '" is not defined in the BE_MOD array');
+		}
+
+		$arrTables = (array) $arrModule['tables'];
+
+		if (!in_array($this->strPickerTable, $arrTables))
+		{
+			throw new AccessDeniedException('Table "' . $this->strPickerTable . '" is not allowed in module "' . $this->strPickerDo . '".');
+		}
 	}
 }
