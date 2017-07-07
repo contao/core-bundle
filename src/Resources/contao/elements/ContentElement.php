@@ -68,6 +68,7 @@ namespace Contao;
  * @property string  $customTpl
  * @property string  $playerSRC
  * @property string  $youtube
+ * @property string  $youtubeOptions
  * @property string  $vimeo
  * @property string  $posterSRC
  * @property string  $playerSize
