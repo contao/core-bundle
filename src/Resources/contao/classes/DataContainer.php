@@ -963,7 +963,7 @@ abstract class DataContainer extends \Backend
 		if (is_a($strClass, DcaFilterInterface::class, true))
 		{
 			/** @var DcaFilterInterface $objWidget */
-			$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable));
+			$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
 
 			$this->setDcaFilter($objWidget->getDcaFilter());
 		}
@@ -1002,14 +1002,14 @@ abstract class DataContainer extends \Backend
 	 */
 	protected function setDcaFilter($arrFilter)
 	{
-		if (isset($arrFilter['root']))
-		{
-			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
-		}
-
 		if (isset($arrFilter['fieldType']))
 		{
 			$this->strPickerFieldType = $arrFilter['fieldType'];
+		}
+
+		if (isset($arrFilter['root']))
+		{
+			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
 		}
 	}
 

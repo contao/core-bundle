@@ -22,8 +22,6 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
  * @property integer $rows
  * @property integer $cols
  * @property string  $dcaPicker
- * @property boolean $files
- * @property boolean $filesOnly
  * @property string  $fieldType
  *
  * @author Leo Feyer <https://github.com/leofeyer>
@@ -118,21 +116,64 @@ class TextArea extends \Widget implements DcaFilterInterface
 
 		$arrFilters = array();
 
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
+		}
+
+		$do = \Input::get('do');
+
+		if ($do === null || !isset($this->dcaPicker[$do]))
+		{
+			return $arrFilters;
+		}
+
+		$arrConfig = $this->dcaPicker[$do];
+
 		// Show files in file tree
-		if ($this->files)
+		if (isset($arrConfig['files']) && $arrConfig['files'] === true)
 		{
 			$arrFilters['files'] = true;
 		}
 
 		// Only files can be selected
-		if ($this->filesOnly)
+		if (isset($arrConfig['filesOnly']) && $arrConfig['filesOnly'] === true)
 		{
 			$arrFilters['filesOnly'] = true;
 		}
 
-		if ($this->fieldType)
+		// Only files within a custom path can be selected
+		if (!empty($arrConfig['path']))
 		{
-			$arrFilters['fieldType'] = $this->fieldType;
+			$arrFilters['root'] = array($arrConfig['path']);
+		}
+
+		// Only certain file types can be selected
+		if (!empty($arrConfig['extensions']))
+		{
+			$arrFilters['extensions'] = $arrConfig['path'];
+		}
+
+		// Predefined node set (see #3563)
+		if (isset($arrConfig['rootNodes']) && is_array($arrConfig['rootNodes']))
+		{
+			// Allow only those roots that are allowed in root nodes
+			if (!empty($GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']))
+			{
+				$root = array_intersect(array_merge($arrConfig['rootNodes'], $this->Database->getChildRecords($arrConfig['rootNodes'], 'tl_page')), $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']);
+
+				if (empty($root))
+				{
+					$root = $arrConfig['rootNodes'];
+					$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] = ''; // hide the breadcrumb menu
+				}
+
+				$arrFilters['root'] = $this->eliminateNestedPages($root);
+			}
+			else
+			{
+				$arrFilters['root'] = $this->eliminateNestedPages($arrConfig['rootNodes']);
+			}
 		}
 
 		return $arrFilters;

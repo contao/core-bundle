@@ -85,6 +85,11 @@ class PageTree extends \Widget implements DcaFilterInterface
 	{
 		$arrFilters = array();
 
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
+		}
+
 		// Predefined node set (see #3563)
 		if (is_array($this->rootNodes))
 		{
@@ -105,11 +110,6 @@ class PageTree extends \Widget implements DcaFilterInterface
 			{
 				$arrFilters['root'] = $this->eliminateNestedPages($this->rootNodes);
 			}
-		}
-
-		if ($this->fieldType)
-		{
-			$arrFilters['fieldType'] = $this->fieldType;
 		}
 
 		return $arrFilters;

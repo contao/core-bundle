@@ -90,6 +90,11 @@ class FileTree extends \Widget implements DcaFilterInterface
 	{
 		$arrFilters = array();
 
+		if ($this->fieldType)
+		{
+			$arrFilters['fieldType'] = $this->fieldType;
+		}
+
 		// Show files in file tree
 		if ($this->files)
 		{
@@ -112,11 +117,6 @@ class FileTree extends \Widget implements DcaFilterInterface
 		if ($this->extensions)
 		{
 			$arrFilters['extensions'] = $this->extensions;
-		}
-
-		if ($this->fieldType)
-		{
-			$arrFilters['fieldType'] = $this->fieldType;
 		}
 
 		return $arrFilters;
