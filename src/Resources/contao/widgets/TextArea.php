@@ -10,8 +10,6 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\DataContainer\DcaFilterInterface;
-
 
 /**
  * Provide methods to handle textareas.
@@ -26,7 +24,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class TextArea extends \Widget implements DcaFilterInterface
+class TextArea extends \Widget
 {
 
 	/**
@@ -101,80 +99,6 @@ class TextArea extends \Widget implements DcaFilterInterface
 				parent::__set($strKey, $varValue);
 				break;
 		}
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getDcaFilter(DataContainer $dc)
-	{
-		if (!$this->dcaPicker)
-		{
-			return array();
-		}
-
-		$arrFilters = array();
-
-		if ($this->fieldType)
-		{
-			$arrFilters['fieldType'] = $this->fieldType;
-		}
-
-		if ($dc->table === null || !isset($this->dcaPicker[$dc->table]))
-		{
-			return $arrFilters;
-		}
-
-		$arrConfig = $this->dcaPicker[$dc->table];
-
-		// Show files in file tree
-		if (isset($arrConfig['files']) && $arrConfig['files'] === true)
-		{
-			$arrFilters['files'] = true;
-		}
-
-		// Only files can be selected
-		if (isset($arrConfig['filesOnly']) && $arrConfig['filesOnly'] === true)
-		{
-			$arrFilters['filesOnly'] = true;
-		}
-
-		// Only files within a custom path can be selected
-		if (!empty($arrConfig['path']))
-		{
-			$arrFilters['root'] = array($arrConfig['path']);
-		}
-
-		// Only certain file types can be selected
-		if (!empty($arrConfig['extensions']))
-		{
-			$arrFilters['extensions'] = $arrConfig['path'];
-		}
-
-		// Predefined node set (see #3563)
-		if (isset($arrConfig['rootNodes']) && is_array($arrConfig['rootNodes']))
-		{
-			// Allow only those roots that are allowed in root nodes
-			if (!empty($GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']))
-			{
-				$root = array_intersect(array_merge($arrConfig['rootNodes'], $this->Database->getChildRecords($arrConfig['rootNodes'], 'tl_page')), $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']);
-
-				if (empty($root))
-				{
-					$root = $arrConfig['rootNodes'];
-					$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] = ''; // hide the breadcrumb menu
-				}
-
-				$arrFilters['root'] = $this->eliminateNestedPages($root);
-			}
-			else
-			{
-				$arrFilters['root'] = $this->eliminateNestedPages($arrConfig['rootNodes']);
-			}
-		}
-
-		return $arrFilters;
 	}
 
 

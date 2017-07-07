@@ -1047,7 +1047,7 @@ abstract class DataContainer extends \Backend
 			case 'checkbox':
 				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 
-			case 'radio':
+			default:
 				return ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 		}
 
