@@ -965,7 +965,7 @@ abstract class DataContainer extends \Backend
 			/** @var DcaFilterInterface $objWidget */
 			$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
 
-			$this->setDcaFilter($objWidget->getDcaFilter());
+			$this->setDcaFilter($objWidget->getDcaFilter($this));
 		}
 
 		return true;
@@ -1087,12 +1087,14 @@ abstract class DataContainer extends \Backend
 		$id = \Input::get('id');
 		$act = \Input::get('act');
 		$rt = \Input::get('rt');
+		$target = \Input::get('target');
 
 		\Input::setGet('do', $this->strPickerDo);
 		\Input::setGet('table', $this->strPickerTable);
 		\Input::setGet('id', $this->intPickerId);
 		\Input::setGet('act', 'edit');
 		\Input::setGet('rt', REQUEST_TOKEN);
+		\Input::setGet('target', null);
 
 		\Controller::loadDataContainer($this->strPickerTable);
 
@@ -1107,6 +1109,7 @@ abstract class DataContainer extends \Backend
 		\Input::setGet('id', $id);
 		\Input::setGet('act', $act);
 		\Input::setGet('rt', $rt);
+		\Input::setGet('target', $target);
 
 		return $objDca;
 	}

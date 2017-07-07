@@ -86,7 +86,7 @@ class FileTree extends \Widget implements DcaFilterInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDcaFilter()
+	public function getDcaFilter(DataContainer $dc)
 	{
 		$arrFilters = array();
 

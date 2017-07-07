@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\DataContainer;
 
+use Contao\DataContainer;
+
 /**
  * DCA filter interface.
  *
@@ -20,10 +22,12 @@ interface DcaFilterInterface
     /**
      * Returns the filter array.
      *
+     * @param DataContainer $dc
+     *
      * @return array
      *
      * @see DataContainer::setDcaFilter()
      * @see DC_Folder::setDcaFilter()
      */
-    public function getDcaFilter();
+    public function getDcaFilter(DataContainer $dc);
 }

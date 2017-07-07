@@ -258,7 +258,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
-			'eval'                    => array('rte'=>'tinyMCE', 'dcaPicker'=>array('files'=>array('filesOnly'=>true)), 'fieldType'=>'radio', 'tl_class'=>'clr'),
+			'eval'                    => array('rte'=>'tinyMCE', 'dcaPicker'=>array('tl_files'=>array('filesOnly'=>true)), 'fieldType'=>'radio', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
 		'printable' => array

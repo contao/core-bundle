@@ -107,7 +107,7 @@ class TextArea extends \Widget implements DcaFilterInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getDcaFilter()
+	public function getDcaFilter(DataContainer $dc)
 	{
 		if (!$this->dcaPicker)
 		{
@@ -121,14 +121,12 @@ class TextArea extends \Widget implements DcaFilterInterface
 			$arrFilters['fieldType'] = $this->fieldType;
 		}
 
-		$do = \Input::get('do');
-
-		if ($do === null || !isset($this->dcaPicker[$do]))
+		if ($dc->table === null || !isset($this->dcaPicker[$dc->table]))
 		{
 			return $arrFilters;
 		}
 
-		$arrConfig = $this->dcaPicker[$do];
+		$arrConfig = $this->dcaPicker[$dc->table];
 
 		// Show files in file tree
 		if (isset($arrConfig['files']) && $arrConfig['files'] === true)
