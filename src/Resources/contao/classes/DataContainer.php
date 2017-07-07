@@ -908,7 +908,14 @@ abstract class DataContainer extends \Backend
 			return false;
 		}
 
-		list($this->strPickerDo, $this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'));
+		$strTarget = \Input::get('target');
+
+		if (\Validator::isInsecurePath($strTarget))
+		{
+			throw new \RuntimeException('The target parameter contains invalid characters');
+		}
+
+		list($this->strPickerDo, $this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', $strTarget);
 		$this->intPickerId = (int) $this->intPickerId;
 
 		$objDca = $this->getDataContainer();
