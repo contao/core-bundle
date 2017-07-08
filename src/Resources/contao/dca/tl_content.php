@@ -1133,6 +1133,19 @@ class tl_content extends Backend
 		$type = $GLOBALS['TL_LANG']['CTE'][$arrRow['type']][0] ?: '&nbsp;';
 		$class = 'limit_height';
 
+		// Add active/inactive class
+		if ($arrRow['start'] || $arrRow['stop'])
+		{
+			if ((!$arrRow['start'] || $arrRow['start'] <= time()) && (!$arrRow['stop'] || $arrRow['stop'] > (time() + 60)))
+			{
+				$key.= ' active';
+			}
+			else
+			{
+				$key.= ' inactive';
+			}
+		}
+
 		// Remove the class if it is a wrapper element
 		if (in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['start']) || in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['separator']) || in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['stop']))
 		{

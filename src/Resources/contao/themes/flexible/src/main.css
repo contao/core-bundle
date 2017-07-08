@@ -772,14 +772,24 @@ table.tl_listing {
 	padding:1px 0 2px 20px;
 	background:url("icons/published.svg") no-repeat left center;
 }
+.cte_type.active {
+	padding:1px 0 2px 20px;
+	background:url("icons/active.svg") no-repeat left center;
+}
+.cte_type.inactive {
+	padding:1px 0 2px 20px;
+	background:url("icons/inactive.svg") no-repeat left center;
+}
 .cte_type.unpublished {
 	padding:1px 0 2px 20px;
 	background:url("icons/unpublished.svg") no-repeat left center;
 }
-.cte_type.published,.cte_type.published a {
+.cte_type.published,.cte_type.published a,
+.cte_type.active,.cte_type.active a {
 	color:#589b0e;
 }
-.cte_type.unpublished,.cte_type.unpublished a {
+.cte_type.unpublished,.cte_type.unpublished a,
+.cte_type.inactive,.cte_type.inactive a {
 	color:#c33;
 }
 .limit_height {
