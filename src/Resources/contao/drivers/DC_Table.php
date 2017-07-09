@@ -6132,10 +6132,8 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		if (parent::initPicker() && \System::getContainer()->get('uri_signer')->check(\Environment::get('uri')))
 		{
 			// Predefined node set (see #3563)
-			if (isset($_GET['rootNodes']))
+			if (isset($_GET['rootNodes']) && is_array($arrRoot = \Input::get('rootNodes')))
 			{
-				$arrRoot = explode(',', \Input::get('rootNodes'));
-
 				// Allow only those roots that are allowed in root nodes
 				if (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']))
 				{
