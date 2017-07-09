@@ -18,6 +18,7 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\UriSigner;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -42,10 +43,11 @@ class FilePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
      * @param RequestStack          $requestStack
      * @param TokenStorageInterface $tokenStorage
      * @param string                $uploadPath
+     * @param UriSigner|null        $uriSigner
      */
-    public function __construct(RouterInterface $router, RequestStack $requestStack, TokenStorageInterface $tokenStorage, $uploadPath)
+    public function __construct(RouterInterface $router, RequestStack $requestStack, TokenStorageInterface $tokenStorage, $uploadPath, UriSigner $uriSigner = null)
     {
-        parent::__construct($router, $requestStack, $tokenStorage);
+        parent::__construct($router, $requestStack, $tokenStorage, $uriSigner);
 
         $this->uploadPath = $uploadPath;
     }
@@ -103,6 +105,10 @@ class FilePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
      */
     public function canHandle(Request $request)
     {
+        if ($request->query->get('context') === 'file') {
+            return true;
+        }
+
         if (!$request->query->has('value')) {
             return false;
         }
@@ -132,5 +138,25 @@ class FilePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
         }
 
         return $this->route('contao_backend', $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getParametersFromRequest(Request $request)
+    {
+        $params = parent::getParametersFromRequest($request);
+
+        if (null === $this->uriSigner || !$this->uriSigner->check($request->getUri())) {
+            return $params;
+        }
+
+        foreach (['files', 'filesOnly', 'path', 'extensions'] as $key) {
+            if ($request->query->has($key)) {
+                $params[$key] = $request->query->get($key);
+            }
+        }
+
+        return $params;
     }
 }

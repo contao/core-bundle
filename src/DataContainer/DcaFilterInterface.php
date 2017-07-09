@@ -14,6 +14,8 @@ namespace Contao\CoreBundle\DataContainer;
  * DCA filter interface.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @deprecated Deprecated since Contao 4.4.1, to be removed in Contao 5.
  */
 interface DcaFilterInterface
 {

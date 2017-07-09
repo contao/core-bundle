@@ -6123,4 +6123,35 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $group;
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function initPicker()
+	{
+		if (parent::initPicker() && \System::getContainer()->get('uri_signer')->check(\Environment::get('uri')))
+		{
+			// Predefined node set (see #3563)
+			if (isset($_GET['rootNodes']) && is_array($arrRoot = \Input::get('rootNodes')))
+			{
+				// Allow only those roots that are allowed in root nodes
+				if (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']))
+				{
+					$root = array_intersect($arrRoot, $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']);
+
+					if (empty($root))
+					{
+						$root = $arrRoot;
+						$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['breadcrumb'] = ''; // hide the breadcrumb menu
+					}
+
+					$arrFilters['root'] = $this->eliminateNestedPages($root);
+				}
+				else
+				{
+					$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrRoot;
+				}
+			}
+		}
+	}
 }
