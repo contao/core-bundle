@@ -149,6 +149,7 @@ services:
             - "@router"
             - "@request_stack"
             - "@security.token_storage"
+            - "@uri_signer"
         tags:
             - { name: contao.picker_menu_provider, priority: 192 }
 
@@ -160,6 +161,7 @@ services:
             - "@request_stack"
             - "@security.token_storage"
             - "%contao.upload_path%"
+            - "@uri_signer"
         tags:
             - { name: contao.picker_menu_provider, priority: 160 }
 

@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\DataContainer\DcaFilterInterface;
+use Symfony\Component\Routing\Router;
 
 
 /**
@@ -28,7 +28,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileTree extends \Widget implements DcaFilterInterface
+class FileTree extends \Widget
 {
 
 	/**
@@ -391,6 +391,31 @@ class FileTree extends \Widget implements DcaFilterInterface
 			}
 		}
 
+		$params = array('do'=>'files', 'context'=>'file', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', array_keys($arrSet)), 'popup'=>1, 'fieldType'=>$this->fieldType);
+
+		if ($this->files)
+		{
+			$params['files'] = (bool) $this->files;
+		}
+
+		if ($this->filesOnly)
+		{
+			$params['filesOnly'] = (bool) $this->filesOnly;
+		}
+
+		if ($this->path)
+		{
+			$params['path'] = (string) $this->path;
+		}
+
+		if ($this->extensions)
+		{
+			$params['extensions'] = (string) $this->extensions;
+		}
+
+		$uri = \System::getContainer()->get('router')->generate('contao_backend_picker', $params, Router::ABSOLUTE_URL);
+		$uri = \System::getContainer()->get('uri_signer')->sign($uri);
+
 		// Convert the binary UUIDs
 		$strSet = implode(',', array_map('StringUtil::binToUuid', $arrSet));
 		$strOrder = $blnHasOrder ? implode(',', array_map('StringUtil::binToUuid', $this->{$this->orderField})) : '';
@@ -407,7 +432,7 @@ class FileTree extends \Widget implements DcaFilterInterface
 		}
 
 		$return .= '</ul>
-    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'files', 'context'=>'file', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', array_keys($arrSet)), 'popup'=>1))) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+    <p><a href="' . ampersand($uri) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
     <script>
       $("ft_' . $this->strName . '").addEvent("click", function(e) {
         e.preventDefault();

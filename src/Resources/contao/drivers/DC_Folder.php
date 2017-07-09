@@ -3042,34 +3042,32 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 
 	/**
-	 * Set the DCA filter
-	 *
-	 * @param array $arrFilter
+	 * {@inheritdoc}
 	 */
-	protected function setDcaFilter($arrFilter)
+	protected function initPicker()
 	{
-		parent::setDcaFilter($arrFilter);
-
-		$blnHideFiles = !isset($arrFilter['files']) && !isset($arrFilter['filesOnly']);
-
-		if (isset($arrFilter['files']) && $arrFilter['files'] === false)
+		if (parent::initPicker() && \System::getContainer()->get('uri_signer')->check(\Environment::get('uri')))
 		{
-			$blnHideFiles = true;
-		}
+			$blnHideFiles = !isset($_GET['files']) && !isset($_GET['filesOnly']);
 
-		$this->blnHideFiles = $blnHideFiles;
+			if (isset($_GET['files']) && \Input::get('files') !== '1')
+			{
+				$blnHideFiles = true;
+			}
 
-		if (!isset($arrFilter['filesOnly']) || $arrFilter['filesOnly'] === false)
-		{
-			$this->blnSelectFolders = true;
-		}
+			$this->blnHideFiles = $blnHideFiles;
 
-		if (isset($arrFilter['extensions']))
-		{
-			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($arrFilter['extensions']));
+			if (!isset($_GET['filesOnly']) || !\Input::get('filesOnly'))
+			{
+				$this->blnSelectFolders = true;
+			}
+
+			if (isset($_GET['extensions']))
+			{
+				$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower(Input::get('extensions')));
+			}
 		}
 	}
-
 
 	/**
 	 * Set the picker value

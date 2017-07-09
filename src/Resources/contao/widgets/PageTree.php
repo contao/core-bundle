@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\DataContainer\DcaFilterInterface;
+use Symfony\Component\Routing\Router;
 
 
 /**
@@ -23,7 +23,7 @@ use Contao\CoreBundle\DataContainer\DcaFilterInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class PageTree extends \Widget implements DcaFilterInterface
+class PageTree extends \Widget
 {
 
 	/**
@@ -75,44 +75,6 @@ class PageTree extends \Widget implements DcaFilterInterface
 			$tmp = \StringUtil::deserialize($objRow->{$this->orderField});
 			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getDcaFilter()
-	{
-		$arrFilters = array();
-
-		// Predefined node set (see #3563)
-		if (is_array($this->rootNodes))
-		{
-			// Allow only those roots that are allowed in root nodes
-			if (!empty($GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']))
-			{
-				$root = array_intersect(array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')), $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root']);
-
-				if (empty($root))
-				{
-					$root = $this->rootNodes;
-					$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] = ''; // hide the breadcrumb menu
-				}
-
-				$arrFilters['root'] = $this->eliminateNestedPages($root);
-			}
-			else
-			{
-				$arrFilters['root'] = $this->eliminateNestedPages($this->rootNodes);
-			}
-		}
-
-		if ($this->fieldType)
-		{
-			$arrFilters['fieldType'] = $this->fieldType;
-		}
-
-		return $arrFilters;
 	}
 
 
@@ -249,6 +211,16 @@ class PageTree extends \Widget implements DcaFilterInterface
 			}
 		}
 
+		$params = array('do'=>'page', 'context'=>'page', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', $arrSet), 'popup'=>1, 'fieldType'=>$this->fieldType);
+
+		if ($this->rootNodes)
+		{
+			$params['rootNodes'] = $this->rootNodes;
+		}
+
+		$uri = \System::getContainer()->get('router')->generate('contao_backend_picker', $params, Router::ABSOLUTE_URL);
+		$uri = \System::getContainer()->get('uri_signer')->sign($uri);
+
 		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', $arrSet).'">' . ($blnHasOrder ? '
   <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->orderField}.'">' : '') . '
   <div class="selector_container">' . (($blnHasOrder && count($arrValues) > 1) ? '
@@ -261,7 +233,7 @@ class PageTree extends \Widget implements DcaFilterInterface
 		}
 
 		$return .= '</ul>
-    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'page', 'context'=>'page', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', $arrSet), 'popup'=>1))) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+    <p><a href="' . ampersand($uri) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
     <script>
       $("pt_' . $this->strName . '").addEvent("click", function(e) {
         e.preventDefault();

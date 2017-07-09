@@ -62,6 +62,10 @@ class PagePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
      */
     public function canHandle(Request $request)
     {
+        if ($request->query->get('context') === 'page') {
+            return true;
+        }
+
         return $request->query->has('value') && false !== strpos($request->query->get('value'), '{{link_url::');
     }
 
@@ -75,5 +79,21 @@ class PagePickerProvider extends AbstractMenuProvider implements PickerMenuProvi
         $params['value'] = str_replace(['{{link_url::', '}}'], '', $params['value']);
 
         return $this->route('contao_backend', $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getParametersFromRequest(Request $request)
+    {
+        $params = parent::getParametersFromRequest($request);
+
+        foreach (['rootNodes'] as $key) {
+            if ($request->query->has($key)) {
+                $params[$key] = $request->query->get($key);
+            }
+        }
+
+        return $params;
     }
 }

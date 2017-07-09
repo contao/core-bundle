@@ -15,6 +15,8 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\UriSigner;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -41,9 +43,14 @@ abstract class AbstractMenuProvider
     protected $tokenStorage;
 
     /**
+     * @var UriSigner
+     */
+    protected $uriSigner;
+
+    /**
      * @var array
      */
-    private $keys = ['do', 'context', 'target', 'value', 'popup'];
+    private $keys = ['do', 'context', 'target', 'value', 'popup', 'fieldType'];
 
     /**
      * Constructor.
@@ -51,12 +58,14 @@ abstract class AbstractMenuProvider
      * @param RouterInterface            $router
      * @param RequestStack               $requestStack
      * @param TokenStorageInterface|null $tokenStorage
+     * @param UriSigner                  $uriSigner
      */
-    public function __construct(RouterInterface $router, RequestStack $requestStack, TokenStorageInterface $tokenStorage = null)
+    public function __construct(RouterInterface $router, RequestStack $requestStack, TokenStorageInterface $tokenStorage = null, UriSigner $uriSigner = null)
     {
         $this->router = $router;
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
+        $this->uriSigner = $uriSigner;
     }
 
     /**
@@ -97,7 +106,15 @@ abstract class AbstractMenuProvider
      */
     protected function route($name, array $params = [])
     {
-        return $this->router->generate($name, $params);
+        unset($params['_hash']);
+
+        $uri = $this->router->generate($name, $params, Router::ABSOLUTE_URL);
+
+        if (null !== $this->uriSigner) {
+            $uri = $this->uriSigner->sign($uri);
+        }
+
+        return $uri;
     }
 
     /**
