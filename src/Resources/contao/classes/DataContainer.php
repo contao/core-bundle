@@ -892,7 +892,7 @@ abstract class DataContainer extends \Backend
 	{
 		$this->objPicker = \System::getContainer()->get('contao.picker.factory')->createFromPayload(\Input::get('picker', true));
 
-		if ($this->objPicker === null || !is_array($config = $this->objPicker->getCurrentConfig()))
+		if ($this->objPicker === null || !is_array($config = $this->objPicker->getCurrentConfig($this)))
 		{
 			return null;
 		}

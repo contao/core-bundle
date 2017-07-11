@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\Picker;
 
+use Contao\DataContainer;
+
 /**
  * Provides the page picker.
  *
@@ -71,8 +73,12 @@ class PagePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config)
+    public function prepareConfig(PickerConfig $config, DataContainer $dc)
     {
+        if ('tl_page' !== $dc->table) {
+            return null;
+        }
+
         $result = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 

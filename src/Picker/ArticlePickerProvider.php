@@ -10,6 +10,8 @@
 
 namespace Contao\CoreBundle\Picker;
 
+use Contao\DataContainer;
+
 /**
  * Provides the article picker.
  *
@@ -63,8 +65,12 @@ class ArticlePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config)
+    public function prepareConfig(PickerConfig $config, DataContainer $dc)
     {
+        if ('tl_article' !== $dc->table) {
+            return null;
+        }
+
         $result = ['fieldType' => $config->getExtra('fieldType')];
 
         if ('link' === $config->getContext() && $this->supportsValue($config)) {

@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Picker;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\DataContainer;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\Validator;
@@ -98,8 +99,12 @@ class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwar
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config)
+    public function prepareConfig(PickerConfig $config, DataContainer $dc)
     {
+        if ('tl_files' !== $dc->table) {
+            return null;
+        }
+
         $result = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 

@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Picker;
 
+use Contao\DataContainer;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 
@@ -99,11 +100,11 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getCurrentConfig()
+    public function getCurrentConfig(DataContainer $dc)
     {
         foreach ($this->providers as $provider) {
             if ($provider->isCurrent($this->config)) {
-                return $provider->prepareConfig($this->config);
+                return $provider->prepareConfig($this->config, $dc);
             }
         }
 

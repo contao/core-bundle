@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Picker;
 
+use Contao\DataContainer;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,10 +69,11 @@ interface PickerProviderInterface
      * Gets configuration array for current picker.
      *
      * @param PickerConfig $config
+     * @param DataContainer $dc
      *
      * @return array
      */
-    public function prepareConfig(PickerConfig $config);
+    public function prepareConfig(PickerConfig $config, DataContainer $dc);
 
     /**
      * Prepares value for picker selection.

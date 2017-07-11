@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Picker;
 
+use Contao\DataContainer;
 use Knp\Menu\ItemInterface;
 
 /**
@@ -36,9 +37,11 @@ interface PickerInterface
     /**
      * Gets attributes for current picker.
      *
+     * @param DataContainer $dc
+     *
      * @return array
      */
-    public function getCurrentConfig();
+    public function getCurrentConfig(DataContainer $dc);
 
     /**
      * Converts value to picker result.
