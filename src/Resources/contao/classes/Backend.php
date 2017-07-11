@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Database\Result;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -285,13 +286,14 @@ abstract class Backend extends \Controller
 	/**
 	 * Open a back end module and return it as HTML
 	 *
-	 * @param string $module
+	 * @param string               $module
+	 * @param PickerInterface|null $picker
 	 *
 	 * @return string
 	 *
 	 * @throws AccessDeniedException
 	 */
-	protected function getBackendModule($module)
+	protected function getBackendModule($module, PickerInterface $picker = null)
 	{
 		$arrModule = array();
 
@@ -403,6 +405,10 @@ abstract class Backend extends \Controller
 
 			/** @var DataContainer $dc */
 			$dc = new $dataContainer($strTable, $arrModule);
+
+			if (null !== $picker && $dc instanceof \Contao\DataContainer) {
+				$dc->initPicker($picker);
+			}
 		}
 
 		// Wrap the existing headline

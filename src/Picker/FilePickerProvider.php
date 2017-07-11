@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Picker;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\DataContainer;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\Validator;
@@ -25,7 +24,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwareInterface
+class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
@@ -99,12 +98,16 @@ class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwar
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config, DataContainer $dc)
+    public function getDcaTable()
     {
-        if ('tl_files' !== $dc->table) {
-            return null;
-        }
+        return 'tl_files';
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDcaAttributes(PickerConfig $config)
+    {
         $result = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 
@@ -135,7 +138,7 @@ class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwar
     /**
      * {@inheritdoc}
      */
-    public function prepareValue(PickerConfig $config, $value)
+    public function convertDcaValue(PickerConfig $config, $value)
     {
         if ('link' === $config->getContext()) {
             /** @var FilesModel $filesModel */

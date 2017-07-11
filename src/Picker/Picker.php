@@ -58,6 +58,14 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getMenu()
     {
         if (null !== $this->menu) {
@@ -78,7 +86,21 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrlForValue()
+    public function getCurrentProvider()
+    {
+        foreach ($this->providers as $provider) {
+            if ($provider->isCurrent($this->config)) {
+                return $provider;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrentUrl()
     {
         $menu = $this->getMenu();
 
@@ -95,36 +117,5 @@ class Picker implements PickerInterface
         }
 
         return $menu->getFirstChild()->getUri();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrentConfig(DataContainer $dc)
-    {
-        foreach ($this->providers as $provider) {
-            if ($provider->isCurrent($this->config)) {
-                return $provider->prepareConfig($this->config, $dc);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCurrentValue($value)
-    {
-        foreach ($this->providers as $provider) {
-            if ($provider->isCurrent($this->config)) {
-                return $provider->prepareValue(
-                    $this->config,
-                    $value
-                );
-            }
-        }
-
-        return $value;
     }
 }

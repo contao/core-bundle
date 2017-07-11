@@ -13,6 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\CoreBundle\Util\SymlinkUtil;
 use Contao\Image\ResizeConfiguration;
 use Imagine\Gd\Imagine;
@@ -199,12 +200,6 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					$callback($this);
 				}
 			}
-		}
-
-		// Initialize the picker
-		if (isset($_GET['picker']) && empty($_GET['act']))
-		{
-			$this->initPicker();
 		}
 
 		// Get all filemounts (root folders)
@@ -3044,27 +3039,29 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function initPicker()
+	public function initPicker(PickerInterface $picker)
 	{
-		if (is_array($config = parent::initPicker()))
-		{
-			$blnHideFiles = !isset($config['files']) && !isset($config['filesOnly']);
+		$attributes = parent::initPicker($picker);
 
-			if (isset($config['files']) && $config['files'] !== '1')
+		if (is_array($attributes))
+		{
+			$blnHideFiles = !isset($attributes['files']) && !isset($attributes['filesOnly']);
+
+			if (isset($attributes['files']) && $attributes['files'] !== '1')
 			{
 				$blnHideFiles = true;
 			}
 
 			$this->blnHideFiles = $blnHideFiles;
 
-			if (!isset($config['filesOnly']) || !$config['filesOnly'])
+			if (!isset($attributes['filesOnly']) || !$attributes['filesOnly'])
 			{
 				$this->blnSelectFolders = true;
 			}
 
-			if (isset($config['path']))
+			if (isset($attributes['path']))
 			{
-				$strPath = (string) $config['path'];
+				$strPath = (string) $attributes['path'];
 
 				if (\Validator::isInsecurePath($strPath) || !is_dir(TL_ROOT . '/' . $strPath))
 				{
@@ -3094,11 +3091,13 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = array($strPath);
 			}
 
-			if (isset($config['extensions']))
+			if (isset($attributes['extensions']))
 			{
-				$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($config['extensions']));
+				$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($attributes['extensions']));
 			}
 		}
+
+		return $attributes;
 	}
 
 	/**

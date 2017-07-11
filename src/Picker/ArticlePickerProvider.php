@@ -10,14 +10,12 @@
 
 namespace Contao\CoreBundle\Picker;
 
-use Contao\DataContainer;
-
 /**
  * Provides the article picker.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class ArticlePickerProvider extends AbstractPickerProvider
+class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
 
     /**
@@ -65,25 +63,29 @@ class ArticlePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config, DataContainer $dc)
+    public function getDcaTable()
     {
-        if ('tl_article' !== $dc->table) {
-            return null;
-        }
-
-        $result = ['fieldType' => $config->getExtra('fieldType')];
-
-        if ('link' === $config->getContext() && $this->supportsValue($config)) {
-            $result['value'] = str_replace(['{{article_url::', '}}'], '', $config->getValue());
-        }
-
-        return $result;
+        return 'tl_article';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepareValue(PickerConfig $config, $value)
+    public function getDcaAttributes(PickerConfig $config)
+    {
+        $attributes = ['fieldType' => $config->getExtra('fieldType')];
+
+        if ('link' === $config->getContext() && $this->supportsValue($config)) {
+            $attributes['value'] = str_replace(['{{article_url::', '}}'], '', $config->getValue());
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertDcaValue(PickerConfig $config, $value)
     {
         return '{{article_url::'.$value.'}}';
     }

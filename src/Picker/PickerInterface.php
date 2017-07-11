@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Picker;
 
-use Contao\DataContainer;
 use Knp\Menu\ItemInterface;
 
 /**
@@ -21,34 +20,30 @@ use Knp\Menu\ItemInterface;
 interface PickerInterface
 {
     /**
-     * Gets picker menu.
+     * Gets the picker config.
+     *
+     * @return PickerConfig
+     */
+    public function getConfig();
+
+    /**
+     * Gets the picker menu.
      *
      * @return ItemInterface
      */
     public function getMenu();
 
     /**
-     * Gets initial URL to the picker.
+     * Gets the current provider.
+     *
+     * @return PickerProviderInterface|null
+     */
+    public function getCurrentProvider();
+
+    /**
+     * Gets URL to the current picker tab.
      *
      * @return string
      */
-    public function getUrlForValue();
-
-    /**
-     * Gets attributes for current picker.
-     *
-     * @param DataContainer $dc
-     *
-     * @return array
-     */
-    public function getCurrentConfig(DataContainer $dc);
-
-    /**
-     * Converts value to picker result.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    public function getCurrentValue($value);
+    public function getCurrentUrl();
 }

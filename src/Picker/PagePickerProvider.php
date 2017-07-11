@@ -17,7 +17,7 @@ use Contao\DataContainer;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class PagePickerProvider extends AbstractPickerProvider
+class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
 
     /**
@@ -73,12 +73,16 @@ class PagePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function prepareConfig(PickerConfig $config, DataContainer $dc)
+    public function getDcaTable()
     {
-        if ('tl_page' !== $dc->table) {
-            return null;
-        }
+        return 'tl_page';
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDcaAttributes(PickerConfig $config)
+    {
         $result = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 
@@ -100,7 +104,7 @@ class PagePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function prepareValue(PickerConfig $config, $value)
+    public function convertDcaValue(PickerConfig $config, $value)
     {
         if ('link' === $config->getContext()) {
             return '{{link_url::'.$value.'}}';

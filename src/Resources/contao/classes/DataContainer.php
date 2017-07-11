@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Image\ResizeConfiguration;
 use Imagine\Gd\Imagine;
@@ -112,9 +113,9 @@ abstract class DataContainer extends \Backend
 	protected $blnUploadable = false;
 
 	/**
-	 * @var PickerInterface
+	 * @var \Closure
 	 */
-	protected $objPicker;
+	protected $objPickerCallback;
 
 	/**
 	 * The picker value
@@ -886,24 +887,36 @@ abstract class DataContainer extends \Backend
 	/**
 	 * Initialize the picker
 	 *
+	 * @param PickerInterface $picker
+	 *
 	 * @return array|null
 	 */
-	protected function initPicker()
+	public function initPicker(PickerInterface $picker)
 	{
-		$this->objPicker = \System::getContainer()->get('contao.picker.builder')->createFromJson(base64_decode(\Input::get('picker', true)));
-
-		if ($this->objPicker === null || !is_array($config = $this->objPicker->getCurrentConfig($this)))
+		if (!empty($_GET['act']))
 		{
 			return null;
 		}
 
-		$this->strPickerFieldType = $config['fieldType'];
+		$provider = $picker->getCurrentProvider();
 
-		if (isset($config['value'])) {
-			$this->arrPickerValue = (array) $config['value'];
+		if (!$provider instanceof DcaPickerProviderInterface || $provider->getDcaTable() != $this->strTable)
+		{
+			return null;
 		}
 
-		return $config;
+		$attributes = $provider->getDcaAttributes($picker->getConfig());
+
+		$this->strPickerFieldType = $attributes['fieldType'];
+		$this->objPickerCallback = function ($value) use ($picker, $provider) {
+			return $provider->convertDcaValue($picker->getConfig(), $value);
+		};
+
+		if (isset($attributes['value'])) {
+			$this->arrPickerValue = (array) $attributes['value'];
+		}
+
+		return $attributes;
 	}
 
 
@@ -922,10 +935,10 @@ abstract class DataContainer extends \Backend
 		switch ($this->strPickerFieldType)
 		{
 			case 'checkbox':
-				return ' <input type="checkbox" name="picker[]" id="picker_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($this->objPicker->getCurrentValue($value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="checkbox" name="picker[]" id="picker_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars(call_user_func($this->objPickerCallback, $value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 
 			case 'radio':
-				return ' <input type="radio" name="picker" id="picker_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($this->objPicker->getCurrentValue($value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="radio" name="picker" id="picker_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars(call_user_func($this->objPickerCallback, $value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 		}
 
 		return '';

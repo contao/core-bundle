@@ -14,6 +14,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Picker\Picker;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -209,12 +210,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					$callback($this);
 				}
 			}
-		}
-
-		// Initialize the picker
-		if (isset($_GET['picker']) && empty($_GET['act']))
-		{
-			$this->initPicker();
 		}
 
 		// Get the IDs of all root records (tree view)
@@ -6128,14 +6123,16 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function initPicker()
+	public function initPicker(PickerInterface $picker)
 	{
-		if (is_array($config = parent::initPicker()))
+		$attributes = parent::initPicker($picker);
+
+		if (is_array($attributes))
 		{
 			// Predefined node set (see #3563)
-			if (isset($config['rootNodes']))
+			if (isset($attributes['rootNodes']))
 			{
-				$arrRoot = (array) $config['rootNodes'];
+				$arrRoot = (array) $attributes['rootNodes'];
 
 				// Allow only those roots that are allowed in root nodes
 				if (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']))
@@ -6151,5 +6148,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrRoot;
 			}
 		}
+
+		return $attributes;
 	}
 }

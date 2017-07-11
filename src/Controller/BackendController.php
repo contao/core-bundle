@@ -240,9 +240,9 @@ class BackendController extends Controller
         $picker = $this->container->get('contao.picker.builder')->create($config);
 
         if (null === $picker) {
-            throw new BadRequestHttpException('Unsupported picker type');
+            throw new BadRequestHttpException('Unsupported picker context');
         }
 
-        return new RedirectResponse($picker->getUrlForValue());
+        return new RedirectResponse($picker->getCurrentUrl());
     }
 }
