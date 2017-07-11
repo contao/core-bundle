@@ -192,9 +192,19 @@ class BackendMain extends \Backend
 		}
 
 		// Picker menu
-		if (\Input::get('popup') && \Input::get('context'))
+		if (isset($_GET['picker']))
 		{
-			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu_builder')->createMenu(\Input::get('context'));
+			$picker = \System::getContainer()->get('contao.picker.factory')->createFromPayload(\Input::get('picker', true));
+
+			if ($picker !== null)
+			{
+				$menu = $picker->getMenu();
+
+				if ($menu->count() > 1)
+				{
+					$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.renderer')->render($picker->getMenu());
+				}
+			}
 		}
 
 		// Website title

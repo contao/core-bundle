@@ -135,7 +135,7 @@ services:
 
     contao.menu.renderer:
         class: Knp\Menu\Renderer\ListRenderer
-        public: false
+        public: true
         arguments:
             - "@contao.menu.matcher"
 
