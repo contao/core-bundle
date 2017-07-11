@@ -181,7 +181,6 @@ services:
         arguments:
             - "@knp_menu.factory"
             - "@security.token_storage"
-            - "@contao.framework"
             - "%contao.upload_path%"
         tags:
             - { name: contao.picker_provider, priority: 160 }

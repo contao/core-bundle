@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\Picker;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\Validator;
@@ -22,8 +24,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class FilePickerProvider extends AbstractPickerProvider
+class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     /**
      * @var ContaoFrameworkInterface
      */
@@ -42,11 +46,10 @@ class FilePickerProvider extends AbstractPickerProvider
      * @param ContaoFrameworkInterface $framework
      * @param string                   $uploadPath
      */
-    public function __construct(FactoryInterface $menuFactory, TokenStorageInterface $tokenStorage, ContaoFrameworkInterface $framework, $uploadPath)
+    public function __construct(FactoryInterface $menuFactory, TokenStorageInterface $tokenStorage, $uploadPath)
     {
         parent::__construct($menuFactory, $tokenStorage);
 
-        $this->framework = $framework;
         $this->uploadPath = $uploadPath;
     }
 
