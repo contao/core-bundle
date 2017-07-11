@@ -21,11 +21,13 @@ use Contao\BackendPassword;
 use Contao\BackendPopup;
 use Contao\BackendPreview;
 use Contao\BackendSwitch;
+use Contao\CoreBundle\Picker\PickerConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Handles the Contao backend routes.
@@ -224,8 +226,23 @@ class BackendController extends Controller
      */
     public function pickerAction(Request $request)
     {
-        $pickerBuilder = $this->container->get('contao.menu.picker_menu_builder');
+        $extras = [];
 
-        return new RedirectResponse($pickerBuilder->getPickerUrl($request));
+        if ($request->query->has('extras')) {
+            $extras = @json_decode(base64_decode($request->query->get('extras')), true);
+
+            if (!is_array($extras)) {
+                throw new BadRequestHttpException('Invalid picker extras');
+            }
+        }
+
+        $config = new PickerConfig($request->query->get('context'), $extras, $request->query->get('value'));
+        $picker = $this->container->get('contao.picker.factory')->create($config);
+
+        if (null === $picker) {
+            throw new BadRequestHttpException('Unsupported picker type');
+        }
+
+        return new RedirectResponse($picker->getUrlForValue($config));
     }
 }

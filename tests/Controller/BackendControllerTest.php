@@ -59,25 +59,4 @@ class BackendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->switchAction());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->alertsAction());
     }
-
-    /**
-     * Tests the pickerAction method.
-     */
-    public function testPickerAction()
-    {
-        $pickerBuilder = $this->createMock(PickerMenuBuilderInterface::class);
-
-        $pickerBuilder
-            ->method('getPickerUrl')
-            ->willReturn('/_contao/picker')
-        ;
-
-        $container = $this->mockKernel()->getContainer();
-        $container->set('contao.menu.picker_menu_builder', $pickerBuilder);
-
-        $controller = new BackendController();
-        $controller->setContainer($container);
-
-        $this->assertInstanceOf(RedirectResponse::class, $controller->pickerAction(new Request()));
-    }
 }
