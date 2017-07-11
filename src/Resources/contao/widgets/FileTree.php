@@ -348,6 +348,30 @@ class FileTree extends \Widget
 			}
 		}
 
+		$extras = array('fieldType'=>$this->fieldType);
+
+		if ($this->files)
+		{
+			$extras['files'] = (bool) $this->files;
+		}
+
+		if ($this->filesOnly)
+		{
+			$extras['filesOnly'] = (bool) $this->filesOnly;
+		}
+
+		if ($this->path)
+		{
+			$extras['path'] = (string) $this->path;
+		}
+
+		if ($this->extensions)
+		{
+			$extras['extensions'] = (string) $this->extensions;
+		}
+
+		$pickerUrl = \System::getContainer()->get('contao.picker.factory')->getInitialUrl('file', $extras);
+
 		// Convert the binary UUIDs
 		$strSet = implode(',', array_map('StringUtil::binToUuid', $arrSet));
 		$strOrder = $blnHasOrder ? implode(',', array_map('StringUtil::binToUuid', $this->{$this->orderField})) : '';
@@ -363,14 +387,23 @@ class FileTree extends \Widget
 			$return .= '<li data-id="'.\StringUtil::binToUuid($k).'">'.$v.'</li>';
 		}
 
-		$return .= '</ul>
-    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'files', 'context'=>'file', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', array_keys($arrSet)), 'popup'=>1))) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+		$return .= '</ul>';
+
+		if (!$pickerUrl)
+		{
+			$return .= '
+	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
+		}
+		else
+		{
+			$return .= '
+    <p><a href="' . ampersand($pickerUrl) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
     <script>
       $("ft_' . $this->strName . '").addEvent("click", function(e) {
         e.preventDefault();
         Backend.openModalSelector({
           "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
-          "url": this.href,
+          "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
           "callback": function(table, value) {
             new Request.Contao({
               evalScripts: false,
@@ -383,10 +416,10 @@ class FileTree extends \Widget
         });
       });
     </script>' . ($blnHasOrder ? '
-    <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '') . '
-  </div>';
+    <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '');
+		}
 
-		$return = '<div>' . $return . '</div>';
+		$return = '<div>' . $return . '</div></div>';
 
 		return $return;
 	}

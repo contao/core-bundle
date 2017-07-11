@@ -211,6 +211,15 @@ class PageTree extends \Widget
 			}
 		}
 
+		$extras = ['fieldType' => $this->fieldType];
+
+		if (is_array($this->rootNodes))
+		{
+			$extras['rootNodes'] = array_values($this->rootNodes);
+		}
+
+		$pickerUrl = \System::getContainer()->get('contao.picker.factory')->getInitialUrl('page', $extras);
+
 		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', $arrSet).'">' . ($blnHasOrder ? '
   <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->orderField}.'">' : '') . '
   <div class="selector_container">' . (($blnHasOrder && count($arrValues) > 1) ? '
@@ -222,30 +231,39 @@ class PageTree extends \Widget
 			$return .= '<li data-id="'.$k.'">'.$v.'</li>';
 		}
 
-		$return .= '</ul>
-    <p><a href="' . ampersand(\System::getContainer()->get('router')->generate('contao_backend_picker', array('do'=>'page', 'context'=>'page', 'target'=>$this->strTable.'.'.$this->strField.'.'.$this->activeRecord->id, 'value'=>implode(',', $arrSet), 'popup'=>1))) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
-    <script>
-      $("pt_' . $this->strName . '").addEvent("click", function(e) {
-        e.preventDefault();
-        Backend.openModalSelector({
-          "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
-          "url": this.href,
-          "callback": function(table, value) {
-            new Request.Contao({
-              evalScripts: false,
-              onSuccess: function(txt, json) {
-                $("ctrl_' . $this->strId . '").getParent("div").set("html", json.content);
-                json.javascript && Browser.exec(json.javascript);
-              }
-            }).post({"action":"reloadPagetree", "name":"' . $this->strId . '", "value":value.join("\t"), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
-          }
-        });
-      });
-    </script>' . ($blnHasOrder ? '
-    <script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '') . '
-  </div>';
+		$return .= '</ul>';
 
-		$return = '<div>' . $return . '</div>';
+		if (!$pickerUrl)
+		{
+			$return .= '
+	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
+		}
+		else
+		{
+			$return .= '
+	<p><a href="' . ampersand($pickerUrl) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<script>
+	  $("pt_' . $this->strName . '").addEvent("click", function(e) {
+		e.preventDefault();
+		Backend.openModalSelector({
+		  "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+		  "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
+		  "callback": function(table, value) {
+			new Request.Contao({
+			  evalScripts: false,
+			  onSuccess: function(txt, json) {
+				$("ctrl_' . $this->strId . '").getParent("div").set("html", json.content);
+				json.javascript && Browser.exec(json.javascript);
+			  }
+			}).post({"action":"reloadPagetree", "name":"' . $this->strId . '", "value":value.join("\t"), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
+		  }
+		});
+	  });
+	</script>' . ($blnHasOrder ? '
+	<script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '');
+		}
+
+		$return = '<div>' . $return . '</div></div>';
 
 		return $return;
 	}

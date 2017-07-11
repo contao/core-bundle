@@ -898,7 +898,7 @@ var Backend =
 		var opt = options || {},
 			maxWidth = (window.getSize().x - 20).toInt(),
 			maxHeight = (window.getSize().y - 192).toInt();
-		if (!opt.id) opt.id = 'tl_select';
+		if (!opt.id) opt.id = 'tl_listing';
 		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 900);
 		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
@@ -977,14 +977,9 @@ var Backend =
 	openModalBrowser: function(field_name, url, type, win, reference) {
 		Backend.openModalSelector({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?' + (type == 'file' ? 'do=page&amp;context=link' : 'do=files&amp;context=file') + '&amp;target=' + (reference || 'tl_content.singleSRC') + '&amp;value=' + url + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras=' + btoa(JSON.encode({fieldType:'radio'})) + '&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {
-				new Request.Contao({
-					evalScripts: false,
-					onSuccess: function(txt, json) {
-						win.document.getElementById(field_name).value = json.content;
-					}
-				}).post({'action':'processPickerSelection', 'table':table, 'value':value.join(','), 'REQUEST_TOKEN':Contao.request_token});
+				win.document.getElementById(field_name).value = value.join(',');
 			}
 		});
 	},
