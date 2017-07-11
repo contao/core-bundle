@@ -977,7 +977,7 @@ var Backend =
 	openModalBrowser: function(field_name, url, type, win, reference) {
 		Backend.openModalSelector({
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras=' + btoa(JSON.encode({fieldType:'radio'})) + '&amp;value=' + url + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras=' + btoa(JSON.encode({fieldType:'radio', filesOnly:true})) + '&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {
 				win.document.getElementById(field_name).value = value.join(',');
 			}
