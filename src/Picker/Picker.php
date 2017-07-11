@@ -1,10 +1,23 @@
 <?php
 
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Picker;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 
+/**
+ * Picker implementation.
+ *
+ * @author Andreas Schempp <https://github.com/aschempp>
+ */
 class Picker implements PickerInterface
 {
     /**
@@ -41,32 +54,51 @@ class Picker implements PickerInterface
         $this->config = $config;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMenu()
     {
-        $this->createMenu();
+        if (null !== $this->menu) {
+            return $this->menu;
+        }
+
+        $this->menu = $this->menuFactory->createItem('picker');
+
+        foreach ($this->providers as $provider) {
+            $item = $provider->createMenuItem($this->config);
+            $item->setExtra('provider', $provider);
+            $this->menu->addChild($item);
+        }
 
         return $this->menu;
     }
 
-    public function getUrlForValue(PickerConfig $config)
+    /**
+     * {@inheritdoc}
+     */
+    public function getUrlForValue()
     {
-        $this->createMenu();
+        $menu = $this->getMenu();
 
-        if (!$this->menu->count()) {
+        if (!$menu->count()) {
             throw new \RuntimeException('No picker menu items found.');
         }
 
         /** @var ItemInterface $menu */
-        foreach ($this->menu as $menu) {
-            $picker = $menu->getExtra('provider');
-            if ($picker instanceof PickerProviderInterface && $picker->supportsValue($config)) {
-                return $menu->getUri();
+        foreach ($menu as $item) {
+            $picker = $item->getExtra('provider');
+            if ($picker instanceof PickerProviderInterface && $picker->supportsValue($this->config)) {
+                return $item->getUri();
             }
         }
 
-        return $this->menu->getFirstChild()->getUri();
+        return $menu->getFirstChild()->getUri();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCurrentConfig()
     {
         foreach ($this->providers as $provider) {
@@ -79,11 +111,7 @@ class Picker implements PickerInterface
     }
 
     /**
-     * Gets current value for the picker.
-     *
-     * @param mixed $value
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getCurrentValue($value)
     {
@@ -97,20 +125,5 @@ class Picker implements PickerInterface
         }
 
         return $value;
-    }
-
-    private function createMenu()
-    {
-        if (null !== $this->menu) {
-            return;
-        }
-
-        $this->menu = $this->menuFactory->createItem('picker');
-
-        foreach ($this->providers as $provider) {
-            $item = $provider->createMenuItem($this->config);
-            $item->setExtra('provider', $provider);
-            $this->menu->addChild($item);
-        }
     }
 }

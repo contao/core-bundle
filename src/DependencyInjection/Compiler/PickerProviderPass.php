@@ -15,9 +15,10 @@ use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Registers the picker menu providers.
+ * Registers the picker providers.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Andreas Schempp <https://github.com/aschempp>
  */
 class PickerProviderPass implements CompilerPassInterface
 {

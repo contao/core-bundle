@@ -1,12 +1,25 @@
 <?php
 
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Picker;
 
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
-class PickerFactory
+/**
+ * Picker factory.
+ *
+ * @author Andreas Schempp <https://github.com/aschempp>
+ */
+class PickerFactory implements PickerFactoryInterface
 {
     /**
      * @var FactoryInterface
@@ -53,9 +66,7 @@ class PickerFactory
     }
 
     /**
-     * @param PickerConfig  $config
-     *
-     * @return PickerInterface|null
+     * {@inheritdoc}
      */
     public function create(PickerConfig $config)
     {
@@ -78,9 +89,7 @@ class PickerFactory
     }
 
     /**
-     * @param string $payload
-     *
-     * @return PickerInterface|null
+     * {@inheritdoc}
      */
     public function createFromPayload($payload)
     {
@@ -94,13 +103,7 @@ class PickerFactory
     }
 
     /**
-     * Gets picker URL for given context and configuration.
-     *
-     * @param string $context
-     * @param array  $extras
-     * @param string $value
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getInitialUrl($context, array $extras = [], $value = '')
     {

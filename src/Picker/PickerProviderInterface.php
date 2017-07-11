@@ -14,6 +14,11 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Picker provider interface.
+ *
+ * @author Andreas Schempp <https://github.com/aschempp>
+ */
 interface PickerProviderInterface
 {
     /**

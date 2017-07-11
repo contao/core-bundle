@@ -243,6 +243,6 @@ class BackendController extends Controller
             throw new BadRequestHttpException('Unsupported picker type');
         }
 
-        return new RedirectResponse($picker->getUrlForValue($config));
+        return new RedirectResponse($picker->getUrlForValue());
     }
 }
