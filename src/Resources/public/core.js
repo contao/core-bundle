@@ -898,7 +898,7 @@ var Backend =
 		var opt = options || {},
 			maxWidth = (window.getSize().x - 20).toInt(),
 			maxHeight = (window.getSize().y - 192).toInt();
-		if (!opt.id) opt.id = 'tl_listing';
+		if (!opt.id) opt.id = 'tl_select';
 		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 900);
 		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
@@ -976,6 +976,7 @@ var Backend =
 	 */
 	openModalBrowser: function(field_name, url, type, win, reference) {
 		Backend.openModalSelector({
+			'id': 'tl_listing',
 			'title': win.document.getElement('div.mce-title').get('text'),
 			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras=' + btoa(JSON.encode({fieldType:'radio', filesOnly:true})) + '&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {

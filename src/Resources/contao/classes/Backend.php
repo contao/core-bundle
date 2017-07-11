@@ -1109,6 +1109,7 @@ abstract class Backend extends \Controller
     $("pp_' . $inputName . '").addEvent("click", function(e) {
       e.preventDefault();
       Backend.openModalSelector({
+        "id": "tl_listing",
         "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
         "url": this.href + "&value=" + document.getElementById("ctrl_'.$inputName.'").value,
         "callback": function(picker, value) {
