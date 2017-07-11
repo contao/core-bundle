@@ -158,6 +158,43 @@ services:
         tags:
             - { name: monolog.processor }
 
+    contao.picker.factory:
+        class: Contao\CoreBundle\Picker\PickerFactory
+        public: true
+        arguments:
+            - "@knp_menu.factory"
+            - "@router"
+            - "@request_stack"
+
+    contao.picker.page_provider:
+        class: Contao\CoreBundle\Picker\PagePickerProvider
+        public: false
+        arguments:
+            - "@knp_menu.factory"
+            - "@security.token_storage"
+        tags:
+            - { name: contao.picker_provider, priority: 192 }
+
+    contao.picker.file_provider:
+        class: Contao\CoreBundle\Picker\FilePickerProvider
+        public: false
+        arguments:
+            - "@knp_menu.factory"
+            - "@security.token_storage"
+            - "@contao.framework"
+            - "%contao.upload_path%"
+        tags:
+            - { name: contao.picker_provider, priority: 160 }
+
+    contao.picker.article_provider:
+        class: Contao\CoreBundle\Picker\ArticlePickerProvider
+        public: false
+        arguments:
+            - "@knp_menu.factory"
+            - "@security.token_storage"
+        tags:
+            - { name: contao.picker_provider }
+
     contao.referer_id.manager:
          class: Symfony\Component\Security\Csrf\CsrfTokenManager
          public: false
