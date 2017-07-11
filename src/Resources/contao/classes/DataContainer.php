@@ -890,7 +890,7 @@ abstract class DataContainer extends \Backend
 	 */
 	protected function initPicker()
 	{
-		$this->objPicker = \System::getContainer()->get('contao.picker.factory')->createFromPayload(\Input::get('picker', true));
+		$this->objPicker = \System::getContainer()->get('contao.picker.builder')->createFromJson(base64_decode(\Input::get('picker', true)));
 
 		if ($this->objPicker === null || !is_array($config = $this->objPicker->getCurrentConfig($this)))
 		{

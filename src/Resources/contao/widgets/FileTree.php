@@ -348,30 +348,6 @@ class FileTree extends \Widget
 			}
 		}
 
-		$extras = array('fieldType'=>$this->fieldType);
-
-		if ($this->files)
-		{
-			$extras['files'] = (bool) $this->files;
-		}
-
-		if ($this->filesOnly)
-		{
-			$extras['filesOnly'] = (bool) $this->filesOnly;
-		}
-
-		if ($this->path)
-		{
-			$extras['path'] = (string) $this->path;
-		}
-
-		if ($this->extensions)
-		{
-			$extras['extensions'] = (string) $this->extensions;
-		}
-
-		$pickerUrl = \System::getContainer()->get('contao.picker.factory')->getInitialUrl('file', $extras);
-
 		// Convert the binary UUIDs
 		$strSet = implode(',', array_map('StringUtil::binToUuid', $arrSet));
 		$strOrder = $blnHasOrder ? implode(',', array_map('StringUtil::binToUuid', $this->{$this->orderField})) : '';
@@ -389,15 +365,37 @@ class FileTree extends \Widget
 
 		$return .= '</ul>';
 
-		if (!$pickerUrl)
+		if (!\System::getContainer()->get('contao.picker.builder')->supportsContext('file'))
 		{
 			$return .= '
 	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
 		}
 		else
 		{
+			$extras = array('fieldType'=>$this->fieldType);
+
+			if ($this->files)
+			{
+				$extras['files'] = (bool) $this->files;
+			}
+
+			if ($this->filesOnly)
+			{
+				$extras['filesOnly'] = (bool) $this->filesOnly;
+			}
+
+			if ($this->path)
+			{
+				$extras['path'] = (string) $this->path;
+			}
+
+			if ($this->extensions)
+			{
+				$extras['extensions'] = (string) $this->extensions;
+			}
+
 			$return .= '
-    <p><a href="' . ampersand($pickerUrl) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+    <p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('file', $extras)) . '" class="tl_submit" id="ft_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
     <script>
       $("ft_' . $this->strName . '").addEvent("click", function(e) {
         e.preventDefault();

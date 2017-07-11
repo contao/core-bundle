@@ -11,11 +11,11 @@
 namespace Contao\CoreBundle\Picker;
 
 /**
- * Interface for picker factory.
+ * Interface for picker builder.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-interface PickerFactoryInterface
+interface PickerBuilderInterface
 {
     /**
      * Creates a picker or null if the context is not supported.
@@ -27,13 +27,22 @@ interface PickerFactoryInterface
     public function create(PickerConfig $config);
 
     /**
-     * Creates a picker from encoded URL data.
+     * Creates a picker from JSON data.
      *
-     * @param string $payload
+     * @param string $json
      *
      * @return PickerInterface|null
      */
-    public function createFromPayload($payload);
+    public function createFromJson($json);
+
+    /**
+     * Returns whether the given context is supported.
+     *
+     * @param string $context
+     *
+     * @return bool
+     */
+    public function supportsContext($context);
 
     /**
      * Gets picker URL for given context and configuration.
@@ -44,5 +53,5 @@ interface PickerFactoryInterface
      *
      * @return string
      */
-    public function getInitialUrl($context, array $extras = [], $value = '');
+    public function getUrl($context, array $extras = [], $value = '');
 }

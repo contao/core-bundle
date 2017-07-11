@@ -19,7 +19,7 @@ use Symfony\Component\Routing\RouterInterface;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class PickerFactory implements PickerFactoryInterface
+class PickerBuilder implements PickerBuilderInterface
 {
     /**
      * @var FactoryInterface
@@ -91,9 +91,9 @@ class PickerFactory implements PickerFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createFromPayload($payload)
+    public function createFromJson($json)
     {
-        $data = @json_decode(base64_decode($payload), true);
+        $data = @json_decode($json, true);
 
         if (null === $data) {
             return null;
@@ -105,17 +105,23 @@ class PickerFactory implements PickerFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getInitialUrl($context, array $extras = [], $value = '')
+    public function supportsContext($context)
     {
-        $supportsContext = array_reduce(
-            $this->providers,
-            function ($carry, PickerProviderInterface $provider) use ($context) {
-                return true === $carry || $provider->supportsContext($context);
-            },
-            false
-        );
+        foreach ($this->providers as $provider) {
+            if ($provider->supportsContext($context)) {
+                return true;
+            }
+        }
 
-        if (!$supportsContext) {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUrl($context, array $extras = [], $value = '')
+    {
+        if (!$this->supportsContext($context)) {
             return '';
         }
 

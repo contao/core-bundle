@@ -237,7 +237,7 @@ class BackendController extends Controller
         }
 
         $config = new PickerConfig($request->query->get('context'), $extras, $request->query->get('value'));
-        $picker = $this->container->get('contao.picker.factory')->create($config);
+        $picker = $this->container->get('contao.picker.builder')->create($config);
 
         if (null === $picker) {
             throw new BadRequestHttpException('Unsupported picker type');

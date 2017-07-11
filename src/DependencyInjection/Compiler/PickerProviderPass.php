@@ -29,11 +29,11 @@ class PickerProviderPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('contao.picker.factory')) {
+        if (!$container->has('contao.picker.builder')) {
             return;
         }
 
-        $definition = $container->findDefinition('contao.picker.factory');
+        $definition = $container->findDefinition('contao.picker.builder');
         $references = $this->findAndSortTaggedServices('contao.picker_provider', $container);
 
         foreach ($references as $reference) {

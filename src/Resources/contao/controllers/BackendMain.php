@@ -194,7 +194,7 @@ class BackendMain extends \Backend
 		// Picker menu
 		if (isset($_GET['picker']))
 		{
-			$picker = \System::getContainer()->get('contao.picker.factory')->createFromPayload(\Input::get('picker', true));
+			$picker = \System::getContainer()->get('contao.picker.builder')->createFromJson(base64_decode(\Input::get('picker', true)));
 
 			if ($picker !== null)
 			{

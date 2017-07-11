@@ -158,8 +158,8 @@ services:
         tags:
             - { name: monolog.processor }
 
-    contao.picker.factory:
-        class: Contao\CoreBundle\Picker\PickerFactory
+    contao.picker.builder:
+        class: Contao\CoreBundle\Picker\PickerBuilder
         public: true
         arguments:
             - "@knp_menu.factory"

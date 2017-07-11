@@ -1097,14 +1097,14 @@ abstract class Backend extends \Controller
 
 		$extras['fieldType'] = $GLOBALS['TL_DCA'][$table]['fields'][$field]['eval']['fieldType'];
 
-		$pickerUrl = \System::getContainer()->get('contao.picker.factory')->getInitialUrl($context, $extras);
+		$factory = \System::getContainer()->get('contao.picker.builder');
 
-		if (!$pickerUrl)
+		if (!$factory->supportsContext($context))
 		{
 			return '';
 		}
 
-		return ' <a href="' . ampersand($pickerUrl) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+		return ' <a href="' . ampersand($factory->getUrl($context, $extras)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
   <script>
     $("pp_' . $inputName . '").addEvent("click", function(e) {
       e.preventDefault();

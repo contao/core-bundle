@@ -211,15 +211,6 @@ class PageTree extends \Widget
 			}
 		}
 
-		$extras = ['fieldType' => $this->fieldType];
-
-		if (is_array($this->rootNodes))
-		{
-			$extras['rootNodes'] = array_values($this->rootNodes);
-		}
-
-		$pickerUrl = \System::getContainer()->get('contao.picker.factory')->getInitialUrl('page', $extras);
-
 		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', $arrSet).'">' . ($blnHasOrder ? '
   <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->orderField}.'">' : '') . '
   <div class="selector_container">' . (($blnHasOrder && count($arrValues) > 1) ? '
@@ -233,15 +224,22 @@ class PageTree extends \Widget
 
 		$return .= '</ul>';
 
-		if (!$pickerUrl)
+		if (!\System::getContainer()->get('contao.picker.builder')->supportsContext('page'))
 		{
 			$return .= '
 	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
 		}
 		else
 		{
+			$extras = ['fieldType' => $this->fieldType];
+
+			if (is_array($this->rootNodes))
+			{
+				$extras['rootNodes'] = array_values($this->rootNodes);
+			}
+
 			$return .= '
-	<p><a href="' . ampersand($pickerUrl) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('page', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
 	<script>
 	  $("pt_' . $this->strName . '").addEvent("click", function(e) {
 		e.preventDefault();
