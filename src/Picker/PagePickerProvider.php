@@ -23,7 +23,7 @@ class PagePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getName()
     {
         return 'pagePicker';
     }

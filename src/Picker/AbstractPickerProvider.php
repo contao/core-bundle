@@ -48,18 +48,20 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
      */
     public function createMenuItem(PickerConfig $config)
     {
+        $name = $this->getName();
+
         $params = array_merge(
             [
                 'popup' => '1',
             ],
             $this->getRouteParameters($config),
-            ['picker' => base64_encode(json_encode($config->cloneForCurrent($this->getAlias())))]
+            ['picker' => base64_encode(json_encode($config->cloneForCurrent($name)))]
         );
 
         return $this->menuFactory->createItem(
-            $this->getAlias(),
+            $name,
             [
-                'label' => $GLOBALS['TL_LANG']['MSC'][$this->getAlias()] ?: $this->getAlias(),
+                'label' => $GLOBALS['TL_LANG']['MSC'][$name] ?: $name,
                 'linkAttributes' => ['class' => $this->getLinkClass()],
                 'current' => $this->isCurrent($config),
                 'route' => 'contao_backend',
@@ -73,7 +75,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
      */
     public function isCurrent(PickerConfig $config)
     {
-        return $config->getCurrent() === $this->getAlias();
+        return $config->getCurrent() === $this->getName();
     }
 
     /**

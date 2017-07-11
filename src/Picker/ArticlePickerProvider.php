@@ -23,7 +23,7 @@ class ArticlePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getName()
     {
         return 'articlePicker';
     }

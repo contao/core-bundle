@@ -57,7 +57,7 @@ class FilePickerProvider extends AbstractPickerProvider implements FrameworkAwar
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getName()
     {
         return 'filePicker';
     }

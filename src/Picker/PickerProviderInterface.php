@@ -23,11 +23,11 @@ use Symfony\Component\HttpFoundation\Request;
 interface PickerProviderInterface
 {
     /**
-     * Gets the unique alias for this picker.
+     * Gets the unique name for this picker.
      *
      * @return string
      */
-    public function getAlias();
+    public function getName();
 
     /**
      * Creates menu item for this picker.
