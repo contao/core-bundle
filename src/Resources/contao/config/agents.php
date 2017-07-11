@@ -34,6 +34,7 @@ $GLOBALS['TL_CONFIG']['browser'] =
 [
 	'MSIE'       => ['browser'=>'ie',           'shorty'=>'ie', 'engine'=>'trident', 'version'=>'/^.*MSIE (\d+(\.\d+)*).*$/'],
 	'Trident'    => ['browser'=>'ie',           'shorty'=>'ie', 'engine'=>'trident', 'version'=>'/^.*Trident\/\d+\.\d+; rv:(\d+(\.\d+)*).*$/'],
+	'Edge'       => ['browser'=>'edge',         'shorty'=>'ed', 'engine'=>'edgehtml', 'version'=>'/^.*Edge\/(\d+(\.\d+)*).*$/'],
 	'Firefox'    => ['browser'=>'firefox',      'shorty'=>'fx', 'engine'=>'gecko',   'version'=>'/^.*Firefox\/(\d+(\.\d+)*).*$/'],
 	'Chrome'     => ['browser'=>'chrome',       'shorty'=>'ch', 'engine'=>'webkit',  'version'=>'/^.*Chrome\/(\d+(\.\d+)*).*$/'],
 	'OmniWeb'    => ['browser'=>'omniweb',      'shorty'=>'ow', 'engine'=>'webkit',  'version'=>'/^.*Version\/(\d+(\.\d+)*).*$/'],
