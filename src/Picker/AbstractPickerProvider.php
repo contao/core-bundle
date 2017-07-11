@@ -52,7 +52,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
             [
                 'popup' => '1',
             ],
-            $this->getRouteParameters(),
+            $this->getRouteParameters($config),
             ['picker' => base64_encode(json_encode($config->cloneForCurrent($this->getAlias())))]
         );
 
@@ -114,7 +114,9 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
     /**
      * Gets routing parameters for the backend picker.
      *
+     * @param PickerConfig $config
+     *
      * @return array
      */
-    abstract protected function getRouteParameters();
+    abstract protected function getRouteParameters(PickerConfig $config);
 }

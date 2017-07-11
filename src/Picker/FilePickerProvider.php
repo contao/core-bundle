@@ -85,7 +85,7 @@ class FilePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    protected function getRouteParameters()
+    protected function getRouteParameters(PickerConfig $config)
     {
         return [
             'do' => 'files',

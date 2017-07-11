@@ -53,7 +53,7 @@ class ArticlePickerProvider extends AbstractPickerProvider
     /**
      * {@inheritdoc}
      */
-    protected function getRouteParameters()
+    protected function getRouteParameters(PickerConfig $config)
     {
         return [
             'do' => 'article',
