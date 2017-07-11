@@ -10,9 +10,8 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Image\ResizeConfiguration;
 use Imagine\Gd\Imagine;
 
@@ -111,6 +110,11 @@ abstract class DataContainer extends \Backend
 	 * @var boolean
 	 */
 	protected $blnUploadable = false;
+
+	/**
+	 * @var PickerInterface
+	 */
+	protected $objPicker;
 
 	/**
 	 * The picker value
@@ -490,7 +494,7 @@ abstract class DataContainer extends \Backend
 		// DCA picker
 		if (isset($arrData['eval']['dcaPicker']) && (is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
 		{
-			$wizard .= \Backend::getDcaPickerWizard($arrData['eval']['dcaPicker'], $this->strTable, $this->strField, $this->intId, $this->varValue, $this->strInputName);
+			$wizard .= \Backend::getDcaPickerWizard($arrData['eval']['dcaPicker'], $this->strTable, $this->strField, $this->strInputName);
 		}
 
 		// Add a custom wizard
@@ -510,7 +514,19 @@ abstract class DataContainer extends \Backend
 			}
 		}
 
-		$objWidget->wizard = $wizard;
+		if ($wizard != '')
+		{
+			$objWidget->wizard = $wizard;
+
+			if (!isset($arrData['eval']['tl_class']) || false === strpos($arrData['eval']['tl_class'], 'wizard'))
+			{
+				$arrData['eval']['tl_class'] .= ' wizard';
+			}
+		}
+		elseif (isset($arrData['eval']['tl_class']) && false !== strpos($arrData['eval']['tl_class'], 'wizard'))
+		{
+			$arrData['eval']['tl_class'] = str_replace('wizard', '', $arrData['eval']['tl_class']);
+		}
 
 		// Set correct form enctype
 		if ($objWidget instanceof \uploadable)
@@ -870,43 +886,24 @@ abstract class DataContainer extends \Backend
 	/**
 	 * Initialize the picker
 	 *
-	 * @return boolean
-	 *
-	 * @throws InternalServerErrorException
+	 * @return array|null
 	 */
 	protected function initPicker()
 	{
-		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
+		$this->objPicker = \System::getContainer()->get('contao.picker.factory')->createFromPayload(\Input::get('picker', true));
 
-		if (!$menuBuilder->supportsTable($this->strTable))
+		if ($this->objPicker === null || !is_array($config = $this->objPicker->getCurrentConfig()))
 		{
-			return false;
+			return null;
 		}
 
-		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
-		$this->intPickerId = (int) $this->intPickerId;
+		$this->strPickerFieldType = $config['fieldType'];
 
-		\Controller::loadDataContainer($this->strPickerTable);
-
-		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
-		{
-			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
+		if (isset($config['value'])) {
+			$this->arrPickerValue = (array) $config['value'];
 		}
 
-		$this->setPickerValue();
-
-		/** @var Widget $strClass */
-		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
-
-		if (is_a($strClass, DcaFilterInterface::class, true))
-		{
-			/** @var DcaFilterInterface $objWidget */
-			$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable));
-
-			$this->setDcaFilter($objWidget->getDcaFilter());
-		}
-
-		return true;
+		return $config;
 	}
 
 
@@ -925,10 +922,10 @@ abstract class DataContainer extends \Backend
 		switch ($this->strPickerFieldType)
 		{
 			case 'checkbox':
-				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="checkbox" name="picker[]" id="picker_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($this->objPicker->getCurrentValue($value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 
 			case 'radio':
-				return ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="radio" name="picker" id="picker_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($this->objPicker->getCurrentValue($value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 		}
 
 		return '';
