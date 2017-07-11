@@ -133,46 +133,6 @@ services:
         class: Knp\Menu\Matcher\Matcher
         public: false
 
-    contao.menu.picker_menu_builder:
-        class: Contao\CoreBundle\Menu\PickerMenuBuilder
-        arguments:
-            - "@knp_menu.factory"
-            - "@contao.menu.renderer"
-            - "@router"
-        tags:
-            - { name: knp_menu.menu_builder, method: createMenu, alias: picker }
-
-    contao.menu.page_picker_provider:
-        class: Contao\CoreBundle\Menu\PagePickerProvider
-        public: false
-        arguments:
-            - "@router"
-            - "@request_stack"
-            - "@security.token_storage"
-        tags:
-            - { name: contao.picker_menu_provider, priority: 192 }
-
-    contao.menu.file_picker_provider:
-        class: Contao\CoreBundle\Menu\FilePickerProvider
-        public: false
-        arguments:
-            - "@router"
-            - "@request_stack"
-            - "@security.token_storage"
-            - "%contao.upload_path%"
-        tags:
-            - { name: contao.picker_menu_provider, priority: 160 }
-
-    contao.menu.article_picker_provider:
-        class: Contao\CoreBundle\Menu\ArticlePickerProvider
-        public: false
-        arguments:
-            - "@router"
-            - "@request_stack"
-            - "@security.token_storage"
-        tags:
-            - { name: contao.picker_menu_provider }
-
     contao.menu.renderer:
         class: Knp\Menu\Renderer\ListRenderer
         public: false

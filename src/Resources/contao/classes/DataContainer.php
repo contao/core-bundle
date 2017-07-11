@@ -113,24 +113,6 @@ abstract class DataContainer extends \Backend
 	protected $blnUploadable = false;
 
 	/**
-	 * The picker table
-	 * @var string
-	 */
-	protected $strPickerTable;
-
-	/**
-	 * The picker field
-	 * @var string
-	 */
-	protected $strPickerField;
-
-	/**
-	 * The picker ID
-	 * @var integer
-	 */
-	protected $intPickerId;
-
-	/**
 	 * The picker value
 	 * @var array
 	 */
@@ -925,64 +907,6 @@ abstract class DataContainer extends \Backend
 		}
 
 		return true;
-	}
-
-
-	/**
-	 * Set the picker value
-	 */
-	protected function setPickerValue()
-	{
-		$varValue = \Input::get('value');
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$varValue = array_filter(explode(',', $varValue));
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$this->arrPickerValue = $varValue;
-	}
-
-
-	/**
-	 * Set the DCA filter
-	 *
-	 * @param array $arrFilter
-	 */
-	protected function setDcaFilter($arrFilter)
-	{
-		if (isset($arrFilter['root']))
-		{
-			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
-		}
-
-		if (isset($arrFilter['fieldType']))
-		{
-			$this->strPickerFieldType = $arrFilter['fieldType'];
-		}
-	}
-
-
-	/**
-	 * Return the picker attributes
-	 *
-	 * @return string
-	 */
-	protected function getPickerAttributes()
-	{
-		if ($this->strPickerField)
-		{
-			return ' id="tl_select" data-table="' . $this->strTable . '"';
-		}
-
-		return '';
 	}
 
 
