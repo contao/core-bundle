@@ -82,7 +82,18 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function supportsValue(PickerConfig $config)
     {
-        return ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{file::'));
+        if ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{file::')) {
+            return true;
+        }
+
+        /** @var Validator $validator */
+        $validator = $this->framework->getAdapter(Validator::class);
+
+        if ('file' === $config->getContext() && $validator->isUuid($config->getValue())) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
