@@ -3047,7 +3047,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		{
 			$blnHideFiles = !isset($attributes['files']) && !isset($attributes['filesOnly']);
 
-			if (isset($attributes['files']) && $attributes['files'] !== '1')
+			if (!isset($attributes['files']) || !$attributes['files'])
 			{
 				$blnHideFiles = true;
 			}
@@ -3069,11 +3069,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				}
 
 				// Allow only those roots that are allowed in root nodes
-				if (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']))
+				if (!empty($this->arrFilemounts))
 				{
 					$blnValid = false;
 
-					foreach ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] as $strFolder)
+					foreach ($this->arrFilemounts as $strFolder)
 					{
 						if (0 === strpos($strPath, $strFolder))
 						{
@@ -3088,7 +3088,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					}
 				}
 
-				$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = array($strPath);
+				$this->arrFilemounts = array($strPath);
 			}
 
 			if (isset($attributes['extensions']))
