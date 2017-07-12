@@ -113,7 +113,14 @@ abstract class DataContainer extends \Backend
 	protected $blnUploadable = false;
 
 	/**
-	 * @var \Closure
+	 * DCA Picker instance
+	 * @var PickerInterface
+	 */
+	protected $objPicker;
+
+	/**
+	 * Callback to convert DCA value to picker value
+	 * @var callable
 	 */
 	protected $objPickerCallback;
 
@@ -557,17 +564,26 @@ abstract class DataContainer extends \Backend
 		{
 			list ($file, $type) = explode('|', $arrData['eval']['rte'], 2);
 
+			$fileBrowserTypes = [];
+			$pickerBuilder = \System::getContainer()->get('contao.picker.builder');
+			foreach (['file' => 'image', 'link' => 'file'] as $context => $type) {
+				if ($pickerBuilder->supportsContext($context)) {
+					$fileBrowserTypes[] = $type;
+				}
+			}
+
 			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
 			$objTemplate->type = $type;
+			$objTemplate->fileBrowserTypes = $fileBrowserTypes;
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
 
 			$updateMode = $objTemplate->parse();
 
-			unset($file, $type);
+			unset($file, $type, $pickerBuilder);
 		}
 
 		// Handle multi-select fields in "override all" mode
@@ -907,6 +923,7 @@ abstract class DataContainer extends \Backend
 
 		$attributes = $provider->getDcaAttributes($picker->getConfig());
 
+		$this->objPicker = $picker;
 		$this->strPickerFieldType = $attributes['fieldType'];
 		$this->objPickerCallback = function ($value) use ($picker, $provider) {
 			return $provider->convertDcaValue($picker->getConfig(), $value);

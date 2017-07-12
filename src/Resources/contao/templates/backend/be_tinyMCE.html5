@@ -3,16 +3,6 @@
 namespace Contao;
 
 if ($GLOBALS['TL_CONFIG']['useRTE']):
-    $builder = \System::getContainer()->get('contao.picker.builder');
-    $pickerTypes = [];
-
-    if ($builder->supportsContext('file')) {
-        $pickerTypes[] = 'image';
-    }
-
-    if ($builder->supportsContext('link')) {
-        $pickerTypes[] = 'file';
-    }
 
 ?>
 <script>window.tinymce || document.write('<script src="<?= TL_ASSETS_URL ?>assets/tinymce4/js/tinymce.gzip.js">\x3C/script>')</script>
@@ -34,7 +24,9 @@ setTimeout(function() {
       }
       editor.on('focus', function(){ Backend.getScrollOffset(); });
     },
-    file_browser_callback_types: <?= json_encode($pickerTypes) ?>,
+    <?php if (is_array($this->fileBrowserTypes)): ?>
+    file_browser_callback_types: <?= json_encode($this->fileBrowserTypes) ?>,
+    <?php endif; ?>
     file_browser_callback: function(field_name, url, type, win) {
       Backend.openModalBrowser(field_name, url, type, win);
     },
