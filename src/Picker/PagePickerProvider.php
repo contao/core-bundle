@@ -49,11 +49,11 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function supportsValue(PickerConfig $config)
     {
-        if ('page' === $config->getContext() && is_numeric($config->getValue())) {
+        if ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{link_url::')) {
             return true;
         }
 
-        if ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{link_url::')) {
+        if ('page' === $config->getContext() && is_numeric($config->getValue())) {
             return true;
         }
 
@@ -83,22 +83,22 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $result = ['fieldType' => $config->getExtra('fieldType')];
+        $attributes = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 
         if ('page' === $config->getContext()) {
             if ($value) {
-                $result['value'] = array_map('intval', explode(',', $value));
+                $attributes['value'] = array_map('intval', explode(',', $value));
             }
 
             if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
-                $result['rootNodes'] = $rootNodes;
+                $attributes['rootNodes'] = $rootNodes;
             }
         } elseif ('link' === $config->getContext() && false !== strpos($value, '{{link_url::')) {
-            $result['value'] = str_replace(['{{link_url::', '}}'], '', $value);
+            $attributes['value'] = str_replace(['{{link_url::', '}}'], '', $value);
         }
 
-        return $result;
+        return $attributes;
     }
 
     /**

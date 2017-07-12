@@ -108,17 +108,17 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $result = ['fieldType' => $config->getExtra('fieldType')];
+        $attributes = ['fieldType' => $config->getExtra('fieldType')];
         $value = $config->getValue();
 
         if ('file' === $config->getContext()) {
-            $result += array_intersect_key(
+            $attributes += array_intersect_key(
                 $config->getExtras(),
                 array_flip(['files', 'filesOnly', 'path', 'extensions'])
             );
 
             if ($value) {
-                $result['value'] = $this->convertValueToPath($value);
+                $attributes['value'] = $this->convertValueToPath($value);
             }
         } elseif ('link' === $config->getContext() && $value) {
             if (false !== strpos($value, '{{file::')) {
@@ -126,13 +126,13 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             }
 
             if (0 === strpos($value, $this->uploadPath.'/')) {
-                $result['value'] = $value;
+                $attributes['value'] = $value;
             } else {
-                $result['value'] = $this->convertValueToPath($value);
+                $attributes['value'] = $this->convertValueToPath($value);
             }
         }
 
-        return $result;
+        return $attributes;
     }
 
     /**
