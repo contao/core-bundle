@@ -78,16 +78,16 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	protected $blnIsDbAssisted = false;
 
 	/**
-	 * Hide files
+	 * Show files
 	 * @var boolean
 	 */
-	protected $blnHideFiles = false;
+	protected $blnFiles = true;
 
 	/**
-	 * Select folders
+	 * Only allow to select files
 	 * @var boolean
 	 */
-	protected $blnSelectFolders = false;
+	protected $blnFilesOnly = false;
 
 
 	/**
@@ -2572,7 +2572,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
-				elseif ($this->blnHideFiles && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
+				elseif (!$this->blnFiles && !$this->blnFilesOnly && !is_dir(TL_ROOT . '/' . $currentFolder . '/' . $file))
 				{
 					--$countFiles;
 				}
@@ -2647,7 +2647,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				if ($this->strPickerFieldType)
 				{
-					$return .= $this->getPickerInputField($currentEncoded, $this->blnSelectFolders ? '' : ' disabled');
+					$return .= $this->getPickerInputField($currentEncoded, $this->blnFilesOnly ? ' disabled' : '');
 				}
 			}
 
@@ -2662,7 +2662,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 		}
 
-		if ($this->blnHideFiles)
+		if (!$this->blnFiles && !$this->blnFilesOnly)
 		{
 			return $return;
 		}
@@ -3043,21 +3043,13 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 	{
 		$attributes = parent::initPicker($picker);
 
+		$this->blnFiles = false;
+		$this->blnFilesOnly = false;
+
 		if (is_array($attributes))
 		{
-			$blnHideFiles = !isset($attributes['files']) && !isset($attributes['filesOnly']);
-
-			if (!isset($attributes['files']) || !$attributes['files'])
-			{
-				$blnHideFiles = true;
-			}
-
-			$this->blnHideFiles = $blnHideFiles;
-
-			if (!isset($attributes['filesOnly']) || !$attributes['filesOnly'])
-			{
-				$this->blnSelectFolders = true;
-			}
+			$this->blnFiles = isset($attributes['files']) && $attributes['files'];
+			$this->blnFilesOnly = isset($attributes['filesOnly']) && $attributes['filesOnly'];
 
 			if (isset($attributes['path']))
 			{
