@@ -138,7 +138,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
                     $attributes['value'][] = $this->urlEncode($this->convertValueToPath($v));
                 }
             }
-        } elseif ('link' === $config->getContext() && $value) {
+        } elseif ('link' === $config->getContext()) {
             $attributes['fieldType'] = 'radio';
             $attributes['filesOnly'] = true;
 
