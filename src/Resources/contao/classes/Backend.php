@@ -1094,6 +1094,7 @@ abstract class Backend extends \Controller
 	{
 		$context = 'link';
 		$extras = is_array($extras) ? $extras : [];
+		$providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
 
 		if (isset($extras['context']))
 		{
@@ -1103,7 +1104,7 @@ abstract class Backend extends \Controller
 
 		$factory = \System::getContainer()->get('contao.picker.builder');
 
-		if (!$factory->supportsContext($context))
+		if (!$factory->supportsContext($context, $providers))
 		{
 			return '';
 		}

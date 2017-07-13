@@ -62,7 +62,7 @@ class PickerBuilder implements PickerBuilderInterface
      */
     public function addProvider(PickerProviderInterface $provider)
     {
-        $this->providers[] = $provider;
+        $this->providers[$provider->getName()] = $provider;
     }
 
     /**
@@ -70,8 +70,14 @@ class PickerBuilder implements PickerBuilderInterface
      */
     public function create(PickerConfig $config)
     {
+        $providers = $this->providers;
+
+        if (is_array($allowed = $config->getExtra('providers'))) {
+            $providers = array_intersect_key($providers, array_flip($allowed));
+        }
+
         $providers = array_filter(
-            $this->providers,
+            $providers,
             function (PickerProviderInterface $provider) use ($config) {
                 return $provider->supportsContext($config->getContext());
             }
@@ -105,9 +111,15 @@ class PickerBuilder implements PickerBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsContext($context)
+    public function supportsContext($context, array $allowed = null)
     {
-        foreach ($this->providers as $provider) {
+        $providers = $this->providers;
+
+        if (null !== $allowed) {
+            $providers = array_intersect_key($providers, array_flip($allowed));
+        }
+
+        foreach ($providers as $provider) {
             if ($provider->supportsContext($context)) {
                 return true;
             }
@@ -121,7 +133,9 @@ class PickerBuilder implements PickerBuilderInterface
      */
     public function getUrl($context, array $extras = [], $value = '')
     {
-        if (!$this->supportsContext($context)) {
+        $providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
+
+        if (!$this->supportsContext($context, $providers)) {
             return '';
         }
 

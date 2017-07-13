@@ -38,11 +38,12 @@ interface PickerBuilderInterface
     /**
      * Returns whether the given context is supported.
      *
-     * @param string $context
+     * @param string     $context
+     * @param array|null $allowed
      *
      * @return bool
      */
-    public function supportsContext($context);
+    public function supportsContext($context, array $allowed = null);
 
     /**
      * Gets picker URL for given context and configuration.
