@@ -94,7 +94,7 @@
 
   <?php if ($this->isPopup): ?>
     <script>
-      if ($$('.tl_tree_checkbox,.tl_tree_radio').length > 0) {
+      if ($$('.tl_tree_checkbox,.tl_tree_radio').length > 0 && !document.location.search.test('act=select')) {
         parent.document.getElements('.simple-modal-footer a').removeClass('btn-disabled');
       } else {
         parent.document.getElements('.simple-modal-footer a').addClass('btn-disabled');
