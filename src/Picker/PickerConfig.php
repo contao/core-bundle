@@ -147,14 +147,50 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Initializes object from previous serialized data.
+     * Encodes the picker configuration for use in the URL.
      *
-     * @param array $data
+     * @param bool $gzip
+     *
+     * @return string
+     */
+    public function urlEncode($gzip = true)
+    {
+        $data = json_encode($this);
+
+        if ($gzip
+            && function_exists('gzencode')
+            && function_exists('gzdecode')
+            && false !== ($encoded = @gzencode($data))
+        ) {
+            $data = $encoded;
+        }
+
+        return base64_encode($data);
+    }
+
+    /**
+     * Initializes object from URL data.
+     *
+     * @param string $data
      *
      * @return PickerConfig
+     *
+     * @throws \InvalidArgumentException
      */
-    public static function jsonUnserialize(array $data)
+    public static function urlDecode($data)
     {
+        $data = base64_decode($data, true);
+
+        if (function_exists('gzdecode') && false !== ($uncompressed = @gzdecode($data))) {
+            $data = $uncompressed;
+        }
+
+        $data = @json_decode($data, true);
+
+        if (null === $data) {
+            throw new \InvalidArgumentException('Invalid JSON data');
+        }
+
         return new PickerConfig(
             $data['context'],
             $data['extras'],

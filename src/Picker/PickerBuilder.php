@@ -91,15 +91,15 @@ class PickerBuilder implements PickerBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function createFromJson($json)
+    public function createFromData($data)
     {
-        $data = @json_decode($json, true);
-
-        if (null === $data) {
+        try {
+            $config = PickerConfig::urlDecode($data);
+        } catch (\InvalidArgumentException $e) {
             return null;
         }
 
-        return $this->create(PickerConfig::jsonUnserialize($data));
+        return $this->create($config);
     }
 
     /**
@@ -125,11 +125,9 @@ class PickerBuilder implements PickerBuilderInterface
             return '';
         }
 
-        $extrasString = base64_encode(json_encode($extras));
-
         return $this->router->generate(
             'contao_backend_picker',
-            ['context' => $context, 'extras' => $extrasString, 'value' => $value]
+            ['context' => $context, 'extras' => $extras, 'value' => $value]
         );
     }
 }

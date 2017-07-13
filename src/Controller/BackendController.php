@@ -229,7 +229,7 @@ class BackendController extends Controller
         $extras = [];
 
         if ($request->query->has('extras')) {
-            $extras = @json_decode(base64_decode($request->query->get('extras')), true);
+            $extras = $request->query->get('extras');
 
             if (!is_array($extras)) {
                 throw new BadRequestHttpException('Invalid picker extras');

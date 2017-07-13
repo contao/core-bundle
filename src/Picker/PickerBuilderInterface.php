@@ -27,13 +27,13 @@ interface PickerBuilderInterface
     public function create(PickerConfig $config);
 
     /**
-     * Creates a picker from JSON data.
+     * Creates a picker from encoded URL data.
      *
-     * @param string $json
+     * @param string $data
      *
      * @return PickerInterface|null
      */
-    public function createFromJson($json);
+    public function createFromData($data);
 
     /**
      * Returns whether the given context is supported.

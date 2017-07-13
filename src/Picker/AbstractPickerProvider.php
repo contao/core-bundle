@@ -55,7 +55,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
                 'popup' => '1',
             ],
             $this->getRouteParameters($config),
-            ['picker' => base64_encode(json_encode($config->cloneForCurrent($name)))]
+            ['picker' => $config->cloneForCurrent($name)->urlEncode()]
         );
 
         return $this->menuFactory->createItem(
