@@ -1101,8 +1101,6 @@ abstract class Backend extends \Controller
 			unset($extras['context']);
 		}
 
-		$extras['fieldType'] = $GLOBALS['TL_DCA'][$table]['fields'][$field]['eval']['fieldType'];
-
 		$factory = \System::getContainer()->get('contao.picker.builder');
 
 		if (!$factory->supportsContext($context))

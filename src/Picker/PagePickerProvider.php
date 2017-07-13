@@ -83,19 +83,25 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $attributes = ['fieldType' => $config->getExtra('fieldType')];
+        $attributes = [];
         $value = $config->getValue();
 
         if ('page' === $config->getContext()) {
-            if ($value) {
-                $attributes['value'] = array_map('intval', explode(',', $value));
-            }
+            $attributes = ['fieldType' => $config->getExtra('fieldType')];
 
             if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
                 $attributes['rootNodes'] = $rootNodes;
             }
-        } elseif ('link' === $config->getContext() && false !== strpos($value, '{{link_url::')) {
-            $attributes['value'] = str_replace(['{{link_url::', '}}'], '', $value);
+
+            if ($value) {
+                $attributes['value'] = array_map('intval', explode(',', $value));
+            }
+        } elseif ('link' === $config->getContext()) {
+            $attributes = ['fieldType' => 'radio'];
+
+            if ($value && false !== strpos($value, '{{link_url::')) {
+                $attributes['value'] = str_replace(['{{link_url::', '}}'], '', $value);
+            }
         }
 
         return $attributes;

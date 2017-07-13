@@ -123,13 +123,13 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $attributes = ['fieldType' => $config->getExtra('fieldType')];
+        $attributes = [];
         $value = $config->getValue();
 
         if ('file' === $config->getContext()) {
             $attributes += array_intersect_key(
                 $config->getExtras(),
-                array_flip(['files', 'filesOnly', 'path', 'extensions'])
+                array_flip(['fieldType', 'files', 'filesOnly', 'path', 'extensions'])
             );
 
             if ($value) {
@@ -139,6 +139,8 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
                 }
             }
         } elseif ('link' === $config->getContext() && $value) {
+            $attributes['fieldType'] = 'radio';
+            $attributes['filesOnly'] = true;
 
             if ($value) {
                 if (false !== strpos($value, '{{file::')) {
