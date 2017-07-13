@@ -166,7 +166,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
         if ('link' === $config->getContext()) {
             /** @var FilesModel $filesModel */
             $filesModel = $this->framework->getAdapter(FilesModel::class);
-            $file = $filesModel->findByPath($value);
+            $file = $filesModel->findByPath(rawurldecode($value));
 
             if (null !== $file) {
                 /** @var StringUtil $stringUtil */
