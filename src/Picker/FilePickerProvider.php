@@ -82,7 +82,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function supportsValue(PickerConfig $config)
     {
-        if ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{file::')) {
+        if ('link' === $config->getContext()
+            && (false !== strpos($config->getValue(), '{{file::')
+                || 0 === strpos($config->getValue(), $this->uploadPath)
+            )
+        ) {
             return true;
         }
 
@@ -129,17 +133,23 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             );
 
             if ($value) {
-                $attributes['value'] = $this->convertValueToPath($value);
+                $attributes['value'] = [];
+                foreach (explode(',', $value) as $v) {
+                    $attributes['value'][] = $this->urlEncode($this->convertValueToPath($v));
+                }
             }
         } elseif ('link' === $config->getContext() && $value) {
-            if (false !== strpos($value, '{{file::')) {
-                $value = str_replace(['{{file::', '}}'], '', $value);
-            }
 
-            if (0 === strpos($value, $this->uploadPath.'/')) {
-                $attributes['value'] = $value;
-            } else {
-                $attributes['value'] = $this->convertValueToPath($value);
+            if ($value) {
+                if (false !== strpos($value, '{{file::')) {
+                    $value = str_replace(['{{file::', '}}'], '', $value);
+                }
+
+                if (0 === strpos($value, $this->uploadPath . '/')) {
+                    $attributes['value'] = $this->urlEncode($value);
+                } else {
+                    $attributes['value'] = $this->urlEncode($this->convertValueToPath($value));
+                }
             }
         }
 
@@ -186,6 +196,20 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             return $file->path;
         }
 
-        return '';
+        return $value;
+    }
+
+    /**
+     * Urlencodes a file path preserving slashes.
+     *
+     * @param string $strPath
+     *
+     * @return string
+     *
+     * @see \Contao\System::urlEncode()
+     */
+    private function urlEncode($strPath)
+    {
+        return str_replace('%2F', '/', rawurlencode($strPath));
     }
 }

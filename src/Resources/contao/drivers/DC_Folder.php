@@ -3091,39 +3091,4 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 		return $attributes;
 	}
-
-	/**
-	 * Set the picker value
-	 */
-	protected function setPickerValue()
-	{
-		$varValue = \Input::get('value', true);
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$varValue = array_map(array($this, 'urlEncode'), array_filter(explode(',', $varValue)));
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$this->arrPickerValue = $varValue;
-
-		// TinyMCE will pass the path instead of the ID
-		if (strpos($varValue[0], \Config::get('uploadPath') . '/') === 0)
-		{
-			return;
-		}
-
-		$objFiles = \FilesModel::findMultipleByIds($varValue);
-
-		if ($objFiles !== null)
-		{
-			$this->arrPickerValue = array_map(array($this, 'urlEncode'), array_values($objFiles->fetchEach('path')));
-		}
-	}
 }
