@@ -50,7 +50,6 @@ class MergeHttpHeadersListener
     public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
-        $this->setHeaders(headers_list());
     }
 
     /**
@@ -60,6 +59,11 @@ class MergeHttpHeadersListener
      */
     public function getHeaders()
     {
+        if ([] === $this->headers) {
+
+            return headers_list();
+        }
+
         return $this->headers;
     }
 
@@ -67,6 +71,9 @@ class MergeHttpHeadersListener
      * Sets the headers.
      *
      * @param array $headers
+     *
+     * @internal Do not use this in userland code. This is for unit test purposes
+     *           only because mocking header_*() functions is tedious work.
      */
     public function setHeaders(array $headers)
     {
