@@ -60,7 +60,6 @@ class MergeHttpHeadersListener
     public function getHeaders()
     {
         if ([] === $this->headers) {
-
             return headers_list();
         }
 
@@ -72,8 +71,7 @@ class MergeHttpHeadersListener
      *
      * @param array $headers
      *
-     * @internal Do not use this in userland code. This is for unit test purposes
-     *           only because mocking header_*() functions is tedious work.
+     * @internal Do not call this method in your code; it is meant for unit test only
      */
     public function setHeaders(array $headers)
     {
