@@ -71,7 +71,7 @@ class MergeHttpHeadersListener
      *
      * @param array $headers
      *
-     * @internal Do not call this method in your code; it is meant for unit test only
+     * @internal Do not call this method in your code; it is meant for unit testing only
      */
     public function setHeaders(array $headers)
     {
