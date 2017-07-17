@@ -3046,47 +3046,49 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$this->blnFiles = false;
 		$this->blnFilesOnly = false;
 
-		if (is_array($attributes))
+		if (null === $attributes)
 		{
-			$this->blnFiles = isset($attributes['files']) && $attributes['files'];
-			$this->blnFilesOnly = isset($attributes['filesOnly']) && $attributes['filesOnly'];
+			return null;
+		}
 
-			if (isset($attributes['path']))
+		$this->blnFiles = isset($attributes['files']) && $attributes['files'];
+		$this->blnFilesOnly = isset($attributes['filesOnly']) && $attributes['filesOnly'];
+
+		if (isset($attributes['path']))
+		{
+			$strPath = (string) $attributes['path'];
+
+			if (\Validator::isInsecurePath($strPath) || !is_dir(TL_ROOT . '/' . $strPath))
 			{
-				$strPath = (string) $attributes['path'];
+				throw new \RuntimeException('Invalid path ' . $strPath);
+			}
 
-				if (\Validator::isInsecurePath($strPath) || !is_dir(TL_ROOT . '/' . $strPath))
+			// Allow only those roots that are allowed in root nodes
+			if (!empty($this->arrFilemounts))
+			{
+				$blnValid = false;
+
+				foreach ($this->arrFilemounts as $strFolder)
 				{
-					throw new \RuntimeException('Invalid path ' . $strPath);
-				}
-
-				// Allow only those roots that are allowed in root nodes
-				if (!empty($this->arrFilemounts))
-				{
-					$blnValid = false;
-
-					foreach ($this->arrFilemounts as $strFolder)
+					if (0 === strpos($strPath, $strFolder))
 					{
-						if (0 === strpos($strPath, $strFolder))
-						{
-							$blnValid = true;
-							break;
-						}
-					}
-
-					if (!$blnValid)
-					{
-						$strPath = '';
+						$blnValid = true;
+						break;
 					}
 				}
 
-				$this->arrFilemounts = array($strPath);
+				if (!$blnValid)
+				{
+					$strPath = '';
+				}
 			}
 
-			if (isset($attributes['extensions']))
-			{
-				$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($attributes['extensions']));
-			}
+			$this->arrFilemounts = array($strPath);
+		}
+
+		if (isset($attributes['extensions']))
+		{
+			$this->arrValidFileTypes = \StringUtil::trimsplit(',', strtolower($attributes['extensions']));
 		}
 
 		return $attributes;

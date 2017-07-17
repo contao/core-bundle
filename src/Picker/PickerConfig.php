@@ -149,15 +149,15 @@ class PickerConfig implements \JsonSerializable
     /**
      * Encodes the picker configuration for use in the URL.
      *
-     * @param bool $gzip
+     * @param bool $compress
      *
      * @return string
      */
-    public function urlEncode($gzip = true)
+    public function urlEncode($compress = true)
     {
         $data = json_encode($this);
 
-        if ($gzip
+        if ($compress
             && function_exists('gzencode')
             && function_exists('gzdecode')
             && false !== ($encoded = @gzencode($data))

@@ -6127,22 +6127,24 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	{
 		$attributes = parent::initPicker($picker);
 
-		if (is_array($attributes))
+		if (null === $attributes)
 		{
-			// Predefined node set (see #3563)
-			if (isset($attributes['rootNodes']))
+			return null;
+		}
+
+		// Predefined node set (see #3563)
+		if (isset($attributes['rootNodes']))
+		{
+			$arrRoot = (array) $attributes['rootNodes'];
+
+			// Allow only those roots that are allowed in root nodes
+			if (!empty($this->root))
 			{
-				$arrRoot = (array) $attributes['rootNodes'];
-
-				// Allow only those roots that are allowed in root nodes
-				if (!empty($this->root))
-				{
-					$arrRoot = array_intersect($arrRoot, $this->Database->getChildRecords($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'], $this->strTable));
-					$arrRoot = $this->eliminateNestedPages($arrRoot);
-				}
-
-				$this->root = $arrRoot;
+				$arrRoot = array_intersect($arrRoot, $this->Database->getChildRecords($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'], $this->strTable));
+				$arrRoot = $this->eliminateNestedPages($arrRoot);
 			}
+
+			$this->root = $arrRoot;
 		}
 
 		return $attributes;

@@ -216,7 +216,8 @@ class BackendController extends Controller
     }
 
     /**
-     * Handles the picker redirect.
+     * Redirects the user to the Contao backend and includes the picker query parameter.
+     * It will determine the current provider URL based on the value (usually read dynamically from javascript).
      *
      * @param Request $request
      *

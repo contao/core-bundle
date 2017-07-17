@@ -583,7 +583,7 @@ abstract class DataContainer extends \Backend
 
 			$updateMode = $objTemplate->parse();
 
-			unset($file, $type, $pickerBuilder);
+			unset($file, $type, $pickerBuilder, $fileBrowserTypes);
 		}
 
 		// Handle multi-select fields in "override all" mode
