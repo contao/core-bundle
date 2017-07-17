@@ -29,11 +29,6 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     use FrameworkAwareTrait;
 
     /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    /**
      * @var string
      */
     private $uploadPath;
@@ -42,13 +37,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      * Constructor.
      *
      * @param FactoryInterface         $menuFactory
-     * @param TokenStorageInterface    $tokenStorage
-     * @param ContaoFrameworkInterface $framework
      * @param string                   $uploadPath
      */
-    public function __construct(FactoryInterface $menuFactory, TokenStorageInterface $tokenStorage, $uploadPath)
+    public function __construct(FactoryInterface $menuFactory, $uploadPath)
     {
-        parent::__construct($menuFactory, $tokenStorage);
+        parent::__construct($menuFactory);
 
         $this->uploadPath = $uploadPath;
     }

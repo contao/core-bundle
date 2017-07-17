@@ -171,7 +171,8 @@ services:
         public: false
         arguments:
             - "@knp_menu.factory"
-            - "@security.token_storage"
+        calls:
+            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 192 }
 
@@ -180,8 +181,9 @@ services:
         public: false
         arguments:
             - "@knp_menu.factory"
-            - "@security.token_storage"
             - "%contao.upload_path%"
+        calls:
+            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 160 }
 
@@ -190,7 +192,8 @@ services:
         public: false
         arguments:
             - "@knp_menu.factory"
-            - "@security.token_storage"
+        calls:
+            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider }
 

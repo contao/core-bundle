@@ -35,12 +35,10 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
      * Constructor.
      *
      * @param FactoryInterface      $menuFactory
-     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(FactoryInterface $menuFactory, TokenStorageInterface $tokenStorage)
+    public function __construct(FactoryInterface $menuFactory)
     {
         $this->menuFactory = $menuFactory;
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -68,6 +66,16 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
                 'routeParameters' => $params,
             ]
         );
+    }
+
+    /**
+     * Setter injection for the security token storage.
+     * 
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function setTokenStorage(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
