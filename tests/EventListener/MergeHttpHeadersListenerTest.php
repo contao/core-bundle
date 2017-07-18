@@ -114,7 +114,7 @@ class MergeHttpHeadersListenerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $listener = new MergeHttpHeadersListener($framework, ['set-cookie: new-content=foobar']); // test a lower-case key here
+        $listener = new MergeHttpHeadersListener($framework, ['set-cookie: new-content=foobar']); // lower-case key
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
