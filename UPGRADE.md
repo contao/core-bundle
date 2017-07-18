@@ -397,3 +397,9 @@ have to be published explicitly to be available via HTTP.
 In Contao 3, the alias of an article was automatically used as its CSS ID, if
 no custom CSS ID was defined. In Contao 4 the default CSS ID will be generated
 from its numeric ID, e.g. `article-1`.
+
+### cron.php
+
+In Contao 4 there is no `cron.php` entry point anymore, you can use the
+`/_contao/cron` route instead. There is no command to execute the cron, only
+a webcron is possible.
