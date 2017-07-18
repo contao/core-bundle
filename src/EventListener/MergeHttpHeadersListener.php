@@ -29,7 +29,7 @@ class MergeHttpHeadersListener
     /**
      * @var array|null
      */
-    private $headers = null;
+    private $headers;
 
     /**
      * @var array
@@ -46,8 +46,7 @@ class MergeHttpHeadersListener
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param array                    $headers Do not pass this argument in your code;
-     *                                          It is meant for unit testing only.
+     * @param array                    $headers   Meant for unit testing only!
      */
     public function __construct(ContaoFrameworkInterface $framework, array $headers = null)
     {
@@ -151,7 +150,6 @@ class MergeHttpHeadersListener
     private function getHeaders()
     {
         if (null === $this->headers) {
-
             return headers_list();
         }
 
