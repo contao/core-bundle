@@ -149,11 +149,7 @@ class MergeHttpHeadersListener
      */
     private function getHeaders()
     {
-        if (null === $this->headers) {
-            $this->headers = headers_list();
-        }
-
-        return $this->headers;
+        return $this->headers ?: headers_list();
     }
 
     /**
