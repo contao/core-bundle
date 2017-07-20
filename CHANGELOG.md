@@ -1,5 +1,9 @@
 # Contao core bundle change log
 
+### DEV
+
+ * Rewrite the DCA picker (see #950).
+
 ### 4.4.1 (2017-07-12)
 
  * Prevent arbitrary PHP file inclusions in the back end (see CVE-2017-10993).
