@@ -160,7 +160,6 @@ services:
 
     contao.picker.builder:
         class: Contao\CoreBundle\Picker\PickerBuilder
-        public: true
         arguments:
             - "@knp_menu.factory"
             - "@router"

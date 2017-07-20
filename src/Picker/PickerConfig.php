@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Picker;
 
 /**
- * Picture configuration.
+ * Picker configuration.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
@@ -54,7 +54,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Gets context.
+     * Returns the context.
      *
      * @return string
      */
@@ -64,7 +64,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Gets value.
+     * Returns the value.
      *
      * @return string
      */
@@ -74,7 +74,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Gets alias of the current picker.
+     * Returns the alias of the current picker.
      *
      * @return string
      */
@@ -84,7 +84,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Gets extras.
+     * Returns the extras.
      *
      * @return array
      */
@@ -94,7 +94,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Gets extra by name.
+     * Returns an extra by name.
      *
      * @param string $name
      *
@@ -106,7 +106,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Sets extra by name.
+     * Sets an extra.
      *
      * @param string $name
      * @param mixed  $value
@@ -117,7 +117,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Duplicates the configuration and overrides current picker alias.
+     * Duplicates the configuration and overrides the current picker alias.
      *
      * @param string $current
      *
@@ -125,12 +125,7 @@ class PickerConfig implements \JsonSerializable
      */
     public function cloneForCurrent($current)
     {
-        return new PickerConfig(
-            $this->context,
-            $this->extras,
-            $this->value,
-            $current
-        );
+        return new self($this->context, $this->extras, $this->value, $current);
     }
 
     /**
@@ -147,7 +142,7 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Encodes the picker configuration for use in the URL.
+     * Encodes the picker configuration for the URL.
      *
      * @param bool $compress
      *
@@ -157,11 +152,7 @@ class PickerConfig implements \JsonSerializable
     {
         $data = json_encode($this);
 
-        if ($compress
-            && function_exists('gzencode')
-            && function_exists('gzdecode')
-            && false !== ($encoded = @gzencode($data))
-        ) {
+        if ($compress && function_exists('gzencode') && false !== ($encoded = @gzencode($data))) {
             $data = $encoded;
         }
 
@@ -169,13 +160,13 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
-     * Initializes object from URL data.
+     * Initializes the object from the URL data.
      *
      * @param string $data
      *
-     * @return PickerConfig
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return PickerConfig
      */
     public static function urlDecode($data)
     {
@@ -191,11 +182,6 @@ class PickerConfig implements \JsonSerializable
             throw new \InvalidArgumentException('Invalid JSON data');
         }
 
-        return new PickerConfig(
-            $data['context'],
-            $data['extras'],
-            $data['value'],
-            $data['current']
-        );
+        return new self($data['context'], $data['extras'], $data['value'], $data['current']);
     }
 }

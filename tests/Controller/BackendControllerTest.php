@@ -12,10 +12,7 @@ namespace Contao\CoreBundle\Tests\Controller;
 
 use Contao\CoreBundle\Controller\BackendController;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Menu\PickerMenuBuilderInterface;
 use Contao\CoreBundle\Tests\TestCase;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Tests the BackendControllerTest class.

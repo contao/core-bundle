@@ -20,14 +20,14 @@ use Knp\Menu\ItemInterface;
 interface PickerProviderInterface
 {
     /**
-     * Gets the unique name for this picker.
+     * Returns the unique name for this picker.
      *
      * @return string
      */
     public function getName();
 
     /**
-     * Creates menu item for this picker.
+     * Creates the menu item for this picker.
      *
      * @param PickerConfig $config
      *
@@ -36,7 +36,7 @@ interface PickerProviderInterface
     public function createMenuItem(PickerConfig $config);
 
     /**
-     * Returns whether the picker is supported for given context.
+     * Returns whether the picker supports the given context.
      *
      * @param string $context
      *
@@ -45,7 +45,7 @@ interface PickerProviderInterface
     public function supportsContext($context);
 
     /**
-     * Returns whether the picker supports given value.
+     * Returns whether the picker supports the given value.
      *
      * @param PickerConfig $config
      *

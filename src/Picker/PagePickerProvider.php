@@ -10,8 +10,6 @@
 
 namespace Contao\CoreBundle\Picker;
 
-use Contao\DataContainer;
-
 /**
  * Provides the page picker.
  *
@@ -19,21 +17,12 @@ use Contao\DataContainer;
  */
 class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
-
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'pagePicker';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getLinkClass()
-    {
-        return 'pagemounts';
     }
 
     /**
@@ -58,16 +47,6 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getRouteParameters(PickerConfig $config)
-    {
-        return [
-            'do' => 'page',
-        ];
     }
 
     /**
@@ -117,5 +96,21 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
         }
 
         return (int) $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getLinkClass()
+    {
+        return 'pagemounts';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteParameters(PickerConfig $config)
+    {
+        return ['do' => 'page'];
     }
 }

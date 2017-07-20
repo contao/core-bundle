@@ -20,28 +20,28 @@ use Knp\Menu\ItemInterface;
 interface PickerInterface
 {
     /**
-     * Gets the picker config.
+     * Returns the picker configuration.
      *
      * @return PickerConfig
      */
     public function getConfig();
 
     /**
-     * Gets the picker menu.
+     * Returns the picker menu.
      *
      * @return ItemInterface
      */
     public function getMenu();
 
     /**
-     * Gets the current provider.
+     * Returns the current provider.
      *
      * @return PickerProviderInterface|null
      */
     public function getCurrentProvider();
 
     /**
-     * Gets URL to the current picker tab.
+     * Returns the URL to the current picker tab.
      *
      * @return string
      */

@@ -10,14 +10,12 @@
 
 namespace Contao\CoreBundle\Picker;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\Validator;
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Provides the file picker.
@@ -36,8 +34,8 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * Constructor.
      *
-     * @param FactoryInterface         $menuFactory
-     * @param string                   $uploadPath
+     * @param FactoryInterface $menuFactory
+     * @param string           $uploadPath
      */
     public function __construct(FactoryInterface $menuFactory, $uploadPath)
     {
@@ -52,14 +50,6 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     public function getName()
     {
         return 'filePicker';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getLinkClass()
-    {
-        return 'filemounts';
     }
 
     /**
@@ -83,24 +73,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             return true;
         }
 
-        /** @var Validator $validator */
-        $validator = $this->framework->getAdapter(Validator::class);
-
-        if ('file' === $config->getContext() && $validator->isUuid($config->getValue())) {
+        if ('file' === $config->getContext() && Validator::isUuid($config->getValue())) {
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getRouteParameters(PickerConfig $config)
-    {
-        return [
-            'do' => 'files',
-        ];
     }
 
     /**
@@ -127,6 +104,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
 
             if ($value) {
                 $attributes['value'] = [];
+
                 foreach (explode(',', $value) as $v) {
                     $attributes['value'][] = $this->urlEncode($this->convertValueToPath($v));
                 }
@@ -140,7 +118,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
                     $value = str_replace(['{{file::', '}}'], '', $value);
                 }
 
-                if (0 === strpos($value, $this->uploadPath . '/')) {
+                if (0 === strpos($value, $this->uploadPath.'/')) {
                     $attributes['value'] = $this->urlEncode($value);
                 } else {
                     $attributes['value'] = $this->urlEncode($this->convertValueToPath($value));
@@ -162,10 +140,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             $file = $filesModel->findByPath(rawurldecode($value));
 
             if (null !== $file) {
-                /** @var StringUtil $stringUtil */
-                $stringUtil = $this->framework->getAdapter(StringUtil::class);
-
-                return '{{file::' . $stringUtil->binToUuid($file->uuid) . '}}';
+                return '{{file::'.StringUtil::binToUuid($file->uuid).'}}';
             }
         }
 
@@ -173,7 +148,23 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     }
 
     /**
-     * Converts UUID value to file path if possible.
+     * {@inheritdoc}
+     */
+    protected function getLinkClass()
+    {
+        return 'filemounts';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteParameters(PickerConfig $config)
+    {
+        return ['do' => 'files'];
+    }
+
+    /**
+     * Converts the UUID value to a file path if possible.
      *
      * @param mixed $value
      *
@@ -181,13 +172,10 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     private function convertValueToPath($value)
     {
-        /** @var Validator $validator */
-        $validator = $this->framework->getAdapter(Validator::class);
-
         /** @var FilesModel $filesModel */
         $filesModel = $this->framework->getAdapter(FilesModel::class);
 
-        if ($validator->isUuid($value) && ($file = $filesModel->findByUuid($value)) instanceof FilesModel) {
+        if (Validator::isUuid($value) && ($file = $filesModel->findByUuid($value)) instanceof FilesModel) {
             return $file->path;
         }
 

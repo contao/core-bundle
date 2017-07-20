@@ -10,12 +10,11 @@
 
 namespace Contao\CoreBundle\Picker;
 
-use Contao\DataContainer;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 
 /**
- * Picker implementation.
+ * DCA picker.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
@@ -77,6 +76,7 @@ class Picker implements PickerInterface
         foreach ($this->providers as $provider) {
             $item = $provider->createMenuItem($this->config);
             $item->setExtra('provider', $provider);
+
             $this->menu->addChild($item);
         }
 
@@ -111,6 +111,7 @@ class Picker implements PickerInterface
         /** @var ItemInterface $menu */
         foreach ($menu as $item) {
             $picker = $item->getExtra('provider');
+
             if ($picker instanceof PickerProviderInterface && $picker->supportsValue($this->config)) {
                 return $item->getUri();
             }

@@ -17,21 +17,12 @@ namespace Contao\CoreBundle\Picker;
  */
 class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
-
     /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'articlePicker';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getLinkClass()
-    {
-        return 'articles';
     }
 
     /**
@@ -48,16 +39,6 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     public function supportsValue(PickerConfig $config)
     {
         return false !== strpos($config->getValue(), '{{article_url::');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getRouteParameters(PickerConfig $config)
-    {
-        return [
-            'do' => 'article',
-        ];
     }
 
     /**
@@ -88,5 +69,21 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     public function convertDcaValue(PickerConfig $config, $value)
     {
         return '{{article_url::'.$value.'}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getLinkClass()
+    {
+        return 'articles';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteParameters(PickerConfig $config)
+    {
+        return ['do' => 'article'];
     }
 }

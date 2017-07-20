@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Picker factory.
+ * Picker builder.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  */
@@ -56,7 +56,7 @@ class PickerBuilder implements PickerBuilderInterface
     }
 
     /**
-     * Adds picker providers to the factory.
+     * Adds a picker provider.
      *
      * @param PickerProviderInterface $provider
      */
@@ -87,11 +87,7 @@ class PickerBuilder implements PickerBuilderInterface
             return null;
         }
 
-        return new Picker(
-            $this->menuFactory,
-            $providers,
-            $config
-        );
+        return new Picker($this->menuFactory, $providers, $config);
     }
 
     /**

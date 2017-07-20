@@ -566,8 +566,11 @@ abstract class DataContainer extends \Backend
 
 			$fileBrowserTypes = [];
 			$pickerBuilder = \System::getContainer()->get('contao.picker.builder');
-			foreach (['file' => 'image', 'link' => 'file'] as $context => $type) {
-				if ($pickerBuilder->supportsContext($context)) {
+
+			foreach (['file' => 'image', 'link' => 'file'] as $context => $type)
+			{
+				if ($pickerBuilder->supportsContext($context))
+				{
 					$fileBrowserTypes[] = $type;
 				}
 			}
@@ -925,6 +928,7 @@ abstract class DataContainer extends \Backend
 
 		$this->objPicker = $picker;
 		$this->strPickerFieldType = $attributes['fieldType'];
+
 		$this->objPickerCallback = function ($value) use ($picker, $provider) {
 			return $provider->convertDcaValue($picker->getConfig(), $value);
 		};

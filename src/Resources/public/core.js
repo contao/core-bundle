@@ -968,13 +968,12 @@ var Backend =
 	/**
 	 * Open a TinyMCE file browser in a modal window
 	 *
-	 * @param {string} field_name  The field name
-	 * @param {string} url         The URL
-	 * @param {string} type        The picker type
-	 * @param {object} win         The window object
-	 * @param {string} [reference] An optional reference field
+	 * @param {string} field_name The field name
+	 * @param {string} url        The URL
+	 * @param {string} type       The picker type
+	 * @param {object} win        The window object
 	 */
-	openModalBrowser: function(field_name, url, type, win, reference) {
+	openModalBrowser: function(field_name, url, type, win) {
 		Backend.openModalSelector({
 			'id': 'tl_listing',
 			'title': win.document.getElement('div.mce-title').get('text'),

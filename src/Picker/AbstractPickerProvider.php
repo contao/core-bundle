@@ -34,7 +34,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
     /**
      * Constructor.
      *
-     * @param FactoryInterface      $menuFactory
+     * @param FactoryInterface $menuFactory
      */
     public function __construct(FactoryInterface $menuFactory)
     {
@@ -49,9 +49,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
         $name = $this->getName();
 
         $params = array_merge(
-            [
-                'popup' => '1',
-            ],
+            ['popup' => '1'],
             $this->getRouteParameters($config),
             ['picker' => $config->cloneForCurrent($name)->urlEncode()]
         );
@@ -69,8 +67,8 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
     }
 
     /**
-     * Setter injection for the security token storage.
-     * 
+     * Sets the security token storage.
+     *
      * @param TokenStorageInterface $tokenStorage
      */
     public function setTokenStorage(TokenStorageInterface $tokenStorage)
@@ -115,14 +113,14 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
     }
 
     /**
-     * Gets link class for picker menu item.
+     * Returns the link class for the picker menu item.
      *
      * @return string
      */
     abstract protected function getLinkClass();
 
     /**
-     * Gets routing parameters for the backend picker.
+     * Returns the routing parameters for the backend picker.
      *
      * @param PickerConfig $config
      *

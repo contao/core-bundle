@@ -406,7 +406,8 @@ abstract class Backend extends \Controller
 			/** @var DataContainer $dc */
 			$dc = new $dataContainer($strTable, $arrModule);
 
-			if (null !== $picker && $dc instanceof \Contao\DataContainer) {
+			if ($picker !== null && $dc instanceof DataContainer)
+			{
 				$dc->initPicker($picker);
 			}
 		}
@@ -1093,7 +1094,7 @@ abstract class Backend extends \Controller
 	public static function getDcaPickerWizard($extras, $table, $field, $inputName)
 	{
 		$context = 'link';
-		$extras = is_array($extras) ? $extras : [];
+		$extras = is_array($extras) ? $extras : array();
 		$providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
 
 		if (isset($extras['context']))

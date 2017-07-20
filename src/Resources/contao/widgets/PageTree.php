@@ -10,8 +10,6 @@
 
 namespace Contao;
 
-use Symfony\Component\Routing\Router;
-
 
 /**
  * Provide methods to handle input field "page tree".
