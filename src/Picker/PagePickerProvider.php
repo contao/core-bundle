@@ -38,15 +38,11 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function supportsValue(PickerConfig $config)
     {
-        if ('link' === $config->getContext() && false !== strpos($config->getValue(), '{{link_url::')) {
-            return true;
+        if ('page' === $config->getContext()) {
+            return is_numeric($config->getValue());
         }
 
-        if ('page' === $config->getContext() && is_numeric($config->getValue())) {
-            return true;
-        }
-
-        return false;
+        return false !== strpos($config->getValue(), '{{link_url::');
     }
 
     /**
@@ -62,7 +58,6 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $attributes = [];
         $value = $config->getValue();
 
         if ('page' === $config->getContext()) {
@@ -75,12 +70,14 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
             if ($value) {
                 $attributes['value'] = array_map('intval', explode(',', $value));
             }
-        } elseif ('link' === $config->getContext()) {
-            $attributes = ['fieldType' => 'radio'];
 
-            if ($value && false !== strpos($value, '{{link_url::')) {
-                $attributes['value'] = str_replace(['{{link_url::', '}}'], '', $value);
-            }
+            return $attributes;
+        }
+
+        $attributes = ['fieldType' => 'radio'];
+
+        if ($value && false !== strpos($value, '{{link_url::')) {
+            $attributes['value'] = str_replace(['{{link_url::', '}}'], '', $value);
         }
 
         return $attributes;
@@ -91,11 +88,11 @@ class PagePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
-        if ('link' === $config->getContext()) {
-            return '{{link_url::'.$value.'}}';
+        if ('page' === $config->getContext()) {
+            return (int) $value;
         }
 
-        return (int) $value;
+        return '{{link_url::'.$value.'}}';
     }
 
     /**

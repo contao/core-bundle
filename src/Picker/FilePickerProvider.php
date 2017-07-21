@@ -65,19 +65,13 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function supportsValue(PickerConfig $config)
     {
-        if ('link' === $config->getContext()
-            && (false !== strpos($config->getValue(), '{{file::')
-                || 0 === strpos($config->getValue(), $this->uploadPath)
-            )
-        ) {
-            return true;
+        if ('file' === $config->getContext()) {
+            return Validator::isUuid($config->getValue());
         }
 
-        if ('file' === $config->getContext() && Validator::isUuid($config->getValue())) {
-            return true;
-        }
-
-        return false;
+        return false !== strpos($config->getValue(), '{{file::')
+            || 0 === strpos($config->getValue(), $this->uploadPath)
+        ;
     }
 
     /**
@@ -93,11 +87,10 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        $attributes = [];
         $value = $config->getValue();
 
         if ('file' === $config->getContext()) {
-            $attributes += array_intersect_key(
+            $attributes = array_intersect_key(
                 $config->getExtras(),
                 array_flip(['fieldType', 'files', 'filesOnly', 'path', 'extensions'])
             );
@@ -109,20 +102,24 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
                     $attributes['value'][] = $this->urlEncode($this->convertValueToPath($v));
                 }
             }
-        } elseif ('link' === $config->getContext()) {
-            $attributes['fieldType'] = 'radio';
-            $attributes['filesOnly'] = true;
 
-            if ($value) {
-                if (false !== strpos($value, '{{file::')) {
-                    $value = str_replace(['{{file::', '}}'], '', $value);
-                }
+            return $attributes;
+        }
 
-                if (0 === strpos($value, $this->uploadPath.'/')) {
-                    $attributes['value'] = $this->urlEncode($value);
-                } else {
-                    $attributes['value'] = $this->urlEncode($this->convertValueToPath($value));
-                }
+        $attributes = [
+            'fieldType' => 'radio',
+            'filesOnly' => true,
+        ];
+
+        if ($value) {
+            if (false !== strpos($value, '{{file::')) {
+                $value = str_replace(['{{file::', '}}'], '', $value);
+            }
+
+            if (0 === strpos($value, $this->uploadPath.'/')) {
+                $attributes['value'] = $this->urlEncode($value);
+            } else {
+                $attributes['value'] = $this->urlEncode($this->convertValueToPath($value));
             }
         }
 
@@ -134,14 +131,13 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
-        if ('link' === $config->getContext()) {
-            /** @var FilesModel $filesModel */
-            $filesModel = $this->framework->getAdapter(FilesModel::class);
-            $file = $filesModel->findByPath(rawurldecode($value));
+        /** @var FilesModel $filesAdapter */
+        $filesAdapter = $this->framework->getAdapter(FilesModel::class);
 
-            if (null !== $file) {
-                return '{{file::'.StringUtil::binToUuid($file->uuid).'}}';
-            }
+        $filesModel = $filesAdapter->findByPath(rawurldecode($value));
+
+        if ($filesModel instanceof FilesModel) {
+            return '{{file::'.StringUtil::binToUuid($filesModel->uuid).'}}';
         }
 
         return $value;
@@ -172,11 +168,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     private function convertValueToPath($value)
     {
-        /** @var FilesModel $filesModel */
-        $filesModel = $this->framework->getAdapter(FilesModel::class);
+        /** @var FilesModel $filesAdapter */
+        $filesAdapter = $this->framework->getAdapter(FilesModel::class);
 
-        if (Validator::isUuid($value) && ($file = $filesModel->findByUuid($value)) instanceof FilesModel) {
-            return $file->path;
+        if (Validator::isUuid($value) && ($filesModel = $filesAdapter->findByUuid($value)) instanceof FilesModel) {
+            return $filesModel->path;
         }
 
         return $value;

@@ -56,7 +56,7 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     {
         $attributes = ['fieldType' => 'radio'];
 
-        if ('link' === $config->getContext() && $this->supportsValue($config)) {
+        if ($this->supportsValue($config)) {
             $attributes['value'] = str_replace(['{{article_url::', '}}'], '', $config->getValue());
         }
 

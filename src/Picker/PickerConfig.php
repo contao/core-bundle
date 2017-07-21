@@ -64,6 +64,16 @@ class PickerConfig implements \JsonSerializable
     }
 
     /**
+     * Returns the extras.
+     *
+     * @return array
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
      * Returns the value.
      *
      * @return string
@@ -81,16 +91,6 @@ class PickerConfig implements \JsonSerializable
     public function getCurrent()
     {
         return $this->current;
-    }
-
-    /**
-     * Returns the extras.
-     *
-     * @return array
-     */
-    public function getExtras()
-    {
-        return $this->extras;
     }
 
     /**
@@ -135,24 +135,22 @@ class PickerConfig implements \JsonSerializable
     {
         return [
             'context' => $this->context,
+            'extras' => $this->extras,
             'current' => $this->current,
             'value' => $this->value,
-            'extras' => $this->extras,
         ];
     }
 
     /**
      * Encodes the picker configuration for the URL.
      *
-     * @param bool $compress
-     *
      * @return string
      */
-    public function urlEncode($compress = true)
+    public function urlEncode()
     {
         $data = json_encode($this);
 
-        if ($compress && function_exists('gzencode') && false !== ($encoded = @gzencode($data))) {
+        if (function_exists('gzencode') && false !== ($encoded = @gzencode($data))) {
             $data = $encoded;
         }
 

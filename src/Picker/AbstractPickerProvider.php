@@ -105,8 +105,8 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
 
         $user = $token->getUser();
 
-        if (null === $user) {
-            throw new \RuntimeException('The token does not contain a user');
+        if (!($user instanceof BackendUser)) {
+            throw new \RuntimeException('The token does not contain a back end user object');
         }
 
         return $user;

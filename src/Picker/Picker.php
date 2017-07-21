@@ -108,7 +108,7 @@ class Picker implements PickerInterface
             throw new \RuntimeException('No picker menu items found.');
         }
 
-        /** @var ItemInterface $menu */
+        /** @var ItemInterface[] $menu */
         foreach ($menu as $item) {
             $picker = $item->getExtra('provider');
 
