@@ -142,7 +142,7 @@ class PickerBuilderTest extends TestCase
 
         $this->builder->addProvider($provider);
 
-        $this->assertEquals('/_contao/picker?context=page', $this->builder->getUrl('page', [], '{{link_url::5}}'));
+        $this->assertSame('/_contao/picker?context=page', $this->builder->getUrl('page', [], '{{link_url::5}}'));
     }
 
     /**
@@ -150,7 +150,7 @@ class PickerBuilderTest extends TestCase
      */
     public function testGetUrlWithoutSupportedContext()
     {
-        $this->assertEquals('', $this->builder->getUrl('foo'));
+        $this->assertSame('', $this->builder->getUrl('foo'));
     }
 
     /**
