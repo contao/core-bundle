@@ -131,9 +131,12 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
+        if ('file' === $config->getContext()) {
+            return $value;
+        }
+
         /** @var FilesModel $filesAdapter */
         $filesAdapter = $this->framework->getAdapter(FilesModel::class);
-
         $filesModel = $filesAdapter->findByPath(rawurldecode($value));
 
         if ($filesModel instanceof FilesModel) {

@@ -327,13 +327,18 @@ class FilePickerProviderTest extends TestCase
     public function testConvertDcaValue()
     {
         $this->assertSame(
-            '{{file::82243f46-a4c3-11e3-8e29-000c29e44aea}}',
+            '/foobar',
             $this->provider->convertDcaValue(new PickerConfig('file'), '/foobar')
         );
 
         $this->assertSame(
+            '{{file::82243f46-a4c3-11e3-8e29-000c29e44aea}}',
+            $this->provider->convertDcaValue(new PickerConfig('link'), '/foobar')
+        );
+
+        $this->assertSame(
             '/foobar',
-            $this->provider->convertDcaValue(new PickerConfig('file'), '/foobar')
+            $this->provider->convertDcaValue(new PickerConfig('link'), '/foobar')
         );
     }
 }
