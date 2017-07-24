@@ -147,7 +147,7 @@ class FilePickerProviderTest extends TestCase
                 'label' => 'File picker',
                 'linkAttributes' => ['class' => 'filePicker'],
                 'current' => true,
-                'uri' => 'contao_backend?do=files&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,')
+                'uri' => 'contao_backend?do=files&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
             ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'filePicker'))
         );
     }

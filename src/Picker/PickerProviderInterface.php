@@ -27,7 +27,7 @@ interface PickerProviderInterface
     public function getName();
 
     /**
-     * Returns the URL to the picker based on current value.
+     * Returns the URL to the picker based on the current value.
      *
      * @param PickerConfig $config
      *

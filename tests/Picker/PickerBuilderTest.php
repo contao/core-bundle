@@ -68,6 +68,7 @@ class PickerBuilderTest extends TestCase
         $provider->setTokenStorage($this->mockTokenStorage());
 
         $this->builder->addProvider($provider);
+
         $this->builder->addProvider(
             new FilePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class), __DIR__)
         );

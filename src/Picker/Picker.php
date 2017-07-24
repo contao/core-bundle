@@ -108,7 +108,7 @@ class Picker implements PickerInterface
         $menu = $this->getMenu();
 
         if (!$menu->count()) {
-            throw new \RuntimeException('No picker menu items found.');
+            throw new \RuntimeException('No picker menu items found');
         }
 
         return $menu->getFirstChild()->getUri();

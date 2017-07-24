@@ -37,11 +37,10 @@ class PickerTest extends TestCase
         parent::setUp();
 
         $factory = new MenuFactory();
-        $router = $this->createMock(RouterInterface::class);
 
         $this->picker = new Picker(
             $factory,
-            [new PagePickerProvider($factory, $router)],
+            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
             new PickerConfig('page', [], 5, 'pagePicker')
         );
 
@@ -114,8 +113,12 @@ class PickerTest extends TestCase
     public function testGetCurrentProviderWithoutActiveProvider()
     {
         $factory = new MenuFactory();
-        $router = $this->createMock(RouterInterface::class);
-        $picker = new Picker($factory, [new PagePickerProvider($factory, $router)], new PickerConfig('page'));
+
+        $picker = new Picker(
+            $factory,
+            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
+            new PickerConfig('page')
+        );
 
         $this->assertNull($picker->getCurrentProvider());
     }
@@ -147,8 +150,12 @@ class PickerTest extends TestCase
     public function testGetCurrentUrlWithoutActiveMenuItem()
     {
         $factory = new MenuFactory();
-        $router = $this->createMock(RouterInterface::class);
-        $picker = new Picker($factory, [new PagePickerProvider($factory, $router)], new PickerConfig('page'));
+
+        $picker = new Picker(
+            $factory,
+            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
+            new PickerConfig('page')
+        );
 
         $this->assertSame(null, $picker->getCurrentUrl());
     }

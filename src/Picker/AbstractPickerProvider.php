@@ -122,6 +122,15 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
     }
 
     /**
+     * Returns the routing parameters for the backend picker.
+     *
+     * @param PickerConfig|null $config
+     *
+     * @return array
+     */
+    abstract protected function getRouteParameters(PickerConfig $config = null);
+
+    /**
      * Generates the URL for the picker.
      *
      * @param PickerConfig $config
@@ -138,13 +147,4 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
 
         return $this->router->generate('contao_backend', $params);
     }
-
-    /**
-     * Returns the routing parameters for the backend picker.
-     *
-     * @param PickerConfig|null $config
-     *
-     * @return array
-     */
-    abstract protected function getRouteParameters(PickerConfig $config = null);
 }
