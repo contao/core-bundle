@@ -15,6 +15,7 @@ use Contao\CoreBundle\Picker\Picker;
 use Contao\CoreBundle\Picker\PickerConfig;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Tests the Picker class.
@@ -36,10 +37,11 @@ class PickerTest extends TestCase
         parent::setUp();
 
         $factory = new MenuFactory();
+        $router = $this->createMock(RouterInterface::class);
 
         $this->picker = new Picker(
             $factory,
-            [new PagePickerProvider($factory)],
+            [new PagePickerProvider($factory, $router)],
             new PickerConfig('page', [], 5, 'pagePicker')
         );
 
@@ -112,7 +114,8 @@ class PickerTest extends TestCase
     public function testGetCurrentProviderWithoutActiveProvider()
     {
         $factory = new MenuFactory();
-        $picker = new Picker($factory, [new PagePickerProvider($factory)], new PickerConfig('page'));
+        $router = $this->createMock(RouterInterface::class);
+        $picker = new Picker($factory, [new PagePickerProvider($factory, $router)], new PickerConfig('page'));
 
         $this->assertNull($picker->getCurrentProvider());
     }
@@ -144,7 +147,8 @@ class PickerTest extends TestCase
     public function testGetCurrentUrlWithoutActiveMenuItem()
     {
         $factory = new MenuFactory();
-        $picker = new Picker($factory, [new PagePickerProvider($factory)], new PickerConfig('page'));
+        $router = $this->createMock(RouterInterface::class);
+        $picker = new Picker($factory, [new PagePickerProvider($factory, $router)], new PickerConfig('page'));
 
         $this->assertSame(null, $picker->getCurrentUrl());
     }
