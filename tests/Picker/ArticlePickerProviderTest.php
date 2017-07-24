@@ -72,6 +72,17 @@ class ArticlePickerProviderTest extends TestCase
      */
     public function testCreateMenuItem()
     {
+        $picker = json_encode([
+            'context' => 'link',
+            'extras' => [],
+            'current' => 'articlePicker',
+            'value' => '',
+        ]);
+
+        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+            $picker = $encoded;
+        }
+
         $this->assertSame(
             [
                 'label' => 'Article picker',
@@ -81,7 +92,7 @@ class ArticlePickerProviderTest extends TestCase
                 'routeParameters' => [
                     'popup' => '1',
                     'do' => 'article',
-                    'picker' => 'H4sIAAAAAAAAA6tWSs7PK0mtKFGyUsrJzMtW0lECcooSi5WsomN1lJJLi4pS80CSiUUlmck5qQGZydmpRUBVZYk5palAcaVaAKBYTCRDAAAA',
+                    'picker' => base64_encode($picker),
                 ],
             ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'articlePicker'))
         );

@@ -119,6 +119,17 @@ class FilePickerProviderTest extends TestCase
      */
     public function testCreateMenuItem()
     {
+        $picker = json_encode([
+            'context' => 'link',
+            'extras' => [],
+            'current' => 'filePicker',
+            'value' => '',
+        ]);
+
+        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+            $picker = $encoded;
+        }
+
         $this->assertSame(
             [
                 'label' => 'File picker',
@@ -128,7 +139,7 @@ class FilePickerProviderTest extends TestCase
                 'routeParameters' => [
                     'popup' => '1',
                     'do' => 'files',
-                    'picker' => 'H4sIAAAAAAAAA6tWSs7PK0mtKFGyUsrJzMtW0lECcooSi5WsomN1lJJLi4pS80CSaZk5qQGZydmpRUAlZYk5palAQaVaAHyEHoBAAAAA',
+                    'picker' => base64_encode($picker),
                 ],
             ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'filePicker'))
         );

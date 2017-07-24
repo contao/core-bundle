@@ -72,6 +72,17 @@ class PagePickerProviderTest extends TestCase
      */
     public function testCreateMenuItem()
     {
+        $picker = json_encode([
+            'context' => 'link',
+            'extras' => [],
+            'current' => 'pagePicker',
+            'value' => '',
+        ]);
+
+        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+            $picker = $encoded;
+        }
+
         $this->assertSame(
             [
                 'label' => 'Page picker',
@@ -81,7 +92,7 @@ class PagePickerProviderTest extends TestCase
                 'routeParameters' => [
                     'popup' => '1',
                     'do' => 'page',
-                    'picker' => 'H4sIAAAAAAAAA6tWSs7PK0mtKFGyUsrJzMtW0lECcooSi5WsomN1lJJLi4pS80CSBYnpqQGZydmpRUAlZYk5palAQaVaAN/dCYtAAAAA',
+                    'picker' => base64_encode($picker),
                 ],
             ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'pagePicker'))
         );
