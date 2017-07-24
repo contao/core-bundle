@@ -1325,22 +1325,6 @@ ul.sortable button[disabled] {
 ul.sortable button[disabled]:hover {
 	background:rgba(255,255,255,.7);
 }
-
-/* #manager is deprecated, only used in be_picker.html5 */
-#manager {
-	padding:7px 12px;
-	background:#f9f9f9;
-	border-bottom:1px solid #ddd;
-}
-#manager .open {
-	padding:3px 15px 3px 21px;
-	background:url("icons/manager.svg") left center no-repeat;
-}
-#manager .close {
-	padding:3px 15px 3px 21px;
-	background:url("icons/back.svg") left center no-repeat;
-}
-
 #picker-menu {
 	padding:9px 6px 0;
 	border-bottom:1px solid #ddd;
@@ -1417,6 +1401,16 @@ time[title] {
 }
 .float_right {
 	float:right;
+}
+
+/* Backwards compatiblity */
+#manager {
+	padding:9px 6px 0;
+	border-bottom:1px solid #ddd;
+}
+#manager a {
+	padding:3px 12px 3px 32px;
+	background:url("icons/manager.svg") 12px center no-repeat;
 }
 
 /* Default icon classes */
