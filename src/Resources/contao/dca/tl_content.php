@@ -716,26 +716,16 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['articleAlias'],
 			'exclude'                 => true,
-			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getArticleAlias'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
-			'wizard' => array
-			(
-				array('tl_content', 'editArticleAlias')
-			),
+			'inputType'               => 'articleTree',
+			'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'article' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['article'],
 			'exclude'                 => true,
-			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getArticles'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
-			'wizard' => array
-			(
-				array('tl_content', 'editArticle')
-			),
+			'inputType'               => 'articleTree',
+			'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'form' => array
@@ -1196,68 +1186,6 @@ class tl_content extends Backend
 
 
 	/**
-	 * Return the edit article alias wizard
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 */
-	public function editArticleAlias(DataContainer $dc)
-	{
-		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_content&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'][0]) . '</a>';
-	}
-
-
-	/**
-	 * Get all articles and return them as array (article alias)
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getArticleAlias(DataContainer $dc)
-	{
-		$arrPids = array();
-		$arrAlias = array();
-
-		if (!$this->User->isAdmin)
-		{
-			foreach ($this->User->pagemounts as $id)
-			{
-				$arrPids[] = $id;
-				$arrPids = array_merge($arrPids, $this->Database->getChildRecords($id, 'tl_page'));
-			}
-
-			if (empty($arrPids))
-			{
-				return $arrAlias;
-			}
-
-			$objAlias = $this->Database->prepare("SELECT a.id, a.pid, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(". implode(',', array_map('intval', array_unique($arrPids))) .") AND a.id!=(SELECT pid FROM tl_content WHERE id=?) ORDER BY parent, a.sorting")
-									   ->execute($dc->id);
-		}
-		else
-		{
-			$objAlias = $this->Database->prepare("SELECT a.id, a.pid, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.id!=(SELECT pid FROM tl_content WHERE id=?) ORDER BY parent, a.sorting")
-									   ->execute($dc->id);
-		}
-
-		if ($objAlias->numRows)
-		{
-			System::loadLanguageFile('tl_article');
-
-			while ($objAlias->next())
-			{
-				$key = $objAlias->parent . ' (ID ' . $objAlias->pid . ')';
-				$arrAlias[$key][$objAlias->id] = $objAlias->title . ' (' . ($GLOBALS['TL_LANG']['COLS'][$objAlias->inColumn] ?: $objAlias->inColumn) . ', ID ' . $objAlias->id . ')';
-			}
-		}
-
-		return $arrAlias;
-	}
-
-
-	/**
 	 * Return the edit alias wizard
 	 *
 	 * @param DataContainer $dc
@@ -1428,94 +1356,6 @@ class tl_content extends Backend
 	public function getElementTemplates(DataContainer $dc)
 	{
 		return $this->getTemplateGroup('ce_' . $dc->activeRecord->type);
-	}
-
-
-	/**
-	 * Return the edit article teaser wizard
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 */
-	public function editArticle(DataContainer $dc)
-	{
-		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_content&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editarticle'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editarticle'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editarticle'][0]) . '</a>';
-	}
-
-
-	/**
-	 * Get all articles and return them as array (article teaser)
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getArticles(DataContainer $dc)
-	{
-		$arrPids = array();
-		$arrArticle = array();
-		$arrRoot = array();
-		$intPid = $dc->activeRecord->pid;
-
-		if (Input::get('act') == 'overrideAll')
-		{
-			$intPid = Input::get('id');
-		}
-
-		// Limit pages to the website root
-		$objArticle = $this->Database->prepare("SELECT pid FROM tl_article WHERE id=?")
-									 ->limit(1)
-									 ->execute($intPid);
-
-		if ($objArticle->numRows)
-		{
-			$objPage = PageModel::findWithDetails($objArticle->pid);
-			$arrRoot = $this->Database->getChildRecords($objPage->rootId, 'tl_page');
-			array_unshift($arrRoot, $objPage->rootId);
-		}
-
-		unset($objArticle);
-
-		// Limit pages to the user's pagemounts
-		if ($this->User->isAdmin)
-		{
-			$objArticle = $this->Database->execute("SELECT a.id, a.pid, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid" . (!empty($arrRoot) ? " WHERE a.pid IN(". implode(',', array_map('intval', array_unique($arrRoot))) .")" : "") . " ORDER BY parent, a.sorting");
-		}
-		else
-		{
-			foreach ($this->User->pagemounts as $id)
-			{
-				if (!in_array($id, $arrRoot))
-				{
-					continue;
-				}
-
-				$arrPids[] = $id;
-				$arrPids = array_merge($arrPids, $this->Database->getChildRecords($id, 'tl_page'));
-			}
-
-			if (empty($arrPids))
-			{
-				return $arrArticle;
-			}
-
-			$objArticle = $this->Database->execute("SELECT a.id, a.pid, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(". implode(',', array_map('intval', array_unique($arrPids))) .") ORDER BY parent, a.sorting");
-		}
-
-		// Edit the result
-		if ($objArticle->numRows)
-		{
-			System::loadLanguageFile('tl_article');
-
-			while ($objArticle->next())
-			{
-				$key = $objArticle->parent . ' (ID ' . $objArticle->pid . ')';
-				$arrArticle[$key][$objArticle->id] = $objArticle->title . ' (' . ($GLOBALS['TL_LANG']['COLS'][$objArticle->inColumn] ?: $objArticle->inColumn) . ', ID ' . $objArticle->id . ')';
-			}
-		}
-
-		return $arrArticle;
 	}
 
 
