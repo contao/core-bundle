@@ -267,6 +267,7 @@ class Ajax extends \Backend
 			// Reload the page/file picker
 			case 'reloadPagetree':
 			case 'reloadFiletree':
+			case 'reloadArticletree':
 				$intId = \Input::get('id');
 				$strField = $dc->inputName = \Input::post('name');
 
@@ -332,8 +333,12 @@ class Ajax extends \Backend
 
 				// Set the new value
 				$varValue = \Input::post('value', true);
-				$strKey = ($this->strAction == 'reloadPagetree') ? 'pageTree' : 'fileTree';
-
+				$strKey = array(
+					'reloadPagetree'	=>'pageTree',
+					'reloadFiletree'	=>'fileTree',
+					'reloadArticletree'	=>'articleTree'
+				)[$this->strAction];
+				
 				// Convert the selected values
 				if ($varValue != '')
 				{
@@ -363,7 +368,7 @@ class Ajax extends \Backend
 					$varValue = serialize($varValue);
 				}
 
-				/** @var FileTree|PageTree $strClass */
+				/** @var FileTree|PageTree|ArticleTree $strClass */
 				$strClass = $GLOBALS['BE_FFL'][$strKey];
 
 				/** @var FileTree|PageTree $objWidget */
