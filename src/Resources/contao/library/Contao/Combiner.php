@@ -196,10 +196,17 @@ class Combiner extends \System
 	/**
 	 * Generates the files and returns the URLs.
 	 *
+	 * @param string $strUrl An optional URL to prepend
+	 *
 	 * @return array The file URLs
 	 */
-	public function getFileUrls()
+	public function getFileUrls($strUrl=null)
 	{
+		if ($strUrl === null)
+		{
+			$strUrl = TL_ASSETS_URL;
+		}
+		
 		$return = array();
 		$strTarget = substr($this->strMode, 1);
 
@@ -215,7 +222,7 @@ class Combiner extends \System
 				// Load the existing file
 				if (file_exists(TL_ROOT . '/' . $strPath))
 				{
-					$return[] = $strPath;
+					$return[] = $strUrl . $strPath;
 					continue;
 				}
 
@@ -223,7 +230,7 @@ class Combiner extends \System
 				$objFile->write($this->handleScssLess($content, $arrFile));
 				$objFile->close();
 
-				$return[] = $strPath;
+				$return[] = $strUrl . $strPath;
 			}
 			else
 			{
@@ -241,7 +248,7 @@ class Combiner extends \System
 					$name .= '" media="' . $arrFile['media'];
 				}
 
-				$return[] = $name;
+				$return[] = $strUrl . $name;
 			}
 		}
 
