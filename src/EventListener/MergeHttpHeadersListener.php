@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
 
 /**
  * Adds HTTP headers sent by Contao to the Symfony response.
@@ -111,7 +112,13 @@ class MergeHttpHeadersListener
             return;
         }
 
-        $event->setResponse($this->mergeHttpHeaders($event->getResponse()));
+        $response = $event->getResponse();
+
+        if (HeaderReplayListener::CONTENT_TYPE === $response->headers->get('Content-Type')) {
+            return;
+        }
+
+        $event->setResponse($this->mergeHttpHeaders($response));
     }
 
     /**

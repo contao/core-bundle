@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
 
 /**
  * Tests the MergeHttpHeadersListenerTest class.
@@ -34,32 +35,6 @@ class MergeHttpHeadersListenerTest extends TestCase
         $listener = new MergeHttpHeadersListener($framework);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\MergeHttpHeadersListener', $listener);
-    }
-
-    /**
-     * Tests that the listener is skipped if the framework is not initialized.
-     */
-    public function testListenerIsSkippedIfFrameworkNotInitialized()
-    {
-        $responseEvent = new FilterResponseEvent(
-            $this->mockKernel(),
-            new Request(),
-            HttpKernelInterface::MASTER_REQUEST,
-            new Response()
-        );
-
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        $framework
-            ->expects($this->once())
-            ->method('isInitialized')
-            ->willReturn(false)
-        ;
-
-        $listener = new MergeHttpHeadersListener($framework, ['Content-Type: text/html']);
-        $listener->onKernelResponse($responseEvent);
-
-        $this->assertFalse($responseEvent->getResponse()->headers->has('Content-Type'));
     }
 
     /**
@@ -181,6 +156,62 @@ class MergeHttpHeadersListenerTest extends TestCase
                 'pragma',
                 'cache-control',
             ]
+        );
+    }
+
+    /**
+     * Tests that the listener is skipped if the framework is not initialized.
+     */
+    public function testListenerIsSkippedIfFrameworkNotInitialized()
+    {
+        $responseEvent = new FilterResponseEvent(
+            $this->mockKernel(),
+            new Request(),
+            HttpKernelInterface::MASTER_REQUEST,
+            new Response()
+        );
+
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->once())
+            ->method('isInitialized')
+            ->willReturn(false)
+        ;
+
+        $listener = new MergeHttpHeadersListener($framework, ['Content-Type: text/html']);
+        $listener->onKernelResponse($responseEvent);
+
+        $this->assertFalse($responseEvent->getResponse()->headers->has('Content-Type'));
+    }
+
+    /**
+     * Tests that the listener is skipped upon header replay.
+     */
+    public function testListenerIsSkippedUponHeaderReplay()
+    {
+        $responseEvent = new FilterResponseEvent(
+            $this->mockKernel(),
+            new Request(),
+            HttpKernelInterface::MASTER_REQUEST,
+            new Response('', 200, ['Content-Type' => HeaderReplayListener::CONTENT_TYPE])
+        );
+
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->once())
+            ->method('isInitialized')
+            ->willReturn(true)
+        ;
+
+        $listener = new MergeHttpHeadersListener($framework, ['Content-Type: text/html']);
+        $listener->onKernelResponse($responseEvent);
+
+        // The content type still has to be application/vnd.t42.header-replay
+        $this->assertSame(
+            HeaderReplayListener::CONTENT_TYPE,
+            $responseEvent->getResponse()->headers->get('Content-Type')
         );
     }
 }
