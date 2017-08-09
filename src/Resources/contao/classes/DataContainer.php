@@ -526,19 +526,21 @@ abstract class DataContainer extends \Backend
 				}
 			}
 		}
+		
+		$cssClasses = Contao\StringUtil::trimsplit(' ', (string) arrData['eval']['tl_class']);
 
 		if ($wizard != '')
 		{
 			$objWidget->wizard = $wizard;
 
-			if (!isset($arrData['eval']['tl_class']) || false === strpos($arrData['eval']['tl_class'], 'wizard'))
+			if (!in_array('wizard', $cssClasses))
 			{
-				$arrData['eval']['tl_class'] .= ' wizard';
+				$cssClasses[] = 'wizard';
 			}
 		}
-		elseif (isset($arrData['eval']['tl_class']) && false !== strpos($arrData['eval']['tl_class'], 'wizard'))
+		elseif (in_array('wizard', $cssClasses))
 		{
-			$arrData['eval']['tl_class'] = str_replace('wizard', '', $arrData['eval']['tl_class']);
+			unset($cssClasses[array_search('wizard', $cssClasses)]);
 		}
 
 		// Set correct form enctype
@@ -549,17 +551,22 @@ abstract class DataContainer extends \Backend
 
 		if ($arrData['inputType'] != 'password')
 		{
-			$arrData['eval']['tl_class'] .= ' widget';
+			$cssClasses[] = 'widget';
 		}
 
 		// Mark floated single checkboxes
-		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && strpos($arrData['eval']['tl_class'], 'w50') !== false)
+		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && in_array('w50', $cssClasses))
 		{
-			$arrData['eval']['tl_class'] .= ' cbx';
+			$cssClasses[] = 'cbx';
 		}
-		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && strpos($arrData['eval']['tl_class'], 'wizard') !== false)
+		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && in_array('wizard', $cssClasses))
 		{
-			$arrData['eval']['tl_class'] .= ' inline';
+			$cssClasses[] = 'inline';
+		}
+		
+		if (!emtpy($cssClasses))
+		{
+			arrData['eval']['tl_class'] = implode(' ', array_unique($cssClasses));
 		}
 
 		$updateMode = '';
