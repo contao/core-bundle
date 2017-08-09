@@ -566,7 +566,7 @@ abstract class DataContainer extends \Backend
 		
 		if (!emtpy($cssClasses))
 		{
-			arrData['eval']['tl_class'] = implode(' ', array_unique($cssClasses));
+			$arrData['eval']['tl_class'] = implode(' ', array_unique($cssClasses));
 		}
 
 		$updateMode = '';
