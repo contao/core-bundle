@@ -58,4 +58,13 @@ final class ContaoCoreEvents
      * @see MenuEvent
      */
     public const BACKEND_MENU_BUILD = 'contao.backend_menu_build';
+
+    /**
+     * The contao.slug_valid_characters event is triggered when the options for the valid characters setting for aliases are generated.
+     *
+     * @var string
+     *
+     * @see SlugValidCharactersEvent
+     */
+    public const SLUG_VALID_CHARACTERS = 'contao.slug_valid_characters';
 }
