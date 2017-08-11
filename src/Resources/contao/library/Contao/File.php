@@ -223,7 +223,7 @@ class File extends \System
 				break;
 
 			case 'hash':
-				return $this->getHash();
+				return ($this->exist) ? $this->getHash() : null;
 				break;
 
 			case 'ctime':
