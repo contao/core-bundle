@@ -173,7 +173,7 @@ class File extends \System
 		{
 			case 'size':
 			case 'filesize':
-				return filesize(TL_ROOT . '/' . $this->strFile);
+				return ($this->exist) ? filesize(TL_ROOT . '/' . $this->strFile) : null;
 				break;
 
 			case 'name':
@@ -227,15 +227,15 @@ class File extends \System
 				break;
 
 			case 'ctime':
-				return filectime(TL_ROOT . '/' . $this->strFile);
+				return ($this->exist) ? filectime(TL_ROOT . '/' . $this->strFile) : null;
 				break;
 
 			case 'mtime':
-				return filemtime(TL_ROOT . '/' . $this->strFile);
+				return ($this->exist) ? filemtime(TL_ROOT . '/' . $this->strFile) : null;
 				break;
 
 			case 'atime':
-				return fileatime(TL_ROOT . '/' . $this->strFile);
+				return ($this->exist) ? fileatime(TL_ROOT . '/' . $this->strFile) : null;
 				break;
 
 			case 'icon':
