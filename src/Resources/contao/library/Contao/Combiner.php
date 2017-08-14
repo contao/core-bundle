@@ -527,9 +527,35 @@ class Combiner extends \System
 			return true;
 		}
 
+		// Check the modification time of the main file
 		if (filemtime(TL_ROOT . '/' . $strFile) > filemtime(TL_ROOT . '/' . $strCacheFile))
 		{
 			return true;
+		}
+
+		$arrCheck = array();
+		$strPath = dirname($strFile);
+
+		$fh = fopen(TL_ROOT . '/' . $strFile, 'rb');
+
+		// Store the paths of the imported files
+		while (($line = fgets($fh)) !== false)
+		{
+			if (strpos($line, '@import') !== false)
+			{
+				$arrCheck[] = $strPath . '/' . str_replace(array('@import ', '"', "'", ';'), '', trim($line)) . '.scss';
+			}
+		}
+
+		fclose($fh);
+
+		// Recompile if the cache file is older than any of the imported files
+		foreach ($arrCheck as $file)
+		{
+			if (filemtime(TL_ROOT . '/' . $file) > filemtime(TL_ROOT . '/' . $strCacheFile))
+			{
+				return true;
+			}
 		}
 
 		return false;
