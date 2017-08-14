@@ -106,7 +106,7 @@ class InstallCommand extends AbstractLockedCommand
         }
 
         $this->addInitializePhp();
-        $this->addTcpdfConfig();
+        $this->symlinkTcpdfConfig();
 
         return 0;
     }
@@ -207,9 +207,9 @@ EOF
     }
 
     /**
-     * Symlinks the tcpdf.php config file to /system/config.
+     * Symlinks the tcpdf.php config file to system/config.
      */
-    private function addTcpdfConfig()
+    private function symlinkTcpdfConfig()
     {
         SymlinkUtil::symlink(
             'vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php',
@@ -217,6 +217,6 @@ EOF
             $this->rootDir
         );
 
-        $this->io->text("Symlinked the TCPDF config file.\n");
+        $this->io->text("Symlinked the <comment>system/config/tcpdf.php</comment> file.\n");
     }
 }
