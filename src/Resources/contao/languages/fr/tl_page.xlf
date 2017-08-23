@@ -342,8 +342,8 @@
         <target>Nom et type</target>
       </trans-unit>
       <trans-unit id="tl_page.meta_legend">
-        <source>Meta information</source>
-        <target>Méta-informations</target>
+        <source>Meta data</source>
+        <target>Meta-données</target>
       </trans-unit>
       <trans-unit id="tl_page.system_legend">
         <source>System settings</source>

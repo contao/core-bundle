@@ -33,6 +33,13 @@
         <source>Add an image to the content element.</source>
         <target>افزودن تصویر به عنصر محتوا.</target>
       </trans-unit>
+      <trans-unit id="tl_content.overwriteMeta.0">
+        <source>Overwrite meta data</source>
+        <target>رونویسی اطلاعات متا</target>
+      </trans-unit>
+      <trans-unit id="tl_content.overwriteMeta.1">
+        <source>Overwrite the image meta data from the file manager.</source>
+      </trans-unit>
       <trans-unit id="tl_content.singleSRC.0">
         <source>Source file</source>
         <target>منبع پرونده</target>
@@ -49,11 +56,11 @@
         <source>Here you can enter an alternate text for the image (&lt;em&gt;alt&lt;/em&gt; attribute).</source>
         <target>اینجا می‌توانید متن جایگزین را برای تصویر وارد نمایید (خصوصیت &lt;em&gt;alt&lt;/em&gt;).</target>
       </trans-unit>
-      <trans-unit id="tl_content.title.0">
-        <source>Title</source>
-        <target>عنوان</target>
+      <trans-unit id="tl_content.imageTitle.0">
+        <source>Image title</source>
+        <target>عنوان تصویر</target>
       </trans-unit>
-      <trans-unit id="tl_content.title.1">
+      <trans-unit id="tl_content.imageTitle.1">
         <source>Here you can enter the image title (&lt;em&gt;title&lt;/em&gt; attribute).</source>
         <target>اینجا می‌توانید عنوان تصویر را وارد کنید (خصوصیت &lt;em&gt;title&lt;/em&gt;).</target>
       </trans-unit>
@@ -334,8 +341,7 @@
         <target>استفاده از دایرکتوری شخصی</target>
       </trans-unit>
       <trans-unit id="tl_content.useHomeDir.1">
-        <source>Use the home directory as file source if there is an authenticated user.</source>
-        <target>استفاده از پوشه شخصی به عنوان منبع پرونده برای کاربران تایید شده.</target>
+        <source>Use the home directory as file source if there is an authenticated member.</source>
       </trans-unit>
       <trans-unit id="tl_content.perRow.0">
         <source>Thumbnails per row</source>
@@ -407,6 +413,7 @@
       </trans-unit>
       <trans-unit id="tl_content.youtube.1">
         <source>Please enter the YouTube video ID (e.g. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</source>
+        <target>لطفا شناسه‌ی ویدیو YouTube را وارد کنید (مانند &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo.0">
         <source>Vimeo ID</source>
@@ -414,6 +421,7 @@
       </trans-unit>
       <trans-unit id="tl_content.vimeo.1">
         <source>Please enter the Vimeo video ID (e.g. &lt;em&gt;95674578&lt;/em&gt;).</source>
+        <target>شناسه‌ی ویدیو Vimeo را وارد کنید (مانند &lt;em&gt;95674578&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.posterSRC.0">
         <source>Preview image</source>

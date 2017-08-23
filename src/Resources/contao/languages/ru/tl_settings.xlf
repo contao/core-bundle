@@ -62,8 +62,8 @@
         <target>Отключить планировщик команд</target>
       </trans-unit>
       <trans-unit id="tl_settings.disableCron.1">
-        <source>Disable the periodic command scheduler and execute the cron.php script by a real cron job (which you have to set up manually).</source>
-        <target>Отключить планировщик команд и выполнять сценарий cron.php (необходимо установить вручную).</target>
+        <source>Disable the periodic command scheduler and trigger the &lt;em&gt;_contao/cron&lt;/em&gt; route by a real cron job (which you have to set up manually).</source>
+        <target>Отключить планировщик периодических команд и запускать &lt;em&gt;_contao/cron&lt;/em&gt; как задания cron (необходимо установить вручную).</target>
       </trans-unit>
       <trans-unit id="tl_settings.minifyMarkup.0">
         <source>Minify the markup</source>
@@ -79,7 +79,7 @@
       </trans-unit>
       <trans-unit id="tl_settings.gzipScripts.1">
         <source>Create a compressed version of the combined CSS and JavaScript files. Requires adjustments of the .htaccess file.</source>
-        <target>Создать сжатую версию объединенных CSS и JavaScript файлов. Требует корректировки .htaccess файла.</target>
+        <target>Создать сжатую версию объединенных CSS и JavaScript файлов. Требует корректировки файла .htaccess</target>
       </trans-unit>
       <trans-unit id="tl_settings.resultsPerPage.0">
         <source>Items per page</source>
@@ -214,8 +214,8 @@
         <target>Максимальная ширина во внешнем интерфейсе</target>
       </trans-unit>
       <trans-unit id="tl_settings.maxImageWidth.1">
-        <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
-        <target>Если ширина изображения или ролика превысит это значение, то он будет автоматически масштабирован.</target>
+        <source>If the width of an image or movie exceeds this value, it will be adjusted automatically. Set to 0 to disable the limit.</source>
+        <target>Если ширина изображения или ролика превысит это значение, то он будет автоматически масштабирован. Установите 0, чтобы отключить ограничение.</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>

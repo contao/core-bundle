@@ -162,7 +162,7 @@ class Encryption
 			throw new \Exception('The PHP mcrypt extension is not installed');
 		}
 
-		if ((self::$resTd = mcrypt_module_open(\Config::get('encryptionCipher'), '', \Config::get('encryptionMode'), '')) == false)
+		if (!self::$resTd = mcrypt_module_open(\Config::get('encryptionCipher'), '', \Config::get('encryptionMode'), ''))
 		{
 			throw new \Exception('Error initializing encryption module');
 		}
@@ -189,7 +189,7 @@ class Encryption
 
 		if (function_exists('password_hash'))
 		{
-			return password_hash($strPassword, PASSWORD_BCRYPT, array('cost'=>$intCost));
+			return password_hash($strPassword, PASSWORD_DEFAULT, array('cost'=>$intCost));
 		}
 		elseif (CRYPT_BLOWFISH == 1)
 		{

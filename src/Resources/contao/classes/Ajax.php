@@ -182,7 +182,7 @@ class Ajax extends \Backend
 		header('Content-Type: text/html; charset=' . \Config::get('characterSet'));
 
 		// Bypass any core logic for non-core drivers (see #5957)
-		if (!($dc instanceof DC_File) && !($dc instanceof DC_Folder) && !($dc instanceof DC_Table))
+		if (!$dc instanceof DC_File && !$dc instanceof DC_Folder && !$dc instanceof DC_Table)
 		{
 			$this->executePostActionsHook($dc);
 			throw new NoContentResponseException();
@@ -344,6 +344,8 @@ class Ajax extends \Backend
 					{
 						foreach ($varValue as $k=>$v)
 						{
+							$v = rawurldecode($v);
+
 							if (\Dbafs::shouldBeSynchronized($v))
 							{
 								$objFile = \FilesModel::findByPath($v);
@@ -403,7 +405,7 @@ class Ajax extends \Backend
 
 						if (\Input::post('load'))
 						{
-							echo $dc->editAll($this->strAjaxId, \Input::post('id'));
+							throw new ResponseException($this->convertToResponse($dc->editAll($this->strAjaxId, \Input::post('id'))));
 						}
 					}
 					else

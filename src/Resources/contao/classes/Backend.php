@@ -11,7 +11,11 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Database\Result;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -267,7 +271,7 @@ abstract class Backend extends \Controller
 			}
 			catch (\Exception $e) {}
 
-			$strRelpath = str_replace(TL_ROOT . DIRECTORY_SEPARATOR, '', $file);
+			$strRelpath = \StringUtil::stripRootDir($file);
 
 			if (!unlink($file))
 			{
@@ -282,13 +286,14 @@ abstract class Backend extends \Controller
 	/**
 	 * Open a back end module and return it as HTML
 	 *
-	 * @param string $module
+	 * @param string               $module
+	 * @param PickerInterface|null $picker
 	 *
 	 * @return string
 	 *
 	 * @throws AccessDeniedException
 	 */
-	protected function getBackendModule($module)
+	protected function getBackendModule($module, PickerInterface $picker = null)
 	{
 		$arrModule = array();
 
@@ -313,6 +318,12 @@ abstract class Backend extends \Controller
 		elseif ($module != 'undo' && !$this->User->hasAccess($module, 'modules'))
 		{
 			throw new AccessDeniedException('Back end module "' . $module . '" is not allowed for user "' . $this->User->username . '".');
+		}
+
+		// The module does not exist
+		if (empty($arrModule))
+		{
+			throw new \InvalidArgumentException('Back end module "' . $module . '" is not defined in the BE_MOD array');
 		}
 
 		/** @var SessionInterface $objSession */
@@ -394,7 +405,15 @@ abstract class Backend extends \Controller
 
 			/** @var DataContainer $dc */
 			$dc = new $dataContainer($strTable, $arrModule);
+
+			if ($picker !== null && $dc instanceof DataContainer)
+			{
+				$dc->initPicker($picker);
+			}
 		}
+
+		// Wrap the existing headline
+		$this->Template->headline = '<span>' . $this->Template->headline . '</span>';
 
 		// AJAX request
 		if ($_POST && \Environment::get('isAjaxRequest'))
@@ -415,7 +434,18 @@ abstract class Backend extends \Controller
 		elseif (\Input::get('key') && isset($arrModule[\Input::get('key')]))
 		{
 			$objCallback = \System::importStatic($arrModule[\Input::get('key')][0]);
-			$this->Template->main .= $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
+			$response = $objCallback->{$arrModule[\Input::get('key')][1]}($dc);
+
+			if ($response instanceof RedirectResponse)
+			{
+				throw new ResponseException($response);
+			}
+			elseif ($response instanceof Response)
+			{
+				$response = $response->getContent();
+			}
+
+			$this->Template->main .= $response;
 
 			// Add the name of the parent element
 			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
@@ -428,17 +458,17 @@ abstract class Backend extends \Controller
 
 					if ($objRow->title != '')
 					{
-						$this->Template->headline .= ' » ' . $objRow->title;
+						$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
 					}
 					elseif ($objRow->name != '')
 					{
-						$this->Template->headline .= ' » ' . $objRow->name;
+						$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
 					}
 				}
 			}
 
 			// Add the name of the submodule
-			$this->Template->headline .= ' » ' . sprintf($GLOBALS['TL_LANG'][$strTable][\Input::get('key')][1], \Input::get('id'));
+			$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][\Input::get('key')][1], \Input::get('id')) . '</span>';
 		}
 
 		// Default action
@@ -457,7 +487,7 @@ abstract class Backend extends \Controller
 				case 'show':
 				case 'showAll':
 				case 'undo':
-					if (!($dc instanceof \listable))
+					if (!$dc instanceof \listable)
 					{
 						$this->log('Data container ' . $strTable . ' is not listable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not listable', E_USER_ERROR);
@@ -471,7 +501,7 @@ abstract class Backend extends \Controller
 				case 'copyAll':
 				case 'move':
 				case 'edit':
-					if (!($dc instanceof \editable))
+					if (!$dc instanceof \editable)
 					{
 						$this->log('Data container ' . $strTable . ' is not editable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not editable', E_USER_ERROR);
@@ -479,127 +509,81 @@ abstract class Backend extends \Controller
 					break;
 			}
 
-			$strFirst = null;
-			$strSecond = null;
-
-			// Handle child child tables (e.g. tl_style)
-			if (isset($GLOBALS['TL_DCA'][$strTable]['config']['ptable']))
+			// Add the name of the parent elements
+			if ($strTable && in_array($strTable, $arrTables) && $strTable != $arrTables[0])
 			{
-				$ptable = $GLOBALS['TL_DCA'][$strTable]['config']['ptable'];
+				$trail = array();
 
-				if (in_array($ptable, $arrTables))
+				$pid = $dc->id;
+				$table = $strTable;
+				$ptable = (\Input::get('act') != 'edit') ? $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] : $strTable;
+
+				while ($ptable && !in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
 				{
-					$this->loadDataContainer($ptable);
+					$objRow = $this->Database->prepare("SELECT * FROM " . $ptable . " WHERE id=?")
+											 ->limit(1)
+											 ->execute($pid);
 
-					if (isset($GLOBALS['TL_DCA'][$ptable]['config']['ptable']))
+					// Add only parent tables to the trail
+					if ($table != $ptable)
 					{
-						$ftable = $GLOBALS['TL_DCA'][$ptable]['config']['ptable'];
-
-						if (in_array($ftable, $arrTables))
+						// Add table name
+						if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 						{
-							$strFirst = $ftable;
-							$strSecond = $ptable;
+							$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
 						}
-					}
-				}
-			}
 
-			// Build the breadcrumb trail
-			if ($strFirst !== null && $strSecond !== null)
-			{
-				if (!isset($_GET['act']) || \Input::get('act') == 'paste' && \Input::get('mode') == 'create' || \Input::get('act') == 'select' || \Input::get('act') == 'editAll' || \Input::get('act') == 'overrideAll')
-				{
-					if ($strTable == $strSecond)
-					{
-						$strQuery = "SELECT * FROM $strFirst WHERE id=?";
-					}
-					else
-					{
-						$strQuery = "SELECT * FROM $strFirst WHERE id=(SELECT pid FROM $strSecond WHERE id=?)";
-					}
-				}
-				else
-				{
-					if ($strTable == $strSecond)
-					{
-						$strQuery = "SELECT * FROM $strFirst WHERE id=(SELECT pid FROM $strSecond WHERE id=?)";
-					}
-					else
-					{
-						$strQuery = "SELECT * FROM $strFirst WHERE id=(SELECT pid FROM $strSecond WHERE id=(SELECT pid FROM $strTable WHERE id=?))";
-					}
-				}
-
-				// Add the first level name
-				$objRow = $this->Database->prepare($strQuery)
-										 ->limit(1)
-										 ->execute($dc->id);
-
-				if ($objRow->title != '')
-				{
-					$this->Template->headline .= ' » ' . $objRow->title;
-				}
-				elseif ($objRow->name != '')
-				{
-					$this->Template->headline .= ' » ' . $objRow->name;
-				}
-
-				if (isset($GLOBALS['TL_LANG']['MOD'][$strSecond]))
-				{
-					$this->Template->headline .= ' » ' . $GLOBALS['TL_LANG']['MOD'][$strSecond];
-				}
-
-				// Add the second level name
-				$objRow = $this->Database->prepare("SELECT * FROM $strSecond WHERE id=?")
-										 ->limit(1)
-										 ->execute(CURRENT_ID);
-
-				if ($objRow->title != '')
-				{
-					$this->Template->headline .= ' » ' . $objRow->title;
-				}
-				elseif ($objRow->name != '')
-				{
-					$this->Template->headline .= ' » ' . $objRow->name;
-				}
-			}
-			else
-			{
-				// Add the name of the parent element
-				if ($strTable && in_array($strTable, $arrTables) && $strTable != $arrTables[0])
-				{
-					if ($GLOBALS['TL_DCA'][$strTable]['config']['ptable'] != '')
-					{
-						$objRow = $this->Database->prepare("SELECT * FROM " . $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] . " WHERE id=?")
-												 ->limit(1)
-												 ->execute(CURRENT_ID);
-
+						// Add object title or name
 						if ($objRow->title != '')
 						{
-							$this->Template->headline .= ' » ' . $objRow->title;
+							$trail[] = ' › <span>' . $objRow->title . '</span>';
 						}
 						elseif ($objRow->name != '')
 						{
-							$this->Template->headline .= ' » ' . $objRow->name;
+							$trail[] = ' › <span>' . $objRow->name . '</span>';
 						}
+						elseif ($objRow->headline != '')
+						{
+							$trail[] = ' › <span>' . $objRow->headline . '</span>';
+						}
+
 					}
+
+					$this->loadDataContainer($ptable);
+
+					// Next parent table
+					$pid = $objRow->pid;
+					$table = $ptable;
+					$ptable = ($GLOBALS['TL_DCA'][$ptable]['config']['dynamicPtable']) ? $objRow->ptable : $GLOBALS['TL_DCA'][$ptable]['config']['ptable'];
 				}
 
-				// Add the name of the submodule
-				if ($strTable && isset($GLOBALS['TL_LANG']['MOD'][$strTable]))
+				// Add the last parent table
+				if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 				{
-					$this->Template->headline .= ' » ' . $GLOBALS['TL_LANG']['MOD'][$strTable];
+					$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
+				}
+
+				// Add the breadcrumb trail in reverse order
+				foreach (array_reverse($trail) as $breadcrumb)
+				{
+					$this->Template->headline .= $breadcrumb;
 				}
 			}
 
 			// Add the current action
 			if (\Input::get('act') == 'editAll')
 			{
-				$this->Template->headline .= ' » ' . $GLOBALS['TL_LANG']['MSC']['all'][0];
+				if (isset($GLOBALS['TL_LANG']['MSC']['all'][0]))
+				{
+					$this->Template->headline .= ' › <span>' . $GLOBALS['TL_LANG']['MSC']['all'][0] . '</span>';
+				}
 			}
 			elseif (\Input::get('act') == 'overrideAll')
 			{
-				$this->Template->headline .= ' » ' . $GLOBALS['TL_LANG']['MSC']['all_override'][0];
+				if (isset($GLOBALS['TL_LANG']['MSC']['all_override'][0]))
+				{
+					$this->Template->headline .= ' › <span>' . $GLOBALS['TL_LANG']['MSC']['all_override'][0] . '</span>';
+				}
 			}
 			else
 			{
@@ -610,27 +594,34 @@ abstract class Backend extends \Controller
 						// Handle new folders (see #7980)
 						if (strpos(\Input::get('id'), '__new__') !== false)
 						{
-							$this->Template->headline .= ' » ' . dirname(\Input::get('id')) . ' » ' . $GLOBALS['TL_LANG'][$strTable]['new'][1];
+							$this->Template->headline .= ' › <span>' . dirname(\Input::get('id')) . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['new'][1] . '</span>';
 						}
 						else
 						{
-							$this->Template->headline .= ' » ' . \Input::get('id');
+							$this->Template->headline .= ' › <span>' . \Input::get('id') . '</span>';
 						}
 					}
-					elseif (is_array($GLOBALS['TL_LANG'][$strTable][$act]))
+					elseif (isset($GLOBALS['TL_LANG'][$strTable][$act][1]))
 					{
-						$this->Template->headline .= ' » ' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('id'));
+						$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('id')) . '</span>';
 					}
 				}
 				elseif (\Input::get('pid'))
 				{
 					if (\Input::get('do') == 'files' || \Input::get('do') == 'tpl_editor')
 					{
-						$this->Template->headline .= ' » ' . \Input::get('pid');
+						if (\Input::get('act') == 'move')
+						{
+							$this->Template->headline .= ' › <span>' . \Input::get('pid') . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['move'][1] . '</span>';
+						}
+						else
+						{
+							$this->Template->headline .= ' › <span>' . \Input::get('pid') . '</span>';
+						}
 					}
-					elseif (is_array($GLOBALS['TL_LANG'][$strTable][$act]))
+					elseif (isset($GLOBALS['TL_LANG'][$strTable][$act][1]))
 					{
-						$this->Template->headline .= ' » ' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('pid'));
+						$this->Template->headline .= ' › <span>' . sprintf($GLOBALS['TL_LANG'][$strTable][$act][1], \Input::get('pid')) . '</span>';
 					}
 				}
 			}
@@ -700,9 +691,13 @@ abstract class Backend extends \Controller
 	 * @param string  $strUuid
 	 * @param string  $strPtable
 	 * @param integer $intPid
+	 *
+	 * @deprecated Deprecated since Contao 4.4, to be removed in Contao 5.0.
 	 */
 	public static function addFileMetaInformationToRequest($strUuid, $strPtable, $intPid)
 	{
+		@trigger_error('Using Backend::addFileMetaInformationToRequest() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 		$objFile = \FilesModel::findByUuid($strUuid);
 
 		if ($objFile === null)
@@ -888,8 +883,8 @@ abstract class Backend extends \Controller
 
 <nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbAriaLabel'] . '" role="navigation">
   <ul id="tl_breadcrumb">
-    <li>' . implode(' &gt; </li><li>', $arrLinks) . '</li>
-  </ul>
+    <li>' . implode(' › </li><li>', $arrLinks) . '</li>
+  </ul>'
 </nav>';
 	}
 
@@ -1087,6 +1082,52 @@ abstract class Backend extends \Controller
 		asort($arrSections);
 
 		return $arrSections;
+	}
+
+
+	/**
+	 * Generate the DCA picker wizard
+	 *
+	 * @param boolean|array $extras
+	 * @param string        $table
+	 * @param string        $field
+	 * @param string        $inputName
+	 *
+	 * @return string
+	 */
+	public static function getDcaPickerWizard($extras, $table, $field, $inputName)
+	{
+		$context = 'link';
+		$extras = is_array($extras) ? $extras : array();
+		$providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
+
+		if (isset($extras['context']))
+		{
+			$context = 'link';
+			unset($extras['context']);
+		}
+
+		$factory = \System::getContainer()->get('contao.picker.builder');
+
+		if (!$factory->supportsContext($context, $providers))
+		{
+			return '';
+		}
+
+		return ' <a href="' . ampersand($factory->getUrl($context, $extras)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+  <script>
+    $("pp_' . $inputName . '").addEvent("click", function(e) {
+      e.preventDefault();
+      Backend.openModalSelector({
+        "id": "tl_listing",
+        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
+        "url": this.href + "&value=" + document.getElementById("ctrl_'.$inputName.'").value,
+        "callback": function(picker, value) {
+          $("ctrl_' . $inputName . '").value = value.join(",");
+        }.bind(this)
+      });
+    });
+  </script>';
 	}
 
 

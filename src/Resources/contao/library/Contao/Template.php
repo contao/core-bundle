@@ -297,7 +297,6 @@ abstract class Template extends \Controller
 
 		$this->compile();
 
-		header('Vary: User-Agent', false);
 		header('Content-Type: ' . $this->strContentType . '; charset=' . \Config::get('characterSet'));
 
 		echo $this->strBuffer;
@@ -317,8 +316,6 @@ abstract class Template extends \Controller
 		$this->compile();
 
 		$response = new Response($this->strBuffer);
-
-		$response->headers->set('Vary', 'User-Agent', false);
 		$response->headers->set('Content-Type', $this->strContentType . '; charset=' . Config::get('characterSet'));
 
 		return $response;
@@ -335,7 +332,15 @@ abstract class Template extends \Controller
 	 */
 	public function route($strName, $arrParams=array())
 	{
-		$strUrl = \System::getContainer()->get('router')->generate($strName, $arrParams);
+		$container = \System::getContainer();
+
+		// Always add the referer ID in the back end
+		if (!isset($arrParams['ref']) && TL_MODE == 'BE')
+		{
+			$arrParams['ref'] = $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id');
+		}
+
+		$strUrl = $container->get('router')->generate($strName, $arrParams);
 		$strUrl = substr($strUrl, strlen(\Environment::get('path')) + 1);
 
 		return ampersand($strUrl);

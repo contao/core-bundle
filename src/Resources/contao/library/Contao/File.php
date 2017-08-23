@@ -15,7 +15,6 @@ use Contao\Image\Image as ContaoImage;
 use Contao\Image\ImageDimensions;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 
@@ -432,7 +431,7 @@ class File extends \System
 		}
 
 		// Open the file
-		if (($this->resFile = $this->Files->fopen($this->strFile, 'wb')) == false)
+		if (!$this->resFile = $this->Files->fopen($this->strFile, 'wb'))
 		{
 			throw new \Exception(sprintf('Cannot create file "%s"', $this->strFile));
 		}
@@ -777,8 +776,6 @@ class File extends \System
 	 */
 	public function sendToBrowser($filename='')
 	{
-		Response::closeOutputBuffers(0, false); // see #698
-
 		$response = new BinaryFileResponse(TL_ROOT . '/' . $this->strFile);
 
 		$response->setContentDisposition
@@ -819,7 +816,7 @@ class File extends \System
 			}
 
 			// Open the temporary file
-			if (($this->resFile = $this->Files->fopen($this->strTmp, $strMode)) == false)
+			if (!$this->resFile = $this->Files->fopen($this->strTmp, $strMode))
 			{
 				return false;
 			}

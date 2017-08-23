@@ -284,7 +284,7 @@ class Statement
 		$this->statement = $this->resConnection->executeQuery($this->strQuery);
 
 		// No result set available
-		if (strncasecmp($this->strQuery, 'SELECT', 6) !== 0 && strncasecmp($this->strQuery, 'SHOW', 4) !== 0)
+		if ($this->statement->columnCount() < 1)
 		{
 			return $this;
 		}
@@ -307,7 +307,7 @@ class Statement
 		$this->strQuery = preg_replace('/(?<!%)%([^bcdufosxX%])/', '%%$1', $this->strQuery);
 
 		// Replace wildcards
-		if (($this->strQuery = @vsprintf($this->strQuery, $arrValues)) == false)
+		if (!$this->strQuery = @vsprintf($this->strQuery, $arrValues))
 		{
 			throw new \Exception('Too few arguments to build the query string');
 		}

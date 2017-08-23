@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ScopeAwareTrait;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -22,21 +22,31 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  */
 class RefererIdListener
 {
-    use ScopeAwareTrait;
-
     /**
      * @var CsrfTokenManagerInterface
      */
     private $tokenManager;
 
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var CsrfToken
+     */
+    private $token;
+
+    /**
      * Constructor.
      *
      * @param CsrfTokenManagerInterface $tokenManager
+     * @param ScopeMatcher              $scopeMatcher
      */
-    public function __construct(CsrfTokenManagerInterface $tokenManager)
+    public function __construct(CsrfTokenManagerInterface $tokenManager, ScopeMatcher $scopeMatcher)
     {
         $this->tokenManager = $tokenManager;
+        $this->scopeMatcher = $scopeMatcher;
     }
 
     /**
@@ -46,15 +56,16 @@ class RefererIdListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$this->isBackendMasterRequest($event)) {
+        if (!$this->scopeMatcher->isBackendMasterRequest($event)) {
             return;
         }
 
         $request = $event->getRequest();
 
-        /** @var CsrfToken $token */
-        $token = $this->tokenManager->refreshToken('contao_referer_id');
+        if (null === $this->token) {
+            $this->token = $this->tokenManager->refreshToken('contao_referer_id');
+        }
 
-        $request->attributes->set('_contao_referer_id', $token->getValue());
+        $request->attributes->set('_contao_referer_id', $this->token->getValue());
     }
 }

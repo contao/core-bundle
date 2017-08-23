@@ -71,6 +71,7 @@ class ModuleArticleList extends \Module
 		$intCount = 0;
 		$articles = array();
 		$id = $objPage->id;
+		$objTarget = null;
 
 		$this->Template->request = \Environment::get('request');
 
@@ -94,6 +95,8 @@ class ModuleArticleList extends \Module
 			return;
 		}
 
+		$objHelper = $objTarget ?: $objPage; // PHP 5.6 compatibility (see #939)
+
 		while ($objArticles->next())
 		{
 			// Skip first article
@@ -109,7 +112,8 @@ class ModuleArticleList extends \Module
 				'link' => $objArticles->title,
 				'title' => \StringUtil::specialchars($objArticles->title),
 				'id' => $cssID[0] ?: 'article-' . $objArticles->id,
-				'articleId' => $objArticles->id
+				'articleId' => $objArticles->id,
+				'href' => $objHelper->getFrontendUrl('/articles/' . ($objArticles->alias ?: $objArticles->id))
 			);
 		}
 

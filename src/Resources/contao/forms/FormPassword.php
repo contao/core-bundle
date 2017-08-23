@@ -56,14 +56,15 @@ class FormPassword extends \Widget
 
 
 	/**
-	 * Always decode entities
+	 * Always use raw request data.
 	 *
 	 * @param array $arrAttributes An optional attributes array
 	 */
 	public function __construct($arrAttributes=null)
 	{
 		parent::__construct($arrAttributes);
-		$this->decodeEntities = true;
+
+		$this->useRawRequestData = true;
 	}
 
 

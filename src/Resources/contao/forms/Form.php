@@ -104,7 +104,7 @@ class Form extends \Hybrid
 		$arrSubmitted = array();
 
 		$this->loadDataContainer('tl_form_field');
-		$formId = ($this->formID != '') ? 'auto_'.$this->formID : 'auto_form_'.$this->id;
+		$formId = $this->formID ? 'auto_'.$this->formID : 'auto_form_'.$this->id;
 
 		$this->Template->fields = '';
 		$this->Template->hidden = '';
@@ -275,6 +275,11 @@ class Form extends \Hybrid
 		$strAttributes = '';
 		$arrAttributes = \StringUtil::deserialize($this->attributes, true);
 
+		if ($arrAttributes[0] != '')
+		{
+			$strAttributes .= ' id="' . $arrAttributes[0] . '"';
+		}
+
 		if ($arrAttributes[1] != '')
 		{
 			$strAttributes .= ' class="' . $arrAttributes[1] . '"';
@@ -283,7 +288,6 @@ class Form extends \Hybrid
 		$this->Template->hasError = $doNotSubmit;
 		$this->Template->attributes = $strAttributes;
 		$this->Template->enctype = $hasUpload ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-		$this->Template->formId = $arrAttributes[0] ?: 'f'.$this->id;
 		$this->Template->action = \Environment::get('indexFreeRequest');
 		$this->Template->maxFileSize = $hasUpload ? $this->objModel->getMaxUploadFileSize() : false;
 		$this->Template->novalidate = $this->novalidate ? ' novalidate' : '';
@@ -438,7 +442,7 @@ class Form extends \Hybrid
 					// Add a link to the uploaded file
 					if ($file['uploaded'])
 					{
-						$uploaded .= "\n" . \Environment::get('base') . str_replace(TL_ROOT . '/', '', dirname($file['tmp_name'])) . '/' . rawurlencode($file['name']);
+						$uploaded .= "\n" . \Environment::get('base') . \StringUtil::stripRootDir(dirname($file['tmp_name'])) . '/' . rawurlencode($file['name']);
 						continue;
 					}
 
@@ -494,7 +498,7 @@ class Form extends \Hybrid
 				{
 					if ($v['uploaded'])
 					{
-						$arrSet[$k] = str_replace(TL_ROOT . '/', '', $v['tmp_name']);
+						$arrSet[$k] = \StringUtil::stripRootDir($v['tmp_name']);
 					}
 				}
 			}

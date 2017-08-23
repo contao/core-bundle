@@ -24,12 +24,12 @@ class MergeHttpHeadersListener
     /**
      * @var ContaoFrameworkInterface
      */
-    private $contaoFramework;
+    private $framework;
 
     /**
-     * @var array
+     * @var array|null
      */
-    private $headers = [];
+    private $headers;
 
     /**
      * @var array
@@ -45,31 +45,12 @@ class MergeHttpHeadersListener
     /**
      * Constructor.
      *
-     * @param ContaoFrameworkInterface $contaoFramework
+     * @param ContaoFrameworkInterface $framework
+     * @param array|null               $headers   Meant for unit testing only!
      */
-    public function __construct(ContaoFrameworkInterface $contaoFramework)
+    public function __construct(ContaoFrameworkInterface $framework, array $headers = null)
     {
-        $this->contaoFramework = $contaoFramework;
-        $this->setHeaders(headers_list());
-    }
-
-    /**
-     * Returns the headers.
-     *
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * Sets the headers.
-     *
-     * @param array $headers
-     */
-    public function setHeaders(array $headers)
-    {
+        $this->framework = $framework;
         $this->headers = $headers;
     }
 
@@ -102,7 +83,7 @@ class MergeHttpHeadersListener
     {
         $uniqueKey = $this->getUniqueKey($name);
 
-        if (!in_array($uniqueKey, $this->multiHeaders)) {
+        if (!in_array($uniqueKey, $this->multiHeaders, true)) {
             $this->multiHeaders[] = $uniqueKey;
         }
     }
@@ -114,7 +95,7 @@ class MergeHttpHeadersListener
      */
     public function removeMultiHeader($name)
     {
-        if (false !== ($i = array_search($this->getUniqueKey($name), $this->multiHeaders))) {
+        if (false !== ($i = array_search($this->getUniqueKey($name), $this->multiHeaders, true))) {
             unset($this->multiHeaders[$i]);
         }
     }
@@ -126,7 +107,7 @@ class MergeHttpHeadersListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->contaoFramework->isInitialized()) {
+        if (!$this->framework->isInitialized()) {
             return;
         }
 
@@ -151,7 +132,7 @@ class MergeHttpHeadersListener
 
             $uniqueKey = $this->getUniqueKey($name);
 
-            if (in_array($uniqueKey, $this->multiHeaders)) {
+            if (in_array($uniqueKey, $this->multiHeaders, true)) {
                 $response->headers->set($uniqueKey, trim($content), false);
             } elseif (!$response->headers->has($uniqueKey)) {
                 $response->headers->set($uniqueKey, trim($content));
@@ -159,6 +140,16 @@ class MergeHttpHeadersListener
         }
 
         return $response;
+    }
+
+    /**
+     * Returns the headers.
+     *
+     * @return array
+     */
+    private function getHeaders()
+    {
+        return $this->headers ?: headers_list();
     }
 
     /**
