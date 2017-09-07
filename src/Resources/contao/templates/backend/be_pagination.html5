@@ -1,9 +1,8 @@
 
 <nav class="pagination <?= $this->class ?>" role="navigation" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['paginationAriaLabel'] ?>">
-  <a href="<?= $this->request ?>#skipNavigation" class="invisible"><?= \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']); ?></a>
-
   <p><?= $this->total ?></p>
 
+  <a href="<?= $this->request ?>#skipNavigation" class="invisible"><?= \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']); ?></a>
   <ul>
     <?php if ($this->hasFirst): ?>
       <li class="first"><a href="<?= $this->first['href'] ?>" class="first" title="<?= $this->first['title'] ?>"><?= $this->first['link'] ?></a></li>
@@ -19,5 +18,6 @@
       <li class="last"><a href="<?= $this->last['href'] ?>" class="last" title="<?= $this->last['title'] ?>"><?= $this->last['link'] ?></a></li>
     <?php endif; ?>
   </ul>
+  <a id="skipNavigation" class="invisible">&nbsp;</a>
 
 </nav>
