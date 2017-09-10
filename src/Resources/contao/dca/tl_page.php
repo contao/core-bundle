@@ -1045,7 +1045,7 @@ class tl_page extends Backend
 
 			if ($objPage->validAliasCharacters)
 			{
-				$slugOptions['valid'] = $objPage->validAliasCharacters;
+				$slugOptions['validChars'] = $objPage->validAliasCharacters;
 			}
 
 			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::stripInsertTags($dc->activeRecord->title), $slugOptions);

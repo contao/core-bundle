@@ -373,7 +373,7 @@ services:
     contao.slug.generator:
         class: Ausi\SlugGenerator\SlugGenerator
         arguments:
-            - { valid: "\\pN\\p{Ll}" }
+            - { validChars: "\\pN\\p{Ll}" }
 
     contao.slug.valid_characters:
         class: Contao\CoreBundle\Slug\ValidCharacters
