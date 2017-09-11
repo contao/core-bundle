@@ -40,11 +40,6 @@ class CsrfTokenCookieListener
     private $cookiePrefix;
 
     /**
-     * @var bool
-     */
-    private $isSecureRequest;
-
-    /**
      * Constructor.
      *
      * @param MemoryTokenStorage $tokenStorage
@@ -70,7 +65,6 @@ class CsrfTokenCookieListener
         }
 
         $this->tokenStorage->initialize($this->getTokensFromCookies($event->getRequest()->cookies));
-        $this->isSecureRequest = $event->getRequest()->isSecure();
     }
 
     /**
@@ -85,10 +79,21 @@ class CsrfTokenCookieListener
         }
 
         $cookieLifetime = $this->cookieLifetime ? $this->cookieLifetime + time() : 0;
+        $isSecure = $event->getRequest()->isSecure();
 
         foreach ($this->tokenStorage->getActiveTokens() as $key => $value) {
             $event->getResponse()->headers->setCookie(
-                new Cookie($this->cookiePrefix.$key, $value, $cookieLifetime, '/', null, $this->isSecureRequest, true, false, Cookie::SAMESITE_LAX)
+                new Cookie(
+                    $this->cookiePrefix.$key,
+                    $value,
+                    $cookieLifetime,
+                    '/',
+                    null,
+                    $isSecure,
+                    true,
+                    false,
+                    Cookie::SAMESITE_LAX
+                )
             );
         }
     }
