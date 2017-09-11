@@ -12,13 +12,13 @@ namespace Contao\CoreBundle\Tests\Csrf;
 
 use Contao\CoreBundle\Csrf\CookieTokenStorage;
 use Contao\CoreBundle\Tests\TestCase;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * Tests the PictureFactory class.
@@ -38,8 +38,6 @@ class CookieTokenStorageTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface', $cookieTokenStorage);
     }
 
-    /**
-     */
     public function testStoresTokensAsCookies()
     {
         $request = $this->createMock(Request::class);
@@ -82,7 +80,7 @@ class CookieTokenStorageTest extends TestCase
             ->expects($this->once())
             ->method('setCookie')
             ->with($this->callback(
-                function(Cookie $cookie) {
+                function (Cookie $cookie) {
                     $this->assertSame('csrf_foo', $cookie->getName());
                     $this->assertSame('bar', $cookie->getValue());
                     $this->assertSame('/', $cookie->getPath());
