@@ -64,11 +64,11 @@ interface FragmentRegistryInterface
      *
      * @param FragmentInterface       $fragment
      * @param ConfigurationInterface  $configuration
-     * @param RenderStrategyInterface $overridingRenderStrategy
+     * @param RenderStrategy          $overridingRenderStrategy
      *
      * @return null|string
      *
      * @throws InvalidConfigurationException
      */
-    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null);
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null);
 }

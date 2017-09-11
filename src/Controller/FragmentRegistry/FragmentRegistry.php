@@ -114,7 +114,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null)
     {
         if (!$fragment->supportsConfiguration($configuration)) {
             $exception = new InvalidConfigurationException(
@@ -126,15 +126,10 @@ class FragmentRegistry implements FragmentRegistryInterface
 
         $renderStrategy = $this->determineRenderStrategy($fragment, $configuration, $overridingRenderStrategy);
 
-        $queryParameters = [];
-        if ($fragment instanceof QueryParameterProviderInterface) {
-            $queryParameters = $fragment->getQueryParameters($configuration);
-        }
-
         $uri = new ControllerReference(
             $this->controllerName, [
                 '_fragment_identifier' => $fragment::getIdentifier(),
-            ], $queryParameters
+            ], $fragment->getQueryParameters($configuration)
         );
 
         return $this->fragmentHandler->render(
@@ -147,20 +142,17 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * Determines the render strategy.
      *
-     * @param FragmentInterface            $fragment
-     * @param null                         $configuration
-     * @param RenderStrategyInterface|null $overridingRenderStrategy
+     * @param FragmentInterface      $fragment
+     * @param ConfigurationInterface $configuration
+     * @param RenderStrategy|null    $overridingRenderStrategy
      *
      * @return RenderStrategy
      */
-    private function determineRenderStrategy(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
+    private function determineRenderStrategy(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null)
     {
         $strategy = new RenderStrategy();
-
-        if ($fragment instanceof RenderStrategyInterface) {
-            $strategy->setRenderStrategy($fragment->getRenderStrategy($configuration));
-            $strategy->setRenderOptions($fragment->getRenderOptions($configuration));
-        }
+        $strategy->setRenderStrategy($fragment->getRenderStrategy($configuration));
+        $strategy->setRenderOptions($fragment->getRenderOptions($configuration));
 
         if (null !== $overridingRenderStrategy) {
             $strategy->setRenderStrategy($overridingRenderStrategy->getRenderStrategy($configuration));

@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Controller\FragmentRegistry;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class RenderStrategy implements RenderStrategyInterface
+class RenderStrategy
 {
     /**
      * @var string
