@@ -161,7 +161,7 @@ services:
         class: Contao\CoreBundle\EventListener\BackendMenu\LegacyMenuListener
         arguments:
             - "@knp_menu.factory"
-            - "@request_stack"
+            - "@security.token_storage"
         tags:
             - { name: kernel.event_listener, event: contao.build_backend_menu, method: onBuild }
 

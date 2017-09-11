@@ -4,40 +4,37 @@ namespace Contao\CoreBundle\EventListener\BackendMenu;
 
 use Contao\CoreBundle\Event\BackendMenuEvent;
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LegacyMenuListener
 {
     private $factory;
-    private $requestStack;
+    private $tokenStorage;
 
-    public function __construct(FactoryInterface $factory, RequestStack $requestStack)
+    public function __construct(FactoryInterface $factory, TokenStorageInterface $tokenStorage)
     {
         $this->factory = $factory;
-        $this->requestStack = $requestStack;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function onBuild(BackendMenuEvent $event)
     {
         $tree = $event->getTree();
-        $modules = $GLOBALS['BE_MOD'];
-        $refererId = $this->requestStack->getCurrentRequest()->attributes->get('_contao_referer_id');
 
-        foreach ($modules as $category => $nodes) {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $modules = $user->navigation();
+
+        foreach ($modules as $category => $categoryOptions) {
+
             // Create a category node if it doesn't exist yet
             if (!$tree->getChild($category)) {
-                $node = $this->createCategory($category, [
-                    'label' => $this->getTranslatedLabel($category),
-                    'route' => 'contao_backend',
-                    'routeParameters' => [
-                        'do' => $this->requestStack->getCurrentRequest()->get('do'),
-                        'mtg' => $category,
-                        'ref' => $refererId
-                    ],
+                $node = $this->factory->createItem($category, [
+                    'label' => $categoryOptions['label'],
                     'attributes' => [
-                        'title' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['collapseNode']),
+                        'title' => $categoryOptions['title'],
                         'icon' => 'modPlus.gif',
-                        'trail' => false
+                        'trail' => false,
+                        'href' => $categoryOptions['href']
                     ]
                 ]);
 
@@ -47,16 +44,14 @@ class LegacyMenuListener
             }
 
             // Create the child nodes
-            foreach ($nodes as $nodeName => $nodeOptions) {
-
-                $node = $this->createNode($nodeName, [
-                    'label' => $this->getTranslatedLabel($nodeName),
-                    'route' => 'contao_backend',
-                    'routeParameters' => ['do' => $nodeName, 'ref' => $refererId],
+            foreach ($categoryOptions['modules'] as $nodeName => $nodeOptions) {
+                $node = $this->factory->createItem($nodeName, [
+                    'label' => $nodeOptions['label'],
                     'attributes' => [
-                        'title' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MOD'][$nodeName][1]),
+                        'title' => $nodeOptions['title'],
                         'class' => $nodeName,
-                        'trail' => false
+                        'trail' => false,
+                        'href' => $nodeOptions['href']
                     ]
                 ]);
 
@@ -67,20 +62,5 @@ class LegacyMenuListener
         }
 
         return $tree;
-    }
-
-    private function createCategory($name, array $options = [])
-    {
-        return $this->factory->createItem($name, $options);
-    }
-
-    private function createNode($name, array $options)
-    {
-        return $this->factory->createItem($name, $options);
-    }
-
-    private function getTranslatedLabel($nodeName)
-    {
-        return (($label = is_array($GLOBALS['TL_LANG']['MOD'][$nodeName]) ? $GLOBALS['TL_LANG']['MOD'][$nodeName][0] : $GLOBALS['TL_LANG']['MOD'][$nodeName]) != false) ? $label : $nodeName;
     }
 }
