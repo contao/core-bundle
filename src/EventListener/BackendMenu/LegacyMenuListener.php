@@ -32,7 +32,6 @@ class LegacyMenuListener
                     'label' => $categoryOptions['label'],
                     'attributes' => [
                         'title' => $categoryOptions['title'],
-                        'icon' => 'modPlus.gif',
                         'trail' => false,
                         'href' => $categoryOptions['href']
                     ]
