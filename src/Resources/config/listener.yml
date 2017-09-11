@@ -156,3 +156,20 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    contao.listener.backend_menu.legacy_menu_listener:
+        class: Contao\CoreBundle\EventListener\BackendMenu\LegacyMenuListener
+        arguments:
+            - "@knp_menu.factory"
+            - "@request_stack"
+        tags:
+            - { name: kernel.event_listener, event: contao.build_backend_menu, method: onBuild }
+
+
+    contao.listener.backend_menu.state_listener:
+        class: Contao\CoreBundle\EventListener\BackendMenu\StateListener
+        arguments:
+            - "@request_stack"
+        tags:
+            - { name: kernel.event_listener, event: contao.annotate_backend_menu, method: setActiveState }
+            - { name: kernel.event_listener, event: contao.annotate_backend_menu, method: collapseItems }

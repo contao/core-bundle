@@ -198,6 +198,24 @@ services:
         arguments:
             - "@contao.menu.matcher"
 
+    contao.menu.backend_render:
+        class: Contao\CoreBundle\Menu\Renderer\BackendMenuRenderer
+        arguments:
+            - "@twig"
+
+    contao.menu.backend_menu_builder:
+        class: Contao\CoreBundle\Menu\BackendMenuBuilder
+        arguments:
+            - "@knp_menu.factory"
+            - "@event_dispatcher"
+
+    contao.menu.backend_menu:
+        class: Knp\Menu\MenuItem
+        factory: ["@contao.menu.backend_menu_builder", create]
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: backend }
+
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
         arguments:
