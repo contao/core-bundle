@@ -3,7 +3,6 @@
 namespace Contao\CoreBundle\EventListener\BackendMenu;
 
 use Contao\CoreBundle\Event\BackendMenuEvent;
-use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -40,7 +39,7 @@ class StateListener
 
     }
 
-    protected function setActiveStateOnNode(ItemInterface $item, $active)
+    private function setActiveStateOnNode(ItemInterface $item, $active)
     {
         if ($item->hasChildren()) {
             foreach ($item->getChildren() as $child) {

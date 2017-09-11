@@ -198,13 +198,13 @@ services:
         arguments:
             - "@contao.menu.matcher"
 
-    contao.menu.backend_render:
-        class: Contao\CoreBundle\Menu\Renderer\BackendMenuRenderer
+    contao.menu.backend_menu_render:
+        class: Contao\CoreBundle\Menu\BackendMenu\MenuRenderer
         arguments:
             - "@twig"
 
     contao.menu.backend_menu_builder:
-        class: Contao\CoreBundle\Menu\BackendMenuBuilder
+        class: Contao\CoreBundle\Menu\BackendMenu\MenuBuilder
         arguments:
             - "@knp_menu.factory"
             - "@event_dispatcher"

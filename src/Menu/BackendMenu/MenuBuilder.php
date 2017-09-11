@@ -1,12 +1,12 @@
 <?php
 
-namespace Contao\CoreBundle\Menu;
+namespace Contao\CoreBundle\Menu\BackendMenu;
 
 use Contao\CoreBundle\Event\BackendMenuEvent;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class BackendMenuBuilder
+class MenuBuilder
 {
     private $factory;
     private $eventDispatcher;

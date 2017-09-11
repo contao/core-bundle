@@ -1,12 +1,12 @@
 <?php
 
-namespace Contao\CoreBundle\Menu\Renderer;
+namespace Contao\CoreBundle\Menu\BackendMenu;
 
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Renderer\RendererInterface;
 use Twig\Environment;
 
-class BackendMenuRenderer implements RendererInterface
+class MenuRenderer implements RendererInterface
 {
     private $templating;
 
