@@ -207,9 +207,15 @@ class Configuration implements ConfigurationInterface
             )
         );
 
+        foreach ($languages as $key => $lang) {
+            if (!preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $lang)) {
+                unset($languages[$key]);
+            }
+        }
+
         // The default locale must be the first supported language (see contao/core#6533)
         array_unshift($languages, $this->defaultLocale);
 
-        return array_unique($languages);
+        return array_values(array_unique($languages));
     }
 }
