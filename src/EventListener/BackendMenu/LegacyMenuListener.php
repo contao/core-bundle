@@ -55,7 +55,7 @@ class LegacyMenuListener
                     ]
                 ]);
 
-                $node->setCurrent(false);
+                $node->setCurrent($nodeOptions['isActive']);
 
                 $tree->getChild($category)->addChild($node);
             }

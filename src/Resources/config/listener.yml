@@ -24,15 +24,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: contao.build_backend_menu, method: onBuild }
 
-
-    contao.listener.backend_menu.state_listener:
-        class: Contao\CoreBundle\EventListener\BackendMenu\StateListener
-        arguments:
-            - "@request_stack"
-        tags:
-            - { name: kernel.event_listener, event: contao.annotate_backend_menu, method: setActiveState }
-            - { name: kernel.event_listener, event: contao.annotate_backend_menu, method: collapseItems }
-
     contao.listener.bypass_maintenance:
         class: Contao\CoreBundle\EventListener\BypassMaintenanceListener
         arguments:

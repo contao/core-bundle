@@ -229,10 +229,8 @@ class BackendMain extends \Backend
 		$this->Template->pageOffset = \Input::cookie('BE_PAGE_OFFSET');
 		$this->Template->logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
 		$this->Template->logoutTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logoutBTTitle']);
-		$this->Template->backendModules = $GLOBALS['TL_LANG']['MSC']['backendModules'];
 		$this->Template->user = $this->User;
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['user'] . ' ' . $GLOBALS['TL_USERNAME'];
-		$this->Template->skipNavigation = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']);
 		$this->Template->request = ampersand(\Environment::get('request'));
 		$this->Template->top = $GLOBALS['TL_LANG']['MSC']['backToTop'];
 		$this->Template->modules = $this->User->navigation();
@@ -247,7 +245,7 @@ class BackendMain extends \Backend
 		$this->Template->burger = $GLOBALS['TL_LANG']['MSC']['burgerTitle'];
 		$this->Template->learnMore = sprintf($GLOBALS['TL_LANG']['MSC']['learnMore'], '<a href="https://contao.org" target="_blank">contao.org</a>');
 		$this->Template->ref = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id');
-        $this->Template->menu = \System::getContainer()->get('contao.menu.backend_menu_renderer')->render(\System::getContainer()->get('contao.menu.backend_menu_builder')->create());;
+		$this->Template->menu = \System::getContainer()->get('contao.menu.backend_renderer')->render(\System::getContainer()->get('contao.menu.backend_menu_builder')->create());;
 
 		$strSystemMessages = \Backend::getSystemMessages();
 		$this->Template->systemMessagesCount = substr_count($strSystemMessages, 'class="tl_');

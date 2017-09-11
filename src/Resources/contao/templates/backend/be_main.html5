@@ -66,8 +66,6 @@
     <?php if (!$this->isPopup): ?>
       <div id="left">
           <?= $this->menu; ?>
-
-          <a id="skipNavigation" class="invisible">&nbsp;</a>
         </nav>
         <div class="version">
           <?= $this->version ?><br><?= $this->learnMore ?>
