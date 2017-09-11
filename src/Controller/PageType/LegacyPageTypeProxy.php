@@ -11,7 +11,6 @@
 namespace Contao\CoreBundle\Controller\PageType;
 
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\RenderStrategy;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

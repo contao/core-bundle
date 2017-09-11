@@ -232,13 +232,13 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 			'filter'                  => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_page', 'getPageTypes'),
-			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50', 'useRawRequestData'=>true),
+			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
 			'reference'               => &$GLOBALS['TL_LANG']['PTY'],
 			'save_callback' => array
 			(
 				array('tl_page', 'checkRootType')
 			),
-			'sql'                     => "varchar(128) NOT NULL default ''"
+			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'pageTitle' => array
 		(

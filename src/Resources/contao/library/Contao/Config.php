@@ -9,10 +9,6 @@
  */
 
 namespace Contao;
-use Contao\CoreBundle\Controller\FrontendModule\FrontendModuleInterface;
-use Contao\CoreBundle\Controller\FrontendModule\LegacyFrontendModuleProxy;
-use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
-use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 
 
 /**
