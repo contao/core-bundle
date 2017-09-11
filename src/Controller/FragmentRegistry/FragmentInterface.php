@@ -36,33 +36,25 @@ interface FragmentInterface
     public static function getIdentifier();
 
     /**
-     * Gets the category of the fragment as a string or null if no categorization
-     * is needed.
-     *
-     * @return string|null
-     */
-    public static function getCategory();
-
-    /**
      * Checks if the fragment supports a given configuration by the consumer
      * that wants to render the fragment.
      *
-     * @param ConfigurationInterface|null $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return bool
      */
-    public function supportsConfiguration(ConfigurationInterface $configuration = null);
+    public function supportsConfiguration(ConfigurationInterface $configuration);
 
     /**
      * Gets the fragment render strategy. Symfony core provides "inline",
      * "esi", "ssi" and "hinclude" but everybody can extend the available
      * renderers by using the service tag "kernel.fragment_renderer".
      *
-     * @param ConfigurationInterface|null $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return string
      */
-    public function getRenderStrategy($configuration = null);
+    public function getRenderStrategy($configuration);
 
     /**
      * Gets the render options for the render strategy. Most of the times
@@ -71,11 +63,11 @@ interface FragmentInterface
      * The passed configuration array contains whatever the triggering code
      * wants to pass on to your fragment.
      *
-     * @param ConfigurationInterface|null $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return array
      */
-    public function getRenderOptions($configuration = null);
+    public function getRenderOptions($configuration);
 
     /**
      * Your fragment likely needs some request query parameters if you use any
@@ -85,25 +77,27 @@ interface FragmentInterface
      * wants to pass on to your fragment.
      * See FragmentRegistryInterface::renderFragment()
      *
-     * @param ConfigurationInterface|null $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return array
      */
-    public function getQueryParameters(ConfigurationInterface $configuration = null);
+    public function getQueryParameters(ConfigurationInterface $configuration);
 
     /**
+     * Converts a request to a configuration.
+     *
      * @param Request $request
      *
-     * @return ConfigurationInterface|null
+     * @return ConfigurationInterface
      */
     public function convertRequestToConfiguration(Request $request);
 
     /**
      * The render action.
      *
-     * @param ConfigurationInterface|null $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return Response
      */
-    public function renderAction(ConfigurationInterface $configuration = null);
+    public function renderAction(ConfigurationInterface $configuration);
 }

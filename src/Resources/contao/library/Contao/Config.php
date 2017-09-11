@@ -9,6 +9,10 @@
  */
 
 namespace Contao;
+use Contao\CoreBundle\Controller\FrontendModule\FrontendModuleInterface;
+use Contao\CoreBundle\Controller\FrontendModule\LegacyFrontendModuleProxy;
+use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
+use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 
 
 /**
@@ -310,6 +314,39 @@ class Config
 		@trigger_error('Using Config::getActiveModules() has been deprecated and will no longer work in Contao 5.0. Use the container parameter "kernel.bundles" instead.', E_USER_DEPRECATED);
 
 		return \ModuleLoader::getActive();
+	}
+
+
+	/**
+	 * Maps new fragments that were registered properly in the fragment
+	 * registry to old $GLOBALS arrays for BC.
+	 */
+	public static function mapNewFragmentsToLegacyArrays()
+	{
+		$container = \System::getContainer();
+
+		/** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
+		$fragmentRegistry = $container->get('contao.fragment_registry');
+
+		foreach ($fragmentRegistry->getFragments([PageTypeInterface::class, FrontendModuleInterface::class]) as $fragment)
+		{
+			// Page types
+			if ($fragment instanceof PageTypeInterface)
+			{
+				$GLOBALS['TL_PTY'][$fragment::getIdentifier()] = LegacyPageTypeProxy::class;
+				continue;
+			}
+
+			// Front end modules
+			if ($fragment instanceof FrontendModuleInterface)
+			{
+				$GLOBALS['FE_MOD'][$fragment::getCategory()][$fragment::getIdentifier()] = LegacyFrontendModuleProxy::class;
+				continue;
+			}
+
+			// TODO
+			// Content elements
+		}
 	}
 
 

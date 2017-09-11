@@ -12,8 +12,6 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
-use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
-use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use League\Uri\Components\Query;
 use Patchwork\Utf8;
@@ -279,33 +277,6 @@ abstract class System
 		$logger->log($level, $strText, array('contao' => new ContaoContext($strFunction, $strCategory)));
 	}
 
-    /**
-     * Maps new fragments that were registered properly in the fragment
-     * registry to old $GLOBALS arrays for BC.
-     */
-	public static function mapNewFragmentsToLegacyArrays()
-    {
-        $container = \System::getContainer();
-
-        /** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
-        $fragmentRegistry = $container->get('contao.fragment_registry');
-
-        foreach ($fragmentRegistry->getFragments([
-            PageTypeInterface::class
-        ]) as $fragment) {
-
-            // Page types
-            if ($fragment instanceof  PageTypeInterface) {
-                $GLOBALS['TL_PTY'][$fragment::getIdentifier()] = LegacyPageTypeProxy::class;
-                continue;
-            }
-
-            // TODO
-            // Front end modules
-            // Content elements
-
-        }
-    }
 
 	/**
 	 * Return the referer URL and optionally encode ampersands

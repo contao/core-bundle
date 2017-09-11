@@ -114,7 +114,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null)
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration, RenderStrategy $overridingRenderStrategy = null)
     {
         if (!$fragment->supportsConfiguration($configuration)) {
             $exception = new InvalidConfigurationException(
@@ -148,15 +148,15 @@ class FragmentRegistry implements FragmentRegistryInterface
      *
      * @return RenderStrategy
      */
-    private function determineRenderStrategy(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null)
+    private function determineRenderStrategy(FragmentInterface $fragment, ConfigurationInterface $configuration, RenderStrategy $overridingRenderStrategy = null)
     {
         $strategy = new RenderStrategy();
         $strategy->setRenderStrategy($fragment->getRenderStrategy($configuration));
         $strategy->setRenderOptions($fragment->getRenderOptions($configuration));
 
         if (null !== $overridingRenderStrategy) {
-            $strategy->setRenderStrategy($overridingRenderStrategy->getRenderStrategy($configuration));
-            $strategy->setRenderOptions($overridingRenderStrategy->getRenderOptions($configuration));
+            $strategy->setRenderStrategy($overridingRenderStrategy->getRenderStrategy());
+            $strategy->setRenderOptions($overridingRenderStrategy->getRenderOptions());
         }
 
         return $strategy;

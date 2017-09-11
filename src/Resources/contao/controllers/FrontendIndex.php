@@ -10,9 +10,6 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Controller\PageType\PageTypeConfiguration;
-use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
@@ -284,7 +281,6 @@ class FrontendIndex extends \Frontend
 					break;
 
 				default:
-					/** @var PageRegular $objHandler */
 					$objHandler = new $GLOBALS['TL_PTY'][$objPage->type]();
 
 					// Backwards compatibility
@@ -320,8 +316,6 @@ class FrontendIndex extends \Frontend
 			$GLOBALS['TL_BODY'] = $arrBody;
 			$GLOBALS['TL_MOOTOOLS'] = $arrMootools;
 			$GLOBALS['TL_JQUERY'] = $arrJquery;
-
-			@trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
 
 			/** @var PageError404 $objHandler */
 			$objHandler = new $GLOBALS['TL_PTY']['error_404']();

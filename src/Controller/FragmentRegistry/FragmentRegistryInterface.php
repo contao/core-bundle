@@ -70,5 +70,5 @@ interface FragmentRegistryInterface
      *
      * @throws InvalidConfigurationException
      */
-    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategy $overridingRenderStrategy = null);
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration, RenderStrategy $overridingRenderStrategy = null);
 }

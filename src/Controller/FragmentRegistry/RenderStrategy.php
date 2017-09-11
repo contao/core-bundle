@@ -54,7 +54,7 @@ class RenderStrategy
     /**
      * {@inheritdoc}
      */
-    public function getRenderStrategy($configuration = null)
+    public function getRenderStrategy()
     {
         return $this->renderStrategy;
     }
@@ -74,7 +74,7 @@ class RenderStrategy
     /**
      * {@inheritdoc}
      */
-    public function getRenderOptions($configuration = null)
+    public function getRenderOptions()
     {
         return $this->renderOptions;
     }

@@ -30,15 +30,7 @@ abstract class AbstractFragment implements FragmentInterface
     /**
      * {@inheritdoc}
      */
-    public static function getCategory()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsConfiguration(ConfigurationInterface $configuration = null)
+    public function supportsConfiguration(ConfigurationInterface $configuration)
     {
         return false;
     }
@@ -46,7 +38,7 @@ abstract class AbstractFragment implements FragmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getRenderStrategy($configuration = null)
+    public function getRenderStrategy($configuration)
     {
         return 'inline';
     }
@@ -54,7 +46,7 @@ abstract class AbstractFragment implements FragmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getRenderOptions($configuration = null)
+    public function getRenderOptions($configuration)
     {
         return [];
     }
@@ -62,7 +54,7 @@ abstract class AbstractFragment implements FragmentInterface
     /**
      * {@inheritdoc}
      */
-    public function getQueryParameters(ConfigurationInterface $configuration = null)
+    public function getQueryParameters(ConfigurationInterface $configuration)
     {
         return [];
     }
@@ -78,5 +70,5 @@ abstract class AbstractFragment implements FragmentInterface
     /**
      * {@inheritdoc}
      */
-    abstract public function renderAction(ConfigurationInterface $configuration = null);
+    abstract public function renderAction(ConfigurationInterface $configuration);
 }
