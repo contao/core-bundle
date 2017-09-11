@@ -28,6 +28,18 @@ class RenderStrategy implements RenderStrategyInterface
     private $renderOptions = [];
 
     /**
+     * RenderStrategy constructor.
+     *
+     * @param string $renderStrategy
+     * @param array  $renderOptions
+     */
+    public function __construct($renderStrategy = 'inline', array $renderOptions = [])
+    {
+        $this->renderStrategy = $renderStrategy;
+        $this->renderOptions  = $renderOptions;
+    }
+
+    /**
      * @param string $renderStrategy
      *
      * @return RenderStrategy

@@ -1324,15 +1324,6 @@ class tl_page extends Backend
 			}
 		}
 
-		$container = \System::getContainer();
-
-		/** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
-		$fragmentRegistry = $container->get('contao.fragment_registry');
-
-		foreach ($fragmentRegistry->getFragments([\Contao\CoreBundle\Controller\PageType\PageTypeInterface::class]) as $fragment) {
-			$arrOptions[] = $fragment::getIdentifier();
-		}
-
 		return $arrOptions;
 	}
 

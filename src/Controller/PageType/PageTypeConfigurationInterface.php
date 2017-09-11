@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Controller\PageType;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\ConfigurationInterface;
 use Contao\PageModel;
 
 /**
@@ -17,7 +18,7 @@ use Contao\PageModel;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-interface PageTypeConfigurationInterface
+interface PageTypeConfigurationInterface extends ConfigurationInterface
 {
     /**
      * @return PageModel

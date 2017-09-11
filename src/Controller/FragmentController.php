@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Controller\FragmentRegistry\ConvertRequestToConfigurationInterface;
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,6 +54,12 @@ class FragmentController
             throw new BadRequestHttpException('This fragment could not be rendered.');
         }
 
-        return $fragment->renderAction($request);
+        $configuration = null;
+
+        if ($fragment instanceof ConvertRequestToConfigurationInterface) {
+            $configuration = $fragment->convertRequestToConfiguration($request);
+        }
+
+        return $fragment->renderAction($configuration);
     }
 }

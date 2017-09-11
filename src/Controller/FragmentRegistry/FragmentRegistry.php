@@ -95,9 +95,10 @@ class FragmentRegistry implements FragmentRegistryInterface
                     $matches[] = $fragment;
                     $visitedFragmentClassNames[$ref->getName()] = null;
                 }
-
             }
         }
+
+        $this->cache[$key] = $matches;
 
         return $matches;
     }
@@ -113,12 +114,14 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function renderFragment(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null)
     {
         if (!$fragment->supportsConfiguration($configuration)) {
-            throw new \InvalidArgumentException(
+            $exception = new InvalidConfigurationException(
                 sprintf('The fragment "%s" does not support the given configuration.', $fragment::getIdentifier())
             );
+            $exception->setConfiguration($configuration);
+            throw $exception;
         }
 
         $renderStrategy = $this->determineRenderStrategy($fragment, $configuration, $overridingRenderStrategy);

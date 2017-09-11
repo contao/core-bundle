@@ -284,30 +284,6 @@ class FrontendIndex extends \Frontend
 					break;
 
 				default:
-					$container = \System::getContainer();
-
-					/** @var FragmentRegistryInterface $fragmentRegistry */
-					$fragmentRegistry = $container->get('contao.fragment_registry');
-
-					$fragment = $fragmentRegistry->getFragment($objPage->type);
-
-					if (null !== $fragment) {
-						$config = new PageTypeConfiguration();
-						$config->setPageModel($objPage);
-
-						// TODO force rendering inline (it never makes sense to render it differently here)
-						// $strategy = new RenderStrategy()
-						// $strategy->setRenderStrategy('inline');
-
-						$result = $fragmentRegistry->renderFragment($fragment, $config);
-
-						if (null !== $result) {
-							return new Response($result);
-						}
-					}
-
-					@trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
-
 					/** @var PageRegular $objHandler */
 					$objHandler = new $GLOBALS['TL_PTY'][$objPage->type]();
 

@@ -49,10 +49,9 @@ interface FragmentRegistryInterface
     public function getFragment($identifier);
 
     /**
-     * Renders a fragment optionally passing on arbitrary configuration. It can
-     * be anything, from a simple array to an object implementing interfaces
-     * (which is recommended). The fragment is asked if it supports() the
-     * configuration and if not, an \InvalidArgumentException is raised.
+     * Renders a fragment optionally passing on arbitrary configuration.
+     * The fragment is asked if it supports() the configuration and if not,
+     * an InvalidConfigurationException is thrown.
      * Otherwise a string (response content according to the render
      * strategy) or null (when the response is streamed) is returned.
      * By default, any fragment is rendered using the "inline" strategy for
@@ -64,12 +63,12 @@ interface FragmentRegistryInterface
      * method.
      *
      * @param FragmentInterface       $fragment
-     * @param mixed                   $configuration
+     * @param ConfigurationInterface  $configuration
      * @param RenderStrategyInterface $overridingRenderStrategy
      *
      * @return null|string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
-    public function renderFragment(FragmentInterface $fragment, $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null);
+    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration = null, RenderStrategyInterface $overridingRenderStrategy = null);
 }

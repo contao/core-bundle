@@ -399,6 +399,7 @@ $GLOBALS['TL_HOOKS'] = array
 	)
 );
 
+$GLOBALS['TL_HOOKS']['initializeSystem'] = array('System', 'mapNewFragmentsToLegacyArrays');
 
 /**
  * Register the auto_item keywords

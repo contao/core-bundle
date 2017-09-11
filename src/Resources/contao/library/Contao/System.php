@@ -12,6 +12,8 @@ namespace Contao;
 
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
+use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
+use Contao\CoreBundle\Controller\PageType\PageTypeInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use League\Uri\Components\Query;
 use Patchwork\Utf8;
@@ -38,19 +40,32 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  *         }
  *     }
  *
- * @property \Automator                                $Automator   The automator object
- * @property \Config                                   $Config      The config object
- * @property \Database                                 $Database    The database object
- * @property \Environment                              $Environment The environment object
- * @property \Files                                    $Files       The files object
- * @property \Input                                    $Input       The input object
- * @property \Database\Installer                       $Installer   The database installer object
- * @property \Database\Updater                         $Updater     The database updater object
- * @property \Messages                                 $Messages    The messages object
- * @property \Session                                  $Session     The session object
- * @property \StyleSheets                              $StyleSheets The style sheets object
- * @property \BackendTemplate|\FrontendTemplate|object $Template    The template object
- * @property \BackendUser|\FrontendUser|object         $User        The user object
+ * @property \Automator                                $Automator   The
+ *           automator object
+ * @property \Config                                   $Config      The config
+ *           object
+ * @property \Database                                 $Database    The
+ *           database object
+ * @property \Environment                              $Environment The
+ *           environment object
+ * @property \Files                                    $Files       The files
+ *           object
+ * @property \Input                                    $Input       The input
+ *           object
+ * @property \Database\Installer                       $Installer   The
+ *           database installer object
+ * @property \Database\Updater                         $Updater     The
+ *           database updater object
+ * @property \Messages                                 $Messages    The
+ *           messages object
+ * @property \Session                                  $Session     The session
+ *           object
+ * @property \StyleSheets                              $StyleSheets The style
+ *           sheets object
+ * @property \BackendTemplate|\FrontendTemplate|object $Template    The
+ *           template object
+ * @property \BackendUser|\FrontendUser|object         $User        The user
+ *           object
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -264,6 +279,33 @@ abstract class System
 		$logger->log($level, $strText, array('contao' => new ContaoContext($strFunction, $strCategory)));
 	}
 
+    /**
+     * Maps new fragments that were registered properly in the fragment
+     * registry to old $GLOBALS arrays for BC.
+     */
+	public static function mapNewFragmentsToLegacyArrays()
+    {
+        $container = \System::getContainer();
+
+        /** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
+        $fragmentRegistry = $container->get('contao.fragment_registry');
+
+        foreach ($fragmentRegistry->getFragments([
+            PageTypeInterface::class
+        ]) as $fragment) {
+
+            // Page types
+            if ($fragment instanceof  PageTypeInterface) {
+                $GLOBALS['TL_PTY'][$fragment::getIdentifier()] = LegacyPageTypeProxy::class;
+                continue;
+            }
+
+            // TODO
+            // Front end modules
+            // Content elements
+
+        }
+    }
 
 	/**
 	 * Return the referer URL and optionally encode ampersands
@@ -767,14 +809,16 @@ abstract class System
 
 
 	/**
-	 * Read the contents of a PHP file, stripping the opening and closing PHP tags
+	 * Read the contents of a PHP file, stripping the opening and closing PHP
+	 * tags
 	 *
 	 * @param string $strName The name of the PHP file
 	 *
 	 * @return string The PHP code without the PHP tags
 	 *
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
-	 *             Use the Contao\CoreBundle\Config\Loader\PhpFileLoader instead.
+	 *             Use the Contao\CoreBundle\Config\Loader\PhpFileLoader
+	 *             instead.
 	 */
 	protected static function readPhpFileWithoutTags($strName)
 	{
@@ -802,7 +846,8 @@ abstract class System
 	 * @return string The PHP code
 	 *
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
-	 *             Use the Contao\CoreBundle\Config\Loader\XliffFileLoader instead.
+	 *             Use the Contao\CoreBundle\Config\Loader\XliffFileLoader
+	 *             instead.
 	 */
 	public static function convertXlfToPhp($strName, $strLanguage, $blnLoad=false)
 	{
@@ -1160,7 +1205,8 @@ abstract class System
 
 
 	/**
-	 * Compile a Model class name from a table name (e.g. tl_form_field becomes FormFieldModel)
+	 * Compile a Model class name from a table name (e.g. tl_form_field becomes
+	 * FormFieldModel)
 	 *
 	 * @param string $strTable The table name
 	 *

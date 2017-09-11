@@ -39,18 +39,18 @@ interface FragmentInterface
      * Checks if the fragment supports a given configuration by the consumer
      * that wants to render the fragment.
      *
-     * @param mixed $configuration
+     * @param ConfigurationInterface $configuration
      *
      * @return bool
      */
-    public function supportsConfiguration($configuration);
+    public function supportsConfiguration(ConfigurationInterface $configuration);
 
     /**
      * The render action.
      *
-     * @param Request $request
+     * @param ConfigurationInterface $configuration
      *
      * @return Response
      */
-    public function renderAction(Request $request);
+    public function renderAction(ConfigurationInterface $configuration = null);
 }
