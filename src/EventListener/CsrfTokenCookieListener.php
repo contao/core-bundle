@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\CoreBundle\Csrf\MemoryTokenStorage;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -81,12 +80,12 @@ class CsrfTokenCookieListener
         $cookieLifetime = $this->cookieLifetime ? $this->cookieLifetime + time() : 0;
         $isSecure = $event->getRequest()->isSecure();
 
-        foreach ($this->tokenStorage->getActiveTokens() as $key => $value) {
+        foreach ($this->tokenStorage->getSaveTokens() as $key => $value) {
             $event->getResponse()->headers->setCookie(
                 new Cookie(
                     $this->cookiePrefix.$key,
                     $value,
-                    $cookieLifetime,
+                    $value === null ? 1 : $cookieLifetime,
                     '/',
                     null,
                     $isSecure,

@@ -8,9 +8,10 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\Csrf;
+namespace Contao\CoreBundle\Tests\EventListener;
 
-use Contao\CoreBundle\Csrf\CookieTokenStorage;
+use Contao\CoreBundle\Csrf\MemoryTokenStorage;
+use Contao\CoreBundle\EventListener\CsrfTokenCookieListener;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -21,28 +22,34 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
- * Tests the PictureFactory class.
+ * Tests the CsrfTokenCookieListener class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class CookieTokenStorageTest extends TestCase
+class CsrfTokenCookieListenerTest extends TestCase
 {
     /**
      * Tests the object instantiation.
      */
     public function testCanBeInstantiated()
     {
-        $cookieTokenStorage = new CookieTokenStorage();
-
-        $this->assertInstanceOf('Contao\CoreBundle\Csrf\CookieTokenStorage', $cookieTokenStorage);
-        $this->assertInstanceOf('Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface', $cookieTokenStorage);
+        $this->assertInstanceOf(
+            'Contao\CoreBundle\EventListener\CsrfTokenCookieListener',
+            new CsrfTokenCookieListener($this->createMock(MemoryTokenStorage::class))
+        );
     }
 
-    public function testStoresTokensAsCookies()
+    /**
+     * Tests the onKernelResponse() method.
+     */
+    public function testOnKernelRequest()
     {
         $request = $this->createMock(Request::class);
 
-        $request->cookies = new ParameterBag();
+        $request->cookies = new ParameterBag([
+            'csrf_foo' => 'bar',
+            'not_csrf' => 'baz',
+        ]);
 
         $requestEvent = $this->createMock(GetResponseEvent::class);
 
@@ -58,6 +65,32 @@ class CookieTokenStorageTest extends TestCase
             ->willReturn($request)
         ;
 
+        $tokenStorage = $this->createMock(MemoryTokenStorage::class);
+
+        $tokenStorage
+            ->expects($this->once())
+            ->method('initialize')
+            ->with(['foo' => 'bar'])
+        ;
+
+        $listener = new CsrfTokenCookieListener($tokenStorage);
+
+        $listener->onKernelRequest($requestEvent);
+    }
+
+    /**
+     * Tests the onKernelResponse() method.
+     */
+    public function testOnKernelResponse()
+    {
+        $request = $this->createMock(Request::class);
+
+        $request
+            ->expects($this->any())
+            ->method('isSecure')
+            ->willReturn(true)
+        ;
+
         $response = $this->createMock(Response::class);
 
         $responseEvent = $this->createMock(FilterResponseEvent::class);
@@ -66,6 +99,12 @@ class CookieTokenStorageTest extends TestCase
             ->expects($this->any())
             ->method('isMasterRequest')
             ->willReturn(true)
+        ;
+
+        $responseEvent
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn($request)
         ;
 
         $responseEvent
@@ -85,6 +124,7 @@ class CookieTokenStorageTest extends TestCase
                     $this->assertSame('bar', $cookie->getValue());
                     $this->assertSame('/', $cookie->getPath());
                     $this->assertTrue($cookie->isHttpOnly());
+                    $this->assertTrue($cookie->isSecure());
                     $this->assertSame('lax', $cookie->getSameSite());
 
                     return true;
@@ -94,17 +134,16 @@ class CookieTokenStorageTest extends TestCase
 
         $response->headers = $responseHeaders;
 
-        $cookieTokenStorage = new CookieTokenStorage();
+        $tokenStorage = $this->createMock(MemoryTokenStorage::class);
 
-        $cookieTokenStorage->onKernelRequest($requestEvent);
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getSaveTokens')
+            ->willReturn(['foo' => 'bar'])
+        ;
 
-        $this->assertFalse($cookieTokenStorage->hasToken('foo'));
+        $listener = new CsrfTokenCookieListener($tokenStorage);
 
-        $cookieTokenStorage->setToken('foo', 'bar');
-
-        $this->assertTrue($cookieTokenStorage->hasToken('foo'));
-        $this->assertSame('bar', $cookieTokenStorage->getToken('foo'));
-
-        $cookieTokenStorage->onKernelResponse($responseEvent);
+        $listener->onKernelResponse($responseEvent);
     }
 }

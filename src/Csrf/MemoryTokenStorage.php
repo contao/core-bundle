@@ -75,7 +75,7 @@ class MemoryTokenStorage implements TokenStorageInterface
         $this->assertInitialized();
 
         $this->activeTokens[$tokenId] = true;
-        $this->tokens[$tokenId] = '';
+        $this->tokens[$tokenId] = null;
     }
 
     /**
@@ -83,7 +83,7 @@ class MemoryTokenStorage implements TokenStorageInterface
      *
      * @param array $tokens
      */
-    public function initialize(array $tokens = [])
+    public function initialize(array $tokens)
     {
         $this->tokens = $tokens;
     }
@@ -93,7 +93,7 @@ class MemoryTokenStorage implements TokenStorageInterface
      *
      * @return array
      */
-    public function getActiveTokens()
+    public function getSaveTokens()
     {
         $tokens = [];
 
