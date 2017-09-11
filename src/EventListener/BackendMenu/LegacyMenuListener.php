@@ -37,7 +37,7 @@ class LegacyMenuListener
                     ]
                 ]);
 
-                $node->setDisplayChildren(true);
+                $node->setDisplayChildren(strpos($categoryOptions['class'], 'node-expanded') !== false);
 
                 $tree->addChild($node);
             }
