@@ -8,6 +8,11 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
+    contao.argument_resolver.model:
+        class: Contao\CoreBundle\ArgumentResolver\ModelResolver
+        tags:
+            - { name: controller.argument_value_resolver, priority: 101 }
+
     contao.cache:
         class: Doctrine\Common\Cache\FilesystemCache
         arguments:

@@ -54,7 +54,7 @@ abstract class AbstractFragment implements FragmentInterface
      protected function getControllerAttributes(array $configuration)
      {
          return [
-             'pageId' => $GLOBALS['objPage']->id,
+             'pageModel' => $GLOBALS['objPage']->id,
          ];
      }
 

@@ -26,7 +26,7 @@ abstract class AbstractFrontendModule extends AbstractFragment
     {
         return array_merge(
             parent::getControllerAttributes($configuration), [
-                'moduleId' => $configuration['moduleModel']->id,
+                'moduleModel' => $configuration['moduleModel']->id,
                 'inColumn' => $configuration['inColumn'],
             ]
         );
