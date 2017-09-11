@@ -13,6 +13,8 @@ namespace Contao\CoreBundle\DependencyInjection;
 use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -33,15 +35,22 @@ class Configuration implements ConfigurationInterface
     private $rootDir;
 
     /**
+     * @var string
+     */
+    private $defaultLocale;
+
+    /**
      * Constructor.
      *
      * @param bool   $debug
      * @param string $rootDir
+     * @param string $defaultLocale
      */
-    public function __construct($debug, $rootDir)
+    public function __construct($debug, $rootDir, $defaultLocale)
     {
         $this->debug = (bool) $debug;
         $this->rootDir = $rootDir;
+        $this->defaultLocale = $defaultLocale;
     }
 
     /**
@@ -99,6 +108,10 @@ class Configuration implements ConfigurationInterface
                     ->min(-1)
                     ->max(32767)
                     ->defaultValue(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED)
+                ->end()
+                ->arrayNode('locales')
+                    ->prototype('scalar')->end()
+                    ->defaultValue($this->getLocales())
                 ->end()
                 ->arrayNode('image')
                     ->addDefaultsIfNotSet()
@@ -167,5 +180,36 @@ class Configuration implements ConfigurationInterface
         }
 
         return $path;
+    }
+
+    /**
+     * Returns the Contao locales.
+     *
+     * @return array
+     */
+    private function getLocales()
+    {
+        $dirs = [__DIR__.'/../Resources/contao/languages'];
+
+        // app/Resources/contao/languages
+        if (is_dir($this->rootDir.'/Resources/contao/languages')) {
+            $dirs[] = $this->rootDir.'/Resources/contao/languages';
+        }
+
+        $finder = Finder::create()->directories()->depth(0)->in($dirs);
+
+        $languages = array_values(
+            array_map(
+                function (SplFileInfo $file) {
+                    return $file->getFilename();
+                },
+                iterator_to_array($finder)
+            )
+        );
+
+        // The default locale must be the first supported language (see contao/core#6533)
+        array_unshift($languages, $this->defaultLocale);
+
+        return array_unique($languages);
     }
 }

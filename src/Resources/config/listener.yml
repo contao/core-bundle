@@ -93,11 +93,9 @@ services:
 
     contao.listener.locale:
         class: Contao\CoreBundle\EventListener\LocaleListener
-        factory: [Contao\CoreBundle\EventListener\LocaleListener, createWithLocales]
         arguments:
             - "@contao.routing.scope_matcher"
-            - "%kernel.default_locale%"
-            - "%kernel.root_dir%"
+            - "%contao.locales%"
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 20 }
 
