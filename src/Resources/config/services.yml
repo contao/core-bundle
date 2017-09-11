@@ -198,7 +198,7 @@ services:
         arguments:
             - "@contao.menu.matcher"
 
-    contao.menu.backend_menu_render:
+    contao.menu.backend_renderer:
         class: Contao\CoreBundle\Menu\BackendMenu\MenuRenderer
         arguments:
             - "@twig"
