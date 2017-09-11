@@ -190,7 +190,8 @@ class BackendUser extends User
 			return true;
 		}
 
-		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		$route = $request->attributes->get('_route');
 
 		if ($route == 'contao_backend_login')
 		{
@@ -200,9 +201,9 @@ class BackendUser extends User
 		$parameters = array();
 
 		// Redirect to the last page visited upon login
-		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
+		if ($request->query->count() > 0 && in_array($route, array('contao_backend', 'contao_backend_preview')))
 		{
-			$parameters['referer'] = base64_encode(\Environment::get('request'));
+			$parameters['referer'] = base64_encode($request->getRequestUri());
 		}
 
 		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
@@ -388,6 +389,7 @@ class BackendUser extends User
 		\Config::set('useCE', $this->useCE);
 		\Config::set('thumbnails', $this->thumbnails);
 		\Config::set('backendTheme', $this->backendTheme);
+		\Config::set('limitWidth', $this->limitWidth);
 
 		// Inherit permissions
 		$always = array('alexf');
@@ -495,6 +497,8 @@ class BackendUser extends User
 			\Controller::redirect(preg_replace('/(&(amp;)?|\?)mtg=[^& ]*/i', '', \Environment::get('request')));
 		}
 
+		$strRefererId = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id');
+
 		foreach ($GLOBALS['BE_MOD'] as $strGroupName=>$arrGroupModules)
 		{
 			if (!empty($arrGroupModules) && ($strGroupName == 'system' || $this->hasAccess(array_keys($arrGroupModules), 'modules')))
@@ -502,17 +506,9 @@ class BackendUser extends User
 				$arrModules[$strGroupName]['class'] = ' node-expanded';
 				$arrModules[$strGroupName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['collapseNode']);
 				$arrModules[$strGroupName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strGroupName]) ? $GLOBALS['TL_LANG']['MOD'][$strGroupName][0] : $GLOBALS['TL_LANG']['MOD'][$strGroupName]) != false) ? $label : $strGroupName;
-				$arrModules[$strGroupName]['href'] = $router->generate('contao_backend', array('do'=>\Input::get('do'), 'mtg'=>$strGroupName, 'ref'=>TL_REFERER_ID));
+				$arrModules[$strGroupName]['href'] = $router->generate('contao_backend', array('do'=>\Input::get('do'), 'mtg'=>$strGroupName, 'ref'=>$strRefererId));
 				$arrModules[$strGroupName]['ajaxUrl'] = $router->generate('contao_backend');
-				$arrModules[$strGroupName]['isClosed'] = false;
-
-				// Do not show the modules if the group is closed
-				if (!$blnShowAll && isset($session['backend_modules'][$strGroupName]) && $session['backend_modules'][$strGroupName] < 1)
-				{
-					$arrModules[$strGroupName]['class'] = ' node-collapsed';
-					$arrModules[$strGroupName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['expandNode']);
-					$arrModules[$strGroupName]['isClosed'] = true;
-				}
+				$arrModules[$strGroupName]['icon'] = 'modPlus.gif'; // backwards compatibility with e.g. EasyThemes
 
 				foreach ($arrGroupModules as $strModuleName=>$arrModuleConfig)
 				{
@@ -523,15 +519,8 @@ class BackendUser extends User
 						$arrModules[$strGroupName]['modules'][$strModuleName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MOD'][$strModuleName][1]);
 						$arrModules[$strGroupName]['modules'][$strModuleName]['label'] = (($label = is_array($GLOBALS['TL_LANG']['MOD'][$strModuleName]) ? $GLOBALS['TL_LANG']['MOD'][$strModuleName][0] : $GLOBALS['TL_LANG']['MOD'][$strModuleName]) != false) ? $label : $strModuleName;
 						$arrModules[$strGroupName]['modules'][$strModuleName]['class'] = 'navigation ' . $strModuleName;
-						$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', array('do'=>$strModuleName, 'ref'=>TL_REFERER_ID));
+						$arrModules[$strGroupName]['modules'][$strModuleName]['href'] = $router->generate('contao_backend', array('do'=>$strModuleName, 'ref'=>$strRefererId));
 						$arrModules[$strGroupName]['modules'][$strModuleName]['isActive'] = false;
-
-						// Mark the active module and its group
-						if (\Input::get('do') == $strModuleName)
-						{
-							$arrModules[$strGroupName]['class'] .= ' trail';
-							$arrModules[$strGroupName]['modules'][$strModuleName]['isActive'] = true;
-						}
 					}
 				}
 			}
@@ -543,7 +532,33 @@ class BackendUser extends User
 			foreach ($GLOBALS['TL_HOOKS']['getUserNavigation'] as $callback)
 			{
 				$this->import($callback[0]);
-				$arrModules = $this->{$callback[0]}->{$callback[1]}($arrModules, $blnShowAll);
+				$arrModules = $this->{$callback[0]}->{$callback[1]}($arrModules, true);
+			}
+		}
+
+		foreach ($arrModules as $strGroupName => $arrGroupModules)
+		{
+			$arrModules[$strGroupName]['isClosed'] = false;
+
+			// Do not show the modules if the group is closed
+			if (!$blnShowAll && isset($session['backend_modules'][$strGroupName]) && $session['backend_modules'][$strGroupName] < 1)
+			{
+				$arrModules[$strGroupName]['class'] = str_replace('node-expanded', '', $arrModules[$strGroupName]['class']) . ' node-collapsed';
+				$arrModules[$strGroupName]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['expandNode']);
+				$arrModules[$strGroupName]['isClosed'] = true;
+			}
+
+			if (isset($arrGroupModules['modules']) && is_array($arrGroupModules['modules']))
+			{
+				foreach ($arrGroupModules['modules'] as $strModuleName => $arrModuleConfig)
+				{
+					// Mark the active module and its group
+					if (\Input::get('do') == $strModuleName)
+					{
+						$arrModules[$strGroupName]['class'] .= ' trail';
+						$arrModules[$strGroupName]['modules'][$strModuleName]['isActive'] = true;
+					}
+				}
 			}
 		}
 

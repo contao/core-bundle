@@ -38,19 +38,9 @@ class EnvironmentTest extends TestCase
     }
 
     /**
-     * Returns the normalized root directory.
-     *
-     * @return string
-     */
-    public function getRootDir()
-    {
-        return strtr(parent::getRootDir(), '\\', '/');
-    }
-
-    /**
      * Tests the mod_php environment.
      */
-    public function testApache()
+    public function testHandlesModPhp()
     {
         $this->setSapi('apache');
 
@@ -79,7 +69,7 @@ class EnvironmentTest extends TestCase
     /**
      * Tests the cgi_fcgi environment.
      */
-    public function testCgiFcgi()
+    public function testHandlesCgiFcgi()
     {
         $this->setSapi('cgi_fcgi');
 
@@ -112,7 +102,7 @@ class EnvironmentTest extends TestCase
     /**
      * Tests the fpm_fcgi environment.
      */
-    public function testFpmFcgi()
+    public function testHandlesFpmFcgi()
     {
         $this->setSapi('fpm_fcgi');
 
@@ -141,6 +131,16 @@ class EnvironmentTest extends TestCase
     }
 
     /**
+     * Returns the normalized root directory.
+     *
+     * @return string
+     */
+    public function getRootDir()
+    {
+        return strtr(parent::getRootDir(), '\\', '/');
+    }
+
+    /**
      * Runs the actual tests.
      */
     protected function runTests()
@@ -157,11 +157,11 @@ class EnvironmentTest extends TestCase
         $agent = Environment::get('agent');
 
         $this->assertSame('mac', $agent->os);
-        $this->assertSame('mac chrome webkit ch33', $agent->class);
+        $this->assertSame('mac chrome blink ch33', $agent->class);
         $this->assertSame('chrome', $agent->browser);
         $this->assertSame('ch', $agent->shorty);
         $this->assertSame('33', $agent->version);
-        $this->assertSame('webkit', $agent->engine);
+        $this->assertSame('blink', $agent->engine);
         $this->assertSame(['33', '0', '1750', '149'], $agent->versions);
         $this->assertFalse($agent->mobile);
 

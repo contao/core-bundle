@@ -16,7 +16,13 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendCron;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\MysqliException;
+use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Tests the CommandSchedulerListener class.
@@ -48,30 +54,11 @@ class CommandSchedulerListenerTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testInstantiation()
+    public function testCanBeInstantiated()
     {
         $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\CommandSchedulerListener', $listener);
-    }
-
-    /**
-     * Tests that the listener does nothing if the Contao framework is not booted.
-     */
-    public function testWithoutContaoFramework()
-    {
-        $this->framework
-            ->method('isInitialized')
-            ->willReturn(false)
-        ;
-
-        $this->framework
-            ->expects($this->never())
-            ->method('getAdapter')
-        ;
-
-        $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
-        $listener->onKernelTerminate();
     }
 
     /**
@@ -80,7 +67,7 @@ class CommandSchedulerListenerTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testWithContaoFramework()
+    public function testRunsTheCommandScheduler()
     {
         $this->framework
             ->expects($this->once())
@@ -105,7 +92,92 @@ class CommandSchedulerListenerTest extends TestCase
         ;
 
         $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
-        $listener->onKernelTerminate();
+        $listener->onKernelTerminate($this->mockPostResponseEvent('contao_frontend'));
+    }
+
+    /**
+     * Tests that the listener does nothing if the Contao framework is not booted.
+     */
+    public function testDoesNotRunTheCommandSchedulerIfTheContaoFrameworkIsNotInitialized()
+    {
+        $this->framework
+            ->method('isInitialized')
+            ->willReturn(false)
+        ;
+
+        $this->framework
+            ->expects($this->never())
+            ->method('getAdapter')
+        ;
+
+        $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
+        $listener->onKernelTerminate($this->mockPostResponseEvent('contao_backend'));
+    }
+
+    /**
+     * Tests that the listener does nothing in the install tool.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDoesNotRunTheCommandSchedulerInTheInstallTool()
+    {
+        $this->framework
+            ->expects($this->never())
+            ->method('getAdapter')
+        ;
+
+        $this->framework
+            ->method('isInitialized')
+            ->willReturn(true)
+        ;
+
+        $ref = new \ReflectionClass(Request::class);
+
+        /** @var Request $request */
+        $request = $ref->newInstance();
+
+        $pathInfo = $ref->getProperty('pathInfo');
+        $pathInfo->setAccessible(true);
+        $pathInfo->setValue($request, '/contao/install');
+
+        $event = new PostResponseEvent($this->createMock(KernelInterface::class), $request, new Response());
+
+        $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
+        $listener->onKernelTerminate($event);
+    }
+
+    /**
+     * Tests that the listener does nothing upon a fragment URL.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDoesNotRunTheCommandSchedulerUponFragmentRequests()
+    {
+        $this->framework
+            ->expects($this->never())
+            ->method('getAdapter')
+        ;
+
+        $this->framework
+            ->method('isInitialized')
+            ->willReturn(true)
+        ;
+
+        $ref = new \ReflectionClass(Request::class);
+
+        /** @var Request $request */
+        $request = $ref->newInstance();
+
+        $pathInfo = $ref->getProperty('pathInfo');
+        $pathInfo->setAccessible(true);
+        $pathInfo->setValue($request, '/foo/_fragment/bar');
+
+        $event = new PostResponseEvent($this->createMock(KernelInterface::class), $request, new Response());
+
+        $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
+        $listener->onKernelTerminate($event);
     }
 
     /**
@@ -114,7 +186,7 @@ class CommandSchedulerListenerTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testIncompleteInstallation()
+    public function testDoesNotRunTheCommandSchedulerIfTheInstallationIsIncomplete()
     {
         $adapter = $this
             ->getMockBuilder(Adapter::class)
@@ -151,7 +223,7 @@ class CommandSchedulerListenerTest extends TestCase
         ;
 
         $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
-        $listener->onKernelTerminate();
+        $listener->onKernelTerminate($this->mockPostResponseEvent('contao_backend'));
     }
 
     /**
@@ -160,7 +232,7 @@ class CommandSchedulerListenerTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testDisableCron()
+    public function testDoesNotRunTheCommandSchedulerIfCronjobsAreDisabled()
     {
         $adapter = $this
             ->getMockBuilder(Adapter::class)
@@ -197,7 +269,48 @@ class CommandSchedulerListenerTest extends TestCase
         ;
 
         $listener = new CommandSchedulerListener($this->framework, $this->mockConnection());
-        $listener->onKernelTerminate();
+        $listener->onKernelTerminate($this->mockPostResponseEvent('contao_frontend'));
+    }
+
+    /**
+     * Tests that the listener does nothing if the database connection fails.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testDoesNotRunTheCommandSchedulerIfThereIsADatabaseConnectionError()
+    {
+        $this->framework
+            ->expects($this->once())
+            ->method('getAdapter')
+        ;
+
+        $this->framework
+            ->method('isInitialized')
+            ->willReturn(true)
+        ;
+
+        $controller = $this->createMock(FrontendCron::class);
+
+        $controller
+            ->expects($this->never())
+            ->method('run')
+        ;
+
+        $this->framework
+            ->method('createInstance')
+            ->willReturn($controller)
+        ;
+
+        $connection = $this->createMock(Connection::class);
+
+        $connection
+            ->method('isConnected')
+            ->willThrowException(new ConnectionException('Could not connect', new MysqliException('Invalid password')))
+        ;
+
+        $listener = new CommandSchedulerListener($this->framework, $connection);
+        $listener->onKernelTerminate($this->mockPostResponseEvent('contao_backend'));
     }
 
     /**
@@ -227,5 +340,23 @@ class CommandSchedulerListenerTest extends TestCase
         ;
 
         return $connection;
+    }
+
+    /**
+     * Mocks a post response event.
+     *
+     * @param string|null $route
+     *
+     * @return PostResponseEvent
+     */
+    private function mockPostResponseEvent($route = null)
+    {
+        $request = new Request();
+
+        if (null !== $route) {
+            $request->attributes->set('_route', $route);
+        }
+
+        return new PostResponseEvent($this->createMock(KernelInterface::class), $request, new Response());
     }
 }

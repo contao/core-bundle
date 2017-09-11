@@ -10,10 +10,13 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\DataContainer\DcaFilterInterface;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Image\ResizeConfiguration;
+use Imagine\Gd\Imagine;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
 
 /**
@@ -112,28 +115,34 @@ abstract class DataContainer extends \Backend
 	protected $blnUploadable = false;
 
 	/**
-	 * The picker table
-	 * @var string
+	 * DCA Picker instance
+	 * @var PickerInterface
 	 */
-	protected $strPickerTable;
+	protected $objPicker;
 
 	/**
-	 * The picker field
-	 * @var string
+	 * Callback to convert DCA value to picker value
+	 * @var callable
 	 */
-	protected $strPickerField;
-
-	/**
-	 * The picker ID
-	 * @var integer
-	 */
-	protected $intPickerId;
+	protected $objPickerCallback;
 
 	/**
 	 * The picker value
 	 * @var array
 	 */
 	protected $arrPickerValue = array();
+
+	/**
+	 * The picker field type
+	 * @var string
+	 */
+	protected $strPickerFieldType;
+
+	/**
+	 * True if a new version has to be created
+	 * @var boolean
+	 */
+	protected $blnCreateNewVersion = false;
 
 
 	/**
@@ -150,7 +159,11 @@ abstract class DataContainer extends \Backend
 				$this->objActiveRecord = $varValue;
 				break;
 
-			default;
+			case 'createNewVersion':
+				$this->blnCreateNewVersion = (bool) $varValue;
+				break;
+
+			default:
 				$this->$strKey = $varValue; // backwards compatibility
 				break;
 		}
@@ -195,6 +208,10 @@ abstract class DataContainer extends \Backend
 			case 'activeRecord':
 				return $this->objActiveRecord;
 				break;
+
+			case 'createNewVersion':
+				return $this->blnCreateNewVersion;
+				break;
 		}
 
 		return parent::__get($strKey);
@@ -232,7 +249,7 @@ abstract class DataContainer extends \Backend
 		// Add the help wizard
 		if ($arrData['eval']['helpwizard'])
 		{
-			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard'], 'style="vertical-align:text-bottom"').'</a>';
+			$xlabel .= ' <a href="contao/help.php?table='.$this->strTable.'&amp;field='.$this->strField.'" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['helpWizard']) . '" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", $arrData['label'][0])).'\',\'url\':this.href});return false">'.\Image::getHtml('about.svg', $GLOBALS['TL_LANG']['MSC']['helpWizard']).'</a>';
 		}
 
 		// Add a custom xlabel
@@ -404,6 +421,10 @@ abstract class DataContainer extends \Backend
 					{
 						$this->save($varValue);
 					}
+					catch (ResponseException $e)
+					{
+						throw $e;
+					}
 					catch (\Exception $e)
 					{
 						$this->noReload = true;
@@ -487,42 +508,7 @@ abstract class DataContainer extends \Backend
 		// DCA picker
 		if (isset($arrData['eval']['dcaPicker']) && (is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
 		{
-			$params = array();
-
-			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['do']))
-			{
-				$params['do'] = $arrData['eval']['dcaPicker']['do'];
-			}
-
-			$params['context'] = 'link';
-			$params['target'] = $this->strTable.'.'.$this->strField.'.'.$this->intId;
-			$params['value'] = $this->varValue;
-			$params['popup'] = 1;
-
-			if (is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['context']))
-			{
-				$params['context'] = $arrData['eval']['dcaPicker']['context'];
-			}
-
-			$wizard .= ' <a href="' . ampersand(System::getContainer()->get('router')->generate('contao_backend_picker', $params)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $this->strField . '">' . \Image::getHtml((is_array($arrData['eval']['dcaPicker']) && isset($arrData['eval']['dcaPicker']['icon']) ? $arrData['eval']['dcaPicker']['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
-  <script>
-    $("pp_' . $this->strField . '").addEvent("click", function(e) {
-      e.preventDefault();
-      Backend.openModalSelector({
-        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
-        "url": this.href,
-        "callback": function(table, value) {
-          new Request.Contao({
-            evalScripts: false,
-            onSuccess: function(txt, json) {
-              $("ctrl_' . $this->strInputName . '").value = (json.tag || json.content);
-              this.set("href", this.get("href").replace(/&value=[^&]*/, "&value=" + (json.tag || json.content)));
-            }.bind(this)
-          }).post({"action":"processPickerSelection", "table":table, "value":value.join(","), "REQUEST_TOKEN":"' . REQUEST_TOKEN . '"});
-        }.bind(this)
-      });
-    });
-  </script>';
+			$wizard .= \Backend::getDcaPickerWizard($arrData['eval']['dcaPicker'], $this->strTable, $this->strField, $this->strInputName);
 		}
 
 		// Add a custom wizard
@@ -542,7 +528,21 @@ abstract class DataContainer extends \Backend
 			}
 		}
 
-		$objWidget->wizard = $wizard;
+		$arrClasses = \StringUtil::trimsplit(' ', (string) $arrData['eval']['tl_class']);
+
+		if ($wizard != '')
+		{
+			$objWidget->wizard = $wizard;
+
+			if (!in_array('wizard', $arrClasses))
+			{
+				$arrClasses[] = 'wizard';
+			}
+		}
+		elseif (in_array('wizard', $arrClasses))
+		{
+			unset($arrClasses[array_search('wizard', $arrClasses)]);
+		}
 
 		// Set correct form enctype
 		if ($objWidget instanceof \uploadable)
@@ -552,17 +552,22 @@ abstract class DataContainer extends \Backend
 
 		if ($arrData['inputType'] != 'password')
 		{
-			$arrData['eval']['tl_class'] .= ' widget';
+			$arrClasses[] = 'widget';
 		}
 
 		// Mark floated single checkboxes
-		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && strpos($arrData['eval']['tl_class'], 'w50') !== false)
+		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && in_array('w50', $arrClasses))
 		{
-			$arrData['eval']['tl_class'] .= ' cbx';
+			$arrClasses[] = 'cbx';
 		}
-		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && strpos($arrData['eval']['tl_class'], 'wizard') !== false)
+		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && in_array('wizard', $arrClasses))
 		{
-			$arrData['eval']['tl_class'] .= ' inline';
+			$arrClasses[] = 'inline';
+		}
+
+		if (!empty($arrClasses))
+		{
+			$arrData['eval']['tl_class'] = implode(' ', array_unique($arrClasses));
 		}
 
 		$updateMode = '';
@@ -572,17 +577,29 @@ abstract class DataContainer extends \Backend
 		{
 			list ($file, $type) = explode('|', $arrData['eval']['rte'], 2);
 
+			$fileBrowserTypes = [];
+			$pickerBuilder = \System::getContainer()->get('contao.picker.builder');
+
+			foreach (['file' => 'image', 'link' => 'file'] as $context => $fileBrowserType)
+			{
+				if ($pickerBuilder->supportsContext($context))
+				{
+					$fileBrowserTypes[] = $fileBrowserType;
+				}
+			}
+
 			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
 			$objTemplate->type = $type;
+			$objTemplate->fileBrowserTypes = $fileBrowserTypes;
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
 
 			$updateMode = $objTemplate->parse();
 
-			unset($file, $type);
+			unset($file, $type, $pickerBuilder, $fileBrowserTypes, $fileBrowserType);
 		}
 
 		// Handle multi-select fields in "override all" mode
@@ -608,9 +625,17 @@ abstract class DataContainer extends \Backend
 
 			if ($objFile->isImage)
 			{
+				$blnCanResize = true;
+
+				// Check the maximum width and height if the GDlib is used to resize images
+				if (!$objFile->isSvgImage && \System::getContainer()->get('contao.image.imagine') instanceof Imagine)
+				{
+					$blnCanResize = $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth');
+				}
+
 				$image = \Image::getPath('placeholder.svg');
 
-				if ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))
+				if ($blnCanResize)
 				{
 					if ($objFile->width > 699 || $objFile->height > 524 || !$objFile->width || !$objFile->height)
 					{
@@ -626,7 +651,6 @@ abstract class DataContainer extends \Backend
 				$ctrl = 'ctrl_preview_' . substr(md5($image), 0, 8);
 
 				$strPreview = '
-
 <div id="' . $ctrl . '" class="tl_edit_preview" data-original-width="' . $objFile->viewWidth . '" data-original-height="' . $objFile->viewHeight . '">
   <img src="' . $objImage->dataUri . '" width="' . $objImage->width . '" height="' . $objImage->height . '" alt="">
 </div>';
@@ -895,135 +919,39 @@ abstract class DataContainer extends \Backend
 	/**
 	 * Initialize the picker
 	 *
-	 * @return boolean
+	 * @param PickerInterface $picker
 	 *
-	 * @throws InternalServerErrorException
+	 * @return array|null
 	 */
-	protected function initPicker()
+	public function initPicker(PickerInterface $picker)
 	{
-		$menuBuilder = \System::getContainer()->get('contao.menu.picker_menu_builder');
-
-		if (!$menuBuilder->supportsTable($this->strTable))
+		if (!empty($_GET['act']))
 		{
-			return false;
+			return null;
 		}
 
-		list($this->strPickerTable, $this->strPickerField, $this->intPickerId) = explode('.', \Input::get('target'), 3);
-		$this->intPickerId = (int) $this->intPickerId;
+		$provider = $picker->getCurrentProvider();
 
-		\Controller::loadDataContainer($this->strPickerTable);
-
-		$this->setPickerValue();
-
-		$strDriver = 'DC_' . $GLOBALS['TL_DCA'][$this->strPickerTable]['config']['dataContainer'];
-		$objDca = new $strDriver($this->strPickerTable);
-		$objDca->id = $this->intPickerId;
-		$objDca->field = $this->strPickerField;
-
-		// Set the active record
-		if ($this->intPickerId && $this->Database->tableExists($this->strPickerTable))
+		if (!$provider instanceof DcaPickerProviderInterface || $provider->getDcaTable() != $this->strTable)
 		{
-			/** @var Model $strModel */
-			$strModel = \Model::getClassFromTable($this->strPickerTable);
-
-			if (class_exists($strModel))
-			{
-				$objModel = $strModel::findByPk($this->intPickerId);
-
-				if ($objModel !== null)
-				{
-					$objDca->activeRecord = $objModel;
-				}
-			}
+			return null;
 		}
 
-		// Call the load_callback
-		if (is_array($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback']))
+		$attributes = $provider->getDcaAttributes($picker->getConfig());
+
+		$this->objPicker = $picker;
+		$this->strPickerFieldType = $attributes['fieldType'];
+
+		$this->objPickerCallback = function ($value) use ($picker, $provider) {
+			return $provider->convertDcaValue($picker->getConfig(), $value);
+		};
+
+		if (isset($attributes['value']))
 		{
-			foreach ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['load_callback'] as $callback)
-			{
-				if (is_array($callback))
-				{
-					$this->import($callback[0]);
-					$this->arrPickerValue = $this->{$callback[0]}->{$callback[1]}($this->arrPickerValue, $objDca);
-				}
-				elseif (is_callable($callback))
-				{
-					$this->arrPickerValue = $callback($this->arrPickerValue, $objDca);
-				}
-			}
+			$this->arrPickerValue = (array) $attributes['value'];
 		}
 
-		if (!isset($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]))
-		{
-			throw new InternalServerErrorException('Target field "' . $this->strPickerTable . '.' . $this->strPickerField . '" does not exist.');
-		}
-
-		/** @var Widget $strClass */
-		$strClass = $GLOBALS['BE_FFL'][$GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['inputType']];
-
-		/** @var Widget $objWidget */
-		$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField], $this->strPickerField, $this->arrPickerValue, $this->strPickerField, $this->strPickerTable, $objDca));
-
-		if ($objWidget instanceof DcaFilterInterface)
-		{
-			$this->setDcaFilter($objWidget->getDcaFilter());
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * Set the picker value
-	 */
-	protected function setPickerValue()
-	{
-		$varValue = \Input::get('value');
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$varValue = array_filter(explode(',', $varValue));
-
-		if (empty($varValue))
-		{
-			return;
-		}
-
-		$this->arrPickerValue = $varValue;
-	}
-
-
-	/**
-	 * Set the DCA filter
-	 *
-	 * @param array $arrFilter
-	 */
-	protected function setDcaFilter($arrFilter)
-	{
-		if (isset($arrFilter['root']))
-		{
-			$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'] = $arrFilter['root'];
-		}
-	}
-
-
-	/**
-	 * Return the picker attributes
-	 *
-	 * @return string
-	 */
-	protected function getPickerAttributes()
-	{
-		if ($this->strPickerField)
-		{
-			return ' id="tl_select" data-table="' . $this->strTable . '"';
-		}
-
-		return '';
+		return $attributes;
 	}
 
 
@@ -1039,16 +967,147 @@ abstract class DataContainer extends \Backend
 	{
 		$id = is_numeric($value) ? $value : md5($value);
 
-		switch ($GLOBALS['TL_DCA'][$this->strPickerTable]['fields'][$this->strPickerField]['eval']['fieldType'])
+		switch ($this->strPickerFieldType)
 		{
 			case 'checkbox':
-				return ' <input type="checkbox" name="'.$this->strPickerField.'[]" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="checkbox" name="picker[]" id="picker_'.$id.'" class="tl_tree_checkbox" value="'.\StringUtil::specialchars(call_user_func($this->objPickerCallback, $value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 
 			case 'radio':
-				return ' <input type="radio" name="'.$this->strPickerField.'" id="'.$this->strPickerField.'_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars($value).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
+				return ' <input type="radio" name="picker" id="picker_'.$id.'" class="tl_tree_radio" value="'.\StringUtil::specialchars(call_user_func($this->objPickerCallback, $value)).'" onfocus="Backend.getScrollOffset()"'.\Widget::optionChecked($value, $this->arrPickerValue).$attributes.'>';
 		}
 
 		return '';
+	}
+
+
+	/**
+	 * Build the sort panel and return it as string
+	 *
+	 * @return string
+	 */
+	protected function panel()
+	{
+		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
+		{
+			return '';
+		}
+
+		// Reset all filters
+		if (isset($_POST['filter_reset']) && \Input::post('FORM_SUBMIT') == 'tl_filters')
+		{
+			/** @var AttributeBagInterface $objSessionBag */
+			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
+
+			$data = $objSessionBag->all();
+
+			unset($data['filter'][$this->strTable]);
+			unset($data['filter'][$this->strTable.'_'.CURRENT_ID]);
+			unset($data['sorting'][$this->strTable]);
+			unset($data['search'][$this->strTable]);
+
+			$objSessionBag->replace($data);
+
+			$this->reload();
+		}
+
+		$intFilterPanel = 0;
+		$arrPanels = array();
+		$arrPanes = \StringUtil::trimsplit(';', $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout']);
+
+		foreach ($arrPanes as $strPanel)
+		{
+			$panels = '';
+			$arrSubPanels = \StringUtil::trimsplit(',', $strPanel);
+
+			foreach ($arrSubPanels as $strSubPanel)
+			{
+				$panel = '';
+
+				// Regular panels
+				if ($strSubPanel == 'search' || $strSubPanel == 'limit' || $strSubPanel == 'sort')
+				{
+					$panel = $this->{$strSubPanel . 'Menu'}();
+				}
+
+				// Multiple filter subpanels can be defined to split the fields across panels
+				elseif ($strSubPanel == 'filter')
+				{
+					$panel = $this->{$strSubPanel . 'Menu'}(++$intFilterPanel);
+				}
+
+				// Call the panel_callback
+				else
+				{
+					$arrCallback = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panel_callback'][$strSubPanel];
+
+					if (is_array($arrCallback))
+					{
+						$this->import($arrCallback[0]);
+						$panel = $this->{$arrCallback[0]}->{$arrCallback[1]}($this);
+					}
+					elseif (is_callable($arrCallback))
+					{
+						$panel = $arrCallback($this);
+					}
+				}
+
+				// Add the panel if it is not empty
+				if ($panel != '')
+				{
+					$panels = $panel . $panels;
+				}
+			}
+
+			// Add the group if it is not empty
+			if ($panels != '')
+			{
+				$arrPanels[] = $panels;
+			}
+		}
+
+		if (empty($arrPanels))
+		{
+			return '';
+		}
+
+		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
+		{
+			$this->reload();
+		}
+
+		$return = '';
+		$intTotal = count($arrPanels);
+		$intLast = $intTotal - 1;
+
+		for ($i=0; $i<$intTotal; $i++)
+		{
+			$submit = '';
+
+			if ($i == $intLast)
+			{
+				$submit = '
+<div class="tl_submit_panel tl_subpanel">
+  <button name="filter" id="filter" class="tl_img_submit filter_apply" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['apply'] . '</button>
+  <button name="filter_reset" id="filter_reset" value="1" class="tl_img_submit filter_reset" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['reset'] . '</button>
+</div>';
+			}
+
+			$return .= '
+<div class="tl_panel cf">
+  ' . $submit . $arrPanels[$i] . '
+</div>';
+		}
+
+		$return = '
+<form action="'.ampersand(\Environment::get('request'), true).'" class="tl_form" method="post">
+<div class="tl_formbody">
+  <input type="hidden" name="FORM_SUBMIT" value="tl_filters">
+  <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
+  ' . $return . '
+</div>
+</form>';
+
+		return $return;
 	}
 
 
@@ -1058,6 +1117,7 @@ abstract class DataContainer extends \Backend
 	 * @return string
 	 */
 	abstract public function getPalette();
+
 
 	/**
 	 * Save the current value

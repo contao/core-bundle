@@ -57,6 +57,11 @@ class BackendTemplate extends \Template
 		// User agent class (see #3074 and #6277)
 		$this->ua = \Environment::get('agent')->class;
 
+		if (\Config::get('limitWidth'))
+		{
+			$this->ua .= ' lw';
+		}
+
 		// Style sheets
 		if (!empty($GLOBALS['TL_CSS']) && is_array($GLOBALS['TL_CSS']))
 		{
@@ -137,7 +142,7 @@ class BackendTemplate extends \Template
 				. 'script_url:"' . TL_ASSETS_URL . '",'
 				. 'path:"' . \Environment::get('path') . '",'
 				. 'request_token:"' . REQUEST_TOKEN . '",'
-				. 'referer_id:"' . TL_REFERER_ID . '"'
+				. 'referer_id:"' . \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id') . '"'
 			. '};';
 	}
 

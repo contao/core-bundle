@@ -24,7 +24,7 @@ class AdapterTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testInstantiation()
+    public function testCanBeInstantiated()
     {
         $adapter = new Adapter('Dummy');
 
@@ -34,8 +34,9 @@ class AdapterTest extends TestCase
     /**
      * Tests the __call method.
      */
-    public function testMagicCall()
+    public function testImplementsTheMagicCallMethod()
     {
+        /** @var LegacyClass $adapter */
         $adapter = new Adapter(LegacyClass::class);
 
         $this->assertSame(['staticMethod', 1, 2], $adapter->staticMethod(1, 2));
@@ -44,7 +45,7 @@ class AdapterTest extends TestCase
     /**
      * Tests the __call method of a non-existent function.
      */
-    public function testMagicCallMissingMethod()
+    public function testFailsIfAMethodDoesNotExist()
     {
         $adapter = new Adapter(LegacyClass::class);
 

@@ -100,7 +100,8 @@ abstract class Controller extends \System
 			$arrTemplates[$strTemplate][] = 'root';
 		}
 
-		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*');
+		$strBrace = '{' . implode(',', \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')))) . '}';
+		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
 
 		// Add the customized templates
 		if (is_array($arrCustomized))
@@ -132,7 +133,7 @@ abstract class Controller extends \System
 				{
 					if ($objTheme->templates != '')
 					{
-						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*');
+						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
 
 						if (is_array($arrThemeTemplates))
 						{
@@ -828,7 +829,9 @@ abstract class Controller extends \System
 			{
 				foreach ($objCombiner->getFileUrls() as $strUrl)
 				{
-					$strScripts .= \Template::generateStyleTag($strUrl, 'all') . "\n";
+					list($url, $media) = explode('|', $strUrl);
+
+					$strScripts .= \Template::generateStyleTag($url, $media) . "\n";
 				}
 			}
 		}
@@ -992,7 +995,7 @@ abstract class Controller extends \System
 		// Add the referer ID
 		if (isset($_GET['ref']) || ($strRequest != '' && $blnAddRef))
 		{
-			$query = $query->merge('ref=' . TL_REFERER_ID);
+			$query = $query->merge('ref=' . \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id'));
 		}
 
 		$uri = $query->getUriComponent();
@@ -1547,7 +1550,7 @@ abstract class Controller extends \System
 		}
 
 		// Image dimensions
-		if (($imgSize = $objFile->imageSize) !== false)
+		if ($objFile->exists() && ($imgSize = $objFile->imageSize) !== false)
 		{
 			$objTemplate->arrSize = $imgSize;
 			$objTemplate->imgSize = ' width="' . $imgSize[0] . '" height="' . $imgSize[1] . '"';

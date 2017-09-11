@@ -99,6 +99,14 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     ];
 
     /**
+     * @var array
+     */
+    private $installRoutes = [
+        'contao_install',
+        'contao_install_redirect',
+    ];
+
+    /**
      * Constructor.
      *
      * @param RequestStack     $requestStack
@@ -377,7 +385,9 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function validateInstallation()
     {
-        if (null === $this->request || 'contao_install' === $this->request->attributes->get('_route')) {
+        if (null === $this->request
+            || in_array($this->request->attributes->get('_route'), $this->installRoutes, true)
+        ) {
             return;
         }
 
@@ -433,7 +443,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
         // Deprecated since Contao 4.0, to be removed in Contao 5.0
         if (!defined('REQUEST_TOKEN')) {
-            define('REQUEST_TOKEN', $requestToken->get());
+            define('REQUEST_TOKEN', 'cli' === PHP_SAPI ? null : $requestToken->get());
         }
 
         if ($this->canSkipTokenCheck() || $requestToken->validate($this->request->request->get('REQUEST_TOKEN'))) {

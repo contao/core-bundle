@@ -43,6 +43,10 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 	// List
 	'list' => array
 	(
+		'sorting' => array
+		(
+			'panelLayout'             => 'search'
+		),
 		'global_operations' => array
 		(
 			'sync' => array
@@ -568,23 +572,21 @@ class tl_files extends Backend
 	 */
 	public function deleteFile($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (is_dir(TL_ROOT . '/' . $row['id']))
-		{
-			$finder = Symfony\Component\Finder\Finder::create()->in(TL_ROOT . '/' . $row['id']);
+		$path = TL_ROOT . '/' . urldecode($row['id']);
 
-			if ($finder->count() > 0)
-			{
-				return $this->User->hasAccess('f4', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-			}
-			else
-			{
-				return $this->User->hasAccess('f3', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-			}
-		}
-		else
+		if (!is_dir($path))
 		{
 			return ($this->User->hasAccess('f3', 'fop') || $this->User->hasAccess('f4', 'fop')) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}
+
+		$finder = Symfony\Component\Finder\Finder::create()->in($path);
+
+		if ($finder->count() > 0)
+		{
+			return $this->User->hasAccess('f4', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		}
+
+		return $this->User->hasAccess('f3', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -656,16 +658,28 @@ class tl_files extends Backend
 	 * @param DataContainer $dc
 	 *
 	 * @return string
+	 *
+	 * @throws RuntimeException
 	 */
 	public function protectFolder(DataContainer $dc)
 	{
-		$count = 0;
 		$strPath = $dc->id;
 
-		// Check whether the temporary name has been replaced already (see #6432)
-		if (Input::post('name') && ($strNewPath = str_replace('__new__', Input::post('name'), $strPath, $count)) && $count > 0 && is_dir(TL_ROOT . '/' . $strNewPath))
+		// Check if the folder has been renamed (see #6432, #934)
+		if (Input::post('name'))
 		{
-			$strPath = $strNewPath;
+			if (Validator::isInsecurePath(Input::post('name')))
+			{
+				throw new RuntimeException('Invalid file or folder name ' . Input::post('name'));
+			}
+
+			$count = 0;
+			$strName = basename($strPath);
+
+			if (($strNewPath = str_replace($strName, Input::post('name'), $strPath, $count)) && $count > 0 && is_dir(TL_ROOT . '/' . $strNewPath))
+			{
+				$strPath = $strNewPath;
+			}
 		}
 
 		// Only show for folders (see #5660)
@@ -681,7 +695,7 @@ class tl_files extends Backend
 		// Check if a parent folder is public
 		while ($strCheck != '.' && !$blnPublic)
 		{
-			if (!($blnPublic = file_exists(TL_ROOT . '/' . $strCheck . '/.public')))
+			if (!$blnPublic = file_exists(TL_ROOT . '/' . $strCheck . '/.public'))
 			{
 				$strCheck = dirname($strCheck);
 			}
@@ -736,7 +750,7 @@ class tl_files extends Backend
 		return '
 <div class="' . $class . '">
   <div id="ctrl_' . $dc->field . '" class="tl_checkbox_single_container">
-    <input type="hidden" name="' . $dc->inputName . '" value=""><input type="checkbox" name="' . $dc->inputName . '" id="opt_' . $dc->field . '_0" class="tl_checkbox" value="1"' . (($blnPublic || basename($strPath) == '__new__') ? ' checked="checked"' : '') . ' onfocus="Backend.getScrollOffset()"' . ($blnDisabled ? ' disabled' : '') . '> <label for="opt_' . $dc->field . '_0">' . $GLOBALS['TL_LANG']['tl_files']['protected'][0] . '</label>
+    <input type="hidden" name="' . $dc->inputName . '" value=""><input type="checkbox" name="' . $dc->inputName . '" id="opt_' . $dc->inputName . '_0" class="tl_checkbox" value="1"' . (($blnPublic || basename($strPath) == '__new__') ? ' checked="checked"' : '') . ' onfocus="Backend.getScrollOffset()"' . ($blnDisabled ? ' disabled' : '') . '> <label for="opt_' . $dc->inputName . '_0">' . $GLOBALS['TL_LANG']['tl_files']['protected'][0] . '</label>
   </div>' . (Config::get('showHelp') ? '
   <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_files']['protected'][1] . '</p>' : '') . '
 </div>';

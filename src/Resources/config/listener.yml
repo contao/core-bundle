@@ -53,6 +53,7 @@ services:
         arguments:
             - "@contao.framework"
             - "@database_connection"
+            - "%fragment.path%"
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
@@ -68,6 +69,22 @@ services:
         class: Contao\CoreBundle\EventListener\ExceptionConverterListener
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 96 }
+
+    contao.listener.header_replay.user_session:
+        class: Contao\CoreBundle\EventListener\HeaderReplay\UserSessionListener
+        arguments:
+            - "@contao.routing.scope_matcher"
+            - "%contao.security.disable_ip_check%"
+        tags:
+            - { name: kernel.event_listener, event: terminal42.header_replay, method: onReplay }
+
+    contao.listener.header_replay.page_layout:
+        class: Contao\CoreBundle\EventListener\HeaderReplay\PageLayoutListener
+        arguments:
+            - "@contao.routing.scope_matcher"
+            - "@contao.framework"
+        tags:
+            - { name: kernel.event_listener, event: terminal42.header_replay, method: onReplay }
 
     contao.listener.insecure_installation:
         class: Contao\CoreBundle\EventListener\InsecureInstallationListener

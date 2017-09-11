@@ -62,8 +62,7 @@
         <target>Désactiver le planificateur de commandes</target>
       </trans-unit>
       <trans-unit id="tl_settings.disableCron.1">
-        <source>Disable the periodic command scheduler and execute the cron.php script by a real cron job (which you have to set up manually).</source>
-        <target>Désactiver le planificateur de commandes périodiques et exécuter le script cron.php par une tâche cron réelle (que vous avez à configurer manuellement).</target>
+        <source>Disable the periodic command scheduler and trigger the &lt;em&gt;_contao/cron&lt;/em&gt; route by a real cron job (which you have to set up manually).</source>
       </trans-unit>
       <trans-unit id="tl_settings.minifyMarkup.0">
         <source>Minify the markup</source>
@@ -214,8 +213,8 @@
         <target>Largeur maximale dans le front office</target>
       </trans-unit>
       <trans-unit id="tl_settings.maxImageWidth.1">
-        <source>If the width of an image or movie exceeds this value, it will be adjusted automatically.</source>
-        <target>Si la largeur d'une image ou d'un film dépasse cette valeur, elle sera ajustée automatiquement.</target>
+        <source>If the width of an image or movie exceeds this value, it will be adjusted automatically. Set to 0 to disable the limit.</source>
+        <target>Si la largeur d'une image ou d'un film dépasse cette valeur, elle sera ajustée automatiquement. Mettre 0 pour désactiver la limite.</target>
       </trans-unit>
       <trans-unit id="tl_settings.gdMaxImgWidth.0">
         <source>Maximum GD image width</source>

@@ -264,7 +264,7 @@ $GLOBALS['TL_DCA']['tl_form'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('nospace'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
+			'eval'                    => array('nospace'=>true, 'doNotCopy'=>true, 'maxlength'=>64, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'allowTags' => array
@@ -454,7 +454,7 @@ class tl_form extends Backend
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_form WHERE id=? OR alias=?")
 								   ->execute($dc->id, $varValue);
 
-		// Check whether the page alias exists
+		// Check whether the form alias exists
 		if ($objAlias->numRows > 1)
 		{
 			if (!$autoAlias)

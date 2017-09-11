@@ -16,6 +16,7 @@ use Contao\FrontendUser;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Tests the ContaoToken class.
@@ -30,7 +31,7 @@ class ContaoTokenTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testInstantiation()
+    public function testCanBeInstantiated()
     {
         $token = new ContaoToken(FrontendUser::getInstance());
 
@@ -43,13 +44,14 @@ class ContaoTokenTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testFrontendUser()
+    public function testHandlesFrontEndUsers()
     {
         $token = new ContaoToken(FrontendUser::getInstance());
 
         $this->assertTrue($token->isAuthenticated());
         $this->assertSame('', $token->getCredentials());
 
+        /** @var RoleInterface[] $roles */
         $roles = $token->getRoles();
 
         $this->assertCount(1, $roles);
@@ -62,12 +64,14 @@ class ContaoTokenTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testBackendUser()
+    public function testHandlesBackEndUsers()
     {
         $token = new ContaoToken(BackendUser::getInstance());
 
         $this->assertTrue($token->isAuthenticated());
         $this->assertSame('', $token->getCredentials());
+
+        /** @var RoleInterface[] $roles */
         $roles = $token->getRoles();
 
         $this->assertCount(2, $roles);
@@ -81,7 +85,7 @@ class ContaoTokenTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testUnauthenticatedUser()
+    public function testFailsIfTheUserIsNotAuthenticated()
     {
         /** @var FrontendUser|object $user */
         $user = FrontendUser::getInstance();

@@ -12,10 +12,12 @@ namespace Contao\CoreBundle\Tests\Controller;
 
 use Contao\CoreBundle\Controller\BackendController;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Menu\PickerMenuBuilderInterface;
+use Contao\CoreBundle\Picker\PickerBuilderInterface;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\CoreBundle\Tests\TestCase;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Tests the BackendControllerTest class.
@@ -27,7 +29,7 @@ class BackendControllerTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testInstantiation()
+    public function testCanBeInstantiated()
     {
         $controller = new BackendController();
 
@@ -37,10 +39,11 @@ class BackendControllerTest extends TestCase
     /**
      * Tests the controller actions.
      */
-    public function testActions()
+    public function testReturnsAResponseInTheActionMethods()
     {
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
+        /** @var ContainerInterface $container */
         $container = $this->mockKernel()->getContainer();
         $container->set('contao.framework', $framework);
 
@@ -61,23 +64,90 @@ class BackendControllerTest extends TestCase
     }
 
     /**
-     * Tests the pickerAction method.
+     * Tests the pickerAction() method.
      */
-    public function testPickerAction()
+    public function testReturnsAResponseInThePickerActionMethod()
     {
-        $pickerBuilder = $this->createMock(PickerMenuBuilderInterface::class);
+        $picker = $this->createMock(PickerInterface::class);
 
-        $pickerBuilder
-            ->method('getPickerUrl')
-            ->willReturn('/_contao/picker')
+        $picker
+            ->method('getCurrentUrl')
+            ->willReturn('/foobar')
         ;
 
-        $container = $this->mockKernel()->getContainer();
-        $container->set('contao.menu.picker_menu_builder', $pickerBuilder);
+        $builder = $this->createMock(PickerBuilderInterface::class);
+
+        $builder
+            ->method('create')
+            ->willReturn($picker)
+        ;
+
+        $container = $this->createMock(ContainerInterface::class);
+
+        $container
+            ->method('get')
+            ->willReturn($builder)
+        ;
 
         $controller = new BackendController();
         $controller->setContainer($container);
 
-        $this->assertInstanceOf(RedirectResponse::class, $controller->pickerAction(new Request()));
+        $request = new Request();
+        $request->query->set('context', 'page');
+        $request->query->set('extras', ['fieldType' => 'radio']);
+        $request->query->set('value', '{{link_url::5}}');
+
+        $response = $controller->pickerAction($request);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
+        $this->assertSame('/foobar', $response->getTargetUrl());
+        $this->assertSame(302, $response->getStatusCode());
+    }
+
+    /**
+     * Tests the pickerAction() method with invalid picker extras.
+     */
+    public function testDoesNotReturnAResponseInThePickerActionMethodIfThePickerExtrasAreInvalid()
+    {
+        $controller = new BackendController();
+
+        $request = new Request();
+        $request->query->set('extras', null);
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->expectExceptionMessage('Invalid picker extras');
+
+        $controller->pickerAction($request);
+    }
+
+    /**
+     * Tests the pickerAction() method with an unsupported context.
+     */
+    public function testDoesNotReturnAResponseInThePickerActionMethodIfThePickerContextIsUnsupported()
+    {
+        $builder = $this->createMock(PickerBuilderInterface::class);
+
+        $builder
+            ->method('create')
+            ->willReturn(null)
+        ;
+
+        $container = $this->createMock(ContainerInterface::class);
+
+        $container
+            ->method('get')
+            ->willReturn($builder)
+        ;
+
+        $controller = new BackendController();
+        $controller->setContainer($container);
+
+        $request = new Request();
+        $request->query->set('context', 'invalid');
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->expectExceptionMessage('Unsupported picker context');
+
+        $controller->pickerAction($request);
     }
 }

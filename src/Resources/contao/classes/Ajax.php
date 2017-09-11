@@ -182,7 +182,7 @@ class Ajax extends \Backend
 		header('Content-Type: text/html; charset=' . \Config::get('characterSet'));
 
 		// Bypass any core logic for non-core drivers (see #5957)
-		if (!($dc instanceof DC_File) && !($dc instanceof DC_Folder) && !($dc instanceof DC_Table))
+		if (!$dc instanceof DC_File && !$dc instanceof DC_Folder && !$dc instanceof DC_Table)
 		{
 			$this->executePostActionsHook($dc);
 			throw new NoContentResponseException();
@@ -405,7 +405,7 @@ class Ajax extends \Backend
 
 						if (\Input::post('load'))
 						{
-							echo $dc->editAll($this->strAjaxId, \Input::post('id'));
+							throw new ResponseException($this->convertToResponse($dc->editAll($this->strAjaxId, \Input::post('id'))));
 						}
 					}
 					else
@@ -432,10 +432,6 @@ class Ajax extends \Backend
 				}
 
 				throw new NoContentResponseException();
-
-			// DCA picker
-			case 'processPickerSelection':
-				throw new ResponseException(new Response(\System::getContainer()->get('contao.menu.picker_menu_builder')->processSelection(\Input::post('table'), \Input::post('value'))));
 
 			// DropZone file upload
 			case 'fileupload':

@@ -12,6 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Database\Result;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -285,13 +286,14 @@ abstract class Backend extends \Controller
 	/**
 	 * Open a back end module and return it as HTML
 	 *
-	 * @param string $module
+	 * @param string               $module
+	 * @param PickerInterface|null $picker
 	 *
 	 * @return string
 	 *
 	 * @throws AccessDeniedException
 	 */
-	protected function getBackendModule($module)
+	protected function getBackendModule($module, PickerInterface $picker = null)
 	{
 		$arrModule = array();
 
@@ -316,6 +318,12 @@ abstract class Backend extends \Controller
 		elseif ($module != 'undo' && !$this->User->hasAccess($module, 'modules'))
 		{
 			throw new AccessDeniedException('Back end module "' . $module . '" is not allowed for user "' . $this->User->username . '".');
+		}
+
+		// The module does not exist
+		if (empty($arrModule))
+		{
+			throw new \InvalidArgumentException('Back end module "' . $module . '" is not defined in the BE_MOD array');
 		}
 
 		/** @var SessionInterface $objSession */
@@ -397,6 +405,11 @@ abstract class Backend extends \Controller
 
 			/** @var DataContainer $dc */
 			$dc = new $dataContainer($strTable, $arrModule);
+
+			if ($picker !== null && $dc instanceof DataContainer)
+			{
+				$dc->initPicker($picker);
+			}
 		}
 
 		// Wrap the existing headline
@@ -474,7 +487,7 @@ abstract class Backend extends \Controller
 				case 'show':
 				case 'showAll':
 				case 'undo':
-					if (!($dc instanceof \listable))
+					if (!$dc instanceof \listable)
 					{
 						$this->log('Data container ' . $strTable . ' is not listable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not listable', E_USER_ERROR);
@@ -488,7 +501,7 @@ abstract class Backend extends \Controller
 				case 'copyAll':
 				case 'move':
 				case 'edit':
-					if (!($dc instanceof \editable))
+					if (!$dc instanceof \editable)
 					{
 						$this->log('Data container ' . $strTable . ' is not editable', __METHOD__, TL_ERROR);
 						trigger_error('The current data container is not editable', E_USER_ERROR);
@@ -869,7 +882,7 @@ abstract class Backend extends \Controller
 		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] .= '
 
 <ul id="tl_breadcrumb">
-  <li>' . implode(' &gt; </li><li>', $arrLinks) . '</li>
+  <li>' . implode(' › </li><li>', $arrLinks) . '</li>
 </ul>';
 	}
 
@@ -1041,7 +1054,7 @@ abstract class Backend extends \Controller
 		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['breadcrumb'] .= '
 
 <ul id="tl_breadcrumb">
-  <li>' . implode(' &gt; </li><li>', $arrLinks) . '</li>
+  <li>' . implode(' › </li><li>', $arrLinks) . '</li>
 </ul>';
 	}
 
@@ -1065,6 +1078,52 @@ abstract class Backend extends \Controller
 		asort($arrSections);
 
 		return $arrSections;
+	}
+
+
+	/**
+	 * Generate the DCA picker wizard
+	 *
+	 * @param boolean|array $extras
+	 * @param string        $table
+	 * @param string        $field
+	 * @param string        $inputName
+	 *
+	 * @return string
+	 */
+	public static function getDcaPickerWizard($extras, $table, $field, $inputName)
+	{
+		$context = 'link';
+		$extras = is_array($extras) ? $extras : array();
+		$providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
+
+		if (isset($extras['context']))
+		{
+			$context = 'link';
+			unset($extras['context']);
+		}
+
+		$factory = \System::getContainer()->get('contao.picker.builder');
+
+		if (!$factory->supportsContext($context, $providers))
+		{
+			return '';
+		}
+
+		return ' <a href="' . ampersand($factory->getUrl($context, $extras)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+  <script>
+    $("pp_' . $inputName . '").addEvent("click", function(e) {
+      e.preventDefault();
+      Backend.openModalSelector({
+        "id": "tl_listing",
+        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
+        "url": this.href + "&value=" + document.getElementById("ctrl_'.$inputName.'").value,
+        "callback": function(picker, value) {
+          $("ctrl_' . $inputName . '").value = value.join(",");
+        }.bind(this)
+      });
+    });
+  </script>';
 	}
 
 

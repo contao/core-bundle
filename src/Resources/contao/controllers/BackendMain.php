@@ -88,7 +88,7 @@ class BackendMain extends \Backend
 		$packages = System::getContainer()->getParameter('kernel.packages');
 
 		$this->Template = new \BackendTemplate('be_main');
-		$this->Template->version = $packages['contao/core-bundle'];
+		$this->Template->version = $GLOBALS['TL_LANG']['MSC']['version'] . ' ' . $packages['contao/core-bundle'];
 		$this->Template->main = '';
 
 		// Ajax request
@@ -115,7 +115,22 @@ class BackendMain extends \Backend
 		// Open a module
 		elseif (\Input::get('do'))
 		{
-			$this->Template->main .= $this->getBackendModule(\Input::get('do'));
+			$picker = null;
+
+			if (isset($_GET['picker']))
+			{
+				$picker = \System::getContainer()->get('contao.picker.builder')->createFromData(\Input::get('picker', true));
+
+				if ($picker !== null)
+				{
+					if (($menu = $picker->getMenu()) && $menu->count() > 1)
+					{
+						$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.renderer')->render($menu);
+					}
+				}
+			}
+
+			$this->Template->main .= $this->getBackendModule(\Input::get('do'), $picker);
 			$this->Template->title = $this->Template->headline;
 		}
 
@@ -193,12 +208,6 @@ class BackendMain extends \Backend
 			$this->Template->manager = (strpos($objSession->get('filePickerRef'), 'contao/page?') !== false) ? $GLOBALS['TL_LANG']['MSC']['pagePickerHome'] : $GLOBALS['TL_LANG']['MSC']['filePickerHome'];
 		}
 
-		// Picker menu
-		if (\Input::get('popup') && \Input::get('context'))
-		{
-			$this->Template->pickerMenu = \System::getContainer()->get('contao.menu.picker_menu_builder')->createMenu(\Input::get('context'));
-		}
-
 		// Website title
 		if (\Config::get('websiteTitle') != 'Contao Open Source CMS')
 		{
@@ -227,6 +236,8 @@ class BackendMain extends \Backend
 		$this->Template->account = $GLOBALS['TL_LANG']['MOD']['login'][1];
 		$this->Template->preview = $GLOBALS['TL_LANG']['MSC']['fePreview'];
 		$this->Template->previewTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['fePreviewTitle']);
+		$this->Template->profile = $GLOBALS['TL_LANG']['MSC']['profile'];
+		$this->Template->profileTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['profileTitle']);
 		$this->Template->pageOffset = \Input::cookie('BE_PAGE_OFFSET');
 		$this->Template->logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
 		$this->Template->logoutLink = $logoutLink;
@@ -246,6 +257,8 @@ class BackendMain extends \Backend
 		$this->Template->isPopup = \Input::get('popup');
 		$this->Template->systemMessages = $GLOBALS['TL_LANG']['MSC']['systemMessages'];
 		$this->Template->burger = $GLOBALS['TL_LANG']['MSC']['burgerTitle'];
+		$this->Template->learnMore = sprintf($GLOBALS['TL_LANG']['MSC']['learnMore'], '<a href="https://contao.org" target="_blank">contao.org</a>');
+		$this->Template->ref = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id');
 
 		$strSystemMessages = \Backend::getSystemMessages();
 		$this->Template->systemMessagesCount = substr_count($strSystemMessages, 'class="tl_');

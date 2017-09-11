@@ -60,6 +60,7 @@ abstract class Template extends \Controller
 	 */
 	protected $arrData = array();
 
+
 	/**
 	 * Valid JavaScipt types
 	 * @var array

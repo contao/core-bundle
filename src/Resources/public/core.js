@@ -390,7 +390,7 @@ var AjaxRequest =
 			onSuccess: function(txt, json) {
 				var div = new Element('div', {
 					'id': id,
-					'class': 'subpal',
+					'class': 'subpal cf',
 					'html': txt,
 					'styles': {
 						'display': 'block'
@@ -849,7 +849,7 @@ var Backend =
 	openModalImage: function(options) {
 		var opt = options || {},
 			maxWidth = (window.getSize().x - 20).toInt();
-		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 900);
 		var M = new SimpleModal({
 			'width': opt.width,
 			'hideFooter': true,
@@ -873,7 +873,7 @@ var Backend =
 		var opt = options || {},
 			maxWidth = (window.getSize().x - 20).toInt(),
 			maxHeight = (window.getSize().y - 137).toInt();
-		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 900);
 		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
 			'width': opt.width,
@@ -899,7 +899,7 @@ var Backend =
 			maxWidth = (window.getSize().x - 20).toInt(),
 			maxHeight = (window.getSize().y - 192).toInt();
 		if (!opt.id) opt.id = 'tl_select';
-		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 768);
+		if (!opt.width || opt.width > maxWidth) opt.width = Math.min(maxWidth, 900);
 		if (!opt.height || opt.height > maxHeight) opt.height = maxHeight;
 		var M = new SimpleModal({
 			'width': opt.width,
@@ -968,23 +968,18 @@ var Backend =
 	/**
 	 * Open a TinyMCE file browser in a modal window
 	 *
-	 * @param {string} field_name  The field name
-	 * @param {string} url         The URL
-	 * @param {string} type        The picker type
-	 * @param {object} win         The window object
-	 * @param {string} [reference] An optional reference field
+	 * @param {string} field_name The field name
+	 * @param {string} url        The URL
+	 * @param {string} type       The picker type
+	 * @param {object} win        The window object
 	 */
-	openModalBrowser: function(field_name, url, type, win, reference) {
+	openModalBrowser: function(field_name, url, type, win) {
 		Backend.openModalSelector({
+			'id': 'tl_listing',
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?target=' + (reference || 'tl_content.singleSRC') + '&amp;value=' + url + (type == 'file' ? '&amp;context=link' : '&amp;do=files&amp;context=file') + '&amp;popup=1',
+			'url': document.location.pathname.replace('/contao', '/_contao') + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {
-				new Request.Contao({
-					evalScripts: false,
-					onSuccess: function(txt, json) {
-						win.document.getElementById(field_name).value = json.content;
-					}
-				}).post({'action':'processPickerSelection', 'table':table, 'value':value.join(','), 'REQUEST_TOKEN':Contao.request_token});
+				win.document.getElementById(field_name).value = value.join(',');
 			}
 		});
 	},
@@ -1204,7 +1199,8 @@ var Backend =
 		new Tips.Contao($$('#tmenu a[title]').filter(function(i) {
 			return i.title != '';
 		}), {
-			offset: {x:2, y:42}
+			offset: {x:-12, y:42},
+			windowPadding: {x:200, y:0}
 		});
 
 		new Tips.Contao($$('#tmenu button[title]').filter(function(i) {
@@ -1217,14 +1213,14 @@ var Backend =
 		new Tips.Contao($$('a[title][class^="group-"]').filter(function(i) {
 			return i.title != '';
 		}), {
-			offset: {x:8, y:38}
+			offset: {x:3, y:27}
 		});
 
 		// Navigation links
 		new Tips.Contao($$('a[title].navigation').filter(function(i) {
 			return i.title != '';
 		}), {
-			offset: {x:8, y:34}
+			offset: {x:34, y:32}
 		});
 
 		// Images
@@ -2456,7 +2452,7 @@ var Backend =
 				isDrawing = false;
 			},
 			init = function() {
-				el.getParent('.tl_tbox').getElements('input[name^="importantPart"]').each(function(input) {
+				el.getParent('.tl_tbox,.tl_box').getElements('input[name^="importantPart"]').each(function(input) {
 					['x', 'y', 'width', 'height'].each(function(key) {
 						if (input.get('name').substr(13, key.length) === key.capitalize()) {
 							inputElements[key] = input = $(input);

@@ -142,8 +142,9 @@ Tips.Contao = new Class(
 			obj[props[z]] = event.page[z] + this.options.offset[z];
 			if (obj[props[z]] < 0) bounds[z] = true;
 			if ((obj[props[z]] + tip[z] - scroll[z]) > size[z] - this.options.windowPadding[z]) {
-				if (z == 'x') // Ignore vertical boundaries
+				if (z == 'x') { // ignore vertical boundaries
 					obj[props[z]] = event.page[z] - this.options.offset[z] - tip[z];
+				}
 				bounds[z+'2'] = true;
 			}
 		}
@@ -267,7 +268,11 @@ Class.refactor(Sortables,
 {
 	initialize: function(lists, options) {
 		options.dragOptions = Object.merge(options.dragOptions || {}, { preventDefault: (options.dragOptions && options.dragOptions.preventDefault) || Browser.Features.Touch });
-		options.dragOptions.unDraggableTags = ['input', 'a', 'textarea', 'select', 'option'];
+		if (options.dragOptions.unDraggableTags === undefined) {
+			options.dragOptions.unDraggableTags = this.options.unDraggableTags.filter(function(tag) {
+				return tag != 'button';
+			});
+		}
 		return this.previous.apply(this, arguments);
 	},
 
