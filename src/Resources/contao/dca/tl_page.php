@@ -232,7 +232,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 			'filter'                  => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_page', 'getPageTypes'),
-			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
+			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50', 'useRawRequestData'=>true),
 			'reference'               => &$GLOBALS['TL_LANG']['PTY'],
 			'save_callback' => array
 			(

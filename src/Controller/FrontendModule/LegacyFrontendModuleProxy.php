@@ -57,14 +57,21 @@ class LegacyFrontendModuleProxy
         $fragmentRegistry = $container->get('contao.fragment_registry');
 
         $fragment = $fragmentRegistry->getFragment($this->moduleModel->type);
+        $fragmentOptions = $fragmentRegistry->getOptions($this->moduleModel->type);
         $response = new Response();
 
         if (null !== $fragment) {
-            $config = new FrontendModuleConfiguration();
-            $config->setModuleModel($this->moduleModel);
-            $config->setInColumn($this->inColumn);
+            $renderStrategy = $fragmentOptions['renderStrategy'] ?: 'inline';
+            $renderOptions = $fragmentOptions['renderOptions'] ?: [];
 
-            $result = $fragmentRegistry->renderFragment($fragment, $config);
+            $result = $fragmentRegistry->renderFragment(
+                $fragment, [
+                    'moduleModel' => $this->moduleModel,
+                    'inColumn' => $this->inColumn,
+                ],
+                $renderStrategy,
+                $renderOptions
+            );
 
             if (null !== $result) {
                 $response->setContent($result);

@@ -102,7 +102,6 @@ services:
         class: Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry
         arguments:
             - "@fragment.handler"
-            - "contao.fragment_controller:renderAction"
 
     contao.fragment_controller:
         class: Contao\CoreBundle\Controller\FragmentController

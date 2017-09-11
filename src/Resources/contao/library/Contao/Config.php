@@ -318,39 +318,6 @@ class Config
 
 
 	/**
-	 * Maps new fragments that were registered properly in the fragment
-	 * registry to old $GLOBALS arrays for BC.
-	 */
-	public static function mapNewFragmentsToLegacyArrays()
-	{
-		$container = \System::getContainer();
-
-		/** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
-		$fragmentRegistry = $container->get('contao.fragment_registry');
-
-		foreach ($fragmentRegistry->getFragments([PageTypeInterface::class, FrontendModuleInterface::class]) as $fragment)
-		{
-			// Page types
-			if ($fragment instanceof PageTypeInterface)
-			{
-				$GLOBALS['TL_PTY'][$fragment::getIdentifier()] = LegacyPageTypeProxy::class;
-				continue;
-			}
-
-			// Front end modules
-			if ($fragment instanceof FrontendModuleInterface)
-			{
-				$GLOBALS['FE_MOD'][$fragment::getCategory()][$fragment::getIdentifier()] = LegacyFrontendModuleProxy::class;
-				continue;
-			}
-
-			// TODO
-			// Content elements
-		}
-	}
-
-
-	/**
 	 * Add a configuration variable to the local configuration file
 	 *
 	 * @param string $strKey   The full variable name

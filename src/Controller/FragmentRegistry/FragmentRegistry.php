@@ -10,7 +10,8 @@
 
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Contao\CoreBundle\Controller\FrontendModule\LegacyFrontendModuleProxy;
+use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
@@ -26,14 +27,14 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragmentHandler;
 
     /**
-     * @var string
-     */
-    private $controllerName;
-
-    /**
      * @var FragmentInterface[]
      */
     private $fragments = [];
+
+    /**
+     * @var array
+     */
+    private $fragmentOptions = [];
 
     /**
      * @var array
@@ -44,63 +45,26 @@ class FragmentRegistry implements FragmentRegistryInterface
      * FragmentRegistry constructor.
      *
      * @param FragmentHandler $fragmentHandler
-     * @param string          $controllerName
      */
-    public function __construct(FragmentHandler $fragmentHandler, $controllerName)
+    public function __construct(FragmentHandler $fragmentHandler)
     {
         $this->fragmentHandler = $fragmentHandler;
-        $this->controllerName = $controllerName;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addFragment(FragmentInterface $fragment)
+    public function addFragment($identifier, FragmentInterface $fragment, $options = [])
     {
         if (0 !== count($this->cache)) {
             throw new \BadMethodCallException('You cannot add fragments if the fragment registry was already initialized!');
         }
 
         // Overrides existing fragments with same identifier
-        $this->fragments[$fragment::getIdentifier()] = $fragment;
+        $this->fragments[$identifier] = $fragment;
+        $this->fragmentOptions[$identifier] = $options;
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFragments(array $mustImplementInterfaces)
-    {
-        sort($mustImplementInterfaces);
-
-        $key = md5(implode(',', $mustImplementInterfaces));
-
-        if (isset($this->cache[$key])) {
-
-            return $this->cache[$key];
-        }
-
-        $matches = [];
-        $visitedFragmentClassNames = [];
-        foreach ($this->fragments as $fragment) {
-            $ref = new \ReflectionClass($fragment);
-
-            foreach ($mustImplementInterfaces as $mustImplementInterface) {
-                if (!$ref->implementsInterface($mustImplementInterface)) {
-                    continue 2;
-                }
-
-                if (!isset($visitedFragmentClassNames[$ref->getName()])) {
-                    $matches[] = $fragment;
-                    $visitedFragmentClassNames[$ref->getName()] = null;
-                }
-            }
-        }
-
-        $this->cache[$key] = $matches;
-
-        return $matches;
     }
 
     /**
@@ -114,51 +78,78 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function renderFragment(FragmentInterface $fragment, ConfigurationInterface $configuration, RenderStrategy $overridingRenderStrategy = null)
+    public function getOptions($identifier)
     {
-        if (!$fragment->supportsConfiguration($configuration)) {
-            $exception = new InvalidConfigurationException(
-                sprintf('The fragment "%s" does not support the given configuration.', $fragment::getIdentifier())
-            );
-            $exception->setConfiguration($configuration);
-            throw $exception;
+        return $this->fragmentOptions[$identifier];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFragmentsByOptionValue($key, $value)
+    {
+        $cacheKey = md5($key . $value);
+
+        if (isset($this->cache[$cacheKey])) {
+
+            return $this->cache[$cacheKey];
         }
 
-        $renderStrategy = $this->determineRenderStrategy($fragment, $configuration, $overridingRenderStrategy);
+        $matches = [];
 
-        $uri = new ControllerReference(
-            $this->controllerName, [
-                '_fragment_identifier' => $fragment::getIdentifier(),
-            ], $fragment->getQueryParameters($configuration)
-        );
+        foreach ($this->fragments as $identifier => $fragment) {
+            $options = $this->getOptions($identifier);
 
+            if (!isset($options[$key]) || $options[$key] !== $value) {
+                continue;
+            }
+
+            $matches[$identifier] = $fragment;
+        }
+
+        return $this->cache[$cacheKey] = $matches;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderFragment(FragmentInterface $fragment, array $configuration = [], $renderStrategy = 'inline', $renderOptions = [])
+    {
         return $this->fragmentHandler->render(
-            $uri,
-            $renderStrategy->getRenderStrategy(),
-            $renderStrategy->getRenderOptions()
+            $fragment->getControllerReference($configuration),
+            $renderStrategy,
+            $renderOptions
         );
     }
 
     /**
-     * Determines the render strategy.
-     *
-     * @param FragmentInterface      $fragment
-     * @param ConfigurationInterface $configuration
-     * @param RenderStrategy|null    $overridingRenderStrategy
-     *
-     * @return RenderStrategy
+     * Maps new fragments that were registered properly in the fragment
+     * registry to old $GLOBALS arrays for BC.
      */
-    private function determineRenderStrategy(FragmentInterface $fragment, ConfigurationInterface $configuration, RenderStrategy $overridingRenderStrategy = null)
+    public function mapNewFragmentsToLegacyArrays()
     {
-        $strategy = new RenderStrategy();
-        $strategy->setRenderStrategy($fragment->getRenderStrategy($configuration));
-        $strategy->setRenderOptions($fragment->getRenderOptions($configuration));
+        $container = \System::getContainer();
 
-        if (null !== $overridingRenderStrategy) {
-            $strategy->setRenderStrategy($overridingRenderStrategy->getRenderStrategy());
-            $strategy->setRenderOptions($overridingRenderStrategy->getRenderOptions());
+        /** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
+        $fragmentRegistry = $container->get('contao.fragment_registry');
+
+        // Page types
+        foreach ($fragmentRegistry->getFragmentsByOptionValue('fragment', 'contao.page_type') as $identifier => $fragment) {
+            $GLOBALS['TL_PTY'][$identifier] = LegacyPageTypeProxy::class;
         }
 
-        return $strategy;
+        // Front end modules
+        foreach ($fragmentRegistry->getFragmentsByOptionValue('fragment', 'contao.frontend_module') as $identifier => $fragment) {
+            $options = $this->getOptions($identifier);
+
+            if (!isset($options['category'])) {
+                continue;
+            }
+
+            $GLOBALS['FE_MOD'][$options['category']][$identifier] = LegacyFrontendModuleProxy::class;
+        }
+
+        // TODO
+        // Content elements
     }
 }

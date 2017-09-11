@@ -16,6 +16,7 @@ use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -44,7 +45,7 @@ class FragmentRegistryPass implements CompilerPassInterface
 
         $fragments = $container->findTaggedServiceIds('contao.fragment');
 
-        foreach ($fragments as $id => $tags) {
+        foreach ($fragments as $id => $options) {
 
             $fragment = $container->findDefinition($id);
 
@@ -55,12 +56,16 @@ class FragmentRegistryPass implements CompilerPassInterface
                 ));
             }
 
+            if (!isset($options[0]['fragment']) || !isset($options[0]['type'])) {
+                throw new RuntimeException('A service tagged as "contao.fragment" must have a "fragment" and "type" attribute set.');
+            }
+
             // Mark all fragments as lazy so they are lazy loaded using
             // the proxy manager (which is why we need to require it in the
             // composer.json (otherwise the lazy definition will just be ignored)
             $fragment->setLazy(true);
 
-            $fragmentRegistry->addMethodCall('addFragment', [new Reference($id)]);
+            $fragmentRegistry->addMethodCall('addFragment', [$options[0]['type'], new Reference($id), $options[0]]);
         }
     }
 

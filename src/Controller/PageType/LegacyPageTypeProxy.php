@@ -38,11 +38,10 @@ class LegacyPageTypeProxy
         $fragment = $fragmentRegistry->getFragment($objPage->type);
 
         if (null !== $fragment) {
-            $config = new PageTypeConfiguration();
-            $config->setPageModel($objPage);
-
             // Force rendering inline (it never makes sense to render a page type as esi or anything else)
-            $result = $fragmentRegistry->renderFragment($fragment, $config, new RenderStrategy('inline'));
+            $result = $fragmentRegistry->renderFragment($fragment, [
+                'pageModel' => $objPage,
+            ]);
 
             return new Response($result ?: '');
         }

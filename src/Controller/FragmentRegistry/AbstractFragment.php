@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 /**
  * Abstract base class for fragments.
@@ -20,55 +20,53 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractFragment implements FragmentInterface
 {
     /**
-     * {@inheritdoc}
+     * Returns the controller reference for that fragment.
+     *
+     * @param array $configuration
+     *
+     * @return ControllerReference
      */
-    public static function getIdentifier()
+     public function getControllerReference(array $configuration)
+     {
+         return new ControllerReference($this->getControllerServiceName(),
+             $this->getControllerAttributes($configuration),
+             $this->getControllerQueryParameters($configuration)
+         );
+     }
+
+    /**
+     * Gets the controller service name.
+     *
+     * @return string
+     */
+    protected function getControllerServiceName()
     {
-        throw new \RuntimeException('The concrete implementation of AbstractFragment must override getIdentifier().');
+        return get_called_class();
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the controller attributes.
+     *
+     * @param array $configuration
+     *
+     * @return array
      */
-    public function supportsConfiguration(ConfigurationInterface $configuration)
-    {
-        return false;
-    }
+     protected function getControllerAttributes(array $configuration)
+     {
+         return [
+             'pageId' => $GLOBALS['objPage']->id,
+         ];
+     }
 
     /**
-     * {@inheritdoc}
+     * Gets the controller query parameters.
+     *
+     * @param array $configuration
+     *
+     * @return array
      */
-    public function getRenderStrategy($configuration)
-    {
-        return 'inline';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRenderOptions($configuration)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getQueryParameters(ConfigurationInterface $configuration)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertRequestToConfiguration(Request $request)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function renderAction(ConfigurationInterface $configuration);
-}
+     protected function getControllerQueryParameters(array $configuration)
+     {
+         return [];
+     }
+ }
