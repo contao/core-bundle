@@ -93,8 +93,8 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         $this->framework->initialize();
 
         // Page types
-        foreach ($this->getFragments($this->getTagFilter(
-            FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)
+        foreach ($this->getFragments(
+            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)
         ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
@@ -102,8 +102,8 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         }
 
         // Front end modules
-        foreach ($this->getFragments($this->getTagFilter(
-            FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)
+        foreach ($this->getFragments(
+            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)
         ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
@@ -119,8 +119,8 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         }
 
         // Content elements
-        foreach ($this->getFragments($this->getTagFilter(
-            FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT)
+        foreach ($this->getFragments(
+            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT)
         ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
