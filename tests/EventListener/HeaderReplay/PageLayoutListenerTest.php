@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,15 +22,13 @@ use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 
 /**
  * Tests the PageLayoutListener class.
- *
- * @author Yanick Witschi <https://github.com/toflar>
  */
 class PageLayoutListenerTest extends TestCase
 {
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
 
@@ -45,7 +45,7 @@ class PageLayoutListenerTest extends TestCase
      *
      * @dataProvider onReplayProvider
      */
-    public function testAddsThePageLayoutHeader($agentIsMobile, $tlViewCookie, $expectedHeaderValue)
+    public function testAddsThePageLayoutHeader(bool $agentIsMobile, string $tlViewCookie = null, string $expectedHeaderValue): void
     {
         $envAdapter = $this
             ->getMockBuilder(Adapter::class)
@@ -56,7 +56,7 @@ class PageLayoutListenerTest extends TestCase
 
         $envAdapter
             ->method('get')
-            ->willReturnCallback(function ($key) use ($agentIsMobile) {
+            ->willReturnCallback(function (string $key) use ($agentIsMobile) {
                 switch ($key) {
                     case 'agent':
                         return (object) ['mobile' => $agentIsMobile];
@@ -106,7 +106,7 @@ class PageLayoutListenerTest extends TestCase
     /**
      * Tests that no header is added outside the Contao front end scope.
      */
-    public function testDoesNotAddThePageLayoutHeaderIfNotInFrontEndScope()
+    public function testDoesNotAddThePageLayoutHeaderIfNotInFrontEndScope(): void
     {
         $event = new HeaderReplayEvent(new Request(), new ResponseHeaderBag());
 

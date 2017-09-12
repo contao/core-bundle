@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,8 +22,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Tests the ScopeMatcher class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
  */
 class ScopeMatcherTest extends TestCase
 {
@@ -33,7 +33,7 @@ class ScopeMatcherTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->matcher = $this->mockScopeMatcher();
     }
@@ -41,7 +41,7 @@ class ScopeMatcherTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Routing\ScopeMatcher', $this->matcher);
     }
@@ -49,15 +49,15 @@ class ScopeMatcherTest extends TestCase
     /**
      * Tests the request methods.
      *
-     * @param string $scope
-     * @param string $requestType
-     * @param bool   $isMaster
-     * @param bool   $isFrontend
-     * @param bool   $isBackend
+     * @param string|null $scope
+     * @param int         $requestType
+     * @param bool        $isMaster
+     * @param bool        $isFrontend
+     * @param bool        $isBackend
      *
      * @dataProvider masterRequestProvider
      */
-    public function testRecognizesTheContaoScopes($scope, $requestType, $isMaster, $isFrontend, $isBackend)
+    public function testRecognizesTheContaoScopes(?string $scope, int $requestType, bool $isMaster, bool $isFrontend, bool $isBackend): void
     {
         $request = new Request();
         $request->attributes->set('_scope', $scope);
@@ -76,7 +76,7 @@ class ScopeMatcherTest extends TestCase
      *
      * @return array
      */
-    public function masterRequestProvider()
+    public function masterRequestProvider(): array
     {
         return [
             [

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,8 +21,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Tests the Combiner class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
  *
  * @group contao3
  *
@@ -42,7 +42,7 @@ class CombinerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$rootDir = __DIR__.'/../Fixtures/tmp';
 
@@ -58,7 +58,7 @@ class CombinerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $fs = new Filesystem();
         $fs->remove(self::$rootDir);
@@ -67,7 +67,7 @@ class CombinerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -84,7 +84,7 @@ class CombinerTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\Combiner', new Combiner());
     }
@@ -92,7 +92,7 @@ class CombinerTest extends TestCase
     /**
      * Tests the CSS combiner.
      */
-    public function testCombinesCssFiles()
+    public function testCombinesCssFiles(): void
     {
         file_put_contents(static::$rootDir.'/file1.css', 'file1 { background: url("foo.bar") }');
         file_put_contents(static::$rootDir.'/web/file2.css', 'web/file2');
@@ -131,7 +131,7 @@ class CombinerTest extends TestCase
     /**
      * Tests the SCSS combiner.
      */
-    public function testCombinesScssFiles()
+    public function testCombinesScssFiles(): void
     {
         file_put_contents(static::$rootDir.'/file1.scss', '$color: red; @import "file1_sub";');
         file_put_contents(static::$rootDir.'/file1_sub.scss', 'body { color: $color }');
@@ -168,7 +168,7 @@ class CombinerTest extends TestCase
     /**
      * Tests the JS Combiner.
      */
-    public function testCombinesJsFiles()
+    public function testCombinesJsFiles(): void
     {
         file_put_contents(static::$rootDir.'/file1.js', 'file1();');
         file_put_contents(static::$rootDir.'/web/file2.js', 'file2();');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -30,11 +32,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManager;
 /**
  * Tests the ContaoFramework class.
  *
- * @author Christian Schiffler <https://github.com/discordier>
- * @author Yanick Witschi <https://github.com/toflar>
- * @author Dominik Tomasi <https://github.com/dtomasi>
- * @author Andreas Schempp <https://github.com/aschempp>
- *
  * @preserveGlobalState disabled
  */
 class ContaoFrameworkTest extends TestCase
@@ -42,7 +39,7 @@ class ContaoFrameworkTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $framework = $this->mockContaoFramework(
             new RequestStack(),
@@ -58,7 +55,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testInitializesTheFrameworkWithAFrontEndRequest()
+    public function testInitializesTheFrameworkWithAFrontEndRequest(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -94,7 +91,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testInitializesTheFrameworkWithABackEndRequest()
+    public function testInitializesTheFrameworkWithABackEndRequest(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -130,7 +127,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testInitializesTheFrameworkWithoutARequest()
+    public function testInitializesTheFrameworkWithoutARequest(): void
     {
         $container = $this->mockContainerWithContaoScopes();
         $container->set('request_stack', new RequestStack());
@@ -159,7 +156,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testInitializesTheFrameworkWithoutARoute()
+    public function testInitializesTheFrameworkWithoutARoute(): void
     {
         $request = new Request();
         $request->setLocale('de');
@@ -200,7 +197,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testInitializesTheFrameworkWithoutAScope()
+    public function testInitializesTheFrameworkWithoutAScope(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -233,7 +230,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testDoesNotInitializeTheFrameworkTwice()
+    public function testDoesNotInitializeTheFrameworkTwice(): void
     {
         $request = new Request();
         $request->attributes->set('_contao_referer_id', 'foobar');
@@ -271,7 +268,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testOverridesTheErrorLevel()
+    public function testOverridesTheErrorLevel(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -304,7 +301,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testValidatesTheRequestToken()
+    public function testValidatesTheRequestToken(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -331,7 +328,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testFailsIfTheRequestTokenIsInvalid()
+    public function testFailsIfTheRequestTokenIsInvalid(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -371,7 +368,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testDoesNotValidateTheRequestTokenUponAjaxRequests()
+    public function testDoesNotValidateTheRequestTokenUponAjaxRequests(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -411,7 +408,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testDoesNotValidateTheRequestTokenIfTheRequestAttributeIsFalse()
+    public function testDoesNotValidateTheRequestTokenIfTheRequestAttributeIsFalse(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -454,7 +451,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testFailsIfTheInstallationIsIncomplete()
+    public function testFailsIfTheInstallationIsIncomplete(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -476,7 +473,7 @@ class ContaoFrameworkTest extends TestCase
 
         $configAdapter
             ->method('get')
-            ->willReturnCallback(function ($key) {
+            ->willReturnCallback(function (string $key): ?string {
                 switch ($key) {
                     case 'characterSet':
                         return 'UTF-8';
@@ -510,7 +507,7 @@ class ContaoFrameworkTest extends TestCase
      * @runInSeparateProcess
      * @dataProvider getInstallRoutes
      */
-    public function testAllowsTheInstallationToBeIncompleteInTheInstallTool($route)
+    public function testAllowsTheInstallationToBeIncompleteInTheInstallTool($route): void
     {
         $request = new Request();
         $request->attributes->set('_route', $route);
@@ -532,7 +529,7 @@ class ContaoFrameworkTest extends TestCase
 
         $configAdapter
             ->method('get')
-            ->willReturnCallback(function ($key) {
+            ->willReturnCallback(function (string $key): ?string {
                 switch ($key) {
                     case 'characterSet':
                         return 'UTF-8';
@@ -563,7 +560,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @return array
      */
-    public function getInstallRoutes()
+    public function getInstallRoutes(): array
     {
         return [
             'contao_install' => ['contao_install'],
@@ -576,7 +573,7 @@ class ContaoFrameworkTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testFailsIfTheContainerIsNotSet()
+    public function testFailsIfTheContainerIsNotSet(): void
     {
         $framework = $this->mockContaoFramework(
             new RequestStack(),
@@ -592,7 +589,7 @@ class ContaoFrameworkTest extends TestCase
     /**
      * Tests the createInstance method.
      */
-    public function testCreatesAnObjectInstance()
+    public function testCreatesAnObjectInstance(): void
     {
         $reflection = new \ReflectionClass(ContaoFramework::class);
         $framework = $reflection->newInstanceWithoutConstructor();
@@ -607,7 +604,7 @@ class ContaoFrameworkTest extends TestCase
     /**
      * Tests the createInstance method for a singleton class.
      */
-    public function testCreateASingeltonObjectInstance()
+    public function testCreateASingeltonObjectInstance(): void
     {
         $reflection = new \ReflectionClass(ContaoFramework::class);
         $framework = $reflection->newInstanceWithoutConstructor();
@@ -622,7 +619,7 @@ class ContaoFrameworkTest extends TestCase
     /**
      * Tests the getAdapter method.
      */
-    public function testCreatesAdaptersForLegacyClasses()
+    public function testCreatesAdaptersForLegacyClasses(): void
     {
         $class = LegacyClass::class;
 

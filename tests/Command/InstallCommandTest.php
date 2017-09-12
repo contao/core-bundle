@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,15 +21,13 @@ use Symfony\Component\Filesystem\LockHandler;
 
 /**
  * Tests the InstallCommand class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
  */
 class InstallCommandTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $tcpdfPath = $this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php';
 
@@ -43,7 +43,7 @@ class InstallCommandTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $fs = new Filesystem();
 
@@ -66,7 +66,7 @@ class InstallCommandTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $command = new InstallCommand('contao:install');
 
@@ -77,7 +77,7 @@ class InstallCommandTest extends TestCase
     /**
      * Tests creating the the Contao folders.
      */
-    public function testCreatesTheContaoFolders()
+    public function testCreatesTheContaoFolders(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.project_dir', $this->getRootDir());
@@ -106,7 +106,7 @@ class InstallCommandTest extends TestCase
     /**
      * Tests adding a custom files and images directory.
      */
-    public function testHandlesCustomFilesAndImagesPaths()
+    public function testHandlesCustomFilesAndImagesPaths(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.project_dir', $this->getRootDir());
@@ -129,7 +129,7 @@ class InstallCommandTest extends TestCase
     /**
      * Tests that the command is locked while running.
      */
-    public function testIsLockedWhileRunning()
+    public function testIsLockedWhileRunning(): void
     {
         $lock = new LockHandler('contao:install');
         $lock->lock();

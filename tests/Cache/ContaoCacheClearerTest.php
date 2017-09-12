@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,15 +18,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Tests the ContaoCacheClearer class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
  */
 class ContaoCacheClearerTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $fs = new Filesystem();
         $fs->remove($this->getCacheDir().'/contao');
@@ -33,7 +33,7 @@ class ContaoCacheClearerTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $clearer = new ContaoCacheClearer(new Filesystem());
 
@@ -43,7 +43,7 @@ class ContaoCacheClearerTest extends TestCase
     /**
      * Tests removing the cache folder.
      */
-    public function testRemovesTheCacheFolder()
+    public function testRemovesTheCacheFolder(): void
     {
         $cacheDir = $this->getCacheDir();
 
