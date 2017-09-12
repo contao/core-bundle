@@ -14,7 +14,6 @@ use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\PathUtil\Path;
 
 /**
@@ -32,6 +31,11 @@ class Configuration implements ConfigurationInterface
     /**
      * @var string
      */
+    private $projectDir;
+
+    /**
+     * @var string
+     */
     private $rootDir;
 
     /**
@@ -43,12 +47,14 @@ class Configuration implements ConfigurationInterface
      * Constructor.
      *
      * @param bool   $debug
+     * @param string $projectDir
      * @param string $rootDir
      * @param string $defaultLocale
      */
-    public function __construct($debug, $rootDir, $defaultLocale)
+    public function __construct($debug, $projectDir, $rootDir, $defaultLocale)
     {
         $this->debug = (bool) $debug;
+        $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
         $this->defaultLocale = $defaultLocale;
     }
@@ -67,7 +73,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('web_dir')
                     ->cannotBeEmpty()
-                    ->defaultValue($this->resolvePath($this->rootDir.'/web'))
+                    ->defaultValue($this->resolvePath($this->projectDir.'/web'))
                     ->validate()
                         ->always(function ($value) {
                             return $this->resolvePath($value);
@@ -124,7 +130,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('target_dir')
                             ->cannotBeEmpty()
-                            ->defaultValue($this->resolvePath($this->rootDir.'/assets/images'))
+                            ->defaultValue($this->resolvePath($this->projectDir.'/assets/images'))
                             ->validate()
                                 ->always(function ($value) {
                                     return $this->resolvePath($value);

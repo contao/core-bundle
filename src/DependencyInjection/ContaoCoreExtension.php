@@ -52,6 +52,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         return new Configuration(
             $container->getParameter('kernel.debug'),
             $container->getParameter('kernel.project_dir'),
+            $container->getParameter('kernel.root_dir'),
             $container->getParameter('kernel.default_locale')
         );
     }
