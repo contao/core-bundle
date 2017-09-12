@@ -49,9 +49,13 @@ class ModelResolver implements ArgumentValueResolverInterface
 
         $this->framework->initialize();
 
+        /** @codeCoverageIgnoreStart
+         * Cannot be tested because the model class does not exist in tests.
+         **/
         if (!is_a($argument->getType(), Model::class, true)) {
             return false;
         }
+        /** @codeCoverageIgnoreEnd */
 
         return true;
     }
@@ -63,6 +67,9 @@ class ModelResolver implements ArgumentValueResolverInterface
     {
         $id = $request->attributes->getInt($argument->getName());
 
-        yield call_user_func($argument->getType() . '::findByPk', $id);
+        /** @var Model $model */
+        $model = $this->framework->getAdapter($argument->getType());
+
+        yield $model->findByPK($id);
     }
 }
