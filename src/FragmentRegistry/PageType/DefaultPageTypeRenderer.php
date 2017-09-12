@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
+namespace Contao\CoreBundle\FragmentRegistry\PageType;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\AbstractFragmentRenderer;

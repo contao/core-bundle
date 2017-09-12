@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
+namespace Contao\CoreBundle\FragmentRegistry\PageType;
 
 use Contao\PageModel;
 
@@ -40,7 +40,7 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
     public function supports(PageModel $pageModel): bool
     {
         foreach ($this->renderers as $renderer) {
-            if ($renderer->supports($$pageModel)) {
+            if ($renderer->supports($pageModel)) {
                 return true;
             }
         }
