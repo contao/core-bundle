@@ -21,9 +21,11 @@ class MenuRenderer implements RendererInterface
             'skipNavigation' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation'])
         ];
 
-        return $this->templating->render('ContaoCoreBundle:Backend:be_menu.html.twig', [
+        $templateData = array_merge([
             'tree' => $item,
             'lang' => $lang
-        ]);
+        ], $options);
+
+        return $this->templating->render('ContaoCoreBundle:Backend:be_menu.html.twig', $templateData);
     }
 }
