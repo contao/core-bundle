@@ -138,7 +138,7 @@ class CsrfTokenCookieListenerTest extends TestCase
 
         $tokenStorage
             ->expects($this->once())
-            ->method('getSaveTokens')
+            ->method('getUsedTokens')
             ->willReturn(['foo' => 'bar'])
         ;
 

@@ -80,7 +80,7 @@ class CsrfTokenCookieListener
         $cookieLifetime = $this->cookieLifetime ? $this->cookieLifetime + time() : 0;
         $isSecure = $event->getRequest()->isSecure();
 
-        foreach ($this->tokenStorage->getSaveTokens() as $key => $value) {
+        foreach ($this->tokenStorage->getUsedTokens() as $key => $value) {
             $event->getResponse()->headers->setCookie(
                 new Cookie(
                     $this->cookiePrefix.$key,

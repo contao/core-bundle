@@ -28,7 +28,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     /**
      * @var array
      */
-    private $activeTokens = [];
+    private $usedTokens = [];
 
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class MemoryTokenStorage implements TokenStorageInterface
             throw new TokenNotFoundException('The CSRF token with ID '.$tokenId.' does not exist.');
         }
 
-        $this->activeTokens[$tokenId] = true;
+        $this->usedTokens[$tokenId] = true;
 
         return $this->tokens[$tokenId];
     }
@@ -53,7 +53,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     {
         $this->assertInitialized();
 
-        $this->activeTokens[$tokenId] = true;
+        $this->usedTokens[$tokenId] = true;
         $this->tokens[$tokenId] = $token;
     }
 
@@ -74,7 +74,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     {
         $this->assertInitialized();
 
-        $this->activeTokens[$tokenId] = true;
+        $this->usedTokens[$tokenId] = true;
         $this->tokens[$tokenId] = null;
     }
 
@@ -89,19 +89,13 @@ class MemoryTokenStorage implements TokenStorageInterface
     }
 
     /**
-     * Get all active tokens.
+     * Get all used tokens.
      *
      * @return array
      */
-    public function getSaveTokens()
+    public function getUsedTokens()
     {
-        $tokens = [];
-
-        foreach (array_keys($this->activeTokens) as $key) {
-            $tokens[$key] = $this->tokens[$key];
-        }
-
-        return $tokens;
+        return array_intersect_key($this->tokens, $this->usedTokens);
     }
 
     /**
