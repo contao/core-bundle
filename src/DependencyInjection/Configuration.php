@@ -196,25 +196,16 @@ class Configuration implements ConfigurationInterface
             $dirs[] = $this->rootDir.'/Resources/contao/languages';
         }
 
+        // The default locale must be the first supported language (see contao/core#6533)
+        $languages = [$this->defaultLocale];
+
         $finder = Finder::create()->directories()->depth(0)->in($dirs);
 
-        $languages = array_values(
-            array_map(
-                function (SplFileInfo $file) {
-                    return $file->getFilename();
-                },
-                iterator_to_array($finder)
-            )
-        );
-
-        foreach ($languages as $key => $lang) {
-            if (!preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $lang)) {
-                unset($languages[$key]);
+        foreach ($finder as $file) {
+            if (preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $file->getFilename())) {
+                $languages[] = $file->getFilename();
             }
         }
-
-        // The default locale must be the first supported language (see contao/core#6533)
-        array_unshift($languages, $this->defaultLocale);
 
         return array_values(array_unique($languages));
     }
