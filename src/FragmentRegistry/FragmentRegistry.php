@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\FragmentRegistry;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
+use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyContentElementProxy;
 use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyFrontendModuleProxy;
 use Contao\CoreBundle\FragmentRegistry\PageType\LegacyPageTypeProxy;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
@@ -92,25 +93,47 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         $this->framework->initialize();
 
         // Page types
-        foreach ($this->getFragments($this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)) as $identifier => $fragment) {
+        foreach ($this->getFragments($this->getTagFilter(
+            FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)
+        ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             $GLOBALS['TL_PTY'][$options['type']] = LegacyPageTypeProxy::class;
         }
 
         // Front end modules
-        foreach ($this->getFragments($this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)) as $identifier => $fragment) {
+        foreach ($this->getFragments($this->getTagFilter(
+            FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)
+        ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             if (!isset($options['category'])) {
-                throw new \RuntimeException('You tagged a "contao.fragment" as a "contao.frontend_module" but forgot to specify the "category" attribute.');
+                throw new \RuntimeException(
+                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
+                        FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE
+                    )
+                );
             }
 
             $GLOBALS['FE_MOD'][$options['category']][$options['type']] = LegacyFrontendModuleProxy::class;
         }
 
-        // TODO
         // Content elements
+        foreach ($this->getFragments($this->getTagFilter(
+            FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT)
+        ) as $identifier => $fragment) {
+            $options = $this->getOptions($identifier);
+
+            if (!isset($options['category'])) {
+                throw new \RuntimeException(
+                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
+                        FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT
+                    )
+                );
+            }
+
+            $GLOBALS['TL_CTE'][$options['category']][$options['type']] = LegacyContentElementProxy::class;
+        }
     }
 
     /**
