@@ -101,7 +101,7 @@ abstract class Controller extends \System
 		}
 
 		$strBrace = '{' . implode(',', \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')))) . '}';
-		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
 
 		// Add the customized templates
 		if (is_array($arrCustomized))
@@ -133,7 +133,7 @@ abstract class Controller extends \System
 				{
 					if ($objTheme->templates != '')
 					{
-						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
 
 						if (is_array($arrThemeTemplates))
 						{
