@@ -26,8 +26,6 @@ class LegacyFrontendModuleProxy extends Module
      */
     public function generate()
     {
-        @trigger_error('Using $GLOBALS[\'FE_MOD\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
-
         $container = \System::getContainer();
         $response = new Response();
 
@@ -35,7 +33,6 @@ class LegacyFrontendModuleProxy extends Module
         $frontendModuleRenderer = $container->get('contao.fragment.renderer.frontend');
 
         $result = $frontendModuleRenderer->render(
-            $this->objModel->type,
             $this->objModel,
             $this->strColumn
         );

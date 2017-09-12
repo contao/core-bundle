@@ -21,22 +21,20 @@ use Contao\ModuleModel;
 interface FrontendModuleRendererInterface
 {
     /**
-     * @param string      $type
      * @param ModuleModel $moduleModel
      * @param string      $inColumn
      * @param string      $scope
      *
      * @return bool
      */
-    public function supports(string $type, ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): bool;
+    public function supports(ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): bool;
 
     /**
-     * @param string      $type
      * @param ModuleModel $moduleModel
      * @param string      $inColumn
      * @param string      $scope
      *
      * @return null|string
      */
-    public function render(string $type, ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string;
+    public function render(ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string;
 }

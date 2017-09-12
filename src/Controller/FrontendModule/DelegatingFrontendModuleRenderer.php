@@ -38,10 +38,10 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
     /**
      * {@inheritdoc}
      */
-    public function supports(string $type, ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): bool
+    public function supports(ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): bool
     {
         foreach ($this->renderers as $renderer) {
-            if ($renderer->supports($type, $moduleModel, $inColumn, $scope)) {
+            if ($renderer->supports($moduleModel, $inColumn, $scope)) {
                 return true;
             }
         }
@@ -52,11 +52,11 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
     /**
      * {@inheritdoc}
      */
-    public function render(string $type, ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string
+    public function render(ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string
     {
         foreach ($this->renderers as $renderer) {
-            if ($renderer->supports($type, $moduleModel, $inColumn, $scope)) {
-                return $renderer->render($type, $moduleModel, $inColumn, $scope);
+            if ($renderer->supports($moduleModel, $inColumn, $scope)) {
+                return $renderer->render($moduleModel, $inColumn, $scope);
             }
         }
 
