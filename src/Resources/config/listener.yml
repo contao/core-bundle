@@ -17,7 +17,7 @@ services:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
     contao.listener.backend_menu.legacy_menu_listener:
-        class: Contao\CoreBundle\EventListener\BackendMenu\LegacyMenuListener
+        class: Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener
         arguments:
             - "@knp_menu.factory"
             - "@security.token_storage"

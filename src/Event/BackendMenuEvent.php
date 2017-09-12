@@ -20,4 +20,9 @@ class BackendMenuEvent extends Event
     {
         return $this->tree;
     }
+
+    public function setTree(ItemInterface $tree)
+    {
+        $this->tree = $tree;
+    }
 }
