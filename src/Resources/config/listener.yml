@@ -16,13 +16,13 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
-    contao.listener.backend_menu.legacy_menu_listener:
+    contao.listener.backend_menu.user_menu_listener:
         class: Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener
         arguments:
             - "@knp_menu.factory"
             - "@security.token_storage"
         tags:
-            - { name: kernel.event_listener, event: contao.build_backend_menu, method: onBuild }
+            - { name: kernel.event_listener, event: contao.backend_menu_build, method: onBuild }
 
     contao.listener.bypass_maintenance:
         class: Contao\CoreBundle\EventListener\BypassMaintenanceListener

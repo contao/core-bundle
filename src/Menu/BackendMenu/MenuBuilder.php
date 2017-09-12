@@ -2,7 +2,8 @@
 
 namespace Contao\CoreBundle\Menu\BackendMenu;
 
-use Contao\CoreBundle\Event\BackendMenuEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\MenuEvent;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -35,7 +36,7 @@ class MenuBuilder
         $tree = $this->factory->createItem('root');
 
         // Nodes can be attached via an event listener
-        $this->eventDispatcher->dispatch(BackendMenuEvent::BUILD_EVENT, new BackendMenuEvent($tree));
+        $this->eventDispatcher->dispatch(ContaoCoreEvents::BACKEND_MENU_BUILD, new MenuEvent($tree));
 
         return $tree;
     }

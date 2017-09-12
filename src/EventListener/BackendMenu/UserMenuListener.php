@@ -3,7 +3,7 @@
 namespace Contao\CoreBundle\EventListener\BackendMenu;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Event\BackendMenuEvent;
+use Contao\CoreBundle\Event\MenuEvent;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -18,48 +18,46 @@ class UserMenuListener
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function onBuild(BackendMenuEvent $event)
+    public function onBuild(MenuEvent $event)
     {
-        $tree = $event->getTree();
         $token = $this->tokenStorage->getToken();
 
         if (null === $token || !($user = $token->getUser()) instanceof BackendUser) {
-            return $tree;
+            return;
         }
 
+        $tree = $event->getTree();
         $modules = $user->navigation();
 
-        foreach ($modules as $category => $categoryOptions) {
-            // Create a category node if it doesn't exist yet
-            if (!$tree->getChild($category)) {
-                $node = $this->factory->createItem($category, [
-                    'label' => $categoryOptions['label'],
-                    'attributes' => [
-                        'title' => $categoryOptions['title'],
-                        'href' => $categoryOptions['href']
-                    ]
-                ]);
+        foreach ($modules as $categoryName => $categoryData) {
+            $categoryNode = $tree->getChild($categoryName);
 
-                $node->setDisplayChildren(strpos($categoryOptions['class'], 'node-expanded') !== false);
-                $tree->addChild($node);
+            if (!$categoryNode) {
+                $categoryNode = $this->createNode($categoryName, $categoryData);
+                $categoryNode->setDisplayChildren(strpos($categoryData['class'], 'node-expanded') !== false);
+
+                $tree->addChild($categoryNode);
             }
 
             // Create the child nodes
-            foreach ($categoryOptions['modules'] as $nodeName => $nodeOptions) {
-                $node = $this->factory->createItem($nodeName, [
-                    'label' => $nodeOptions['label'],
-                    'attributes' => [
-                        'title' => $nodeOptions['title'],
-                        'class' => $nodeName,
-                        'href' => $nodeOptions['href']
-                    ]
-                ]);
+            foreach ($categoryData['modules'] as $moduleName => $moduleData) {
+                $moduleNode = $this->createNode($moduleName, $moduleData);
+                $moduleNode->setCurrent((bool) $moduleData['isActive']);
+                $moduleNode->setAttribute('class', $categoryName);
 
-                $node->setCurrent($nodeOptions['isActive']);
-                $tree->getChild($category)->addChild($node);
+                $categoryNode->addChild($moduleNode);
             }
         }
+    }
 
-        return $tree;
+    private function createNode($name, array $attributes)
+    {
+        return $this->factory->createItem($name, [
+            'label' => $attributes['label'],
+            'attributes' => [
+                'title' => $attributes['title'],
+                'href' => $attributes['href']
+            ]
+        ]);
     }
 }

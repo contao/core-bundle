@@ -5,10 +5,8 @@ namespace Contao\CoreBundle\Event;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class BackendMenuEvent extends Event
+class MenuEvent extends Event
 {
-    const BUILD_EVENT = 'contao.build_backend_menu';
-
     private $tree;
 
     public function __construct(ItemInterface $tree)
@@ -19,10 +17,5 @@ class BackendMenuEvent extends Event
     public function getTree()
     {
         return $this->tree;
-    }
-
-    public function setTree(ItemInterface $tree)
-    {
-        $this->tree = $tree;
     }
 }

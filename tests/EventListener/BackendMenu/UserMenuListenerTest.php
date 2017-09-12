@@ -3,7 +3,7 @@
 namespace Contao\CoreBundle\Tests\EventListener\BackendMenu;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Event\BackendMenuEvent;
+use Contao\CoreBundle\Event\MenuEvent;
 use Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
@@ -90,7 +90,7 @@ class UserMenuListenerTest extends TestCase
         $nodeFactory = new MenuFactory();
         $rootNode = $nodeFactory->createItem('root');
 
-        $event = new BackendMenuEvent($rootNode);
+        $event = new MenuEvent($rootNode);
 
         $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
         $listener->onBuild($event);
@@ -133,7 +133,7 @@ class UserMenuListenerTest extends TestCase
         $nodeFactory = new MenuFactory();
         $rootNode = $nodeFactory->createItem('root');
 
-        $event = new BackendMenuEvent($rootNode);
+        $event = new MenuEvent($rootNode);
 
         $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
         $listener->onBuild($event);

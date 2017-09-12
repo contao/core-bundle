@@ -2,7 +2,7 @@
 
 namespace Contao\CoreBundle\Tests\Menu\BackendMenu;
 
-use Contao\CoreBundle\Event\BackendMenuEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Menu\BackendMenu\MenuBuilder;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
@@ -49,7 +49,7 @@ class MenuBuilderTest extends TestCase
         $this->eventDispatcher
             ->expects($this->atLeastOnce())
             ->method('dispatch')
-            ->with(BackendMenuEvent::BUILD_EVENT, $this->isInstanceOf('Contao\CoreBundle\Event\BackendMenuEvent'))
+            ->with(ContaoCoreEvents::BACKEND_MENU_BUILD, $this->isInstanceOf('Contao\CoreBundle\Event\MenuEvent'))
         ;
 
         $this->builder->create();
