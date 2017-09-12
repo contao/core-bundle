@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\FragmentRegistry;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
@@ -72,7 +72,7 @@ abstract class AbstractFragmentRenderer
 
         if ($fragment instanceof SimpleRenderingInformationProvidingInterface) {
             $attributes = $fragment->getControllerRequestAttributes($request, $attributes);
-            $query = $fragment->getControllerRequestAttributes($request, $query);
+            $query = $fragment->getControllerQueryParameters($request, $query);
         }
 
         $controllerReference = new ControllerReference(

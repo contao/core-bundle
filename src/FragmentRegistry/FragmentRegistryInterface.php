@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\FragmentRegistry;
 
 /**
  * Fragment registry.
@@ -23,7 +23,7 @@ interface FragmentRegistryInterface
      * If a fragment with the same identifier already exists, it will override
      * the old one.
      * The $options array must at least handle the following three keys:
-     *     - fragment (which contains the fragment type (e.g. "contao.frontend_module")
+     *     - tag (which contains the fragment tag (e.g. "contao.fragment.frontend_module")
      *     - type (which contains the type within that fragment type (e.g. "navigation")
      *     - controller (which contains the controller reference to that fragment)
      *

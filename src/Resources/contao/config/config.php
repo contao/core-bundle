@@ -399,7 +399,7 @@ $GLOBALS['TL_HOOKS'] = array
 	)
 );
 
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('contao.fragment.registry', 'mapNewFragmentsToLegacyArrays');
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array(\Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass::FRAGMENT_REGISTRY, 'mapNewFragmentsToLegacyArrays');
 
 /**
  * Register the auto_item keywords

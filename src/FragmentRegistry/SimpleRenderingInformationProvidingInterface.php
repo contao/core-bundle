@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\FragmentRegistry;
 
 use Symfony\Component\HttpFoundation\Request;
 

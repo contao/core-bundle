@@ -8,18 +8,23 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FragmentRegistry;
+namespace Contao\CoreBundle\FragmentRegistry;
 
-use Contao\CoreBundle\Controller\FrontendModule\LegacyFrontendModuleProxy;
-use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
+use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
+use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyFrontendModuleProxy;
+use Contao\CoreBundle\FragmentRegistry\PageType\LegacyPageTypeProxy;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 
 /**
  * Fragment registry.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class FragmentRegistry implements FragmentRegistryInterface
+class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     /**
      * @var array
      */
@@ -84,15 +89,17 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function mapNewFragmentsToLegacyArrays()
     {
+        $this->framework->initialize();
+
         // Page types
-        foreach ($this->getFragments($this->getFragmentFilter('contao.page_type')) as $identifier => $fragment) {
+        foreach ($this->getFragments($this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             $GLOBALS['TL_PTY'][$options['type']] = LegacyPageTypeProxy::class;
         }
 
         // Front end modules
-        foreach ($this->getFragments($this->getFragmentFilter('contao.frontend_module')) as $identifier => $fragment) {
+        foreach ($this->getFragments($this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             if (!isset($options['category'])) {
@@ -111,22 +118,22 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     private function ensureBasicOptions(array $options)
     {
-        if (0 === count(array_intersect(array_keys($options), ['fragment', 'type', 'controller']))) {
-            throw new \InvalidArgumentException('The basic 3 options, fragment, type and controller were not provided.');
+        if (3 !== count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
+            throw new \InvalidArgumentException('The basic 3 options, tag, type and controller were not provided.');
         }
     }
 
     /**
-     * @param string $type
+     * @param string $tag
      *
      * @return \Closure
      */
-    private function getFragmentFilter($type)
+    private function getTagFilter($tag)
     {
-        return function($identifier) use ($type) {
+        return function($identifier) use ($tag) {
             $options = $this->getOptions($identifier);
 
-            if (!isset($options['fragment']) || $options['fragment'] !== $type) {
+            if ($options['tag'] !== $tag) {
                 return false;
             }
 

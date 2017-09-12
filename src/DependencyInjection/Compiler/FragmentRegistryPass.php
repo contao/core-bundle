@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
+use Contao\CoreBundle\FragmentRegistry\FragmentRegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,9 +28,9 @@ class FragmentRegistryPass implements CompilerPassInterface
 
     const FRAGMENT_REGISTRY = 'contao.fragment.registry';
 
-    const TAG_FRAGMENT_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module';
-    const TAG_FRAGMENT_PAGE_TYPE = 'contao.fragment.renderer.page_type';
-    const TAG_FRAGMENT_CONTENT_ELEMENT = 'contao.fragment.renderer.content_element';
+    const TAG_FRAGMENT_FRONTEND_MODULE = 'contao.fragment.frontend_module';
+    const TAG_FRAGMENT_PAGE_TYPE = 'contao.fragment.page_type';
+    const TAG_FRAGMENT_CONTENT_ELEMENT = 'contao.fragment.content_element';
 
     const RENDERER_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module.delegating';
     const RENDERER_PAGE_TYPE = 'contao.fragment.renderer.page_type.delegating';
@@ -95,11 +95,12 @@ class FragmentRegistryPass implements CompilerPassInterface
             $fragment = $container->findDefinition($reference);
             $fragmentOptions = $fragment->getTag($tag)[0];
 
-            if (!isset($fragmentOptions['fragment']) || !isset($fragmentOptions['type'])) {
-                throw new RuntimeException('A service tagged as "contao.fragment" must have a "fragment" and "type" attribute set.');
+            if (!isset($fragmentOptions['type'])) {
+                throw new RuntimeException(sprintf('A service tagged as "%s" must have a "type" attribute set.', $tag));
             }
 
             $fragmentOptions['controller'] = (string) $reference;
+            $fragmentOptions['tag'] = $tag;
 
             // Support specific method on controller
             if (isset($fragmentOptions['method'])) {
@@ -111,7 +112,7 @@ class FragmentRegistryPass implements CompilerPassInterface
             // composer.json (otherwise the lazy definition will just be ignored)
             $fragment->setLazy(true);
 
-            $fragmentIdentifier = $fragmentOptions['fragment'] . '.' . $fragmentOptions['type'];
+            $fragmentIdentifier = $tag . '.' . $fragmentOptions['type'];
             $this->fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
         }
     }

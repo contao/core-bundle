@@ -8,9 +8,10 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\PageType;
+namespace Contao\CoreBundle\FragmentRegistry\PageType;
 
-use Contao\CoreBundle\Controller\FrontendModule\PageTypeRendererInterface;
+use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
+use Contao\CoreBundle\FragmentRegistry\FrontendModule\PageTypeRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -31,7 +32,7 @@ class LegacyPageTypeProxy
         $response = new Response();
 
         /** @var PageTypeRendererInterface $pageTypeRenderer */
-        $pageTypeRenderer = $container->get('contao.fragment.renderer.page_type');
+        $pageTypeRenderer = $container->get(FragmentRegistryPass::RENDERER_PAGE_TYPE);
 
         $result = $pageTypeRenderer->render($objPage);
 

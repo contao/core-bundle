@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Controller\FrontendModule;
+namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
 
 use Contao\PageModel;
 
