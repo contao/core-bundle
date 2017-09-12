@@ -2362,11 +2362,7 @@ abstract class Controller extends \System
 		{
 			$path = $info->getPathname();
 
-			if (preg_match($regex, $path) && $info->isFile()) {
-				return true;
-			}
-
-			return false;
+			return preg_match($regex, $path) && $info->isFile();
 		});
 
 		$files = iterator_to_array($filesIterator);
