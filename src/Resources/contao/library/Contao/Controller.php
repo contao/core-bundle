@@ -2359,7 +2359,7 @@ abstract class Controller extends \System
 
 		// Match the actual regex and filter the files
 		$filesIterator = $filesIterator->filter(function (\SplFileInfo $info) use ($regex)
-        {
+		{
 			$path = $info->getPathname();
 
 			if (preg_match($regex, $path) && $info->isFile()) {
