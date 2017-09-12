@@ -17,6 +17,7 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
+use Contao\CoreBundle\DependencyInjection\Security\Factory\FrontendAuthenticationFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -58,6 +59,9 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(
             new AddPackagesPass($container->getParameter('kernel.root_dir').'/../vendor/composer/installed.json')
         );
+
+        $extension = $container->getExtension('security');
+        $extension->addSecurityListenerFactory(new FrontendAuthenticationFactory());
 
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());

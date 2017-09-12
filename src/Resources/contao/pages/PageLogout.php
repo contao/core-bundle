@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\RouterInterface;
 
 
 /**
@@ -30,30 +31,35 @@ class PageLogout extends \Frontend
 	 */
 	public function getResponse($objPage)
 	{
-		// Set last page visited
-		if ($objPage->redirectBack)
-		{
-			$_SESSION['LAST_PAGE_VISITED'] = $this->getReferer();
-		}
+	    /** @var RouterInterface $router */
+	    $router = System::getContainer()->get('router');
+	    $session = System::getContainer()->get('session');
 
-		$this->import('FrontendUser', 'User');
-		$strRedirect = \Environment::get('base');
+        // Set last page visited
+        if ($objPage->redirectBack)
+        {
+            $session->set('LAST_PAGE_VISITED', $this->getReferer());
+        }
 
-		// Redirect to last page visited
-		if ($objPage->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))
-		{
-			$strRedirect = $_SESSION['LAST_PAGE_VISITED'];
-		}
+        $strRedirect = \Environment::get('base');
 
-		// Redirect to jumpTo page
-		elseif ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof PageModel)
-		{
-			/** @var PageModel $objTarget */
-			$strRedirect = $objTarget->getAbsoluteUrl();
-		}
+        // Redirect to last page visited
+        if ($objPage->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))
+        {
+            $strRedirect = $_SESSION['LAST_PAGE_VISITED'];
+        }
 
-		$this->User->logout();
+        // Redirect to jumpTo page
+        elseif ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof PageModel)
+        {
+            /** @var PageModel $objTarget */
+            $strRedirect = $objTarget->getAbsoluteUrl();
+        }
 
-		return new RedirectResponse($strRedirect);
+        $this->User->logout();
+
+	    return new RedirectResponse($router->generate('contao_frontend_logout', [
+	        'redirect' => $strRedirect,
+        ]));
 	}
 }

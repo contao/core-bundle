@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
 
 /**
  * Provide methods to manage front end users.
@@ -20,7 +22,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendUser extends \User
+class FrontendUser extends User
 {
 
 	/**
@@ -70,6 +72,19 @@ class FrontendUser extends \User
 		$this->strIp = \Environment::get('ip');
 		$this->strHash = \Input::cookie($this->strCookie);
 	}
+
+    public static function getInstance()
+    {
+        /** @var TokenInterface $token */
+        $token = System::getContainer()->get('security.token_storage')->getToken();
+
+        if ($token !== null && is_a($token->getUser(), get_called_class()))
+        {
+            return $token->getUser();
+        }
+
+        return parent::getInstance();
+    }
 
 
 	/**
@@ -124,6 +139,15 @@ class FrontendUser extends \User
 	 */
 	public function authenticate()
 	{
+        /** @var TokenInterface $token */
+        $token = System::getContainer()->get('security.token_storage')->getToken();
+
+        // Do not redirect if authentication is successful
+        if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
+        {
+            return true;
+        }
+
 		// Default authentication
 		if (parent::authenticate())
 		{
@@ -319,4 +343,28 @@ class FrontendUser extends \User
 	{
 		return $this->roles;
 	}
+
+    public static function loadUserByUsername($username)
+    {
+        $user = new static();
+
+        // Load the user object
+        if ($user->findBy('username', $username) === false)
+        {
+            return null;
+        }
+
+        $user->setUserFromDb();
+
+        // HOOK: post authenticate callback
+        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
+        {
+            foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
+            {
+                System::importStatic($callback[0])->{$callback[1]}($user);
+            }
+        }
+
+        return $user;
+    }
 }

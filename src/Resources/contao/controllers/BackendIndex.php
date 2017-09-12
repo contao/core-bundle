@@ -57,12 +57,12 @@ class BackendIndex extends \Backend
 		/** @var TokenInterface $token */
 		$token = $this->container->get('security.token_storage')->getToken();
 
-		if ($token !== null && ($user = $token->getUser()) instanceof BackendUser)
+		if ($token !== null && ($user = $token->getUser()) instanceof FrontendUser)
 		{
 			/** @var UserInterface $user */
 			if ($authorizationChecker->isGranted($user->getRoles()))
 			{
-				return $this->redirect('contao/logout');
+				return $this->redirect('/logout');
 			}
 		}
 
@@ -118,36 +118,36 @@ class BackendIndex extends \Backend
 		return $objTemplate->getResponse();
 	}
 
-	protected function checkAuthentication()
-	{
-		/** @var AuthenticationUtils $authenticationUtils */
-		$authenticationUtils = $this->container->get('security.authentication_utils');
+    protected function checkAuthentication()
+    {
+        /** @var AuthenticationUtils $authenticationUtils */
+        $authenticationUtils = $this->container->get('security.authentication_utils');
 
-		$error = $authenticationUtils->getLastAuthenticationError();
+        $error = $authenticationUtils->getLastAuthenticationError();
 
-		if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
-		{
-			$this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-		}
+        if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
+        {
+            $this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+        }
 
-		elseif ($error instanceof LockedException)
-		{
-			$time = time();
+        elseif ($error instanceof LockedException)
+        {
+            $time = time();
 
-			/** @var TokenStorageInterface $tokenStorage */
-			$tokenStorage = $this->container->get('security.token_storage');
+            /** @var TokenStorageInterface $tokenStorage */
+            $tokenStorage = $this->container->get('security.token_storage');
 
-			$user = $tokenStorage->getToken()->getUser();
+            $user = $tokenStorage->getToken()->getUser();
 
-			$this->flashBag->set('be_login', sprintf(
-				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
-				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
-			));
-		}
+            $this->flashBag->set('be_login', sprintf(
+                $GLOBALS['TL_LANG']['ERR']['accountLocked'],
+                ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
+            ));
+        }
 
-		elseif ($error instanceof \Exception)
-		{
-			throw $error;
-		}
-	}
+        elseif ($error instanceof \Exception)
+        {
+            throw $error;
+        }
+    }
 }

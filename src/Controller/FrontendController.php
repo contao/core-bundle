@@ -73,4 +73,14 @@ class FrontendController extends Controller
 
         return $controller->run();
     }
+
+    /**
+     * Symfony will un-authenticate the user automatically by calling this route.
+     * Redirects to the login route (see security.yml for logout.target)
+     *
+     * @Route("/_contao/logout", name="contao_frontend_logout")
+     */
+    public function logoutAction()
+    {
+    }
 }

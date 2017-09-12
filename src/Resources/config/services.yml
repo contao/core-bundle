@@ -273,6 +273,12 @@ services:
         arguments:
             - "@contao.framework"
 
+    contao.security.frontend_user_provider:
+        class: Contao\CoreBundle\Security\User\ContaoFrontendUserProvider
+        public: false
+        arguments:
+            - "@contao.framework"
+
     contao.security.switch_user_button_generator:
         class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
         arguments:
@@ -281,6 +287,22 @@ services:
             - "@database_connection"
             - "@templating"
             - "@security.token_storage"
+
+    contao.security.authentication.provider.login_module:
+        class: Contao\CoreBundle\Security\Authentication\Provider\FrontendAuthenticationProvider
+        public: false
+
+    contao.security.preview_authenticator:
+        class: Contao\CoreBundle\Security\Authentication\ContaoPreviewAuthenticator
+        arguments:
+            - "@request_stack"
+            - "@session"
+            - "@security.token_storage"
+            - "@contao.security.frontend_user_provider"
+            - "@monolog.logger.contao"
+
+    contao.security.frontend_logout_handler:
+        class: Contao\CoreBundle\Security\LogoutHandler
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine

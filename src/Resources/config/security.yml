@@ -6,6 +6,9 @@ security:
         contao.security.backend_user_provider:
             id: contao.security.backend_user_provider
 
+        contao.security.frontend_user_provider:
+            id: contao.security.frontend_user_provider
+
     encoders:
         default:
             algorithm: bcrypt
@@ -27,6 +30,7 @@ security:
             provider: contao.security.backend_user_provider
             anonymous: ~
             switch_user: true
+#            context: contao
 
             form_login:
                 login_path: /contao/login
@@ -37,13 +41,23 @@ security:
 
             logout:
                 path: /contao/logout
-                target: /contao/login
+                target: /contao
 
         contao_frontend:
             request_matcher: contao.routing.frontend_matcher
-            stateless: true
-            simple_preauth:
-                authenticator: contao.security.authenticator
+            provider: contao.security.frontend_user_provider
+            anonymous: ~
+            switch_user: true
+
+            logout:
+                path: /_contao/logout
+                target: /
+                handlers:
+                    - contao.security.frontend_logout_handler
+#
+            login_module:
+##                username_parameter: username
+##                password_parameter: password
 
     access_control:
         - { path: ^/contao/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
