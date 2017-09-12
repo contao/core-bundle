@@ -199,12 +199,10 @@ class Configuration implements ConfigurationInterface
         // The default locale must be the first supported language (see contao/core#6533)
         $languages = [$this->defaultLocale];
 
-        $finder = Finder::create()->directories()->depth(0)->in($dirs);
+        $finder = Finder::create()->directories()->depth(0)->name('/^[a-z]{2}(_[A-Z]{2})?$/')->in($dirs);
 
         foreach ($finder as $file) {
-            if (preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $file->getFilename())) {
-                $languages[] = $file->getFilename();
-            }
+            $languages[] = $file->getFilename();
         }
 
         return array_values(array_unique($languages));
