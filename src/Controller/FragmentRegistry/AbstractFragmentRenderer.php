@@ -60,7 +60,7 @@ abstract class AbstractFragmentRenderer
      *
      * @return null|string
      */
-    protected function renderDefault(string $fragmentIdentifier, array $attributes, array $query, $forceRenderStrategy = ''): ?string
+    protected function renderDefault(string $fragmentIdentifier, array $attributes = [], array $query = [], $forceRenderStrategy = ''): ?string
     {
         $options = $this->fragmentRegistry->getOptions($fragmentIdentifier);
         $fragment = $this->fragmentRegistry->getFragment($fragmentIdentifier);

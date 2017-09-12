@@ -14,7 +14,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ModuleModel;
 
 /**
- * Class GeneralFrontendModuleRenderer
+ * Interface FrontendModuleRendererInterface
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */

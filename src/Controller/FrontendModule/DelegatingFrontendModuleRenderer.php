@@ -14,7 +14,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ModuleModel;
 
 /**
- * Class ChainFrontendModuleRenderer
+ * Class DelegatingFrontendModuleRenderer
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */

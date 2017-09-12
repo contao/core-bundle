@@ -109,9 +109,12 @@ services:
         class: Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry
 
     contao.fragment.renderer.frontend:
-        alias: contao.fragment.renderer.frontend.delegating
+        alias: !php/const:Contao\CoreBundle\DependencyInjection\Compiler::RENDERER_FRONTEND_MODULE
 
-    contao.fragment.renderer.frontend.delegating:
+    !php/const:Contao\CoreBundle\DependencyInjection\Compiler::RENDERER_FRONTEND_MODULE:
+        class: Contao\CoreBundle\Controller\FrontendModule\DelegatingFrontendModuleRenderer
+
+    !php/const:Contao\CoreBundle\DependencyInjection\Compiler::RENDERER_FRONTEND_MODULE:
         class: Contao\CoreBundle\Controller\FrontendModule\DelegatingFrontendModuleRenderer
 
     contao.fragment.renderer.default:

@@ -10,7 +10,7 @@
 
 namespace Contao\CoreBundle\Controller\PageType;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
+use Contao\CoreBundle\Controller\FrontendModule\PageTypeRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -26,25 +26,19 @@ class LegacyPageTypeProxy
      */
     public function getResponse()
     {
-        @trigger_error('Using $GLOBALS[\'TL_PTY\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
-
         global $objPage;
         $container = \System::getContainer();
+        $response = new Response();
 
-        /** @var FragmentRegistryInterface $fragmentRegistry */
-        $fragmentRegistry = $container->get('contao.fragment_registry');
+        /** @var PageTypeRendererInterface $pageTypeRenderer */
+        $pageTypeRenderer = $container->get('contao.fragment.renderer.page_type');
 
-        $fragment = $fragmentRegistry->getFragment($objPage->type);
+        $result = $pageTypeRenderer->render($objPage);
 
-        if (null !== $fragment) {
-            // Force rendering inline (it never makes sense to render a page type as esi or anything else)
-            $result = $fragmentRegistry->renderFragment($fragment, [
-                'pageModel' => $objPage,
-            ]);
-
-            return new Response($result ?: '');
+        if (null !== $result) {
+            $response->setContent($result);
         }
 
-        return new Response('');
+        return $response;
     }
 }
