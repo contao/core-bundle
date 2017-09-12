@@ -10,12 +10,12 @@
 
 namespace Contao\CoreBundle\FragmentRegistry;
 
+use Contao\ContentProxy;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\FragmentRegistry\ContentElement\LegacyContentElementProxy;
-use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyFrontendModuleProxy;
-use Contao\CoreBundle\FragmentRegistry\PageType\LegacyPageTypeProxy;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\ModuleProxy;
+use Contao\PageProxy;
 
 /**
  * Fragment registry.
@@ -98,7 +98,7 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         ) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
-            $GLOBALS['TL_PTY'][$options['type']] = LegacyPageTypeProxy::class;
+            $GLOBALS['TL_PTY'][$options['type']] = PageProxy::class;
         }
 
         // Front end modules
@@ -115,7 +115,7 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
                 );
             }
 
-            $GLOBALS['FE_MOD'][$options['category']][$options['type']] = LegacyFrontendModuleProxy::class;
+            $GLOBALS['FE_MOD'][$options['category']][$options['type']] = ModuleProxy::class;
         }
 
         // Content elements
@@ -132,7 +132,7 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
                 );
             }
 
-            $GLOBALS['TL_CTE'][$options['category']][$options['type']] = LegacyContentElementProxy::class;
+            $GLOBALS['TL_CTE'][$options['category']][$options['type']] = ContentProxy::class;
         }
     }
 

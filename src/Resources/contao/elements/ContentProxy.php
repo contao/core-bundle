@@ -8,10 +8,10 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\ContentElement;
+namespace Contao;
 
-use Contao\ContentElement;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
+use Contao\CoreBundle\FragmentRegistry\ContentElement\ContentElementRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class LegacyContentElementProxy extends ContentElement
+class ContentProxy extends ContentElement
 {
     /**
      * @return string

@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\PageType;
+namespace Contao;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\FrontendModule\PageTypeRendererInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class LegacyPageTypeProxy
+class PageProxy
 {
     /**
      * @return Response

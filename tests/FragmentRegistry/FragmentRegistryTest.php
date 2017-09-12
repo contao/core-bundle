@@ -10,12 +10,12 @@
 
 namespace Contao\CoreBundle\Tests\FragmentRegistry;
 
+use Contao\ContentProxy;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
-use Contao\CoreBundle\FragmentRegistry\ContentElement\LegacyContentElementProxy;
-use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyFrontendModuleProxy;
-use Contao\CoreBundle\FragmentRegistry\PageType\LegacyPageTypeProxy;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\ModuleProxy;
+use Contao\PageProxy;
 
 /**
  * Class FragmentRegistryTest
@@ -110,8 +110,8 @@ class FragmentRegistryTest extends TestCase
 
         $registry->mapNewFragmentsToLegacyArrays();
 
-        $this->assertSame(LegacyPageTypeProxy::class, $GLOBALS['TL_PTY']['test']);
-        $this->assertSame(LegacyFrontendModuleProxy::class, $GLOBALS['FE_MOD']['navigationMod']['test']);
-        $this->assertSame(LegacyContentElementProxy::class, $GLOBALS['TL_CTE']['text']['test']);
+        $this->assertSame(PageProxy::class, $GLOBALS['TL_PTY']['test']);
+        $this->assertSame(ModuleProxy::class, $GLOBALS['FE_MOD']['navigationMod']['test']);
+        $this->assertSame(ContentProxy::class, $GLOBALS['TL_CTE']['text']['test']);
     }
 }

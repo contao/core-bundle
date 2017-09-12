@@ -8,10 +8,10 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
+namespace Contao;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\Module;
+use Contao\CoreBundle\FragmentRegistry\FrontendModule\FrontendModuleRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class LegacyFrontendModuleProxy extends Module
+class ModuleProxy extends Module
 {
     /**
      * @return string
