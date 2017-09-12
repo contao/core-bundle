@@ -10,8 +10,7 @@
 
 namespace Contao\CoreBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
-use Contao\ModuleModel;
+use Contao\Module;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,30 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class LegacyFrontendModuleProxy
+class LegacyFrontendModuleProxy extends Module
 {
-    /**
-     * @var ModuleModel
-     */
-    private $moduleModel;
-
-    /**
-     * @var string
-     */
-    private $inColumn;
-
-    /**
-     * LegacyFrontendModuleProxy constructor.
-     *
-     * @param ModuleModel $moduleModel
-     * @param string      $inColumn
-     */
-    public function __construct(ModuleModel $moduleModel, $inColumn)
-    {
-        $this->moduleModel = $moduleModel;
-        $this->inColumn    = $inColumn;
-    }
-
     /**
      * @return string
      */
@@ -52,32 +29,29 @@ class LegacyFrontendModuleProxy
         @trigger_error('Using $GLOBALS[\'FE_MOD\'] has been deprecated and will no longer work in Contao 5.0. Use the fragment registry instead.', E_USER_DEPRECATED);
 
         $container = \System::getContainer();
-
-        /** @var FragmentRegistryInterface $fragmentRegistry */
-        $fragmentRegistry = $container->get('contao.fragment_registry');
-
-        $fragment = $fragmentRegistry->getFragment($this->moduleModel->type);
-        $fragmentOptions = $fragmentRegistry->getOptions($this->moduleModel->type);
         $response = new Response();
 
-        if (null !== $fragment) {
-            $renderStrategy = $fragmentOptions['renderStrategy'] ?: 'inline';
-            $renderOptions = $fragmentOptions['renderOptions'] ?: [];
+        /** @var FrontendModuleRendererInterface $frontendModuleRenderer */
+        $frontendModuleRenderer = $container->get('contao.fragment.renderer.frontend');
 
-            $result = $fragmentRegistry->renderFragment(
-                $fragment, [
-                    'moduleModel' => $this->moduleModel,
-                    'inColumn' => $this->inColumn,
-                ],
-                $renderStrategy,
-                $renderOptions
-            );
+        $result = $frontendModuleRenderer->render(
+            $this->objModel->type,
+            $this->objModel,
+            $this->strColumn
+        );
 
-            if (null !== $result) {
-                $response->setContent($result);
-            }
+        if (null !== $result) {
+            $response->setContent($result);
         }
 
         return $response->getContent();
+    }
+
+    /**
+     * Compile the current element
+     */
+    protected function compile()
+    {
+        // noop
     }
 }

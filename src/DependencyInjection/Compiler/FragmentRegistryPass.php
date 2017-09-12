@@ -10,14 +10,12 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentInterface;
-use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistry;
 use Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface;
+use Contao\CoreBundle\Controller\FrontendModule\FrontendModuleRendererInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Fragment registry compiler pass.
@@ -26,38 +24,50 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class FragmentRegistryPass implements CompilerPassInterface
 {
+    use PriorityTaggedServiceTrait;
+
     /**
-     * Collect all the fragment and add them to the fragment registry.
+     * Collect all the fragments and fragment renderers.
      *
      * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('contao.fragment_registry')) {
+        $this->registerFragments($container);
+        $this->registerFrontendModuleRenderers($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function registerFragments(ContainerBuilder $container)
+    {
+        if (!$container->has('contao.fragment.registry')) {
             return;
         }
 
-        $fragmentRegistry = $container->findDefinition('contao.fragment_registry');
+        $fragmentRegistry = $container->findDefinition('contao.fragment.registry');
 
         if (!$this->classImplementsInterface($fragmentRegistry->getClass(), FragmentRegistryInterface::class)) {
             return;
         }
 
-        $fragments = $container->findTaggedServiceIds('contao.fragment');
+        $fragments = $this->findAndSortTaggedServices('contao.fragment', $container);
 
-        foreach ($fragments as $id => $options) {
+        foreach ($fragments as $priority => $reference) {
 
-            $fragment = $container->findDefinition($id);
+            $fragment = $container->findDefinition($reference);
+            $fragmentOptions = $fragment->getTag('contao.fragment')[0];
 
-            if (!$this->classImplementsInterface($fragment->getClass(), FragmentInterface::class)) {
-                throw new LogicException(sprintf('The fragment class "%s" was registered as "contao.fragment" but does not implement the interface "%s".',
-                    $fragment->getClass(),
-                    FragmentInterface::class
-                ));
+            if (!isset($fragmentOptions['fragment']) || !isset($fragmentOptions['type'])) {
+                throw new RuntimeException('A service tagged as "contao.fragment" must have a "fragment" and "type" attribute set.');
             }
 
-            if (!isset($options[0]['fragment']) || !isset($options[0]['type'])) {
-                throw new RuntimeException('A service tagged as "contao.fragment" must have a "fragment" and "type" attribute set.');
+            $fragmentOptions['controller'] = (string) $reference;
+
+            // Support specific method on controller
+            if (isset($fragmentOptions['method'])) {
+                $fragmentOptions['controller'] .= ':' . $fragmentOptions['method'];
             }
 
             // Mark all fragments as lazy so they are lazy loaded using
@@ -65,8 +75,24 @@ class FragmentRegistryPass implements CompilerPassInterface
             // composer.json (otherwise the lazy definition will just be ignored)
             $fragment->setLazy(true);
 
-            $fragmentRegistry->addMethodCall('addFragment', [$options[0]['type'], new Reference($id), $options[0]]);
+            $fragmentIdentifier = $fragmentOptions['fragment'] . '.' . $fragmentOptions['type'];
+            $fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
         }
+    }
+
+    private function registerFrontendModuleRenderers(ContainerBuilder $container)
+    {
+        if (!$container->has('contao.fragment.renderer.frontend.delegating')) {
+            return;
+        }
+
+        $renderer = $container->findDefinition('contao.fragment.renderer.frontend.delegating');
+
+        if (!$this->classImplementsInterface($renderer->getClass(), FrontendModuleRendererInterface::class)) {
+            return;
+        }
+
+        $renderer->setArgument(0, $this->findAndSortTaggedServices('contao.fragment.renderer.frontend', $container));
     }
 
     /**

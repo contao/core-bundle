@@ -12,7 +12,6 @@ namespace Contao\CoreBundle\Controller\FragmentRegistry;
 
 use Contao\CoreBundle\Controller\FrontendModule\LegacyFrontendModuleProxy;
 use Contao\CoreBundle\Controller\PageType\LegacyPageTypeProxy;
-use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
  * Fragment registry.
@@ -22,12 +21,7 @@ use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 class FragmentRegistry implements FragmentRegistryInterface
 {
     /**
-     * @var FragmentHandler
-     */
-    private $fragmentHandler;
-
-    /**
-     * @var FragmentInterface[]
+     * @var array
      */
     private $fragments = [];
 
@@ -37,20 +31,12 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragmentOptions = [];
 
     /**
-     * FragmentRegistry constructor.
-     *
-     * @param FragmentHandler $fragmentHandler
-     */
-    public function __construct(FragmentHandler $fragmentHandler)
-    {
-        $this->fragmentHandler = $fragmentHandler;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function addFragment($identifier, FragmentInterface $fragment, $options = [])
+    public function addFragment(string $identifier, $fragment, array $options): FragmentRegistryInterface
     {
+        $this->ensureBasicOptions($options);
+
         // Overrides existing fragments with same identifier
         $this->fragments[$identifier] = $fragment;
         $this->fragmentOptions[$identifier] = $options;
@@ -69,7 +55,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions($identifier)
+    public function getOptions($identifier): array
     {
         return $this->fragmentOptions[$identifier];
     }
@@ -77,7 +63,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFragments(callable $filter = null)
+    public function getFragments(callable $filter = null): array
     {
         $matches = [];
 
@@ -93,46 +79,41 @@ class FragmentRegistry implements FragmentRegistryInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function renderFragment(FragmentInterface $fragment, array $configuration = [], $renderStrategy = 'inline', $renderOptions = [])
-    {
-        return $this->fragmentHandler->render(
-            $fragment->getControllerReference($configuration),
-            $renderStrategy,
-            $renderOptions
-        );
-    }
-
-    /**
      * Maps new fragments that were registered properly in the fragment
      * registry to old $GLOBALS arrays for BC.
      */
     public function mapNewFragmentsToLegacyArrays()
     {
-        $container = \System::getContainer();
-
-        /** @var \Contao\CoreBundle\Controller\FragmentRegistry\FragmentRegistryInterface $fragmentRegistry */
-        $fragmentRegistry = $container->get('contao.fragment_registry');
-
         // Page types
-        foreach ($fragmentRegistry->getFragments($this->getFragmentFilter('contao.page_type')) as $identifier => $fragment) {
-            $GLOBALS['TL_PTY'][$identifier] = LegacyPageTypeProxy::class;
+        foreach ($this->getFragments($this->getFragmentFilter('contao.page_type')) as $identifier => $fragment) {
+            $options = $this->getOptions($identifier);
+
+            $GLOBALS['TL_PTY'][$options['type']] = LegacyPageTypeProxy::class;
         }
 
         // Front end modules
-        foreach ($fragmentRegistry->getFragments($this->getFragmentFilter('contao.frontend_module')) as $identifier => $fragment) {
+        foreach ($this->getFragments($this->getFragmentFilter('contao.frontend_module')) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             if (!isset($options['category'])) {
-                continue;
+                throw new \RuntimeException('You tagged a "contao.fragment" as a "contao.frontend_module" but forgot to specify the "category" attribute.');
             }
 
-            $GLOBALS['FE_MOD'][$options['category']][$identifier] = LegacyFrontendModuleProxy::class;
+            $GLOBALS['FE_MOD'][$options['category']][$options['type']] = LegacyFrontendModuleProxy::class;
         }
 
         // TODO
         // Content elements
+    }
+
+    /**
+     * @param array $options
+     */
+    private function ensureBasicOptions(array $options)
+    {
+        if (0 === count(array_intersect(array_keys($options), ['fragment', 'type', 'controller']))) {
+            throw new \InvalidArgumentException('The basic 3 options, fragment, type and controller were not provided.');
+        }
     }
 
     /**

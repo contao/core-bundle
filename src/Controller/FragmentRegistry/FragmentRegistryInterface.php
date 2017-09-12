@@ -19,22 +19,28 @@ interface FragmentRegistryInterface
 {
     /**
      * Adds a fragment.
+     *
      * If a fragment with the same identifier already exists, it will override
      * the old one.
+     * The $options array must at least handle the following three keys:
+     *     - fragment (which contains the fragment type (e.g. "contao.frontend_module")
+     *     - type (which contains the type within that fragment type (e.g. "navigation")
+     *     - controller (which contains the controller reference to that fragment)
      *
-     * @param string            $identifier
-     * @param FragmentInterface $fragment
+     * @param string $identifier
+     * @param        $fragment
+     * @param array  $options
      *
      * @return FragmentRegistryInterface
      */
-    public function addFragment($identifier, FragmentInterface $fragment);
+    public function addFragment(string $identifier, $fragment, array $options): FragmentRegistryInterface;
 
     /**
      * Gets a fragment by its identifier.
      *
      * @param string $identifier
      *
-     * @return FragmentInterface|null
+     * @return object|null
      */
     public function getFragment($identifier);
 
@@ -45,10 +51,10 @@ interface FragmentRegistryInterface
      *
      * @param callable|null $filter
      *
-     * @return FragmentInterface[]
+     * @return object[]
      *
      */
-    public function getFragments(callable $filter = null);
+    public function getFragments(callable $filter = null): array;
 
     /**
      * Gets options for a fragment.
@@ -57,21 +63,5 @@ interface FragmentRegistryInterface
      *
      * @return array
      */
-    public function getOptions($identifier);
-
-    /**
-     * Renders a fragment and returns a string (response content according
-     * to the render strategy) or null (when the response is streamed).
-     * By default, any fragment is rendered using the "inline" strategy for
-     * maximum compatibility. Of course, other strategies such as "esi" or
-     * "hinclude" (or your own one) are the interesting ones.
-     *
-     * @param FragmentInterface $fragment
-     * @param array             $configuration
-     * @param string            $renderStrategy
-     * @param array             $renderOptions
-     *
-     * @return null|string
-     */
-    public function renderFragment(FragmentInterface $fragment, array $configuration = [], $renderStrategy = 'inline', $renderOptions = []);
+    public function getOptions($identifier): array;
 }
