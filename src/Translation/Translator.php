@@ -45,32 +45,29 @@ class Translator implements TranslatorInterface
      */
     public function trans($id, array $parameters = [], $domain = null, $locale = null)
     {
-        $translated = $this->translator->trans($id, $parameters, $domain, $locale);
-
-        if ($translated !== $id) {
-            return $translated;
+        if (null === $domain || strncmp($domain, 'contao_', 7) !== 0) {
+            return $this->translator->trans($id, $parameters, $domain, $locale);
         }
 
         if (!$this->framework->isInitialized()) {
-            return $translated;
+            return $id;
         }
+
+        $domain = substr($domain, 7);
 
         $this->loadLanguageFile($domain);
 
-        if (null !== $translated = $this->getFromGlobals($id, $domain)) {
+        $translated = $this->getFromGlobals($id, $domain);
 
-            if (isset($parameters["%0%"])) {
-                $values = [];
-                for ($i = 0; isset($parameters["%$i%"]); $i++) {
-                    $values[] = $parameters["%$i%"];
-                }
-                $translated = vsprintf($translated, $values);
-            }
-
-            return $translated;
+        if (null === $translated) {
+            return $id;
         }
 
-        return $id;
+        if (!empty($parameters)) {
+            $translated = vsprintf($translated, $parameters);
+        }
+
+        return $translated;
     }
 
     /**
@@ -100,14 +97,14 @@ class Translator implements TranslatorInterface
     /**
      * Get the translation from the $GLOBALS['TL_LANG'] array.
      *
-     * @param string      $id     Message id, e.g. "MSC.view"
-     * @param string|null $domain Message domain, e.g. "messages" or "tl_content"
+     * @param string $id     Message id, e.g. "MSC.view"
+     * @param string $domain Message domain, e.g. "messages" or "tl_content"
      *
      * @return string|null
      */
-    private function getFromGlobals(string $id, string $domain = null)
+    private function getFromGlobals(string $id, string $domain)
     {
-        if ('messages' !== $domain && null !== $domain) {
+        if ('default' !== $domain) {
             $id = $domain.'.'.$id;
         }
 
@@ -129,14 +126,10 @@ class Translator implements TranslatorInterface
     /**
      * Load a Contao framework language file.
      *
-     * @param string|null $name
+     * @param string $name
      */
-    private function loadLanguageFile(string $name = null)
+    private function loadLanguageFile(string $name)
     {
-        if ('messages' === $name || null === $name) {
-            $name = 'default';
-        }
-
         /** @var \Contao\System */
         $system = $this->framework->getAdapter('System');
 
