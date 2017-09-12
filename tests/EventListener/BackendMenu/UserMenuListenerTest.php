@@ -7,17 +7,25 @@ use Contao\CoreBundle\Event\BackendMenuEvent;
 use Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
-use Knp\Menu\MenuItem;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class UserMenuListenerTest extends TestCase
 {
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
+    /**
+     * Tests the object instantiation.
+     */
+    public function testCanBeInstantiated()
+    {
+        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
-    protected function setUp()
+        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
+        $this->assertInstanceOf('Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener', $listener);
+    }
+
+    public function testConvertsLegacyArrayToNodeList()
     {
         $user = $this
             ->getMockBuilder(BackendUser::class)
@@ -71,6 +79,7 @@ class UserMenuListenerTest extends TestCase
             ->willReturn($user)
         ;
 
+        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $tokenStorage
@@ -78,26 +87,12 @@ class UserMenuListenerTest extends TestCase
             ->willReturn($token)
         ;
 
-        $this->tokenStorage = $tokenStorage;
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
-    {
-        $listener = new UserMenuListener(new MenuFactory(), $this->tokenStorage);
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener', $listener);
-    }
-
-    public function testConvertsLegacyArrayToNodeList()
-    {
         $nodeFactory = new MenuFactory();
         $rootNode = $nodeFactory->createItem('root');
 
         $event = new BackendMenuEvent($rootNode);
 
-        $listener = new UserMenuListener(new MenuFactory(), $this->tokenStorage);
+        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
         $listener->onBuild($event);
 
         $tree = $event->getTree();
@@ -123,5 +118,28 @@ class UserMenuListenerTest extends TestCase
         // Test active/not active
         $this->assertTrue($categoryNode->getChild('node1')->isCurrent());
         $this->assertFalse($categoryNode->getChild('node2')->isCurrent());
+    }
+
+    public function testDoesNotModifyTreeIfNoUserOrTokenIsGiven()
+    {
+        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->method('getToken')
+            ->willReturn(null)
+        ;
+
+        $nodeFactory = new MenuFactory();
+        $rootNode = $nodeFactory->createItem('root');
+
+        $event = new BackendMenuEvent($rootNode);
+
+        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
+        $listener->onBuild($event);
+
+        $tree = $event->getTree();
+
+        $this->assertEquals(0, count($tree->getChildren()));
     }
 }
