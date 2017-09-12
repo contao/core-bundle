@@ -16,8 +16,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
 
-    contao.listener.backend_menu.user_menu_listener:
-        class: Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener
+    contao.listener.user_backend_menu_listener:
+        class: Contao\CoreBundle\EventListener\UserBackendMenuListener
         arguments:
             - "@knp_menu.factory"
             - "@security.token_storage"

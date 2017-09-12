@@ -1,13 +1,13 @@
 <?php
 
-namespace Contao\CoreBundle\EventListener\BackendMenu;
+namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\MenuEvent;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class UserMenuListener
+class UserBackendMenuListener
 {
     private $factory;
     private $tokenStorage;

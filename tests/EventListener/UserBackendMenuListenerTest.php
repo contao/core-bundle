@@ -1,17 +1,17 @@
 <?php
 
-namespace Contao\CoreBundle\Tests\EventListener\BackendMenu;
+namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\MenuEvent;
-use Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener;
+use Contao\CoreBundle\EventListener\UserBackendMenuListener;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class UserMenuListenerTest extends TestCase
+class UserBackendMenuListenerTest extends TestCase
 {
     /**
      * Tests the object instantiation.
@@ -21,8 +21,8 @@ class UserMenuListenerTest extends TestCase
         /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
-        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\BackendMenu\UserMenuListener', $listener);
+        $listener = new UserBackendMenuListener(new MenuFactory(), $tokenStorage);
+        $this->assertInstanceOf('Contao\CoreBundle\EventListener\UserBackendMenuListener', $listener);
     }
 
     public function testConvertsLegacyArrayToNodeList()
@@ -92,7 +92,7 @@ class UserMenuListenerTest extends TestCase
 
         $event = new MenuEvent($rootNode);
 
-        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
+        $listener = new UserBackendMenuListener(new MenuFactory(), $tokenStorage);
         $listener->onBuild($event);
 
         $tree = $event->getTree();
@@ -135,7 +135,7 @@ class UserMenuListenerTest extends TestCase
 
         $event = new MenuEvent($rootNode);
 
-        $listener = new UserMenuListener(new MenuFactory(), $tokenStorage);
+        $listener = new UserBackendMenuListener(new MenuFactory(), $tokenStorage);
         $listener->onBuild($event);
 
         $tree = $event->getTree();

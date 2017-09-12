@@ -2,18 +2,17 @@
 
 namespace Contao\CoreBundle\Tests\Menu\BackendMenu;
 
-use Contao\CoreBundle\Menu\BackendMenu\MenuBuilder;
-use Contao\CoreBundle\Menu\BackendMenu\MenuRenderer;
+use Contao\CoreBundle\Menu\BackendMenuRenderer;
 use Knp\Menu\ItemInterface;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 
-class MenuRendererTest extends TestCase
+class BackendMenuRendererTest extends TestCase
 {
     /** @var Environment|\PHPUnit_Framework_MockObject_MockObject */
     protected $templating;
 
-    /** @var MenuRenderer */
+    /** @var BackendMenuRenderer */
     protected $renderer;
 
     protected function setUp()
@@ -21,7 +20,7 @@ class MenuRendererTest extends TestCase
         $GLOBALS['TL_LANG']['MSC']['skipNavigation'] = 'Skip navigation';
 
         $this->templating = $this->createMock(Environment::class);
-        $this->renderer = new MenuRenderer($this->templating);
+        $this->renderer = new BackendMenuRenderer($this->templating);
     }
 
     protected function tearDown()
@@ -34,7 +33,7 @@ class MenuRendererTest extends TestCase
      */
     public function testCanBeInstantiated()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenu\MenuRenderer', $this->renderer);
+        $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenuRenderer', $this->renderer);
     }
 
     public function testRendersBackendMenuTemplate()

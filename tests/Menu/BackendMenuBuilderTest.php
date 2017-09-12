@@ -1,25 +1,25 @@
 <?php
 
-namespace Contao\CoreBundle\Tests\Menu\BackendMenu;
+namespace Contao\CoreBundle\Tests\Menu;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
-use Contao\CoreBundle\Menu\BackendMenu\MenuBuilder;
+use Contao\CoreBundle\Menu\BackendMenuBuilder;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class MenuBuilderTest extends TestCase
+class BackendMenuBuilderTest extends TestCase
 {
     /** @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject $dispatcher */
     protected $eventDispatcher;
 
-    /** @var MenuBuilder */
+    /** @var BackendMenuBuilder */
     protected $builder;
 
     protected function setUp()
     {
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->builder = new MenuBuilder(new MenuFactory(), $this->eventDispatcher);
+        $this->builder = new BackendMenuBuilder(new MenuFactory(), $this->eventDispatcher);
     }
 
     /**
@@ -27,7 +27,7 @@ class MenuBuilderTest extends TestCase
      */
     public function testCanBeInstantiated()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenu\MenuBuilder', $this->builder);
+        $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenuBuilder', $this->builder);
     }
 
     /**
