@@ -39,6 +39,18 @@ interface FragmentRegistryInterface
     public function getFragment($identifier);
 
     /**
+     * Gets an array of fragments that optionally match a given filter
+     * callable which receives the identifier as first parameter and the
+     * fragment instance as second.
+     *
+     * @param callable|null $filter
+     *
+     * @return FragmentInterface[]
+     *
+     */
+    public function getFragments(callable $filter = null);
+
+    /**
      * Gets options for a fragment.
      *
      * @param string $identifier
@@ -46,17 +58,6 @@ interface FragmentRegistryInterface
      * @return array
      */
     public function getOptions($identifier);
-
-    /**
-     * Gets an array of fragments that match a certain option value.
-     * E.g. getFragmentsByOptionValue('type', 'foobar').
-     *
-     * @param string $key
-     * @param string $value
-     *
-     * @return FragmentInterface[]
-     */
-    public function getFragmentsByOptionValue($key, $value);
 
     /**
      * Renders a fragment and returns a string (response content according

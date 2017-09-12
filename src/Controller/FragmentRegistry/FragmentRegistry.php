@@ -37,11 +37,6 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragmentOptions = [];
 
     /**
-     * @var array
-     */
-    private $cache = [];
-
-    /**
      * FragmentRegistry constructor.
      *
      * @param FragmentHandler $fragmentHandler
@@ -56,10 +51,6 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment($identifier, FragmentInterface $fragment, $options = [])
     {
-        if (0 !== count($this->cache)) {
-            throw new \BadMethodCallException('You cannot add fragments if the fragment registry was already initialized!');
-        }
-
         // Overrides existing fragments with same identifier
         $this->fragments[$identifier] = $fragment;
         $this->fragmentOptions[$identifier] = $options;
@@ -86,28 +77,19 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFragmentsByOptionValue($key, $value)
+    public function getFragments(callable $filter = null)
     {
-        $cacheKey = md5($key . $value);
-
-        if (isset($this->cache[$cacheKey])) {
-
-            return $this->cache[$cacheKey];
-        }
-
         $matches = [];
 
         foreach ($this->fragments as $identifier => $fragment) {
-            $options = $this->getOptions($identifier);
-
-            if (!isset($options[$key]) || $options[$key] !== $value) {
+            if (null !== $filter && !$filter($identifier, $fragment)) {
                 continue;
             }
 
             $matches[$identifier] = $fragment;
         }
 
-        return $this->cache[$cacheKey] = $matches;
+        return $matches;
     }
 
     /**
@@ -134,12 +116,12 @@ class FragmentRegistry implements FragmentRegistryInterface
         $fragmentRegistry = $container->get('contao.fragment_registry');
 
         // Page types
-        foreach ($fragmentRegistry->getFragmentsByOptionValue('fragment', 'contao.page_type') as $identifier => $fragment) {
+        foreach ($fragmentRegistry->getFragments($this->getFragmentFilter('contao.page_type')) as $identifier => $fragment) {
             $GLOBALS['TL_PTY'][$identifier] = LegacyPageTypeProxy::class;
         }
 
         // Front end modules
-        foreach ($fragmentRegistry->getFragmentsByOptionValue('fragment', 'contao.frontend_module') as $identifier => $fragment) {
+        foreach ($fragmentRegistry->getFragments($this->getFragmentFilter('contao.frontend_module')) as $identifier => $fragment) {
             $options = $this->getOptions($identifier);
 
             if (!isset($options['category'])) {
@@ -151,5 +133,23 @@ class FragmentRegistry implements FragmentRegistryInterface
 
         // TODO
         // Content elements
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return \Closure
+     */
+    private function getFragmentFilter($type)
+    {
+        return function($identifier) use ($type) {
+            $options = $this->getOptions($identifier);
+
+            if (!isset($options['fragment']) || $options['fragment'] !== $type) {
+                return false;
+            }
+
+            return true;
+        };
     }
 }
