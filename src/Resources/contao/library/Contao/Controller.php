@@ -15,6 +15,8 @@ use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use League\Uri\Components\Query;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\Glob;
 
 
 /**
@@ -101,7 +103,7 @@ abstract class Controller extends \System
 		}
 
 		$strBrace = '{' . implode(',', \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')))) . '}';
-		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+		$arrCustomized = self::braceGlob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace);
 
 		// Add the customized templates
 		if (is_array($arrCustomized))
@@ -133,7 +135,7 @@ abstract class Controller extends \System
 				{
 					if ($objTheme->templates != '')
 					{
-						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+						$arrThemeTemplates = self::braceGlob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace);
 
 						if (is_array($arrThemeTemplates))
 						{
@@ -2340,5 +2342,35 @@ abstract class Controller extends \System
 
 		$objVersions = new \Versions($strTable, $intId);
 		$objVersions->create();
+	}
+
+	protected static function braceGlob($resource)
+	{
+		if (false === strpos($resource, '/**/') && (defined('GLOB_BRACE') || false === strpos($resource, '{')))
+		{
+			return glob($resource, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
+		}
+
+		$finder = new Finder();
+		$regex = Glob::toRegex($resource);
+
+		// All files in the given template folder
+		$filesIterator = $finder->followLinks()->sortByName()->in(dirname($resource))->files();
+
+		// Match the actual regex and filter the files
+		$filesIterator = $filesIterator->filter(function (\SplFileInfo $info) use ($regex)
+        {
+			$path = $info->getPathname();
+
+			if (preg_match($regex, $path) && $info->isFile()) {
+				return true;
+			}
+
+			return false;
+		});
+
+		$files = iterator_to_array($filesIterator);
+
+		return array_keys($files);
 	}
 }
