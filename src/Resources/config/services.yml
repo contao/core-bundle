@@ -288,10 +288,6 @@ services:
             - "@templating"
             - "@security.token_storage"
 
-    contao.security.authentication.provider.login_module:
-        class: Contao\CoreBundle\Security\Authentication\Provider\FrontendAuthenticationProvider
-        public: false
-
     contao.security.preview_authenticator:
         class: Contao\CoreBundle\Security\Authentication\ContaoPreviewAuthenticator
         arguments:
@@ -303,6 +299,22 @@ services:
 
     contao.security.frontend_logout_handler:
         class: Contao\CoreBundle\Security\LogoutHandler
+
+    contao.security.frontend_failure_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
+        arguments:
+            - "@http_kernel"
+            - "@security.http_utils"
+            - []
+            - "@logger"
+            - "@session"
+
+    contao.security.frontend_success_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
+        arguments:
+            - "@security.http_utils"
+            - []
+            - "@contao.framework"
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine

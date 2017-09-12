@@ -60,9 +60,6 @@ class ContaoCoreBundle extends Bundle
             new AddPackagesPass($container->getParameter('kernel.root_dir').'/../vendor/composer/installed.json')
         );
 
-        $extension = $container->getExtension('security');
-        $extension->addSecurityListenerFactory(new FrontendAuthenticationFactory());
-
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
         $container->addCompilerPass(new AddImagineClassPass());

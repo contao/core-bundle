@@ -33,7 +33,7 @@ class ContaoPreviewAuthenticator
         $this->logger = $logger;
     }
 
-    public function authenticateFrontend($username = null)
+    public function authenticateFrontend($username = null): void
     {
         $sessionKey = '_security_contao_frontend';
         $providerKey = 'contao_frontend';

@@ -16,7 +16,9 @@ use Contao\FrontendShare;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * Handles the Contao frontend routes.
@@ -81,6 +83,15 @@ class FrontendController extends Controller
      * @Route("/_contao/logout", name="contao_frontend_logout")
      */
     public function logoutAction()
+    {
+    }
+
+    /**
+     * Symfony security login route
+     *
+     * @Route("/_contao/login", name="contao_frontend_login")
+     */
+    public function loginAction(Request $request, AuthenticationUtils $authUtils)
     {
     }
 }

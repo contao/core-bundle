@@ -26,6 +26,9 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  * Provides a Contao front end or back end user object.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ *
+ * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+ *             Use ContaoBackendUserProvider or ContaoFrontendUserProvider instead.
  */
 class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterface
 {

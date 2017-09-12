@@ -30,35 +30,39 @@ security:
             provider: contao.security.backend_user_provider
             anonymous: ~
             switch_user: true
-#            context: contao
 
             form_login:
-                login_path: /contao/login
-                check_path: /contao/login
-                default_target_path: /contao
+                login_path: contao_backend_login
+                check_path: contao_backend_login
+                default_target_path: contao_backend
                 username_parameter: username
                 password_parameter: password
 
             logout:
-                path: /contao/logout
-                target: /contao
+                path: contao_backend_logout
+                target: contao_backend
 
         contao_frontend:
             request_matcher: contao.routing.frontend_matcher
             provider: contao.security.frontend_user_provider
             anonymous: ~
-            switch_user: true
+            switch_user: false
+
+            form_login:
+                login_path: contao_frontend_login
+                check_path: contao_frontend_login
+                default_target_path: contao_index
+                failure_handler: contao.security.frontend_failure_handler
+                username_parameter: username
+                password_parameter: password
 
             logout:
-                path: /_contao/logout
-                target: /
+                path: contao_frontend_logout
+                target: contao_index
                 handlers:
                     - contao.security.frontend_logout_handler
-#
-            login_module:
-##                username_parameter: username
-##                password_parameter: password
 
     access_control:
         - { path: ^/contao/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/contao, roles: ROLE_USER }
+        - { path: ^/_contao/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

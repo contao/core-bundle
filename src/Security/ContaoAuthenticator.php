@@ -27,6 +27,8 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
  * Authenticates a Contao token.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
+ *
+ * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  */
 class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthenticatorInterface
 {

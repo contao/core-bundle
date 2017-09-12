@@ -48,24 +48,8 @@ class FrontendIndex extends \Frontend
         $this->container = System::getContainer();
         $this->flashBag = $this->container->get('session')->getFlashBag();
 
-        /** @var AuthorizationCheckerInterface $authorizationChecker */
-        $authorizationChecker = $this->container->get('security.authorization_checker');
-
         /** @var TokenInterface $token */
         $token = $this->container->get('security.token_storage')->getToken();
-
-//        if ($token !== null && ($user = $token->getUser()) instanceof FrontendUser)
-//        {
-//            /** @var UserInterface $user */
-//            if ($authorizationChecker->isGranted($user->getRoles()))
-//            {
-//                return $this->redirect('/logout');
-//            }
-//        }
-
-
-//        dump($token);
-//        dump($_SESSION); die();
 
 		// Load the user object before calling the parent constructor
 		$this->import('FrontendUser', 'User');
@@ -382,7 +366,7 @@ class FrontendIndex extends \Frontend
         /** @var AuthenticationUtils $authenticationUtils */
         $authenticationUtils = $this->container->get('security.authentication_utils');
 
-        $error = $authenticationUtils->getLastAuthenticationError();
+        $error = $authenticationUtils->getLastAuthenticationError(false);
 
         if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
         {

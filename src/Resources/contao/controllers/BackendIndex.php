@@ -51,21 +51,6 @@ class BackendIndex extends \Backend
 		$this->container = System::getContainer();
 		$this->flashBag = $this->container->get('session')->getFlashBag();
 
-		/** @var AuthorizationCheckerInterface $authorizationChecker */
-		$authorizationChecker = $this->container->get('security.authorization_checker');
-
-		/** @var TokenInterface $token */
-		$token = $this->container->get('security.token_storage')->getToken();
-
-		if ($token !== null && ($user = $token->getUser()) instanceof FrontendUser)
-		{
-			/** @var UserInterface $user */
-			if ($authorizationChecker->isGranted($user->getRoles()))
-			{
-				return $this->redirect('/logout');
-			}
-		}
-
 		$this->import('BackendUser', 'User');
 		parent::__construct();
 

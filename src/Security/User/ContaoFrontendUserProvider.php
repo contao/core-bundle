@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -44,9 +46,9 @@ class ContaoFrontendUserProvider implements UserProviderInterface
      *
      * @param string $username
      *
-     * @return FrontendUser
+     * @return UserInterface
      */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): UserInterface
     {
         $this->framework->initialize();
 
@@ -67,7 +69,7 @@ class ContaoFrontendUserProvider implements UserProviderInterface
      *
      * @param UserInterface $user
      */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof FrontendUser) {
             throw new UnsupportedUserException(
@@ -85,7 +87,7 @@ class ContaoFrontendUserProvider implements UserProviderInterface
      *
      * @return bool
      */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return $class instanceof FrontendUser;
     }

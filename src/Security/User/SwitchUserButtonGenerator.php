@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Contao\CoreBundle\Security\User;
 
 use Contao\CoreBundle\Exception\UserNotFoundException;
@@ -29,7 +31,7 @@ class SwitchUserButtonGenerator
 
     }
 
-    public function generateSwitchUserButton($row, $href, $label, $title, $icon)
+    public function generateSwitchUserButton($row, $href, $label, $title, $icon): string
     {
         if (!$this->authorizationChecker->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
             return '';

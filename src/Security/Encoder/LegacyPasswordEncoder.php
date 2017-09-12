@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,13 +20,15 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author David Greminger <https://github.com/bytehead>
+ *
+ * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  */
 class LegacyPasswordEncoder extends BasePasswordEncoder
 {
     /**
      * {@inheritdoc}
      */
-    public function encodePassword($raw, $salt)
+    public function encodePassword($raw, $salt): string
     {
         if ($this->isPasswordTooLong($raw)) {
             throw new BadCredentialsException('Invalid password.');
@@ -36,7 +40,7 @@ class LegacyPasswordEncoder extends BasePasswordEncoder
     /**
      * {@inheritdoc}
      */
-    public function isPasswordValid($encoded, $raw, $salt)
+    public function isPasswordValid($encoded, $raw, $salt): bool
     {
         return
             !$this->isPasswordTooLong($raw) &&
