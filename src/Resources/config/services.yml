@@ -10,6 +10,8 @@ services:
 
     contao.argument_resolver.model:
         class: Contao\CoreBundle\ArgumentResolver\ModelResolver
+        arguments:
+            - "@contao.framework"
         tags:
             - { name: controller.argument_value_resolver, priority: 101 }
 

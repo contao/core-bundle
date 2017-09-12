@@ -10,6 +10,7 @@
 
 namespace Contao\CoreBundle\ArgumentResolver;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
@@ -23,6 +24,21 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 class ModelResolver implements ArgumentValueResolverInterface
 {
     /**
+     * @var ContaoFrameworkInterface
+     */
+    private $framework;
+
+    /**
+     * ModelResolver constructor.
+     *
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(ContaoFrameworkInterface $framework)
+    {
+        $this->framework = $framework;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function supports(Request $request, ArgumentMetadata $argument)
@@ -30,6 +46,8 @@ class ModelResolver implements ArgumentValueResolverInterface
         if (!$request->attributes->has($argument->getName())) {
             return false;
         }
+
+        $this->framework->initialize();
 
         if (!is_a($argument->getType(), Model::class, true)) {
             return false;
