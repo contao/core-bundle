@@ -58,6 +58,15 @@ class Translator implements TranslatorInterface
         $this->loadLanguageFile($domain);
 
         if (null !== $translated = $this->getFromGlobals($id, $domain)) {
+
+            if (isset($parameters["%0%"])) {
+                $values = [];
+                for ($i = 0; isset($parameters["%$i%"]); $i++) {
+                    $values[] = $parameters["%$i%"];
+                }
+                $translated = vsprintf($translated, $values);
+            }
+
             return $translated;
         }
 
@@ -120,7 +129,7 @@ class Translator implements TranslatorInterface
     /**
      * Load a Contao framework language file.
      *
-     * @param string $name
+     * @param string|null $name
      */
     private function loadLanguageFile(string $name = null)
     {
