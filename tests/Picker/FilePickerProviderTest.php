@@ -324,9 +324,9 @@ class FilePickerProviderTest extends TestCase
             [
                 'fieldType' => 'radio',
                 'filesOnly' => true,
-                'value' => __DIR__.'/foobar',
+                'value' => '/foobar',
             ],
-            $this->provider->getDcaAttributes(new PickerConfig('link', $extra, __DIR__.'/foobar'))
+            $this->provider->getDcaAttributes(new PickerConfig('link', $extra, '/foobar'))
         );
 
         $this->assertSame(
