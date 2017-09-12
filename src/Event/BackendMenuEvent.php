@@ -8,7 +8,6 @@ use Symfony\Component\EventDispatcher\Event;
 class BackendMenuEvent extends Event
 {
     const BUILD_EVENT = 'contao.build_backend_menu';
-    const ANNOTATE_EVENT = 'contao.annotate_backend_menu';
 
     private $tree;
 

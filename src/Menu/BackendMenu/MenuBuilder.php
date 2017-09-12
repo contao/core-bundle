@@ -37,9 +37,6 @@ class MenuBuilder
         // Nodes can be attached via an event listener
         $this->eventDispatcher->dispatch(BackendMenuEvent::BUILD_EVENT, new BackendMenuEvent($tree));
 
-        // Annotate nodes, ie. active states
-        $this->eventDispatcher->dispatch(BackendMenuEvent::ANNOTATE_EVENT, new BackendMenuEvent($tree));
-
         return $tree;
     }
 }
