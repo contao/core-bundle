@@ -10,8 +10,7 @@
 
 namespace Contao\CoreBundle\Translation;
 
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -19,21 +18,26 @@ use Symfony\Component\Translation\TranslatorInterface;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class Translator implements TranslatorInterface, FrameworkAwareInterface
+class Translator implements TranslatorInterface
 {
-    use FrameworkAwareTrait;
-
     /**
      * @var TranslatorInterface
      */
     private $translator;
 
     /**
-     * @param TranslatorInterface $translator original translator service that gets decorated
+     * @var ContaoFrameworkInterface
      */
-    public function __construct(TranslatorInterface $translator)
+    private $framework;
+
+    /**
+     * @param TranslatorInterface      $translator Original translator service that gets decorated.
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(TranslatorInterface $translator, ContaoFrameworkInterface $framework)
     {
         $this->translator = $translator;
+        $this->framework = $framework;
     }
 
     /**

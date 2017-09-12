@@ -283,8 +283,10 @@ services:
 
     contao.translation.translator:
         class: Contao\CoreBundle\Translation\Translator
+        decorates: translator
         arguments:
-            - "@translator"
+            - "@contao.translation.translator.inner"
+            - "@contao.framework"
 
     contao.twig.template_extension:
         class: Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension
