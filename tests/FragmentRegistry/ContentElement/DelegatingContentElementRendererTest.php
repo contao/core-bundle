@@ -9,6 +9,7 @@
  */
 
 namespace Contao\CoreBundle\Tests\FragmentRegistry\ContentElement;
+
 use Contao\ContentModel;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\ContentElement\ContentElementRendererInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
- * Class DefaultContentElementRendererTest
+ * Class DelegatingContentElementRendererTest
  *
  * @author Yanick Witschi
  */

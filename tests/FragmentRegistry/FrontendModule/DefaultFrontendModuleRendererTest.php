@@ -8,23 +8,23 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\FragmentRegistry\ContentElement;
+namespace Contao\CoreBundle\Tests\FragmentRegistry\FrontendModule;
 
-use Contao\ContentModel;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer;
 use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
+use Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\ModuleModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
- * Class DefaultContentElementRendererTest
+ * Class DefaultFrontendModuleRendererTest
  *
  * @author Yanick Witschi
  */
-class DefaultContentElementRendererTest extends TestCase
+class DefaultFrontendModuleRendererTest extends TestCase
 {
     /**
      * Tests the object instantiation.
@@ -35,9 +35,9 @@ class DefaultContentElementRendererTest extends TestCase
         $fragmentHandler = $this->createMock(FragmentHandler::class);
         $requestStack = new RequestStack();
 
-        $renderer = new DefaultContentElementRenderer($registry, $fragmentHandler, $requestStack);
+        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
 
-        $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer', $renderer);
+        $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer', $renderer);
     }
 
     public function testSupports()
@@ -46,9 +46,9 @@ class DefaultContentElementRendererTest extends TestCase
         $fragmentHandler = $this->createMock(FragmentHandler::class);
         $requestStack = new RequestStack();
 
-        $renderer = new DefaultContentElementRenderer($registry, $fragmentHandler, $requestStack);
+        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
 
-        $model = new ContentModel();
+        $model = new ModuleModel();
 
         $this->assertTrue($renderer->supports($model));
     }
@@ -56,18 +56,18 @@ class DefaultContentElementRendererTest extends TestCase
     public function testRender()
     {
         $expectedControllerReference = new ControllerReference('test', [
-            'contentModel' => 42,
+            'moduleModel' => 42,
             'inColumn' => 'whateverColumn',
             'scope' => 'scope'
         ]);
 
         $registry = new FragmentRegistry();
-        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT . '.identifier',
+        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE . '.identifier',
             new \stdClass(), [
-                'tag' => FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT,
+                'tag' => FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE,
                 'type' => 'test',
                 'controller' => 'test',
-                'category' => 'text'
+                'category' => 'navigationMod'
             ]);
 
         $fragmentHandler = $this->createMock(FragmentHandler::class);
@@ -77,9 +77,9 @@ class DefaultContentElementRendererTest extends TestCase
 
         $requestStack = new RequestStack();
 
-        $renderer = new DefaultContentElementRenderer($registry, $fragmentHandler, $requestStack);
+        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
 
-        $model = new ContentModel();
+        $model = new ModuleModel();
         $model->setRow(['id' => 42, 'type' => 'identifier']);
 
         $renderer->render($model, 'whateverColumn', 'scope');
