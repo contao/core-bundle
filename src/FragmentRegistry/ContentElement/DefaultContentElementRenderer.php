@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
+namespace Contao\CoreBundle\FragmentRegistry\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\ContaoCoreBundle;
@@ -42,7 +42,7 @@ class DefaultContentElementRenderer extends AbstractFragmentRenderer implements 
             'scope' => $scope,
         ];
 
-        $fragmentIdentifier = FragmentRegistryPass::TAG_RENDERER_CONTENT_ELEMENT . '.' . $contentModel->type;
+        $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT . '.' . $contentModel->type;
 
         return $this->renderDefault($fragmentIdentifier, $attributes, $query);
     }

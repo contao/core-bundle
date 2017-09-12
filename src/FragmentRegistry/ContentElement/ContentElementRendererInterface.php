@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
+namespace Contao\CoreBundle\FragmentRegistry\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\ContaoCoreBundle;

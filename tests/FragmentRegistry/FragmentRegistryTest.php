@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\Tests\FragmentRegistry;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
-use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyContentElementProxy;
+use Contao\CoreBundle\FragmentRegistry\ContentElement\LegacyContentElementProxy;
 use Contao\CoreBundle\FragmentRegistry\FrontendModule\LegacyFrontendModuleProxy;
 use Contao\CoreBundle\FragmentRegistry\PageType\LegacyPageTypeProxy;
 use Contao\CoreBundle\Tests\TestCase;
