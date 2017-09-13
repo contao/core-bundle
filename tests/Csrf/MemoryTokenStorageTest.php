@@ -43,17 +43,17 @@ class MemoryTokenStorageTest extends TestCase
         $memoryTokenStorage->setToken('baz', 'bar');
 
         $this->assertTrue($memoryTokenStorage->hasToken('baz'));
-        $this->assertSame(['baz' => 'bar'], $memoryTokenStorage->getUsedTokens());
+        $this->assertEquals(['baz' => 'bar'], $memoryTokenStorage->getUsedTokens());
         $this->assertSame('bar', $memoryTokenStorage->getToken('foo'));
-        $this->assertSame(['baz' => 'bar', 'foo' => 'bar'], $memoryTokenStorage->getUsedTokens());
+        $this->assertEquals(['baz' => 'bar', 'foo' => 'bar'], $memoryTokenStorage->getUsedTokens());
 
         $memoryTokenStorage->removeToken('foo');
         $this->assertFalse($memoryTokenStorage->hasToken('foo'));
-        $this->assertSame(['baz' => 'bar', 'foo' => null], $memoryTokenStorage->getUsedTokens());
+        $this->assertEquals(['baz' => 'bar', 'foo' => null], $memoryTokenStorage->getUsedTokens());
 
         $memoryTokenStorage->removeToken('baz');
         $this->assertFalse($memoryTokenStorage->hasToken('baz'));
-        $this->assertSame(['baz' => null, 'foo' => null], $memoryTokenStorage->getUsedTokens());
+        $this->assertEquals(['baz' => null, 'foo' => null], $memoryTokenStorage->getUsedTokens());
     }
 
     public function testGetThrowsExceptionIfNotInitialized()
