@@ -105,6 +105,7 @@ class FragmentRegistryPass implements CompilerPassInterface
             // Support specific method on controller
             if (isset($fragmentOptions['method'])) {
                 $fragmentOptions['controller'] .= ':' . $fragmentOptions['method'];
+                unset($fragmentOptions['method']);
             }
 
             // Mark all fragments as lazy so they are lazy loaded using
