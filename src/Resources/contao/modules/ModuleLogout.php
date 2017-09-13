@@ -77,7 +77,7 @@ class ModuleLogout extends \Module
 		$session->set('_contao_logout_target', $strRedirect);
 
 		// TODO: fix/replace me
-		//        $this->User->logout();
+		// $this->User->logout();
 
 		$this->redirect($router->generate('contao_frontend_logout'));
 	}
