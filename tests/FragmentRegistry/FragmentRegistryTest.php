@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -18,7 +18,7 @@ use Contao\ModuleProxy;
 use Contao\PageProxy;
 
 /**
- * Class FragmentRegistryTest
+ * Class FragmentRegistryTest.
  *
  * @author Yanick Witschi
  */
@@ -81,7 +81,7 @@ class FragmentRegistryTest extends TestCase
         $registry->addFragment('foobar', new \stdClass(), $options);
 
         $this->assertcount(1, $registry->getFragments());
-        $this->assertCount(0, $registry->getFragments(function($identifier, $fragment) {
+        $this->assertCount(0, $registry->getFragments(function ($identifier, $fragment) {
             return false;
         }));
     }
@@ -93,7 +93,7 @@ class FragmentRegistryTest extends TestCase
         $registry->addFragment('page-type', new \stdClass(), [
             'tag' => FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE,
             'type' => 'test',
-            'controller' => 'test'
+            'controller' => 'test',
         ]);
         $registry->addFragment('frontend-module', new \stdClass(), [
             'tag' => FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE,
@@ -105,7 +105,7 @@ class FragmentRegistryTest extends TestCase
             'tag' => FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT,
             'type' => 'test',
             'controller' => 'test',
-            'category' => 'text'
+            'category' => 'text',
         ]);
 
         $registry->mapNewFragmentsToLegacyArrays();

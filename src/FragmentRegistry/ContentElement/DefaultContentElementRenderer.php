@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -16,7 +16,7 @@ use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\AbstractFragmentRenderer;
 
 /**
- * Class DefaultContentElementRenderer
+ * Class DefaultContentElementRenderer.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
@@ -42,7 +42,7 @@ class DefaultContentElementRenderer extends AbstractFragmentRenderer implements 
             'scope' => $scope,
         ];
 
-        $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT . '.' . $contentModel->type;
+        $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT.'.'.$contentModel->type;
 
         return $this->renderDefault($fragmentIdentifier, $attributes, $query);
     }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -14,7 +14,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ModuleModel;
 
 /**
- * Interface FrontendModuleRendererInterface
+ * Interface FrontendModuleRendererInterface.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */

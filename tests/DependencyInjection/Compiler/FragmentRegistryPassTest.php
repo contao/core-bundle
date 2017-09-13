@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -41,8 +41,8 @@ class FragmentRegistryPassTest extends TestCase
         $loader = new YamlFileLoader(
             $container,
             new FileLocator([
-                __DIR__ . '/../../../src/Resources/config',
-                __DIR__ . '/../../Fixtures/FragmentRegistry'
+                __DIR__.'/../../../src/Resources/config',
+                __DIR__.'/../../Fixtures/FragmentRegistry',
             ])
         );
 
@@ -112,7 +112,7 @@ class FragmentRegistryPassTest extends TestCase
             'type' => 'navigation_trivial',
             'category' => 'navigationMenu',
             'controller' => 'AppBundle\TestTrivialModule',
-            'tag' => 'contao.fragment.frontend_module'
+            'tag' => 'contao.fragment.frontend_module',
         ], $methodCalls[0][1][2]);
 
         $this->assertSame('addFragment', $methodCalls[1][0]);
@@ -122,7 +122,7 @@ class FragmentRegistryPassTest extends TestCase
             'category' => 'navigationMenu',
             'renderStrategy' => 'esi',
             'controller' => 'AppBundle\TestEsiModule',
-            'tag' => 'contao.fragment.frontend_module'
+            'tag' => 'contao.fragment.frontend_module',
         ], $methodCalls[1][1][2]);
 
         $this->assertSame('addFragment', $methodCalls[2][0]);
@@ -130,7 +130,7 @@ class FragmentRegistryPassTest extends TestCase
         $this->assertSame([
             'type' => 'super_page',
             'controller' => 'AppBundle\SuperPageType',
-            'tag' => 'contao.fragment.page_type'
+            'tag' => 'contao.fragment.page_type',
         ], $methodCalls[2][1][2]);
 
         $this->assertSame('addFragment', $methodCalls[3][0]);
@@ -140,7 +140,7 @@ class FragmentRegistryPassTest extends TestCase
             'category' => 'text',
             'renderStrategy' => 'esi',
             'controller' => 'other_controller:foobarAction', // Validates method option
-            'tag' => 'contao.fragment.content_element'
+            'tag' => 'contao.fragment.content_element',
         ], $methodCalls[3][1][2]);
     }
 }

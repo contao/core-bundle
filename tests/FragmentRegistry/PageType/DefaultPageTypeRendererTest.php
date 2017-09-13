@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
- * Class DefaultPageTypeRendererTest
+ * Class DefaultPageTypeRendererTest.
  *
  * @author Yanick Witschi
  */
@@ -64,7 +64,7 @@ class DefaultPageTypeRendererTest extends TestCase
         ]);
 
         $registry = new FragmentRegistry();
-        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE . '.identifier',
+        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.identifier',
             new \stdClass(), [
                 'tag' => FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE,
                 'type' => 'test',

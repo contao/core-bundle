@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,18 +11,12 @@
 namespace Contao\CoreBundle\Tests\FragmentRegistry\ContentElement;
 
 use Contao\ContentModel;
-use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\ContentElement\ContentElementRendererInterface;
-use Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer;
 use Contao\CoreBundle\FragmentRegistry\ContentElement\DelegatingContentElementRenderer;
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
 use Contao\CoreBundle\Tests\TestCase;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
- * Class DelegatingContentElementRendererTest
+ * Class DelegatingContentElementRendererTest.
  *
  * @author Yanick Witschi
  */

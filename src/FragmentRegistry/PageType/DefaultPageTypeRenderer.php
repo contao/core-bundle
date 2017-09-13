@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -15,7 +15,7 @@ use Contao\CoreBundle\FragmentRegistry\AbstractFragmentRenderer;
 use Contao\PageModel;
 
 /**
- * Class DefaultPageTypeRenderer
+ * Class DefaultPageTypeRenderer.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
@@ -34,7 +34,7 @@ class DefaultPageTypeRenderer extends AbstractFragmentRenderer implements PageTy
      */
     public function render(PageModel $pageModel): ?string
     {
-        $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE . '.' . $pageModel->type;
+        $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.'.$pageModel->type;
 
         return $this->renderDefault($fragmentIdentifier, [], [], 'inline');
     }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 /**
- * Class DefaultFrontendModuleRendererTest
+ * Class DefaultFrontendModuleRendererTest.
  *
  * @author Yanick Witschi
  */
@@ -58,16 +58,16 @@ class DefaultFrontendModuleRendererTest extends TestCase
         $expectedControllerReference = new ControllerReference('test', [
             'moduleModel' => 42,
             'inColumn' => 'whateverColumn',
-            'scope' => 'scope'
+            'scope' => 'scope',
         ]);
 
         $registry = new FragmentRegistry();
-        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE . '.identifier',
+        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE.'.identifier',
             new \stdClass(), [
                 'tag' => FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE,
                 'type' => 'test',
                 'controller' => 'test',
-                'category' => 'navigationMod'
+                'category' => 'navigationMod',
             ]);
 
         $fragmentHandler = $this->createMock(FragmentHandler::class);

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -14,7 +14,7 @@ use Contao\ContentModel;
 use Contao\CoreBundle\ContaoCoreBundle;
 
 /**
- * Interface ContentElementRendererInterface
+ * Interface ContentElementRendererInterface.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
@@ -22,8 +22,8 @@ interface ContentElementRendererInterface
 {
     /**
      * @param ContentModel $contentModel
-     * @param string      $inColumn
-     * @param string      $scope
+     * @param string       $inColumn
+     * @param string       $scope
      *
      * @return bool
      */
@@ -31,8 +31,8 @@ interface ContentElementRendererInterface
 
     /**
      * @param ContentModel $contentModel
-     * @param string      $inColumn
-     * @param string      $scope
+     * @param string       $inColumn
+     * @param string       $scope
      *
      * @return null|string
      */

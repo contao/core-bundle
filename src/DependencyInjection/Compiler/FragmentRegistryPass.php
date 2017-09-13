@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -70,7 +70,6 @@ class FragmentRegistryPass implements CompilerPassInterface
             self::TAG_FRAGMENT_CONTENT_ELEMENT,
         ] as $tag) {
             $this->registerFragments($container, $tag);
-
         }
 
         foreach ([
@@ -91,7 +90,6 @@ class FragmentRegistryPass implements CompilerPassInterface
         $fragments = $this->findAndSortTaggedServices($tag, $container);
 
         foreach ($fragments as $priority => $reference) {
-
             $fragment = $container->findDefinition($reference);
             $fragmentOptions = $fragment->getTag($tag)[0];
 
@@ -104,7 +102,7 @@ class FragmentRegistryPass implements CompilerPassInterface
 
             // Support specific method on controller
             if (isset($fragmentOptions['method'])) {
-                $fragmentOptions['controller'] .= ':' . $fragmentOptions['method'];
+                $fragmentOptions['controller'] .= ':'.$fragmentOptions['method'];
                 unset($fragmentOptions['method']);
             }
 
@@ -113,7 +111,7 @@ class FragmentRegistryPass implements CompilerPassInterface
             // composer.json (otherwise the lazy definition will just be ignored)
             $fragment->setLazy(true);
 
-            $fragmentIdentifier = $tag . '.' . $fragmentOptions['type'];
+            $fragmentIdentifier = $tag.'.'.$fragmentOptions['type'];
             $this->fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
         }
     }
