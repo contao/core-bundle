@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Core\Exception\LockedException;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -47,9 +48,6 @@ class FrontendIndex extends \Frontend
 	{
         $this->container = System::getContainer();
         $this->flashBag = $this->container->get('session')->getFlashBag();
-
-        /** @var TokenInterface $token */
-        $token = $this->container->get('security.token_storage')->getToken();
 
 		// Load the user object before calling the parent constructor
 		$this->import('FrontendUser', 'User');
@@ -366,7 +364,7 @@ class FrontendIndex extends \Frontend
         /** @var AuthenticationUtils $authenticationUtils */
         $authenticationUtils = $this->container->get('security.authentication_utils');
 
-        $error = $authenticationUtils->getLastAuthenticationError(false);
+        $error = $authenticationUtils->getLastAuthenticationError();
 
         if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
         {
@@ -386,6 +384,11 @@ class FrontendIndex extends \Frontend
                 $GLOBALS['TL_LANG']['ERR']['accountLocked'],
                 ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
             ));
+        }
+
+        elseif ($error instanceof SessionUnavailableException)
+        {
+            // TODO: i don't know.
         }
 
         elseif ($error instanceof \Exception)

@@ -35,18 +35,12 @@ class PageLogout extends \Frontend
 	    $router = System::getContainer()->get('router');
 	    $session = System::getContainer()->get('session');
 
-        // Set last page visited
-        if ($objPage->redirectBack)
-        {
-            $session->set('LAST_PAGE_VISITED', $this->getReferer());
-        }
-
         $strRedirect = \Environment::get('base');
 
-        // Redirect to last page visited
-        if ($objPage->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))
+        // Set last page visited
+        if ($objPage->redirectBack && $this->getReferer())
         {
-            $strRedirect = $_SESSION['LAST_PAGE_VISITED'];
+            $strRedirect = $this->getReferer();
         }
 
         // Redirect to jumpTo page
@@ -56,10 +50,11 @@ class PageLogout extends \Frontend
             $strRedirect = $objTarget->getAbsoluteUrl();
         }
 
-        $this->User->logout();
+        $session->set('_contao_logout_target', $strRedirect);
 
-	    return new RedirectResponse($router->generate('contao_frontend_logout', [
-	        'redirect' => $strRedirect,
-        ]));
+        // TODO: fix/replace me
+//        $this->User->logout();
+
+	    return new RedirectResponse($router->generate('contao_frontend_logout'));
 	}
 }

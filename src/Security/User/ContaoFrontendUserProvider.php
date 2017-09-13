@@ -14,10 +14,14 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\FrontendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 
 /**
  * Provides a Contao front end user object.
@@ -89,6 +93,6 @@ class ContaoFrontendUserProvider implements UserProviderInterface
      */
     public function supportsClass($class): bool
     {
-        return $class instanceof FrontendUser;
+        return $class ===  FrontendUser::class;
     }
 }

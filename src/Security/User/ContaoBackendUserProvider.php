@@ -90,6 +90,6 @@ class ContaoBackendUserProvider implements UserProviderInterface
      */
     public function supportsClass($class): bool
     {
-        return $class instanceof BackendUser;
+        return $class === BackendUser::class;
     }
 }

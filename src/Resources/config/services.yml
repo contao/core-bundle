@@ -252,21 +252,6 @@ services:
         calls:
             - ["matchAttribute", ["_scope", "frontend"]]
 
-    contao.security.authenticator:
-        class: Contao\CoreBundle\Security\ContaoAuthenticator
-        public: false
-        arguments:
-            - "@contao.routing.scope_matcher"
-
-    contao.security.user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoUserProvider
-        public: false
-        arguments:
-            - "@contao.framework"
-            - "@contao.routing.scope_matcher"
-        calls:
-            - ["setContainer", ["@service_container"]]
-
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\ContaoBackendUserProvider
         public: false
@@ -297,8 +282,10 @@ services:
             - "@contao.security.frontend_user_provider"
             - "@monolog.logger.contao"
 
-    contao.security.frontend_logout_handler:
-        class: Contao\CoreBundle\Security\LogoutHandler
+    contao.security.frontend_logout_success_handler:
+        class: Contao\CoreBundle\Security\LogoutSuccessHandler
+        arguments:
+            - "@router"
 
     contao.security.frontend_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
