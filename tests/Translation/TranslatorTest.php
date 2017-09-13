@@ -68,32 +68,17 @@ class TranslatorTest extends TestCase
 
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
+        $framework
+            ->expects($this->never())
+            ->method('initialize')
+        ;
+
         $translator = new Translator($originalTranslator, $framework);
 
         $this->assertSame('trans', $translator->trans('id', ['param' => 'value'], 'domain', 'en'));
         $this->assertSame('transChoice', $translator->transChoice('id', 3, ['param' => 'value'], 'domain', 'en'));
         $translator->setLocale('en');
         $this->assertSame('en', $translator->getLocale());
-    }
-
-    public function testSkipsIfFrameworkIsNotInitialized()
-    {
-        $originalTranslator = $this->createMock(TranslatorInterface::class);
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        $framework
-            ->expects($this->any())
-            ->method('isInitialized')
-            ->willReturn(false)
-        ;
-
-        $translator = new Translator($originalTranslator, $framework);
-
-        $GLOBALS['TL_LANG']['MSC']['foo'] = 'bar';
-
-        $this->assertSame('MSC.foo', $translator->trans('MSC.foo', [], 'contao_default'));
-
-        unset($GLOBALS['TL_LANG']['MSC']['foo']);
     }
 
     public function testReadsFromGlobals()
@@ -103,8 +88,7 @@ class TranslatorTest extends TestCase
 
         $framework
             ->expects($this->atLeastOnce())
-            ->method('isInitialized')
-            ->willReturn(true)
+            ->method('initialize')
         ;
 
         $systemAdapter = $this->createMock(Adapter::class);
@@ -150,8 +134,7 @@ class TranslatorTest extends TestCase
 
         $framework
             ->expects($this->atLeastOnce())
-            ->method('isInitialized')
-            ->willReturn(true)
+            ->method('initialize')
         ;
 
         $systemAdapter = $this->createMock(Adapter::class);

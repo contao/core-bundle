@@ -49,12 +49,9 @@ class Translator implements TranslatorInterface
             return $this->translator->trans($id, $parameters, $domain, $locale);
         }
 
-        if (!$this->framework->isInitialized()) {
-            return $id;
-        }
-
         $domain = substr($domain, 7);
 
+        $this->framework->initialize();
         $this->loadLanguageFile($domain);
 
         $translated = $this->getFromGlobals($id, $domain);
