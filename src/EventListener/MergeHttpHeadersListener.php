@@ -30,6 +30,11 @@ class MergeHttpHeadersListener
     private $framework;
 
     /**
+     * @var HeaderStorageInterface
+     */
+    private $headerStorage;
+
+    /**
      * @var array
      */
     private $headers = [];
@@ -44,10 +49,6 @@ class MergeHttpHeadersListener
         'pragma',
         'cache-control',
     ];
-    /**
-     * @var HeaderStorageInterface|null
-     */
-    private $headerStorage;
 
     /**
      * Constructor.
