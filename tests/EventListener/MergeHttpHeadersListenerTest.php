@@ -229,7 +229,7 @@ class MergeHttpHeadersListenerTest extends TestCase
     }
 
     /**
-     * Tests that mulit headers are inherited from a subrequest.
+     * Tests that multi headers are inherited from a subrequest.
      */
     public function testInheritsMultiHeadersFromSubrequest()
     {
