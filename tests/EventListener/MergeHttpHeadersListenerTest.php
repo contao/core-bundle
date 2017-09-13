@@ -115,8 +115,9 @@ class MergeHttpHeadersListenerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $headers = new MemoryHeaderStorage(['set-cookie: new-content=foobar']);
-        $listener = new MergeHttpHeadersListener($framework, $headers); // lower-case key
+        $headers = new MemoryHeaderStorage(['set-cookie: new-content=foobar']); // lower-case key
+
+        $listener = new MergeHttpHeadersListener($framework, $headers);
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
@@ -187,9 +188,9 @@ class MergeHttpHeadersListenerTest extends TestCase
     }
 
     /**
-     * Tests that headers are inherited
+     * Tests that headers are inherited from a subrequest.
      */
-    public function testHeadersAreInheritedFromSubrequests()
+    public function testInheritsHeadersFromSubrequest()
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -216,9 +217,9 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertTrue($response->headers->has('Content-Type'));
         $this->assertSame('text/html', $response->headers->get('Content-Type'));
 
-        $responseEvent->setResponse(new Response());
         $headerStorage->add('Content-Type: application/json');
 
+        $responseEvent->setResponse(new Response());
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
@@ -227,7 +228,10 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertSame('application/json', $response->headers->get('Content-Type'));
     }
 
-    public function testMultiHeadersAreInheritedFromSubrequests()
+    /**
+     * Tests that mulit headers are inherited from a subrequest.
+     */
+    public function testInheritsMultiHeadersFromSubrequest()
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -256,9 +260,9 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertCount(1, $allHeaders);
         $this->assertSame('content=foobar; path=/', $allHeaders[0]);
 
-        $responseEvent->setResponse(new Response());
         $headerStorage->add('Set-Cookie: new-content=foobar');
 
+        $responseEvent->setResponse(new Response());
         $listener->onKernelResponse($responseEvent);
 
         $response = $responseEvent->getResponse();
