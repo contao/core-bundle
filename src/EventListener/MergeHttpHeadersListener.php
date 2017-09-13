@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\HttpKernel\Header\HeaderStorageInterface;
+use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -18,6 +20,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
  * Adds HTTP headers sent by Contao to the Symfony response.
  *
  * @author Yanick Witschi <https://github.com/toflar>
+ * @author Andreas Schempp <https://github.com/aschempp>
  */
 class MergeHttpHeadersListener
 {
@@ -27,9 +30,14 @@ class MergeHttpHeadersListener
     private $framework;
 
     /**
-     * @var array|null
+     * @var array
      */
-    private $headers;
+    private $stack = [];
+
+    /**
+     * @var array
+     */
+    private $current = [];
 
     /**
      * @var array
@@ -41,17 +49,21 @@ class MergeHttpHeadersListener
         'pragma',
         'cache-control',
     ];
+    /**
+     * @var HeaderStorageInterface|null
+     */
+    private $headerStorage;
 
     /**
      * Constructor.
      *
-     * @param ContaoFrameworkInterface $framework
-     * @param array|null               $headers   Meant for unit testing only!
+     * @param ContaoFrameworkInterface    $framework
+     * @param HeaderStorageInterface|null $headerStorage
      */
-    public function __construct(ContaoFrameworkInterface $framework, array $headers = null)
+    public function __construct(ContaoFrameworkInterface $framework, HeaderStorageInterface $headerStorage = null)
     {
         $this->framework = $framework;
-        $this->headers = $headers;
+        $this->headerStorage = $headerStorage ?: new NativeHeaderStorage();
     }
 
     /**
@@ -101,6 +113,19 @@ class MergeHttpHeadersListener
     }
 
     /**
+     * Starts a new header stack.
+     */
+    public function onKernelRequest(): void
+    {
+        // Store the headers that were added before this request
+        $this->fetchHttpHeaders();
+
+        // Push the old headers to stack and create a new headers array
+        $this->stack[] = $this->current;
+        $this->current = [];
+    }
+
+    /**
      * Adds the Contao headers to the Symfony response.
      *
      * @param FilterResponseEvent $event
@@ -111,24 +136,26 @@ class MergeHttpHeadersListener
             return;
         }
 
-        $event->setResponse($this->mergeHttpHeaders($event->getResponse()));
+        // Fetch remaining headers and add them to the response
+        $this->fetchHttpHeaders();
+        $this->setResponseHeaders($event->getResponse());
+
+        $this->current = array_pop($this->stack);
+
+        if (!is_array($this->current)) {
+            $this->current = [];
+        }
     }
 
     /**
-     * Merges the HTTP headers.
+     * Sets the current HTTP headers on the response.
      *
      * @param Response $response
-     *
-     * @return Response
      */
-    private function mergeHttpHeaders(Response $response)
+    private function setResponseHeaders(Response $response)
     {
-        foreach ($this->getHeaders() as $header) {
+        foreach ($this->current as $header) {
             list($name, $content) = explode(':', $header, 2);
-
-            if ('cli' !== PHP_SAPI && !headers_sent()) {
-                header_remove($name);
-            }
 
             $uniqueKey = $this->getUniqueKey($name);
 
@@ -138,18 +165,15 @@ class MergeHttpHeadersListener
                 $response->headers->set($uniqueKey, trim($content));
             }
         }
-
-        return $response;
     }
 
     /**
-     * Returns the headers.
-     *
-     * @return array
+     * Fetches and stores HTTP headers from PHP.
      */
-    private function getHeaders()
+    private function fetchHttpHeaders()
     {
-        return $this->headers ?: headers_list();
+        $this->current = array_merge($this->current, $this->headerStorage->all());
+        $this->headerStorage->clear();
     }
 
     /**
