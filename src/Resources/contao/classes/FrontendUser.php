@@ -142,49 +142,10 @@ class FrontendUser extends User
         /** @var TokenInterface $token */
         $token = System::getContainer()->get('security.token_storage')->getToken();
 
-//        dump($token); die();
-
         // Do not redirect if authentication is successful
         if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
         {
             return true;
-        }
-
-		// Default authentication
-		if (parent::authenticate())
-		{
-			return true;
-		}
-
-		// Check whether auto login is enabled
-		if (\Config::get('autologin') > 0 && ($strCookie = \Input::cookie('FE_AUTO_LOGIN'))) {
-            // Try to find the user by his auto login cookie
-            if ($this->findBy('autologin', $strCookie) !== false) {
-                // Check the auto login period
-                if ($this->createdOn >= (time() - \Config::get('autologin'))) {
-                    // Validate the account status
-                    if ($this->checkAccountStatus() !== false) {
-                        $this->setUserFromDb();
-
-                        // Last login date
-                        $this->lastLogin = $this->currentLogin;
-                        $this->currentLogin = time();
-                        $this->save();
-
-                        // Generate the session
-                        $this->generateSession();
-                        $this->log('User "' . $this->username . '" was logged in automatically', __METHOD__, TL_ACCESS);
-
-                        // Reload the page
-                        \Controller::reload();
-
-                        return true;
-                    }
-                }
-            }
-
-            // Remove the cookie if it is invalid to enable loading cached pages
-            $this->setCookie('FE_AUTO_LOGIN', $strCookie, (time() - 86400), null, null, \Environment::get('ssl'), true);
         }
 
 		return false;
