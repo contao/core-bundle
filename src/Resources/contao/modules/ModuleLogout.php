@@ -55,31 +55,31 @@ class ModuleLogout extends \Module
 			return $objTemplate->parse();
 		}
 
-        /** @var RouterInterface $router */
-        $router = System::getContainer()->get('router');
-        $session = System::getContainer()->get('session');
+		/** @var RouterInterface $router */
+		$router = System::getContainer()->get('router');
+		$session = System::getContainer()->get('session');
 
-        $strRedirect = \Environment::get('base');
+		$strRedirect = \Environment::get('base');
 
-        // Set last page visited
-        if ($this->redirectBack && $this->getReferer())
-        {
-            $strRedirect = $this->getReferer();
-        }
+		// Set last page visited
+		if ($this->redirectBack && $this->getReferer())
+		{
+			$strRedirect = $this->getReferer();
+		}
 
-        // Redirect to jumpTo page
-        elseif ($this->jumpTo && ($objTarget = $this->getRelated('jumpTo')) instanceof PageModel)
-        {
-            /** @var PageModel $objTarget */
-            $strRedirect = $objTarget->getAbsoluteUrl();
-        }
+		// Redirect to jumpTo page
+		elseif ($this->jumpTo && ($objTarget = $this->getRelated('jumpTo')) instanceof PageModel)
+		{
+			/** @var PageModel $objTarget */
+			$strRedirect = $objTarget->getAbsoluteUrl();
+		}
 
-        $session->set('_contao_logout_target', $strRedirect);
+		$session->set('_contao_logout_target', $strRedirect);
 
-        // TODO: fix/replace me
-//        $this->User->logout();
+		// TODO: fix/replace me
+		//        $this->User->logout();
 
-        $this->redirect($router->generate('contao_frontend_logout'));
+		$this->redirect($router->generate('contao_frontend_logout'));
 	}
 
 

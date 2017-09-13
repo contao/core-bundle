@@ -106,8 +106,8 @@ services:
         class: Contao\CoreBundle\EventListener\MergeHttpHeadersListener
         arguments:
             - "@contao.framework"
-#        tags:
-#            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 256 }
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 256 }
 
     contao.listener.pretty_error_screens:
         class: Contao\CoreBundle\EventListener\PrettyErrorScreenListener
