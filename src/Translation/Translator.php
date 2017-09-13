@@ -106,8 +106,10 @@ class Translator implements TranslatorInterface
             $id = $domain.'.'.$id;
         }
 
-        preg_match_all('/(?:\\\\.|[^.])+/s', $id, $matches);
-        $parts = preg_replace('/\\\\(.)/s', '$1', $matches[0]);
+        // Split the ID into chunks separated by dots,
+        // escaped dots (\.) and backslashes (\\) are allowed.
+        preg_match_all('/(?:\\\\[.\\\\]|[^.])++/s', $id, $matches);
+        $parts = preg_replace('/\\\\([.\\\\])/s', '$1', $matches[0]);
 
         $item = &$GLOBALS['TL_LANG'];
 

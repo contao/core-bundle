@@ -120,10 +120,17 @@ class TranslatorTest extends TestCase
         $GLOBALS['TL_LANG']['MSC']['foo.bar\\baz'] = 'foo';
 
         $this->assertSame('foo', $translator->trans('MSC.foo\.bar\\\\baz', [], 'contao_default'));
+        $this->assertSame('foo', $translator->trans('MSC.foo\.bar\baz', [], 'contao_default'));
+
+        $GLOBALS['TL_LANG']['MSC']['foo\\']['bar\\baz.'] = 'foo';
+
+        $this->assertSame('foo', $translator->trans('MSC.foo\\\\.bar\baz\.', [], 'contao_default'));
+        $this->assertSame('MSC.foo\.bar\baz\.', $translator->trans('MSC.foo\.bar\baz\.', [], 'contao_default'));
 
         unset(
             $GLOBALS['TL_LANG']['MSC']['foo'],
-            $GLOBALS['TL_LANG']['MSC']['foo.bar\\baz']
+            $GLOBALS['TL_LANG']['MSC']['foo.bar\\baz'],
+            $GLOBALS['TL_LANG']['MSC']['foo\\']['bar\\baz.']
         );
     }
 
