@@ -32,7 +32,7 @@ class Translator implements TranslatorInterface
     private $framework;
 
     /**
-     * @param TranslatorInterface      $translator Original translator service that gets decorated.
+     * @param TranslatorInterface      $translator Original translator service that gets decorated
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(TranslatorInterface $translator, ContaoFrameworkInterface $framework)
