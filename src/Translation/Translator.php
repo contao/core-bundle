@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Translation;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\System;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -127,8 +128,8 @@ class Translator implements TranslatorInterface
      */
     private function loadLanguageFile(string $name)
     {
-        /** @var \Contao\System */
-        $system = $this->framework->getAdapter('System');
+        /** @var System */
+        $system = $this->framework->getAdapter(System::class);
 
         $system->loadLanguageFile($name);
     }
