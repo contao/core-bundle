@@ -25,10 +25,11 @@ use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureH
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**
-     * Stores the security exception in the session,
+     * Stores the security exception in the session,.
      *
-     * @param Request $request
+     * @param Request                 $request
      * @param AuthenticationException $exception
+     *
      * @return RedirectResponse
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): RedirectResponse

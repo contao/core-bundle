@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\Security\Authentication;
 
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -19,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * Class for handling the authentication for the Contao frontend preview
+ * Class for handling the authentication for the Contao frontend preview.
  *
  * @author David Greminger <https://github.com/bytehead>
  */
@@ -34,8 +33,8 @@ class ContaoPreviewAuthenticator
     /**
      * Constructor.
      *
-     * @param RequestStack $requestStack
-     * @param SessionInterface $session
+     * @param RequestStack          $requestStack
+     * @param SessionInterface      $session
      * @param TokenStorageInterface $tokenStorage
      * @param UserProviderInterface $userProvider
      */
@@ -48,7 +47,7 @@ class ContaoPreviewAuthenticator
     }
 
     /**
-     * Authenticate a frontend user based on the username
+     * Authenticate a frontend user based on the username.
      *
      * @param null $username
      */

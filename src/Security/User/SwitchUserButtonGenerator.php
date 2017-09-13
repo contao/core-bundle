@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
- * Class for generating the switch user button
+ * Class for generating the switch user button.
  *
  * @author David Greminger <https://github.com/bytehead>
  */
@@ -38,10 +38,10 @@ class SwitchUserButtonGenerator
      * Constructor.
      *
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param RouterInterface $router
-     * @param Connection $connection
-     * @param EngineInterface $twig
-     * @param TokenStorageInterface $tokenStorage
+     * @param RouterInterface               $router
+     * @param Connection                    $connection
+     * @param EngineInterface               $twig
+     * @param TokenStorageInterface         $tokenStorage
      */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router, Connection $connection, EngineInterface $twig, TokenStorageInterface $tokenStorage)
     {
@@ -53,13 +53,14 @@ class SwitchUserButtonGenerator
     }
 
     /**
-     * Generate a switch user button and return it as string
+     * Generate a switch user button and return it as string.
      *
-     * @param array $row
+     * @param array  $row
      * @param string $href
      * @param string $label
      * @param string $title
      * @param string $icon
+     *
      * @return string
      */
     public function generateSwitchUserButton(array $row, string $href, string $label, string $title, string $icon): string

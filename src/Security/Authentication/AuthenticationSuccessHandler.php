@@ -31,8 +31,8 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     /**
      * Constructor.
      *
-     * @param HttpUtils $httpUtils
-     * @param array $options
+     * @param HttpUtils                $httpUtils
+     * @param array                    $options
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework)
@@ -49,8 +49,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * This is called when an interactive authentication attempt succeeds.
      * Manages the correct redirecting of the logged in user.
      *
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
+     *
      * @return RedirectResponse
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse

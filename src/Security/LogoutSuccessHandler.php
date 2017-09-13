@@ -43,6 +43,7 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
      * Creates a custom redirecting Response object to send upon a successful logout.
      *
      * @param Request $request
+     *
      * @return RedirectResponse
      */
     public function onLogoutSuccess(Request $request): RedirectResponse
