@@ -677,7 +677,7 @@ class Image
 	
 			if (count($vendorAssets) > 0)
 			{
-				return StringUtil::stripRootDir($vendorAssets[0]);
+				return \StringUtil::stripRootDir($vendorAssets[0]);
 			}
 		}
 	}
