@@ -41,7 +41,16 @@ class DelegatingFrontendModuleRendererTest extends TestCase
         $renderer2->expects($this->never())->method('supports');
 
         $renderer = new DelegatingFrontendModuleRenderer([$renderer1, $renderer2]);
-        $renderer->supports(new ModuleModel());
+        $this->assertTrue($renderer->supports(new ModuleModel()));
+
+        $renderer1 = $this->createMock(FrontendModuleRendererInterface::class);
+        $renderer1->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer2 = $this->createMock(FrontendModuleRendererInterface::class);
+        $renderer2->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer = new DelegatingFrontendModuleRenderer([$renderer1, $renderer2]);
+        $this->assertFalse($renderer->supports(new ModuleModel()));
     }
 
     public function testRender()
@@ -56,5 +65,14 @@ class DelegatingFrontendModuleRendererTest extends TestCase
 
         $renderer = new DelegatingFrontendModuleRenderer([$renderer1, $renderer2]);
         $this->assertSame('foobar', $renderer->render(new ModuleModel()));
+
+        $renderer1 = $this->createMock(FrontendModuleRendererInterface::class);
+        $renderer1->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer2 = $this->createMock(FrontendModuleRendererInterface::class);
+        $renderer2->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer = new DelegatingFrontendModuleRenderer([$renderer1, $renderer2]);
+        $this->assertNull($renderer->render(new ModuleModel()));
     }
 }

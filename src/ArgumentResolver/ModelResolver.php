@@ -49,13 +49,9 @@ class ModelResolver implements ArgumentValueResolverInterface
 
         $this->framework->initialize();
 
-        /** @codeCoverageIgnoreStart
-         * Cannot be tested because the model class does not exist in tests.
-         **/
         if (!is_a($argument->getType(), Model::class, true)) {
             return false;
         }
-        /** @codeCoverageIgnoreEnd */
 
         return true;
     }

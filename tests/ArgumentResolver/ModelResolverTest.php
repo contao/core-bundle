@@ -60,8 +60,27 @@ class ModelResolverTest extends TestCase
         $this->assertFalse($resolver->supports($request, $argument));
     }
 
+    public function testSupports()
+    {
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+        $framework->expects($this->once())->method('initialize');
+
+        $pageModel = new PageModel();
+        $pageModel->setRow(['id' => 42]);
+
+        $request = Request::create('/foobar');
+        $request->attributes->set('pageModel', 42);
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
+        $resolver = new ModelResolver($framework);
+
+        $this->assertTrue($resolver->supports($request, $argument));
+    }
+
     public function testResolve()
     {
+        $pageModel = new PageModel();
+        $pageModel->setRow(['id' => 42]);
+
          $adapter = $this
              ->getMockBuilder(Adapter::class)
              ->disableOriginalConstructor()
@@ -71,25 +90,26 @@ class ModelResolverTest extends TestCase
         $adapter
             ->expects($this->once())
             ->method('findByPk')
-            ->willReturn('testReturn');
+            ->with(42)
+            ->willReturn($pageModel);
 
         $framework = $this->mockContaoFramework(
             null,
             null,
-            ['foobar' => $adapter]
+            [PageModel::class => $adapter]
         );
 
         $request = Request::create('/foobar');
-        $request->attributes->set('foobar', 42);
-        $argument = new ArgumentMetadata('foobar', 'foobar', false, false, '');
+        $request->attributes->set('pageModel', 42);
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
 
         $resolver = new ModelResolver($framework);
         $generator = $resolver->resolve($request, $argument);
 
         $this->assertInstanceOf(\Generator::class, $generator);
 
-        foreach ($generator as $returnValue) {
-            $this->assertSame('testReturn', $returnValue);
+        foreach ($generator as $resolved) {
+            $this->assertSame($pageModel, $resolved);
         }
     }
 }

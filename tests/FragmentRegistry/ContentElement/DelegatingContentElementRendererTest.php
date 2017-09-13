@@ -41,7 +41,16 @@ class DelegatingContentElementRendererTest extends TestCase
         $renderer2->expects($this->never())->method('supports');
 
         $renderer = new DelegatingContentElementRenderer([$renderer1, $renderer2]);
-        $renderer->supports(new ContentModel());
+        $this->assertTrue($renderer->supports(new ContentModel()));
+
+        $renderer1 = $this->createMock(ContentElementRendererInterface::class);
+        $renderer1->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer2 = $this->createMock(ContentElementRendererInterface::class);
+        $renderer2->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer = new DelegatingContentElementRenderer([$renderer1, $renderer2]);
+        $this->assertFalse($renderer->supports(new ContentModel()));
     }
 
     public function testRender()
@@ -56,5 +65,15 @@ class DelegatingContentElementRendererTest extends TestCase
 
         $renderer = new DelegatingContentElementRenderer([$renderer1, $renderer2]);
         $this->assertSame('foobar', $renderer->render(new ContentModel()));
+
+
+        $renderer1 = $this->createMock(ContentElementRendererInterface::class);
+        $renderer1->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer2 = $this->createMock(ContentElementRendererInterface::class);
+        $renderer2->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer = new DelegatingContentElementRenderer([$renderer1, $renderer2]);
+        $this->assertNull($renderer->render(new ContentModel()));
     }
 }
