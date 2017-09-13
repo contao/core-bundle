@@ -12,8 +12,6 @@ namespace Contao\CoreBundle\Exception;
 
 /**
  * UserNotFoundException is thrown if a User cannot be found.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class UserNotFoundException extends \RuntimeException
 {

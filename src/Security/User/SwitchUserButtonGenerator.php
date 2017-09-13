@@ -23,8 +23,6 @@ use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class for generating the switch user button.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class SwitchUserButtonGenerator
 {

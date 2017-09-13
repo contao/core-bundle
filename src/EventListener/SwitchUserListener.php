@@ -19,8 +19,6 @@ use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 /**
  * SwitchUserListener allows a user to impersonate another one temporarily
  * (like the Unix su command).
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class SwitchUserListener
 {

@@ -16,8 +16,6 @@ use Symfony\Component\Security\Core\Encoder\BasePasswordEncoder;
 
 /**
  * Tests the BackendControllerTest class.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class LegacyPasswordEncoderTest extends TestCase
 {

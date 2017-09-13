@@ -19,8 +19,6 @@ use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureH
 
 /**
  * Class with the custom Contao authentication failure handling logic.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {

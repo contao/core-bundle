@@ -19,8 +19,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * Class for handling the authentication for the Contao frontend preview.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class ContaoPreviewAuthenticator
 {

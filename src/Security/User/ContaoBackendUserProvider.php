@@ -21,8 +21,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * Provides a Contao back end user object.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class ContaoBackendUserProvider implements UserProviderInterface
 {

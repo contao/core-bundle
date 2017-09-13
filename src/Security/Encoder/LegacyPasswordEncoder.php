@@ -18,9 +18,6 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 /**
  * Legacy password encoder for old sha1-encoded passwords.
  *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author David Greminger <https://github.com/bytehead>
- *
  * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  */
 class LegacyPasswordEncoder extends BasePasswordEncoder

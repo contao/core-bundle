@@ -19,8 +19,6 @@ use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 /**
  * Class with the custom Contao logout success handling logic.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
 {

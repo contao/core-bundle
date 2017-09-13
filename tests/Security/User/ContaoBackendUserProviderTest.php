@@ -18,10 +18,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Tests the ContaoBackendUserProvider class.
- *
- * @author David Greminger <https://github.com/bytehead>
- * @author Andreas Schempp <https://github.com/aschempp>
-
  */
 class ContaoBackendUserProviderTest extends TestCase
 {

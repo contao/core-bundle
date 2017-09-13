@@ -34,7 +34,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
- * @author David Greminger <https://github.com/bytehead>
  *
  * @Route(defaults={"_scope" = "backend", "_token_check" = true})
  */

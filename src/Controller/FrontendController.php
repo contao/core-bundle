@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
- * @author David Greminger <https://github.com/bytehead>
  *
  * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
  */

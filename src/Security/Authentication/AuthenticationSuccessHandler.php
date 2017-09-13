@@ -21,8 +21,6 @@ use Symfony\Component\Security\Http\HttpUtils;
 
 /**
  * Class with the custom Contao authentication success handling logic.
- *
- * @author David Greminger <https://github.com/bytehead>
  */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {

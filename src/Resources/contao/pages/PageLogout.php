@@ -41,7 +41,7 @@ class PageLogout extends \Frontend
 		if ($objPage->redirectBack && $this->getReferer())
 		{
 			$strRedirect = $this->getReferer();
-	}
+		}
 
 		// Redirect to jumpTo page
 		elseif ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof PageModel)

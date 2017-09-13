@@ -56,7 +56,6 @@ security:
 
             remember_me:
                 secret:   '%secret%'
-                lifetime: 604800 # 1 week in seconds
                 remember_me_parameter: autologin
 
             logout:
