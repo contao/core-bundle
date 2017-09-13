@@ -32,12 +32,7 @@ class MergeHttpHeadersListener
     /**
      * @var array
      */
-    private $stack = [];
-
-    /**
-     * @var array
-     */
-    private $current = [];
+    private $headers = [];
 
     /**
      * @var array
@@ -113,19 +108,6 @@ class MergeHttpHeadersListener
     }
 
     /**
-     * Starts a new header stack.
-     */
-    public function onKernelRequest(): void
-    {
-        // Store the headers that were added before this request
-        $this->fetchHttpHeaders();
-
-        // Push the old headers to stack and create a new headers array
-        $this->stack[] = $this->current;
-        $this->current = [];
-    }
-
-    /**
      * Adds the Contao headers to the Symfony response.
      *
      * @param FilterResponseEvent $event
@@ -139,12 +121,6 @@ class MergeHttpHeadersListener
         // Fetch remaining headers and add them to the response
         $this->fetchHttpHeaders();
         $this->setResponseHeaders($event->getResponse());
-
-        $this->current = array_pop($this->stack);
-
-        if (!is_array($this->current)) {
-            $this->current = [];
-        }
     }
 
     /**
@@ -154,14 +130,17 @@ class MergeHttpHeadersListener
      */
     private function setResponseHeaders(Response $response)
     {
-        foreach ($this->current as $header) {
+        $allowOverrides = [];
+
+        foreach ($this->headers as $header) {
             list($name, $content) = explode(':', $header, 2);
 
             $uniqueKey = $this->getUniqueKey($name);
 
             if (in_array($uniqueKey, $this->multiHeaders, true)) {
                 $response->headers->set($uniqueKey, trim($content), false);
-            } elseif (!$response->headers->has($uniqueKey)) {
+            } elseif (isset($allowOverrides[$uniqueKey]) || !$response->headers->has($uniqueKey)) {
+                $allowOverrides[$uniqueKey] = true;
                 $response->headers->set($uniqueKey, trim($content));
             }
         }
@@ -172,7 +151,7 @@ class MergeHttpHeadersListener
      */
     private function fetchHttpHeaders()
     {
-        $this->current = array_merge($this->current, $this->headerStorage->all());
+        $this->headers = array_merge($this->headers, $this->headerStorage->all());
         $this->headerStorage->clear();
     }
 
