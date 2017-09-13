@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
@@ -11,11 +19,23 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\HttpUtils;
 
+/**
+ * Class with the custom Contao authentication success handling logic.
+ *
+ * @author David Greminger <https://github.com/bytehead>
+ */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
     protected $framework;
 
-    public function __construct(HttpUtils $httpUtils, array $options = array(), ContaoFrameworkInterface $framework)
+    /**
+     * Constructor.
+     *
+     * @param HttpUtils $httpUtils
+     * @param array $options
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework)
     {
         $options['always_use_default_target_path'] = false;
         $options['target_path_parameter'] = '_target_path';
@@ -25,6 +45,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $this->framework = $framework;
     }
 
+    /**
+     * This is called when an interactive authentication attempt succeeds.
+     * Manages the correct redirecting of the logged in user.
+     *
+     * @param Request $request
+     * @param TokenInterface $token
+     * @return RedirectResponse
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse
     {
         if ($request->request->has('_target_referer')) {

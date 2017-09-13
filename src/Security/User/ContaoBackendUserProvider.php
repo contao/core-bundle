@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -90,6 +91,6 @@ class ContaoBackendUserProvider implements UserProviderInterface
      */
     public function supportsClass($class): bool
     {
-        return $class === BackendUser::class;
+        return BackendUser::class === $class;
     }
 }

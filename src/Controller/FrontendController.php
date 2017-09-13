@@ -16,16 +16,14 @@ use Contao\FrontendShare;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * Handles the Contao frontend routes.
  *
  * @author Andreas Schempp <https://github.com/aschempp>
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author David Greminger <https://github.com/bytehead>
  *
  * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
  */
@@ -79,7 +77,6 @@ class FrontendController extends Controller
 
     /**
      * Symfony will un-authenticate the user automatically by calling this route.
-     * Redirects to the login route (see security.yml for logout.target)
      *
      * @Route("/_contao/logout", name="contao_frontend_logout")
      */
@@ -88,7 +85,7 @@ class FrontendController extends Controller
     }
 
     /**
-     * Symfony security login route
+     * Symfony will authenticate the user automatically by calling this route.
      *
      * @Route("/_contao/login", name="contao_frontend_login")
      */

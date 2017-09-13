@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\User;
 
-use Contao\FrontendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\FrontendUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -89,6 +89,6 @@ class ContaoFrontendUserProvider implements UserProviderInterface
      */
     public function supportsClass($class): bool
     {
-        return $class ===  FrontendUser::class;
+        return FrontendUser::class === $class;
     }
 }

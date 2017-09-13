@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Test\Security\Encoder;
 
 use Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Security\Core\Encoder\BasePasswordEncoder;
 
 /**
@@ -54,8 +54,6 @@ class LegacyPasswordEncoderTest extends TestCase
 
     /**
      * Tests for the BadCredentialsException for too long password.
-     *
-     * @expectedException \Symfony\Component\Security\Core\Exception\BadCredentialsException
      */
     public function testBadCredentialsException()
     {

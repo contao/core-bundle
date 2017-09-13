@@ -13,7 +13,7 @@ namespace Contao\CoreBundle\Test\Security\User;
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Security\User\ContaoBackendUserProvider;
-use Contao\CoreBundle\Test\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -76,8 +76,6 @@ class ContaoBackendUserProviderTest extends TestCase
 
     /**
      * Tests loading a backend user.
-     *
-     * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
      */
     public function testUsernameNotFoundException()
     {
@@ -101,9 +99,6 @@ class ContaoBackendUserProviderTest extends TestCase
         $provider->loadUserByUsername('test-user');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Security\Core\Exception\UnsupportedUserException
-     */
     public function testUnsupportedUserException()
     {
         $provider = new ContaoBackendUserProvider($this->mockContaoFramework());

@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Security\User;
 
 use Contao\CoreBundle\Exception\UserNotFoundException;
@@ -13,6 +21,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Templating\EngineInterface;
 
+/**
+ * Class for generating the switch user button
+ *
+ * @author David Greminger <https://github.com/bytehead>
+ */
 class SwitchUserButtonGenerator
 {
     protected $authorizationChecker;
@@ -21,6 +34,15 @@ class SwitchUserButtonGenerator
     protected $twig;
     protected $tokenStorage;
 
+    /**
+     * Constructor.
+     *
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param RouterInterface $router
+     * @param Connection $connection
+     * @param EngineInterface $twig
+     * @param TokenStorageInterface $tokenStorage
+     */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router, Connection $connection, EngineInterface $twig, TokenStorageInterface $tokenStorage)
     {
         $this->authorizationChecker = $authorizationChecker;
@@ -28,21 +50,30 @@ class SwitchUserButtonGenerator
         $this->connection = $connection;
         $this->twig = $twig;
         $this->tokenStorage = $tokenStorage;
-
     }
 
-    public function generateSwitchUserButton($row, $href, $label, $title, $icon): string
+    /**
+     * Generate a switch user button and return it as string
+     *
+     * @param array $row
+     * @param string $href
+     * @param string $label
+     * @param string $title
+     * @param string $icon
+     * @return string
+     */
+    public function generateSwitchUserButton(array $row, string $href, string $label, string $title, string $icon): string
     {
         if (!$this->authorizationChecker->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
             return '';
         }
 
-        $stmt = $this->connection->prepare("SELECT id, username FROM tl_user WHERE id = :id");
+        $stmt = $this->connection->prepare('SELECT id, username FROM tl_user WHERE id = :id');
         $stmt->bindValue('id', $row['id']);
         $stmt->execute();
 
         if (0 === $stmt->rowCount()) {
-            throw new UserNotFoundException('Invalid user ID' . $row['id']);
+            throw new UserNotFoundException('Invalid user ID'.$row['id']);
         }
 
         $tokenUser = $this->tokenStorage->getToken()->getUser();
@@ -53,7 +84,7 @@ class SwitchUserButtonGenerator
         }
 
         $url = $this->router->generate('contao_backend', [
-            '_switch_user' => $user->username
+            '_switch_user' => $user->username,
         ]);
 
         return $this->twig->render('@ContaoCore/Backend/switch_user.html.twig', [

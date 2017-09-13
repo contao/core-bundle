@@ -280,7 +280,6 @@ services:
             - "@session"
             - "@security.token_storage"
             - "@contao.security.frontend_user_provider"
-            - "@monolog.logger.contao"
 
     contao.security.frontend_logout_success_handler:
         class: Contao\CoreBundle\Security\LogoutSuccessHandler

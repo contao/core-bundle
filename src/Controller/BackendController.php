@@ -63,7 +63,7 @@ class BackendController extends Controller
      *
      * @Route("/contao/login", name="contao_backend_login")
      */
-    public function loginAction()
+    public function loginAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -95,7 +95,7 @@ class BackendController extends Controller
      *
      * @Route("/contao/preview", name="contao_backend_preview")
      */
-    public function previewAction()
+    public function previewAction(): Response
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
 
@@ -194,7 +194,7 @@ class BackendController extends Controller
      *
      * @Route("/contao/switch", name="contao_backend_switch")
      */
-    public function switchAction()
+    public function switchAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -221,7 +221,6 @@ class BackendController extends Controller
 
     /**
      * Symfony will un-authenticate the user automatically by calling this route.
-     * Redirects to the login route (see security.yml for logout.target)
      *
      * @Route("/contao/logout", name="contao_backend_logout")
      */
