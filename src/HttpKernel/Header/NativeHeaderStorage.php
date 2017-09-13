@@ -20,7 +20,7 @@ class NativeHeaderStorage implements HeaderStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function all(): array
+    public function all()
     {
         return headers_list();
     }

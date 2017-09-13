@@ -22,7 +22,7 @@ interface HeaderStorageInterface
      *
      * @return array
      */
-    public function all(): array;
+    public function all();
 
     /**
      * Adds a header to the storage.

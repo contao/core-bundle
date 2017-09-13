@@ -35,7 +35,7 @@ class MemoryHeaderStorage implements HeaderStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function all(): array
+    public function all()
     {
         return $this->headers;
     }
