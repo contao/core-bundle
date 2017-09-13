@@ -5,19 +5,21 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\MenuEvent;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserBackendMenuListener
 {
-    private $factory;
     private $tokenStorage;
 
-    public function __construct(FactoryInterface $factory, TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->factory = $factory;
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * @param MenuEvent $event
+     */
     public function onBuild(MenuEvent $event)
     {
         $token = $this->tokenStorage->getToken();
@@ -26,6 +28,7 @@ class UserBackendMenuListener
             return;
         }
 
+        $factory = $event->getFactory();
         $tree = $event->getTree();
         $modules = $user->navigation();
 
@@ -33,7 +36,7 @@ class UserBackendMenuListener
             $categoryNode = $tree->getChild($categoryName);
 
             if (!$categoryNode) {
-                $categoryNode = $this->createNode($categoryName, $categoryData);
+                $categoryNode = $this->createNode($factory, $categoryName, $categoryData);
                 $categoryNode->setDisplayChildren(strpos($categoryData['class'], 'node-expanded') !== false);
 
                 $tree->addChild($categoryNode);
@@ -41,7 +44,7 @@ class UserBackendMenuListener
 
             // Create the child nodes
             foreach ($categoryData['modules'] as $moduleName => $moduleData) {
-                $moduleNode = $this->createNode($moduleName, $moduleData);
+                $moduleNode = $this->createNode($factory, $moduleName, $moduleData);
                 $moduleNode->setCurrent((bool) $moduleData['isActive']);
                 $moduleNode->setAttribute('class', $categoryName);
 
@@ -50,9 +53,15 @@ class UserBackendMenuListener
         }
     }
 
-    private function createNode($name, array $attributes)
+    /**
+     * @param FactoryInterface $factory
+     * @param $name
+     * @param array $attributes
+     * @return ItemInterface
+     */
+    private function createNode(FactoryInterface $factory, $name, array $attributes)
     {
-        return $this->factory->createItem($name, [
+        return $factory->createItem($name, [
             'label' => $attributes['label'],
             'attributes' => [
                 'title' => $attributes['title'],

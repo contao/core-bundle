@@ -36,7 +36,7 @@ class BackendMenuBuilder
         $tree = $this->factory->createItem('root');
 
         // Nodes can be attached via an event listener
-        $this->eventDispatcher->dispatch(ContaoCoreEvents::BACKEND_MENU_BUILD, new MenuEvent($tree));
+        $this->eventDispatcher->dispatch(ContaoCoreEvents::BACKEND_MENU_BUILD, new MenuEvent($this->factory, $tree));
 
         return $tree;
     }

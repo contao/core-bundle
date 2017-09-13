@@ -209,13 +209,6 @@ services:
             - "@knp_menu.factory"
             - "@event_dispatcher"
 
-    contao.menu.backend_menu:
-        class: Knp\Menu\MenuItem
-        factory: ["@contao.menu.backend_menu_builder", create]
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: backend }
-
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
         arguments:

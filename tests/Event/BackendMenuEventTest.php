@@ -3,6 +3,7 @@
 namespace Contao\CoreBundle\Tests\Event;
 
 use Contao\CoreBundle\Event\MenuEvent;
+use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,10 @@ class BackendMenuEventTest extends TestCase
         /** @var ItemInterface|\PHPUnit_Framework_MockObject_MockObject $node */
         $node = $this->createMock(ItemInterface::class);
 
-        $event = new MenuEvent($node);
+        /** @var FactoryInterface|\PHPUnit_Framework_MockObject_MockObject $factory */
+        $factory = $this->createMock(FactoryInterface::class);
+
+        $event = new MenuEvent($factory, $node);
         $this->assertInstanceOf('Contao\CoreBundle\Event\MenuEvent', $event);
     }
 
@@ -25,7 +29,10 @@ class BackendMenuEventTest extends TestCase
         /** @var ItemInterface|\PHPUnit_Framework_MockObject_MockObject $node */
         $node = $this->createMock(ItemInterface::class);
 
-        $event = new MenuEvent($node);
+        /** @var FactoryInterface|\PHPUnit_Framework_MockObject_MockObject $factory */
+        $factory = $this->createMock(FactoryInterface::class);
+
+        $event = new MenuEvent($factory, $node);
         $this->assertEquals($node, $event->getTree());
     }
 }

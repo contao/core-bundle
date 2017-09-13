@@ -19,7 +19,6 @@ services:
     contao.listener.user_backend_menu_listener:
         class: Contao\CoreBundle\EventListener\UserBackendMenuListener
         arguments:
-            - "@knp_menu.factory"
             - "@security.token_storage"
         tags:
             - { name: kernel.event_listener, event: contao.backend_menu_build, method: onBuild }
