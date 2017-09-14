@@ -84,9 +84,7 @@ abstract class AbstractFragmentRenderer
         if ('' !== $forceRenderStrategy) {
             $renderStrategy = $forceRenderStrategy;
         } else {
-            $renderStrategy = isset($options['renderStrategy']) ?
-                $options['renderStrategy']
-                : 'inline';
+            $renderStrategy = $options['renderStrategy'] ?? 'inline';
         }
 
         return $this->fragmentHandler->render($controllerReference, $renderStrategy);
