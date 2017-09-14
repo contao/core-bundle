@@ -36,6 +36,6 @@ class DefaultPageTypeRenderer extends AbstractFragmentRenderer implements PageTy
     {
         $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.'.$pageModel->type;
 
-        return $this->renderDefault($fragmentIdentifier, [], [], 'inline');
+        return $this->renderFragment($fragmentIdentifier, [], [], 'inline');
     }
 }

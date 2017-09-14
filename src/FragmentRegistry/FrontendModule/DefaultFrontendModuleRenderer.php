@@ -44,6 +44,6 @@ class DefaultFrontendModuleRenderer extends AbstractFragmentRenderer implements 
 
         $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE.'.'.$moduleModel->type;
 
-        return $this->renderDefault($fragmentIdentifier, $attributes, $query);
+        return $this->renderFragment($fragmentIdentifier, $attributes, $query);
     }
 }

@@ -44,6 +44,6 @@ class DefaultContentElementRenderer extends AbstractFragmentRenderer implements 
 
         $fragmentIdentifier = FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT.'.'.$contentModel->type;
 
-        return $this->renderDefault($fragmentIdentifier, $attributes, $query);
+        return $this->renderFragment($fragmentIdentifier, $attributes, $query);
     }
 }
