@@ -10,22 +10,13 @@
 
 namespace Contao\CoreBundle\FragmentRegistry;
 
-use Contao\ContentProxy;
-use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\ModuleProxy;
-use Contao\PageProxy;
-
 /**
  * Fragment registry.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInterface
+class FragmentRegistry implements FragmentRegistryInterface
 {
-    use FrameworkAwareTrait;
-
     /**
      * @var array
      */
@@ -85,58 +76,6 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
     }
 
     /**
-     * Maps new fragments that were registered properly in the fragment
-     * registry to old $GLOBALS arrays for BC.
-     */
-    public function mapNewFragmentsToLegacyArrays()
-    {
-        $this->framework->initialize();
-
-        // Page types
-        foreach ($this->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)
-        ) as $identifier => $fragment) {
-            $options = $this->getOptions($identifier);
-
-            $GLOBALS['TL_PTY'][$options['type']] = PageProxy::class;
-        }
-
-        // Front end modules
-        foreach ($this->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)
-        ) as $identifier => $fragment) {
-            $options = $this->getOptions($identifier);
-
-            if (!isset($options['category'])) {
-                throw new \RuntimeException(
-                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
-                        FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE
-                    )
-                );
-            }
-
-            $GLOBALS['FE_MOD'][$options['category']][$options['type']] = ModuleProxy::class;
-        }
-
-        // Content elements
-        foreach ($this->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT)
-        ) as $identifier => $fragment) {
-            $options = $this->getOptions($identifier);
-
-            if (!isset($options['category'])) {
-                throw new \RuntimeException(
-                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
-                        FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT
-                    )
-                );
-            }
-
-            $GLOBALS['TL_CTE'][$options['category']][$options['type']] = ContentProxy::class;
-        }
-    }
-
-    /**
      * @param array $options
      */
     private function ensureBasicOptions(array $options)
@@ -144,23 +83,5 @@ class FragmentRegistry implements FragmentRegistryInterface, FrameworkAwareInter
         if (3 !== count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
             throw new \InvalidArgumentException('The basic 3 options, tag, type and controller were not provided.');
         }
-    }
-
-    /**
-     * @param string $tag
-     *
-     * @return \Closure
-     */
-    private function getTagFilter($tag)
-    {
-        return function ($identifier) use ($tag) {
-            $options = $this->getOptions($identifier);
-
-            if ($options['tag'] !== $tag) {
-                return false;
-            }
-
-            return true;
-        };
     }
 }
