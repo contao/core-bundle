@@ -108,7 +108,7 @@ class FragmentRegistryPassTest extends TestCase
 
         $this->assertSame('addFragment', $methodCalls[0][0]);
         $this->assertSame('contao.fragment.frontend_module.navigation_trivial', $methodCalls[0][1][0]);
-        $this->assertSame([
+        $this->assertEquals([
             'type' => 'navigation_trivial',
             'category' => 'navigationMenu',
             'controller' => 'AppBundle\TestTrivialModule',
@@ -117,7 +117,7 @@ class FragmentRegistryPassTest extends TestCase
 
         $this->assertSame('addFragment', $methodCalls[1][0]);
         $this->assertSame('contao.fragment.frontend_module.navigation_esi', $methodCalls[1][1][0]);
-        $this->assertSame([
+        $this->assertEquals([
             'type' => 'navigation_esi',
             'category' => 'navigationMenu',
             'renderStrategy' => 'esi',
@@ -127,7 +127,7 @@ class FragmentRegistryPassTest extends TestCase
 
         $this->assertSame('addFragment', $methodCalls[2][0]);
         $this->assertSame('contao.fragment.page_type.super_page', $methodCalls[2][1][0]);
-        $this->assertSame([
+        $this->assertEquals([
             'type' => 'super_page',
             'controller' => 'AppBundle\SuperPageType',
             'tag' => 'contao.fragment.page_type',
@@ -135,12 +135,21 @@ class FragmentRegistryPassTest extends TestCase
 
         $this->assertSame('addFragment', $methodCalls[3][0]);
         $this->assertSame('contao.fragment.content_element.other', $methodCalls[3][1][0]);
-        $this->assertSame([
+        $this->assertEquals([
             'type' => 'other',
             'category' => 'text',
             'renderStrategy' => 'esi',
             'controller' => 'other_controller:foobarAction', // Validates method option
             'tag' => 'contao.fragment.content_element',
         ], $methodCalls[3][1][2]);
+
+        $this->assertSame('addFragment', $methodCalls[4][0]);
+        $this->assertSame('contao.fragment.content_element.other', $methodCalls[4][1][0]);
+        $this->assertEquals([
+            'type' => 'other',
+            'category' => 'maintenance',
+            'controller' => 'other_controller:secondAction', // Validates method option
+            'tag' => 'contao.fragment.content_element',
+        ], $methodCalls[4][1][2]);
     }
 }

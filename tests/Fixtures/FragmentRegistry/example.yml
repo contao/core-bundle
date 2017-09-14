@@ -16,3 +16,4 @@ services:
         class: AppBundle\Controller\Other
         tags:
             - { name: contao.fragment.content_element, method: foobarAction, type: other, category: text, renderStrategy: esi }
+            - { name: contao.fragment.content_element, method: secondAction, type: other, category: maintenance }

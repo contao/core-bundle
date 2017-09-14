@@ -91,28 +91,30 @@ class FragmentRegistryPass implements CompilerPassInterface
 
         foreach ($fragments as $priority => $reference) {
             $fragment = $container->findDefinition($reference);
-            $fragmentOptions = $fragment->getTag($tag)[0];
 
-            if (!isset($fragmentOptions['type'])) {
-                throw new RuntimeException(sprintf('A service tagged as "%s" must have a "type" attribute set.', $tag));
+            foreach ($fragment->getTag($tag) as $fragmentOptions) {
+                $fragmentOptions['tag'] = $tag;
+
+                if (!isset($fragmentOptions['type'])) {
+                    throw new RuntimeException(sprintf('A service tagged as "%s" must have a "type" attribute set.', $tag));
+                }
+
+                $fragmentOptions['controller'] = (string) $reference;
+
+                // Support specific method on controller
+                if (isset($fragmentOptions['method'])) {
+                    $fragmentOptions['controller'] .= ':'.$fragmentOptions['method'];
+                    unset($fragmentOptions['method']);
+                }
+
+                // Mark all fragments as lazy so they are lazy loaded using
+                // the proxy manager (which is why we need to require it in the
+                // composer.json (otherwise the lazy definition will just be ignored)
+                $fragment->setLazy(true);
+
+                $fragmentIdentifier = $tag.'.'.$fragmentOptions['type'];
+                $this->fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
             }
-
-            $fragmentOptions['controller'] = (string) $reference;
-            $fragmentOptions['tag'] = $tag;
-
-            // Support specific method on controller
-            if (isset($fragmentOptions['method'])) {
-                $fragmentOptions['controller'] .= ':'.$fragmentOptions['method'];
-                unset($fragmentOptions['method']);
-            }
-
-            // Mark all fragments as lazy so they are lazy loaded using
-            // the proxy manager (which is why we need to require it in the
-            // composer.json (otherwise the lazy definition will just be ignored)
-            $fragment->setLazy(true);
-
-            $fragmentIdentifier = $tag.'.'.$fragmentOptions['type'];
-            $this->fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
         }
     }
 
