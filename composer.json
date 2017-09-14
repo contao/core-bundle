@@ -22,7 +22,6 @@
         "symfony/security": "^3.3",
         "symfony/yaml": "^3.3",
         "symfony/proxy-manager-bridge": "^3.3",
-        "ocramius/proxy-manager": "^2.1",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/swiftmailer-bundle": "^2.3",
         "doctrine/dbal": "^2.5",
