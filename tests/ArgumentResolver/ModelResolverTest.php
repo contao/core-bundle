@@ -60,13 +60,69 @@ class ModelResolverTest extends TestCase
         $this->assertFalse($resolver->supports($request, $argument));
     }
 
-    public function testSupports()
+    public function testSupportsReturnsFalseIfNotNullableAndModelNotFound()
+    {
+        $adapter = $this
+            ->getMockBuilder(Adapter::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findByPk'])
+            ->getMock();
+
+        $adapter
+            ->expects($this->once())
+            ->method('findByPk')
+            ->with(42)
+            ->willReturn(null);
+
+        $framework = $this->mockContaoFramework(
+            null,
+            null,
+            [PageModel::class => $adapter]
+        );
+
+        $request = Request::create('/foobar');
+        $request->attributes->set('pageModel', 42);
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
+        $resolver = new ModelResolver($framework);
+
+        $this->assertFalse($resolver->supports($request, $argument));
+    }
+
+    public function testSupportsNullable()
     {
         $framework = $this->createMock(ContaoFrameworkInterface::class);
         $framework->expects($this->once())->method('initialize');
 
+        $request = Request::create('/foobar');
+        $request->attributes->set('pageModel', 42);
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '', true);
+        $resolver = new ModelResolver($framework);
+
+        $this->assertTrue($resolver->supports($request, $argument));
+    }
+
+    public function testSupportsNotNullable()
+    {
         $pageModel = new PageModel();
         $pageModel->setRow(['id' => 42]);
+
+        $adapter = $this
+            ->getMockBuilder(Adapter::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findByPk'])
+            ->getMock();
+
+        $adapter
+            ->expects($this->once())
+            ->method('findByPk')
+            ->with(42)
+            ->willReturn($pageModel);
+
+        $framework = $this->mockContaoFramework(
+            null,
+            null,
+            [PageModel::class => $adapter]
+        );
 
         $request = Request::create('/foobar');
         $request->attributes->set('pageModel', 42);
@@ -81,7 +137,7 @@ class ModelResolverTest extends TestCase
         $pageModel = new PageModel();
         $pageModel->setRow(['id' => 42]);
 
-         $adapter = $this
+        $adapter = $this
              ->getMockBuilder(Adapter::class)
              ->disableOriginalConstructor()
              ->setMethods(['findByPk'])

@@ -53,6 +53,10 @@ class ModelResolver implements ArgumentValueResolverInterface
             return false;
         }
 
+        if (!$argument->isNullable() && null === $this->fetchModel($request, $argument)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -61,11 +65,27 @@ class ModelResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
+        yield $this->fetchModel($request, $argument);
+    }
+
+    /**
+     * Fetches the model.
+     *
+     * @param Request          $request
+     * @param ArgumentMetadata $argument
+     *
+     * @return Model|null
+     */
+    private function fetchModel(Request $request, ArgumentMetadata $argument)
+    {
         $id = $request->attributes->getInt($argument->getName());
 
         /** @var Model $model */
         $model = $this->framework->getAdapter($argument->getType());
+        if (null === $model) {
+            var_dump($model);
+        }
 
-        yield $model->findByPK($id);
+        return $model->findByPK($id);
     }
 }
