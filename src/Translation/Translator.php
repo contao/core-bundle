@@ -140,7 +140,7 @@ class Translator implements TranslatorInterface
      */
     private function loadLanguageFile(string $name)
     {
-        /** @var System */
+        /** @var System $system */
         $system = $this->framework->getAdapter(System::class);
 
         $system->loadLanguageFile($name);
