@@ -23,7 +23,7 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
     /**
      * @var FrontendModuleRendererInterface[]
      */
-    private $renderers;
+    private $renderers = [];
 
     /**
      * ChainFrontendModuleRenderer constructor.
@@ -32,7 +32,19 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
      */
     public function __construct(array $renderers)
     {
-        $this->renderers = $renderers;
+        foreach ($renderers as $renderer) {
+            $this->addRenderer($renderer);
+        }
+    }
+
+    /**
+     * Adds a renderer.
+     *
+     * @param FrontendModuleRendererInterface $renderer
+     */
+    public function addRenderer(FrontendModuleRendererInterface $renderer)
+    {
+        $this->renderers[] = $renderer;
     }
 
     /**

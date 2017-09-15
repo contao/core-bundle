@@ -23,7 +23,7 @@ class DelegatingContentElementRenderer implements ContentElementRendererInterfac
     /**
      * @var ContentElementRendererInterface[]
      */
-    private $renderers;
+    private $renderers = [];
 
     /**
      * ChainFrontendModuleRenderer constructor.
@@ -32,7 +32,19 @@ class DelegatingContentElementRenderer implements ContentElementRendererInterfac
      */
     public function __construct(array $renderers)
     {
-        $this->renderers = $renderers;
+        foreach ($renderers as $renderer) {
+            $this->addRenderer($renderer);
+        }
+    }
+
+    /**
+     * Adds a renderer.
+     *
+     * @param ContentElementRendererInterface $renderer
+     */
+    public function addRenderer(ContentElementRendererInterface $renderer)
+    {
+        $this->renderers[] = $renderer;
     }
 
     /**

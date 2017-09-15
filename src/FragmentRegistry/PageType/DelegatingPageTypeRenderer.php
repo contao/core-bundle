@@ -22,7 +22,7 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
     /**
      * @var PageTypeRendererInterface[]
      */
-    private $renderers;
+    private $renderers = [];
 
     /**
      * DelegatingPageTypeRenderer constructor.
@@ -31,8 +31,21 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
      */
     public function __construct(array $renderers)
     {
-        $this->renderers = $renderers;
+        foreach ($renderers as $renderer) {
+            $this->addRenderer($renderer);
+        }
     }
+
+    /**
+     * Adds a renderer.
+     *
+     * @param PageTypeRendererInterface $renderer
+     */
+    public function addRenderer(PageTypeRendererInterface $renderer)
+    {
+        $this->renderers[] = $renderer;
+    }
+
 
     /**
      * {@inheritdoc}
