@@ -2344,18 +2344,31 @@ abstract class Controller extends \System
 		$objVersions->create();
 	}
 
-	protected static function braceGlob($resource)
+	/**
+	 * Return the files matching a GLOB pattern
+	 *
+	 * @param string $pattern
+	 *
+	 * @return array
+	 */
+	protected static function braceGlob($pattern)
 	{
-		if (false === strpos($resource, '/**/') && (defined('GLOB_BRACE') || false === strpos($resource, '{')))
+		// Use glob() if possible
+		if (false === strpos($pattern, '/**/') && (defined('GLOB_BRACE') || false === strpos($pattern, '{')))
 		{
-			return glob($resource, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
+			return glob($pattern, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
 		}
 
 		$finder = new Finder();
-		$regex = Glob::toRegex($resource);
+		$regex = Glob::toRegex($pattern);
 
 		// All files in the given template folder
-		$filesIterator = $finder->followLinks()->sortByName()->in(dirname($resource))->files();
+		$filesIterator = $finder
+			->files()
+			->followLinks()
+			->sortByName()
+			->in(dirname($pattern))
+		;
 
 		// Match the actual regex and filter the files
 		$filesIterator = $filesIterator->filter(function (\SplFileInfo $info) use ($regex)
