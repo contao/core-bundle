@@ -86,7 +86,7 @@ class ContaoTableProcessor
         $record['extra']['contao'] = $context;
         unset($record['context']['contao']);
 
-        return (new PsrLogMessageProcessor())($record);
+        return $record;
     }
 
     /**

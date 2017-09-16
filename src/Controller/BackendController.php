@@ -99,7 +99,7 @@ class BackendController extends Controller
         $request = $this->container->get('request_stack')->getCurrentRequest();
 
         $this->container->get('contao.framework')->initialize();
-        $this->container->get('contao.security.preview_authenticator')->authenticateFrontend($request->get('user'));
+        $this->container->get('contao.security.preview_authenticator')->authenticateFrontendUser($request->get('user'));
 
         $controller = new BackendPreview();
 

@@ -49,7 +49,7 @@ class ContaoPreviewAuthenticator
      *
      * @param null $username
      */
-    public function authenticateFrontend($username = null): void
+    public function authenticateFrontendUser($username = null): void
     {
         $sessionKey = '_security_contao_frontend';
         $providerKey = 'contao_frontend';
@@ -66,7 +66,7 @@ class ContaoPreviewAuthenticator
         try {
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            return;
+            // TODO:
         }
 
         $token = new UsernamePasswordToken(
