@@ -133,12 +133,15 @@ class ModuleLogin extends \Module
 			return;
 		}
 
-		$flashBag = \System::getContainer()->get('session')->getFlashBag();
-
-		if ($flashBag->has($this->strFlashType))
+		if (\System::getContainer()->get('session')->isStarted())
 		{
-			$this->Template->hasError = true;
-			$this->Template->message = $flashBag->get($this->strFlashType)[0];
+			$flashBag = \System::getContainer()->get('session')->getFlashBag();
+
+			if ($flashBag->has($this->strFlashType))
+			{
+				$this->Template->hasError = true;
+				$this->Template->message = $flashBag->get($this->strFlashType)[0];
+			}
 		}
 
 		$this->Template->targetName = '_target_path';
