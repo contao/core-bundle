@@ -388,7 +388,7 @@ class FrontendIndex extends \Frontend
 
         elseif ($error instanceof SessionUnavailableException)
         {
-            // TODO: i don't know.
+            // TODO: i don't know, but this case should actually not happen.
         }
 
         elseif ($error instanceof \Exception)

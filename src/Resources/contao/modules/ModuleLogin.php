@@ -47,15 +47,15 @@ class ModuleLogin extends \Module
 	 */
 	public function generate()
 	{
-        /** @var Session $session */
-        $session = \System::getContainer()->get('session');
+		/** @var Session $session */
+		$session = \System::getContainer()->get('session');
 
-        /** @var Request $request */
-        $request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
-        /** @var AuthenticationUtils $authenticationUtils */
-        $authenticationUtils = \System::getContainer()->get('security.authentication_utils');
-        $error = $authenticationUtils->getLastAuthenticationError();
+		/** @var AuthenticationUtils $authenticationUtils */
+		$authenticationUtils = \System::getContainer()->get('security.authentication_utils');
+		$error = $authenticationUtils->getLastAuthenticationError();
 
 		if (TL_MODE == 'BE')
 		{
@@ -79,10 +79,16 @@ class ModuleLogin extends \Module
 
 		if ($error)
 		{
-            $session->getFlashBag()->set($this->strFlashType, $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-        }
+			$session->getFlashBag()->set($this->strFlashType, $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+		}
 
-        return parent::generate();
+		if ($this->User instanceof FrontendUser)
+		{
+			// To be removed in Contao 5.x, only for BC reasons
+			$this->User->login();
+		}
+
+		return parent::generate();
 	}
 
 
@@ -91,21 +97,21 @@ class ModuleLogin extends \Module
 	 */
 	protected function compile()
 	{
-	    /** @var Session $session */
-	    $session = \System::getContainer()->get('session');
+		/** @var Session $session */
+		$session = \System::getContainer()->get('session');
 
-	    /** @var RouterInterface $router */
-	    $router = \System::getContainer()->get('router');
+		/** @var RouterInterface $router */
+		$router = \System::getContainer()->get('router');
 
-        /** @var TokenInterface $token */
-        $token = \System::getContainer()->get('security.token_storage')->getToken();
+		/** @var TokenInterface $token */
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
-        /** @var Request $request */
-        $request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		// Show logout form
-        // Do not redirect if authentication is successful
-        if ($token !== null && $token->getUser() instanceof FrontendUser && $token->isAuthenticated())
+		// Do not redirect if authentication is successful
+		if ($token !== null && $token->getUser() instanceof FrontendUser && $token->isAuthenticated())
 		{
 			$this->import('FrontendUser', 'User');
 
@@ -135,20 +141,20 @@ class ModuleLogin extends \Module
 			$this->Template->message = $flashBag->get($this->strFlashType)[0];
 		}
 
-        $this->Template->targetName = '_target_path';
-        $this->Template->targetPath = $request->getRequestUri();
+		$this->Template->targetName = '_target_path';
+		$this->Template->targetPath = $request->getRequestUri();
 
-        // Redirect to the last page visited
-        if ($this->redirectBack && $session->get('LAST_PAGE_VISITED') != '')
-        {
-            $this->Template->targetName = '_target_referer';
-            $this->Template->targetPath = $session->get('LAST_PAGE_VISITED');
-        }
-        elseif ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) instanceof PageModel)
-        {
-            /** @var PageModel $objTarget */
-            $this->Template->targetPath = $objTarget->getAbsoluteUrl();
-        }
+		// Redirect to the last page visited
+		if ($this->redirectBack && $session->get('LAST_PAGE_VISITED') != '')
+		{
+			$this->Template->targetName = '_target_referer';
+			$this->Template->targetPath = $session->get('LAST_PAGE_VISITED');
+		}
+		elseif ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) instanceof PageModel)
+		{
+			/** @var PageModel $objTarget */
+			$this->Template->targetPath = $objTarget->getAbsoluteUrl();
+		}
 
 		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['username'];
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];

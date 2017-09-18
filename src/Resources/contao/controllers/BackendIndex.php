@@ -57,6 +57,12 @@ class BackendIndex extends \Backend
 		// Login
 		$this->User->authenticate();
 
+		if ($this->User instanceof BackendUser)
+		{
+			// To be removed in Contao 5.x, only for BC reasons
+			$this->User->login();
+		}
+
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('tl_user');
 	}

@@ -357,16 +357,13 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function login()
 	{
+		dump(\Input::post('username'));
+		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+
 		/** @var Request $request */
 		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		\System::loadLanguageFile('default');
-
-		// Do not continue if username or password are missing
-		if (empty($_POST['username']) || empty($_POST['password']))
-		{
-			return false;
-		}
 
 		// Load the user object
 		if ($this->findBy('username', \Input::post('username', true)) == false)
