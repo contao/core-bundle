@@ -4082,7 +4082,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						}
 						
 						$group = $objSubChilds->$groupField;
-						$subReturn .= "\n  " . '<li class="tl_folder click2edit cf" style="background: #fafafc;"><div class="tl_left" style="padding-left:'.(($level+2) * $intSpacing).'px">';
+						$subReturn .= "\n  " . '<li class="tl_group click2edit cf"><div class="tl_left" style="padding-left:'.(($level+2) * $intSpacing).'px">';
 
 						if (strpos($groupField, ':') !== false)
 						{
