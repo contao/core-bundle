@@ -36,7 +36,10 @@ class TranslatorTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Translation\TranslatorInterface', $translator);
     }
 
-    public function testForwardsMethodCalls()
+    /**
+     * Tests forwarding method calls to the decorated translator.
+     */
+    public function testForwardsTheMethodCalls()
     {
         $originalTranslator = $this->createMock(TranslatorInterface::class);
 
@@ -77,13 +80,17 @@ class TranslatorTest extends TestCase
 
         $this->assertSame('trans', $translator->trans('id', ['param' => 'value'], 'domain', 'en'));
         $this->assertSame('transChoice', $translator->transChoice('id', 3, ['param' => 'value'], 'domain', 'en'));
+
         $translator->setLocale('en');
+        
         $this->assertSame('en', $translator->getLocale());
     }
 
-    public function testReadsFromGlobals()
+    /**
+     * Tests reading from $GLOBALS['TL_LANG'].
+     */
+    public function testReadsFromTheGlobalLanguageArray()
     {
-        $originalTranslator = $this->createMock(TranslatorInterface::class);
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
         $framework
@@ -105,7 +112,7 @@ class TranslatorTest extends TestCase
             ->willReturn($systemAdapter)
         ;
 
-        $translator = new Translator($originalTranslator, $framework);
+        $translator = new Translator($this->createMock(TranslatorInterface::class), $framework);
 
         $this->assertSame('MSC.foo', $translator->trans('MSC.foo', [], 'contao_default'));
 
@@ -135,9 +142,11 @@ class TranslatorTest extends TestCase
         );
     }
 
-    public function testLoadsMessageDomainWithPrefix()
+    /**
+     * Tests loading message domains with the "contao_" prefix.
+     */
+    public function testLoadsMessageDomainsWithTheContaoPrefix()
     {
-        $originalTranslator = $this->createMock(TranslatorInterface::class);
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
         $framework
@@ -159,7 +168,7 @@ class TranslatorTest extends TestCase
             ->willReturn($systemAdapter)
         ;
 
-        $translator = new Translator($originalTranslator, $framework);
+        $translator = new Translator($this->createMock(TranslatorInterface::class), $framework);
 
         $this->assertSame('foo', $translator->trans('foo', [], 'contao_tl_foobar'));
 
