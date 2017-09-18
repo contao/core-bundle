@@ -32,7 +32,7 @@ class Translator implements TranslatorInterface
     private $framework;
 
     /**
-     * @param TranslatorInterface      $translator Original translator service that gets decorated
+     * @param TranslatorInterface      $translator The translator to decorate
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(TranslatorInterface $translator, ContaoFrameworkInterface $framework)
@@ -44,12 +44,12 @@ class Translator implements TranslatorInterface
     /**
      * {@inheritdoc}
      *
-     * Gets the translation from Contao’s $GLOBALS['TL_LANG'] array
-     * if the message domain starts with "contao_".
-     * The locale parameter is ignored in this case.
+     * Gets the translation from Contao’s $GLOBALS['TL_LANG'] array if the message domain starts with
+     * "contao_". The locale parameter is ignored in this case.
      */
     public function trans($id, array $parameters = [], $domain = null, $locale = null)
     {
+        // Forward to the default translator
         if (null === $domain || strncmp($domain, 'contao_', 7) !== 0) {
             return $this->translator->trans($id, $parameters, $domain, $locale);
         }
@@ -74,36 +74,33 @@ class Translator implements TranslatorInterface
 
     /**
      * {@inheritdoc}
-     *
-     * Forwards to the default translator, doesn’t handle $GLOBALS['TL_LANG'].
      */
     public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
     {
+        // Forward to the default translator
         return $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * Forwards to the default translator, doesn’t handle $GLOBALS['TL_LANG'].
      */
     public function setLocale($locale)
     {
+        // Forward to the default translator
         return $this->translator->setLocale($locale);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * Forwards to the default translator, doesn’t handle $GLOBALS['TL_LANG'].
      */
     public function getLocale()
     {
+        // Forward to the default translator
         return $this->translator->getLocale();
     }
 
     /**
-     * Get the translation from the $GLOBALS['TL_LANG'] array.
+     * Returns the labels from the $GLOBALS['TL_LANG'] array.
      *
      * @param string $id     Message id, e.g. "MSC.view"
      * @param string $domain Message domain, e.g. "messages" or "tl_content"
@@ -116,8 +113,7 @@ class Translator implements TranslatorInterface
             $id = $domain.'.'.$id;
         }
 
-        // Split the ID into chunks separated by dots,
-        // escaped dots (\.) and backslashes (\\) are allowed.
+        // Split the ID into chunks allowing escaped dots (\.) and backslashes (\\)
         preg_match_all('/(?:\\\\[.\\\\]|[^.])++/s', $id, $matches);
         $parts = preg_replace('/\\\\([.\\\\])/s', '$1', $matches[0]);
 
@@ -127,6 +123,7 @@ class Translator implements TranslatorInterface
             if (!isset($item[$part])) {
                 return null;
             }
+
             $item = &$item[$part];
         }
 
@@ -134,7 +131,7 @@ class Translator implements TranslatorInterface
     }
 
     /**
-     * Load a Contao framework language file.
+     * Loads a Contao framework language file.
      *
      * @param string $name
      */
