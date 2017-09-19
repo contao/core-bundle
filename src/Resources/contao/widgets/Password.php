@@ -115,7 +115,7 @@ class Password extends \Widget
 		}
 
 		// Check password length either from DCA or use Config as fallback (#1086)
-		$intLength = ($this->arrConfiguration['minlength'] > 0) ? $this->arrConfiguration['minlength'] : \Config::get('minPasswordLength');
+		$intLength = ($this->minlength > 0) ? $this->minlength : \Config::get('minPasswordLength');
 
 		if (Utf8::strlen($varInput) < $intLength)
 		{
