@@ -30,6 +30,8 @@ class SymlinksCommandTest extends TestCase
      */
     public function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
 
         $fs->remove($this->getRootDir().'/system/logs');

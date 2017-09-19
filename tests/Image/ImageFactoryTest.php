@@ -50,6 +50,8 @@ class ImageFactoryTest extends TestCase
      */
     public function tearDown(): void
     {
+        parent::tearDown();
+
         if (file_exists($this->getRootDir().'/assets/images')) {
             (new Filesystem())->remove($this->getRootDir().'/assets/images');
         }

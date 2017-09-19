@@ -31,6 +31,8 @@ class BackendCsvImportControllerTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         $GLOBALS['TL_LANG']['MSC']['source'] = 'Source';
         $GLOBALS['TL_LANG']['MSC']['separator'] = 'Separator';
         $GLOBALS['TL_LANG']['MSC']['comma'] = 'Comma';
@@ -50,6 +52,8 @@ class BackendCsvImportControllerTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
+        parent::tearDownAfterClass();
+
         unset($GLOBALS['TL_LANG']);
     }
 
@@ -427,8 +431,6 @@ EOF;
      */
     private function getController(Request $request = null): BackendCsvImportController
     {
-        parent::setUp();
-
         if (null === $request) {
             $request = new Request();
         }

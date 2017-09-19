@@ -35,6 +35,8 @@ class PictureTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         self::$rootDir = __DIR__.'/../../tmp';
 
         $fs = new Filesystem();
@@ -55,6 +57,8 @@ class PictureTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
+        parent::tearDownAfterClass();
+
         $fs = new Filesystem();
         $fs->remove(self::$rootDir);
     }

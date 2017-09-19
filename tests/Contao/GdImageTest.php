@@ -38,6 +38,8 @@ class GdImageTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         self::$rootDir = __DIR__.'/../../tmp';
 
         $fs = new Filesystem();
@@ -49,6 +51,8 @@ class GdImageTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
+        parent::tearDownAfterClass();
+
         $fs = new Filesystem();
 
         if ($fs->exists(self::$rootDir)) {

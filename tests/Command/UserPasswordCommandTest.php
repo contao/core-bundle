@@ -45,6 +45,8 @@ class UserPasswordCommandTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $framework = $this->mockContaoFramework(
             null,
             null,

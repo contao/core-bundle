@@ -45,6 +45,8 @@ class ImageSizesTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $framework = $this->mockContaoFramework();
         $framework->initialize();
 

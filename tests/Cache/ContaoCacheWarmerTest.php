@@ -53,6 +53,8 @@ class ContaoCacheWarmerTest extends TestCase
      */
     protected function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
         $fs->remove($this->getCacheDir().'/contao');
     }

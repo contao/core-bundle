@@ -35,6 +35,8 @@ class ScopeMatcherTest extends TestCase
      */
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->matcher = $this->mockScopeMatcher();
     }
 

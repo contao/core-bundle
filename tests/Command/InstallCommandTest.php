@@ -29,6 +29,8 @@ class InstallCommandTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $tcpdfPath = $this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php';
 
         if (!file_exists($tcpdfPath)) {
@@ -45,6 +47,8 @@ class InstallCommandTest extends TestCase
      */
     public function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
 
         $fs->remove($this->getRootDir().'/assets/css');

@@ -46,10 +46,10 @@ class TemplateTest extends TestCase
      */
     protected function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
         $fs->remove($this->getRootDir().'/templates');
-
-        parent::tearDown();
     }
 
     /**

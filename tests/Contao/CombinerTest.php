@@ -44,6 +44,8 @@ class CombinerTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         self::$rootDir = __DIR__.'/../Fixtures/tmp';
 
         $fs = new Filesystem();
@@ -60,6 +62,8 @@ class CombinerTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
+        parent::tearDownAfterClass();
+
         $fs = new Filesystem();
         $fs->remove(self::$rootDir);
     }

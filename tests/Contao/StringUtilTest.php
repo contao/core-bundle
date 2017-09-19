@@ -28,6 +28,8 @@ class StringUtilTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         if (!defined('TL_ERROR')) {
             define('TL_ERROR', 'ERROR');
         }
@@ -38,6 +40,8 @@ class StringUtilTest extends TestCase
      */
     protected function setUp(): void
     {
+        parent::setUp();
+
         if (!defined('TL_ROOT')) {
             define('TL_ROOT', $this->getRootDir());
         }
