@@ -406,8 +406,8 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         /** @var Config $config */
         $config = $this->getAdapter(Config::class);
 
-        $this->iniSet('date.timezone', $config->get('timeZone'));
-        date_default_timezone_set($config->get('timeZone'));
+        $this->iniSet('date.timezone', (string) $config->get('timeZone'));
+        date_default_timezone_set((string) $config->get('timeZone'));
     }
 
     /**
@@ -453,9 +453,9 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      * Tries to set a php.ini configuration option.
      *
      * @param string $key
-     * @param mixed  $value
+     * @param string $value
      */
-    private function iniSet($key, $value): void
+    private function iniSet(string $key, string $value): void
     {
         if (function_exists('ini_set')) {
             ini_set($key, $value);

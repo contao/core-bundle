@@ -80,28 +80,32 @@ class FilePickerProviderTest extends TestCase
             )
         ;
 
-        $filesAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['findByUuid', 'findByPath'])
-            ->getMock()
-        ;
+        $count = 0;
+        $adapter = $this->createMock(Adapter::class);
 
-        $filesAdapter
-            ->method('findByUuid')
-            ->willReturn($filesModel)
-        ;
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key) use ($filesModel, &$count) {
+                    if ('findByUuid' === $key) {
+                        return $filesModel;
+                    }
 
-        $filesAdapter
-            ->method('findByPath')
-            ->willReturnOnConsecutiveCalls($filesModel, null)
+                    // Return the files model upon the first call
+                    if ('findByPath' === $key && ++$count === 1) {
+                        return $filesModel;
+                    }
+
+                    return null;
+                }
+            )
         ;
 
         $framwork = $this->createMock(ContaoFramework::class);
 
         $framwork
             ->method('getAdapter')
-            ->willReturn($filesAdapter)
+            ->willReturn($adapter)
         ;
 
         $this->provider = new FilePickerProvider($menuFactory, $router, __DIR__);

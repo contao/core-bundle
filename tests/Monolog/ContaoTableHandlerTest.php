@@ -97,16 +97,19 @@ class ContaoTableHandlerTest extends TestCase
             ->willReturnCallback(function (string $key) use ($connection) {
                 switch ($key) {
                     case 'contao.framework':
-                        $system = $this
-                            ->getMockBuilder(Adapter::class)
-                            ->disableOriginalConstructor()
-                            ->setMethods(['importStatic', 'addLogEntry'])
-                            ->getMock()
-                        ;
+                        $system = $this->createMock(Adapter::class);
 
                         $system
-                            ->method('importStatic')
-                            ->willReturn($this)
+                            ->method('__call')
+                            ->willReturnCallback(
+                                function (string $key): ?self {
+                                    if ('importStatic' === $key) {
+                                        return $this;
+                                    }
+
+                                    return null;
+                                }
+                            )
                         ;
 
                         $framework = $this->createMock(ContaoFrameworkInterface::class);

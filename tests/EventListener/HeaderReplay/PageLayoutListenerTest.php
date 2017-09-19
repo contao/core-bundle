@@ -47,24 +47,23 @@ class PageLayoutListenerTest extends TestCase
      */
     public function testAddsThePageLayoutHeader(bool $agentIsMobile, string $tlViewCookie = null, string $expectedHeaderValue): void
     {
-        $envAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['get'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $envAdapter
-            ->method('get')
-            ->willReturnCallback(function (string $key) use ($agentIsMobile) {
-                switch ($key) {
-                    case 'agent':
-                        return (object) ['mobile' => $agentIsMobile];
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key, array $params) use ($agentIsMobile) {
+                    $this->assertSame('get', $key);
 
-                    default:
-                        return null;
+                    switch ($params[0]) {
+                        case 'agent':
+                            return (object) ['mobile' => $agentIsMobile];
+
+                        default:
+                            return null;
+                    }
                 }
-            })
+            )
         ;
 
         $request = new Request();
@@ -78,7 +77,7 @@ class PageLayoutListenerTest extends TestCase
 
         $listener = new PageLayoutListener(
             $this->mockScopeMatcher(),
-            $this->mockContaoFramework(null, null, [Environment::class => $envAdapter])
+            $this->mockContaoFramework(null, null, [Environment::class => $adapter])
         );
 
         $listener->onReplay($event);

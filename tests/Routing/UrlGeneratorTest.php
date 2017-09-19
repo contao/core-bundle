@@ -324,47 +324,34 @@ class UrlGeneratorTest extends TestCase
      */
     private function getGenerator(UrlGeneratorInterface $router, bool $prependLocale = false, bool $useAutoItem = true): UrlGenerator
     {
-        $configAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['isComplete', 'preload', 'getInstance', 'get'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $configAdapter
-            ->method('isComplete')
-            ->willReturn(true)
-        ;
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key, array $params) use ($useAutoItem) {
+                    if ('isComplete' === $key) {
+                        return true;
+                    }
 
-        $configAdapter
-            ->method('preload')
-            ->willReturn(null)
-        ;
+                    if ('get' === $key) {
+                        switch ($params[0]) {
+                            case 'useAutoItem':
+                                return $useAutoItem;
 
-        $configAdapter
-            ->method('getInstance')
-            ->willReturn(null)
-        ;
+                            case 'timeZone':
+                                return 'Europe/Berlin';
+                        }
+                    }
 
-        $configAdapter
-            ->method('get')
-            ->willReturnCallback(function (string $key) use ($useAutoItem) {
-                switch ($key) {
-                    case 'useAutoItem':
-                        return $useAutoItem;
-
-                    case 'timeZone':
-                        return 'Europe/Berlin';
-
-                    default:
-                        return null;
+                    return null;
                 }
-            })
+            )
         ;
 
         return new UrlGenerator(
             $router,
-            $this->mockContaoFramework(null, null, [Config::class => $configAdapter]),
+            $this->mockContaoFramework(null, null, [Config::class => $adapter]),
             $prependLocale
         );
     }

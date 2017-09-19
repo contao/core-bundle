@@ -339,22 +339,17 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $rtAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['validate'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $rtAdapter
-            ->method('validate')
+        $adapter
+            ->method('__call')
             ->willReturn(false)
         ;
 
         $framework = $this->mockContaoFramework(
             $container->get('request_stack'),
             null,
-            [RequestToken::class => $rtAdapter]
+            [RequestToken::class => $adapter]
         );
 
         $this->expectException(InvalidRequestTokenException::class);
@@ -379,22 +374,17 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $rtAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['validate'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $rtAdapter
+        $adapter
             ->expects($this->never())
-            ->method('validate')
+            ->method('__call')
         ;
 
         $framework = $this->mockContaoFramework(
             $container->get('request_stack'),
             null,
-            [RequestToken::class => $rtAdapter]
+            [RequestToken::class => $adapter]
         );
 
         $framework->setContainer($container);
@@ -419,27 +409,29 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $rtAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['get', 'validate'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $rtAdapter
-            ->method('get')
-            ->willReturn('foobar')
-        ;
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key): ?string {
+                    if ('get' === $key) {
+                        return 'foobar';
+                    }
 
-        $rtAdapter
-            ->expects($this->never())
-            ->method('validate')
+                    if ('validate' === $key) {
+                        $this->fail('The validate() method was not supposed to be called');
+                    }
+
+                    return null;
+                }
+            )
         ;
 
         $framework = $this->mockContaoFramework(
             $container->get('request_stack'),
             null,
-            [RequestToken::class => $rtAdapter]
+            [RequestToken::class => $adapter]
         );
 
         $framework->setContainer($container);
@@ -459,38 +451,35 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $configAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['isComplete', 'get', 'preload', 'getInstance'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $configAdapter
-            ->method('isComplete')
-            ->willReturn(false)
-        ;
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key, array $params) {
+                    if ('isComplete' === $key) {
+                        return false;
+                    }
 
-        $configAdapter
-            ->method('get')
-            ->willReturnCallback(function (string $key): ?string {
-                switch ($key) {
-                    case 'characterSet':
-                        return 'UTF-8';
+                    if ('get' === $key) {
+                        switch ($params[0]) {
+                            case 'characterSet':
+                                return 'UTF-8';
 
-                    case 'timeZone':
-                        return 'Europe/Berlin';
+                            case 'timeZone':
+                                return 'Europe/Berlin';
+                        }
+                    }
 
-                    default:
-                        return null;
+                    return null;
                 }
-            })
+            )
         ;
 
         $framework = $this->mockContaoFramework(
             $container->get('request_stack'),
             $this->mockRouter('/contao/login'),
-            [Config::class => $configAdapter]
+            [Config::class => $adapter]
         );
 
         $this->expectException(IncompleteInstallationException::class);
@@ -515,38 +504,35 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_BACKEND);
         $container->get('request_stack')->push($request);
 
-        $configAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['isComplete', 'get', 'preload', 'getInstance'])
-            ->getMock()
-        ;
+        $adapter = $this->createMock(Adapter::class);
 
-        $configAdapter
-            ->method('isComplete')
-            ->willReturn(false)
-        ;
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $key, array $params) {
+                    if ('isComplete' === $key) {
+                        return false;
+                    }
 
-        $configAdapter
-            ->method('get')
-            ->willReturnCallback(function (string $key): ?string {
-                switch ($key) {
-                    case 'characterSet':
-                        return 'UTF-8';
+                    if ('get' === $key) {
+                        switch ($params[0]) {
+                            case 'characterSet':
+                                return 'UTF-8';
 
-                    case 'timeZone':
-                        return 'Europe/Berlin';
+                            case 'timeZone':
+                                return 'Europe/Berlin';
+                        }
+                    }
 
-                    default:
-                        return null;
+                    return null;
                 }
-            })
+            )
         ;
 
         $framework = $this->mockContaoFramework(
             $container->get('request_stack'),
             $this->mockRouter('/contao/install'),
-            [Config::class => $configAdapter]
+            [Config::class => $adapter]
         );
 
         $framework->setContainer($container);
