@@ -420,7 +420,7 @@ class ContaoFrameworkTest extends TestCase
                     }
 
                     if ('validate' === $key) {
-                        $this->fail('The validate() method was not supposed to be called');
+                        $this->fail('The validate() method should never be called');
                     }
 
                     return null;

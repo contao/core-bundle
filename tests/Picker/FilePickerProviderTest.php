@@ -86,7 +86,7 @@ class FilePickerProviderTest extends TestCase
         $adapter
             ->method('__call')
             ->willReturnCallback(
-                function (string $key) use ($filesModel, &$count) {
+                function (string $key) use ($filesModel, &$count): ?FilesModel {
                     if ('findByUuid' === $key) {
                         return $filesModel;
                     }
