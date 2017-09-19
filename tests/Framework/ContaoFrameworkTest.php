@@ -412,15 +412,17 @@ class ContaoFrameworkTest extends TestCase
         $adapter = $this->createMock(Adapter::class);
 
         $adapter
+            ->expects($this->never())
+            ->method('__call')
+            ->with('validate')
+        ;
+
+        $adapter
             ->method('__call')
             ->willReturnCallback(
                 function (string $key): ?string {
                     if ('get' === $key) {
                         return 'foobar';
-                    }
-
-                    if ('validate' === $key) {
-                        $this->fail('The validate() method should never be called');
                     }
 
                     return null;
