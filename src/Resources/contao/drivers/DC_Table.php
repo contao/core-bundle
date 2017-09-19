@@ -3865,9 +3865,10 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				if (strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group']))
 				{
 					$groupField = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group'];
-					array_unshift($arrOrder, $groupField);
+					$flag = !empty($GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag']) ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
+					array_unshift($arrOrder, $groupField . (($flag % 2) == 0 ? ' DESC' : ''));
 				}
-				
+	
 				// Also apply the filter settings to the child table (see #716)
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6 && !empty($this->procedure))
 				{
@@ -4082,54 +4083,13 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						}
 						
 						$group = $objSubChilds->$groupField;
+
+						$sortingMode  = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
+						$groupValue = $this->formatCurrentValue($groupField, $group, $sortingMode);
+						$groupLabel = $this->formatGroupHeader($groupField, $groupValue, $sortingMode, $objSubChilds->row());
+
 						$subReturn .= "\n  " . '<li class="tl_group click2edit cf"><div class="tl_left" style="padding-left:'.(($level+2) * $intSpacing).'px">';
-
-						if (strpos($groupField, ':') !== false)
-						{
-							list($strKey, $strTable) = explode(':', $groupField);
-							list($strTable, $strField) = explode('.', $strTable);
-
-							$objRef = $this->Database->prepare("SELECT " . $strField . " FROM " . $strTable . " WHERE id=?")
-													 ->limit(1)
-													 ->execute($objSubChilds->$strKey);
-
-							$label = $objRef->numRows ? $objRef->$strField : '';
-						}
-						elseif (in_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'], array(5, 6, 7, 8, 9, 10)))
-						{
-							$label = \Date::parse(\Config::get('datimFormat'),$objSubChilds->$groupField);
-						}
-						else
-						{
-							$label = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['reference'][$objSubChilds->$groupField] ?: $objSubChilds->$groupField;
-						}
-
-						// Shorten the label if it is too long
-						if ($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'] > 0 && $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'] < Utf8::strlen(strip_tags($label)))
-						{
-							$label = trim(\StringUtil::substrHtml($label, $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'])) . ' …';
-						}
-
-						$label = preg_replace('/\(\) ?|\[\] ?|\{\} ?|<> ?/', '', $label);
-
-						// Call the group_label_callback ($row, $label, $this)
-						if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']))
-						{
-							$strClass = $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback'][0];
-							$strMethod = $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback'][1];
-
-							$this->import($strClass);
-							$subReturn .= $this->$strClass->$strMethod($objSubChilds, $label, $this);
-						}
-						elseif (is_callable($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']))
-						{
-							$subReturn .= $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']($objSubChilds, $label, $this);
-						}
-						else
-						{
-							$subReturn .= \Image::getHtml('iconPLAIN.svg', '') . ' ' . $label;
-						}
-
+						$subReturn .= \Image::getHtml('iconPLAIN.svg', '') . ' ' . $groupLabel;
 						$subReturn .= '</div><li class="parent"><ul class="level_'.($level+1).'">';
 					}
 
