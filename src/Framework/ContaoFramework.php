@@ -305,6 +305,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
         // Fully load the configuration
         $config->getInstance();
+        $this->buildHookGlobals();
 
         $this->validateInstallation();
 
@@ -470,5 +471,35 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
             || !$this->request->attributes->has('_token_check')
             || false === $this->request->attributes->get('_token_check')
         ;
+    }
+
+    /**
+     * Build hooks globals.
+     */
+    private function buildHookGlobals()
+    {
+        if ($this->container->hasParameter('contao.hook_listeners.before')) {
+            $config = (array) $this->container->getParameter('contao.hook_listeners.before');
+
+            foreach ($config as $hookName => $hooks) {
+                if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
+                    $GLOBALS['TL_HOOKS'][$hookName] = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
+                } else {
+                    $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
+                }
+            }
+        }
+
+        if ($this->container->hasParameter('contao.hook_listeners.after')) {
+            $config = (array) $this->container->getParameter('contao.hook_listeners.after');
+
+            foreach ($config as $hookName => $hooks) {
+                if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
+                    $GLOBALS['TL_HOOKS'][$hookName] = array_merge($GLOBALS['TL_HOOKS'][$hookName], $hooks);
+                } else {
+                    $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
+                }
+            }
+        }
     }
 }

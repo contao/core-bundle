@@ -577,4 +577,94 @@ class ContaoFrameworkTest extends TestCase
 
         $this->assertSame($class, $prop->getValue($adapter));
     }
+
+    /**
+     * Tests that the hook_listeners are applied.
+     */
+    public function testHookServicesAreRegistered(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'dummy');
+        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
+        $request->attributes->set('_contao_referer_id', 'foobar');
+        $request->setLocale('de');
+
+        $container = $this->mockContainerWithContaoScopes();
+        $container->get('request_stack')->push($request);
+        $container->setParameter(
+            'contao.hook_listeners.before',
+            [
+                'getPageLayout' => [
+                    ['test.listener', 'onGetPageLayout']
+                ],
+                'generatePage' => [
+                    ['test.listener', 'onGeneratePage']
+                ]
+            ]
+        );
+
+        $container->set('test.listener', new \stdClass());
+        $container->set('test.listener2', new \stdClass());
+
+        $container->setParameter(
+            'contao.hook_listeners.after',
+            [
+                'getPageLayout' => [
+                    ['test.listener', 'onGetPageLayoutAfter']
+                ],
+                'parseTemplate' => [
+                    ['test.listener', 'onParseTemplate']
+                ]
+            ]
+        );
+
+        $GLOBALS['TL_HOOKS'] = [
+            'parseTemplate' => [
+                ['test.listener2', 'onParseTemplate']
+            ],
+            'getPageLayout' => [
+                ['test.listener2', 'onGetPageLayout']
+            ],
+            'generatePage' => [
+                ['test.listener2', 'onGeneratePage']
+            ],
+        ];
+
+        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/index.html'));
+        $framework->setContainer($container);
+        $framework->initialize();
+
+        $this->assertArrayHasKey('TL_HOOKS', $GLOBALS);
+        $this->assertArrayHasKey('getPageLayout', $GLOBALS['TL_HOOKS']);
+        $this->assertArrayHasKey('parseTemplate', $GLOBALS['TL_HOOKS']);
+        $this->assertArrayHasKey('generatePage', $GLOBALS['TL_HOOKS']);
+
+        // After and before parameter
+        $this->assertEquals(
+            [
+                ['test.listener', 'onGetPageLayout'],
+                ['test.listener2', 'onGetPageLayout'],
+                ['test.listener', 'onGetPageLayoutAfter']
+            ],
+            $GLOBALS['TL_HOOKS']['getPageLayout']
+        );
+
+        // After parameter
+        $this->assertEquals(
+            [
+                ['test.listener2', 'onParseTemplate'],
+                ['test.listener', 'onParseTemplate']
+            ],
+            $GLOBALS['TL_HOOKS']['parseTemplate']
+        );
+
+        // Before parameter
+        $this->assertEquals(
+            [
+                ['test.listener', 'onGeneratePage'],
+                ['test.listener2', 'onGeneratePage']
+            ],
+            $GLOBALS['TL_HOOKS']['generatePage']
+        );
+    }
 }
