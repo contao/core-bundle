@@ -166,7 +166,7 @@ class RegisterHooksPassTest extends TestCase
     /**
      * Test that exception is thrown for missing hook attribute.
      */
-    public function testInvalidConfigurationExceptionForMissingHookAttribute()
+    public function testInvalidConfigurationExceptionForMissingHookAttribute(): void
     {
         $container = new ContainerBuilder();
 
@@ -189,7 +189,7 @@ class RegisterHooksPassTest extends TestCase
     /**
      * Test that exception is thrown for missing method attribute.
      */
-    public function testInvalidConfigurationExceptionForMissingMethodAttribute()
+    public function testInvalidConfigurationExceptionForMissingMethodAttribute(): void
     {
         $container = new ContainerBuilder();
 

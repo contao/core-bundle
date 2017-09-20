@@ -476,7 +476,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     /**
      * Build hooks globals.
      */
-    private function buildHookGlobals()
+    private function buildHookGlobals(): void
     {
         if ($this->container->hasParameter('contao.hook_listeners.before')) {
             $config = (array) $this->container->getParameter('contao.hook_listeners.before');
