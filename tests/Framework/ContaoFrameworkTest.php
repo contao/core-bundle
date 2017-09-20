@@ -603,9 +603,6 @@ class ContaoFrameworkTest extends TestCase
             ]
         );
 
-        $container->set('test.listener', new \stdClass());
-        $container->set('test.listener2', new \stdClass());
-
         $container->setParameter(
             'contao.hook_listeners.after',
             [
@@ -617,6 +614,9 @@ class ContaoFrameworkTest extends TestCase
                 ]
             ]
         );
+
+        $container->set('test.listener', new \stdClass());
+        $container->set('test.listener2', new \stdClass());
 
         $GLOBALS['TL_HOOKS'] = [
             'parseTemplate' => [
@@ -632,7 +632,15 @@ class ContaoFrameworkTest extends TestCase
 
         $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/index.html'));
         $framework->setContainer($container);
-        $framework->initialize();
+
+        if ($framework->isInitialized()) {
+            $reflection = new \ReflectionObject($framework);
+            $reflectionMethod = $reflection->getMethod('buildHookGlobals');
+            $reflectionMethod->setAccessible(true);
+            $reflectionMethod->invoke($framework);
+        } else {
+            $framework->initialize();
+        }
 
         $this->assertArrayHasKey('TL_HOOKS', $GLOBALS);
         $this->assertArrayHasKey('getPageLayout', $GLOBALS['TL_HOOKS']);
