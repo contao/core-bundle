@@ -602,6 +602,12 @@ class ContaoFrameworkTest extends TestCase
                       0 => [['test.listener.b', 'onGeneratePage']],
                     -10 => [['test.listener.a', 'onGeneratePage']],
                 ],
+                'parseTemplate' => [
+                    10 => [['test.listener.a', 'onParseTemplate']]
+                ],
+                'isVisibleElement' => [
+                    -10 => [['test.listener.a', 'onIsVisibleElement']]
+                ],
             ]
         );
 
@@ -614,6 +620,12 @@ class ContaoFrameworkTest extends TestCase
             ],
             'generatePage' => [
                 ['test.listener.c', 'onGeneratePage']
+            ],
+            'parseTemplate' => [
+                ['test.listener.c', 'onParseTemplate']
+            ],
+            'isVisibleElement' => [
+                ['test.listener.c', 'onIsVisibleElement']
             ],
         ];
 
@@ -632,6 +644,8 @@ class ContaoFrameworkTest extends TestCase
         $this->assertArrayHasKey('TL_HOOKS', $GLOBALS);
         $this->assertArrayHasKey('getPageLayout', $GLOBALS['TL_HOOKS']);
         $this->assertArrayHasKey('generatePage', $GLOBALS['TL_HOOKS']);
+        $this->assertArrayHasKey('parseTemplate', $GLOBALS['TL_HOOKS']);
+        $this->assertArrayHasKey('isVisibleElement', $GLOBALS['TL_HOOKS']);
 
         // Test hooks with high priority are added before low and legacy hooks
         // Test legacy hooks are added before hooks with priority 0
@@ -652,6 +666,24 @@ class ContaoFrameworkTest extends TestCase
                 ['test.listener.a', 'onGeneratePage']
             ],
             $GLOBALS['TL_HOOKS']['generatePage']
+        );
+
+        // Test legacy hooks are kept when adding only hook listeners with high priority.
+        $this->assertEquals(
+            [
+                ['test.listener.a', 'onParseTemplate'],
+                ['test.listener.c', 'onParseTemplate'],
+            ],
+            $GLOBALS['TL_HOOKS']['parseTemplate']
+        );
+
+        // Test legacy hooks are kept when adding only hook listeners with low priority.
+        $this->assertEquals(
+            [
+                ['test.listener.c', 'onIsVisibleElement'],
+                ['test.listener.a', 'onIsVisibleElement'],
+            ],
+            $GLOBALS['TL_HOOKS']['isVisibleElement']
         );
     }
 }

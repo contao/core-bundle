@@ -493,6 +493,12 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
                     $hooks[$hookName] = array_merge($hooks[$hookName], $listeners);
                 }
+
+                // Add legacy hook if only hook listeners with high priority are defined
+                if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
+                    $hooks[$hookName] = array_merge($hooks[$hookName], $GLOBALS['TL_HOOKS'][$hookName]);
+                    unset ($GLOBALS['TL_HOOKS'][$hookName]);
+                }
             }
 
             $GLOBALS['TL_HOOKS'] = $hooks;
