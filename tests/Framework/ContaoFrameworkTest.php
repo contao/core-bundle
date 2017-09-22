@@ -592,26 +592,16 @@ class ContaoFrameworkTest extends TestCase
         $container = $this->mockContainerWithContaoScopes();
         $container->get('request_stack')->push($request);
         $container->setParameter(
-            'contao.hook_listeners.before',
+            'contao.hook_listeners',
             [
                 'getPageLayout' => [
-                    ['test.listener', 'onGetPageLayout']
+                    10 => [['test.listener.a', 'onGetPageLayout']],
+                    0  => [['test.listener.b', 'onGetPageLayout']],
                 ],
-                'generatePage' => [
-                    ['test.listener', 'onGeneratePage']
-                ]
-            ]
-        );
-
-        $container->setParameter(
-            'contao.hook_listeners.after',
-            [
-                'getPageLayout' => [
-                    ['test.listener', 'onGetPageLayoutAfter']
+                'generatePage'  => [
+                      0 => [['test.listener.b', 'onGeneratePage']],
+                    -10 => [['test.listener.a', 'onGeneratePage']],
                 ],
-                'parseTemplate' => [
-                    ['test.listener', 'onParseTemplate']
-                ]
             ]
         );
 
@@ -619,14 +609,11 @@ class ContaoFrameworkTest extends TestCase
         $container->set('test.listener2', new \stdClass());
 
         $GLOBALS['TL_HOOKS'] = [
-            'parseTemplate' => [
-                ['test.listener2', 'onParseTemplate']
-            ],
             'getPageLayout' => [
-                ['test.listener2', 'onGetPageLayout']
+                ['test.listener.c', 'onGetPageLayout']
             ],
             'generatePage' => [
-                ['test.listener2', 'onGeneratePage']
+                ['test.listener.c', 'onGeneratePage']
             ],
         ];
 
@@ -644,33 +631,25 @@ class ContaoFrameworkTest extends TestCase
 
         $this->assertArrayHasKey('TL_HOOKS', $GLOBALS);
         $this->assertArrayHasKey('getPageLayout', $GLOBALS['TL_HOOKS']);
-        $this->assertArrayHasKey('parseTemplate', $GLOBALS['TL_HOOKS']);
         $this->assertArrayHasKey('generatePage', $GLOBALS['TL_HOOKS']);
 
-        // After and before parameter
+        // Test hooks with high priority are added before low and legacy hooks
+        // Test legacy hooks are added before hooks with priority 0
         $this->assertEquals(
             [
-                ['test.listener', 'onGetPageLayout'],
-                ['test.listener2', 'onGetPageLayout'],
-                ['test.listener', 'onGetPageLayoutAfter']
+                ['test.listener.a', 'onGetPageLayout'],
+                ['test.listener.c', 'onGetPageLayout'],
+                ['test.listener.b', 'onGetPageLayout']
             ],
             $GLOBALS['TL_HOOKS']['getPageLayout']
         );
 
-        // After parameter
+        // Test hooks with negative priority are added at the end
         $this->assertEquals(
             [
-                ['test.listener2', 'onParseTemplate'],
-                ['test.listener', 'onParseTemplate']
-            ],
-            $GLOBALS['TL_HOOKS']['parseTemplate']
-        );
-
-        // Before parameter
-        $this->assertEquals(
-            [
-                ['test.listener', 'onGeneratePage'],
-                ['test.listener2', 'onGeneratePage']
+                ['test.listener.c', 'onGeneratePage'],
+                ['test.listener.b', 'onGeneratePage'],
+                ['test.listener.a', 'onGeneratePage']
             ],
             $GLOBALS['TL_HOOKS']['generatePage']
         );

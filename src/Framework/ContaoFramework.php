@@ -478,28 +478,24 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function buildHookGlobals(): void
     {
-        if ($this->container->hasParameter('contao.hook_listeners.before')) {
-            $config = (array) $this->container->getParameter('contao.hook_listeners.before');
+        if ($this->container->hasParameter('contao.hook_listeners')) {
+            $config = (array) $this->container->getParameter('contao.hook_listeners');
+            $hooks  = [];
 
-            foreach ($config as $hookName => $hooks) {
-                if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
-                    $GLOBALS['TL_HOOKS'][$hookName] = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
-                } else {
-                    $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
+            foreach ($config as $hookName => $priorities) {
+                $hooks[$hookName] = [];
+
+                foreach ($priorities as $priority => $listeners) {
+                    if ($priority <= 0 && isset ($GLOBALS['TL_HOOKS'][$hookName])) {
+                        $hooks[$hookName] = array_merge($hooks[$hookName], $GLOBALS['TL_HOOKS'][$hookName]);
+                        unset ($GLOBALS['TL_HOOKS'][$hookName]);
+                    }
+
+                    $hooks[$hookName] = array_merge($hooks[$hookName], $listeners);
                 }
             }
-        }
 
-        if ($this->container->hasParameter('contao.hook_listeners.after')) {
-            $config = (array) $this->container->getParameter('contao.hook_listeners.after');
-
-            foreach ($config as $hookName => $hooks) {
-                if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
-                    $GLOBALS['TL_HOOKS'][$hookName] = array_merge($GLOBALS['TL_HOOKS'][$hookName], $hooks);
-                } else {
-                    $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
-                }
-            }
+            $GLOBALS['TL_HOOKS'] = $hooks;
         }
     }
 }

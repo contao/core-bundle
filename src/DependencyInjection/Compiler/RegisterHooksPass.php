@@ -29,35 +29,24 @@ class RegisterHooksPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $serviceIds = $container->findTaggedServiceIds('contao.hook');
-        $before     = [];
-        $after      = [];
+        $hooks      = [];
 
         foreach ($serviceIds as $serviceId => $tags) {
             foreach ($tags as $attributes) {
                 $this->guardRequiredAttributesExist($serviceId, $attributes);
 
-                if (!empty($attributes['before'])) {
-                    if (!isset($before[$attributes['hook']])) {
-                        $before[$attributes['hook']] = [];
-                    }
+                $priority = $attributes['priority'] ?? 0;
+                $hook     = $attributes['hook'];
 
-                    $before[$attributes['hook']][] = [$serviceId, $attributes['method']];
-                } else {
-                    if (!isset($after[$attributes['hook']])) {
-                        $after[$attributes['hook']] = [];
-                    }
-
-                    $after[$attributes['hook']][] = [$serviceId, $attributes['method']];
-                }
+                $hooks[$hook][$priority][] = [$serviceId, $attributes['method']];
             }
         }
 
-        if ($before) {
-            $container->setParameter('contao.hook_listeners.before', $before);
-        }
+        if (count($hooks) > 0) {
+            // Apply priority sorting.
+            krsort($hooks);
 
-        if ($after) {
-            $container->setParameter('contao.hook_listeners.after', $after);
+            $container->setParameter('contao.hook_listeners', $hooks);
         }
     }
 

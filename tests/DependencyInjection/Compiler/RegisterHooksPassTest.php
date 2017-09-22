@@ -38,7 +38,7 @@ class RegisterHooksPassTest extends TestCase
     /**
      * Tests the after parameter is given.
      */
-    public function testSetHookListenerAfterParameter(): void
+    public function testSetHookListenersParameter(): void
     {
         $container = new ContainerBuilder();
 
@@ -46,8 +46,9 @@ class RegisterHooksPassTest extends TestCase
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'initializeSystem',
-                'method' => 'onInitializeSystem'
+                'hook'     => 'initializeSystem',
+                'method'   => 'onInitializeSystem',
+                'priority' => 0,
             ]
         );
 
@@ -56,45 +57,43 @@ class RegisterHooksPassTest extends TestCase
         $pass = new RegisterHooksPass();
         $pass->process($container);
 
-        $this->assertTrue($container->hasParameter('contao.hook_listeners.after'));
-        $this->assertFalse($container->hasParameter('contao.hook_listeners.before'));
+        $this->assertTrue($container->hasParameter('contao.hook_listeners'));
 
-        $parameter = $container->getParameter('contao.hook_listeners.after');
+        $parameter = $container->getParameter('contao.hook_listeners');
 
         $this->assertArrayHasKey('initializeSystem', $parameter);
-        $this->assertEquals([['test.hook_listener.after', 'onInitializeSystem']], $parameter['initializeSystem']);
+        $this->assertArrayHasKey(0, $parameter['initializeSystem']);
+        $this->assertEquals([['test.hook_listener.after', 'onInitializeSystem']], $parameter['initializeSystem'][0]);
     }
-
 
     /**
      * Tests the after parameter is given.
      */
-    public function testSetHookListenerBeforeParameter(): void
+    public function testPriorityIsZeroByDefaultParameter(): void
     {
         $container = new ContainerBuilder();
 
-        $definition = new Definition('Test\HookListener\BeforeListener');
+        $definition = new Definition('Test\HookListener\AfterListener');
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'initializeSystem',
-                'method' => 'onInitializeSystem',
-                'before' => true,
+                'hook'     => 'initializeSystem',
+                'method'   => 'onInitializeSystem',
             ]
         );
 
-        $container->setDefinition('test.hook_listener.before', $definition);
+        $container->setDefinition('test.hook_listener.after', $definition);
 
         $pass = new RegisterHooksPass();
         $pass->process($container);
 
-        $this->assertTrue($container->hasParameter('contao.hook_listeners.before'));
-        $this->assertFalse($container->hasParameter('contao.hook_listeners.after'));
+        $this->assertTrue($container->hasParameter('contao.hook_listeners'));
 
-        $parameter = $container->getParameter('contao.hook_listeners.before');
+        $parameter = $container->getParameter('contao.hook_listeners');
 
         $this->assertArrayHasKey('initializeSystem', $parameter);
-        $this->assertEquals([['test.hook_listener.before', 'onInitializeSystem']], $parameter['initializeSystem']);
+        $this->assertArrayHasKey(0, $parameter['initializeSystem']);
+        $this->assertEquals([['test.hook_listener.after', 'onInitializeSystem']], $parameter['initializeSystem'][0]);
     }
 
     /**
@@ -109,7 +108,7 @@ class RegisterHooksPassTest extends TestCase
             'contao.hook',
             [
                 'hook'   => 'initializeSystem',
-                'method' => 'onInitializeSystemAfter',
+                'method' => 'onInitializeSystemFirst',
             ]
         );
 
@@ -125,8 +124,7 @@ class RegisterHooksPassTest extends TestCase
             'contao.hook',
             [
                 'hook'   => 'initializeSystem',
-                'method' => 'onInitializeSystemBefore',
-                'before' => true,
+                'method' => 'onInitializeSystemSecond',
             ]
         );
 
@@ -135,7 +133,6 @@ class RegisterHooksPassTest extends TestCase
             [
                 'hook'   => 'parseTemplate',
                 'method' => 'onParseTemplate',
-                'before' => true,
             ]
         );
 
@@ -144,23 +141,82 @@ class RegisterHooksPassTest extends TestCase
         $pass = new RegisterHooksPass();
         $pass->process($container);
 
-        // Test after parameter.
-        $this->assertTrue($container->hasParameter('contao.hook_listeners.after'));
-        $parameter = $container->getParameter('contao.hook_listeners.after');
+        $this->assertTrue($container->hasParameter('contao.hook_listeners'));
+        $parameter = $container->getParameter('contao.hook_listeners');
+
         $this->assertArrayHasKey('initializeSystem', $parameter);
+        $this->assertArrayHasKey(0, $parameter['initializeSystem']);
+
         $this->assertArrayHasKey('generatePage', $parameter);
+        $this->assertArrayHasKey(0, $parameter['generatePage']);
 
-        $this->assertEquals([['test.hook_listener', 'onInitializeSystemAfter']], $parameter['initializeSystem']);
-        $this->assertEquals([['test.hook_listener', 'onGeneratePage']], $parameter['generatePage']);
+        $this->assertEquals(
+            [['test.hook_listener', 'onInitializeSystemFirst'], ['test.hook_listener', 'onInitializeSystemSecond']],
+            $parameter['initializeSystem'][0]
+        );
+        $this->assertEquals([['test.hook_listener', 'onGeneratePage']], $parameter['generatePage'][0]);
+    }
 
-        // Test before parameter.
-        $this->assertTrue($container->hasParameter('contao.hook_listeners.before'));
-        $parameter = $container->getParameter('contao.hook_listeners.before');
+    /**
+     * Tests that multiple tags are handled.
+     */
+    public function testMultipleDefinitionsWithPrioritiesAreSorted(): void
+    {
+        $container = new ContainerBuilder();
+
+        $definitionA = new Definition('Test\HookListenerA');
+        $definitionA->addTag(
+            'contao.hook',
+            [
+                'hook'     => 'initializeSystem',
+                'method'   => 'onInitializeSystem',
+                'priority' => 10,
+            ]
+        );
+
+        $definitionB = new Definition('Test\HookListenerB');
+        $definitionB->addTag(
+            'contao.hook',
+            [
+                'hook'     => 'initializeSystem',
+                'method'   => 'onInitializeSystemLow',
+                'priority' => 10,
+            ]
+        );
+
+        $definitionB->addTag(
+            'contao.hook',
+            [
+                'hook'     => 'initializeSystem',
+                'method'   => 'onInitializeSystemHigh',
+                'priority' => 100,
+            ]
+        );
+
+        $container->setDefinition('test.hook_listener.a', $definitionA);
+        $container->setDefinition('test.hook_listener.b', $definitionB);
+
+        $pass = new RegisterHooksPass();
+        $pass->process($container);
+
+        $this->assertTrue($container->hasParameter('contao.hook_listeners'));
+        $parameter = $container->getParameter('contao.hook_listeners');
+
         $this->assertArrayHasKey('initializeSystem', $parameter);
-        $this->assertArrayHasKey('parseTemplate', $parameter);
 
-        $this->assertEquals([['test.hook_listener', 'onInitializeSystemBefore']], $parameter['initializeSystem']);
-        $this->assertEquals([['test.hook_listener', 'onParseTemplate']], $parameter['parseTemplate']);
+        $this->assertArrayHasKey(10, $parameter['initializeSystem']);
+        $this->assertArrayHasKey(100, $parameter['initializeSystem']);
+
+        $this->assertEquals(
+            [
+                100 => [['test.hook_listener.b', 'onInitializeSystemHigh']],
+                10  => [
+                    ['test.hook_listener.a', 'onInitializeSystem'],
+                    ['test.hook_listener.b', 'onInitializeSystemLow']
+                ],
+            ],
+            $parameter['initializeSystem']
+        );
     }
 
     /**
