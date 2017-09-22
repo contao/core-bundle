@@ -480,28 +480,26 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     {
         if ($this->container->hasParameter('contao.hook_listeners')) {
             $config = (array) $this->container->getParameter('contao.hook_listeners');
-            $hooks  = [];
 
             foreach ($config as $hookName => $priorities) {
-                $hooks[$hookName] = [];
+                $hooks = [];
 
                 foreach ($priorities as $priority => $listeners) {
-                    if ($priority <= 0 && isset ($GLOBALS['TL_HOOKS'][$hookName])) {
-                        $hooks[$hookName] = array_merge($hooks[$hookName], $GLOBALS['TL_HOOKS'][$hookName]);
-                        unset ($GLOBALS['TL_HOOKS'][$hookName]);
+                    if ($priority <= 0 && isset($GLOBALS['TL_HOOKS'][$hookName])) {
+                        $hooks = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
+                        unset($GLOBALS['TL_HOOKS'][$hookName]);
                     }
 
-                    $hooks[$hookName] = array_merge($hooks[$hookName], $listeners);
+                    $hooks = array_merge($hooks, $listeners);
                 }
 
                 // Add legacy hook if only hook listeners with high priority are defined
                 if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
-                    $hooks[$hookName] = array_merge($hooks[$hookName], $GLOBALS['TL_HOOKS'][$hookName]);
-                    unset ($GLOBALS['TL_HOOKS'][$hookName]);
+                    $hooks = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
                 }
-            }
 
-            $GLOBALS['TL_HOOKS'] = $hooks;
+                $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
+            }
         }
     }
 }
