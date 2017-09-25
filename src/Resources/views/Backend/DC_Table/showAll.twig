@@ -1,0 +1,9 @@
+{% if panel is defined %}
+    {{ panel|raw }}
+{% endif %}
+
+{{ view|raw }}
+
+{% if pagination is defined %}
+    {{ pagination|raw }}
+{% endif %}
