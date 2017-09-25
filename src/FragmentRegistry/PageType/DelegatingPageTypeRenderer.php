@@ -46,7 +46,6 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
         $this->renderers[] = $renderer;
     }
 
-
     /**
      * {@inheritdoc}
      */

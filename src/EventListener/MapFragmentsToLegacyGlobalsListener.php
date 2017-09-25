@@ -18,7 +18,6 @@ use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\ModuleProxy;
 use Contao\PageProxy;
 
-
 /**
  * Class MapFragmentsToLegacyGlobals.
  *
