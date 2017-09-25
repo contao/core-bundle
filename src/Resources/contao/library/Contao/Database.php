@@ -707,6 +707,36 @@ class Database
 
 
 	/**
+	 * Escape the column name if it a reserved word
+	 *
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	public static function escapeColumnName($name)
+	{
+		if (in_array($name, ['rows'], true)) {
+			$name = '`'.$name.'`';
+		}
+
+		return $name;
+	}
+
+
+	/**
+	 * Escape a list of column names
+	 *
+	 * @param string[] $names
+	 *
+	 * @return string[]
+	 */
+	public static function escapeColumnNames(array $names)
+	{
+		return array_map([static::class, 'escapeColumnName'], $names);
+	}
+
+
+	/**
 	 * Execute a query and do not cache the result
 	 *
 	 * @param string $strQuery The query string
