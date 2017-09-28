@@ -660,20 +660,25 @@ class Image
 		{
 			$theme = \Backend::getTheme();
 
-			if (pathinfo($src, PATHINFO_EXTENSION) == 'svg')
-			{
-				return 'system/themes/' . $theme . '/icons/' . $src;
-			}
-
 			$filename = pathinfo($src, PATHINFO_FILENAME);
-
+	
 			// Prefer SVG icons
 			if (file_exists(TL_ROOT . '/system/themes/' . $theme . '/icons/' . $filename . '.svg'))
 			{
 				return 'system/themes/' . $theme . '/icons/' . $filename . '.svg';
 			}
 
-			return 'system/themes/' . $theme . '/images/' . $src;
+			if (file_exists(TL_ROOT . 'system/themes/' . $theme . '/images/' . $src))
+			{
+				return 'system/themes/' . $theme . '/images/' . $src;
+			}	
+	
+			$vendorAssets = glob(TL_ROOT . '/web/bundles/*/' . $src);
+	
+			if (count($vendorAssets) > 0)
+			{
+				return \StringUtil::stripRootDir($vendorAssets[0]);
+			}
 		}
 	}
 
