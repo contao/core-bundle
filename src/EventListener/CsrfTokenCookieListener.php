@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,11 +18,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-/**
- * Retrieves and stores CSRF token cookies.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class CsrfTokenCookieListener
 {
     /**
@@ -39,8 +36,6 @@ class CsrfTokenCookieListener
     private $cookiePrefix;
 
     /**
-     * Constructor.
-     *
      * @param MemoryTokenStorage $tokenStorage
      * @param int                $cookieLifetime
      * @param string             $cookiePrefix
@@ -57,7 +52,7 @@ class CsrfTokenCookieListener
      *
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -67,26 +62,28 @@ class CsrfTokenCookieListener
     }
 
     /**
-     * Writes the current session data to the database.
+     * Adds the token cookies to the response.
      *
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
         }
 
+        $request = $event->getRequest();
+        $response = $event->getResponse();
         $cookieLifetime = $this->cookieLifetime ? $this->cookieLifetime + time() : 0;
-        $isSecure = $event->getRequest()->isSecure();
+        $isSecure = $request->isSecure();
 
         foreach ($this->tokenStorage->getUsedTokens() as $key => $value) {
-            $event->getResponse()->headers->setCookie(
+            $response->headers->setCookie(
                 new Cookie(
                     $this->cookiePrefix.$key,
                     $value,
-                    $value === null ? 1 : $cookieLifetime,
-                    '/',
+                    null === $value ? 1 : $cookieLifetime,
+                    $request->getBasePath() ?: '/',
                     null,
                     $isSecure,
                     true,
@@ -98,18 +95,18 @@ class CsrfTokenCookieListener
     }
 
     /**
-     * Get the token array from the cookies.
+     * Returns the tokens from the cookies.
      *
      * @param ParameterBag $cookies
      *
      * @return array
      */
-    private function getTokensFromCookies(ParameterBag $cookies)
+    private function getTokensFromCookies(ParameterBag $cookies): array
     {
         $tokens = [];
 
         foreach ($cookies as $key => $value) {
-            if (strncmp($key, $this->cookiePrefix, strlen($this->cookiePrefix)) === 0) {
+            if (0 === strncmp($key, $this->cookiePrefix, strlen($this->cookiePrefix))) {
                 $tokens[substr($key, strlen($this->cookiePrefix))] = $value;
             }
         }

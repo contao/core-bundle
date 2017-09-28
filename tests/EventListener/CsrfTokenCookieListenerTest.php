@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -21,17 +23,9 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-/**
- * Tests the CsrfTokenCookieListener class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class CsrfTokenCookieListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf(
             'Contao\CoreBundle\EventListener\CsrfTokenCookieListener',
@@ -39,10 +33,7 @@ class CsrfTokenCookieListenerTest extends TestCase
         );
     }
 
-    /**
-     * Tests the onKernelResponse() method.
-     */
-    public function testOnKernelRequest()
+    public function testInitializesTheStorage(): void
     {
         $request = $this->createMock(Request::class);
 
@@ -54,13 +45,11 @@ class CsrfTokenCookieListenerTest extends TestCase
         $requestEvent = $this->createMock(GetResponseEvent::class);
 
         $requestEvent
-            ->expects($this->any())
             ->method('isMasterRequest')
             ->willReturn(true)
         ;
 
         $requestEvent
-            ->expects($this->any())
             ->method('getRequest')
             ->willReturn($request)
         ;
@@ -74,41 +63,32 @@ class CsrfTokenCookieListenerTest extends TestCase
         ;
 
         $listener = new CsrfTokenCookieListener($tokenStorage);
-
         $listener->onKernelRequest($requestEvent);
     }
 
-    /**
-     * Tests the onKernelResponse() method.
-     */
-    public function testOnKernelResponse()
+    public function testAddsTheTokenCookiesToTheResponse(): void
     {
         $request = $this->createMock(Request::class);
 
         $request
-            ->expects($this->any())
             ->method('isSecure')
             ->willReturn(true)
         ;
 
         $response = $this->createMock(Response::class);
-
         $responseEvent = $this->createMock(FilterResponseEvent::class);
 
         $responseEvent
-            ->expects($this->any())
             ->method('isMasterRequest')
             ->willReturn(true)
         ;
 
         $responseEvent
-            ->expects($this->any())
             ->method('getRequest')
             ->willReturn($request)
         ;
 
         $responseEvent
-            ->expects($this->any())
             ->method('getResponse')
             ->willReturn($response)
         ;
@@ -143,7 +123,6 @@ class CsrfTokenCookieListenerTest extends TestCase
         ;
 
         $listener = new CsrfTokenCookieListener($tokenStorage);
-
         $listener->onKernelResponse($responseEvent);
     }
 }

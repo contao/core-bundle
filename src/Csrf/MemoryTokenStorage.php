@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\Csrf;
 use Symfony\Component\Security\Csrf\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
-/**
- * Token storage that uses the memory to store the tokens.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class MemoryTokenStorage implements TokenStorageInterface
 {
     /**
@@ -33,12 +30,12 @@ class MemoryTokenStorage implements TokenStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function getToken($tokenId)
+    public function getToken($tokenId): string
     {
         $this->assertInitialized();
 
         if (empty($this->tokens[$tokenId])) {
-            throw new TokenNotFoundException('The CSRF token with ID '.$tokenId.' does not exist.');
+            throw new TokenNotFoundException(sprintf('The CSRF token ID "%s" does not exist.', $tokenId));
         }
 
         $this->usedTokens[$tokenId] = true;
@@ -49,7 +46,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function setToken($tokenId, $token)
+    public function setToken($tokenId, $token): void
     {
         $this->assertInitialized();
 
@@ -60,7 +57,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function hasToken($tokenId)
+    public function hasToken($tokenId): bool
     {
         $this->assertInitialized();
 
@@ -70,7 +67,7 @@ class MemoryTokenStorage implements TokenStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function removeToken($tokenId)
+    public function removeToken($tokenId): void
     {
         $this->assertInitialized();
 
@@ -79,31 +76,31 @@ class MemoryTokenStorage implements TokenStorageInterface
     }
 
     /**
-     * Initialize the storage.
+     * Initializes the storage.
      *
      * @param array $tokens
      */
-    public function initialize(array $tokens)
+    public function initialize(array $tokens): void
     {
         $this->tokens = $tokens;
     }
 
     /**
-     * Get all used tokens.
+     * Returns all used tokens.
      *
      * @return array
      */
-    public function getUsedTokens()
+    public function getUsedTokens(): array
     {
         return array_intersect_key($this->tokens, $this->usedTokens);
     }
 
     /**
-     * Check if the store is initialized.
+     * Checks if the storage is initialized.
      *
      * @throws \LogicException if the store was not initialized
      */
-    private function assertInitialized()
+    private function assertInitialized(): void
     {
         if (null === $this->tokens) {
             throw new \LogicException('MemoryTokenStorage must not be accessed before it was initialized.');
