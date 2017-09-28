@@ -107,8 +107,8 @@ class CsrfTokenCookieListener
         $tokens = [];
 
         foreach ($cookies as $key => $value) {
-            if (0 === strncmp($key, $this->cookiePrefix, strlen($this->cookiePrefix))) {
-                $tokens[substr($key, strlen($this->cookiePrefix))] = $value;
+            if (0 === strncmp($key, $this->cookiePrefix, \strlen($this->cookiePrefix))) {
+                $tokens[substr($key, \strlen($this->cookiePrefix))] = $value;
             }
         }
 
