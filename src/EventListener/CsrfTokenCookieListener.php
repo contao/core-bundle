@@ -76,6 +76,7 @@ class CsrfTokenCookieListener
         $response = $event->getResponse();
         $cookieLifetime = $this->cookieLifetime ? $this->cookieLifetime + time() : 0;
         $isSecure = $request->isSecure();
+        $basePath = $request->getBasePath() ?: '/';
 
         foreach ($this->tokenStorage->getUsedTokens() as $key => $value) {
             $response->headers->setCookie(
@@ -83,7 +84,7 @@ class CsrfTokenCookieListener
                     $this->cookiePrefix.$key,
                     $value,
                     null === $value ? 1 : $cookieLifetime,
-                    $request->getBasePath() ?: '/',
+                    $basePath,
                     null,
                     $isSecure,
                     true,
