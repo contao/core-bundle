@@ -63,7 +63,9 @@ class RegisterHooksPassTest extends TestCase
 
         $this->assertArrayHasKey('initializeSystem', $parameter);
         $this->assertArrayHasKey(0, $parameter['initializeSystem']);
-        $this->assertEquals([['test.hook_listener.after', 'onInitializeSystem']], $parameter['initializeSystem'][0]);
+
+        $expected = [['test.hook_listener.after', 'onInitializeSystem']];
+        $this->assertTrue($expected === $parameter['initializeSystem'][0]);
     }
 
     /**
@@ -93,7 +95,9 @@ class RegisterHooksPassTest extends TestCase
 
         $this->assertArrayHasKey('initializeSystem', $parameter);
         $this->assertArrayHasKey(0, $parameter['initializeSystem']);
-        $this->assertEquals([['test.hook_listener.after', 'onInitializeSystem']], $parameter['initializeSystem'][0]);
+
+        $expected = [['test.hook_listener.after', 'onInitializeSystem']];
+        $this->assertTrue($expected === $parameter['initializeSystem'][0]);
     }
 
     /**
@@ -150,11 +154,15 @@ class RegisterHooksPassTest extends TestCase
         $this->assertArrayHasKey('generatePage', $parameter);
         $this->assertArrayHasKey(0, $parameter['generatePage']);
 
-        $this->assertEquals(
-            [['test.hook_listener', 'onInitializeSystemFirst'], ['test.hook_listener', 'onInitializeSystemSecond']],
-            $parameter['initializeSystem'][0]
-        );
-        $this->assertEquals([['test.hook_listener', 'onGeneratePage']], $parameter['generatePage'][0]);
+        $expected = [
+            ['test.hook_listener', 'onInitializeSystemFirst'],
+            ['test.hook_listener', 'onInitializeSystemSecond']
+        ];
+
+        $this->assertTrue($expected === $parameter['initializeSystem'][0]);
+
+        $expected = [['test.hook_listener', 'onGeneratePage']];
+        $this->assertTrue($expected === $parameter['generatePage'][0]);
     }
 
     /**
@@ -207,16 +215,15 @@ class RegisterHooksPassTest extends TestCase
         $this->assertArrayHasKey(10, $parameter['initializeSystem']);
         $this->assertArrayHasKey(100, $parameter['initializeSystem']);
 
-        $this->assertEquals(
-            [
-                100 => [['test.hook_listener.b', 'onInitializeSystemHigh']],
-                10  => [
-                    ['test.hook_listener.a', 'onInitializeSystem'],
-                    ['test.hook_listener.b', 'onInitializeSystemLow']
-                ],
+        $expected = [
+            100 => [['test.hook_listener.b', 'onInitializeSystemHigh']],
+            10  => [
+                ['test.hook_listener.a', 'onInitializeSystem'],
+                ['test.hook_listener.b', 'onInitializeSystemLow']
             ],
-            $parameter['initializeSystem']
-        );
+        ];
+
+        $this->assertTrue($expected === $parameter['initializeSystem']);
     }
 
     /**

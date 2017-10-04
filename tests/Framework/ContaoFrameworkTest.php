@@ -649,41 +649,37 @@ class ContaoFrameworkTest extends TestCase
 
         // Test hooks with high priority are added before low and legacy hooks
         // Test legacy hooks are added before hooks with priority 0
-        $this->assertEquals(
-            [
-                ['test.listener.a', 'onGetPageLayout'],
-                ['test.listener.c', 'onGetPageLayout'],
-                ['test.listener.b', 'onGetPageLayout']
-            ],
-            $GLOBALS['TL_HOOKS']['getPageLayout']
-        );
+        $expected = [
+            ['test.listener.a', 'onGetPageLayout'],
+            ['test.listener.c', 'onGetPageLayout'],
+            ['test.listener.b', 'onGetPageLayout']
+        ];
+
+        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['getPageLayout']);
 
         // Test hooks with negative priority are added at the end
-        $this->assertEquals(
-            [
-                ['test.listener.c', 'onGeneratePage'],
-                ['test.listener.b', 'onGeneratePage'],
-                ['test.listener.a', 'onGeneratePage']
-            ],
-            $GLOBALS['TL_HOOKS']['generatePage']
-        );
+        $expected = [
+            ['test.listener.c', 'onGeneratePage'],
+            ['test.listener.b', 'onGeneratePage'],
+            ['test.listener.a', 'onGeneratePage']
+        ];
+
+        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['generatePage']);
 
         // Test legacy hooks are kept when adding only hook listeners with high priority.
-        $this->assertEquals(
-            [
-                ['test.listener.a', 'onParseTemplate'],
-                ['test.listener.c', 'onParseTemplate'],
-            ],
-            $GLOBALS['TL_HOOKS']['parseTemplate']
-        );
+        $expected = [
+            ['test.listener.a', 'onParseTemplate'],
+            ['test.listener.c', 'onParseTemplate'],
+        ];
+
+        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['parseTemplate']);
 
         // Test legacy hooks are kept when adding only hook listeners with low priority.
-        $this->assertEquals(
-            [
-                ['test.listener.c', 'onIsVisibleElement'],
-                ['test.listener.a', 'onIsVisibleElement'],
-            ],
-            $GLOBALS['TL_HOOKS']['isVisibleElement']
-        );
+        $expected = [
+            ['test.listener.c', 'onIsVisibleElement'],
+            ['test.listener.a', 'onIsVisibleElement'],
+        ];
+
+        $this->assertTrue($expected ===  $GLOBALS['TL_HOOKS']['isVisibleElement']);
     }
 }
