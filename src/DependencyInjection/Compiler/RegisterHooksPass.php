@@ -35,7 +35,7 @@ class RegisterHooksPass implements CompilerPassInterface
             foreach ($tags as $attributes) {
                 $this->guardRequiredAttributesExist($serviceId, $attributes);
 
-                $priority = $attributes['priority'] ?? 0;
+                $priority = (int) ($attributes['priority'] ?? 0);
                 $hook     = $attributes['hook'];
 
                 $hooks[$hook][$priority][] = [$serviceId, $attributes['method']];
