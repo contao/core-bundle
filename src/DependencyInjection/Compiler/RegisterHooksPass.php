@@ -44,7 +44,9 @@ class RegisterHooksPass implements CompilerPassInterface
 
         if (count($hooks) > 0) {
             // Apply priority sorting.
-            krsort($hooks);
+            foreach (array_keys($hooks) as $hook) {
+                krsort($hooks[$hook]);
+            }
 
             $container->setParameter('contao.hook_listeners', $hooks);
         }
