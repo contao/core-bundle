@@ -71,7 +71,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param array                $instances
      * @param array                $hookListeners
      *
-     * @return ContaoFramework
+     * @return ContaoFramework|\PHPUnit_Framework_MockObject_MockObject
      */
     public function mockContaoFramework(RequestStack $requestStack = null, RouterInterface $router = null, array $adapters = [], array $instances = [], array $hookListeners = []): ContaoFramework
     {
