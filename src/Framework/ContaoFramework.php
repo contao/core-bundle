@@ -100,14 +100,20 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     ];
 
     /**
+     * @var array
+     */
+    private $hookListeners;
+
+    /**
      * @param RequestStack     $requestStack
      * @param RouterInterface  $router
      * @param SessionInterface $session
      * @param ScopeMatcher     $scopeMatcher
      * @param string           $rootDir
      * @param int              $errorLevel
+     * @param array            $hookListeners
      */
-    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, ScopeMatcher $scopeMatcher, string $rootDir, int $errorLevel)
+    public function __construct(RequestStack $requestStack, RouterInterface $router, SessionInterface $session, ScopeMatcher $scopeMatcher, string $rootDir, int $errorLevel, array $hookListeners = [])
     {
         $this->requestStack = $requestStack;
         $this->router = $router;
@@ -115,6 +121,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         $this->scopeMatcher = $scopeMatcher;
         $this->rootDir = $rootDir;
         $this->errorLevel = $errorLevel;
+        $this->hookListeners = $hookListeners;
     }
 
     /**
@@ -478,10 +485,8 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function buildHookGlobals(): void
     {
-        if ($this->container->hasParameter('contao.hook_listeners')) {
-            $config = (array) $this->container->getParameter('contao.hook_listeners');
-
-            foreach ($config as $hookName => $priorities) {
+        if (count($this->hookListeners) > 0) {
+            foreach ($this->hookListeners as $hookName => $priorities) {
                 $hooks = [];
 
                 foreach ($priorities as $priority => $listeners) {

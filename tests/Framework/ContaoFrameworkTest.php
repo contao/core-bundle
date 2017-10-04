@@ -591,26 +591,6 @@ class ContaoFrameworkTest extends TestCase
 
         $container = $this->mockContainerWithContaoScopes();
         $container->get('request_stack')->push($request);
-        $container->setParameter(
-            'contao.hook_listeners',
-            [
-                'getPageLayout' => [
-                    10 => [['test.listener.a', 'onGetPageLayout']],
-                    0  => [['test.listener.b', 'onGetPageLayout']],
-                ],
-                'generatePage'  => [
-                      0 => [['test.listener.b', 'onGeneratePage']],
-                    -10 => [['test.listener.a', 'onGeneratePage']],
-                ],
-                'parseTemplate' => [
-                    10 => [['test.listener.a', 'onParseTemplate']]
-                ],
-                'isVisibleElement' => [
-                    -10 => [['test.listener.a', 'onIsVisibleElement']]
-                ],
-            ]
-        );
-
         $container->set('test.listener', new \stdClass());
         $container->set('test.listener2', new \stdClass());
 
@@ -629,7 +609,31 @@ class ContaoFrameworkTest extends TestCase
             ],
         ];
 
-        $framework = $this->mockContaoFramework($container->get('request_stack'), $this->mockRouter('/index.html'));
+        $listeners = [
+            'getPageLayout' => [
+                10 => [['test.listener.a', 'onGetPageLayout']],
+                0  => [['test.listener.b', 'onGetPageLayout']],
+            ],
+            'generatePage'  => [
+                0 => [['test.listener.b', 'onGeneratePage']],
+                -10 => [['test.listener.a', 'onGeneratePage']],
+            ],
+            'parseTemplate' => [
+                10 => [['test.listener.a', 'onParseTemplate']]
+            ],
+            'isVisibleElement' => [
+                -10 => [['test.listener.a', 'onIsVisibleElement']]
+            ],
+        ];
+
+        $framework = $this->mockContaoFramework(
+            $container->get('request_stack'),
+            $this->mockRouter('/index.html'),
+            [],
+            [],
+            $listeners
+        );
+
         $framework->setContainer($container);
 
         if ($framework->isInitialized()) {

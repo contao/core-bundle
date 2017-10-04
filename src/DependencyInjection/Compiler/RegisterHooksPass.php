@@ -28,6 +28,10 @@ class RegisterHooksPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        if (!$container->hasDefinition('contao.framework')) {
+            return;
+        }
+
         $serviceIds = $container->findTaggedServiceIds('contao.hook');
         $hooks      = [];
 
@@ -48,7 +52,8 @@ class RegisterHooksPass implements CompilerPassInterface
                 krsort($hooks[$hook]);
             }
 
-            $container->setParameter('contao.hook_listeners', $hooks);
+            $definition = $container->getDefinition('contao.framework');
+            $definition->setArgument(6, $hooks);
         }
     }
 
