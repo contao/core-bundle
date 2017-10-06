@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,11 +16,6 @@ use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\AbstractFragmentRenderer;
 use Contao\PageModel;
 
-/**
- * Class DefaultPageTypeRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class DefaultPageTypeRenderer extends AbstractFragmentRenderer implements PageTypeRendererInterface
 {
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,27 +20,19 @@ use Contao\CoreBundle\Tests\TestCase;
 use Contao\ModuleProxy;
 use Contao\PageProxy;
 
-/**
- * Tests the MapFragmentsToGlobalsListener class.
- *
- * @author Yanick Witschi
- */
 class MapFragmentsToGlobalsListenerTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 
         unset($GLOBALS['TL_PTY'], $GLOBALS['FE_MOD'], $GLOBALS['TL_CTE']);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $registry = new FragmentRegistry();
         $listener = new MapFragmentsToGlobalsListener($registry);
@@ -46,7 +40,7 @@ class MapFragmentsToGlobalsListenerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\MapFragmentsToGlobalsListener', $listener);
     }
 
-    public function testMapsFragmentsToTheGlobalsArray()
+    public function testMapsFragmentsToTheGlobalsArray(): void
     {
         $registry = new FragmentRegistry();
 

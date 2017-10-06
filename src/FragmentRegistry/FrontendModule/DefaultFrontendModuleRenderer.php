@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,11 +17,6 @@ use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\AbstractFragmentRenderer;
 use Contao\ModuleModel;
 
-/**
- * Class DefaultFrontendModuleRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class DefaultFrontendModuleRenderer extends AbstractFragmentRenderer implements FrontendModuleRendererInterface
 {
     /**

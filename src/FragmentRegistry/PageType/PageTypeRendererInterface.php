@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,15 +14,10 @@ namespace Contao\CoreBundle\FragmentRegistry\PageType;
 
 use Contao\PageModel;
 
-/**
- * Interface PageTypeRendererInterface.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 interface PageTypeRendererInterface
 {
     /**
-     * Checks if the renderer is supported.
+     * Checks if the renderer supports the given model.
      *
      * @param PageModel $pageModel
      *

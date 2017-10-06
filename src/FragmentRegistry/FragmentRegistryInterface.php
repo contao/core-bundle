@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,23 +12,18 @@
 
 namespace Contao\CoreBundle\FragmentRegistry;
 
-/**
- * Fragment registry.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 interface FragmentRegistryInterface
 {
     /**
      * Adds a fragment.
      *
-     * The $options array must at least handle the following three keys:
+     * The $options array must contain at least the following three keys:
      *
-     *     - tag (which contains the fragment tag (e.g. "contao.fragment.frontend_module")
-     *     - type (which contains the type within that fragment type (e.g. "navigation")
+     *     - tag (which contains the fragment tag, e.g. "contao.fragment.frontend_module")
+     *     - type (which contains the type within that fragment type, e.g. "navigation")
      *     - controller (which contains the controller reference to that fragment)
      *
-     * If a fragment with the same identifier already exists, it will override the old one.
+     * If a fragment with the same identifier already exists, it will be overwritten.
      *
      * @param string $identifier
      * @param object $fragment
@@ -43,7 +40,7 @@ interface FragmentRegistryInterface
      *
      * @return object|null
      */
-    public function getFragment($identifier);
+    public function getFragment(string $identifier);
 
     /**
      * Returns an array of fragments that optionally match a given filter callable,
@@ -62,5 +59,5 @@ interface FragmentRegistryInterface
      *
      * @return array
      */
-    public function getOptions($identifier): array;
+    public function getOptions(string $identifier): array;
 }

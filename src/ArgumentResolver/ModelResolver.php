@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,11 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-/**
- * Argument resolver for Contao Models.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class ModelResolver implements ArgumentValueResolverInterface
 {
     /**
@@ -29,8 +26,6 @@ class ModelResolver implements ArgumentValueResolverInterface
     private $framework;
 
     /**
-     * ModelResolver constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(ContaoFrameworkInterface $framework)
@@ -41,7 +36,7 @@ class ModelResolver implements ArgumentValueResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(Request $request, ArgumentMetadata $argument)
+    public function supports(Request $request, ArgumentMetadata $argument): bool
     {
         if (!$request->attributes->has($argument->getName())) {
             return false;
@@ -63,7 +58,7 @@ class ModelResolver implements ArgumentValueResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function resolve(Request $request, ArgumentMetadata $argument)
+    public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
         yield $this->fetchModel($request, $argument);
     }
@@ -76,7 +71,7 @@ class ModelResolver implements ArgumentValueResolverInterface
      *
      * @return Model|null
      */
-    private function fetchModel(Request $request, ArgumentMetadata $argument)
+    private function fetchModel(Request $request, ArgumentMetadata $argument): ?Model
     {
         $id = $request->attributes->getInt($argument->getName());
 

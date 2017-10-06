@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,11 +14,6 @@ namespace Contao\CoreBundle\FragmentRegistry\PageType;
 
 use Contao\PageModel;
 
-/**
- * Class DelegatingPageTypeRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class DelegatingPageTypeRenderer implements PageTypeRendererInterface
 {
     /**
@@ -25,8 +22,6 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
     private $renderers = [];
 
     /**
-     * DelegatingPageTypeRenderer constructor.
-     *
      * @param PageTypeRendererInterface[] $renderers
      */
     public function __construct(array $renderers)
@@ -41,7 +36,7 @@ class DelegatingPageTypeRenderer implements PageTypeRendererInterface
      *
      * @param PageTypeRendererInterface $renderer
      */
-    public function addRenderer(PageTypeRendererInterface $renderer)
+    public function addRenderer(PageTypeRendererInterface $renderer): void
     {
         $this->renderers[] = $renderer;
     }

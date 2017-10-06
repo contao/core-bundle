@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,27 +17,16 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-/**
- * Tests the FragmentRegistryPass.
- *
- * @author Yanick Witschi
- */
 class FragmentRegistryPassTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $pass = new FragmentRegistryPass();
 
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass', $pass);
     }
 
-    /**
-     * Tests if fragments and fragment renderers are registered properly.
-     */
-    public function testRegistersTheFragmentsAndFragmentRenderers()
+    public function testRegistersTheFragmentsAndFragmentRenderers(): void
     {
         $container = new ContainerBuilder();
 

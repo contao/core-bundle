@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,24 +15,16 @@ namespace Contao\CoreBundle\Tests\FragmentRegistry;
 use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Class FragmentRegistryTest.
- *
- * @author Yanick Witschi
- */
 class FragmentRegistryTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $registry = new FragmentRegistry();
 
         $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\FragmentRegistry', $registry);
     }
 
-    public function testChecksTheBasicOptions()
+    public function testChecksTheBasicOptions(): void
     {
         $registry = new FragmentRegistry();
 
@@ -39,7 +33,7 @@ class FragmentRegistryTest extends TestCase
         $registry->addFragment('foobar', new \stdClass(), ['nonsense' => 'test']);
     }
 
-    public function testReadsAndWritesFragments()
+    public function testReadsAndWritesFragments(): void
     {
         $fragment = new \stdClass();
         $registry = new FragmentRegistry();
@@ -57,7 +51,7 @@ class FragmentRegistryTest extends TestCase
         $this->assertSame($fragment, $registry->getFragment('foobar'));
     }
 
-    public function testReadsAndWritesOptions()
+    public function testReadsAndWritesOptions(): void
     {
         $options = [
             'tag' => 'test',
@@ -72,7 +66,7 @@ class FragmentRegistryTest extends TestCase
         $this->assertSame($options, $registry->getOptions('foobar'));
     }
 
-    public function testReturnsTheFragments()
+    public function testReturnsTheFragments(): void
     {
         $options = [
             'tag' => 'test',
@@ -87,7 +81,7 @@ class FragmentRegistryTest extends TestCase
         $this->assertcount(1, $registry->getFragments());
     }
 
-    public function testSupportsFilteringFragments()
+    public function testSupportsFilteringFragments(): void
     {
         $options = [
             'tag' => 'test',

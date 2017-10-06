@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,17 +22,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
-/**
- * Class DefaultContentElementRendererTest.
- *
- * @author Yanick Witschi
- */
 class DefaultContentElementRendererTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf(
             'Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer',
@@ -38,12 +32,12 @@ class DefaultContentElementRendererTest extends TestCase
         );
     }
 
-    public function testSupportsContentModels()
+    public function testSupportsContentModels(): void
     {
         $this->assertTrue($this->mockRenderer()->supports(new ContentModel()));
     }
 
-    public function testRendersContentModels()
+    public function testRendersContentModels(): void
     {
         $expectedControllerReference = new ControllerReference(
             'test',
@@ -90,7 +84,7 @@ class DefaultContentElementRendererTest extends TestCase
      *
      * @return DefaultContentElementRenderer
      */
-    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null)
+    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null): DefaultContentElementRenderer
     {
         if (null === $registry) {
             $registry = new FragmentRegistry();

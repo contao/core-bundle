@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,17 +22,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
-/**
- * Class DefaultPageTypeRendererTest.
- *
- * @author Yanick Witschi
- */
 class DefaultPageTypeRendererTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf(
             'Contao\CoreBundle\FragmentRegistry\PageType\DefaultPageTypeRenderer',
@@ -38,12 +32,12 @@ class DefaultPageTypeRendererTest extends TestCase
         );
     }
 
-    public function testSupportsPageModels()
+    public function testSupportsPageModels(): void
     {
         $this->assertTrue($this->mockRenderer()->supports(new PageModel()));
     }
 
-    public function testRendersPageModels()
+    public function testRendersPageModels(): void
     {
         $page = new PageModel();
         $page->setRow(['id' => 42]);
@@ -92,7 +86,7 @@ class DefaultPageTypeRendererTest extends TestCase
      *
      * @return DefaultPageTypeRenderer
      */
-    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null)
+    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null): DefaultPageTypeRenderer
     {
         if (null === $registry) {
             $registry = new FragmentRegistry();

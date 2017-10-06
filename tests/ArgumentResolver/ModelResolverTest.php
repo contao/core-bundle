@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,24 +20,16 @@ use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-/**
- * Class ArgumentResolverTest.
- *
- * @autor Yanick Witschi
- */
 class ModelResolverTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $resolver = new ModelResolver($this->mockContaoFramework());
 
         $this->assertInstanceOf('Contao\CoreBundle\ArgumentResolver\ModelResolver', $resolver);
     }
 
-    public function testResolvesTheModel()
+    public function testResolvesTheModel(): void
     {
         $pageModel = new PageModel();
         $pageModel->setRow(['id' => 42]);
@@ -72,7 +66,7 @@ class ModelResolverTest extends TestCase
         }
     }
 
-    public function testChecksIfTheRequestAttributeExists()
+    public function testChecksIfTheRequestAttributeExists(): void
     {
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
@@ -88,7 +82,7 @@ class ModelResolverTest extends TestCase
         $resolver->supports($request, $argument);
     }
 
-    public function testChecksIfTheArgumentTypeIsCorrect()
+    public function testChecksIfTheArgumentTypeIsCorrect(): void
     {
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
@@ -106,7 +100,7 @@ class ModelResolverTest extends TestCase
         $this->assertFalse($resolver->supports($request, $argument));
     }
 
-    public function testSupportsNullableArguments()
+    public function testSupportsNullableArguments(): void
     {
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
@@ -124,7 +118,7 @@ class ModelResolverTest extends TestCase
         $this->assertTrue($resolver->supports($request, $argument));
     }
 
-    public function testChecksIfTheModelExistsIfTheArgumentIsNotNullable()
+    public function testChecksIfTheModelExistsIfTheArgumentIsNotNullable(): void
     {
         $adapter = $this->createMock(Adapter::class);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,24 +17,16 @@ use Contao\CoreBundle\FragmentRegistry\PageType\PageTypeRendererInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\PageModel;
 
-/**
- * Class DelegatingPageTypeRendererTest.
- *
- * @author Yanick Witschi
- */
 class DelegatingPageTypeRendererTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $renderer = new DelegatingPageTypeRenderer([]);
 
         $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\PageType\DelegatingPageTypeRenderer', $renderer);
     }
 
-    public function testReturnsTrueIfOneOfTheRenderersSupportsTheModel()
+    public function testReturnsTrueIfOneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
 
@@ -54,7 +48,7 @@ class DelegatingPageTypeRendererTest extends TestCase
         $this->assertTrue($renderer->supports(new PageModel()));
     }
 
-    public function testReturnsFalseIfNoneOfTheRenderersSupportsTheModel()
+    public function testReturnsFalseIfNoneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
 
@@ -77,7 +71,7 @@ class DelegatingPageTypeRendererTest extends TestCase
         $this->assertFalse($renderer->supports(new PageModel()));
     }
 
-    public function testRendersTheFragmentIfOneOfTheRenderersSupportsTheModel()
+    public function testRendersTheFragmentIfOneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
 

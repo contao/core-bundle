@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,28 +18,23 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
-/**
- * Fragment registry compiler pass.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class FragmentRegistryPass implements CompilerPassInterface
 {
     use PriorityTaggedServiceTrait;
 
-    const FRAGMENT_REGISTRY = 'contao.fragment.registry';
+    public const FRAGMENT_REGISTRY = 'contao.fragment.registry';
 
-    const TAG_FRAGMENT_FRONTEND_MODULE = 'contao.fragment.frontend_module';
-    const TAG_FRAGMENT_PAGE_TYPE = 'contao.fragment.page_type';
-    const TAG_FRAGMENT_CONTENT_ELEMENT = 'contao.fragment.content_element';
+    public const TAG_FRAGMENT_FRONTEND_MODULE = 'contao.fragment.frontend_module';
+    public const TAG_FRAGMENT_PAGE_TYPE = 'contao.fragment.page_type';
+    public const TAG_FRAGMENT_CONTENT_ELEMENT = 'contao.fragment.content_element';
 
-    const RENDERER_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module.delegating';
-    const RENDERER_PAGE_TYPE = 'contao.fragment.renderer.page_type.delegating';
-    const RENDERER_CONTENT_ELEMENT = 'contao.fragment.renderer.content_element.delegating';
+    public const RENDERER_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module.delegating';
+    public const RENDERER_PAGE_TYPE = 'contao.fragment.renderer.page_type.delegating';
+    public const RENDERER_CONTENT_ELEMENT = 'contao.fragment.renderer.content_element.delegating';
 
-    const TAG_RENDERER_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module';
-    const TAG_RENDERER_PAGE_TYPE = 'contao.fragment.renderer.page_type';
-    const TAG_RENDERER_CONTENT_ELEMENT = 'contao.fragment.renderer.content_element';
+    public const TAG_RENDERER_FRONTEND_MODULE = 'contao.fragment.renderer.frontend_module';
+    public const TAG_RENDERER_PAGE_TYPE = 'contao.fragment.renderer.page_type';
+    public const TAG_RENDERER_CONTENT_ELEMENT = 'contao.fragment.renderer.content_element';
 
     /**
      * @var Definition
@@ -67,7 +64,7 @@ class FragmentRegistryPass implements CompilerPassInterface
      *
      * @param ContainerBuilder $container
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->has(self::FRAGMENT_REGISTRY)) {
             return;
@@ -90,7 +87,7 @@ class FragmentRegistryPass implements CompilerPassInterface
      * @param ContainerBuilder $container
      * @param string           $tag
      */
-    private function registerFragments(ContainerBuilder $container, string $tag)
+    private function registerFragments(ContainerBuilder $container, string $tag): void
     {
         $fragments = $this->findAndSortTaggedServices($tag, $container);
 
@@ -137,7 +134,7 @@ class FragmentRegistryPass implements CompilerPassInterface
      * @param string           $renderer
      * @param string           $tag
      */
-    private function registerFragmentRenderers(ContainerBuilder $container, string $renderer, string $tag)
+    private function registerFragmentRenderers(ContainerBuilder $container, string $renderer, string $tag): void
     {
         if (!$container->has($renderer)) {
             return;

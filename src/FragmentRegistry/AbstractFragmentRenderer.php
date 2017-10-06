@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,11 +16,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
-/**
- * Class AbstractFragmentRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 abstract class AbstractFragmentRenderer
 {
     /**
@@ -37,8 +34,6 @@ abstract class AbstractFragmentRenderer
     protected $requestStack;
 
     /**
-     * FrontendModuleRenderer constructor.
-     *
      * @param FragmentRegistryInterface $fragmentRegistry
      * @param FragmentHandler           $fragmentHandler
      * @param RequestStack              $requestStack
@@ -51,14 +46,14 @@ abstract class AbstractFragmentRenderer
     }
 
     /**
-     * Abstract helper class for general renderers.
+     * Renders a fragment.
      *
      * @param string $fragmentIdentifier
      * @param array  $attributes
      * @param array  $query
      * @param string $forceRenderStrategy
      *
-     * @return null|string
+     * @return string|null
      */
     protected function renderFragment(string $fragmentIdentifier, array $attributes = [], array $query = [], string $forceRenderStrategy = ''): ?string
     {

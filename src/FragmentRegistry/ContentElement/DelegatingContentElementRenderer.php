@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\FragmentRegistry\ContentElement;
 use Contao\ContentModel;
 use Contao\CoreBundle\ContaoCoreBundle;
 
-/**
- * Class DelegatingContentElementRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class DelegatingContentElementRenderer implements ContentElementRendererInterface
 {
     /**
@@ -26,8 +23,6 @@ class DelegatingContentElementRenderer implements ContentElementRendererInterfac
     private $renderers = [];
 
     /**
-     * ChainFrontendModuleRenderer constructor.
-     *
      * @param ContentElementRendererInterface[] $renderers
      */
     public function __construct(array $renderers)
@@ -42,7 +37,7 @@ class DelegatingContentElementRenderer implements ContentElementRendererInterfac
      *
      * @param ContentElementRendererInterface $renderer
      */
-    public function addRenderer(ContentElementRendererInterface $renderer)
+    public function addRenderer(ContentElementRendererInterface $renderer): void
     {
         $this->renderers[] = $renderer;
     }

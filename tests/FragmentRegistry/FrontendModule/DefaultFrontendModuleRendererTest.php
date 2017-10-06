@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,17 +22,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
-/**
- * Class DefaultFrontendModuleRendererTest.
- *
- * @author Yanick Witschi
- */
 class DefaultFrontendModuleRendererTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf(
             'Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer',
@@ -38,12 +32,12 @@ class DefaultFrontendModuleRendererTest extends TestCase
         );
     }
 
-    public function testSupportsModuleModels()
+    public function testSupportsModuleModels(): void
     {
         $this->assertTrue($this->mockRenderer()->supports(new ModuleModel()));
     }
 
-    public function testRendersModuleModels()
+    public function testRendersModuleModels(): void
     {
         $expectedControllerReference = new ControllerReference(
             'test',
@@ -90,7 +84,7 @@ class DefaultFrontendModuleRendererTest extends TestCase
      *
      * @return DefaultFrontendModuleRenderer
      */
-    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null)
+    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null): DefaultFrontendModuleRenderer
     {
         if (null === $registry) {
             $registry = new FragmentRegistry();

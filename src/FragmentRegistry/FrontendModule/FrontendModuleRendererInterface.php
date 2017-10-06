@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,15 +15,10 @@ namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ModuleModel;
 
-/**
- * Interface FrontendModuleRendererInterface.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 interface FrontendModuleRendererInterface
 {
     /**
-     * Checks if the renderer is supported.
+     * Checks if the renderer supports the given model.
      *
      * @param ModuleModel $moduleModel
      * @param string      $inColumn

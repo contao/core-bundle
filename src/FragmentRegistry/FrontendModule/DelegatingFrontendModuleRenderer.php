@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\FragmentRegistry\FrontendModule;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ModuleModel;
 
-/**
- * Class DelegatingFrontendModuleRenderer.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterface
 {
     /**
@@ -26,8 +23,6 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
     private $renderers = [];
 
     /**
-     * ChainFrontendModuleRenderer constructor.
-     *
      * @param FrontendModuleRendererInterface[] $renderers
      */
     public function __construct(array $renderers)
@@ -42,7 +37,7 @@ class DelegatingFrontendModuleRenderer implements FrontendModuleRendererInterfac
      *
      * @param FrontendModuleRendererInterface $renderer
      */
-    public function addRenderer(FrontendModuleRendererInterface $renderer)
+    public function addRenderer(FrontendModuleRendererInterface $renderer): void
     {
         $this->renderers[] = $renderer;
     }

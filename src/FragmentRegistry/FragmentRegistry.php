@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,11 +12,6 @@
 
 namespace Contao\CoreBundle\FragmentRegistry;
 
-/**
- * Fragment registry.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class FragmentRegistry implements FragmentRegistryInterface
 {
     /**
@@ -46,7 +43,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFragment($identifier)
+    public function getFragment(string $identifier)
     {
         return $this->fragments[$identifier];
     }
@@ -54,7 +51,7 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions($identifier): array
+    public function getOptions(string $identifier): array
     {
         return $this->fragmentOptions[$identifier];
     }

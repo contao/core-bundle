@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,24 +17,16 @@ use Contao\CoreBundle\FragmentRegistry\ContentElement\ContentElementRendererInte
 use Contao\CoreBundle\FragmentRegistry\ContentElement\DelegatingContentElementRenderer;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Class DelegatingContentElementRendererTest.
- *
- * @author Yanick Witschi
- */
 class DelegatingContentElementRendererTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $renderer = new DelegatingContentElementRenderer([]);
 
         $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\ContentElement\DelegatingContentElementRenderer', $renderer);
     }
 
-    public function testReturnsTrueIfOneOfTheRenderersSupportsTheModel()
+    public function testReturnsTrueIfOneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(ContentElementRendererInterface::class);
 
@@ -54,7 +48,7 @@ class DelegatingContentElementRendererTest extends TestCase
         $this->assertTrue($renderer->supports(new ContentModel()));
     }
 
-    public function testReturnsFalseIfNoneOfTheRenderersSupportsTheModel()
+    public function testReturnsFalseIfNoneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(ContentElementRendererInterface::class);
 
@@ -77,7 +71,7 @@ class DelegatingContentElementRendererTest extends TestCase
         $this->assertFalse($renderer->supports(new ContentModel()));
     }
 
-    public function testRendersTheFragmentIfOneOfTheRenderersSupportsTheModel()
+    public function testRendersTheFragmentIfOneOfTheRenderersSupportsTheModel(): void
     {
         $renderer1 = $this->createMock(ContentElementRendererInterface::class);
 

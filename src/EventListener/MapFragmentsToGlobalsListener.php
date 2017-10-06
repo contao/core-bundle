@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,11 +20,6 @@ use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\ModuleProxy;
 use Contao\PageProxy;
 
-/**
- * Class MapFragmentsToGlobals.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
@@ -41,9 +38,9 @@ class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
     }
 
     /**
-     * Maps fragments to old globals.
+     * Maps fragments to the globals array.
      */
-    public function onInitializeSystem()
+    public function onInitializeSystem(): void
     {
         $this->framework->initialize();
 
@@ -55,7 +52,7 @@ class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
     /**
      * Maps the page types.
      */
-    private function mapPageTypes()
+    private function mapPageTypes(): void
     {
         $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE);
 
@@ -71,7 +68,7 @@ class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
      *
      * @throws \RuntimeException
      */
-    private function mapFrontEndModules()
+    private function mapFrontEndModules(): void
     {
         $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE);
 
@@ -94,7 +91,7 @@ class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
      *
      * @throws \RuntimeException
      */
-    private function mapContentElements()
+    private function mapContentElements(): void
     {
         $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT);
 
@@ -119,7 +116,7 @@ class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
      *
      * @return \Closure
      */
-    private function getTagFilter($tag)
+    private function getTagFilter(string $tag): \Closure
     {
         return function ($identifier) use ($tag) {
             $options = $this->fragmentRegistry->getOptions($identifier);
