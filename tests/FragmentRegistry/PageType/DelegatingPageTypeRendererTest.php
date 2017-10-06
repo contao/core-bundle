@@ -32,47 +32,81 @@ class DelegatingPageTypeRendererTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\PageType\DelegatingPageTypeRenderer', $renderer);
     }
 
-    public function testSupports()
+    public function testReturnsTrueIfOneOfTheRenderersSupportsTheModel()
     {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer1->expects($this->once())->method('supports')->willReturn(true);
+
+        $renderer1
+            ->expects($this->once())
+            ->method('supports')
+            ->willReturn(true)
+        ;
 
         $renderer2 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer2->expects($this->never())->method('supports');
+
+        $renderer2
+            ->expects($this->never())
+            ->method('supports')
+        ;
 
         $renderer = new DelegatingPageTypeRenderer([$renderer1, $renderer2]);
+
         $this->assertTrue($renderer->supports(new PageModel()));
+    }
 
+    public function testReturnsFalseIfNoneOfTheRenderersSupportsTheModel()
+    {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer1->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer1
+            ->expects($this->once())
+            ->method('supports')
+            ->willReturn(false)
+        ;
 
         $renderer2 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer2->expects($this->once())->method('supports')->willReturn(false);
+
+        $renderer2
+            ->expects($this->once())
+            ->method('supports')
+            ->willReturn(false)
+        ;
 
         $renderer = new DelegatingPageTypeRenderer([$renderer1, $renderer2]);
+
         $this->assertFalse($renderer->supports(new PageModel()));
     }
 
-    public function testRender()
+    public function testRendersTheFragmentIfOneOfTheRenderersSupportsTheModel()
     {
         $renderer1 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer1->expects($this->once())->method('supports')->willReturn(true);
-        $renderer1->expects($this->once())->method('render')->willReturn('foobar');
+
+        $renderer1
+            ->expects($this->once())
+            ->method('supports')
+            ->willReturn(true)
+        ;
+
+        $renderer1
+            ->expects($this->once())
+            ->method('render')
+            ->willReturn('foobar')
+        ;
 
         $renderer2 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer2->expects($this->never())->method('supports');
-        $renderer2->expects($this->never())->method('render');
+
+        $renderer2
+            ->expects($this->never())
+            ->method('supports')
+        ;
+
+        $renderer2
+            ->expects($this->never())
+            ->method('render')
+        ;
 
         $renderer = new DelegatingPageTypeRenderer([$renderer1, $renderer2]);
+
         $this->assertSame('foobar', $renderer->render(new PageModel()));
-
-        $renderer1 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer1->expects($this->once())->method('supports')->willReturn(false);
-
-        $renderer2 = $this->createMock(PageTypeRendererInterface::class);
-        $renderer2->expects($this->once())->method('supports')->willReturn(false);
-
-        $renderer = new DelegatingPageTypeRenderer([$renderer1, $renderer2]);
-        $this->assertNull($renderer->render(new PageModel()));
     }
 }

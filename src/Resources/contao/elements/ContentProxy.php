@@ -15,15 +15,14 @@ use Contao\CoreBundle\FragmentRegistry\ContentElement\ContentElementRendererInte
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Proxy for new content element fragments so they are accessible
- * via $GLOBALS['TL_CTE'].
+ * Proxy for new content element fragments so they are accessible via $GLOBALS['TL_CTE'].
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
 class ContentProxy extends ContentElement
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function generate()
     {
@@ -33,10 +32,7 @@ class ContentProxy extends ContentElement
         /** @var ContentElementRendererInterface $contentElementRenderer */
         $contentElementRenderer = $container->get(FragmentRegistryPass::RENDERER_CONTENT_ELEMENT);
 
-        $result = $contentElementRenderer->render(
-            $this->objModel,
-            $this->strColumn
-        );
+        $result = $contentElementRenderer->render($this->objModel, $this->strColumn);
 
         if (null !== $result) {
             $response->setContent($result);
@@ -46,7 +42,7 @@ class ContentProxy extends ContentElement
     }
 
     /**
-     * Compile the current element
+     * {@inheritdoc}
      */
     protected function compile()
     {

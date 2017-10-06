@@ -32,9 +32,11 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment(string $identifier, $fragment, array $options): FragmentRegistryInterface
     {
-        $this->ensureBasicOptions($options);
+        if (3 !== count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
+            throw new \InvalidArgumentException('Missing the three basic options "tag", "type" and "controller".');
+        }
 
-        // Overrides existing fragments with same identifier
+        // Override existing fragments with the same identifier
         $this->fragments[$identifier] = $fragment;
         $this->fragmentOptions[$identifier] = $options;
 
@@ -73,15 +75,5 @@ class FragmentRegistry implements FragmentRegistryInterface
         }
 
         return $matches;
-    }
-
-    /**
-     * @param array $options
-     */
-    private function ensureBasicOptions(array $options)
-    {
-        if (3 !== count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
-            throw new \InvalidArgumentException('The basic 3 options, tag, type and controller were not provided.');
-        }
     }
 }

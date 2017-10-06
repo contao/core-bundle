@@ -396,10 +396,13 @@ $GLOBALS['TL_HOOKS'] = array
 		array('Messages', 'versionCheck'),
 		array('Messages', 'maintenanceCheck'),
 		array('Messages', 'languageFallback')
+	),
+	'initializeSystem' => array
+	(
+		array('contao.listener.map_fragments_to_globals', 'onInitializeSystem')
 	)
 );
 
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('contao.listener.map_fragments_to_legacy_globals', 'onInitializeSystem');
 
 /**
  * Register the auto_item keywords

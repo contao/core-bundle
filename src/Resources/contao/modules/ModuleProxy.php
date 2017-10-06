@@ -15,15 +15,14 @@ use Contao\CoreBundle\FragmentRegistry\FrontendModule\FrontendModuleRendererInte
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Proxy for new front end module fragments so they are accessible
- * via $GLOBALS['FE_MOD'].
+ * Proxy for new front end module fragments so they are accessible via $GLOBALS['FE_MOD'].
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
 class ModuleProxy extends Module
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function generate()
     {
@@ -33,10 +32,7 @@ class ModuleProxy extends Module
         /** @var FrontendModuleRendererInterface $frontendModuleRenderer */
         $frontendModuleRenderer = $container->get(FragmentRegistryPass::RENDERER_FRONTEND_MODULE);
 
-        $result = $frontendModuleRenderer->render(
-            $this->objModel,
-            $this->strColumn
-        );
+        $result = $frontendModuleRenderer->render($this->objModel, $this->strColumn);
 
         if (null !== $result) {
             $response->setContent($result);
@@ -46,7 +42,7 @@ class ModuleProxy extends Module
     }
 
     /**
-     * Compile the current element
+     * {@inheritdoc}
      */
     protected function compile()
     {

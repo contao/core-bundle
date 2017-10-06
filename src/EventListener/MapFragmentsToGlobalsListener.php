@@ -19,11 +19,11 @@ use Contao\ModuleProxy;
 use Contao\PageProxy;
 
 /**
- * Class MapFragmentsToLegacyGlobals.
+ * Class MapFragmentsToGlobals.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-class MapFragmentsToLegacyGlobalsListener implements FrameworkAwareInterface
+class MapFragmentsToGlobalsListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
@@ -47,44 +47,65 @@ class MapFragmentsToLegacyGlobalsListener implements FrameworkAwareInterface
     {
         $this->framework->initialize();
 
-        // Page types
-        foreach ($this->fragmentRegistry->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE)
-        ) as $identifier => $fragment) {
+        $this->mapPageTypes();
+        $this->mapFrontEndModules();
+        $this->mapContentElements();
+    }
+
+    /**
+     * Maps the page types.
+     */
+    private function mapPageTypes()
+    {
+        $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE);
+
+        foreach ($this->fragmentRegistry->getFragments($filter) as $identifier => $fragment) {
             $options = $this->fragmentRegistry->getOptions($identifier);
 
             $GLOBALS['TL_PTY'][$options['type']] = PageProxy::class;
         }
+    }
 
-        // Front end modules
-        foreach ($this->fragmentRegistry->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE)
-        ) as $identifier => $fragment) {
+    /**
+     * Maps the front end modules.
+     *
+     * @throws \RuntimeException
+     */
+    private function mapFrontEndModules()
+    {
+        $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE);
+
+        foreach ($this->fragmentRegistry->getFragments($filter) as $identifier => $fragment) {
             $options = $this->fragmentRegistry->getOptions($identifier);
 
             if (!isset($options['category'])) {
-                throw new \RuntimeException(
-                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
-                        FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE
-                    )
-                );
+                throw new \RuntimeException(sprintf(
+                    'You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
+                    FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE
+                ));
             }
 
             $GLOBALS['FE_MOD'][$options['category']][$options['type']] = ModuleProxy::class;
         }
+    }
 
-        // Content elements
-        foreach ($this->fragmentRegistry->getFragments(
-            $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT)
-        ) as $identifier => $fragment) {
+    /**
+     * Maps the content elements.
+     *
+     * @throws \RuntimeException
+     */
+    private function mapContentElements()
+    {
+        $filter = $this->getTagFilter(FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT);
+
+        foreach ($this->fragmentRegistry->getFragments($filter) as $identifier => $fragment) {
             $options = $this->fragmentRegistry->getOptions($identifier);
 
             if (!isset($options['category'])) {
-                throw new \RuntimeException(
-                    sprintf('You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
-                        FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT
-                    )
-                );
+                throw new \RuntimeException(sprintf(
+                    'You tagged a fragment as "%s" but forgot to specify the "category" attribute.',
+                    FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT
+                ));
             }
 
             $GLOBALS['TL_CTE'][$options['category']][$options['type']] = ContentProxy::class;
@@ -92,6 +113,8 @@ class MapFragmentsToLegacyGlobalsListener implements FrameworkAwareInterface
     }
 
     /**
+     * Returns the tag filter function.
+     *
      * @param string $tag
      *
      * @return \Closure

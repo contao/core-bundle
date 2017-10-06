@@ -20,6 +20,8 @@ use Contao\PageModel;
 interface PageTypeRendererInterface
 {
     /**
+     * Checks if the renderer is supported.
+     *
      * @param PageModel $pageModel
      *
      * @return bool
@@ -27,6 +29,8 @@ interface PageTypeRendererInterface
     public function supports(PageModel $pageModel): bool;
 
     /**
+     * Renders the fragment.
+     *
      * @param PageModel $pageModel
      *
      * @return string|null

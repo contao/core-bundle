@@ -83,6 +83,6 @@ class ModelResolver implements ArgumentValueResolverInterface
         /** @var Model $model */
         $model = $this->framework->getAdapter($argument->getType());
 
-        return $model->findByPK($id);
+        return $model->findByPk($id);
     }
 }

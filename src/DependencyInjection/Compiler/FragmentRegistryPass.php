@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -46,7 +45,25 @@ class FragmentRegistryPass implements CompilerPassInterface
     private $fragmentRegistry;
 
     /**
-     * Collect all the fragments and fragment renderers.
+     * @var array
+     */
+    private $tags = [
+        self::TAG_FRAGMENT_FRONTEND_MODULE,
+        self::TAG_FRAGMENT_PAGE_TYPE,
+        self::TAG_FRAGMENT_CONTENT_ELEMENT,
+    ];
+
+    /**
+     * @var array
+     */
+    private $renderers = [
+        self::RENDERER_FRONTEND_MODULE => self::TAG_RENDERER_FRONTEND_MODULE,
+        self::RENDERER_PAGE_TYPE => self::TAG_RENDERER_PAGE_TYPE,
+        self::RENDERER_CONTENT_ELEMENT => self::TAG_FRAGMENT_CONTENT_ELEMENT,
+    ];
+
+    /**
+     * Adds the fragments and fragment renderers.
      *
      * @param ContainerBuilder $container
      */
@@ -58,30 +75,18 @@ class FragmentRegistryPass implements CompilerPassInterface
 
         $this->fragmentRegistry = $container->findDefinition(self::FRAGMENT_REGISTRY);
 
-        if (!$this->classImplementsInterface(
-            $this->fragmentRegistry->getClass(), FragmentRegistryInterface::class)
-        ) {
-            return;
-        }
-
-        foreach ([
-            self::TAG_FRAGMENT_FRONTEND_MODULE,
-            self::TAG_FRAGMENT_PAGE_TYPE,
-            self::TAG_FRAGMENT_CONTENT_ELEMENT,
-        ] as $tag) {
+        foreach ($this->tags as $tag) {
             $this->registerFragments($container, $tag);
         }
 
-        foreach ([
-            self::RENDERER_FRONTEND_MODULE => self::TAG_RENDERER_FRONTEND_MODULE,
-            self::RENDERER_PAGE_TYPE => self::TAG_RENDERER_PAGE_TYPE,
-            self::RENDERER_CONTENT_ELEMENT => self::TAG_FRAGMENT_CONTENT_ELEMENT,
-        ] as $renderer => $tag) {
+        foreach ($this->renderers as $renderer => $tag) {
             $this->registerFragmentRenderers($container, $renderer, $tag);
         }
     }
 
     /**
+     * Registers the fragments.
+     *
      * @param ContainerBuilder $container
      * @param string           $tag
      */
@@ -96,29 +101,38 @@ class FragmentRegistryPass implements CompilerPassInterface
                 $fragmentOptions['tag'] = $tag;
 
                 if (!isset($fragmentOptions['type'])) {
-                    throw new RuntimeException(sprintf('A service tagged as "%s" must have a "type" attribute set.', $tag));
+                    throw new RuntimeException(sprintf(
+                        'A service tagged as "%s" must have a "type" attribute set.',
+                        $tag
+                    ));
                 }
 
                 $fragmentOptions['controller'] = (string) $reference;
 
-                // Support specific method on controller
+                // Support a specific method on the controller
                 if (isset($fragmentOptions['method'])) {
                     $fragmentOptions['controller'] .= ':'.$fragmentOptions['method'];
                     unset($fragmentOptions['method']);
                 }
 
-                // Mark all fragments as lazy so they are lazy loaded using
-                // the proxy manager (which is why we need to require it in the
-                // composer.json (otherwise the lazy definition will just be ignored)
+                // Mark all fragments as lazy so they are lazy loaded using the
+                // proxy manager (which is why we need to require it in the composer.json,
+                // otherwise the lazy definition will just be ignored).
                 $fragment->setLazy(true);
 
                 $fragmentIdentifier = $tag.'.'.$fragmentOptions['type'];
-                $this->fragmentRegistry->addMethodCall('addFragment', [$fragmentIdentifier, $reference, $fragmentOptions]);
+
+                $this->fragmentRegistry->addMethodCall(
+                    'addFragment',
+                    [$fragmentIdentifier, $reference, $fragmentOptions]
+                );
             }
         }
     }
 
     /**
+     * Registers the fragment renderers.
+     *
      * @param ContainerBuilder $container
      * @param string           $renderer
      * @param string           $tag
@@ -131,20 +145,5 @@ class FragmentRegistryPass implements CompilerPassInterface
 
         $renderer = $container->findDefinition($renderer);
         $renderer->setArgument(0, $this->findAndSortTaggedServices($tag, $container));
-    }
-
-    /**
-     * Checks if a given class name implements a given interface name.
-     *
-     * @param string $class
-     * @param string $interface
-     *
-     * @return bool
-     */
-    private function classImplementsInterface($class, $interface)
-    {
-        $ref = new \ReflectionClass($class);
-
-        return $ref->implementsInterface($interface);
     }
 }

@@ -13,13 +13,15 @@ namespace Contao\CoreBundle\FragmentRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Interface SimpleRenderingInformationProvidingInterface.
+ * Interface SimpleRenderingInformationProviderInterface.
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
-interface SimpleRenderingInformationProvidingInterface
+interface SimpleRenderingInformationProviderInterface
 {
     /**
+     * Returns the request attributes.
+     *
      * @param Request $request
      * @param array   $attributes
      *
@@ -28,6 +30,8 @@ interface SimpleRenderingInformationProvidingInterface
     public function getControllerRequestAttributes(Request $request, array $attributes): array;
 
     /**
+     * Returns the query parameters.
+     *
      * @param Request $request
      * @param array   $parameters
      *

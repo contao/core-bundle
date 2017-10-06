@@ -36,6 +36,7 @@ class DefaultContentElementRenderer extends AbstractFragmentRenderer implements 
     public function render(ContentModel $contentModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string
     {
         $query = [];
+
         $attributes = [
             'contentModel' => $contentModel->id,
             'inColumn' => $inColumn,

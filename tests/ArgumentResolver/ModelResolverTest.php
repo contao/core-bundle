@@ -35,87 +35,19 @@ class ModelResolverTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\ArgumentResolver\ModelResolver', $resolver);
     }
 
-    public function testFrameworkNotInstantiatedWhenRequestAttributeNotPresent()
-    {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-        $framework->expects($this->never())->method('initialize');
-
-        $request = Request::create('/foobar');
-        $argument = new ArgumentMetadata('foobar', 'string', false, false, '');
-        $resolver = new ModelResolver($framework);
-        $resolver->supports($request, $argument);
-    }
-
-    public function testSupportsReturnsFalseIfWrongType()
-    {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-        $framework->expects($this->once())->method('initialize');
-
-        $request = Request::create('/foobar');
-        $request->attributes->set('foobar', 'test');
-        $argument = new ArgumentMetadata('foobar', 'string', false, false, '');
-        $resolver = new ModelResolver($framework);
-
-        $this->assertFalse($resolver->supports($request, $argument));
-    }
-
-    public function testSupportsReturnsFalseIfNotNullableAndModelNotFound()
-    {
-        $adapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['findByPk'])
-            ->getMock();
-
-        $adapter
-            ->expects($this->once())
-            ->method('findByPk')
-            ->with(42)
-            ->willReturn(null);
-
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            [PageModel::class => $adapter]
-        );
-
-        $request = Request::create('/foobar');
-        $request->attributes->set('pageModel', 42);
-        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
-        $resolver = new ModelResolver($framework);
-
-        $this->assertFalse($resolver->supports($request, $argument));
-    }
-
-    public function testSupportsNullable()
-    {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-        $framework->expects($this->once())->method('initialize');
-
-        $request = Request::create('/foobar');
-        $request->attributes->set('pageModel', 42);
-        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '', true);
-        $resolver = new ModelResolver($framework);
-
-        $this->assertTrue($resolver->supports($request, $argument));
-    }
-
-    public function testSupportsNotNullable()
+    public function testResolvesTheModel()
     {
         $pageModel = new PageModel();
         $pageModel->setRow(['id' => 42]);
 
-        $adapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['findByPk'])
-            ->getMock();
+        $adapter = $this->createMock(Adapter::class);
 
         $adapter
             ->expects($this->once())
-            ->method('findByPk')
-            ->with(42)
-            ->willReturn($pageModel);
+            ->method('__call')
+            ->with('findByPk', [42])
+            ->willReturn($pageModel)
+        ;
 
         $framework = $this->mockContaoFramework(
             null,
@@ -125,46 +57,96 @@ class ModelResolverTest extends TestCase
 
         $request = Request::create('/foobar');
         $request->attributes->set('pageModel', 42);
-        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
+
         $resolver = new ModelResolver($framework);
 
-        $this->assertTrue($resolver->supports($request, $argument));
-    }
-
-    public function testResolve()
-    {
-        $pageModel = new PageModel();
-        $pageModel->setRow(['id' => 42]);
-
-        $adapter = $this
-             ->getMockBuilder(Adapter::class)
-             ->disableOriginalConstructor()
-             ->setMethods(['findByPk'])
-             ->getMock();
-
-        $adapter
-            ->expects($this->once())
-            ->method('findByPk')
-            ->with(42)
-            ->willReturn($pageModel);
-
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            [PageModel::class => $adapter]
+        $generator = $resolver->resolve(
+            $request,
+            new ArgumentMetadata('pageModel', PageModel::class, false, false, '')
         );
-
-        $request = Request::create('/foobar');
-        $request->attributes->set('pageModel', 42);
-        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
-
-        $resolver = new ModelResolver($framework);
-        $generator = $resolver->resolve($request, $argument);
 
         $this->assertInstanceOf(\Generator::class, $generator);
 
         foreach ($generator as $resolved) {
             $this->assertSame($pageModel, $resolved);
         }
+    }
+
+    public function testChecksIfTheRequestAttributeExists()
+    {
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->never())
+            ->method('initialize')
+        ;
+
+        $request = Request::create('/foobar');
+        $argument = new ArgumentMetadata('foobar', 'string', false, false, '');
+
+        $resolver = new ModelResolver($framework);
+        $resolver->supports($request, $argument);
+    }
+
+    public function testChecksIfTheArgumentTypeIsCorrect()
+    {
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->once())
+            ->method('initialize')
+        ;
+
+        $request = Request::create('/foobar');
+        $request->attributes->set('foobar', 'test');
+
+        $argument = new ArgumentMetadata('foobar', 'string', false, false, '');
+        $resolver = new ModelResolver($framework);
+
+        $this->assertFalse($resolver->supports($request, $argument));
+    }
+
+    public function testSupportsNullableArguments()
+    {
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->once())
+            ->method('initialize')
+        ;
+
+        $request = Request::create('/foobar');
+        $request->attributes->set('pageModel', 42);
+
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '', true);
+        $resolver = new ModelResolver($framework);
+
+        $this->assertTrue($resolver->supports($request, $argument));
+    }
+
+    public function testChecksIfTheModelExistsIfTheArgumentIsNotNullable()
+    {
+        $adapter = $this->createMock(Adapter::class);
+
+        $adapter
+            ->expects($this->once())
+            ->method('__call')
+            ->with('findByPk', [42])
+            ->willReturn(null)
+        ;
+
+        $framework = $this->mockContaoFramework(
+            null,
+            null,
+            [PageModel::class => $adapter]
+        );
+
+        $request = Request::create('/foobar');
+        $request->attributes->set('pageModel', 42);
+
+        $argument = new ArgumentMetadata('pageModel', PageModel::class, false, false, '');
+        $resolver = new ModelResolver($framework);
+
+        $this->assertFalse($resolver->supports($request, $argument));
     }
 }

@@ -36,6 +36,7 @@ class DefaultFrontendModuleRenderer extends AbstractFragmentRenderer implements 
     public function render(ModuleModel $moduleModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): ?string
     {
         $query = [];
+
         $attributes = [
             'moduleModel' => $moduleModel->id,
             'inColumn' => $inColumn,

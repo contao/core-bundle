@@ -30,28 +30,34 @@ class FragmentRegistryTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\FragmentRegistry', $registry);
     }
 
-    public function testBasicOptionsAreEnsured()
+    public function testChecksTheBasicOptions()
     {
+        $registry = new FragmentRegistry();
+
         $this->expectException(\InvalidArgumentException::class);
 
-        $registry = new FragmentRegistry();
         $registry->addFragment('foobar', new \stdClass(), ['nonsense' => 'test']);
     }
 
-    public function testAddAndGetFragment()
+    public function testReadsAndWritesFragments()
     {
         $fragment = new \stdClass();
         $registry = new FragmentRegistry();
-        $registry->addFragment('foobar', $fragment, [
-            'tag' => 'test',
-            'type' => 'test',
-            'controller' => 'test',
-        ]);
+
+        $registry->addFragment(
+            'foobar',
+            $fragment,
+            [
+                'tag' => 'test',
+                'type' => 'test',
+                'controller' => 'test',
+            ]
+        );
 
         $this->assertSame($fragment, $registry->getFragment('foobar'));
     }
 
-    public function testGetOptions()
+    public function testReadsAndWritesOptions()
     {
         $options = [
             'tag' => 'test',
@@ -59,13 +65,14 @@ class FragmentRegistryTest extends TestCase
             'controller' => 'test',
             'whatever' => 'more',
         ];
+
         $registry = new FragmentRegistry();
         $registry->addFragment('foobar', new \stdClass(), $options);
 
         $this->assertSame($options, $registry->getOptions('foobar'));
     }
 
-    public function testGetFragments()
+    public function testReturnsTheFragments()
     {
         $options = [
             'tag' => 'test',
@@ -73,12 +80,25 @@ class FragmentRegistryTest extends TestCase
             'controller' => 'test',
             'whatever' => 'more',
         ];
+
         $registry = new FragmentRegistry();
         $registry->addFragment('foobar', new \stdClass(), $options);
 
         $this->assertcount(1, $registry->getFragments());
-        $this->assertCount(0, $registry->getFragments(function ($identifier, $fragment) {
-            return false;
-        }));
+    }
+
+    public function testSupportsFilteringFragments()
+    {
+        $options = [
+            'tag' => 'test',
+            'type' => 'test',
+            'controller' => 'test',
+            'whatever' => 'more',
+        ];
+
+        $registry = new FragmentRegistry();
+        $registry->addFragment('foobar', new \stdClass(), $options);
+
+        $this->assertCount(0, $registry->getFragments(function () { return false; }));
     }
 }

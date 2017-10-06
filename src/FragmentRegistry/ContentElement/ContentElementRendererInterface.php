@@ -21,6 +21,8 @@ use Contao\CoreBundle\ContaoCoreBundle;
 interface ContentElementRendererInterface
 {
     /**
+     * Checks if the renderer is supported.
+     *
      * @param ContentModel $contentModel
      * @param string       $inColumn
      * @param string       $scope
@@ -30,6 +32,8 @@ interface ContentElementRendererInterface
     public function supports(ContentModel $contentModel, string $inColumn = 'main', string $scope = ContaoCoreBundle::SCOPE_FRONTEND): bool;
 
     /**
+     * Renders the fragment.
+     *
      * @param ContentModel $contentModel
      * @param string       $inColumn
      * @param string       $scope

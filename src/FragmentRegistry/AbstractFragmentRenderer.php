@@ -70,16 +70,12 @@ abstract class AbstractFragmentRenderer
             $attributes['pageModel'] = $GLOBALS['objPage']->id;
         }
 
-        if ($fragment instanceof SimpleRenderingInformationProvidingInterface) {
+        if ($fragment instanceof SimpleRenderingInformationProviderInterface) {
             $attributes = $fragment->getControllerRequestAttributes($request, $attributes);
             $query = $fragment->getControllerQueryParameters($request, $query);
         }
 
-        $controllerReference = new ControllerReference(
-            $options['controller'],
-            $attributes,
-            $query
-        );
+        $controllerReference = new ControllerReference($options['controller'], $attributes, $query);
 
         if ('' !== $forceRenderStrategy) {
             $renderStrategy = $forceRenderStrategy;

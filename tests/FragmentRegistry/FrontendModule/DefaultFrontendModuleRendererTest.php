@@ -12,6 +12,7 @@ namespace Contao\CoreBundle\Tests\FragmentRegistry\FrontendModule;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
+use Contao\CoreBundle\FragmentRegistry\FragmentRegistryInterface;
 use Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\ModuleModel;
@@ -31,57 +32,74 @@ class DefaultFrontendModuleRendererTest extends TestCase
      */
     public function testCanBeInstantiated()
     {
-        $registry = new FragmentRegistry();
-        $fragmentHandler = $this->createMock(FragmentHandler::class);
-        $requestStack = new RequestStack();
-
-        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
-
-        $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer', $renderer);
+        $this->assertInstanceOf(
+            'Contao\CoreBundle\FragmentRegistry\FrontendModule\DefaultFrontendModuleRenderer',
+            $this->mockRenderer()
+        );
     }
 
-    public function testSupports()
+    public function testSupportsModuleModels()
     {
-        $registry = new FragmentRegistry();
-        $fragmentHandler = $this->createMock(FragmentHandler::class);
-        $requestStack = new RequestStack();
-
-        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
-
-        $model = new ModuleModel();
-
-        $this->assertTrue($renderer->supports($model));
+        $this->assertTrue($this->mockRenderer()->supports(new ModuleModel()));
     }
 
-    public function testRender()
+    public function testRendersModuleModels()
     {
-        $expectedControllerReference = new ControllerReference('test', [
-            'moduleModel' => 42,
-            'inColumn' => 'whateverColumn',
-            'scope' => 'scope',
-        ]);
+        $expectedControllerReference = new ControllerReference(
+            'test',
+            [
+                'moduleModel' => 42,
+                'inColumn' => 'main',
+                'scope' => 'scope',
+            ]
+        );
 
         $registry = new FragmentRegistry();
-        $registry->addFragment(FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE.'.identifier',
-            new \stdClass(), [
+
+        $registry->addFragment(
+            FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE.'.identifier',
+            new \stdClass(),
+            [
                 'tag' => FragmentRegistryPass::TAG_FRAGMENT_FRONTEND_MODULE,
                 'type' => 'test',
                 'controller' => 'test',
                 'category' => 'navigationMod',
-            ]);
+            ]
+        );
 
-        $fragmentHandler = $this->createMock(FragmentHandler::class);
-        $fragmentHandler->expects($this->once())
+        $handler = $this->createMock(FragmentHandler::class);
+
+        $handler
+            ->expects($this->once())
             ->method('render')
-            ->with($this->equalTo($expectedControllerReference));
-
-        $requestStack = new RequestStack();
-
-        $renderer = new DefaultFrontendModuleRenderer($registry, $fragmentHandler, $requestStack);
+            ->with($this->equalTo($expectedControllerReference))
+        ;
 
         $model = new ModuleModel();
         $model->setRow(['id' => 42, 'type' => 'identifier']);
 
-        $renderer->render($model, 'whateverColumn', 'scope');
+        $renderer = $this->mockRenderer($registry, $handler);
+        $renderer->render($model, 'main', 'scope');
+    }
+
+    /**
+     * Mocks a default front end module renderer.
+     *
+     * @param FragmentRegistryInterface|null $registry
+     * @param FragmentHandler|null           $handler
+     *
+     * @return DefaultFrontendModuleRenderer
+     */
+    private function mockRenderer(FragmentRegistryInterface $registry = null, FragmentHandler $handler = null)
+    {
+        if (null === $registry) {
+            $registry = new FragmentRegistry();
+        }
+
+        if (null === $handler) {
+            $handler = $this->createMock(FragmentHandler::class);
+        }
+
+        return new DefaultFrontendModuleRenderer($registry, $handler, new RequestStack());
     }
 }

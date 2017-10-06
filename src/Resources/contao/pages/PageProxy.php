@@ -11,12 +11,11 @@
 namespace Contao;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\FragmentRegistry\FrontendModule\PageTypeRendererInterface;
+use Contao\CoreBundle\FragmentRegistry\PageType\PageTypeRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Proxy for new page type fragments so they are accessible
- * via $GLOBALS['TL_PTY'].
+ * Proxy for new page type fragments so they are accessible via $GLOBALS['TL_PTY'].
  *
  * @author Yanick Witschi <https://github.com/toflar>
  */
