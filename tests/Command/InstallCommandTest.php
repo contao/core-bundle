@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,23 +19,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\LockHandler;
 
-/**
- * Tests the InstallCommand class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class InstallCommandTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $tcpdfPath = $this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php';
 
         if (!file_exists($tcpdfPath)) {
-            if (!file_exists(dirname($tcpdfPath))) {
-                mkdir(dirname($tcpdfPath), 0777, true);
+            if (!file_exists(\dirname($tcpdfPath))) {
+                mkdir(\dirname($tcpdfPath), 0777, true);
             }
 
             file_put_contents($tcpdfPath, '');
@@ -43,8 +42,10 @@ class InstallCommandTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
 
         $fs->remove($this->getRootDir().'/assets/css');
@@ -63,10 +64,7 @@ class InstallCommandTest extends TestCase
         $fs->remove($this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $command = new InstallCommand('contao:install');
 
@@ -74,10 +72,7 @@ class InstallCommandTest extends TestCase
         $this->assertSame('contao:install', $command->getName());
     }
 
-    /**
-     * Tests creating the the Contao folders.
-     */
-    public function testCreatesTheContaoFolders()
+    public function testCreatesTheContaoFolders(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.project_dir', $this->getRootDir());
@@ -103,10 +98,7 @@ class InstallCommandTest extends TestCase
         $this->assertContains(' * system/tmp', $output);
     }
 
-    /**
-     * Tests adding a custom files and images directory.
-     */
-    public function testHandlesCustomFilesAndImagesPaths()
+    public function testHandlesCustomFilesAndImagesPaths(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.project_dir', $this->getRootDir());
@@ -126,15 +118,17 @@ class InstallCommandTest extends TestCase
         $this->assertContains(' * assets/images_test', $display);
     }
 
-    /**
-     * Tests that the command is locked while running.
-     */
-    public function testIsLockedWhileRunning()
+    public function testIsLockedWhileRunning(): void
     {
-        $lock = new LockHandler('contao:install');
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', 'foobar');
+
+        $lock = new LockHandler('contao:install', sys_get_temp_dir().'/'.md5('foobar'));
         $lock->lock();
 
         $command = new InstallCommand('contao:install');
+        $command->setContainer($container);
+
         $tester = new CommandTester($command);
 
         $code = $tester->execute([]);

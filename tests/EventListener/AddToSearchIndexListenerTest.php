@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,11 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-/**
- * Tests the AddToSearchIndexListener class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class AddToSearchIndexListenerTest extends TestCase
 {
     /**
@@ -34,34 +31,19 @@ class AddToSearchIndexListenerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->framework = $this->createMock(ContaoFrameworkInterface::class);
 
-        $frontendAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['indexPageIfApplicable'])
-            ->getMock()
-        ;
-
-        $frontendAdapter
-            ->method('indexPageIfApplicable')
-            ->willReturn(null)
-        ;
-
         $this->framework
             ->method('getAdapter')
-            ->willReturn($frontendAdapter)
+            ->willReturn($this->createMock(Adapter::class))
         ;
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $listener = new AddToSearchIndexListener($this->framework);
 
@@ -69,12 +51,10 @@ class AddToSearchIndexListenerTest extends TestCase
     }
 
     /**
-     * Tests that the listener does use the response if the Contao framework is booted.
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testIndexesTheResponse()
+    public function testIndexesTheResponse(): void
     {
         $this->framework
             ->method('isInitialized')
@@ -93,10 +73,7 @@ class AddToSearchIndexListenerTest extends TestCase
         $listener->onKernelTerminate($event);
     }
 
-    /**
-     * Tests that the listener does nothing if the Contao framework is not booted.
-     */
-    public function testDoesNotIndexTheResponseIfTheContaoFrameworkIsNotInitialized()
+    public function testDoesNotIndexTheResponseIfTheContaoFrameworkIsNotInitialized(): void
     {
         $this->framework
             ->method('isInitialized')
@@ -114,10 +91,7 @@ class AddToSearchIndexListenerTest extends TestCase
         $listener->onKernelTerminate($event);
     }
 
-    /**
-     * Tests that the listener does nothing if the request is a fragment.
-     */
-    public function testDoesNotIndexTheResponseUponFragmentRequests()
+    public function testDoesNotIndexTheResponseUponFragmentRequests(): void
     {
         $this->framework
             ->method('isInitialized')
@@ -136,13 +110,13 @@ class AddToSearchIndexListenerTest extends TestCase
     }
 
     /**
-     * Returns a PostResponseEvent mock object.
+     * Mocks a post response event.
      *
      * @param string|null $requestUri
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|PostResponseEvent
+     * @return PostResponseEvent|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPostResponseEvent($requestUri = null)
+    private function mockPostResponseEvent($requestUri = null): PostResponseEvent
     {
         $request = new Request();
 
@@ -150,7 +124,7 @@ class AddToSearchIndexListenerTest extends TestCase
             $request->server->set('REQUEST_URI', $requestUri);
         }
 
-        return $this
+        $event = $this
             ->getMockBuilder(PostResponseEvent::class)
             ->setConstructorArgs([
                 $this->createMock(KernelInterface::class),
@@ -160,5 +134,7 @@ class AddToSearchIndexListenerTest extends TestCase
             ->setMethods(['getResponse'])
             ->getMock()
         ;
+
+        return $event;
     }
 }

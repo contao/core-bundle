@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,17 +18,9 @@ use Contao\CoreBundle\Tests\DoctrineTestCase;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 
-/**
- * Tests the DcaSchemaProvider class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class DcaSchemaProviderTest extends DoctrineTestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $provider = new DcaSchemaProvider(
             $this->createMock(ContaoFrameworkInterface::class),
@@ -36,23 +30,18 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertInstanceOf('Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider', $provider);
     }
 
-    /**
-     * Tests that the schema is empty.
-     */
-    public function testHasAnEmptySchema()
+    public function testHasAnEmptySchema(): void
     {
         $this->assertCount(0, $this->getProvider()->createSchema()->getTableNames());
     }
 
     /**
-     * Tests creating a schema.
-     *
      * @param array $dca
      * @param array $sql
      *
      * @dataProvider createSchemaProvider
      */
-    public function testCreatesASchema(array $dca = [], array $sql = [])
+    public function testCreatesASchema(array $dca = [], array $sql = []): void
     {
         $schema = $this->getProvider($dca, $sql)->createSchema();
 
@@ -140,11 +129,9 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     }
 
     /**
-     * Provides the data for the schema test.
-     *
      * @return array
      */
-    public function createSchemaProvider()
+    public function createSchemaProvider(): array
     {
         return [
             // Test table fields SQL string from DCA file
@@ -213,10 +200,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         ];
     }
 
-    /**
-     * Test the table options.
-     */
-    public function testReadsTheTableOptions()
+    public function testReadsTheTableOptions(): void
     {
         $provider = $this->getProvider(['tl_member' => ['TABLE_OPTIONS' => 'ENGINE=MyISAM DEFAULT CHARSET=utf8']]);
         $schema = $provider->createSchema();
@@ -246,10 +230,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertSame('Latin1', $schema->getTable('tl_member')->getOption('charset'));
     }
 
-    /**
-     * Tests the table create definitions.
-     */
-    public function testCreatesTheTableDefinitions()
+    public function testCreatesTheTableDefinitions(): void
     {
         $provider = $this->getProvider(
             [
@@ -295,10 +276,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertSame(['firstname', 'lastname'], $table->getIndex('name')->getColumns());
     }
 
-    /**
-     * Tests adding an index with a key length.
-     */
-    public function testHandlesIndexesWithKeyLength()
+    public function testHandlesIndexesWithKeyLength(): void
     {
         $provider = $this->getProvider(
             [
@@ -329,10 +307,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertSame(['path(333)'], $table->getIndex('path')->getColumns());
     }
 
-    /**
-     * Tests adding a fulltext index.
-     */
-    public function testHandlesFulltextIndexes()
+    public function testHandlesFulltextIndexes(): void
     {
         $provider = $this->getProvider(
             [
@@ -365,10 +340,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertSame(['fulltext'], $table->getIndex('text')->getFlags());
     }
 
-    /**
-     * Tests parsing an invalid primary key.
-     */
-    public function testFailsIfThePrimaryKeyIsInvalid()
+    public function testFailsIfThePrimaryKeyIsInvalid(): void
     {
         $provider = $this->getProvider(
             [
@@ -388,10 +360,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $provider->createSchema();
     }
 
-    /**
-     * Tests parsing an invalid key.
-     */
-    public function testFailsIfAKeyIsInvalid()
+    public function testFailsIfAKeyIsInvalid(): void
     {
         $provider = $this->getProvider(
             [
@@ -412,14 +381,12 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     }
 
     /**
-     * Returns a DCA schema provider.
-     *
      * @param array $dca
      * @param array $file
      *
      * @return DcaSchemaProvider
      */
-    protected function getProvider(array $dca = [], array $file = [])
+    protected function getProvider(array $dca = [], array $file = []): DcaSchemaProvider
     {
         return new DcaSchemaProvider(
             $this->mockContaoFrameworkWithInstaller($dca, $file),

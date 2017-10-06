@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,14 +13,11 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\HttpKernel\Header\HeaderStorageInterface;
+use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
-/**
- * Adds HTTP headers sent by Contao to the Symfony response.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class MergeHttpHeadersListener
 {
     /**
@@ -27,9 +26,14 @@ class MergeHttpHeadersListener
     private $framework;
 
     /**
-     * @var array|null
+     * @var HeaderStorageInterface
      */
-    private $headers;
+    private $headerStorage;
+
+    /**
+     * @var array
+     */
+    private $headers = [];
 
     /**
      * @var array
@@ -43,15 +47,13 @@ class MergeHttpHeadersListener
     ];
 
     /**
-     * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     * @param array|null               $headers   Meant for unit testing only!
+     * @param ContaoFrameworkInterface    $framework
+     * @param HeaderStorageInterface|null $headerStorage
      */
-    public function __construct(ContaoFrameworkInterface $framework, array $headers = null)
+    public function __construct(ContaoFrameworkInterface $framework, HeaderStorageInterface $headerStorage = null)
     {
         $this->framework = $framework;
-        $this->headers = $headers;
+        $this->headerStorage = $headerStorage ?: new NativeHeaderStorage();
     }
 
     /**
@@ -59,7 +61,7 @@ class MergeHttpHeadersListener
      *
      * @return array
      */
-    public function getMultiHeaders()
+    public function getMultiHeaders(): array
     {
         return array_values($this->multiHeaders);
     }
@@ -69,7 +71,7 @@ class MergeHttpHeadersListener
      *
      * @param array $headers
      */
-    public function setMultiHeader(array $headers)
+    public function setMultiHeader(array $headers): void
     {
         $this->multiHeaders = $headers;
     }
@@ -79,11 +81,11 @@ class MergeHttpHeadersListener
      *
      * @param string $name
      */
-    public function addMultiHeader($name)
+    public function addMultiHeader(string $name): void
     {
         $uniqueKey = $this->getUniqueKey($name);
 
-        if (!in_array($uniqueKey, $this->multiHeaders, true)) {
+        if (!\in_array($uniqueKey, $this->multiHeaders, true)) {
             $this->multiHeaders[] = $uniqueKey;
         }
     }
@@ -93,7 +95,7 @@ class MergeHttpHeadersListener
      *
      * @param string $name
      */
-    public function removeMultiHeader($name)
+    public function removeMultiHeader(string $name): void
     {
         if (false !== ($i = array_search($this->getUniqueKey($name), $this->multiHeaders, true))) {
             unset($this->multiHeaders[$i]);
@@ -105,51 +107,47 @@ class MergeHttpHeadersListener
      *
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$this->framework->isInitialized()) {
             return;
         }
 
-        $event->setResponse($this->mergeHttpHeaders($event->getResponse()));
+        // Fetch remaining headers and add them to the response
+        $this->fetchHttpHeaders();
+        $this->setResponseHeaders($event->getResponse());
     }
 
     /**
-     * Merges the HTTP headers.
+     * Fetches and stores HTTP headers from PHP.
+     */
+    private function fetchHttpHeaders(): void
+    {
+        $this->headers = array_merge($this->headers, $this->headerStorage->all());
+        $this->headerStorage->clear();
+    }
+
+    /**
+     * Sets the response headers.
      *
      * @param Response $response
-     *
-     * @return Response
      */
-    private function mergeHttpHeaders(Response $response)
+    private function setResponseHeaders(Response $response): void
     {
-        foreach ($this->getHeaders() as $header) {
-            list($name, $content) = explode(':', $header, 2);
+        $allowOverrides = [];
 
-            if ('cli' !== PHP_SAPI && !headers_sent()) {
-                header_remove($name);
-            }
+        foreach ($this->headers as $header) {
+            list($name, $content) = explode(':', $header, 2);
 
             $uniqueKey = $this->getUniqueKey($name);
 
-            if (in_array($uniqueKey, $this->multiHeaders, true)) {
+            if (\in_array($uniqueKey, $this->multiHeaders, true)) {
                 $response->headers->set($uniqueKey, trim($content), false);
-            } elseif (!$response->headers->has($uniqueKey)) {
+            } elseif (isset($allowOverrides[$uniqueKey]) || !$response->headers->has($uniqueKey)) {
+                $allowOverrides[$uniqueKey] = true;
                 $response->headers->set($uniqueKey, trim($content));
             }
         }
-
-        return $response;
-    }
-
-    /**
-     * Returns the headers.
-     *
-     * @return array
-     */
-    private function getHeaders()
-    {
-        return $this->headers ?: headers_list();
     }
 
     /**
@@ -159,7 +157,7 @@ class MergeHttpHeadersListener
      *
      * @return string
      */
-    private function getUniqueKey($name)
+    private function getUniqueKey(string $name): string
     {
         return str_replace('_', '-', strtolower($name));
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,20 +20,13 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
-/**
- * Tests the ContaoToken class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ContaoTokenTest extends TestCase
 {
     /**
-     * Tests the object instantiation.
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $token = new ContaoToken(FrontendUser::getInstance());
 
@@ -39,12 +34,10 @@ class ContaoTokenTest extends TestCase
     }
 
     /**
-     * Tests a front end user.
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testHandlesFrontEndUsers()
+    public function testHandlesFrontEndUsers(): void
     {
         $token = new ContaoToken(FrontendUser::getInstance());
 
@@ -59,12 +52,10 @@ class ContaoTokenTest extends TestCase
     }
 
     /**
-     * Tests a back end user.
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testHandlesBackEndUsers()
+    public function testHandlesBackEndUsers(): void
     {
         $token = new ContaoToken(BackendUser::getInstance());
 
@@ -80,12 +71,10 @@ class ContaoTokenTest extends TestCase
     }
 
     /**
-     * Tests an unauthenticated user.
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testFailsIfTheUserIsNotAuthenticated()
+    public function testFailsIfTheUserIsNotAuthenticated(): void
     {
         /** @var FrontendUser|object $user */
         $user = FrontendUser::getInstance();

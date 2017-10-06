@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,11 +12,6 @@
 
 namespace Contao\CoreBundle\Picker;
 
-/**
- * Picker configuration.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class PickerConfig implements \JsonSerializable
 {
     /**
@@ -38,14 +35,12 @@ class PickerConfig implements \JsonSerializable
     private $current;
 
     /**
-     * Constructor.
-     *
-     * @param string $context
-     * @param array  $extras
-     * @param string $value
-     * @param string $current
+     * @param string     $context
+     * @param array      $extras
+     * @param string|int $value
+     * @param string     $current
      */
-    public function __construct($context, array $extras = [], $value = '', $current = '')
+    public function __construct(string $context, array $extras = [], $value = '', string $current = '')
     {
         $this->context = $context;
         $this->extras = $extras;
@@ -58,7 +53,7 @@ class PickerConfig implements \JsonSerializable
      *
      * @return string
      */
-    public function getContext()
+    public function getContext(): string
     {
         return $this->context;
     }
@@ -68,7 +63,7 @@ class PickerConfig implements \JsonSerializable
      *
      * @return array
      */
-    public function getExtras()
+    public function getExtras(): array
     {
         return $this->extras;
     }
@@ -78,7 +73,7 @@ class PickerConfig implements \JsonSerializable
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return (string) $this->value;
     }
@@ -88,7 +83,7 @@ class PickerConfig implements \JsonSerializable
      *
      * @return string
      */
-    public function getCurrent()
+    public function getCurrent(): string
     {
         return $this->current;
     }
@@ -100,9 +95,9 @@ class PickerConfig implements \JsonSerializable
      *
      * @return mixed
      */
-    public function getExtra($name)
+    public function getExtra(string $name)
     {
-        return isset($this->extras[$name]) ? $this->extras[$name] : null;
+        return $this->extras[$name] ?? null;
     }
 
     /**
@@ -111,7 +106,7 @@ class PickerConfig implements \JsonSerializable
      * @param string $name
      * @param mixed  $value
      */
-    public function setExtra($name, $value)
+    public function setExtra(string $name, $value): void
     {
         $this->extras[$name] = $value;
     }
@@ -123,7 +118,7 @@ class PickerConfig implements \JsonSerializable
      *
      * @return PickerConfig
      */
-    public function cloneForCurrent($current)
+    public function cloneForCurrent(string $current): PickerConfig
     {
         return new self($this->context, $this->extras, $this->value, $current);
     }
@@ -131,7 +126,7 @@ class PickerConfig implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'context' => $this->context,
@@ -146,11 +141,11 @@ class PickerConfig implements \JsonSerializable
      *
      * @return string
      */
-    public function urlEncode()
+    public function urlEncode(): string
     {
         $data = json_encode($this);
 
-        if (function_exists('gzencode') && false !== ($encoded = @gzencode($data))) {
+        if (\function_exists('gzencode') && false !== ($encoded = @gzencode($data))) {
             $data = $encoded;
         }
 
@@ -166,11 +161,11 @@ class PickerConfig implements \JsonSerializable
      *
      * @return PickerConfig
      */
-    public static function urlDecode($data)
+    public static function urlDecode(string $data): PickerConfig
     {
         $data = base64_decode(strtr($data, '-_,', '+/='), true);
 
-        if (function_exists('gzdecode') && false !== ($uncompressed = @gzdecode($data))) {
+        if (\function_exists('gzdecode') && false !== ($uncompressed = @gzdecode($data))) {
             $data = $uncompressed;
         }
 

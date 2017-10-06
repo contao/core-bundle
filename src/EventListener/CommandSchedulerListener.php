@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,15 +16,10 @@ use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendCron;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
-/**
- * Triggers the Contao command scheduler after the response has been sent.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class CommandSchedulerListener
 {
     /**
@@ -41,13 +38,11 @@ class CommandSchedulerListener
     private $fragmentPath;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      * @param Connection               $connection
      * @param string                   $fragmentPath
      */
-    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, $fragmentPath = '_fragment')
+    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, string $fragmentPath = '_fragment')
     {
         $this->framework = $framework;
         $this->connection = $connection;
@@ -59,7 +54,7 @@ class CommandSchedulerListener
      *
      * @param PostResponseEvent $event
      */
-    public function onKernelTerminate(PostResponseEvent $event)
+    public function onKernelTerminate(PostResponseEvent $event): void
     {
         if (!$this->framework->isInitialized() || !$this->canRunController($event->getRequest())) {
             return;
@@ -77,7 +72,7 @@ class CommandSchedulerListener
      *
      * @return bool
      */
-    private function canRunController(Request $request)
+    private function canRunController(Request $request): bool
     {
         $pathInfo = $request->getPathInfo();
 
@@ -97,11 +92,11 @@ class CommandSchedulerListener
      *
      * @return bool
      */
-    private function canRunDbQuery()
+    private function canRunDbQuery(): bool
     {
         try {
             return $this->connection->isConnected() && $this->connection->getSchemaManager()->tablesExist(['tl_cron']);
-        } catch (ConnectionException $e) {
+        } catch (DriverException $e) {
             return false;
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -30,23 +32,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Handles the Contao back end routes.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author Leo Feyer <https://github.com/leofeyer>
- *
  * @Route(defaults={"_scope" = "backend", "_token_check" = true})
  */
 class BackendController extends Controller
 {
     /**
-     * Runs the main back end controller.
-     *
      * @return Response
      *
      * @Route("/contao", name="contao_backend")
      */
-    public function mainAction()
+    public function mainAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -56,13 +51,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the back end login form.
-     *
      * @return Response
      *
      * @Route("/contao/login", name="contao_backend_login")
      */
-    public function loginAction()
+    public function loginAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -72,13 +65,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the "set new password" form.
-     *
      * @return Response
      *
      * @Route("/contao/password", name="contao_backend_password")
      */
-    public function passwordAction()
+    public function passwordAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -88,13 +79,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the front end preview.
-     *
      * @return Response
      *
      * @Route("/contao/preview", name="contao_backend_preview")
      */
-    public function previewAction()
+    public function previewAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -104,13 +93,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the "invalid request token" screen.
-     *
      * @return Response
      *
      * @Route("/contao/confirm", name="contao_backend_confirm")
      */
-    public function confirmAction()
+    public function confirmAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -120,13 +107,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the file picker.
-     *
      * @return Response
      *
      * @Route("/contao/file", name="contao_backend_file")
      */
-    public function fileAction()
+    public function fileAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -136,13 +121,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the help content.
-     *
      * @return Response
      *
      * @Route("/contao/help", name="contao_backend_help")
      */
-    public function helpAction()
+    public function helpAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -152,13 +135,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the page picker.
-     *
      * @return Response
      *
      * @Route("/contao/page", name="contao_backend_page")
      */
-    public function pageAction()
+    public function pageAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -168,13 +149,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the pop-up content.
-     *
      * @return Response
      *
      * @Route("/contao/popup", name="contao_backend_popup")
      */
-    public function popupAction()
+    public function popupAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -184,13 +163,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the front end preview switcher.
-     *
      * @return Response
      *
      * @Route("/contao/switch", name="contao_backend_switch")
      */
-    public function switchAction()
+    public function switchAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -200,13 +177,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Renders the alerts content.
-     *
      * @return Response
      *
      * @Route("/contao/alerts", name="contao_backend_alerts")
      */
-    public function alertsAction()
+    public function alertsAction(): Response
     {
         $this->container->get('contao.framework')->initialize();
 
@@ -216,8 +191,9 @@ class BackendController extends Controller
     }
 
     /**
-     * Redirects the user to the Contao back end and includes the picker query parameter. It will determine
-     * the current provider URL based on the value (usually read dynamically via JavaScript).
+     * Redirects the user to the Contao back end and adds the picker query parameter.
+     * It will determine the current provider URL based on the value, which is usually
+     * read dynamically via JavaScript.
      *
      * @param Request $request
      *
@@ -227,14 +203,14 @@ class BackendController extends Controller
      *
      * @Route("/_contao/picker", name="contao_backend_picker")
      */
-    public function pickerAction(Request $request)
+    public function pickerAction(Request $request): RedirectResponse
     {
         $extras = [];
 
         if ($request->query->has('extras')) {
             $extras = $request->query->get('extras');
 
-            if (!is_array($extras)) {
+            if (!\is_array($extras)) {
                 throw new BadRequestHttpException('Invalid picker extras');
             }
         }

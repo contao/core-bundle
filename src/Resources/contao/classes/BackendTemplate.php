@@ -62,15 +62,43 @@ class BackendTemplate extends \Template
 			$this->ua .= ' lw';
 		}
 
+		$strWebDir = \System::getContainer()->getParameter('contao.web_dir');
+
 		// Style sheets
 		if (!empty($GLOBALS['TL_CSS']) && is_array($GLOBALS['TL_CSS']))
 		{
 			$strStyleSheets = '';
+			$objCombiner = new \Combiner();
 
 			foreach (array_unique($GLOBALS['TL_CSS']) as $stylesheet)
 			{
 				$options = \StringUtil::resolveFlaggedUrl($stylesheet);
-				$strStyleSheets .= \Template::generateStyleTag($this->addStaticUrlTo($stylesheet), $options->media);
+
+				if ($options->static)
+				{
+					if ($options->mtime === null)
+					{
+						if (file_exists(TL_ROOT . '/' . $stylesheet))
+						{
+							$options->mtime = filemtime(TL_ROOT . '/' . $stylesheet);
+						}
+						elseif (file_exists(TL_ROOT . '/' . $strWebDir . '/' . $stylesheet))
+						{
+							$options->mtime = filemtime(TL_ROOT . '/' . $strWebDir . '/' . $stylesheet);
+						}
+					}
+
+					$objCombiner->add($stylesheet, $options->mtime, $options->media);
+				}
+				else
+				{
+					$strStyleSheets .= \Template::generateStyleTag($this->addStaticUrlTo($stylesheet), $options->media);
+				}
+			}
+
+			if ($objCombiner->hasEntries())
+			{
+				$strStyleSheets = \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . $strStyleSheets;
 			}
 
 			$this->stylesheets = $strStyleSheets;
@@ -79,12 +107,44 @@ class BackendTemplate extends \Template
 		// JavaScripts
 		if (!empty($GLOBALS['TL_JAVASCRIPT']) && is_array($GLOBALS['TL_JAVASCRIPT']))
 		{
+			$objCombiner = new \Combiner();
+			$objCombinerAsync = new \Combiner();
 			$strJavaScripts = '';
 
 			foreach (array_unique($GLOBALS['TL_JAVASCRIPT']) as $javascript)
 			{
 				$options = \StringUtil::resolveFlaggedUrl($javascript);
-				$strJavaScripts .= \Template::generateScriptTag($this->addStaticUrlTo($javascript), $options->async) . "\n";
+
+				if ($options->static)
+				{
+					if ($options->mtime === null)
+					{
+						if (file_exists(TL_ROOT . '/' . $javascript))
+						{
+							$options->mtime = filemtime(TL_ROOT . '/' . $javascript);
+						}
+						elseif (file_exists(TL_ROOT . '/' . $strWebDir . '/' . $javascript))
+						{
+							$options->mtime = filemtime(TL_ROOT . '/' . $strWebDir . '/' . $javascript);
+						}
+					}
+
+					$options->async ? $objCombinerAsync->add($javascript, $options->mtime) : $objCombiner->add($javascript, $options->mtime);
+				}
+				else
+				{
+					$strJavaScripts .= \Template::generateScriptTag($this->addStaticUrlTo($javascript), $options->async);
+				}
+			}
+
+			if ($objCombiner->hasEntries())
+			{
+				$strJavaScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . $strJavaScripts;
+			}
+
+			if ($objCombinerAsync->hasEntries())
+			{
+				$strJavaScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . $strJavaScripts;
 			}
 
 			$this->javascripts = $strJavaScripts;
@@ -97,7 +157,7 @@ class BackendTemplate extends \Template
 
 			foreach (array_unique($GLOBALS['TL_MOOTOOLS']) as $script)
 			{
-				$strMootools .= "\n" . trim($script) . "\n";
+				$strMootools .= $script;
 			}
 
 			$this->mootools = $strMootools;

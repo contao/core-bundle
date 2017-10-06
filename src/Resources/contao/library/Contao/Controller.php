@@ -15,6 +15,8 @@ use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use League\Uri\Components\Query;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\Glob;
 
 
 /**
@@ -101,7 +103,7 @@ abstract class Controller extends \System
 		}
 
 		$strBrace = '{' . implode(',', \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')))) . '}';
-		$arrCustomized = glob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+		$arrCustomized = self::braceGlob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace);
 
 		// Add the customized templates
 		if (is_array($arrCustomized))
@@ -133,7 +135,7 @@ abstract class Controller extends \System
 				{
 					if ($objTheme->templates != '')
 					{
-						$arrThemeTemplates = glob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace, GLOB_BRACE);
+						$arrThemeTemplates = self::braceGlob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace);
 
 						if (is_array($arrThemeTemplates))
 						{
@@ -730,7 +732,7 @@ abstract class Controller extends \System
 		{
 			foreach (array_unique($GLOBALS['TL_JQUERY']) as $script)
 			{
-				$strScripts .= "\n" . trim($script) . "\n";
+				$strScripts .= $script;
 			}
 		}
 
@@ -742,7 +744,7 @@ abstract class Controller extends \System
 		{
 			foreach (array_unique($GLOBALS['TL_MOOTOOLS']) as $script)
 			{
-				$strScripts .= "\n" . trim($script) . "\n";
+				$strScripts .= $script;
 			}
 		}
 
@@ -754,7 +756,7 @@ abstract class Controller extends \System
 		{
 			foreach (array_unique($GLOBALS['TL_BODY']) as $script)
 			{
-				$strScripts .= trim($script) . "\n";
+				$strScripts .= $script;
 			}
 		}
 
@@ -795,7 +797,7 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media) . "\n";
+					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media);
 				}
 			}
 		}
@@ -813,7 +815,7 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media) . "\n";
+					$strScripts .= \Template::generateStyleTag(static::addStaticUrlTo($stylesheet), $options->media);
 				}
 			}
 		}
@@ -823,7 +825,7 @@ abstract class Controller extends \System
 		{
 			if ($blnCombineScripts)
 			{
-				$strScripts .= \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . "\n";
+				$strScripts .= \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all');
 			}
 			else
 			{
@@ -831,7 +833,7 @@ abstract class Controller extends \System
 				{
 					list($url, $media) = explode('|', $strUrl);
 
-					$strScripts .= \Template::generateStyleTag($url, $media) . "\n";
+					$strScripts .= \Template::generateStyleTag($url, $media);
 				}
 			}
 		}
@@ -860,7 +862,7 @@ abstract class Controller extends \System
 				}
 				else
 				{
-					$strScripts .= \Template::generateScriptTag(static::addStaticUrlTo($javascript), $options->async) . "\n";
+					$strScripts .= \Template::generateScriptTag(static::addStaticUrlTo($javascript), $options->async);
 				}
 			}
 
@@ -869,7 +871,7 @@ abstract class Controller extends \System
 			{
 				if ($blnCombineScripts)
 				{
-					$strScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . "\n" . $strScripts;
+					$strScripts = \Template::generateScriptTag($objCombiner->getCombinedFile()) . $strScripts;
 				}
 				else
 				{
@@ -877,7 +879,7 @@ abstract class Controller extends \System
 
 					foreach ($arrReversed as $strUrl)
 					{
-						$strScripts = \Template::generateScriptTag($strUrl) . "\n" . $strScripts;
+						$strScripts = \Template::generateScriptTag($strUrl) . $strScripts;
 					}
 				}
 			}
@@ -886,7 +888,7 @@ abstract class Controller extends \System
 			{
 				if ($blnCombineScripts)
 				{
-					$strScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . "\n" . $strScripts;
+					$strScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . $strScripts;
 				}
 				else
 				{
@@ -894,7 +896,7 @@ abstract class Controller extends \System
 
 					foreach ($arrReversed as $strUrl)
 					{
-						$strScripts = \Template::generateScriptTag($strUrl, true) . "\n" . $strScripts;
+						$strScripts = \Template::generateScriptTag($strUrl, true) . $strScripts;
 					}
 				}
 			}
@@ -905,7 +907,7 @@ abstract class Controller extends \System
 		{
 			foreach (array_unique($GLOBALS['TL_HEAD']) as $head)
 			{
-				$strScripts .= trim($head) . "\n";
+				$strScripts .= $head;
 			}
 		}
 
@@ -2340,5 +2342,44 @@ abstract class Controller extends \System
 
 		$objVersions = new \Versions($strTable, $intId);
 		$objVersions->create();
+	}
+
+	/**
+	 * Return the files matching a GLOB pattern
+	 *
+	 * @param string $pattern
+	 *
+	 * @return array
+	 */
+	protected static function braceGlob($pattern)
+	{
+		// Use glob() if possible
+		if (false === strpos($pattern, '/**/') && (defined('GLOB_BRACE') || false === strpos($pattern, '{')))
+		{
+			return glob($pattern, defined('GLOB_BRACE') ? GLOB_BRACE : 0);
+		}
+
+		$finder = new Finder();
+		$regex = Glob::toRegex($pattern);
+
+		// All files in the given template folder
+		$filesIterator = $finder
+			->files()
+			->followLinks()
+			->sortByName()
+			->in(dirname($pattern))
+		;
+
+		// Match the actual regex and filter the files
+		$filesIterator = $filesIterator->filter(function (\SplFileInfo $info) use ($regex)
+		{
+			$path = $info->getPathname();
+
+			return preg_match($regex, $path) && $info->isFile();
+		});
+
+		$files = iterator_to_array($filesIterator);
+
+		return array_keys($files);
 	}
 }

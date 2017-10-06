@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,17 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Tests the InitializeController class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class InitializeControllerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $controller = new InitializeController();
 
@@ -35,20 +29,18 @@ class InitializeControllerTest extends TestCase
     }
 
     /**
-     * Tests the indexAction() method.
-     *
      * @group legacy
      *
      * @expectedDeprecation Custom entry points are deprecated and will no longer work in Contao 5.0.
      */
-    public function testReturnsAResponseInTheIndexActionMethod()
+    public function testReturnsAResponseInTheIndexActionMethod(): void
     {
-        if (!defined('TL_MODE')) {
-            define('TL_MODE', 'BE');
+        if (!\defined('TL_MODE')) {
+            \define('TL_MODE', 'BE');
         }
 
-        if (!defined('TL_SCRIPT')) {
-            define('TL_SCRIPT', 'index.php');
+        if (!\defined('TL_SCRIPT')) {
+            \define('TL_SCRIPT', 'index.php');
         }
 
         $requestStack = new RequestStack();

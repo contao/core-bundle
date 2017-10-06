@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,12 +14,6 @@ namespace Contao\CoreBundle\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Stores a response object.
- *
- * @author Christian Schiffler <https://github.com/discordier>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ResponseException extends \RuntimeException
 {
     /**
@@ -26,8 +22,6 @@ class ResponseException extends \RuntimeException
     private $response;
 
     /**
-     * Constructor.
-     *
      * @param Response        $response
      * @param \Exception|null $previous
      */
@@ -47,7 +41,7 @@ class ResponseException extends \RuntimeException
      *
      * @return Response
      */
-    public function getResponse()
+    public function getResponse(): Response
     {
         return $this->response;
     }

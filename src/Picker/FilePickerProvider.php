@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,11 +20,6 @@ use Contao\Validator;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * Provides the file picker.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
@@ -33,13 +30,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     private $uploadPath;
 
     /**
-     * Constructor.
-     *
      * @param FactoryInterface $menuFactory
      * @param RouterInterface  $router
      * @param string           $uploadPath
      */
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, $uploadPath)
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, string $uploadPath)
     {
         parent::__construct($menuFactory, $router);
 
@@ -49,7 +44,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'filePicker';
     }
@@ -57,15 +52,15 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    public function supportsContext($context)
+    public function supportsContext($context): bool
     {
-        return in_array($context, ['file', 'link'], true) && $this->getUser()->hasAccess('files', 'modules');
+        return \in_array($context, ['file', 'link'], true) && $this->getUser()->hasAccess('files', 'modules');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supportsValue(PickerConfig $config)
+    public function supportsValue(PickerConfig $config): bool
     {
         if ('file' === $config->getContext()) {
             return Validator::isUuid($config->getValue());
@@ -79,7 +74,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    public function getDcaTable()
+    public function getDcaTable(): string
     {
         return 'tl_files';
     }
@@ -87,7 +82,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    public function getDcaAttributes(PickerConfig $config)
+    public function getDcaAttributes(PickerConfig $config): array
     {
         $value = $config->getValue();
 
@@ -135,7 +130,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    public function convertDcaValue(PickerConfig $config, $value)
+    public function convertDcaValue(PickerConfig $config, $value): string
     {
         if ('file' === $config->getContext()) {
             return $value;
@@ -155,7 +150,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * {@inheritdoc}
      */
-    protected function getRouteParameters(PickerConfig $config = null)
+    protected function getRouteParameters(PickerConfig $config = null): array
     {
         return ['do' => 'files'];
     }
@@ -163,11 +158,11 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
     /**
      * Converts the UUID value to a file path if possible.
      *
-     * @param mixed $value
+     * @param string $value
      *
      * @return string
      */
-    private function convertValueToPath($value)
+    private function convertValueToPath(string $value): string
     {
         /** @var FilesModel $filesAdapter */
         $filesAdapter = $this->framework->getAdapter(FilesModel::class);
@@ -188,7 +183,7 @@ class FilePickerProvider extends AbstractPickerProvider implements DcaPickerProv
      *
      * @see \Contao\System::urlEncode()
      */
-    private function urlEncode($strPath)
+    private function urlEncode(string $strPath): string
     {
         return str_replace('%2F', '/', rawurlencode($strPath));
     }

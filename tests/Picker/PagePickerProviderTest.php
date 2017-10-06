@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,11 +21,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-/**
- * Tests the PagePickerProvider class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class PagePickerProviderTest extends TestCase
 {
     /**
@@ -34,7 +31,7 @@ class PagePickerProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +47,7 @@ class PagePickerProviderTest extends TestCase
         $router
             ->method('generate')
             ->willReturnCallback(
-                function ($name, array $params) {
+                function (string $name, array $params): string {
                     return $name.'?'.http_build_query($params);
                 }
             )
@@ -64,25 +61,19 @@ class PagePickerProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
         unset($GLOBALS['TL_LANG']);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Picker\PagePickerProvider', $this->provider);
     }
 
-    /**
-     * Tests the createMenuItem() method.
-     */
-    public function testCreatesTheMenuItem()
+    public function testCreatesTheMenuItem(): void
     {
         $picker = json_encode([
             'context' => 'link',
@@ -91,7 +82,7 @@ class PagePickerProviderTest extends TestCase
             'value' => '',
         ]);
 
-        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+        if (\function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
             $picker = $encoded;
         }
 
@@ -105,10 +96,7 @@ class PagePickerProviderTest extends TestCase
         );
     }
 
-    /**
-     * Tests the isCurrent() method.
-     */
-    public function testChecksIfAMenuItemIsCurrent()
+    public function testChecksIfAMenuItemIsCurrent(): void
     {
         $this->assertTrue($this->provider->isCurrent(new PickerConfig('page', [], '', 'pagePicker')));
         $this->assertFalse($this->provider->isCurrent(new PickerConfig('page', [], '', 'filePicker')));
@@ -117,18 +105,12 @@ class PagePickerProviderTest extends TestCase
         $this->assertFalse($this->provider->isCurrent(new PickerConfig('link', [], '', 'filePicker')));
     }
 
-    /**
-     * Tests the getName() method.
-     */
-    public function testReturnsTheCorrectName()
+    public function testReturnsTheCorrectName(): void
     {
         $this->assertSame('pagePicker', $this->provider->getName());
     }
 
-    /**
-     * Tests the supportsContext() method.
-     */
-    public function testChecksIfAContextIsSupported()
+    public function testChecksIfAContextIsSupported(): void
     {
         $user = $this
             ->getMockBuilder(BackendUser::class)
@@ -163,10 +145,7 @@ class PagePickerProviderTest extends TestCase
         $this->assertFalse($this->provider->supportsContext('file'));
     }
 
-    /**
-     * Tests the supportsContext() method without token storage.
-     */
-    public function testFailsToCheckTheContextIfThereIsNoTokenStorage()
+    public function testFailsToCheckTheContextIfThereIsNoTokenStorage(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('No token storage provided');
@@ -174,10 +153,7 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without token.
-     */
-    public function testFailsToCheckTheContextIfThereIsNoToken()
+    public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
@@ -194,10 +170,7 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without a user object.
-     */
-    public function testFailsToCheckTheContextIfThereIsNoUser()
+    public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -221,10 +194,7 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsValue() method.
-     */
-    public function testChecksIfAValueIsSupported()
+    public function testChecksIfAValueIsSupported(): void
     {
         $this->assertTrue($this->provider->supportsValue(new PickerConfig('page', [], 5)));
         $this->assertFalse($this->provider->supportsValue(new PickerConfig('page', [], '{{article_url::5}}')));
@@ -233,18 +203,12 @@ class PagePickerProviderTest extends TestCase
         $this->assertFalse($this->provider->supportsValue(new PickerConfig('link', [], '{{article_url::5}}')));
     }
 
-    /**
-     * Tests the getDcaTable() method.
-     */
-    public function testReturnsTheDcaTable()
+    public function testReturnsTheDcaTable(): void
     {
         $this->assertSame('tl_page', $this->provider->getDcaTable());
     }
 
-    /**
-     * Tests the getDcaAttributes() method.
-     */
-    public function testReturnsTheDcaAttributes()
+    public function testReturnsTheDcaAttributes(): void
     {
         $extra = [
             'fieldType' => 'checkbox',
@@ -274,10 +238,7 @@ class PagePickerProviderTest extends TestCase
         );
     }
 
-    /**
-     * Tests the convertDcaValue() method.
-     */
-    public function testConvertsTheDcaValue()
+    public function testConvertsTheDcaValue(): void
     {
         $this->assertSame(5, $this->provider->convertDcaValue(new PickerConfig('page'), 5));
         $this->assertSame('{{link_url::5}}', $this->provider->convertDcaValue(new PickerConfig('link'), 5));

@@ -23,14 +23,14 @@ setTimeout(function() {
       if (document.activeElement && document.activeElement.id && document.activeElement.id == editor.id) {
         editor.editorManager.get(editor.id).focus();
       }
-      editor.on('focus', function(){ Backend.getScrollOffset(); });
+      editor.on('focus', function() { Backend.getScrollOffset(); });
     },
     file_browser_callback: function(field_name, url, type, win) {
       Backend.openModalBrowser(field_name, url, type, win);
     },
     file_browser_callback_types: <?= json_encode($this->fileBrowserTypes) ?>,
     doctype: '<!DOCTYPE html PUBLIC \'-//W3C//DTD HTML 3.2//EN\'>',
-    plugins: 'autosave charmap code fullscreen image link lists paste searchreplace tabfocus table visualblocks',
+    plugins: 'autosave charmap code fullscreen image link lists paste searchreplace stripnbsp tabfocus table visualblocks',
     browser_spellcheck: true,
     tabfocus_elements: ':prev,:next',
     importcss_append: true,

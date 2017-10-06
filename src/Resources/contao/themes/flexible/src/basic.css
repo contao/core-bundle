@@ -1,5 +1,5 @@
-/**
- * Contao Open Source CMS
+/*!
+ * This file is part of Contao.
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
@@ -449,7 +449,7 @@ a.tl_submit {
 	border-color:#aaa transparent transparent;
 }
 .split-button button img {
-	vertical-align:bottom;
+	vertical-align:0;
 }
 .split-button > button[type="submit"] {
 	position:relative;

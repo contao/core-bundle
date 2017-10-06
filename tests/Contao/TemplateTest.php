@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,10 +18,6 @@ use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the Template class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -30,32 +28,29 @@ class TemplateTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $fs = new Filesystem();
         $fs->mkdir($this->getRootDir().'/templates');
 
-        define('TL_ROOT', $this->getRootDir());
-        define('TL_MODE', 'BE');
+        \define('TL_ROOT', $this->getRootDir());
+        \define('TL_MODE', 'BE');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
         $fs->remove($this->getRootDir().'/templates');
-
-        parent::tearDown();
     }
 
-    /**
-     * Tests replacing variables.
-     */
-    public function testReplacesTheVariables()
+    public function testReplacesTheVariables(): void
     {
         file_put_contents(
             $this->getRootDir().'/templates/test_template.html5',
@@ -70,10 +65,7 @@ class TemplateTest extends TestCase
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests throwing an exceptions inside a template.
-     */
-    public function testHandlesExceptions()
+    public function testHandlesExceptions(): void
     {
         file_put_contents(
             $this->getRootDir().'/templates/test_template.html5',
@@ -96,10 +88,7 @@ class TemplateTest extends TestCase
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests throwing an exceptions inside a template block.
-     */
-    public function testHandlesExceptionsInsideBlocks()
+    public function testHandlesExceptionsInsideBlocks(): void
     {
         file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
 <?php
@@ -130,10 +119,7 @@ EOF
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests throwing an exceptions inside a parent template.
-     */
-    public function testHandlesExceptionsInParentTemplate()
+    public function testHandlesExceptionsInParentTemplate(): void
     {
         file_put_contents($this->getRootDir().'/templates/test_parent.html5', <<<'EOF'
 <?php
@@ -188,10 +174,7 @@ EOF
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests parsing nested blocks.
-     */
-    public function testParsesNestedBlocks()
+    public function testParsesNestedBlocks(): void
     {
         file_put_contents($this->getRootDir().'/templates/test_parent.html5', '');
 

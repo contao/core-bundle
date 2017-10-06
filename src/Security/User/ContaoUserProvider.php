@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -22,11 +24,6 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-/**
- * Provides a Contao front end or back end user object.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterface
 {
     use ContainerAwareTrait;
@@ -42,8 +39,6 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
     private $framework;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      * @param ScopeMatcher             $scopeMatcher
      */
@@ -58,7 +53,7 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      *
      * @return BackendUser|FrontendUser
      */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): User
     {
         if ($this->isBackendUsername($username)) {
             $this->framework->initialize();
@@ -78,7 +73,7 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
     /**
      * {@inheritdoc}
      */
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): void
     {
         throw new UnsupportedUserException('Cannot refresh a Contao user.');
     }
@@ -86,7 +81,7 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
     /**
      * {@inheritdoc}
      */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return is_subclass_of($class, User::class);
     }
@@ -98,7 +93,7 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      *
      * @return bool
      */
-    private function isFrontendUsername($username)
+    private function isFrontendUsername(string $username): bool
     {
         if (null === $this->container
             || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
@@ -116,7 +111,7 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      *
      * @return bool
      */
-    private function isBackendUsername($username)
+    private function isBackendUsername(string $username): bool
     {
         if (null === $this->container
             || null === ($request = $this->container->get('request_stack')->getCurrentRequest())

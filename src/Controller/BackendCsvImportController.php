@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -24,18 +26,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Handles importing CSV data in the Contao back end.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author Kamil Kuzminski <https://github.com/qzminski>
- */
 class BackendCsvImportController
 {
-    const SEPARATOR_COMMA = 'comma';
-    const SEPARATOR_LINEBREAK = 'linebreak';
-    const SEPARATOR_SEMICOLON = 'semicolon';
-    const SEPARATOR_TABULATOR = 'tabulator';
+    public const SEPARATOR_COMMA = 'comma';
+    public const SEPARATOR_LINEBREAK = 'linebreak';
+    public const SEPARATOR_SEMICOLON = 'semicolon';
+    public const SEPARATOR_TABULATOR = 'tabulator';
 
     /**
      * @var ContaoFrameworkInterface
@@ -58,14 +54,12 @@ class BackendCsvImportController
     private $contaoRoot;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      * @param Connection               $connection
      * @param RequestStack             $requestStack
      * @param string                   $contaoRoot
      */
-    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack, $contaoRoot)
+    public function __construct(ContaoFrameworkInterface $framework, Connection $connection, RequestStack $requestStack, string $contaoRoot)
     {
         $this->framework = $framework;
         $this->connection = $connection;
@@ -80,10 +74,10 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importListWizard(DataContainer $dc)
+    public function importListWizard(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
-            function ($data, $row) {
+            function (array $data, array $row): array {
                 return array_merge($data, $row);
             },
             $dc->table,
@@ -101,10 +95,10 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importTableWizard(DataContainer $dc)
+    public function importTableWizard(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
-            function ($data, $row) {
+            function (array $data, array $row): array {
                 $data[] = $row;
 
                 return $data;
@@ -123,10 +117,10 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importOptionWizard(DataContainer $dc)
+    public function importOptionWizard(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
-            function ($data, $row) {
+            function (array $data, array $row): array {
                 $data[] = [
                     'value' => $row[0],
                     'label' => $row[1],
@@ -157,7 +151,7 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    private function importFromTemplate(callable $callback, $table, $field, $id, $submitLabel = null, $allowLinebreak = false)
+    private function importFromTemplate(callable $callback, string $table, string $field, int $id, string $submitLabel = null, $allowLinebreak = false): Response
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -207,7 +201,7 @@ class BackendCsvImportController
      *
      * @return BackendTemplate|object
      */
-    private function prepareTemplate(Request $request, FileUpload $uploader, $allowLinebreak = false)
+    private function prepareTemplate(Request $request, FileUpload $uploader, bool $allowLinebreak = false): BackendTemplate
     {
         /** @var BackendTemplate|object $template */
         $template = new BackendTemplate('be_csv_import');
@@ -239,7 +233,7 @@ class BackendCsvImportController
      *
      * @return array
      */
-    private function fetchData(FileUpload $uploader, $separator, callable $callback)
+    private function fetchData(FileUpload $uploader, $separator, callable $callback): array
     {
         $data = [];
         $files = $this->getFiles($uploader);
@@ -263,7 +257,7 @@ class BackendCsvImportController
      *
      * @return string
      */
-    private function getFormId(Request $request)
+    private function getFormId(Request $request): string
     {
         return 'tl_csv_import_'.$request->query->get('key');
     }
@@ -275,7 +269,7 @@ class BackendCsvImportController
      *
      * @return string
      */
-    private function getBackUrl(Request $request)
+    private function getBackUrl(Request $request): string
     {
         return str_replace('&key='.$request->query->get('key'), '', $request->getRequestUri());
     }
@@ -287,7 +281,7 @@ class BackendCsvImportController
      *
      * @return array<string,array>
      */
-    private function getSeparators($allowLinebreak = false)
+    private function getSeparators($allowLinebreak = false): array
     {
         $separators = [
             self::SEPARATOR_COMMA => [
@@ -327,7 +321,7 @@ class BackendCsvImportController
      *
      * @return string
      */
-    private function getDelimiter($separator)
+    private function getDelimiter($separator): string
     {
         $separators = $this->getSeparators(true);
 
@@ -347,11 +341,11 @@ class BackendCsvImportController
      *
      * @return array
      */
-    private function getFiles(FileUpload $uploader)
+    private function getFiles(FileUpload $uploader): array
     {
         $files = $uploader->uploadTo('system/tmp');
 
-        if (count($files) < 1) {
+        if (\count($files) < 1) {
             throw new \RuntimeException($GLOBALS['TL_LANG']['ERR']['all_fields']);
         }
 

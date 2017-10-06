@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\Cache;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 
-/**
- * Removes the Contao cache directory during cache clear.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ContaoCacheClearer implements CacheClearerInterface
 {
     /**
@@ -26,8 +23,6 @@ class ContaoCacheClearer implements CacheClearerInterface
     private $filesystem;
 
     /**
-     * Constructor.
-     *
      * @param Filesystem $filesystem
      */
     public function __construct(Filesystem $filesystem)
@@ -38,7 +33,7 @@ class ContaoCacheClearer implements CacheClearerInterface
     /**
      * {@inheritdoc}
      */
-    public function clear($cacheDir)
+    public function clear($cacheDir): void
     {
         $this->filesystem->remove($cacheDir.'/contao/config');
         $this->filesystem->remove($cacheDir.'/contao/dca');

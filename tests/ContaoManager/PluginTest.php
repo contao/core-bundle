@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -32,28 +34,16 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Terminal42\HeaderReplay\HeaderReplayBundle;
 
-/**
- * Tests the Plugin class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class PluginTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $plugin = new Plugin();
 
         $this->assertInstanceOf('Contao\CoreBundle\ContaoManager\Plugin', $plugin);
     }
 
-    /**
-     * Tests returning the bundles.
-     */
-    public function testReturnsTheBundles()
+    public function testReturnsTheBundles(): void
     {
         $plugin = new Plugin();
 
@@ -96,10 +86,7 @@ class PluginTest extends TestCase
         );
     }
 
-    /**
-     * Tests returning the route collection.
-     */
-    public function testReturnsTheRouteCollection()
+    public function testReturnsTheRouteCollection(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
 
@@ -115,7 +102,9 @@ class PluginTest extends TestCase
             ->willReturn($loader)
         ;
 
+        $kernel = $this->createMock(KernelInterface::class);
+
         $plugin = new Plugin();
-        $plugin->getRouteCollection($resolver, $this->createMock(KernelInterface::class));
+        $plugin->getRouteCollection($resolver, $kernel);
     }
 }

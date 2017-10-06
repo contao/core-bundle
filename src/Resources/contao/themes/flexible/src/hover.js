@@ -1,5 +1,5 @@
-/**
- * Contao Open Source CMS
+/*!
+ * This file is part of Contao.
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
@@ -189,6 +189,29 @@ var Theme = {
 	},
 
 	/**
+	 * Set up the profile toggle
+	 */
+	setupProfileToggle: function() {
+		var tmenu = $('tmenu');
+		if (!tmenu) return;
+
+		var ul = tmenu.getElement('.level_2'),
+			h2 = tmenu.getElement('h2');
+		if (!ul || !h2) return;
+
+		h2.addEvent('click', function(e) {
+			ul.fade();
+			e.stopPropagation();
+		});
+
+		$(document.body).addEvent('click', function() {
+			if (ul.getStyle('opacity')) {
+				ul.fade('out');
+			}
+		});
+	},
+
+	/**
 	 * Hide the menu on scroll
 	 */
 	hideMenuOnScroll: function() {
@@ -276,6 +299,7 @@ window.addEvent('domready', function() {
 	Theme.setupCtrlClick();
 	Theme.setupTextareaResizing();
 	Theme.setupMenuToggle();
+	Theme.setupProfileToggle();
 	Theme.hideMenuOnScroll();
 	Theme.setupSplitButtonToggle();
 });

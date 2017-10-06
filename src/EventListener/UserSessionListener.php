@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -23,12 +25,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * Stores and restores the user session.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class UserSessionListener
 {
     /**
@@ -56,8 +52,6 @@ class UserSessionListener
     private $scopeMatcher;
 
     /**
-     * Constructor.
-     *
      * @param SessionInterface                     $session
      * @param Connection                           $connection
      * @param TokenStorageInterface                $tokenStorage
@@ -78,7 +72,7 @@ class UserSessionListener
      *
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
@@ -98,7 +92,7 @@ class UserSessionListener
 
         $session = $user->session;
 
-        if (is_array($session)) {
+        if (\is_array($session)) {
             $this->getSessionBag($event->getRequest())->replace($session);
         }
     }
@@ -108,7 +102,7 @@ class UserSessionListener
      *
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
@@ -150,7 +144,7 @@ class UserSessionListener
      *
      * @return AttributeBagInterface
      */
-    private function getSessionBag(Request $request)
+    private function getSessionBag(Request $request): AttributeBagInterface
     {
         if ($this->scopeMatcher->isBackendRequest($request)) {
             $name = 'contao_backend';

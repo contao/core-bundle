@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,11 +19,6 @@ use Contao\System;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the Picture class.
- *
- * @author Martin Auswöger <https://github.com/ausi>
- * @author Yanick Witschi <https://github.com/Toflar>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -34,8 +31,10 @@ class PictureTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         self::$rootDir = __DIR__.'/../../tmp';
 
         $fs = new Filesystem();
@@ -54,8 +53,10 @@ class PictureTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
+        parent::tearDownAfterClass();
+
         $fs = new Filesystem();
         $fs->remove(self::$rootDir);
     }
@@ -63,7 +64,7 @@ class PictureTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -74,9 +75,9 @@ class PictureTest extends TestCase
         $GLOBALS['TL_CONFIG']['gdMaxImgHeight'] = 3000;
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpeg,jpg,svg,svgz';
 
-        define('TL_ERROR', 'ERROR');
-        define('TL_FILES_URL', 'http://example.com/');
-        define('TL_ROOT', self::$rootDir);
+        \define('TL_ERROR', 'ERROR');
+        \define('TL_FILES_URL', 'http://example.com/');
+        \define('TL_ROOT', self::$rootDir);
 
         $container = $this->mockContainerWithContaoScopes();
         $this->addImageServicesToContainer($container, self::$rootDir);
@@ -84,10 +85,7 @@ class PictureTest extends TestCase
         System::setContainer($container);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $fileMock = $this->createMock(File::class);
 
@@ -99,17 +97,16 @@ class PictureTest extends TestCase
         $fileMock
             ->method('__get')
             ->will($this->returnCallback(
-                function ($key) {
+                function (string $key): ?string {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
 
                         case 'path':
                             return 'dummy.jpg';
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
             ))
         ;
@@ -117,10 +114,7 @@ class PictureTest extends TestCase
         $this->assertInstanceOf('Contao\Picture', new Picture($fileMock));
     }
 
-    /**
-     * Tests returning the template data.
-     */
-    public function testReturnsTheTemplateData()
+    public function testReturnsTheTemplateData(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 
@@ -140,10 +134,7 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests returning the template data for an image.
-     */
-    public function testHandlesImages()
+    public function testHandlesImages(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 
@@ -168,10 +159,7 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests returning the template data for an image with sources.
-     */
-    public function testHandlesImagesWithSources()
+    public function testHandlesImagesWithSources(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 
@@ -231,10 +219,7 @@ class PictureTest extends TestCase
         );
     }
 
-    /**
-     * Tests returning the template data for an image with densities.
-     */
-    public function testHandlesImagesWithDensities()
+    public function testHandlesImagesWithDensities(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 
@@ -258,10 +243,7 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests returning the template data for an image with densities and sizes.
-     */
-    public function testHandlesImagesWithDensitiesAndSizes()
+    public function testHandlesImagesWithDensitiesAndSizes(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 
@@ -287,10 +269,7 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests that file names are encoded.
-     */
-    public function testEncodesFileNames()
+    public function testEncodesFileNames(): void
     {
         copy(__DIR__.'/../Fixtures/images/dummy.jpg', self::$rootDir.'/dummy with spaces.jpg');
 
@@ -312,10 +291,7 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the old resize mode.
-     */
-    public function testSupportsTheOldResizeMode()
+    public function testSupportsTheOldResizeMode(): void
     {
         $picture = new Picture(new File('dummy.jpg'));
 

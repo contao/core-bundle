@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,19 +17,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\LockHandler;
 
-/**
- * Runs a command and locks it while its running.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 abstract class AbstractLockedCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
-    final protected function execute(InputInterface $input, OutputInterface $output)
+    final protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $lock = new LockHandler($this->getName());
+        $lock = new LockHandler(
+            $this->getName(),
+            sys_get_temp_dir().'/'.md5($this->getContainer()->getParameter('kernel.project_dir'))
+        );
 
         if (!$lock->lock()) {
             $output->writeln('The command is already running in another process.');
@@ -52,7 +52,7 @@ abstract class AbstractLockedCommand extends ContainerAwareCommand
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|null
+     * @return int
      */
     abstract protected function executeLocked(InputInterface $input, OutputInterface $output);
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,12 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
-/**
- * Adds the bundle services to the container.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class ContaoCoreExtension extends ConfigurableExtension
 {
     /**
@@ -36,7 +32,7 @@ class ContaoCoreExtension extends ConfigurableExtension
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'contao';
     }
@@ -44,21 +40,23 @@ class ContaoCoreExtension extends ConfigurableExtension
     /**
      * {@inheritdoc}
      */
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
     {
         // Add the resource to the container
         parent::getConfiguration($config, $container);
 
         return new Configuration(
             $container->getParameter('kernel.debug'),
-            $container->getParameter('kernel.project_dir')
+            $container->getParameter('kernel.project_dir'),
+            $container->getParameter('kernel.root_dir'),
+            $container->getParameter('kernel.default_locale')
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader(
             $container,
@@ -77,6 +75,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.csrf_token_name', $mergedConfig['csrf_token_name']);
         $container->setParameter('contao.pretty_error_screens', $mergedConfig['pretty_error_screens']);
         $container->setParameter('contao.error_level', $mergedConfig['error_level']);
+        $container->setParameter('contao.locales', $mergedConfig['locales']);
         $container->setParameter('contao.image.bypass_cache', $mergedConfig['image']['bypass_cache']);
         $container->setParameter('contao.image.target_dir', $mergedConfig['image']['target_dir']);
         $container->setParameter('contao.image.valid_extensions', $mergedConfig['image']['valid_extensions']);
@@ -101,7 +100,7 @@ class ContaoCoreExtension extends ConfigurableExtension
      * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
-    private function overwriteImageTargetDir(array $mergedConfig, ContainerBuilder $container)
+    private function overwriteImageTargetDir(array $mergedConfig, ContainerBuilder $container): void
     {
         if (!isset($mergedConfig['image']['target_path'])) {
             return;

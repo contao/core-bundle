@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -25,17 +27,14 @@ class ConfigurationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->configuration = new Configuration(false, $this->getRootDir().'/app');
+        $this->configuration = new Configuration(false, $this->getRootDir(), $this->getRootDir().'/app', 'en');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Configuration', $this->configuration);
 
@@ -44,10 +43,7 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
     }
 
-    /**
-     * Tests resolving the paths.
-     */
-    public function testResolvesThePaths()
+    public function testResolvesThePaths(): void
     {
         $params = [
             'contao' => [
@@ -69,13 +65,11 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * Tests an invalid upload path.
-     *
      * @param string $uploadPath
      *
      * @dataProvider invalidUploadPathProvider
      */
-    public function testFailsIfTheUploadPathIsInvalid($uploadPath)
+    public function testFailsIfTheUploadPathIsInvalid(string $uploadPath): void
     {
         $params = [
             'contao' => [
@@ -90,11 +84,9 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * Provides the data for the testInvalidUploadPath() method.
-     *
      * @return array
      */
-    public function invalidUploadPathProvider()
+    public function invalidUploadPathProvider(): array
     {
         return [
             [''],

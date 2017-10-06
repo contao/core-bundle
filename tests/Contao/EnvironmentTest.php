@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,10 +17,6 @@ use Contao\Environment;
 use Contao\System;
 
 /**
- * Tests the Environment class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- *
  * @group contao3
  */
 class EnvironmentTest extends TestCase
@@ -26,7 +24,7 @@ class EnvironmentTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,10 +35,7 @@ class EnvironmentTest extends TestCase
         require __DIR__.'/../../src/Resources/contao/config/agents.php';
     }
 
-    /**
-     * Tests the mod_php environment.
-     */
-    public function testHandlesModPhp()
+    public function testHandlesModPhp(): void
     {
         $this->setSapi('apache');
 
@@ -66,10 +61,7 @@ class EnvironmentTest extends TestCase
         $this->runTests();
     }
 
-    /**
-     * Tests the cgi_fcgi environment.
-     */
-    public function testHandlesCgiFcgi()
+    public function testHandlesCgiFcgi(): void
     {
         $this->setSapi('cgi_fcgi');
 
@@ -99,10 +91,7 @@ class EnvironmentTest extends TestCase
         $this->runTests();
     }
 
-    /**
-     * Tests the fpm_fcgi environment.
-     */
-    public function testHandlesFpmFcgi()
+    public function testHandlesFpmFcgi(): void
     {
         $this->setSapi('fpm_fcgi');
 
@@ -131,19 +120,14 @@ class EnvironmentTest extends TestCase
     }
 
     /**
-     * Returns the normalized root directory.
-     *
      * @return string
      */
-    public function getRootDir()
+    public function getRootDir(): string
     {
         return strtr(parent::getRootDir(), '\\', '/');
     }
 
-    /**
-     * Runs the actual tests.
-     */
-    protected function runTests()
+    protected function runTests(): void
     {
         $container = $this->mockContainerWithContaoScopes();
         $request = $container->get('request_stack')->getCurrentRequest();
@@ -189,11 +173,9 @@ class EnvironmentTest extends TestCase
     }
 
     /**
-     * Overrides the SAPI value.
-     *
      * @param string $sapi
      */
-    private function setSapi($sapi)
+    private function setSapi(string $sapi): void
     {
         $reflection = new \ReflectionClass(Environment::class);
 
