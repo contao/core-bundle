@@ -29,7 +29,7 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function addFragment(string $identifier, $fragment, array $options): FragmentRegistryInterface
     {
-        if (3 !== count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
+        if (3 !== \count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
             throw new \InvalidArgumentException('Missing the three basic options "tag", "type" and "controller".');
         }
 
