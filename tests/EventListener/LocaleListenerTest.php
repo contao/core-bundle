@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,17 +20,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-/**
- * Tests the LocaleListener class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class LocaleListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $listener = new LocaleListener($this->mockScopeMatcher(), ['en']);
 
@@ -36,14 +30,12 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * Tests reading the locale from the request.
+     * @param string|null $locale
+     * @param string      $expected
      *
-     * @param string $locale
-     * @param string $expected
-     *
-     * @dataProvider localeTestData
+     * @dataProvider getLocaleRequestData
      */
-    public function testReadsTheLocaleFromTheRequest($locale, $expected)
+    public function testReadsTheLocaleFromTheRequest(?string $locale, string $expected): void
     {
         $request = Request::create('/');
         $request->attributes->set('_locale', $locale);
@@ -58,14 +50,26 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * Tests reading the locale from the session.
-     *
-     * @param string $locale
+     * @return array
+     */
+    public function getLocaleRequestData(): array
+    {
+        return [
+            [null, 'en'], // see #264
+            ['en', 'en'],
+            ['de', 'de'],
+            ['de-CH', 'de_CH'],
+            ['de_CH', 'de_CH'],
+            ['zh-tw', 'zh_TW'],
+        ];
+    }
+
+    /**
      * @param string $expected
      *
-     * @dataProvider localeTestData
+     * @dataProvider getLocaleSessionData
      */
-    public function testReadsTheLocaleFromTheSession($locale, $expected)
+    public function testReadsTheLocaleFromTheSession(string $expected): void
     {
         // The session values are already formatted, so we're passing in $expected here
         $session = $this->mockSession();
@@ -84,11 +88,23 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * Provides the test data for the locale tests.
-     *
      * @return array
      */
-    public function localeTestData()
+    public function getLocaleSessionData(): array
+    {
+        return [
+            ['en'],
+            ['de'],
+            ['de_CH'],
+            ['de_CH'],
+            ['zh_TW'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function localeTestData(): array
     {
         return [
             [null, 'en'], // see #264
@@ -101,15 +117,13 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * Tests the onKernelRequest() method with an accept language header.
-     *
-     * @param string $locale
-     * @param string $expected
-     * @param array  $available
+     * @param string|null $locale
+     * @param string      $expected
+     * @param array       $available
      *
      * @dataProvider acceptLanguageTestData
      */
-    public function testReadsTheLocaleFromTheAcceptLanguageHeader($locale, $expected, array $available)
+    public function testReadsTheLocaleFromTheAcceptLanguageHeader(?string $locale, string $expected, array $available): void
     {
         $request = Request::create('/');
         $request->headers->set('Accept-Language', $locale);
@@ -124,11 +138,9 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * Provides the test data for the accept language header tests.
-     *
      * @return array
      */
-    public function acceptLanguageTestData()
+    public function acceptLanguageTestData(): array
     {
         return [
             [null, 'de', ['de', 'en']], // see #264
@@ -141,10 +153,7 @@ class LocaleListenerTest extends TestCase
         ];
     }
 
-    /**
-     * Tests that the listener does nothing if there is no request scope.
-     */
-    public function testDoesNothingIfThereIsNoRequestScope()
+    public function testDoesNothingIfThereIsNoRequestScope(): void
     {
         $attributes = $this->createMock(ParameterBag::class);
 
@@ -160,10 +169,7 @@ class LocaleListenerTest extends TestCase
         $listener->onKernelRequest($event);
     }
 
-    /**
-     * Tests the onKernelRequest() method with an invalid locale.
-     */
-    public function testFailsIfTheLocaleIsInvalid()
+    public function testFailsIfTheLocaleIsInvalid(): void
     {
         $request = Request::create('/');
         $request->attributes->set('_locale', 'invalid');

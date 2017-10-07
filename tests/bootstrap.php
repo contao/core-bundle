@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,8 +17,8 @@ $include = function ($file) {
 };
 
 // PhpStorm fix (see https://www.drupal.org/node/2597814)
-if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
-    define('PHPUNIT_COMPOSER_INSTALL', __DIR__.'/../vendor/autoload.php');
+if (!\defined('PHPUNIT_COMPOSER_INSTALL')) {
+    \define('PHPUNIT_COMPOSER_INSTALL', __DIR__.'/../vendor/autoload.php');
 }
 
 if (
@@ -31,7 +33,7 @@ if (
 }
 
 // Autoload the fixture classes
-$fixtureLoader = function ($class) {
+$fixtureLoader = function ($class): void {
     if (class_exists($class, false) || interface_exists($class, false) || trait_exists($class, false)) {
         return;
     }

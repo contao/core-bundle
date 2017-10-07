@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,12 +18,6 @@ use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
-/**
- * Adds HTTP headers sent by Contao to the Symfony response.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class MergeHttpHeadersListener
 {
     /**
@@ -51,8 +47,6 @@ class MergeHttpHeadersListener
     ];
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface    $framework
      * @param HeaderStorageInterface|null $headerStorage
      */
@@ -67,7 +61,7 @@ class MergeHttpHeadersListener
      *
      * @return array
      */
-    public function getMultiHeaders()
+    public function getMultiHeaders(): array
     {
         return array_values($this->multiHeaders);
     }
@@ -77,7 +71,7 @@ class MergeHttpHeadersListener
      *
      * @param array $headers
      */
-    public function setMultiHeader(array $headers)
+    public function setMultiHeader(array $headers): void
     {
         $this->multiHeaders = $headers;
     }
@@ -87,11 +81,11 @@ class MergeHttpHeadersListener
      *
      * @param string $name
      */
-    public function addMultiHeader($name)
+    public function addMultiHeader(string $name): void
     {
         $uniqueKey = $this->getUniqueKey($name);
 
-        if (!in_array($uniqueKey, $this->multiHeaders, true)) {
+        if (!\in_array($uniqueKey, $this->multiHeaders, true)) {
             $this->multiHeaders[] = $uniqueKey;
         }
     }
@@ -101,7 +95,7 @@ class MergeHttpHeadersListener
      *
      * @param string $name
      */
-    public function removeMultiHeader($name)
+    public function removeMultiHeader(string $name): void
     {
         if (false !== ($i = array_search($this->getUniqueKey($name), $this->multiHeaders, true))) {
             unset($this->multiHeaders[$i]);
@@ -113,7 +107,7 @@ class MergeHttpHeadersListener
      *
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$this->framework->isInitialized()) {
             return;
@@ -127,7 +121,7 @@ class MergeHttpHeadersListener
     /**
      * Fetches and stores HTTP headers from PHP.
      */
-    private function fetchHttpHeaders()
+    private function fetchHttpHeaders(): void
     {
         $this->headers = array_merge($this->headers, $this->headerStorage->all());
         $this->headerStorage->clear();
@@ -138,7 +132,7 @@ class MergeHttpHeadersListener
      *
      * @param Response $response
      */
-    private function setResponseHeaders(Response $response)
+    private function setResponseHeaders(Response $response): void
     {
         $allowOverrides = [];
 
@@ -147,7 +141,7 @@ class MergeHttpHeadersListener
 
             $uniqueKey = $this->getUniqueKey($name);
 
-            if (in_array($uniqueKey, $this->multiHeaders, true)) {
+            if (\in_array($uniqueKey, $this->multiHeaders, true)) {
                 $response->headers->set($uniqueKey, trim($content), false);
             } elseif (isset($allowOverrides[$uniqueKey]) || !$response->headers->has($uniqueKey)) {
                 $allowOverrides[$uniqueKey] = true;
@@ -163,7 +157,7 @@ class MergeHttpHeadersListener
      *
      * @return string
      */
-    private function getUniqueKey($name)
+    private function getUniqueKey(string $name): string
     {
         return str_replace('_', '-', strtolower($name));
     }

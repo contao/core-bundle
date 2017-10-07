@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,42 +17,33 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Tests the InsertTagsController class.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class InsertTagsControllerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $controller = new InsertTagsController($this->mockContaoFramework());
 
         $this->assertInstanceOf('Contao\CoreBundle\Controller\InsertTagsController', $controller);
     }
 
-    /**
-     * Tests rendering non-cacheable insert tags.
-     */
-    public function testRendersNonCacheableInsertTag()
+    public function testRendersNonCacheableInsertTag(): void
     {
-        /** @var Adapter|\PHPUnit_Framework_MockObject_MockObject $insertTagAdapter */
-        $insertTagAdapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['replace'])
-            ->getMock()
+        $adapter = $this->createMock(Adapter::class);
+
+        $adapter
+            ->method('__call')
+            ->willReturnCallback(
+                function (string $method): ?string {
+                    if ('replace' === $method) {
+                        return '3858f62230ac3c915f300c664312c63f';
+                    }
+
+                    return null;
+                }
+            )
         ;
 
-        $insertTagAdapter
-            ->method('replace')
-            ->willReturn('3858f62230ac3c915f300c664312c63f')
-        ;
-
-        $controller = new InsertTagsController($this->mockFramework($insertTagAdapter));
+        $controller = new InsertTagsController($this->mockFramework($adapter));
         $response = $controller->renderAction('{{request_token}}');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -59,13 +52,13 @@ class InsertTagsControllerTest extends TestCase
     }
 
     /**
-     * Returns a ContaoFramework instance.
+     * Mocks the Contao framework.
      *
      * @param Adapter $adapter
      *
      * @return ContaoFramework The object instance
      */
-    private function mockFramework($adapter)
+    private function mockFramework($adapter): ContaoFramework
     {
         $framework = $this->createMock(ContaoFramework::class);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,12 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-/**
- * Adds the maintenance attribute to the request.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class BypassMaintenanceListener
 {
     /**
@@ -38,13 +34,11 @@ class BypassMaintenanceListener
     private $requestAttribute;
 
     /**
-     * Constructor.
-     *
      * @param SessionInterface $session
      * @param bool             $disableIpCheck
      * @param string           $requestAttribute
      */
-    public function __construct(SessionInterface $session, $disableIpCheck, $requestAttribute = '_bypass_maintenance')
+    public function __construct(SessionInterface $session, bool $disableIpCheck, string $requestAttribute = '_bypass_maintenance')
     {
         $this->session = $session;
         $this->disableIpCheck = $disableIpCheck;
@@ -56,7 +50,7 @@ class BypassMaintenanceListener
      *
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -74,7 +68,7 @@ class BypassMaintenanceListener
      *
      * @return bool
      */
-    private function hasAuthenticatedBackendUser(Request $request)
+    private function hasAuthenticatedBackendUser(Request $request): bool
     {
         if (!$request->cookies->has('BE_USER_AUTH')) {
             return false;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,28 +21,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-/**
- * Tests the MergeHttpHeadersListenerTest class.
- *
- * @author Yanick Witschi <https:/github.com/toflar>
- */
 class MergeHttpHeadersListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-        $listener = new MergeHttpHeadersListener($framework);
+        $listener = new MergeHttpHeadersListener($this->createMock(ContaoFrameworkInterface::class));
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\MergeHttpHeadersListener', $listener);
     }
 
-    /**
-     * Tests that the headers are merged into the response object.
-     */
-    public function testMergesTheHeadersSent()
+    public function testMergesTheHeadersSent(): void
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -66,10 +56,7 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertSame('text/html', $response->headers->get('Content-Type'));
     }
 
-    /**
-     * Tests that the listener is skipped if the framework is not initialized.
-     */
-    public function testDoesNotMergeTheHeadersSentIfTheContaoFrameworkIsNotInitialized()
+    public function testDoesNotMergeTheHeadersSentIfTheContaoFrameworkIsNotInitialized(): void
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -92,10 +79,7 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertFalse($responseEvent->getResponse()->headers->has('Content-Type'));
     }
 
-    /**
-     * Tests that multi-value headers are not overridden.
-     */
-    public function testDoesNotOverrideMultiValueHeaders()
+    public function testDoesNotOverrideMultiValueHeaders(): void
     {
         $response = new Response();
         $response->headers->set('Set-Cookie', 'content=foobar');
@@ -130,10 +114,7 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertSame('new-content=foobar; path=/', $allHeaders[1]);
     }
 
-    /**
-     * Tests that multi-value headers can be added and removed.
-     */
-    public function testAddsAndRemovesMultiValueHeaders()
+    public function testAddsAndRemovesMultiValueHeaders(): void
     {
         $listener = new MergeHttpHeadersListener($this->mockContaoFramework());
 
@@ -187,10 +168,7 @@ class MergeHttpHeadersListenerTest extends TestCase
         );
     }
 
-    /**
-     * Tests that headers are inherited from a subrequest.
-     */
-    public function testInheritsHeadersFromSubrequest()
+    public function testInheritsHeadersFromSubrequest(): void
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),
@@ -228,10 +206,7 @@ class MergeHttpHeadersListenerTest extends TestCase
         $this->assertSame('application/json', $response->headers->get('Content-Type'));
     }
 
-    /**
-     * Tests that multi headers are inherited from a subrequest.
-     */
-    public function testInheritsMultiHeadersFromSubrequest()
+    public function testInheritsMultiHeadersFromSubrequest(): void
     {
         $responseEvent = new FilterResponseEvent(
             $this->mockKernel(),

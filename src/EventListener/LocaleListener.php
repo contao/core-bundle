@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,12 +16,6 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-/**
- * Persists the locale from the accept header or the request in the session.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class LocaleListener
 {
     /**
@@ -33,12 +29,10 @@ class LocaleListener
     private $availableLocales;
 
     /**
-     * Constructor.
-     *
      * @param ScopeMatcher $scopeMatcher
      * @param array        $availableLocales
      */
-    public function __construct(ScopeMatcher $scopeMatcher, $availableLocales)
+    public function __construct(ScopeMatcher $scopeMatcher, array $availableLocales)
     {
         $this->scopeMatcher = $scopeMatcher;
         $this->availableLocales = $availableLocales;
@@ -49,7 +43,7 @@ class LocaleListener
      *
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         if (!$this->scopeMatcher->isContaoRequest($event->getRequest())) {
             return;
@@ -66,7 +60,7 @@ class LocaleListener
      *
      * @return string
      */
-    private function getLocale(Request $request)
+    private function getLocale(Request $request): string
     {
         if (null !== $request->attributes->get('_locale')) {
             return $this->formatLocaleId($request->attributes->get('_locale'));
@@ -88,7 +82,7 @@ class LocaleListener
      *
      * @throw \InvalidArgumentException
      */
-    private function formatLocaleId($locale)
+    private function formatLocaleId(string $locale): string
     {
         if (!preg_match('/^[a-z]{2}([_-][a-z]{2})?$/i', $locale)) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a supported locale.', $locale));

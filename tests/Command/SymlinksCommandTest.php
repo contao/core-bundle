@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,18 +20,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\LockHandler;
 
-/**
- * Tests the SymlinksCommand class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class SymlinksCommandTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
 
         $fs->remove($this->getRootDir().'/system/logs');
@@ -39,10 +38,7 @@ class SymlinksCommandTest extends TestCase
         $fs->remove($this->getRootDir().'/web/system');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $command = new SymlinksCommand('contao:symlinks');
 
@@ -50,10 +46,7 @@ class SymlinksCommandTest extends TestCase
         $this->assertSame('contao:symlinks', $command->getName());
     }
 
-    /**
-     * Tests symlinking the Contao folders.
-     */
-    public function testSymlinksTheContaoFolders()
+    public function testSymlinksTheContaoFolders(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.logs_dir', $this->getRootDir().'/var/logs');
@@ -90,15 +83,17 @@ class SymlinksCommandTest extends TestCase
         $this->assertContains('var/logs', $display);
     }
 
-    /**
-     * Tests that the command is locked while running.
-     */
-    public function testIsLockedWhileRunning()
+    public function testIsLockedWhileRunning(): void
     {
-        $lock = new LockHandler('contao:symlinks');
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', 'foobar');
+
+        $lock = new LockHandler('contao:symlinks', sys_get_temp_dir().'/'.md5('foobar'));
         $lock->lock();
 
         $command = new SymlinksCommand('contao:symlinks');
+        $command->setContainer($container);
+
         $tester = new CommandTester($command);
 
         $code = $tester->execute([]);
@@ -109,10 +104,7 @@ class SymlinksCommandTest extends TestCase
         $lock->release();
     }
 
-    /**
-     * Tests that absolute paths are converted to relative paths.
-     */
-    public function testConvertsAbsolutePathsToRelativePaths()
+    public function testConvertsAbsolutePathsToRelativePaths(): void
     {
         $command = new SymlinksCommand('contao:symlinks');
 

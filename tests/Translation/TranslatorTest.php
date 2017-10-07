@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,17 +18,9 @@ use Contao\CoreBundle\Translation\Translator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the TokenGenerator class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class TranslatorTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $originalTranslator = $this->createMock(TranslatorInterface::class);
         $framework = $this->createMock(ContaoFrameworkInterface::class);
@@ -36,10 +30,7 @@ class TranslatorTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Translation\TranslatorInterface', $translator);
     }
 
-    /**
-     * Tests forwarding method calls to the decorated translator.
-     */
-    public function testForwardsTheMethodCalls()
+    public function testForwardsTheMethodCallsToTheDecoratedTranslator(): void
     {
         $originalTranslator = $this->createMock(TranslatorInterface::class);
 
@@ -82,28 +73,25 @@ class TranslatorTest extends TestCase
         $this->assertSame('transChoice', $translator->transChoice('id', 3, ['param' => 'value'], 'domain', 'en'));
 
         $translator->setLocale('en');
-        
+
         $this->assertSame('en', $translator->getLocale());
     }
 
-    /**
-     * Tests reading from $GLOBALS['TL_LANG'].
-     */
-    public function testReadsFromTheGlobalLanguageArray()
+    public function testReadsFromTheGlobalLanguageArray(): void
     {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        $framework
-            ->expects($this->atLeastOnce())
-            ->method('initialize')
-        ;
-
         $systemAdapter = $this->createMock(Adapter::class);
 
         $systemAdapter
             ->expects($this->atLeastOnce())
             ->method('__call')
             ->with('loadLanguageFile', ['default'])
+        ;
+
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->atLeastOnce())
+            ->method('initialize')
         ;
 
         $framework
@@ -142,24 +130,21 @@ class TranslatorTest extends TestCase
         );
     }
 
-    /**
-     * Tests loading message domains with the "contao_" prefix.
-     */
-    public function testLoadsMessageDomainsWithTheContaoPrefix()
+    public function testLoadsMessageDomainsWithTheContaoPrefix(): void
     {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        $framework
-            ->expects($this->atLeastOnce())
-            ->method('initialize')
-        ;
-
         $systemAdapter = $this->createMock(Adapter::class);
 
         $systemAdapter
             ->expects($this->atLeastOnce())
             ->method('__call')
             ->with('loadLanguageFile', ['tl_foobar'])
+        ;
+
+        $framework = $this->createMock(ContaoFrameworkInterface::class);
+
+        $framework
+            ->expects($this->atLeastOnce())
+            ->method('initialize')
         ;
 
         $framework

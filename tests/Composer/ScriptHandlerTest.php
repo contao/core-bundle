@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,10 +22,6 @@ use Contao\CoreBundle\Composer\ScriptHandler;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the ScriptHandler class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- *
  * @preserveGlobalState disabled
  */
 class ScriptHandlerTest extends TestCase
@@ -36,30 +34,27 @@ class ScriptHandlerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->handler = new ScriptHandler();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Composer\ScriptHandler', $this->handler);
     }
 
     /**
-     * Tests generating a random secret.
-     *
      * @runInSeparateProcess
      */
-    public function testGeneratesARandomSecretIfTheConfigurationFileDoesNotExist()
+    public function testGeneratesARandomSecretIfTheConfigurationFileDoesNotExist(): void
     {
         $this->assertRandomSecretDoesNotExist();
 
         $this->handler->generateRandomSecret(
-            $this->getComposerEvent(
+            $this->mockComposerEvent(
                 [
                     'incenteev-parameters' => [
                         'file' => __DIR__.'/../Fixtures/app/config/parameters.yml',
@@ -71,17 +66,14 @@ class ScriptHandlerTest extends TestCase
         $this->assertRandomSecretIsValid();
     }
 
-    /**
-     * Tests that no secret is generated if the configuration file exists.
-     */
-    public function testDoesNotGenerateARandomSecretIfTheConfigurationFileExists()
+    public function testDoesNotGenerateARandomSecretIfTheConfigurationFileExists(): void
     {
         $this->assertRandomSecretDoesNotExist();
 
         touch(__DIR__.'/../Fixtures/app/config/parameters.yml');
 
         $this->handler->generateRandomSecret(
-            $this->getComposerEvent(
+            $this->mockComposerEvent(
                 [
                     'incenteev-parameters' => [
                         'file' => __DIR__.'/../Fixtures/app/config/parameters.yml',
@@ -95,19 +87,16 @@ class ScriptHandlerTest extends TestCase
         $this->assertRandomSecretDoesNotExist();
     }
 
-    /**
-     * Tests that no secret is generated if no configuration file has been defined.
-     */
-    public function testDoesNotGenerateARandomSecretIfNoConfigurationFileIsDefined()
+    public function testDoesNotGenerateARandomSecretIfNoConfigurationFileIsDefined(): void
     {
         $this->assertRandomSecretDoesNotExist();
 
-        $this->handler->generateRandomSecret($this->getComposerEvent([]));
+        $this->handler->generateRandomSecret($this->mockComposerEvent([]));
 
         $this->assertRandomSecretDoesNotExist();
 
         $this->handler->generateRandomSecret(
-            $this->getComposerEvent(
+            $this->mockComposerEvent(
                 [
                     'incenteev-parameters' => [],
                 ]
@@ -118,27 +107,23 @@ class ScriptHandlerTest extends TestCase
     }
 
     /**
-     * Tests that the bin dir is read from the configuration.
-     *
      * @param array  $extra
      * @param string $expected
      *
      * @dataProvider binDirProvider
      */
-    public function testReadsTheBinDirFromTheConfiguration(array $extra, $expected)
+    public function testReadsTheBinDirFromTheConfiguration(array $extra, string $expected): void
     {
         $method = new \ReflectionMethod($this->handler, 'getBinDir');
         $method->setAccessible(true);
 
-        $this->assertSame($expected, $method->invokeArgs($this->handler, [$this->getComposerEvent($extra)]));
+        $this->assertSame($expected, $method->invokeArgs($this->handler, [$this->mockComposerEvent($extra)]));
     }
 
     /**
-     * Provides the bin dir data.
-     *
      * @return array
      */
-    public function binDirProvider()
+    public function binDirProvider(): array
     {
         return [
             [
@@ -164,27 +149,23 @@ class ScriptHandlerTest extends TestCase
     }
 
     /**
-     * Tests that the web dir is read from the configuration.
-     *
      * @param array  $extra
      * @param string $expected
      *
      * @dataProvider webDirProvider
      */
-    public function testReadsTheWebDirFromTheConfiguration(array $extra, $expected)
+    public function testReadsTheWebDirFromTheConfiguration(array $extra, string $expected): void
     {
         $method = new \ReflectionMethod($this->handler, 'getWebDir');
         $method->setAccessible(true);
 
-        $this->assertSame($expected, $method->invokeArgs($this->handler, [$this->getComposerEvent($extra)]));
+        $this->assertSame($expected, $method->invokeArgs($this->handler, [$this->mockComposerEvent($extra)]));
     }
 
     /**
-     * Provides the web dir data.
-     *
      * @return array
      */
-    public function webDirProvider()
+    public function webDirProvider(): array
     {
         return [
             [
@@ -198,61 +179,52 @@ class ScriptHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * Tests that the verbosity flag is considered.
-     */
-    public function testHandlesTheVerbosityFlag()
+    public function testHandlesTheVerbosityFlag(): void
     {
         $method = new \ReflectionMethod($this->handler, 'getVerbosityFlag');
         $method->setAccessible(true);
 
         $this->assertSame(
             '',
-            $method->invokeArgs($this->handler, [$this->getComposerEvent()])
+            $method->invokeArgs($this->handler, [$this->mockComposerEvent()])
         );
 
         $this->assertSame(
             ' -v',
-            $method->invokeArgs($this->handler, [$this->getComposerEvent([], 'isVerbose')])
+            $method->invokeArgs($this->handler, [$this->mockComposerEvent([], 'isVerbose')])
         );
 
         $this->assertSame(
             ' -vv',
-            $method->invokeArgs($this->handler, [$this->getComposerEvent([], 'isVeryVerbose')])
+            $method->invokeArgs($this->handler, [$this->mockComposerEvent([], 'isVeryVerbose')])
         );
 
         $this->assertSame(
             ' -vvv',
-            $method->invokeArgs($this->handler, [$this->getComposerEvent([], 'isDebug')])
+            $method->invokeArgs($this->handler, [$this->mockComposerEvent([], 'isDebug')])
         );
     }
 
-    /**
-     * Asserts that the random secret environment variable is not set.
-     */
-    private function assertRandomSecretDoesNotExist()
+    private function assertRandomSecretDoesNotExist(): void
     {
         $this->assertEmpty(getenv(ScriptHandler::RANDOM_SECRET_NAME));
     }
 
-    /**
-     * Asserts that the random secret environment variable is set and valid.
-     */
-    private function assertRandomSecretIsValid()
+    private function assertRandomSecretIsValid(): void
     {
         $this->assertNotFalse(getenv(ScriptHandler::RANDOM_SECRET_NAME));
-        $this->assertGreaterThanOrEqual(64, strlen(getenv(ScriptHandler::RANDOM_SECRET_NAME)));
+        $this->assertGreaterThanOrEqual(64, \strlen(getenv(ScriptHandler::RANDOM_SECRET_NAME)));
     }
 
     /**
-     * Returns the composer event object.
+     * Mocks a Composer event.
      *
      * @param array       $extra
      * @param string|null $method
      *
      * @return Event
      */
-    private function getComposerEvent(array $extra = [], $method = null)
+    private function mockComposerEvent(array $extra = [], string $method = null): Event
     {
         $package = $this->mockPackage($extra);
 
@@ -260,26 +232,24 @@ class ScriptHandlerTest extends TestCase
     }
 
     /**
-     * Mocks the Composer object.
+     * Mocks Composer.
      *
      * @param PackageInterface $package
      *
      * @return Composer|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockComposer(PackageInterface $package)
+    private function mockComposer(PackageInterface $package): Composer
     {
-        $config = $this->createMock(Config::class);
-        $downloadManager = $this->createMock(DownloadManager::class);
         $composer = $this->createMock(Composer::class);
 
         $composer
             ->method('getConfig')
-            ->willReturn($config)
+            ->willReturn($this->createMock(Config::class))
         ;
 
         $composer
             ->method('getDownloadManager')
-            ->willReturn($downloadManager)
+            ->willReturn($this->createMock(DownloadManager::class))
         ;
 
         $composer
@@ -297,7 +267,7 @@ class ScriptHandlerTest extends TestCase
      *
      * @return IOInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockIO($method = null)
+    private function mockIO(string $method = null): IOInterface
     {
         $io = $this->createMock(IOInterface::class);
 
@@ -309,13 +279,13 @@ class ScriptHandlerTest extends TestCase
     }
 
     /**
-     * Mocks the package object.
+     * Mocks a package.
      *
      * @param array $extras
      *
      * @return PackageInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPackage(array $extras = [])
+    private function mockPackage(array $extras = []): PackageInterface
     {
         $package = $this->createMock(PackageInterface::class);
 

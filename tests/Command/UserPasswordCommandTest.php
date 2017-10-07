@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -23,11 +25,6 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * Tests the UserPasswordCommandTest class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class UserPasswordCommandTest extends TestCase
 {
     /**
@@ -43,38 +40,32 @@ class UserPasswordCommandTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $framework = $this->mockContaoFramework(
             null,
             null,
             [Encryption::class => $this->mockEncryptionAdapter()]
         );
 
-        $connection = $this->createMock(Connection::class);
-
         $this->container = $this->mockContainerWithContaoScopes();
         $this->container->set('contao.framework', $framework);
-        $this->container->set('database_connection', $connection);
+        $this->container->set('database_connection', $this->createMock(Connection::class));
 
         $this->command = new UserPasswordCommand();
         $this->command->setContainer($this->container);
         $this->command->setApplication(new Application());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Command\UserPasswordCommand', $this->command);
         $this->assertSame('contao:user:password', $this->command->getName());
     }
 
-    /**
-     * Tests that the command defines username and password.
-     */
-    public function testDefinesUsernameAndPassword()
+    public function testDefinesUsernameAndPassword(): void
     {
         $this->assertNotEmpty($this->command->getDescription());
 
@@ -84,10 +75,7 @@ class UserPasswordCommandTest extends TestCase
         $this->assertTrue($definition->hasOption('password'));
     }
 
-    /**
-     * Tests that a password can be passed as argument.
-     */
-    public function testTakesAPasswordAsArgument()
+    public function testTakesAPasswordAsArgument(): void
     {
         $code = (new CommandTester($this->command))
             ->execute(
@@ -101,10 +89,7 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(0, $code);
     }
 
-    /**
-     * Tests that the password is asked for interactively if not given.
-     */
-    public function testAsksForThePasswordIfNotGiven()
+    public function testAsksForThePasswordIfNotGiven(): void
     {
         $question = $this->createMock(QuestionHelper::class);
 
@@ -120,16 +105,13 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(0, $code);
     }
 
-    /**
-     * Tests that the command fails if the passwords do not match.
-     */
-    public function testFailsIfThePasswordsDoNotMatch()
+    public function testFailsIfThePasswordsDoNotMatch(): void
     {
         $question = $this->createMock(QuestionHelper::class);
 
         $question
             ->method('ask')
-            ->willReturnOnConsecutiveCalls(['12345678', '87654321'])
+            ->willReturnOnConsecutiveCalls('12345678', '87654321')
         ;
 
         $this->command->getHelperSet()->set($question, 'question');
@@ -140,10 +122,7 @@ class UserPasswordCommandTest extends TestCase
         (new CommandTester($this->command))->execute(['username' => 'foobar']);
     }
 
-    /**
-     * Tests that the command fails if no username is given.
-     */
-    public function testFailsWithoutUsername()
+    public function testFailsWithoutUsername(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please provide the username as argument.');
@@ -151,10 +130,7 @@ class UserPasswordCommandTest extends TestCase
         (new CommandTester($this->command))->execute([]);
     }
 
-    /**
-     * Tests that the command fails without a password if not interactive.
-     */
-    public function testFailsWithoutPasswordIfNotInteractive()
+    public function testFailsWithoutPasswordIfNotInteractive(): void
     {
         $code = (new CommandTester($this->command))
             ->execute(
@@ -166,10 +142,7 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(1, $code);
     }
 
-    /**
-     * Tests that a minimum password length is required.
-     */
-    public function testRequiresAMinimumPasswordLength()
+    public function testRequiresAMinimumPasswordLength(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The password must be at least 8 characters long.');
@@ -185,10 +158,7 @@ class UserPasswordCommandTest extends TestCase
         ;
     }
 
-    /**
-     * Tests that the minimum password length is read from the Config object.
-     */
-    public function testHandlesACustomMinimumPasswordLength()
+    public function testHandlesACustomMinimumPasswordLength(): void
     {
         $framework = $this->mockContaoFramework(
             null,
@@ -220,10 +190,7 @@ class UserPasswordCommandTest extends TestCase
         ;
     }
 
-    /**
-     * Tests that the command fails if the username is unknown.
-     */
-    public function testFailsIfTheUsernameIsUnknown()
+    public function testFailsIfTheUsernameIsUnknown(): void
     {
         $connection = $this->container->get('database_connection');
 
@@ -248,14 +215,12 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * Tests that the database is updated on success.
-     *
      * @param string $username
      * @param string $password
      *
      * @dataProvider usernamePasswordProvider
      */
-    public function testUpdatesTheDatabaseOnSuccess($username, $password)
+    public function testUpdatesTheDatabaseOnSuccess(string $username, string $password): void
     {
         $connection = $this->container->get('database_connection');
 
@@ -282,11 +247,9 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * Provides username and password data.
-     *
      * @return array
      */
-    public function usernamePasswordProvider()
+    public function usernamePasswordProvider(): array
     {
         return [
             [
@@ -305,23 +268,23 @@ class UserPasswordCommandTest extends TestCase
      *
      * @return Adapter|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function mockEncryptionAdapter()
+    protected function mockEncryptionAdapter(): Adapter
     {
-        $encryption = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hash'])
-            ->getMock();
+        $adapter = $this->createMock(Adapter::class);
 
-        $encryption
-            ->method('hash')
+        $adapter
+            ->method('__call')
             ->willReturnCallback(
-                function ($password) {
-                    return 'HA$HED-'.$password.'-HA$HED';
+                function (string $method, array $arguments): ?string {
+                    if ('hash' === $method) {
+                        return 'HA$HED-'.$arguments[0].'-HA$HED';
+                    }
+
+                    return null;
                 }
             )
         ;
 
-        return $encryption;
+        return $adapter;
     }
 }

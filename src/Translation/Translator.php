@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,11 +16,6 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Translator.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class Translator implements TranslatorInterface
 {
     /**
@@ -47,10 +44,10 @@ class Translator implements TranslatorInterface
      * Gets the translation from Contao’s $GLOBALS['TL_LANG'] array if the message domain starts with
      * "contao_". The locale parameter is ignored in this case.
      */
-    public function trans($id, array $parameters = [], $domain = null, $locale = null)
+    public function trans($id, array $parameters = [], $domain = null, $locale = null): string
     {
         // Forward to the default translator
-        if (null === $domain || strncmp($domain, 'contao_', 7) !== 0) {
+        if (null === $domain || 0 !== strncmp($domain, 'contao_', 7)) {
             return $this->translator->trans($id, $parameters, $domain, $locale);
         }
 
@@ -75,27 +72,24 @@ class Translator implements TranslatorInterface
     /**
      * {@inheritdoc}
      */
-    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null): string
     {
-        // Forward to the default translator
         return $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setLocale($locale)
+    public function setLocale($locale): ?string
     {
-        // Forward to the default translator
         return $this->translator->setLocale($locale);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getLocale()
+    public function getLocale(): string
     {
-        // Forward to the default translator
         return $this->translator->getLocale();
     }
 
@@ -107,7 +101,7 @@ class Translator implements TranslatorInterface
      *
      * @return string|null
      */
-    private function getFromGlobals(string $id, string $domain)
+    private function getFromGlobals(string $id, string $domain): ?string
     {
         if ('default' !== $domain) {
             $id = $domain.'.'.$id;
@@ -135,7 +129,7 @@ class Translator implements TranslatorInterface
      *
      * @param string $name
      */
-    private function loadLanguageFile(string $name)
+    private function loadLanguageFile(string $name): void
     {
         /** @var System $system */
         $system = $this->framework->getAdapter(System::class);
