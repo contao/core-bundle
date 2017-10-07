@@ -73,6 +73,8 @@ services:
 
     contao.listener.map_fragments_to_globals:
         class: Contao\CoreBundle\EventListener\MapFragmentsToGlobalsListener
+        arguments:
+            - "@contao.fragment.registry"
 
     contao.listener.merge_http_headers:
         class: Contao\CoreBundle\EventListener\MergeHttpHeadersListener
