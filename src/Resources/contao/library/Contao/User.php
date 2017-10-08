@@ -368,6 +368,12 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		/** @var Request $request */
 		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
+		// Check only POST requests
+		if ($request->getMethod() !== Request::METHOD_POST)
+		{
+			return false;
+		}
+
 		\System::loadLanguageFile('default');
 
 		// Load the user object

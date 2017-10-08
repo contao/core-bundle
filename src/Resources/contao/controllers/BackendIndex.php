@@ -99,13 +99,6 @@ class BackendIndex extends \Backend
 		$objTemplate->default = $GLOBALS['TL_LANG']['MSC']['default'];
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
 
-		if ($this->flashBag->has('be_login'))
-		{
-			$flashes = $this->flashBag->get('be_login');
-
-			$objTemplate->message = $flashes[0];
-		}
-
 		return $objTemplate->getResponse();
 	}
 
@@ -116,9 +109,10 @@ class BackendIndex extends \Backend
 
         $error = $authenticationUtils->getLastAuthenticationError();
 
+
         if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
         {
-            $this->flashBag->set('be_login', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+            $this->flashBag->set('contao.BE.error', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
         }
 
         elseif ($error instanceof LockedException)
@@ -130,7 +124,7 @@ class BackendIndex extends \Backend
 
             $user = $tokenStorage->getToken()->getUser();
 
-            $this->flashBag->set('be_login', sprintf(
+            $this->flashBag->set('contao.BE.error', sprintf(
                 $GLOBALS['TL_LANG']['ERR']['accountLocked'],
                 ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
             ));
