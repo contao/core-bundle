@@ -872,10 +872,21 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		}
 	}
 
-	public static function importUser($username, $strTable)
+	/**
+	 * Replacement method for the legacy importUser-Hook
+	 *
+	 * @param $username
+	 * @param $strTable
+	 * @return bool|static
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 */
+	public static function triggerImportUserHook($username, $strTable)
 	{
+		@trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+
 		/** @var Request $request */
-		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		$self = new static();
 
@@ -890,7 +901,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 				// Load successfull
 				if ($blnLoaded === true)
 				{
-					return $self;
+					return true;
 				}
 			}
 		}

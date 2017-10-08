@@ -76,7 +76,7 @@ class FrontendUser extends User
     public static function getInstance()
     {
         /** @var TokenInterface $token */
-        $token = System::getContainer()->get('security.token_storage')->getToken();
+        $token = \System::getContainer()->get('security.token_storage')->getToken();
 
         if ($token !== null && is_a($token->getUser(), get_called_class()))
         {
@@ -144,7 +144,7 @@ class FrontendUser extends User
 		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
 		/** @var TokenInterface $token */
-		$token = System::getContainer()->get('security.token_storage')->getToken();
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
 		// Do not redirect if authentication is successful
 		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
@@ -154,7 +154,7 @@ class FrontendUser extends User
 			{
 				foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
 				{
-					System::importStatic($callback[0])->{$callback[1]}($this);
+					\System::importStatic($callback[0])->{$callback[1]}($this);
 				}
 			}
 
@@ -333,9 +333,11 @@ class FrontendUser extends User
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
-			$user = self::importUser($username, $user->strTable);
+			if (self::triggerImportUserHook($username, $user->strTable) === false) {
+				return null;
+			}
 
-			if ($user === false) {
+			if ($user->findBy('username', \Input::post('username') === false)) {
 				return null;
 			}
 		}

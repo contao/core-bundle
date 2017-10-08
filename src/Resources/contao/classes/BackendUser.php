@@ -104,7 +104,7 @@ class BackendUser extends User
 	 * Symfony security roles
 	 * @var array
 	 */
-	protected $roles = array('ROLE_USER', 'ROLE_ADMIN');
+	protected $roles = array('ROLE_USER');
 
 
 	/**
@@ -186,7 +186,7 @@ class BackendUser extends User
 		@trigger_error('Using BackendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
 		/** @var TokenInterface $token */
-		$token = System::getContainer()->get('security.token_storage')->getToken();
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
 		// Do not redirect if authentication is successful
 		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
@@ -196,7 +196,7 @@ class BackendUser extends User
 			{
 				foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
 				{
-					System::importStatic($callback[0])->{$callback[1]}($this);
+					\System::importStatic($callback[0])->{$callback[1]}($this);
 				}
 			}
 
@@ -603,7 +603,7 @@ class BackendUser extends User
 			);
 		}
 
-		return array('ROLE_USER');
+		return $this->roles;
 	}
 
 	public static function loadUserByUsername($username)
@@ -613,9 +613,11 @@ class BackendUser extends User
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
-			$user = self::importUser($username, $user->strTable);
+			if (self::triggerImportUserHook($username, $user->strTable) === false) {
+				return null;
+			}
 
-			if ($user === false) {
+			if ($user->findBy('username', \Input::post('username')) === false) {
 				return null;
 			}
 		}
