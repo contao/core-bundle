@@ -292,9 +292,13 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Authenticate a user
 	 *
 	 * @return boolean True if the user could be authenticated
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function authenticate()
 	{
+		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
+
 		// No cookie
 		if ($this->strHash === null)
 		{
@@ -360,6 +364,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Try to login the current user
 	 *
 	 * @return boolean True if the user could be logged in
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function login()
 	{
