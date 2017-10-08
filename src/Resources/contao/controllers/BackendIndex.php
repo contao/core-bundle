@@ -54,7 +54,7 @@ class BackendIndex extends \Backend
 		$this->import('BackendUser', 'User');
 		parent::__construct();
 
-		// Login
+		// Authenticate
 		$this->User->authenticate();
 
 		if ($this->User instanceof BackendUser)

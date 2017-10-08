@@ -136,17 +136,30 @@ class FrontendUser extends User
 	 * Authenticate a user
 	 *
 	 * @return boolean
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function authenticate()
 	{
-        /** @var TokenInterface $token */
-        $token = System::getContainer()->get('security.token_storage')->getToken();
+		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
-        // Do not redirect if authentication is successful
-        if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
-        {
-            return true;
-        }
+		/** @var TokenInterface $token */
+		$token = System::getContainer()->get('security.token_storage')->getToken();
+
+		// Do not redirect if authentication is successful
+		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
+		{
+			// HOOK: post authenticate callback
+			if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
+			{
+				foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
+				{
+					System::importStatic($callback[0])->{$callback[1]}($this);
+				}
+			}
+
+			return true;
+		}
 
 		return false;
 	}

@@ -298,65 +298,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	public function authenticate()
 	{
 		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
-
-		// No cookie
-		if ($this->strHash === null)
-		{
-			return false;
-		}
-
-		// Check the cookie hash
-		if ($this->strHash != $this->getSessionHash($this->strCookie))
-		{
-			return false;
-		}
-
-		$objSession = $this->Database->prepare("SELECT * FROM tl_session WHERE hash=?")
-									 ->execute($this->strHash);
-
-		// Try to find the session in the database
-		if ($objSession->numRows < 1)
-		{
-			return false;
-		}
-
-		$time = time();
-		$container = \System::getContainer();
-		$session = $container->get('session');
-
-		// Validate the session
-		if ($objSession->sessionID != $session->getId() || (!$container->getParameter('contao.security.disable_ip_check') && $objSession->ip != $this->strIp) || $objSession->hash != $this->strHash || ($objSession->tstamp + \Config::get('sessionTimeout')) < $time)
-		{
-			return false;
-		}
-
-		$this->intId = $objSession->pid;
-
-		// Load the user object
-		if ($this->findBy('id', $this->intId) == false)
-		{
-			return false;
-		}
-
-		$this->setUserFromDb();
-
-		// Update session
-		$this->Database->prepare("UPDATE tl_session SET tstamp=$time WHERE hash=?")
-					   ->execute($this->strHash);
-
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-
-		// HOOK: post authenticate callback
-		if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-			{
-				$this->import($callback[0], 'objAuth', true);
-				$this->objAuth->{$callback[1]}($this);
-			}
-		}
-
-		return true;
 	}
 
 
