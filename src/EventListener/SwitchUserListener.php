@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -44,9 +46,7 @@ class SwitchUserListener
         /** @var BackendUser $targetUser */
         $targetUser = $event->getTargetUser();
 
-        $this->logger->info('User {from_name} has switched to user {to_name}.', [
-            'from_name' => $user->username,
-            'to_name' => $targetUser->username,
+        $this->logger->info(sprintf('User %s has switched to user %s.',$user->username, $targetUser->username), [
             'contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS),
         ]);
     }

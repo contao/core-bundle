@@ -405,8 +405,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			return false;
 		}
 
-		$this->setUserFromDb();
-
 		// Update the record
 		$this->lastLogin = $this->currentLogin;
 		$this->currentLogin = $time;
@@ -416,18 +414,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		// Generate the session
 		$this->regenerateSessionId();
 		$this->generateSession();
-
-		$this->log('User "' . $this->username . '" has logged in', __METHOD__, TL_ACCESS);
-
-		// HOOK: post login callback
-		if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback)
-			{
-				$this->import($callback[0], 'objLogin', true);
-				$this->objLogin->{$callback[1]}($this);
-			}
-		}
 
 		return true;
 	}
