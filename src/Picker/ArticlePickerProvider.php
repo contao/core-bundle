@@ -59,10 +59,14 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     public function getDcaAttributes(PickerConfig $config)
     {
         $value = $config->getValue();
+        $attributes = ['fieldType' => 'radio'];
 
         if ('article' === $config->getContext()) {
             $attributes = ['fieldType' => $config->getExtra('fieldType')];
-
+            if ($fieldType = $config->getExtra('fieldType')) {
+                $attributes['fieldType'] = $fieldType;
+            }
+  
             if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
                 $attributes['rootNodes'] = $rootNodes;
             }
@@ -73,8 +77,6 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
 
             return $attributes;
         }
-
-        $attributes = ['fieldType' => 'radio'];
 
         if ($value && false !== strpos($value, '{{article_url::')) {
             $attributes['value'] = str_replace(['{{article_url::', '}}'], '', $value);
