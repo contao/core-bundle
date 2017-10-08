@@ -613,7 +613,11 @@ class BackendUser extends User
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
-			return null;
+			$user = self::importUser($username, $user->strTable);
+
+			if ($user === false) {
+				return null;
+			}
 		}
 
 		$user->setUserFromDb();

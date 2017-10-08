@@ -323,37 +323,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 		\System::loadLanguageFile('default');
 
-		// Load the user object
-		if ($this->findBy('username', \Input::post('username', true)) == false)
-		{
-			$blnLoaded = false;
-
-			// HOOK: pass credentials to callback functions
-			if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
-			{
-				foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
-				{
-					$this->import($callback[0], 'objImport', true);
-					$blnLoaded = $this->objImport->{$callback[1]}(\Input::post('username', true), $request->request->get('password'), $this->strTable);
-
-					// Load successfull
-					if ($blnLoaded === true)
-					{
-						break;
-					}
-				}
-			}
-
-			// Return if the user still cannot be loaded
-			if (!$blnLoaded || $this->findBy('username', \Input::post('username', true)) == false)
-			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-				$this->log('Could not find user "' . \Input::post('username', true) . '"', __METHOD__, TL_ACCESS);
-
-				return false;
-			}
-		}
-
 		$time = time();
 
 		// Set the user language
@@ -901,5 +870,31 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 				$this->setSalt($salt);
 			}
 		}
+	}
+
+	public static function importUser($username, $strTable)
+	{
+		/** @var Request $request */
+		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		$self = new static();
+
+		// HOOK: pass credentials to callback functions
+		if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
+			{
+				$self->import($callback[0], 'objImport', true);
+				$blnLoaded = $self->objImport->{$callback[1]}($username, $request->request->get('password'), $strTable);
+
+				// Load successfull
+				if ($blnLoaded === true)
+				{
+					return $self;
+				}
+			}
+		}
+
+		return false;
 	}
 }
