@@ -326,27 +326,18 @@ class FrontendUser extends User
 		return $this->roles;
 	}
 
-    public static function loadUserByUsername($username)
-    {
-        $user = new static();
+	public static function loadUserByUsername($username)
+	{
+		$user = new static();
 
-        // Load the user object
-        if ($user->findBy('username', $username) === false)
-        {
-            return null;
-        }
+		// Load the user object
+		if ($user->findBy('username', $username) === false)
+		{
+			return null;
+		}
 
-        $user->setUserFromDb();
+		$user->setUserFromDb();
 
-        // HOOK: post authenticate callback
-        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-        {
-            foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-            {
-                System::importStatic($callback[0])->{$callback[1]}($user);
-            }
-        }
-
-        return $user;
-    }
+		return $user;
+	}
 }
