@@ -337,7 +337,7 @@ class FrontendUser extends User
 				return null;
 			}
 
-			if ($user->findBy('username', \Input::post('username') === false)) {
+			if ($user->findBy('username', \Input::post('username')) === false) {
 				return null;
 			}
 		}
