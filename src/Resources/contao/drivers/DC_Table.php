@@ -285,7 +285,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	 */
 	public function showAll()
 	{
-		$return = '';
+		$template = [];
 		$this->limit = '';
 
 		/** @var SessionInterface $objSession */
@@ -333,8 +333,8 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Render view
 		if ($this->treeView)
 		{
-			$return .= $this->panel();
-			$return .= $this->treeView();
+            $template['panel'] = $this->panel();
+            $template['view'] = $this->treeView();
 		}
 		else
 		{
@@ -344,13 +344,13 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$this->values[] = CURRENT_ID;
 			}
 
-			$return .= $this->panel();
-			$return .= ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4) ? $this->parentView() : $this->listView();
+            $template['panel'] = $this->panel();
+            $template['view'] = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4) ? $this->parentView() : $this->listView();
 
 			// Add another panel at the end of the page
 			if (strpos($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'], 'limit') !== false)
 			{
-				$return .= $this->paginationMenu();
+                $template['pagination'] = $this->paginationMenu();
 			}
 		}
 
@@ -359,7 +359,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$session['CURRENT']['IDS'] = $this->current;
 		$objSession->replace($session);
 
-		return $return;
+        return System::getContainer()
+            ->get('twig')
+            ->render('@ContaoCore/Backend/DC_Table/showAll.twig', $template);
 	}
 
 
@@ -384,8 +386,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			return '';
 		}
 
-		$count = 1;
-		$return = '';
 		$row = $objRow->row();
 
 		// Get the order fields
@@ -405,6 +405,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$fields = array_intersect($allowedFields, $fields);
 
 		// Show all allowed fields
+        $templateEntries = [];
 		foreach ($fields as $i)
 		{
 			if (!in_array($i, $allowedFields) || $GLOBALS['TL_DCA'][$this->strTable]['fields'][$i]['inputType'] == 'password' || $GLOBALS['TL_DCA'][$this->strTable]['fields'][$i]['eval']['doNotShow'] || $GLOBALS['TL_DCA'][$this->strTable]['fields'][$i]['eval']['hideInput'])
@@ -425,8 +426,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				$value = \Encryption::decrypt($value);
 			}
-
-			$class = (($count++ % 2) == 0) ? ' class="tl_bg"' : '';
 
 			// Get the field value
 			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$i]['foreignKey']))
@@ -550,11 +549,10 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$label = $i;
 			}
 
-			$return .= '
-  <tr>
-    <td'.$class.'><span class="tl_label">'.$label.': </span></td>
-    <td'.$class.'>'.$row[$i].'</td>
-  </tr>';
+            $templateEntries[] =  [
+                'label' => $label,
+                'value' => $row[$i]
+            ];
 		}
 
 		// Special treatment for tl_undo
@@ -570,10 +568,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				foreach ($arrTableData as $arrRow)
 				{
 					$count = 0;
-					$return .= '
-  <tr>
-    <td colspan="2" style="height:5em"></td>
-  </tr>';
+                    $templateEntries[] =  [];
 
 					foreach ($arrRow as $i=>$v)
 					{
@@ -581,8 +576,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						{
 							continue;
 						}
-
-						$class = (($count++ % 2) == 0) ? ' class="tl_bg"' : '';
 
 						// Get the field label
 						if (isset($GLOBALS['TL_DCA'][$strTable]['fields'][$i]['label']))
@@ -599,21 +592,23 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							$label = $i;
 						}
 
-						// Always encode special characters (thanks to Oliver Klee)
-						$return .= '
-  <tr>
-    <td'.$class.'><span class="tl_label">'.$label.': </span></td>
-    <td'.$class.'>'.\StringUtil::specialchars($v).'</td>
-  </tr>';
+                        $templateEntries[] =  [
+                            'label' => $label,
+                            // Always encode special characters (thanks to Oliver Klee)
+                            'value' => \StringUtil::specialchars($v)
+                        ];
 					}
 				}
 			}
 		}
 
-		// Return table
-		return '
-<table class="tl_show">'.$return.'
-</table>';
+        // Render table
+        return System::getContainer()
+            ->get('twig')
+            ->render(
+                '@ContaoCore/Backend/DC_Table/show.twig',
+                ['entries' => $templateEntries]
+            );
 	}
 
 
@@ -1820,7 +1815,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$this->objActiveRecord = $objRow;
 
-		$return = '';
+		$template = [];
 		$this->values[] = $this->intId;
 		$this->procedure[] = 'id=?';
 
@@ -1886,12 +1881,13 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			/** @var SessionInterface $objSessionBag */
 			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
-			$class = 'tl_tbox';
 			$fs = $objSessionBag->get('fieldset_states');
 
 			// Render boxes
+            $templateBoxes = [];
 			foreach ($boxes as $k=>$v)
 			{
+			    $templateBox = [];
 				$arrAjax = array();
 				$blnAjax = false;
 				$key = '';
@@ -1901,23 +1897,28 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				if (isset($legends[$k]))
 				{
 					list($key, $cls) = explode(':', $legends[$k]);
-					$legend = "\n" . '<legend onclick="AjaxRequest.toggleFieldset(this,\'' . $key . '\',\'' . $this->strTable . '\')">' . (isset($GLOBALS['TL_LANG'][$this->strTable][$key]) ? $GLOBALS['TL_LANG'][$this->strTable][$key] : $key) . '</legend>';
-				}
 
+                    $templateBox['key'] = $key;
+                    $templateBox['legend'] = isset($GLOBALS['TL_LANG'][$this->strTable][$key]) ? $GLOBALS['TL_LANG'][$this->strTable][$key] : $key;
+				}
 				if (isset($fs[$this->strTable][$key]))
 				{
-					$class .= ($fs[$this->strTable][$key] ? '' : ' collapsed');
+                    if(!$fs[$this->strTable][$key]) {
+                        $templateBox['class'] = 'collapsed';
+                    }
 				}
 				else
 				{
-					$class .= (($cls && $legend) ? ' ' . $cls : '');
+				    if($cls && $legend) {
+                        $templateBox['class'] = $cls;
+                    }
 				}
 
-				$return .= "\n\n" . '<fieldset' . ($key ? ' id="pal_'.$key.'"' : '') . ' class="' . $class . ($legend ? '' : ' nolegend') . '">' . $legend;
-				$thisId = '';
-
 				// Build rows of the current box
-				foreach ($v as $vv)
+				// todo: refactor box rows
+				$thisId = '';
+                $rows = '';
+                foreach ($v as $vv)
 				{
 					if ($vv == '[EOF]')
 					{
@@ -1938,7 +1939,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							}
 						}
 
-						$return .= "\n" . '</div>';
+                        $rows .= "\n" . '</div>';
 
 						continue;
 					}
@@ -1948,7 +1949,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						$thisId = 'sub_' . substr($vv, 1, -1);
 						$arrAjax[$thisId] = '';
 						$blnAjax = ($ajaxId == $thisId && \Environment::get('isAjaxRequest')) ? true : $blnAjax;
-						$return .= "\n" . '<div id="'.$thisId.'" class="subpal cf">';
+                        $rows .= "\n" . '<div id="'.$thisId.'" class="subpal cf">';
 
 						continue;
 					}
@@ -1984,121 +1985,129 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					$this->objActiveRecord->{$this->strField} = $this->varValue;
 
 					// Build the row and pass the current palette string (thanks to Tristan Lins)
-					$blnAjax ? $arrAjax[$thisId] .= $this->row($this->strPalette) : $return .= $this->row($this->strPalette);
+					$blnAjax ? $arrAjax[$thisId] .= $this->row($this->strPalette) : $rows .= $this->row($this->strPalette);
 				}
 
-				$class = 'tl_box';
-				$return .= "\n" . '</fieldset>';
+				$templateBox['rows'] = $rows;
+				$templateBoxes[] = $templateBox;
 			}
+		    $template['boxes'] = $templateBoxes;
 		}
 
 		// Versions overview
 		if ($GLOBALS['TL_DCA'][$this->strTable]['config']['enableVersioning'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['hideVersionMenu'])
 		{
-			$version = $objVersions->renderDropdown();
-		}
-		else
-		{
-			$version = '';
+			$template['versionDropdown'] = $objVersions->renderDropdown();
 		}
 
-		// Submit buttons
-		$arrButtons = array();
-		$arrButtons['save'] = '<button type="submit" name="save" id="save" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['MSC']['save'].'</button>';
+        // Submit buttons
+        $template['buttons']['submit'][] = [
+            'id'        => 'save',
+            'accessKey' => 's',
+            'label'     => $GLOBALS['TL_LANG']['MSC']['save']
+        ];
 
 		if (!\Input::get('nb'))
 		{
-			$arrButtons['saveNclose'] = '<button type="submit" name="saveNclose" id="saveNclose" class="tl_submit" accesskey="c">'.$GLOBALS['TL_LANG']['MSC']['saveNclose'].'</button>';
+            $template['buttons']['submit'][] = [
+                'id' => 'saveNclose',
+                'accessKey' => 'c',
+                'label' => $GLOBALS['TL_LANG']['MSC']['saveNclose']
+            ];
 
 			if (!\Input::get('nc'))
 			{
 				if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable'])
 				{
-					$arrButtons['saveNcreate'] = '<button type="submit" name="saveNcreate" id="saveNcreate" class="tl_submit" accesskey="n">'.$GLOBALS['TL_LANG']['MSC']['saveNcreate'].'</button>';
+                    $template['buttons']['submit'][] = [
+                        'id' => 'saveNcreate',
+                        'accessKey' => 'n',
+                        'label' => $GLOBALS['TL_LANG']['MSC']['saveNcreate']
+                    ];
 
 					if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['notCopyable'])
 					{
-						$arrButtons['saveNduplicate'] = '<button type="submit" name="saveNduplicate" id="saveNduplicate" class="tl_submit" accesskey="d">'.$GLOBALS['TL_LANG']['MSC']['saveNduplicate'].'</button>';
+                        $template['buttons']['submit'][] = [
+                            'id' => 'saveNduplicate',
+                            'accessKey' => 'd',
+                            'label' => $GLOBALS['TL_LANG']['MSC']['saveNduplicate']
+                        ];
 					}
 				}
 
 				if ($GLOBALS['TL_DCA'][$this->strTable]['config']['switchToEdit'])
 				{
-					$arrButtons['saveNedit'] = '<button type="submit" name="saveNedit" id="saveNedit" class="tl_submit" accesskey="e">'.$GLOBALS['TL_LANG']['MSC']['saveNedit'].'</button>';
+                    $template['buttons']['submit'][] = [
+                        'id' => 'saveNedit',
+                        'accessKey' => 'e',
+                        'label' => $GLOBALS['TL_LANG']['MSC']['saveNedit']
+                    ];
 				}
 
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4 || strlen($this->ptable) || $GLOBALS['TL_DCA'][$this->strTable]['config']['switchToEdit'])
 				{
-					$arrButtons['saveNback'] = '<button type="submit" name="saveNback" id="saveNback" class="tl_submit" accesskey="g">'.$GLOBALS['TL_LANG']['MSC']['saveNback'].'</button>';
+                    $template['buttons']['submit'][] = [
+                        'id' => 'saveNback',
+                        'accessKey' => 'g',
+                        'label' => $GLOBALS['TL_LANG']['MSC']['saveNback']
+                    ];
 				}
 			}
 		}
 
-		// Call the buttons_callback (see #4691)
-		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback'] as $callback)
-			{
-				if (is_array($callback))
-				{
-					$this->import($callback[0]);
-					$arrButtons = $this->{$callback[0]}->{$callback[1]}($arrButtons, $this);
-				}
-				elseif (is_callable($callback))
-				{
-					$arrButtons = $callback($arrButtons, $this);
-				}
-			}
-		}
+//		todo: meh, button callbacks (maybe extract buttons in its own template)
 
-		if (count($arrButtons) < 3)
-		{
-			$strButtons = implode(' ', $arrButtons);
-		}
-		else
-		{
-			$strButtons = array_shift($arrButtons) . ' ';
-			$strButtons .= '<div class="split-button">';
-			$strButtons .= array_shift($arrButtons) . '<button type="button" id="sbtog">' . \Image::getHtml('navcol.svg') . '</button> <ul class="invisible">';
-
-			foreach ($arrButtons as $strButton)
-			{
-				$strButtons .= '<li>' . $strButton . '</li>';
-			}
-
-			$strButtons .= '</ul></div>';
-		}
-
-		// Add the buttons and end the form
-		$return .= '
-</div>
-<div class="tl_formbody_submit">
-<div class="tl_submit_container">
-  ' . $strButtons . '
-</div>
-</div>
-</form>';
-
-		$strVersionField = '';
+//		// Call the buttons_callback (see #4691)
+//		if (is_array($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback']))
+//		{
+//			foreach ($GLOBALS['TL_DCA'][$this->strTable]['edit']['buttons_callback'] as $callback)
+//			{
+//				if (is_array($callback))
+//				{
+//					$this->import($callback[0]);
+//					$arrButtons = $this->{$callback[0]}->{$callback[1]}($arrButtons, $this);
+//				}
+//				elseif (is_callable($callback))
+//				{
+//					$arrButtons = $callback($arrButtons, $this);
+//				}
+//			}
+//		}
 
 		// Store the current version number (see #8412)
 		if (($intLatestVersion = $objVersions->getLatestVersion()) !== null)
 		{
-			$strVersionField = '
-<input type="hidden" name="VERSION_NUMBER" value="'.$intLatestVersion.'">';
+			$template['meta']['version'] = $intLatestVersion;
 		}
 
-		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
-		$return = $version . \Message::generate() . ($this->noReload ? '
-<p class="tl_error">'.$GLOBALS['TL_LANG']['ERR']['general'].'</p>' : '') . '
-<div id="tl_buttons">' . (\Input::get('nb') ? '&nbsp;' : '
-<a href="'.$this->getReferer(true).'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>') . '
-</div>
-<form action="'.ampersand(\Environment::get('request'), true).'" id="'.$this->strTable.'" class="tl_form tl_edit_form" method="post" enctype="' . ($this->blnUploadable ? 'multipart/form-data' : 'application/x-www-form-urlencoded') . '"'.(!empty($this->onsubmit) ? ' onsubmit="'.implode(' ', $this->onsubmit).'"' : '').'>
-<div class="tl_formbody_edit">
-<input type="hidden" name="FORM_SUBMIT" value="'.$this->strTable.'">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">'.$strVersionField.'
-<input type="hidden" name="FORM_FIELDS[]" value="'.\StringUtil::specialchars($this->strPalette).'">' . $return;
+		$template['message'] =  \Message::generate();
+		if($this->noReload) {
+		    $template['error'] = $GLOBALS['TL_LANG']['ERR']['general'];
+        }
+
+        // Back button
+        if(!\Input::get('nb')) {
+		    $template['buttons']['back'] =
+            [
+                'href' => $this->getReferer(true),
+                'title' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']),
+                'label' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle'])
+            ];
+        }
+
+        // Form and meta properties
+        $template['form'] = [
+            'action'     => \Environment::get('request'),
+            'id'         => $this->strTable,
+            'noEncoding' => $this->blnUploadable
+        ];
+        if (!empty($this->onsubmit)) {
+            $template['form']['onSubmit'] = implode(' ', $this->onsubmit);
+        }
+		$template['meta'] = [
+          'requestToken' => REQUEST_TOKEN,
+          'fields' => \StringUtil::specialchars($this->strPalette)
+        ];
 
 		// Reload the page to prevent _POST variables from being sent twice
 		if (\Input::post('FORM_SUBMIT') == $this->strTable && !$this->noReload)
@@ -2284,17 +2293,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 
 		// Set the focus if there is an error
-		if ($this->noReload)
-		{
-			$return .= '
-<script>
-  window.addEvent(\'domready\', function() {
-    Backend.vScrollTo(($(\'' . $this->strTable . '\').getElement(\'label.error\').getPosition().y - 20));
-  });
-</script>';
-		}
+        $template['setFocus'] = $this->noReload;
 
-		return $return;
+		// Render form
+        return System::getContainer()
+            ->get('twig')
+            ->render('@ContaoCore/Backend/DC_Table/edit.twig', $template);
 	}
 
 

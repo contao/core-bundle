@@ -1,0 +1,87 @@
+{{ versionDropdown|raw }}
+{{ message|raw }}
+
+{% if error is defined %}
+    <p class="tl_error">{{ error }}</p>
+{% endif %}
+
+<div id="tl_buttons">
+    {% if buttons.back is defined %}
+        <a href="{{ buttons.back.href|e('html_attr') }}" class="header_back" title="{{ buttons.back.title }}"
+           accesskey="b" onclick="Backend.getScrollOffset()">{{ buttons.back.label }}</a>
+    {% else %}
+        &nbsp;
+    {% endif %}
+</div>
+
+<form action="{{ form.action|e('html_attr') }}" id="{{ form.id }}" class="tl_form tl_edit_form" method="post"
+      enctype="{{ form.noEncoding ? 'multipart/form-data' : 'application/x-www-form-urlencoded' }}"
+        {% if form.onSubmit is defined %} onsubmit="{{ form.onSubmit }}"{% endif %}>
+
+    <div class="tl_formbody_edit">
+        <input type="hidden" name="FORM_SUBMIT" value="{{ form.id }}">
+        <input type="hidden" name="REQUEST_TOKEN" value="{{ meta.requestToken }}">
+        {% if meta.version is defined %}
+            <input type="hidden" name="VERSION_NUMBER" value="{{ meta.version }}">
+        {% endif %}
+        <input type="hidden" name="FORM_FIELDS[]" value="{{ meta.fields }}">
+
+        {% for box in boxes %}
+            <fieldset{% if box.key is defined %} id="pal_{{ box.key }}"{% endif %}
+                    class="{{ loop.first ? 'tl_tbox' : 'tl_box' }}{% if box.legend is not defined %} nolegend{% endif %}{% if box.class is defined %} {{ box.class }}{% endif %}">
+                {% if box.legend is defined %}
+                    <legend onclick="AjaxRequest.toggleFieldset(this, '{{ box.key }}', '{{ form.id }}')">{{ box.legend }}</legend>
+                {% endif %}
+
+                {{ box.rows|raw }}
+            </fieldset>
+        {% endfor %}
+    </div>
+
+    <div class="tl_formbody_submit">
+        <div class="tl_submit_container">
+            {% if buttons.submit|length < 3 %}
+                {# all buttons in a row #}
+                {% for button in buttons.submit %}
+                    <button type="submit" id="{{ button.id }}" name="{{ button.id }}" class="tl_submit"
+                            accesskey="{{ button.accessKey }}">{{ button.label }}</button>
+                {% endfor %}
+            {% else %}
+                {# first button + others grouped under second button (split) #}
+                {% set firstButton = buttons.submit[0] %}
+                {% set secondButton = buttons.submit[1] %}
+                {% set remainingButtons = buttons.submit[2:] %}
+                <button type="submit" id="{{ firstButton.id }}" name="{{ firstButton.id }}"
+                        class="tl_submit" accesskey="{{ firstButton.accessKey }}">
+                    {{ firstButton.label }}
+                </button>
+                <div class="split-button">
+                    <button type="submit" id="{{ secondButton.id }}" name="{{ secondButton.id }}"
+                            class="tl_submit" accesskey="{{ secondButton.accessKey }}">
+                        {{ secondButton.label }}
+                    </button>
+                    <button type="button" id="sbtog">
+                        <img src="system/themes/flexible/icons/navcol.svg" alt="" width="10" height="10">
+                    </button>
+                    <ul class="invisible">
+                        <li>
+                            {% for button in remainingButtons %}
+                                <button type="submit" id="{{ button.id }}" name="{{ button.id }}" class="tl_submit"
+                                        accesskey="{{ button.accessKey }}">{{ button.label }}</button>
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</form>
+
+{% if setFocus %}
+    <script>
+        window.addEvent('domready', function () {
+            Backend.vScrollTo(($('{{ form.id }}').getElement('label.error').getPosition().y - 20));
+        });
+    </script>
+{% endif %}

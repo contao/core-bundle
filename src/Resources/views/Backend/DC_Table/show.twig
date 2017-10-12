@@ -1,0 +1,16 @@
+<table class="tl_show">
+    {% for entry in entries %}
+        <tr>
+            {% if entry.value is defined %}
+                <td{{ cycle([' class=tl_bg',''], loop.index) }}>
+                    <span class="tl_label">{{ entry.label }}: </span>
+                </td>
+                <td{{ cycle([' class=tl_bg',''], loop.index) }}>
+                    {{ entry.value }}
+                </td>
+            {% else %}
+                <td colspan="2" style="height:5em"></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
