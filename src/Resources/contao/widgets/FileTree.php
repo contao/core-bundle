@@ -97,9 +97,9 @@ class FileTree extends \Widget
 		}
 
 		// Store the order value
-		if ($this->orderField != '')
+		if ($this->orderField != '' && ($order = \Input::post($this->strOrderName)) !='')
 		{
-			$arrNew = array_map('StringUtil::uuidToBin', explode(',', \Input::post($this->strOrderName)));
+			$arrNew = array_map('StringUtil::uuidToBin', explode(',', $order));
 
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})

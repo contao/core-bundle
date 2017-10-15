@@ -93,9 +93,9 @@ class PageTree extends \Widget
 		}
 
 		// Store the order value
-		if ($this->orderField != '')
+		if ($this->orderField != '' && ($order = \Input::post($this->strOrderName)) !='')
 		{
-			$arrNew = explode(',', \Input::post($this->strOrderName));
+			$arrNew = explode(',', $order);
 
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
