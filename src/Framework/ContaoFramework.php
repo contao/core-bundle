@@ -486,23 +486,18 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     private function buildHookGlobals(): void
     {
         foreach ($this->hookListeners as $hookName => $priorities) {
-            $hooks = [];
+            if (isset($GLOBALS['TL_HOOKS'][$hookName]) && is_array($GLOBALS['TL_HOOKS'][$hookName])) {
+                if (isset($priorities[0])) {
+                    $priorities[0] = array_merge($GLOBALS['TL_HOOKS'][$hookName], $priorities[0]);
+                } else {
+                    $priorities[0] = $GLOBALS['TL_HOOKS'][$hookName];
 
-            foreach ($priorities as $priority => $listeners) {
-                if ($priority <= 0 && isset($GLOBALS['TL_HOOKS'][$hookName])) {
-                    $hooks = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
-                    unset($GLOBALS['TL_HOOKS'][$hookName]);
+                    // Sorting priorities might gets broken by adding a new key.
+                    krsort($priorities);
                 }
-
-                $hooks = array_merge($hooks, $listeners);
             }
 
-            // Add legacy hook if only hook listeners with high priority are defined
-            if (isset($GLOBALS['TL_HOOKS'][$hookName])) {
-                $hooks = array_merge($hooks, $GLOBALS['TL_HOOKS'][$hookName]);
-            }
-
-            $GLOBALS['TL_HOOKS'][$hookName] = $hooks;
+            $GLOBALS['TL_HOOKS'][$hookName] = array_merge(...$priorities);
         }
     }
 }
