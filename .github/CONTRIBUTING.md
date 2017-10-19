@@ -13,7 +13,7 @@ propose changes to this document in a pull request.
 * Include the version of Contao and PHP you are using.
 * Include screenshots if possible; they are immensely helpful.
 * If you are reporting a bug, please include any related error message you are
-  seeing and also check the `system/logs/error.log` file.
+  seeing and also check the `var/logs/prod/error.log` file.
 
 ## Pull requests
 
@@ -29,4 +29,4 @@ propose changes to this document in a pull request.
 * Reference issues and pull requests liberally.
 
 [1]: https://github.com/contao
-[2]: http://demo.contao.org
+[2]: https://demo.contao.org
