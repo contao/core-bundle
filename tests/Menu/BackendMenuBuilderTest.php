@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Tests\Menu;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
@@ -10,41 +20,41 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BackendMenuBuilderTest extends TestCase
 {
-    /** @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject $dispatcher */
+    /**
+     * @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject $dispatcher
+     */
     protected $eventDispatcher;
 
-    /** @var BackendMenuBuilder */
+    /**
+     * @var BackendMenuBuilder
+     */
     protected $builder;
 
-    protected function setUp()
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->builder = new BackendMenuBuilder(new MenuFactory(), $this->eventDispatcher);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenuBuilder', $this->builder);
     }
 
-    /**
-     * Tests if after the creation a KnpMenu node is present and its called root.
-     */
-    public function testCreatesARootNode()
+    public function testCreatesTheRootNode(): void
     {
         $tree = $this->builder->create();
 
         $this->assertInstanceOf('Knp\Menu\ItemInterface', $tree);
-        $this->assertEquals('root', $tree->getName());
+        $this->assertSame('root', $tree->getName());
     }
 
-    /**
-     * Test if within the creation process of the backend menu a BUILD_EVENT is fired.
-     */
-    public function testDispatchesTheMenuEvent()
+    public function testDispatchesTheMenuBuildEvent(): void
     {
         $this->eventDispatcher
             ->expects($this->atLeastOnce())

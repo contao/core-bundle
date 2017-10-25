@@ -65,8 +65,7 @@
   <div id="container" class="cf">
     <?php if (!$this->isPopup): ?>
       <div id="left">
-          <?= $this->menu; ?>
-        </nav>
+        <?= $this->menu; ?>
         <div class="version">
           <?= $this->version ?><br><?= $this->learnMore ?>
         </div>

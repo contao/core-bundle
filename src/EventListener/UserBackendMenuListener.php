@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
@@ -10,17 +20,25 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class UserBackendMenuListener
 {
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
+    /**
+     * @param TokenStorageInterface $tokenStorage
+     */
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
 
     /**
+     * Adds the back end user navigation.
+     *
      * @param MenuEvent $event
      */
-    public function onBuild(MenuEvent $event)
+    public function onBuild(MenuEvent $event): void
     {
         $token = $this->tokenStorage->getToken();
 
@@ -37,7 +55,7 @@ class UserBackendMenuListener
 
             if (!$categoryNode) {
                 $categoryNode = $this->createNode($factory, $categoryName, $categoryData);
-                $categoryNode->setDisplayChildren(strpos($categoryData['class'], 'node-expanded') !== false);
+                $categoryNode->setDisplayChildren(false !== strpos($categoryData['class'], 'node-expanded'));
 
                 $tree->addChild($categoryNode);
             }
@@ -54,19 +72,25 @@ class UserBackendMenuListener
     }
 
     /**
+     * Creates a node.
+     *
      * @param FactoryInterface $factory
-     * @param $name
-     * @param array $attributes
+     * @param string           $name
+     * @param array            $attributes
+     *
      * @return ItemInterface
      */
-    private function createNode(FactoryInterface $factory, $name, array $attributes)
+    private function createNode(FactoryInterface $factory, string $name, array $attributes): ItemInterface
     {
-        return $factory->createItem($name, [
-            'label' => $attributes['label'],
-            'attributes' => [
-                'title' => $attributes['title'],
-                'href' => $attributes['href']
+        return $factory->createItem(
+            $name,
+            [
+                'label' => $attributes['label'],
+                'attributes' => [
+                    'title' => $attributes['title'],
+                    'href' => $attributes['href'],
+                ],
             ]
-        ]);
+        );
     }
 }

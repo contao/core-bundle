@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Tests\Event;
 
 use Contao\CoreBundle\Event\MenuEvent;
@@ -9,30 +19,29 @@ use PHPUnit\Framework\TestCase;
 
 class BackendMenuEventTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
-        /** @var ItemInterface|\PHPUnit_Framework_MockObject_MockObject $node */
-        $node = $this->createMock(ItemInterface::class);
+        $event = new MenuEvent(
+            $this->createMock(FactoryInterface::class),
+            $this->createMock(ItemInterface::class)
+        );
 
-        /** @var FactoryInterface|\PHPUnit_Framework_MockObject_MockObject $factory */
-        $factory = $this->createMock(FactoryInterface::class);
-
-        $event = new MenuEvent($factory, $node);
         $this->assertInstanceOf('Contao\CoreBundle\Event\MenuEvent', $event);
     }
 
-    public function testSupportsReadingNodes()
+    public function testReturnsTheMenuItemFactory(): void
     {
-        /** @var ItemInterface|\PHPUnit_Framework_MockObject_MockObject $node */
-        $node = $this->createMock(ItemInterface::class);
-
-        /** @var FactoryInterface|\PHPUnit_Framework_MockObject_MockObject $factory */
         $factory = $this->createMock(FactoryInterface::class);
+        $event = new MenuEvent($factory, $this->createMock(ItemInterface::class));
 
-        $event = new MenuEvent($factory, $node);
-        $this->assertEquals($node, $event->getTree());
+        $this->assertSame($factory, $event->getFactory());
+    }
+
+    public function testReturnsTheMenuItemTree(): void
+    {
+        $tree = $this->createMock(ItemInterface::class);
+        $event = new MenuEvent($this->createMock(FactoryInterface::class), $tree);
+
+        $this->assertSame($tree, $event->getTree());
     }
 }

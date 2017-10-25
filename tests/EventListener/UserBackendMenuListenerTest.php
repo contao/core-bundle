@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\BackendUser;
@@ -13,20 +23,16 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class UserBackendMenuListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
+    public function testCanBeInstantiated(): void
     {
-        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $listener = new UserBackendMenuListener($this->createMock(TokenStorageInterface::class));
 
-        $listener = new UserBackendMenuListener($tokenStorage);
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\UserBackendMenuListener', $listener);
     }
 
-    public function testConvertsLegacyArrayToNodeList()
+    public function testCreatesANodeListFromTheBackendUserMenuArray(): void
     {
+        /** @var BackendUser|\PHPUnit_Framework_MockObject_MockObject $user */
         $user = $this
             ->getMockBuilder(BackendUser::class)
             ->disableOriginalConstructor()
@@ -52,23 +58,23 @@ class UserBackendMenuListenerTest extends TestCase
                             'label' => 'Node 1',
                             'title' => 'Node 1 Title',
                             'href' => '/node1',
-                            'isActive' => true
+                            'isActive' => true,
                         ],
                         'node2' => [
                             'label' => 'Node 2',
                             'title' => 'Node 2 Title',
                             'href' => '/node2',
-                            'isActive' => false
-                        ]
-                    ]
+                            'isActive' => false,
+                        ],
+                    ],
                 ],
                 'category2' => [
                     'label' => 'Category 2',
                     'title' => 'Category 2 Title',
                     'href' => '/',
                     'class' => 'node-collapsed',
-                    'modules' => []
-                ]
+                    'modules' => [],
+                ],
             ])
         ;
 
@@ -79,7 +85,6 @@ class UserBackendMenuListenerTest extends TestCase
             ->willReturn($user)
         ;
 
-        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $tokenStorage
@@ -88,9 +93,7 @@ class UserBackendMenuListenerTest extends TestCase
         ;
 
         $nodeFactory = new MenuFactory();
-        $rootNode = $nodeFactory->createItem('root');
-
-        $event = new MenuEvent($nodeFactory, $rootNode);
+        $event = new MenuEvent($nodeFactory, $nodeFactory->createItem('root'));
 
         $listener = new UserBackendMenuListener($tokenStorage);
         $listener->onBuild($event);
@@ -99,17 +102,17 @@ class UserBackendMenuListenerTest extends TestCase
 
         // Test root node
         $this->assertInstanceOf(ItemInterface::class, $tree);
-        $this->assertEquals(2, count($tree->getChildren()));
+        $this->assertSame(2, \count($tree->getChildren()));
 
         // Test category node
         $categoryNode = $tree->getChild('category1');
         $this->assertInstanceOf(ItemInterface::class, $categoryNode);
-        $this->assertEquals(2, count($categoryNode->getChildren()));
+        $this->assertSame(2, \count($categoryNode->getChildren()));
 
         // Test module node
         $moduleNode = $categoryNode->getChild('node1');
         $this->assertInstanceOf(ItemInterface::class, $moduleNode);
-        $this->assertEquals(0, count($moduleNode->getChildren()));
+        $this->assertSame(0, \count($moduleNode->getChildren()));
 
         // Test expanded/collapsed
         $this->assertTrue($tree->getChild('category1')->getDisplayChildren());
@@ -120,9 +123,8 @@ class UserBackendMenuListenerTest extends TestCase
         $this->assertFalse($categoryNode->getChild('node2')->isCurrent());
     }
 
-    public function testDoesNotModifyTreeIfNoUserOrTokenIsGiven()
+    public function testDoesNotModifyTheTreeIfNoUserOrTokenIsGiven(): void
     {
-        /** @var TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject $tokenStorage */
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $tokenStorage
@@ -131,15 +133,13 @@ class UserBackendMenuListenerTest extends TestCase
         ;
 
         $nodeFactory = new MenuFactory();
-        $rootNode = $nodeFactory->createItem('root');
-
-        $event = new MenuEvent($nodeFactory, $rootNode);
+        $event = new MenuEvent($nodeFactory, $nodeFactory->createItem('root'));
 
         $listener = new UserBackendMenuListener($tokenStorage);
         $listener->onBuild($event);
 
         $tree = $event->getTree();
 
-        $this->assertEquals(0, count($tree->getChildren()));
+        $this->assertSame(0, \count($tree->getChildren()));
     }
 }

@@ -190,14 +190,6 @@ services:
             - "%contao.error_level%"
         public: true
 
-    contao.menu.matcher:
-        class: Knp\Menu\Matcher\Matcher
-
-    contao.menu.renderer:
-        class: Knp\Menu\Renderer\ListRenderer
-        arguments:
-            - "@contao.menu.matcher"
-
     contao.menu.backend_menu_renderer:
         class: Contao\CoreBundle\Menu\BackendMenuRenderer
         arguments:
@@ -208,6 +200,14 @@ services:
         arguments:
             - "@knp_menu.factory"
             - "@event_dispatcher"
+
+    contao.menu.matcher:
+        class: Knp\Menu\Matcher\Matcher
+
+    contao.menu.renderer:
+        class: Knp\Menu\Renderer\ListRenderer
+        arguments:
+            - "@contao.menu.matcher"
 
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
