@@ -63,13 +63,13 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
         if ($this->isBackendUsername($username)) {
             $this->framework->initialize();
 
-            return BackendUser::getInstance();
+            return \BackendUser::getInstance();
         }
 
         if ($this->isFrontendUsername($username)) {
             $this->framework->initialize();
 
-            return FrontendUser::getInstance();
+            return \FrontendUser::getInstance();
         }
 
         throw new UsernameNotFoundException('Can only load user "frontend" or "backend".');
