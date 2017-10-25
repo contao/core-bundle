@@ -36,20 +36,8 @@ class BackendMenuRendererTest extends TestCase
     {
         parent::setUp();
 
-        $GLOBALS['TL_LANG']['MSC']['skipNavigation'] = 'Skip navigation';
-
         $this->templating = $this->createMock(Environment::class);
         $this->renderer = new BackendMenuRenderer($this->templating);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        unset($GLOBALS['TL_LANG']['MSC']['skipNavigation']);
     }
 
     public function testCanBeInstantiated(): void
@@ -59,23 +47,15 @@ class BackendMenuRendererTest extends TestCase
 
     public function testRendersTheBackendMenuTemplate(): void
     {
-        $node = $this->createMock(ItemInterface::class);
+        $tree = $this->createMock(ItemInterface::class);
 
         $this->templating
             ->expects($this->once())
             ->method('render')
-            ->with(
-                'ContaoCoreBundle:Backend:be_menu.html.twig',
-                [
-                    'tree' => $node,
-                    'lang' => [
-                        'skipNavigation' => $GLOBALS['TL_LANG']['MSC']['skipNavigation'],
-                    ],
-                ]
-            )
-            ->willReturn('<html/>')
+            ->with('ContaoCoreBundle:Backend:be_menu.html.twig', ['tree' => $tree])
+            ->willReturn('')
         ;
 
-        $this->renderer->render($node);
+        $this->renderer->render($tree);
     }
 }

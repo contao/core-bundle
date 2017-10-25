@@ -21,7 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class BackendMenuBuilderTest extends TestCase
 {
     /**
-     * @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject $dispatcher
+     * @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $eventDispatcher;
 

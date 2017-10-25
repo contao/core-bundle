@@ -1,5 +1,6 @@
+{% trans_default_domain 'contao_default' %}
 <nav id="tl_navigation" role="navigation">
-    <a href="#skipNavigation" class="invisible">{{ lang.skipNavigation }}</a>
+    <a href="{{ app.request.requestUri }}#skipNavigation" class="invisible">{{ 'MSC.skipNavigation'|trans }}</a>
 
     <ul class="tl_level_1">
         {% for item in tree %}

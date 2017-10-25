@@ -21,31 +21,21 @@ class BackendMenuRenderer implements RendererInterface
     /**
      * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
-     * @param Environment $templating
+     * @param Environment $twig
      */
-    public function __construct(Environment $templating)
+    public function __construct(Environment $twig)
     {
-        $this->templating = $templating;
+        $this->twig = $twig;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function render(ItemInterface $item, array $options = []): string
+    public function render(ItemInterface $tree, array $options = []): string
     {
-        $lang = [
-            'skipNavigation' => \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['skipNavigation']),
-        ];
-
-        return $this->templating->render(
-            'ContaoCoreBundle:Backend:be_menu.html.twig',
-            [
-                'tree' => $item,
-                'lang' => $lang,
-            ]
-        );
+        return $this->twig->render('ContaoCoreBundle:Backend:be_menu.html.twig', ['tree' => $tree]);
     }
 }
