@@ -1057,7 +1057,7 @@ abstract class Model
 			if (count($arrColumn) == 1)
 			{
 				// Support table prefixes
-				$arrColumn[0] = $result = preg_replace('/^' . preg_quote(static::getTable(), '/') . '\./', '', $arrColumn[0]);
+				$arrColumn[0] = preg_replace('/^' . preg_quote(static::getTable(), '/') . '\./', '', $arrColumn[0]);
 
 				if ($arrColumn[0] == static::$strPk || in_array($arrColumn[0], static::getUniqueFields()))
 				{
