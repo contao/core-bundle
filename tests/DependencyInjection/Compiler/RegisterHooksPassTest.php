@@ -19,40 +19,30 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-/**
- * Tests the RegisterHooksPassTest class.
- *
- * @author David Molineus <https://github.com/dmolineus>
- */
 class RegisterHooksPassTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
-        $pass = new RegisterHooksPass();
-
-        $this->assertInstanceOf(RegisterHooksPass::class, $pass);
+        $this->assertInstanceOf(
+            'Contao\CoreBundle\DependencyInjection\Compiler\RegisterHooksPass',
+            new RegisterHooksPass()
+        );
     }
 
-    /**
-     * Tests the after parameter is given.
-     */
-    public function testSetHookListenersParameter(): void
+    public function testRegistersTheHookListeners(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definition = new Definition('Test\HookListener\AfterListener');
+
         $definition->addTag(
             'contao.hook',
             [
-                'hook'     => 'initializeSystem',
-                'method'   => 'onInitializeSystem',
+                'hook' => 'initializeSystem',
+                'method' => 'onInitializeSystem',
                 'priority' => 0,
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener.after', $definition);
 
         $pass = new RegisterHooksPass();
@@ -61,28 +51,30 @@ class RegisterHooksPassTest extends TestCase
         $argument = $this->assertHookListenersAreRegistered($container);
 
         $this->assertArrayHasKey('initializeSystem', $argument);
+        $this->assertInternalType('array', $argument['initializeSystem']);
         $this->assertArrayHasKey(0, $argument['initializeSystem']);
 
-        $expected = [['test.hook_listener.after', 'onInitializeSystem']];
-        $this->assertTrue($expected === $argument['initializeSystem'][0]);
+        $this->assertSame(
+            [
+                ['test.hook_listener.after', 'onInitializeSystem'],
+            ],
+            $argument['initializeSystem'][0]
+        );
     }
 
-    /**
-     * Tests the after parameter is given.
-     */
-    public function testPriorityIsZeroByDefaultParameter(): void
+    public function testSetsTheDefaultPriorityIfNoPriorityGiven(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definition = new Definition('Test\HookListener\AfterListener');
+
         $definition->addTag(
             'contao.hook',
             [
-                'hook'     => 'initializeSystem',
-                'method'   => 'onInitializeSystem',
+                'hook' => 'initializeSystem',
+                'method' => 'onInitializeSystem',
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener.after', $definition);
 
         $pass = new RegisterHooksPass();
@@ -91,24 +83,25 @@ class RegisterHooksPassTest extends TestCase
         $argument = $this->assertHookListenersAreRegistered($container);
 
         $this->assertArrayHasKey('initializeSystem', $argument);
+        $this->assertInternalType('array', $argument['initializeSystem']);
         $this->assertArrayHasKey(0, $argument['initializeSystem']);
 
-        $expected = [['test.hook_listener.after', 'onInitializeSystem']];
-        $this->assertTrue($expected === $argument['initializeSystem'][0]);
+        $this->assertSame(
+            [
+                ['test.hook_listener.after', 'onInitializeSystem'],
+            ],
+            $argument['initializeSystem'][0]
+        );
     }
 
-    /**
-     * Tests that multiple tags are handled.
-     */
-    public function testMultipleTagsAreHandled(): void
+    public function testHandlesMultipleTags(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definition = new Definition('Test\HookListener');
+
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'initializeSystem',
+                'hook' => 'initializeSystem',
                 'method' => 'onInitializeSystemFirst',
             ]
         );
@@ -116,7 +109,7 @@ class RegisterHooksPassTest extends TestCase
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'generatePage',
+                'hook' => 'generatePage',
                 'method' => 'onGeneratePage',
             ]
         );
@@ -124,7 +117,7 @@ class RegisterHooksPassTest extends TestCase
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'initializeSystem',
+                'hook' => 'initializeSystem',
                 'method' => 'onInitializeSystemSecond',
             ]
         );
@@ -132,11 +125,12 @@ class RegisterHooksPassTest extends TestCase
         $definition->addTag(
             'contao.hook',
             [
-                'hook'   => 'parseTemplate',
+                'hook' => 'parseTemplate',
                 'method' => 'onParseTemplate',
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
 
         $pass = new RegisterHooksPass();
@@ -145,45 +139,49 @@ class RegisterHooksPassTest extends TestCase
         $argument = $this->assertHookListenersAreRegistered($container);
 
         $this->assertArrayHasKey('initializeSystem', $argument);
+        $this->assertInternalType('array', $argument['initializeSystem']);
         $this->assertArrayHasKey(0, $argument['initializeSystem']);
 
         $this->assertArrayHasKey('generatePage', $argument);
+        $this->assertInternalType('array', $argument['generatePage']);
         $this->assertArrayHasKey(0, $argument['generatePage']);
 
-        $expected = [
-            ['test.hook_listener', 'onInitializeSystemFirst'],
-            ['test.hook_listener', 'onInitializeSystemSecond']
-        ];
+        $this->assertSame(
+            [
+                ['test.hook_listener', 'onInitializeSystemFirst'],
+                ['test.hook_listener', 'onInitializeSystemSecond'],
+            ],
+            $argument['initializeSystem'][0]
+        );
 
-        $this->assertTrue($expected === $argument['initializeSystem'][0]);
-
-        $expected = [['test.hook_listener', 'onGeneratePage']];
-        $this->assertTrue($expected === $argument['generatePage'][0]);
+        $this->assertSame(
+            [
+                ['test.hook_listener', 'onGeneratePage'],
+            ],
+            $argument['generatePage'][0]
+        );
     }
 
-    /**
-     * Tests that multiple tags are handled.
-     */
-    public function testMultipleDefinitionsWithPrioritiesAreSorted(): void
+    public function testSortsTheHooksByPriority(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definitionA = new Definition('Test\HookListenerA');
+
         $definitionA->addTag(
             'contao.hook',
             [
-                'hook'     => 'initializeSystem',
-                'method'   => 'onInitializeSystem',
+                'hook' => 'initializeSystem',
+                'method' => 'onInitializeSystem',
                 'priority' => 10,
             ]
         );
 
         $definitionB = new Definition('Test\HookListenerB');
+
         $definitionB->addTag(
             'contao.hook',
             [
-                'hook'     => 'initializeSystem',
-                'method'   => 'onInitializeSystemLow',
+                'hook' => 'initializeSystem',
+                'method' => 'onInitializeSystemLow',
                 'priority' => 10,
             ]
         );
@@ -191,12 +189,13 @@ class RegisterHooksPassTest extends TestCase
         $definitionB->addTag(
             'contao.hook',
             [
-                'hook'     => 'initializeSystem',
-                'method'   => 'onInitializeSystemHigh',
+                'hook' => 'initializeSystem',
+                'method' => 'onInitializeSystemHigh',
                 'priority' => 100,
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener.a', $definitionA);
         $container->setDefinition('test.hook_listener.b', $definitionB);
 
@@ -206,29 +205,26 @@ class RegisterHooksPassTest extends TestCase
         $argument = $this->assertHookListenersAreRegistered($container);
 
         $this->assertArrayHasKey('initializeSystem', $argument);
+        $this->assertInternalType('array', $argument['initializeSystem']);
 
-        $this->assertArrayHasKey(10, $argument['initializeSystem']);
-        $this->assertArrayHasKey(100, $argument['initializeSystem']);
-
-        $expected = [
-            100 => [['test.hook_listener.b', 'onInitializeSystemHigh']],
-            10  => [
-                ['test.hook_listener.a', 'onInitializeSystem'],
-                ['test.hook_listener.b', 'onInitializeSystemLow']
+        $this->assertSame(
+            [
+                100 => [
+                    ['test.hook_listener.b', 'onInitializeSystemHigh'],
+                ],
+                10 => [
+                    ['test.hook_listener.a', 'onInitializeSystem'],
+                    ['test.hook_listener.b', 'onInitializeSystemLow'],
+                ],
             ],
-        ];
-
-        $this->assertTrue($expected === $argument['initializeSystem']);
+            $argument['initializeSystem']
+        );
     }
 
-    /**
-     * Test that exception is thrown for missing hook attribute.
-     */
-    public function testInvalidConfigurationExceptionForMissingHookAttribute(): void
+    public function testFailsIfTheHookAttributeIsMissing(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definition = new Definition('Test\HookListener');
+
         $definition->addTag(
             'contao.hook',
             [
@@ -236,22 +232,20 @@ class RegisterHooksPassTest extends TestCase
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
+
+        $pass = new RegisterHooksPass();
 
         $this->expectException(InvalidConfigurationException::class);
 
-        $pass = new RegisterHooksPass();
         $pass->process($container);
     }
 
-    /**
-     * Test that exception is thrown for missing method attribute.
-     */
-    public function testInvalidConfigurationExceptionForMissingMethodAttribute(): void
+    public function testFailsIfTheMethodAttributeIsMissing(): void
     {
-        $container = $this->createContainerBuilder();
-
         $definition = new Definition('Test\HookListener');
+
         $definition->addTag(
             'contao.hook',
             [
@@ -259,40 +253,42 @@ class RegisterHooksPassTest extends TestCase
             ]
         );
 
+        $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
+
+        $pass = new RegisterHooksPass();
 
         $this->expectException(InvalidConfigurationException::class);
 
-        $pass = new RegisterHooksPass();
         $pass->process($container);
     }
 
     /**
-     * Assert hook listeners are registered and return them as array.
+     * Asserts that the hook listeners are registered and returns them as array.
      *
      * @param ContainerBuilder $container
      *
      * @return array
      */
-    private function assertHookListenersAreRegistered(ContainerBuilder $container)
+    private function assertHookListenersAreRegistered(ContainerBuilder $container): array
     {
         $this->assertTrue($container->hasDefinition('contao.framework'));
 
         $definition = $container->getDefinition('contao.framework');
-        $argument   = $definition->getArgument(6);
+        $argument = $definition->getArgument(6);
 
-        $this->assertTrue(is_array($argument));
-        $this->assertTrue(count($argument) > 0);
+        $this->assertInternalType('array', $argument);
+        $this->assertTrue(\count($argument) > 0);
 
         return $argument;
     }
 
     /**
-     * Create the container builder with a dummy contao.framework definition.
+     * Returns the container builder with a dummy contao.framework definition.
      *
      * @return ContainerBuilder
      */
-    private function createContainerBuilder()
+    private function getContainerBuilder(): ContainerBuilder
     {
         $container = new ContainerBuilder();
         $container->setDefinition('contao.framework', new Definition(ContaoFramework::class, []));

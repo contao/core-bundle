@@ -71,6 +71,11 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     private $errorLevel;
 
     /**
+     * @var array
+     */
+    private $hookListeners = [];
+
+    /**
      * @var Request
      */
     private $request;
@@ -98,11 +103,6 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         'contao_install',
         'contao_install_redirect',
     ];
-
-    /**
-     * @var array
-     */
-    private $hookListeners;
 
     /**
      * @param RequestStack     $requestStack
@@ -312,8 +312,8 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
         // Fully load the configuration
         $config->getInstance();
-        $this->buildHookGlobals();
 
+        $this->registerHooks();
         $this->validateInstallation();
 
         Input::initialize();
@@ -481,18 +481,16 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     }
 
     /**
-     * Build hooks globals.
+     * Registers the hooks in the global hooks array.
      */
-    private function buildHookGlobals(): void
+    private function registerHooks(): void
     {
         foreach ($this->hookListeners as $hookName => $priorities) {
-            if (isset($GLOBALS['TL_HOOKS'][$hookName]) && is_array($GLOBALS['TL_HOOKS'][$hookName])) {
+            if (isset($GLOBALS['TL_HOOKS'][$hookName]) && \is_array($GLOBALS['TL_HOOKS'][$hookName])) {
                 if (isset($priorities[0])) {
                     $priorities[0] = array_merge($GLOBALS['TL_HOOKS'][$hookName], $priorities[0]);
                 } else {
                     $priorities[0] = $GLOBALS['TL_HOOKS'][$hookName];
-
-                    // Sorting priorities might gets broken by adding a new key.
                     krsort($priorities);
                 }
             }

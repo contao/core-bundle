@@ -16,40 +16,34 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * Find hook services and store them in an parameter.
- *
- * @author David Molineus <https://github.com/dmolineus>
- */
 class RegisterHooksPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('contao.framework')) {
             return;
         }
 
         $serviceIds = $container->findTaggedServiceIds('contao.hook');
-        $hooks      = [];
+        $hooks = [];
 
         foreach ($serviceIds as $serviceId => $tags) {
             foreach ($tags as $attributes) {
-                $this->guardRequiredAttributesExist($serviceId, $attributes);
+                $this->checkRequiredAttributes($serviceId, $attributes);
 
                 $priority = (int) ($attributes['priority'] ?? 0);
-                $hook     = $attributes['hook'];
+                $hook = $attributes['hook'];
 
                 $hooks[$hook][$priority][] = [$serviceId, $attributes['method']];
             }
         }
 
-        if (count($hooks) > 0) {
-            // Apply priority sorting.
+        if (\count($hooks) > 0) {
             foreach (array_keys($hooks) as $hook) {
-                krsort($hooks[$hook]);
+                krsort($hooks[$hook]); // order by priority
             }
 
             $definition = $container->getDefinition('contao.framework');
@@ -58,14 +52,14 @@ class RegisterHooksPass implements CompilerPassInterface
     }
 
     /**
-     * Guard that required attributes (hook and method) are defined.
+     * Checks that required attributes (hook and method) are set.
      *
-     * @param string $serviceId  Service id.
-     * @param array  $attributes Tag attributes.
+     * @param string $serviceId
+     * @param array  $attributes
      *
-     * @throws InvalidConfigurationException When an attribute is missing.
+     * @throws InvalidConfigurationException
      */
-    private function guardRequiredAttributesExist(string $serviceId, array $attributes): void
+    private function checkRequiredAttributes(string $serviceId, array $attributes): void
     {
         if (!isset($attributes['hook'])) {
             throw new InvalidConfigurationException(

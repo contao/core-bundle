@@ -578,10 +578,7 @@ class ContaoFrameworkTest extends TestCase
         $this->assertSame($class, $prop->getValue($adapter));
     }
 
-    /**
-     * Tests that the hook_listeners are applied.
-     */
-    public function testHookServicesAreRegistered(): void
+    public function testRegistersTheHookServices(): void
     {
         $request = new Request();
         $request->attributes->set('_route', 'dummy');
@@ -596,33 +593,45 @@ class ContaoFrameworkTest extends TestCase
 
         $GLOBALS['TL_HOOKS'] = [
             'getPageLayout' => [
-                ['test.listener.c', 'onGetPageLayout']
+                ['test.listener.c', 'onGetPageLayout'],
             ],
             'generatePage' => [
-                ['test.listener.c', 'onGeneratePage']
+                ['test.listener.c', 'onGeneratePage'],
             ],
             'parseTemplate' => [
-                ['test.listener.c', 'onParseTemplate']
+                ['test.listener.c', 'onParseTemplate'],
             ],
             'isVisibleElement' => [
-                ['test.listener.c', 'onIsVisibleElement']
+                ['test.listener.c', 'onIsVisibleElement'],
             ],
         ];
 
         $listeners = [
             'getPageLayout' => [
-                10 => [['test.listener.a', 'onGetPageLayout']],
-                0  => [['test.listener.b', 'onGetPageLayout']],
+                10 => [
+                    ['test.listener.a', 'onGetPageLayout'],
+                ],
+                0 => [
+                    ['test.listener.b', 'onGetPageLayout'],
+                ],
             ],
-            'generatePage'  => [
-                0 => [['test.listener.b', 'onGeneratePage']],
-                -10 => [['test.listener.a', 'onGeneratePage']],
+            'generatePage' => [
+                0 => [
+                    ['test.listener.b', 'onGeneratePage'],
+                ],
+                -10 => [
+                    ['test.listener.a', 'onGeneratePage'],
+                ],
             ],
             'parseTemplate' => [
-                10 => [['test.listener.a', 'onParseTemplate']]
+                10 => [
+                    ['test.listener.a', 'onParseTemplate'],
+                ],
             ],
             'isVisibleElement' => [
-                -10 => [['test.listener.a', 'onIsVisibleElement']]
+                -10 => [
+                    ['test.listener.a', 'onIsVisibleElement'],
+                ],
             ],
         ];
 
@@ -638,7 +647,7 @@ class ContaoFrameworkTest extends TestCase
 
         if ($framework->isInitialized()) {
             $reflection = new \ReflectionObject($framework);
-            $reflectionMethod = $reflection->getMethod('buildHookGlobals');
+            $reflectionMethod = $reflection->getMethod('registerHooks');
             $reflectionMethod->setAccessible(true);
             $reflectionMethod->invoke($framework);
         } else {
@@ -653,37 +662,41 @@ class ContaoFrameworkTest extends TestCase
 
         // Test hooks with high priority are added before low and legacy hooks
         // Test legacy hooks are added before hooks with priority 0
-        $expected = [
-            ['test.listener.a', 'onGetPageLayout'],
-            ['test.listener.c', 'onGetPageLayout'],
-            ['test.listener.b', 'onGetPageLayout']
-        ];
-
-        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['getPageLayout']);
+        $this->assertSame(
+            [
+                ['test.listener.a', 'onGetPageLayout'],
+                ['test.listener.c', 'onGetPageLayout'],
+                ['test.listener.b', 'onGetPageLayout'],
+            ],
+            $GLOBALS['TL_HOOKS']['getPageLayout']
+        );
 
         // Test hooks with negative priority are added at the end
-        $expected = [
-            ['test.listener.c', 'onGeneratePage'],
-            ['test.listener.b', 'onGeneratePage'],
-            ['test.listener.a', 'onGeneratePage']
-        ];
-
-        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['generatePage']);
+        $this->assertSame(
+            [
+                ['test.listener.c', 'onGeneratePage'],
+                ['test.listener.b', 'onGeneratePage'],
+                ['test.listener.a', 'onGeneratePage'],
+            ],
+            $GLOBALS['TL_HOOKS']['generatePage']
+        );
 
         // Test legacy hooks are kept when adding only hook listeners with high priority.
-        $expected = [
-            ['test.listener.a', 'onParseTemplate'],
-            ['test.listener.c', 'onParseTemplate'],
-        ];
-
-        $this->assertTrue($expected === $GLOBALS['TL_HOOKS']['parseTemplate']);
+        $this->assertSame(
+            [
+                ['test.listener.a', 'onParseTemplate'],
+                ['test.listener.c', 'onParseTemplate'],
+            ],
+            $GLOBALS['TL_HOOKS']['parseTemplate']
+        );
 
         // Test legacy hooks are kept when adding only hook listeners with low priority.
-        $expected = [
-            ['test.listener.c', 'onIsVisibleElement'],
-            ['test.listener.a', 'onIsVisibleElement'],
-        ];
-
-        $this->assertTrue($expected ===  $GLOBALS['TL_HOOKS']['isVisibleElement']);
+        $this->assertSame(
+            [
+                ['test.listener.c', 'onIsVisibleElement'],
+                ['test.listener.a', 'onIsVisibleElement'],
+            ],
+            $GLOBALS['TL_HOOKS']['isVisibleElement']
+        );
     }
 }
