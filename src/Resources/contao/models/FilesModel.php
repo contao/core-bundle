@@ -175,6 +175,14 @@ class FilesModel extends \Model
 			$strUuid = \StringUtil::uuidToBin($strUuid);
 		}
 
+		// Check in model registry (does not work by default due to UNHEX())
+		$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $strUuid, 'uuid');
+
+		if ($objModel !== null)
+		{
+			return $objModel;
+		}
+
 		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);
 	}
 
