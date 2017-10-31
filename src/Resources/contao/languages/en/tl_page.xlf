@@ -102,7 +102,7 @@
         <source>Valid alias characters</source>
       </trans-unit>
       <trans-unit id="tl_page.validAliasCharacters.1">
-        <source>Please choose the character for auto-generating page aliases.</source>
+        <source>Please choose the characters for auto-generating page aliases.</source>
       </trans-unit>
       <trans-unit id="tl_page.createSitemap.0">
         <source>Create an XML sitemap</source>

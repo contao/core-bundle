@@ -19,6 +19,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ValidCharacters
 {
+    private const DEFAULT_OPTIONS = [
+        '\pN\p{Ll}' => 'unicodeLowercase',
+        '\pN\pL' => 'unicode',
+        '0-9a-z' => 'asciiLowercase',
+        '0-9a-zA-Z' => 'ascii',
+    ];
+
     /**
      * @var EventDispatcherInterface
      */
@@ -28,16 +35,6 @@ class ValidCharacters
      * @var TranslatorInterface
      */
     private $translator;
-
-    /**
-     * @var string[]
-     */
-    private $defaultOptions = [
-        '\pN\p{Ll}' => 'unicodeLowercase',
-        '\pN\pL' => 'unicode',
-        '0-9a-z' => 'asciiLowercase',
-        '0-9a-zA-Z' => 'ascii',
-    ];
 
     /**
      * @param EventDispatcherInterface $eventDispatcher
@@ -58,7 +55,7 @@ class ValidCharacters
     {
         $options = [];
 
-        foreach ($this->defaultOptions as $option => $label) {
+        foreach (self::DEFAULT_OPTIONS as $option => $label) {
             $options[$option] = $this->translator->trans('MSC.validCharacters.'.$label, [], 'contao_default');
         }
 

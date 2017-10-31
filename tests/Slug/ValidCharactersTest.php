@@ -57,31 +57,8 @@ class ValidCharactersTest extends TestCase
         $translator = $this->createMock(TranslatorInterface::class);
 
         $translator
-            ->expects($this->at(0))
+            ->expects($this->atLeastOnce())
             ->method('trans')
-            ->with('MSC.validCharacters.unicodeLowercase')
-            ->willReturn('Unicode numbers and lowercase letters')
-        ;
-
-        $translator
-            ->expects($this->at(1))
-            ->method('trans')
-            ->with('MSC.validCharacters.unicode')
-            ->willReturn('Unicode numbers and letters')
-        ;
-
-        $translator
-            ->expects($this->at(2))
-            ->method('trans')
-            ->with('MSC.validCharacters.asciiLowercase')
-            ->willReturn('ASCII numbers and lowercase letters')
-        ;
-
-        $translator
-            ->expects($this->at(3))
-            ->method('trans')
-            ->with('MSC.validCharacters.ascii')
-            ->willReturn('ASCII numbers and letters')
         ;
 
         $validCharacters = new ValidCharacters($eventDispatcher, $translator);

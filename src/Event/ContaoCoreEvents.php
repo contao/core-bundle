@@ -60,7 +60,7 @@ final class ContaoCoreEvents
     public const BACKEND_MENU_BUILD = 'contao.backend_menu_build';
 
     /**
-     * The contao.slug_valid_characters event is triggered when the valid slug characters option is generated.
+     * The contao.slug_valid_characters event is triggered when the valid slug characters options are generated.
      *
      * @var string
      *
