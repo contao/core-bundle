@@ -16,6 +16,16 @@ services:
             # The priority must be higher than the one of the request attribute value resolver (defaults to 100)
             - { name: controller.argument_value_resolver, priority: 101 }
 
+    contao.assets.assets_context:
+        class: Contao\CoreBundle\Asset\ContaoContext
+        arguments:
+            - 'TL_ASSETS_URL'
+
+    contao.assets.files_context:
+        class: Contao\CoreBundle\Asset\ContaoContext
+        arguments:
+            - 'TL_FILES_URL'
+
     contao.cache:
         class: Doctrine\Common\Cache\FilesystemCache
         arguments:
