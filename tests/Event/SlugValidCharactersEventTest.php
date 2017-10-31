@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,27 +15,16 @@ namespace Contao\CoreBundle\Tests\Event;
 use Contao\CoreBundle\Event\SlugValidCharactersEvent;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the SlugValidCharactersEvent class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class SlugValidCharactersEventTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $event = new SlugValidCharactersEvent([]);
 
         $this->assertInstanceOf('Contao\CoreBundle\Event\SlugValidCharactersEvent', $event);
     }
 
-    /**
-     * Tests the options setter and getter.
-     */
-    public function testOptionsSetterGetter()
+    public function testReadsAndWritesTheOptions(): void
     {
         $event = new SlugValidCharactersEvent(['a-z' => 'ASCII']);
 

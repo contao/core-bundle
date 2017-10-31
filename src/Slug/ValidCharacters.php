@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,11 +16,6 @@ use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SlugValidCharactersEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * Defines the options valid service.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ValidCharacters
 {
     /**
@@ -37,8 +34,6 @@ class ValidCharacters
     private $eventDispatcher;
 
     /**
-     * Constructor.
-     *
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(EventDispatcherInterface $eventDispatcher)
@@ -51,7 +46,7 @@ class ValidCharacters
      *
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         $options = [];
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,9 +14,6 @@ namespace Contao\CoreBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-/**
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class SlugValidCharactersEvent extends Event
 {
     /**
@@ -23,8 +22,6 @@ class SlugValidCharactersEvent extends Event
     private $options;
 
     /**
-     * Constructor.
-     *
      * @param array $options
      */
     public function __construct(array $options)
@@ -37,7 +34,7 @@ class SlugValidCharactersEvent extends Event
      *
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -47,7 +44,7 @@ class SlugValidCharactersEvent extends Event
      *
      * @param array $options
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }

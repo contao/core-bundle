@@ -1039,8 +1039,8 @@ class tl_page extends Backend
 		// Generate an alias if there is none
 		if ($varValue == '')
 		{
-			$objPage = PageModel::findWithDetails($dc->activeRecord->id);
 			$autoAlias = true;
+			$objPage = PageModel::findWithDetails($dc->activeRecord->id);
 			$slugOptions = ['locale' => $objPage->language];
 
 			if ($objPage->validAliasCharacters)
@@ -1051,12 +1051,9 @@ class tl_page extends Backend
 			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::stripInsertTags($dc->activeRecord->title), $slugOptions);
 
 			// Generate folder URL aliases (see #4933)
-			if (Config::get('folderUrl'))
+			if (Config::get('folderUrl') && $objPage->folderUrl != '')
 			{
-				if ($objPage->folderUrl != '')
-				{
-					$varValue = $objPage->folderUrl . $varValue;
-				}
+				$varValue = $objPage->folderUrl . $varValue;
 			}
 		}
 

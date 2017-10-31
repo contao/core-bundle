@@ -344,6 +344,16 @@ services:
         calls:
             - ["setName", ["contao_frontend"]]
 
+    contao.slug.generator:
+        class: Ausi\SlugGenerator\SlugGenerator
+        arguments:
+            - { validChars: "\\pN\\p{Ll}" }
+
+    contao.slug.valid_characters:
+        class: Contao\CoreBundle\Slug\ValidCharacters
+        arguments:
+            - "@event_dispatcher"
+
     contao.csrf.token_manager:
         class: Symfony\Component\Security\Csrf\CsrfTokenManager
         arguments:
@@ -369,13 +379,3 @@ services:
             - "@contao.routing.scope_matcher"
         tags:
             - { name: twig.extension }
-
-    contao.slug.generator:
-        class: Ausi\SlugGenerator\SlugGenerator
-        arguments:
-            - { validChars: "\\pN\\p{Ll}" }
-
-    contao.slug.valid_characters:
-        class: Contao\CoreBundle\Slug\ValidCharacters
-        arguments:
-            - "@event_dispatcher"
