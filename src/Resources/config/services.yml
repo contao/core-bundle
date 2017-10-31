@@ -353,6 +353,7 @@ services:
         class: Contao\CoreBundle\Slug\ValidCharacters
         arguments:
             - "@event_dispatcher"
+            - "@translator"
 
     contao.csrf.token_manager:
         class: Symfony\Component\Security\Csrf\CsrfTokenManager

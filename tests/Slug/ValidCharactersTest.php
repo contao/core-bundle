@@ -17,14 +17,18 @@ use Contao\CoreBundle\Event\SlugValidCharactersEvent;
 use Contao\CoreBundle\Slug\ValidCharacters;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ValidCharactersTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $validCharacters = new ValidCharacters(
+            $this->createMock(EventDispatcherInterface::class),
+            $this->createMock(TranslatorInterface::class)
+        );
 
-        $this->assertInstanceOf('Contao\CoreBundle\Slug\ValidCharacters', new ValidCharacters($eventDispatcher));
+        $this->assertInstanceOf('Contao\CoreBundle\Slug\ValidCharacters', $validCharacters);
     }
 
     public function testReadsTheOptionsFromTheDispatchedEvent(): void
@@ -50,15 +54,37 @@ class ValidCharactersTest extends TestCase
             )
         ;
 
-        $validCharacters = new ValidCharacters($eventDispatcher);
+        $translator = $this->createMock(TranslatorInterface::class);
 
-        $GLOBALS['TL_LANG']['MSC']['validCharacters'] = [
-            'unicodeLowercase' => 'unicodeLowercase',
-            'unicode' => 'unicode',
-            'asciiLowercase' => 'asciiLowercase',
-            'ascii' => 'ascii',
-        ];
+        $translator
+            ->expects($this->at(0))
+            ->method('trans')
+            ->with('MSC.validCharacters.unicodeLowercase')
+            ->willReturn('Unicode numbers and lowercase letters')
+        ;
 
+        $translator
+            ->expects($this->at(1))
+            ->method('trans')
+            ->with('MSC.validCharacters.unicode')
+            ->willReturn('Unicode numbers and letters')
+        ;
+
+        $translator
+            ->expects($this->at(2))
+            ->method('trans')
+            ->with('MSC.validCharacters.asciiLowercase')
+            ->willReturn('ASCII numbers and lowercase letters')
+        ;
+
+        $translator
+            ->expects($this->at(3))
+            ->method('trans')
+            ->with('MSC.validCharacters.ascii')
+            ->willReturn('ASCII numbers and letters')
+        ;
+
+        $validCharacters = new ValidCharacters($eventDispatcher, $translator);
         $options = $validCharacters->getOptions();
 
         $this->assertInternalType('array', $options);
@@ -66,7 +92,5 @@ class ValidCharactersTest extends TestCase
         $this->assertArrayHasKey('\pN\pL', $options);
         $this->assertArrayHasKey('0-9a-z', $options);
         $this->assertArrayHasKey('0-9a-zA-Z', $options);
-
-        unset($GLOBALS['TL_LANG']['MSC']['validCharacters']);
     }
 }

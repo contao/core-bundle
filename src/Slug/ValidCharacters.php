@@ -15,9 +15,20 @@ namespace Contao\CoreBundle\Slug;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SlugValidCharactersEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ValidCharacters
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     /**
      * @var string[]
      */
@@ -29,16 +40,13 @@ class ValidCharacters
     ];
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * @param EventDispatcherInterface $eventDispatcher
+     * @param TranslatorInterface      $translator
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, TranslatorInterface $translator)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->translator = $translator;
     }
 
     /**
@@ -51,7 +59,7 @@ class ValidCharacters
         $options = [];
 
         foreach ($this->defaultOptions as $option => $label) {
-            $options[$option] = $GLOBALS['TL_LANG']['MSC']['validCharacters'][$label];
+            $options[$option] = $this->translator->trans('MSC.validCharacters.'.$label, [], 'contao_default');
         }
 
         $event = new SlugValidCharactersEvent($options);
