@@ -35,6 +35,7 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
 use Terminal42\HeaderReplay\HeaderReplayBundle;
+use Terminal42\AssetBundle\Terminal42AssetBundle;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
@@ -65,6 +66,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
                         NelmioSecurityBundle::class,
                         SensioFrameworkExtraBundle::class,
                         HeaderReplayBundle::class,
+                        Terminal42AssetBundle::class,
                         ContaoManagerBundle::class,
                     ]
                 ),
