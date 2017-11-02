@@ -335,16 +335,16 @@ class Ajax extends \Backend
 				$varValue = \Input::post('value', true);
 
 				switch ($this->strAction) {
-                    case 'reloadPagetree':
-                        $strKey = 'reloadPagetree';
-                        break;
-                    case 'reloadFiletree':
-                        $strKey = 'fileTree';
-                        break;
-                    default:
-                        $strKey = 'picker';
-                        break;
-                }
+					case 'reloadPagetree':
+						$strKey = 'reloadPagetree';
+						break;
+					case 'reloadFiletree':
+						$strKey = 'fileTree';
+						break;
+					default:
+						$strKey = 'picker';
+						break;
+				}
 
 				// Convert the selected values
 				if ($varValue != '')

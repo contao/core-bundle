@@ -122,43 +122,43 @@ class PickerWidget extends \Widget
 	}
 
 
-    /**
-     * Generate the record label
-     *
-     * @param array $data
-     *
-     * @return string
-     */
-    protected function generateRecordLabel(array $data)
-    {
-        // Label callback
-        if (is_array($this->label_callback))
-        {
-            $callback = $this->label_callback;
+	/**
+	 * Generate the record label
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	protected function generateRecordLabel(array $data)
+	{
+		// Label callback
+		if (is_array($this->label_callback))
+		{
+			$callback = $this->label_callback;
 
-            $label = static::importStatic($callback[0])->{$callback[1]}($data, $this->objDca);
-        }
-        elseif (is_callable($callback = $this->label_callback))
-        {
-            $label = $callback($data, $this->objDca);
-        }
-        elseif ($this->labelField)
-        {
-            // Label field
-            $label = $data[$this->labelField];
-        }
-        else
-        {
-            $label = $data['id'];
-        }
+			$label = static::importStatic($callback[0])->{$callback[1]}($data, $this->objDca);
+		}
+		elseif (is_callable($callback = $this->label_callback))
+		{
+			$label = $callback($data, $this->objDca);
+		}
+		elseif ($this->labelField)
+		{
+			// Label field
+			$label = $data[$this->labelField];
+		}
+		else
+		{
+			$label = $data['id'];
+		}
 
-        // Add the icon
-        if ($this->icon)
-        {
-            $label = sprintf('%s %s', \Image::getHtml($this->icon, '', 'style="vertical-align:middle;"'), $label);
-        }
+		// Add the icon
+		if ($this->icon)
+		{
+			$label = sprintf('%s %s', \Image::getHtml($this->icon, '', 'style="vertical-align:middle;"'), $label);
+		}
 
-        return $label;
+		return $label;
 	}
 
 
@@ -171,19 +171,19 @@ class PickerWidget extends \Widget
 	{
 		$arrValues = array();
 
-        // Generate the records
+		// Generate the records
 		if (!empty($this->varValue)) // Can be an array
 		{
-		    $ids = array_map('intval', (array) $this->varValue);
-		    $records = $this->Database->execute("SELECT * FROM {$this->foreignTable} WHERE id IN (" . implode(',', $ids) . ")" . ($this->sortable ? (" ORDER BY " . $this->Database->findInSet('id', $ids)) : ""));
+			$ids = array_map('intval', (array) $this->varValue);
+			$records = $this->Database->execute("SELECT * FROM {$this->foreignTable} WHERE id IN (" . implode(',', $ids) . ")" . ($this->sortable ? (" ORDER BY " . $this->Database->findInSet('id', $ids)) : ""));
 
-		    while ($records->next())
-            {
-		        $arrValues[$records->id] = $this->generateRecordLabel($records->row());
-            }
+			while ($records->next())
+			{
+				$arrValues[$records->id] = $this->generateRecordLabel($records->row());
+			}
 		}
 
-        $return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', array_keys($arrValues)).'">
+		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', array_keys($arrValues)).'">
   <div class="selector_container">' . (($this->sortable && count($arrValues) > 1) ? '
     <p class="sort_hint">' . $GLOBALS['TL_LANG']['MSC']['dragItemsHint'] . '</p>' : '') . '
     <ul id="sort_'.$this->strId.'" class="'.($this->sortable ? 'sortable' : '').'">';
