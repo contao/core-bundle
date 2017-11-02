@@ -34,11 +34,7 @@
 
       <?php $this->block('header'); ?>
         <?php if ($this->header): ?>
-          <header id="header" itemscope itemtype="http://schema.org/WPHeader">
-            <div class="inside">
-              <?= $this->header ?>
-            </div>
-          </header>
+          <?php $this->insert('block_section', array('id'=>'header', 'tag'=>'header', 'content'=>$this->header, 'attributes'=>' itemscope itemtype="http://schema.org/WPHeader"')); ?>
         <?php endif; ?>
       <?php $this->endblock(); ?>
 
@@ -48,31 +44,19 @@
         <div id="container">
 
           <?php $this->block('main'); ?>
-            <main id="main" itemscope itemtype="http://schema.org/WebPageElement" itemprop="mainContentOfPage">
-              <div class="inside">
-                <?= $this->main ?>
-              </div>
-              <?php $this->sections('main'); ?>
-            </main>
+            <?php ob_start(); $this->sections('main'); $main = ob_get_clean(); ?>
+            <?php $this->insert('block_section', array('id'=>'main', 'tag'=>'main', 'content'=>$this->main, 'attributes'=>' itemscope itemtype="http://schema.org/WebPageElement" itemprop="mainContentOfPage"', 'custom'=>$main)); ?>
           <?php $this->endblock(); ?>
 
           <?php $this->block('left'); ?>
             <?php if ($this->left): ?>
-              <aside id="left">
-                <div class="inside">
-                  <?= $this->left ?>
-                </div>
-              </aside>
+              <?php $this->insert('block_section', array('id'=>'left', 'tag'=>'aside', 'content'=>$this->left)); ?>
             <?php endif; ?>
           <?php $this->endblock(); ?>
 
           <?php $this->block('right'); ?>
             <?php if ($this->right): ?>
-              <aside id="right">
-                <div class="inside">
-                  <?= $this->right ?>
-                </div>
-              </aside>
+              <?php $this->insert('block_section', array('id'=>'right', 'tag'=>'aside', 'content'=>$this->right)); ?>
             <?php endif; ?>
           <?php $this->endblock(); ?>
 
@@ -83,11 +67,7 @@
 
       <?php $this->block('footer'); ?>
         <?php if ($this->footer): ?>
-          <footer id="footer" itemscope itemtype="http://schema.org/WPFooter">
-            <div class="inside">
-              <?= $this->footer ?>
-            </div>
-          </footer>
+          <?php $this->insert('block_section', array('id'=>'footer', 'tag'=>'footer', 'content'=>$this->footer, 'attributes'=>' itemscope itemtype="http://schema.org/WPFooter"')); ?>
         <?php endif; ?>
       <?php $this->endblock(); ?>
 

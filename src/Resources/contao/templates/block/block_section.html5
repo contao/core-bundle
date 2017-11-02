@@ -1,6 +1,7 @@
 
-<div id="<?= StringUtil::standardize($this->id, true) ?>">
+<<?= $this->tag ?: 'div' ?> id="<?= StringUtil::standardize($this->id, true) ?>"<?= $this->attributes ?>>
   <div class="inside">
     <?= $this->content ?>
   </div>
-</div>
+  <?= $this->custom ?>
+</<?= $this->tag ?: 'div' ?>>
