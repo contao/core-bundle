@@ -74,7 +74,7 @@ class InstallCommandTest extends TestCase
 
     public function testCreatesTheContaoFolders(): void
     {
-        $container = $this->mockContainer($this->getFixturesDir());
+        $container = $this->mockContainer($this->getTempDir());
         $container->set('filesystem', new Filesystem());
 
         $command = new InstallCommand('contao:install');
