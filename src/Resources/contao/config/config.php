@@ -228,7 +228,8 @@ $GLOBALS['BE_FFL'] = array
 	'imageSize'      => 'ImageSize',
 	'timePeriod'     => 'TimePeriod',
 	'metaWizard'     => 'MetaWizard',
-	'sectionWizard'  => 'SectionWizard'
+	'sectionWizard'  => 'SectionWizard',
+	'picker'         => 'PickerWidget'
 );
 
 

@@ -264,9 +264,10 @@ class Ajax extends \Backend
 
 				throw new ResponseException($this->convertToResponse($objWidget->generate()));
 
-			// Reload the page/file picker
+			// Reload the page/file/universal picker
 			case 'reloadPagetree':
 			case 'reloadFiletree':
+			case 'reloadPicker':
 				$intId = \Input::get('id');
 				$strField = $dc->inputName = \Input::post('name');
 
@@ -332,7 +333,18 @@ class Ajax extends \Backend
 
 				// Set the new value
 				$varValue = \Input::post('value', true);
-				$strKey = ($this->strAction == 'reloadPagetree') ? 'pageTree' : 'fileTree';
+
+				switch ($this->strAction) {
+                    case 'reloadPagetree':
+                        $strKey = 'reloadPagetree';
+                        break;
+                    case 'reloadFiletree':
+                        $strKey = 'fileTree';
+                        break;
+                    default:
+                        $strKey = 'picker';
+                        break;
+                }
 
 				// Convert the selected values
 				if ($varValue != '')
@@ -363,10 +375,10 @@ class Ajax extends \Backend
 					$varValue = serialize($varValue);
 				}
 
-				/** @var FileTree|PageTree $strClass */
+				/** @var FileTree|PageTree|PickerWidget $strClass */
 				$strClass = $GLOBALS['BE_FFL'][$strKey];
 
-				/** @var FileTree|PageTree $objWidget */
+				/** @var FileTree|PageTree|PickerWidget $objWidget */
 				$objWidget = new $strClass($strClass::getAttributesFromDca($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField], $dc->inputName, $varValue, $strField, $dc->table, $dc));
 
 				throw new ResponseException($this->convertToResponse($objWidget->generate()));

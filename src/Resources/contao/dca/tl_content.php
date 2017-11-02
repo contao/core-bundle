@@ -716,9 +716,28 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['articleAlias'],
 			'exclude'                 => true,
-			'inputType'               => 'select',
-			'options_callback'        => array('tl_content', 'getArticleAlias'),
-			'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
+			'inputType'               => 'picker',
+			//'options_callback'        => array('tl_content', 'getArticleAlias'),
+			'eval'                    => array(
+                'mandatory'    => true,
+                'tl_class'     => 'clr',
+
+                'foreignTable' => 'tl_article', // Foreign table for widget record fetching. @todo get from picker somehow?
+                'context'      => 'article', // Context for picker
+                'labelField'   => 'title', // Field for the label
+                'fieldType'    => 'radio', // Field type
+                'icon'         => 'article.svg', // Optional icon
+
+                // Custom record label callback (icon is added anyway)
+                'label_callback' => function (array $row) {
+                    return $row['title'] . ' (ID: ' . $row['id'] . ')';
+                },
+
+                // Multiple sortable selection
+//                'fieldType'    => 'checkbox',
+//                'sortable'     => true,
+            ),
+			// @todo – how to handle wizard?
 			'wizard' => array
 			(
 				array('tl_content', 'editArticleAlias')

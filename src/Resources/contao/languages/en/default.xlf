@@ -170,6 +170,9 @@
       <trans-unit id="ERR.invalidPages">
         <source>Your selection contains invalid page IDs!</source>
       </trans-unit>
+      <trans-unit id="ERR.invalidRecords">
+        <source>Your selection contains invalid record IDs!</source>
+      </trans-unit>
       <trans-unit id="ERR.circularReference">
         <source>Invalid redirect target (circular reference)!</source>
       </trans-unit>

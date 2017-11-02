@@ -27,7 +27,7 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
      */
     public function supportsContext($context): bool
     {
-        return 'link' === $context && $this->getUser()->hasAccess('article', 'modules');
+        return in_array($context, ['article', 'link'], true) && $this->getUser()->hasAccess('article', 'modules');
     }
 
     /**
@@ -35,6 +35,10 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
      */
     public function supportsValue(PickerConfig $config): bool
     {
+        if ('article' === $config->getContext()) {
+            return is_numeric($config->getValue());
+        }
+
         return false !== strpos($config->getValue(), '{{article_url::');
     }
 
@@ -51,10 +55,29 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
      */
     public function getDcaAttributes(PickerConfig $config): array
     {
+        $value = $config->getValue();
         $attributes = ['fieldType' => 'radio'];
 
-        if ($this->supportsValue($config)) {
-            $attributes['value'] = str_replace(['{{article_url::', '}}'], '', $config->getValue());
+        if ('article' === $config->getContext()) {
+            $attributes = ['fieldType' => $config->getExtra('fieldType')];
+
+            if ($fieldType = $config->getExtra('fieldType')) {
+                $attributes['fieldType'] = $fieldType;
+            }
+
+            if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
+                $attributes['rootNodes'] = $rootNodes;
+            }
+
+            if ($value) {
+                $attributes['value'] = array_map('intval', explode(',', $value));
+            }
+
+            return $attributes;
+        }
+
+        if ($value && false !== strpos($value, '{{article_url::')) {
+            $attributes['value'] = str_replace(['{{article_url::', '}}'], '', $value);
         }
 
         return $attributes;
@@ -65,6 +88,10 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
      */
     public function convertDcaValue(PickerConfig $config, $value): string
     {
+        if ('article' === $config->getContext()) {
+            return (string) $value;
+        }
+
         return '{{article_url::'.$value.'}}';
     }
 
