@@ -14,7 +14,6 @@ namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\BackendTemplate;
 use Contao\CoreBundle\Tests\TestCase;
-use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -33,9 +32,9 @@ class TemplateTest extends TestCase
         parent::setUp();
 
         $fs = new Filesystem();
-        $fs->mkdir($this->getRootDir().'/templates');
+        $fs->mkdir($this->getFixturesDir().'/templates');
 
-        \define('TL_ROOT', $this->getRootDir());
+        \define('TL_ROOT', $this->getFixturesDir());
         \define('TL_MODE', 'BE');
     }
 
@@ -47,13 +46,13 @@ class TemplateTest extends TestCase
         parent::tearDown();
 
         $fs = new Filesystem();
-        $fs->remove($this->getRootDir().'/templates');
+        $fs->remove($this->getFixturesDir().'/templates');
     }
 
     public function testReplacesTheVariables(): void
     {
         file_put_contents(
-            $this->getRootDir().'/templates/test_template.html5',
+            $this->getFixturesDir().'/templates/test_template.html5',
             '<?= $this->value ?>'
         );
 
@@ -68,7 +67,7 @@ class TemplateTest extends TestCase
     public function testHandlesExceptions(): void
     {
         file_put_contents(
-            $this->getRootDir().'/templates/test_template.html5',
+            $this->getFixturesDir().'/templates/test_template.html5',
             'test<?php throw new Exception ?>'
         );
 
@@ -80,7 +79,7 @@ class TemplateTest extends TestCase
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -90,7 +89,7 @@ class TemplateTest extends TestCase
 
     public function testHandlesExceptionsInsideBlocks(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->block('a');
@@ -111,7 +110,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -121,7 +120,7 @@ EOF
 
     public function testHandlesExceptionsInParentTemplate(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_parent.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_parent.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->block('a');
@@ -140,7 +139,7 @@ EOF
 EOF
         );
 
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->extend('test_parent');
@@ -166,7 +165,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -176,9 +175,9 @@ EOF
 
     public function testParsesNestedBlocks(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_parent.html5', '');
+        file_put_contents($this->getFixturesDir().'/templates/test_parent.html5', '');
 
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->extend('test_parent');
@@ -202,7 +201,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 

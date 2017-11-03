@@ -83,6 +83,11 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
     /**
      * @var array
      */
+    private $hookListeners = [];
+
+    /**
+     * @var array
+     */
     private $basicClasses = [
         'System',
         'Config',
@@ -148,6 +153,16 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
         $this->setConstants();
         $this->initializeFramework();
+    }
+
+    /**
+     * Sets the hook listeners.
+     *
+     * @param array $hookListeners
+     */
+    public function setHookListeners(array $hookListeners): void
+    {
+        $this->hookListeners = $hookListeners;
     }
 
     /**
@@ -306,6 +321,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         // Fully load the configuration
         $config->getInstance();
 
+        $this->registerHookListeners();
         $this->validateInstallation();
 
         Input::initialize();
@@ -470,5 +486,24 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
             || !$this->request->attributes->has('_token_check')
             || false === $this->request->attributes->get('_token_check')
         ;
+    }
+
+    /**
+     * Registers the hooks listeners in the global array.
+     */
+    private function registerHookListeners(): void
+    {
+        foreach ($this->hookListeners as $hookName => $priorities) {
+            if (isset($GLOBALS['TL_HOOKS'][$hookName]) && \is_array($GLOBALS['TL_HOOKS'][$hookName])) {
+                if (isset($priorities[0])) {
+                    $priorities[0] = array_merge($GLOBALS['TL_HOOKS'][$hookName], $priorities[0]);
+                } else {
+                    $priorities[0] = $GLOBALS['TL_HOOKS'][$hookName];
+                    krsort($priorities);
+                }
+            }
+
+            $GLOBALS['TL_HOOKS'][$hookName] = array_merge(...$priorities);
+        }
     }
 }

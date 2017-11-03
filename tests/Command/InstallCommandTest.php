@@ -15,30 +15,12 @@ namespace Contao\CoreBundle\Tests\Command;
 use Contao\CoreBundle\Command\InstallCommand;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 class InstallCommandTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $tcpdfPath = $this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php';
-
-        if (!file_exists($tcpdfPath)) {
-            if (!file_exists(\dirname($tcpdfPath))) {
-                mkdir(\dirname($tcpdfPath), 0777, true);
-            }
-
-            file_put_contents($tcpdfPath, '');
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -48,20 +30,18 @@ class InstallCommandTest extends TestCase
 
         $fs = new Filesystem();
 
-        $fs->remove($this->getRootDir().'/assets/css');
-        $fs->remove($this->getRootDir().'/assets/images');
-        $fs->remove($this->getRootDir().'/assets/images_test');
-        $fs->remove($this->getRootDir().'/assets/js');
-        $fs->remove($this->getRootDir().'/files_test');
-        $fs->remove($this->getRootDir().'/system/cache');
-        $fs->remove($this->getRootDir().'/system/config');
-        $fs->remove($this->getRootDir().'/system/initialize.php');
-        $fs->remove($this->getRootDir().'/system/modules/.gitignore');
-        $fs->remove($this->getRootDir().'/system/tmp');
-        $fs->remove($this->getRootDir().'/templates');
-        $fs->remove($this->getRootDir().'/web/share');
-        $fs->remove($this->getRootDir().'/web/system');
-        $fs->remove($this->getRootDir().'/vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php');
+        $fs->remove($this->getTempDir().'/assets/css');
+        $fs->remove($this->getTempDir().'/assets/images');
+        $fs->remove($this->getTempDir().'/assets/images_test');
+        $fs->remove($this->getTempDir().'/assets/js');
+        $fs->remove($this->getTempDir().'/files_test');
+        $fs->remove($this->getTempDir().'/system/cache');
+        $fs->remove($this->getTempDir().'/system/config');
+        $fs->remove($this->getTempDir().'/system/modules/.gitignore');
+        $fs->remove($this->getTempDir().'/system/tmp');
+        $fs->remove($this->getTempDir().'/templates');
+        $fs->remove($this->getTempDir().'/web/share');
+        $fs->remove($this->getTempDir().'/web/system');
     }
 
     public function testCanBeInstantiated(): void
@@ -74,11 +54,8 @@ class InstallCommandTest extends TestCase
 
     public function testCreatesTheContaoFolders(): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', $this->getRootDir());
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
-        $container->setParameter('contao.upload_path', 'files');
-        $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images');
+        $container = $this->mockContainer($this->getTempDir());
+        $container->set('filesystem', new Filesystem());
 
         $command = new InstallCommand('contao:install');
         $command->setContainer($container);
@@ -100,11 +77,10 @@ class InstallCommandTest extends TestCase
 
     public function testHandlesCustomFilesAndImagesPaths(): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', $this->getRootDir());
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
+        $container = $this->mockContainer($this->getTempDir());
         $container->setParameter('contao.upload_path', 'files_test');
-        $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images_test');
+        $container->setParameter('contao.image.target_dir', $this->getTempDir().'/assets/images_test');
+        $container->set('filesystem', new Filesystem());
 
         $command = new InstallCommand('contao:install');
         $command->setContainer($container);
@@ -120,14 +96,13 @@ class InstallCommandTest extends TestCase
 
     public function testIsLockedWhileRunning(): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', 'foobar');
+        $factory = new Factory(new FlockStore(sys_get_temp_dir().'/'.md5($this->getTempDir())));
 
-        $lock = new LockHandler('contao:install', sys_get_temp_dir().'/'.md5('foobar'));
-        $lock->lock();
+        $lock = $factory->createLock('contao:install');
+        $lock->acquire();
 
         $command = new InstallCommand('contao:install');
-        $command->setContainer($container);
+        $command->setContainer($this->mockContainer($this->getTempDir()));
 
         $tester = new CommandTester($command);
 

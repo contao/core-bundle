@@ -10,10 +10,10 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\FragmentRegistry;
+namespace Contao\CoreBundle\Tests\Fragment;
 
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
-use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Fragment\FragmentRegistry;
+use PHPUnit\Framework\TestCase;
 
 class FragmentRegistryTest extends TestCase
 {
@@ -21,14 +21,14 @@ class FragmentRegistryTest extends TestCase
     {
         $registry = new FragmentRegistry();
 
-        $this->assertInstanceOf('Contao\CoreBundle\FragmentRegistry\FragmentRegistry', $registry);
+        $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentRegistry', $registry);
     }
 
     public function testChecksTheBasicOptions(): void
     {
         $registry = new FragmentRegistry();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException('InvalidArgumentException');
 
         $registry->addFragment('foobar', new \stdClass(), ['nonsense' => 'test']);
     }

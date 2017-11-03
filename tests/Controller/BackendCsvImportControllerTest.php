@@ -12,51 +12,52 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Controller;
 
+use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\Controller\BackendCsvImportController;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\DataContainer;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class BackendCsvImportControllerTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
 
-        $GLOBALS['TL_LANG']['MSC']['source'] = 'Source';
-        $GLOBALS['TL_LANG']['MSC']['separator'] = 'Separator';
-        $GLOBALS['TL_LANG']['MSC']['comma'] = 'Comma';
-        $GLOBALS['TL_LANG']['MSC']['semicolon'] = 'Semicolon';
-        $GLOBALS['TL_LANG']['MSC']['tabulator'] = 'Tabulator';
-        $GLOBALS['TL_LANG']['MSC']['linebreak'] = 'Line break';
-        $GLOBALS['TL_LANG']['MSC']['apply'] = 'Apply';
-        $GLOBALS['TL_LANG']['MSC']['backBT'] = 'Back';
-        $GLOBALS['TL_LANG']['MSC']['backBTTitle'] = 'Go back';
-        $GLOBALS['TL_LANG']['MSC']['lw_import'] = ['Import'];
-        $GLOBALS['TL_LANG']['MSC']['tw_import'] = ['Import'];
-        $GLOBALS['TL_LANG']['MSC']['ow_import'] = ['Import'];
-    }
+        \define('TL_MODE', 'BE');
+        \define('TL_ROOT', $this->getFixturesDir());
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
+        $container = $this->mockContainer();
+        $container->set('session', new Session(new MockArraySessionStorage()));
 
-        unset($GLOBALS['TL_LANG']);
+        $container->set(
+            'contao.resource_finder',
+            new ResourceFinder($this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao')
+        );
+
+        System::setContainer($container);
     }
 
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Controller\BackendCsvImportController', $this->mockController());
+        $controller = $this->mockController();
+
+        $this->assertInstanceOf('Contao\CoreBundle\Controller\BackendCsvImportController', $controller);
     }
 
     public function testRendersTheListWizardMarkup(): void
@@ -135,7 +136,8 @@ EOF;
             $this->mockContaoFramework(),
             $connection,
             $requestStack,
-            $this->getRootDir()
+            $this->createMock(TranslatorInterface::class),
+            $this->getFixturesDir()
         );
 
         $response = $controller->importListWizard($dc);
@@ -220,7 +222,8 @@ EOF;
             $this->mockContaoFramework(),
             $connection,
             $requestStack,
-            $this->getRootDir()
+            $this->createMock(TranslatorInterface::class),
+            $this->getFixturesDir()
         );
 
         $response = $controller->importTableWizard($dc);
@@ -309,7 +312,8 @@ EOF;
             $this->mockContaoFramework(),
             $connection,
             $requestStack,
-            $this->getRootDir()
+            $this->createMock(TranslatorInterface::class),
+            $this->getFixturesDir()
         );
 
         $response = $controller->importOptionWizard($dc);
@@ -376,7 +380,8 @@ EOF;
             $this->mockContaoFramework(),
             $connection,
             new RequestStack(),
-            $this->getRootDir()
+            $this->createMock(TranslatorInterface::class),
+            $this->getFixturesDir()
         );
 
         $this->expectException(InternalServerErrorException::class);
@@ -393,18 +398,22 @@ EOF;
      */
     private function mockController(Request $request = null): BackendCsvImportController
     {
-        if (null === $request) {
-            $request = new Request();
-        }
-
         $requestStack = new RequestStack();
-        $requestStack->push($request);
+        $requestStack->push($request ?: new Request());
+
+        $translator = $this->createMock(TranslatorInterface::class);
+
+        $translator
+            ->method('trans')
+            ->willReturnArgument(0)
+        ;
 
         $controller = new BackendCsvImportController(
             $this->mockContaoFramework(),
             $this->createMock(Connection::class),
             $requestStack,
-            $this->getRootDir()
+            $translator,
+            $this->getFixturesDir()
         );
 
         return $controller;

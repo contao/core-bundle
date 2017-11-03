@@ -10,15 +10,14 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\FragmentRegistry\PageType;
+namespace Contao\CoreBundle\Tests\Fragment\PageType;
 
-use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\FragmentRegistry\PageType\DefaultPageTypeRenderer;
-use Contao\CoreBundle\FragmentRegistry\SimpleRenderingInformationProviderInterface;
-use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Fragment\FragmentRegistry;
+use Contao\CoreBundle\Fragment\FragmentRegistryInterface;
+use Contao\CoreBundle\Fragment\PageType\DefaultPageTypeRenderer;
+use Contao\CoreBundle\Fragment\SimpleRenderingInformationProviderInterface;
 use Contao\PageModel;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
@@ -28,10 +27,9 @@ class DefaultPageTypeRendererTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf(
-            'Contao\CoreBundle\FragmentRegistry\PageType\DefaultPageTypeRenderer',
-            $this->mockRenderer()
-        );
+        $renderer = $this->mockRenderer();
+
+        $this->assertInstanceOf('Contao\CoreBundle\Fragment\PageType\DefaultPageTypeRenderer', $renderer);
     }
 
     public function testSupportsPageModels(): void
@@ -48,18 +46,16 @@ class DefaultPageTypeRendererTest extends TestCase
 
         $expectedControllerReference = new ControllerReference(
             'test',
-            [
-                'pageModel' => 42,
-            ]
+            ['pageModel' => 42]
         );
 
         $registry = new FragmentRegistry();
 
         $registry->addFragment(
-            FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.identifier',
+            FragmentRegistryInterface::PAGE_TYPE_FRAGMENT.'.identifier',
             new \stdClass(),
             [
-                'tag' => FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE,
+                'tag' => FragmentRegistryInterface::PAGE_TYPE_FRAGMENT,
                 'type' => 'test',
                 'controller' => 'test',
             ]
@@ -89,13 +85,8 @@ class DefaultPageTypeRendererTest extends TestCase
 
         $expectedControllerReference = new ControllerReference(
             'test',
-            [
-                'pageModel' => 42,
-                'foo' => 'bar',
-            ],
-            [
-                'bar' => 'foo',
-            ]
+            ['pageModel' => 42, 'foo' => 'bar'],
+            ['bar' => 'foo']
         );
 
         $fragment = $this->createMock(SimpleRenderingInformationProviderInterface::class);
@@ -115,10 +106,10 @@ class DefaultPageTypeRendererTest extends TestCase
         $registry = new FragmentRegistry();
 
         $registry->addFragment(
-            FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.identifier',
+            FragmentRegistryInterface::PAGE_TYPE_FRAGMENT.'.identifier',
             $fragment,
             [
-                'tag' => FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE,
+                'tag' => FragmentRegistryInterface::PAGE_TYPE_FRAGMENT,
                 'type' => 'test',
                 'controller' => 'test',
             ]
@@ -151,9 +142,7 @@ class DefaultPageTypeRendererTest extends TestCase
 
         $expectedControllerReference = new ControllerReference(
             'test',
-            [
-                'pageModel' => 42,
-            ]
+            ['pageModel' => 42]
         );
 
         $fragment = $this->createMock(SimpleRenderingInformationProviderInterface::class);
@@ -171,10 +160,10 @@ class DefaultPageTypeRendererTest extends TestCase
         $registry = new FragmentRegistry();
 
         $registry->addFragment(
-            FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE.'.identifier',
+            FragmentRegistryInterface::PAGE_TYPE_FRAGMENT.'.identifier',
             $fragment,
             [
-                'tag' => FragmentRegistryPass::TAG_FRAGMENT_PAGE_TYPE,
+                'tag' => FragmentRegistryInterface::PAGE_TYPE_FRAGMENT,
                 'type' => 'test',
                 'controller' => 'test',
             ]

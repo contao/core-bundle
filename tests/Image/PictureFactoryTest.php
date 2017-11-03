@@ -44,7 +44,7 @@ class PictureFactoryTest extends TestCase
 
     public function testCreatesAPictureObjectFromAnImagePath(): void
     {
-        $path = $this->getRootDir().'/images/dummy.jpg';
+        $path = $this->getTempDir().'/images/dummy.jpg';
         $imageMock = $this->createMock(ImageInterface::class);
         $pictureMock = new Picture(['src' => $imageMock, 'srcset' => []], []);
         $pictureGenerator = $this->createMock(PictureGeneratorInterface::class);
@@ -129,12 +129,7 @@ class PictureFactoryTest extends TestCase
             )
         ;
 
-        $imageSizeAdapter = $this->createMock(Adapter::class);
-
-        $imageSizeAdapter
-            ->method('__call')
-            ->willReturn($imageSizeModel)
-        ;
+        $imageSizeAdapter = $this->mockConfiguredAdapter(['findByPk' => $imageSizeModel]);
 
         $imageSizeItemModel = $this->createMock(ImageSizeItemModel::class);
 
@@ -160,12 +155,9 @@ class PictureFactoryTest extends TestCase
             ->willReturn(true)
         ;
 
-        $imageSizeItemAdapter = $this->createMock(Adapter::class);
-
-        $imageSizeItemAdapter
-            ->method('__call')
-            ->willReturn(new Collection([$imageSizeItemModel], 'tl_image_size_item'))
-        ;
+        $imageSizeItemAdapter = $this->mockConfiguredAdapter([
+            'findVisibleByPid' => new Collection([$imageSizeItemModel], 'tl_image_size_item'),
+        ]);
 
         $framework = $this->createMock(ContaoFrameworkInterface::class);
 
@@ -248,7 +240,7 @@ class PictureFactoryTest extends TestCase
 
     public function testCreatesAPictureObjectInLegacyMode(): void
     {
-        $path = $this->getRootDir().'/images/dummy.jpg';
+        $path = $this->getTempDir().'/images/dummy.jpg';
 
         $pictureMock = $this->createMock(PictureInterface::class);
         $pictureGenerator = $this->createMock(PictureGeneratorInterface::class);
@@ -330,7 +322,7 @@ class PictureFactoryTest extends TestCase
     public function testCreatesAPictureObjectWithoutAModel(): void
     {
         $defaultDensities = '';
-        $path = $this->getRootDir().'/images/dummy.jpg';
+        $path = $this->getTempDir().'/images/dummy.jpg';
 
         $imageMock = $this->createMock(ImageInterface::class);
         $pictureMock = $this->createMock(PictureInterface::class);

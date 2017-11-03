@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Csrf;
 
 use Contao\CoreBundle\Csrf\MemoryTokenStorage;
-use Contao\CoreBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Csrf\Exception\TokenNotFoundException;
 
 class MemoryTokenStorageTest extends TestCase
 {
@@ -21,7 +22,10 @@ class MemoryTokenStorageTest extends TestCase
     {
         $memoryTokenStorage = new MemoryTokenStorage();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Csrf\MemoryTokenStorage', $memoryTokenStorage);
+        $this->assertInstanceOf(
+            'Contao\CoreBundle\Csrf\MemoryTokenStorage',
+            $memoryTokenStorage
+        );
 
         $this->assertInstanceOf(
             'Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface',
@@ -51,6 +55,16 @@ class MemoryTokenStorageTest extends TestCase
         $memoryTokenStorage->removeToken('baz');
         $this->assertFalse($memoryTokenStorage->hasToken('baz'));
         $this->assertSame(['foo' => null, 'baz' => null], $memoryTokenStorage->getUsedTokens());
+    }
+
+    public function testFailsIfATokenDoesNotExist(): void
+    {
+        $memoryTokenStorage = new MemoryTokenStorage();
+        $memoryTokenStorage->initialize(['foo' => 'bar']);
+
+        $this->expectException(TokenNotFoundException::class);
+
+        $memoryTokenStorage->getToken('bar');
     }
 
     public function testFailsToReturnATokenIfNotInitialized(): void

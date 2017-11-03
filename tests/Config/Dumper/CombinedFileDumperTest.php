@@ -21,14 +21,13 @@ class CombinedFileDumperTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf(
-            'Contao\CoreBundle\Config\Dumper\CombinedFileDumper',
-            new CombinedFileDumper(
-                $this->createMock(Filesystem::class),
-                $this->createMock(PhpFileLoader::class),
-                $this->getCacheDir()
-            )
+        $dumper = new CombinedFileDumper(
+            $this->createMock(Filesystem::class),
+            $this->createMock(PhpFileLoader::class),
+            $this->getTempDir()
         );
+
+        $this->assertInstanceOf('Contao\CoreBundle\Config\Dumper\CombinedFileDumper', $dumper);
     }
 
     public function testDumpsTheDataIntoAFile(): void
@@ -36,7 +35,7 @@ class CombinedFileDumperTest extends TestCase
         $dumper = new CombinedFileDumper(
             $this->mockFilesystem("<?php\n\necho 'test';\n"),
             $this->mockLoader(),
-            $this->getCacheDir()
+            $this->getTempDir()
         );
 
         $dumper->dump(['test.php'], 'test.php');
@@ -47,7 +46,7 @@ class CombinedFileDumperTest extends TestCase
         $dumper = new CombinedFileDumper(
             $this->mockFilesystem("<?php\necho 'foo';\necho 'test';\n"),
             $this->mockLoader(),
-            $this->getCacheDir()
+            $this->getTempDir()
         );
 
         $dumper->setHeader("<?php\necho 'foo';");
@@ -56,13 +55,13 @@ class CombinedFileDumperTest extends TestCase
 
     public function testFailsIfTheHeaderIsInvalid(): void
     {
-        $this->expectException('InvalidArgumentException');
-
         $dumper = new CombinedFileDumper(
             $this->createMock(Filesystem::class),
             $this->createMock(PhpFileLoader::class),
-            $this->getCacheDir()
+            $this->getTempDir()
         );
+
+        $this->expectException('InvalidArgumentException');
 
         $dumper->setHeader('No opening PHP tag');
     }
@@ -81,7 +80,7 @@ class CombinedFileDumperTest extends TestCase
         $filesystem
             ->expects($this->once())
             ->method('dumpFile')
-            ->with($this->getCacheDir().'/test.php', $expects)
+            ->with($this->getTempDir().'/test.php', $expects)
         ;
 
         return $filesystem;

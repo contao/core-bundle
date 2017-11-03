@@ -84,6 +84,7 @@ services:
         class: Contao\CoreBundle\EventListener\MapFragmentsToGlobalsListener
         arguments:
             - "@contao.fragment.registry"
+        public: true
 
     contao.listener.merge_http_headers:
         class: Contao\CoreBundle\EventListener\MergeHttpHeadersListener
@@ -143,6 +144,13 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 20 }
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    contao.listener.user_backend_menu_listener:
+        class: Contao\CoreBundle\EventListener\UserBackendMenuListener
+        arguments:
+            - "@security.token_storage"
+        tags:
+            - { name: kernel.event_listener, event: contao.backend_menu_build, method: onBuild }
 
     contao.listener.user_session:
         class: Contao\CoreBundle\EventListener\UserSessionListener

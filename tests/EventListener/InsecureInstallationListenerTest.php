@@ -18,6 +18,7 @@ use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class InsecureInstallationListenerTest extends TestCase
 {
@@ -30,7 +31,7 @@ class InsecureInstallationListenerTest extends TestCase
 
     public function testThrowsAnExceptionIfTheDocumentRootIsInsecure(): void
     {
-        $kernel = $this->mockKernel();
+        $kernel = $this->createMock(KernelInterface::class);
         $event = new GetResponseEvent($kernel, $this->getRequest(), Kernel::MASTER_REQUEST);
 
         $this->expectException(InsecureInstallationException::class);
@@ -41,11 +42,11 @@ class InsecureInstallationListenerTest extends TestCase
 
     public function testDoesNotThrowAnExceptionIfTheDocumentRootIsSecure(): void
     {
-        $kernel = $this->mockKernel();
+        $kernel = $this->createMock(KernelInterface::class);
 
         $request = $this->getRequest();
         $request->server->set('REQUEST_URI', '/app_dev.php?do=test');
-        $request->server->set('SCRIPT_FILENAME', $this->getRootDir().'/app_dev.php');
+        $request->server->set('SCRIPT_FILENAME', $this->getTempDir().'/app_dev.php');
 
         $event = new GetResponseEvent($kernel, $request, Kernel::MASTER_REQUEST);
 
@@ -57,7 +58,7 @@ class InsecureInstallationListenerTest extends TestCase
 
     public function testDoesNotThrowAnExceptionOnLocalhost(): void
     {
-        $kernel = $this->mockKernel();
+        $kernel = $this->createMock(KernelInterface::class);
 
         $request = $this->getRequest();
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
@@ -80,7 +81,7 @@ class InsecureInstallationListenerTest extends TestCase
         $request = new Request();
 
         $request->server->set('SCRIPT_NAME', 'app_dev.php');
-        $request->server->set('SCRIPT_FILENAME', $this->getRootDir().'/web/app_dev.php');
+        $request->server->set('SCRIPT_FILENAME', $this->getTempDir().'/web/app_dev.php');
         $request->server->set('REMOTE_ADDR', '123.456.789.0');
         $request->server->set('REQUEST_URI', '/web/app_dev.php?do=test');
 

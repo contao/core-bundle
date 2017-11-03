@@ -49,4 +49,22 @@ final class ContaoCoreEvents
      * @see PreviewUrlConvertEvent
      */
     public const PREVIEW_URL_CONVERT = 'contao.preview_url_convert';
+
+    /**
+     * The contao.backend_menu_build event is triggered when the backend menu is built.
+     *
+     * @var string
+     *
+     * @see MenuEvent
+     */
+    public const BACKEND_MENU_BUILD = 'contao.backend_menu_build';
+
+    /**
+     * The contao.slug_valid_characters event is triggered when the valid slug characters options are generated.
+     *
+     * @var string
+     *
+     * @see SlugValidCharactersEvent
+     */
+    public const SLUG_VALID_CHARACTERS = 'contao.slug_valid_characters';
 }

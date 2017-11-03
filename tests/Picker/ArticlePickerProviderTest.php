@@ -15,18 +15,38 @@ namespace Contao\CoreBundle\Tests\Picker;
 use Contao\BackendUser;
 use Contao\CoreBundle\Picker\ArticlePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ArticlePickerProviderTest extends TestCase
+class ArticlePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var ArticlePickerProvider
      */
     protected $provider;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        $GLOBALS['TL_LANG']['MSC']['articlePicker'] = 'Article picker';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+
+        unset($GLOBALS['TL_LANG']);
+    }
 
     /**
      * {@inheritdoc}
@@ -54,18 +74,6 @@ class ArticlePickerProviderTest extends TestCase
         ;
 
         $this->provider = new ArticlePickerProvider($menuFactory, $router);
-
-        $GLOBALS['TL_LANG']['MSC']['articlePicker'] = 'Article picker';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        unset($GLOBALS['TL_LANG']);
     }
 
     public function testCanBeInstantiated(): void
@@ -73,6 +81,11 @@ class ArticlePickerProviderTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Picker\ArticlePickerProvider', $this->provider);
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using a picker provider without injecting the translator service has been deprecated %s.
+     */
     public function testCreatesTheMenuItem(): void
     {
         $picker = json_encode([
@@ -110,33 +123,7 @@ class ArticlePickerProviderTest extends TestCase
 
     public function testChecksIfAContextIsSupported(): void
     {
-        $user = $this
-            ->getMockBuilder(BackendUser::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hasAccess'])
-            ->getMock()
-        ;
-
-        $user
-            ->method('hasAccess')
-            ->willReturn(true)
-        ;
-
-        $token = $this->createMock(TokenInterface::class);
-
-        $token
-            ->method('getUser')
-            ->willReturn($user)
-        ;
-
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
-        $tokenStorage
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        $this->provider->setTokenStorage($tokenStorage);
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('link'));
         $this->assertFalse($this->provider->supportsContext('file'));

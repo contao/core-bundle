@@ -10,14 +10,13 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\FragmentRegistry\ContentElement;
+namespace Contao\CoreBundle\Tests\Fragment\ContentElement;
 
 use Contao\ContentModel;
-use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
-use Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer;
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistry;
-use Contao\CoreBundle\FragmentRegistry\FragmentRegistryInterface;
-use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Fragment\ContentElement\DefaultContentElementRenderer;
+use Contao\CoreBundle\Fragment\FragmentRegistry;
+use Contao\CoreBundle\Fragment\FragmentRegistryInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
@@ -26,10 +25,9 @@ class DefaultContentElementRendererTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf(
-            'Contao\CoreBundle\FragmentRegistry\ContentElement\DefaultContentElementRenderer',
-            $this->mockRenderer()
-        );
+        $renderer = $this->mockRenderer();
+
+        $this->assertInstanceOf('Contao\CoreBundle\Fragment\ContentElement\DefaultContentElementRenderer', $renderer);
     }
 
     public function testSupportsContentModels(): void
@@ -62,10 +60,10 @@ class DefaultContentElementRendererTest extends TestCase
         $registry = new FragmentRegistry();
 
         $registry->addFragment(
-            FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT.'.identifier',
+            FragmentRegistryInterface::CONTENT_ELEMENT_FRAGMENT.'.identifier',
             new \stdClass(),
             [
-                'tag' => FragmentRegistryPass::TAG_FRAGMENT_CONTENT_ELEMENT,
+                'tag' => FragmentRegistryInterface::CONTENT_ELEMENT_FRAGMENT,
                 'type' => 'test',
                 'controller' => 'test',
                 'category' => 'text',
