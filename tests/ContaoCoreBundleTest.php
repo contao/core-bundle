@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,45 +18,43 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\RegisterHookListenersPass;
+use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * Tests the ContaoCoreBundle class.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class ContaoCoreBundleTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $bundle = new ContaoCoreBundle();
 
         $this->assertInstanceOf('Contao\CoreBundle\ContaoCoreBundle', $bundle);
     }
 
-    /**
-     * Tests the getContainerExtension() method.
-     */
-    public function testGetContainerExtension()
+    public function testReturnsTheContainerExtension(): void
     {
-        $bundle = new ContaoCoreBundle();
+        $extension = (new ContaoCoreBundle())->getContainerExtension();
 
-        $this->assertInstanceOf(
-            'Contao\CoreBundle\DependencyInjection\ContaoCoreExtension',
-            $bundle->getContainerExtension()
-        );
+        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\ContaoCoreExtension', $extension);
     }
 
-    /**
-     * Tests the build() method.
-     */
-    public function testBuild()
+    public function testDoesNotRegisterAnyCommands(): void
+    {
+        $application = new Application();
+        $commands = $application->all();
+
+        $bundle = new ContaoCoreBundle();
+        $bundle->registerCommands($application);
+
+        $this->assertSame($commands, $application->all());
+    }
+
+    public function testAddsTheCompilerPaths(): void
     {
         $container = new ContainerBuilder();
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
+        $container->setParameter('kernel.root_dir', $this->getFixturesDir().'/app');
 
         $bundle = new ContaoCoreBundle();
         $bundle->build($container);
@@ -71,5 +71,8 @@ class ContaoCoreBundleTest extends TestCase
         $this->assertContains(AddResourcesPathsPass::class, $classes);
         $this->assertContains(AddImagineClassPass::class, $classes);
         $this->assertContains(DoctrineMigrationsPass::class, $classes);
+        $this->assertContains(PickerProviderPass::class, $classes);
+        $this->assertContains(FragmentRegistryPass::class, $classes);
+        $this->assertContains(RegisterHookListenersPass::class, $classes);
     }
 }

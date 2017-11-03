@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,36 +19,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-/**
- * Tests the RefererIdListener class.
- *
- * @author Yanick Witschi <https:/github.com/toflar>
- * @author Leo Feyer <https:/github.com/leofeyer>
- */
 class RefererIdListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\RefererIdListener', $listener);
     }
 
-    /**
-     * Tests that the token is added to the request.
-     */
-    public function testTokenAddedToRequest()
+    public function testAddsTheTokenToTheRequest(): void
     {
-        $kernel = $this->createMock(KernelInterface::class);
-
         $request = new Request();
         $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
 
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new GetResponseEvent(
+            $this->createMock(KernelInterface::class),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
 
         $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
         $listener->onKernelRequest($event);
@@ -55,17 +49,16 @@ class RefererIdListenerTest extends TestCase
         $this->assertSame('testValue', $request->attributes->get('_contao_referer_id'));
     }
 
-    /**
-     * Tests that the token is not added to a front end request.
-     */
-    public function testTokenNotAddedToFrontendRequest()
+    public function testDoesNotAddTheTokenInFrontEndScope(): void
     {
-        $kernel = $this->createMock(KernelInterface::class);
-
         $request = new Request();
         $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_FRONTEND);
 
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new GetResponseEvent(
+            $this->createMock(KernelInterface::class),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
 
         $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
         $listener->onKernelRequest($event);
@@ -73,17 +66,16 @@ class RefererIdListenerTest extends TestCase
         $this->assertFalse($request->attributes->has('_contao_referer_id'));
     }
 
-    /**
-     * Tests that the token is not added to a subrequest.
-     */
-    public function testTokenNotAddedToSubrequest()
+    public function testDoesNotAddTheTokenToASubrequest(): void
     {
-        $kernel = $this->createMock(KernelInterface::class);
-
         $request = new Request();
         $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
 
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::SUB_REQUEST);
+        $event = new GetResponseEvent(
+            $this->createMock(KernelInterface::class),
+            $request,
+            HttpKernelInterface::SUB_REQUEST
+        );
 
         $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
         $listener->onKernelRequest($event);
@@ -91,17 +83,16 @@ class RefererIdListenerTest extends TestCase
         $this->assertFalse($request->attributes->has('_contao_referer_id'));
     }
 
-    /**
-     * Tests that the same token is added to subsequent requests.
-     */
-    public function testSameTokenAddedToSubsequestRequests()
+    public function testAddsTheSameTokenToSubsequestRequests(): void
     {
-        $kernel = $this->createMock(KernelInterface::class);
-
         $request = new Request();
         $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
 
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new GetResponseEvent(
+            $this->createMock(KernelInterface::class),
+            $request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
 
         $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
         $listener->onKernelRequest($event);
@@ -113,5 +104,27 @@ class RefererIdListenerTest extends TestCase
 
         $this->assertTrue($request->attributes->has('_contao_referer_id'));
         $this->assertSame('testValue', $request->attributes->get('_contao_referer_id'));
+    }
+
+    /**
+     * Mocks a token manager.
+     *
+     * @return CsrfTokenManagerInterface
+     */
+    private function mockTokenManager(): CsrfTokenManagerInterface
+    {
+        $tokenManager = $this->createMock(CsrfTokenManagerInterface::class);
+
+        $tokenManager
+            ->method('getToken')
+            ->willReturn(new CsrfToken('_csrf', 'testValue'))
+        ;
+
+        $tokenManager
+            ->method('refreshToken')
+            ->willReturnOnConsecutiveCalls(new CsrfToken('_csrf', 'testValue'), new CsrfToken('_csrf', 'foo'))
+        ;
+
+        return $tokenManager;
     }
 }

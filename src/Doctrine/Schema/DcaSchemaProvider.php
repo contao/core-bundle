@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,9 +21,6 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 
-/**
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class DcaSchemaProvider
 {
     /**
@@ -35,8 +34,6 @@ class DcaSchemaProvider
     private $doctrine;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      * @param Registry|null            $doctrine
      */
@@ -51,9 +48,9 @@ class DcaSchemaProvider
      *
      * @return Schema
      */
-    public function createSchema()
+    public function createSchema(): Schema
     {
-        if (0 !== count($this->doctrine->getManagerNames())) {
+        if (0 !== \count($this->doctrine->getManagerNames())) {
             return $this->createSchemaFromOrm();
         }
 
@@ -65,7 +62,7 @@ class DcaSchemaProvider
      *
      * @param Schema $schema
      */
-    public function appendToSchema(Schema $schema)
+    public function appendToSchema(Schema $schema): void
     {
         $config = $this->getSqlDefinitions();
 
@@ -82,7 +79,7 @@ class DcaSchemaProvider
 
             if (isset($definitions['TABLE_FIELDS'])) {
                 foreach ($definitions['TABLE_FIELDS'] as $fieldName => $sql) {
-                    $this->parseColumnSql($table, $fieldName, strtolower(substr($sql, strlen($fieldName) + 3)));
+                    $this->parseColumnSql($table, $fieldName, substr($sql, \strlen($fieldName) + 3));
                 }
             }
 
@@ -109,7 +106,7 @@ class DcaSchemaProvider
      *
      * @return Schema
      */
-    private function createSchemaFromOrm()
+    private function createSchemaFromOrm(): Schema
     {
         /** @var EntityManagerInterface $manager */
         $manager = $this->doctrine->getManager();
@@ -129,7 +126,7 @@ class DcaSchemaProvider
      *
      * @return Schema
      */
-    private function createSchemaFromDca()
+    private function createSchemaFromDca(): Schema
     {
         $schema = new Schema();
 
@@ -145,12 +142,12 @@ class DcaSchemaProvider
      * @param string $columnName
      * @param string $sql
      */
-    private function parseColumnSql(Table $table, $columnName, $sql)
+    private function parseColumnSql(Table $table, string $columnName, string $sql): void
     {
         list($dbType, $def) = explode(' ', $sql, 2);
 
         $type = strtok(strtolower($dbType), '(), ');
-        $length = strtok('(), ');
+        $length = (int) strtok('(), ');
         $fixed = false;
         $scale = null;
         $precision = null;
@@ -159,21 +156,24 @@ class DcaSchemaProvider
         $this->setLengthAndPrecisionByType($type, $dbType, $length, $scale, $precision, $fixed);
 
         $type = $this->doctrine->getConnection()->getDatabasePlatform()->getDoctrineTypeMapping($type);
-        $length = (0 === (int) $length) ? null : (int) $length;
 
-        if (preg_match('/default (\'[^\']*\'|\d+)/', $def, $match)) {
+        if (0 === $length) {
+            $length = null;
+        }
+
+        if (preg_match('/default (\'[^\']*\'|\d+)/i', $def, $match)) {
             $default = trim($match[1], "'");
         }
 
         $options = [
             'length' => $length,
-            'unsigned' => false !== strpos($def, 'unsigned'),
+            'unsigned' => false !== stripos($def, 'unsigned'),
             'fixed' => $fixed,
             'default' => $default,
-            'notnull' => false !== strpos($def, 'not null'),
+            'notnull' => false !== stripos($def, 'not null'),
             'scale' => null,
             'precision' => null,
-            'autoincrement' => false !== strpos($def, 'auto_increment'),
+            'autoincrement' => false !== stripos($def, 'auto_increment'),
             'comment' => null,
         ];
 
@@ -188,14 +188,14 @@ class DcaSchemaProvider
     /**
      * Sets the length, scale, precision and fixed values by field type.
      *
-     * @param string $type
-     * @param string $dbType
-     * @param int    $length
-     * @param int    $scale
-     * @param int    $precision
-     * @param bool   $fixed
+     * @param string   $type
+     * @param string   $dbType
+     * @param int|null $length
+     * @param int|null $scale
+     * @param int|null $precision
+     * @param bool     $fixed
      */
-    private function setLengthAndPrecisionByType($type, $dbType, &$length, &$scale, &$precision, &$fixed)
+    private function setLengthAndPrecisionByType(string $type, string $dbType, ?int &$length, ?int &$scale, ?int &$precision, bool &$fixed): void
     {
         switch ($type) {
             case 'char':
@@ -258,7 +258,7 @@ class DcaSchemaProvider
      * @param string $keyName
      * @param string $sql
      */
-    private function parseIndexSql(Table $table, $keyName, $sql)
+    private function parseIndexSql(Table $table, string $keyName, string $sql): void
     {
         if ('PRIMARY' === $keyName) {
             if (!preg_match_all('/`([^`]+)`/', $sql, $matches)) {
@@ -305,7 +305,7 @@ class DcaSchemaProvider
      *
      * @return array
      */
-    private function getSqlDefinitions()
+    private function getSqlDefinitions(): array
     {
         $this->framework->initialize();
 
@@ -319,7 +319,7 @@ class DcaSchemaProvider
         if (!empty($sqlLegacy)) {
             foreach ($sqlLegacy as $table => $categories) {
                 foreach ($categories as $category => $fields) {
-                    if (is_array($fields)) {
+                    if (\is_array($fields)) {
                         foreach ($fields as $name => $sql) {
                             $sqlTarget[$table][$category][$name] = $sql;
                         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,20 +15,19 @@ namespace Contao\CoreBundle\Tests\Referer;
 use Contao\CoreBundle\Referer\TokenGenerator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the TokenGenerator class.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
 class TokenGeneratorTest extends TestCase
 {
-    /**
-     * Tests whether the generated token is eight characters long.
-     */
-    public function testGeneratedTokenHasLengthOfEight()
+    public function testCanBeInstantiated(): void
     {
         $generator = new TokenGenerator(1000);
 
-        $this->assertSame(8, strlen($generator->generateToken()));
+        $this->assertInstanceOf('Contao\CoreBundle\Referer\TokenGenerator', $generator);
+    }
+
+    public function testGeneratesAnEightCharacterToken(): void
+    {
+        $generator = new TokenGenerator(1000);
+
+        $this->assertSame(8, \strlen($generator->generateToken()));
     }
 }

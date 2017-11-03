@@ -46,12 +46,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	protected $ctable;
 
 	/**
-	 * ID of the button container
-	 * @var string
-	 */
-	protected $bid;
-
-	/**
 	 * Limit (database query)
 	 * @var string
 	 */
@@ -293,7 +287,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	{
 		$return = '';
 		$this->limit = '';
-		$this->bid = 'tl_buttons';
 
 		/** @var SessionInterface $objSession */
 		$objSession = \System::getContainer()->get('session');
@@ -579,7 +572,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					$count = 0;
 					$return .= '
   <tr>
-    <td colspan="2" style="padding:0"><div style="margin-bottom:26px;line-height:24px;border-bottom:1px dotted #ccc">&nbsp;</div></td>
+    <td colspan="2" style="height:5em"></td>
   </tr>';
 
 					foreach ($arrRow as $i=>$v)
@@ -902,7 +895,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					// Empty unique fields or add a unique identifier in copyAll mode
 					elseif ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['eval']['unique'])
 					{
-						$v = (\Input::get('act') == 'copyAll') ? $v .'-'. substr(md5(uniqid(mt_rand(), true)), 0, 8) : \Widget::getEmptyValueByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['sql']);
+						$v = (\Input::get('act') == 'copyAll' && !$GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['eval']['doNotCopy']) ? $v .'-'. substr(md5(uniqid(mt_rand(), true)), 0, 8) : \Widget::getEmptyValueByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['sql']);
 					}
 
 					// Reset doNotCopy and fallback fields to their default value
@@ -962,7 +955,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			// Mark the new record with "copy of" (see #2938)
 			foreach (array_keys($GLOBALS['TL_DCA'][$this->strTable]['fields']) as $strKey)
 			{
-				if (in_array($strKey, array('headline', 'name', 'subject', 'title')))
+				if (!empty($GLOBALS['TL_DCA'][$this->strTable]['fields'][$strKey]['eval']['doNotCopy']))
+				{
+					continue;
+				}
+
+				if (in_array($strKey, array('headline', 'name', 'subject', 'title', 'question', 'label')))
 				{
 					if ($strKey == 'headline')
 					{
@@ -972,14 +970,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						{
 							$headline['value'] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $headline['value']);
 							$this->set['headline'] = serialize($headline);
+
+							continue;
 						}
 					}
-					else
+
+					if ($this->set[$strKey] != '')
 					{
-						if ($this->set[$strKey] != '')
-						{
-							$this->set[$strKey] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set[$strKey]);
-						}
+						$this->set[$strKey] = sprintf($GLOBALS['TL_LANG']['MSC']['copyOf'], $this->set[$strKey]);
 					}
 
 					break;
@@ -3538,7 +3536,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 
 		$return .= ((\Input::get('act') == 'select') ? '
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form tl_edit_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
+<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_select">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').($blnClipboard ? '
@@ -4075,7 +4073,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$return .= ((\Input::get('act') == 'select') ? '
 
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form tl_edit_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
+<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_select">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').($blnClipboard ? '
@@ -4583,7 +4581,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	 */
 	protected function listView()
 	{
-		$return = '';
 		$table = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->ptable : $this->strTable;
 		$orderBy = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'];
 		$firstOrderBy = preg_replace('/\s+.*$/', '', $orderBy[0]);
@@ -4681,18 +4678,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 
 		$objRow = $objRowStmt->execute($this->values);
-		$this->bid = ($return != '') ? $this->bid : 'tl_buttons';
 
 		// Display buttos
-		if (!$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] || !empty($GLOBALS['TL_DCA'][$this->strTable]['list']['global_operations']))
-		{
-			$return .= \Message::generate() . '
-<div id="'.$this->bid.'">'.((\Input::get('act') == 'select' || $this->ptable) ? '
+		$return = \Message::generate() . '
+<div id="tl_buttons">'.((\Input::get('act') == 'select' || $this->ptable) ? '
 <a href="'.$this->getReferer(true, $this->ptable).'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a> ' : (isset($GLOBALS['TL_DCA'][$this->strTable]['config']['backlink']) ? '
 <a href="contao/main.php?'.$GLOBALS['TL_DCA'][$this->strTable]['config']['backlink'].'" class="header_back" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']).'" accesskey="b" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a> ' : '')) . ((\Input::get('act') != 'select' && !$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable']) ? '
 <a href="'.(($this->ptable != '') ? $this->addToUrl('act=create' . (($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] < 4) ? '&amp;mode=2' : '') . '&amp;pid=' . $this->intId) : $this->addToUrl('act=create')).'" class="header_new" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['new'][1]).'" accesskey="n" onclick="Backend.getScrollOffset()">'.$GLOBALS['TL_LANG'][$this->strTable]['new'][0].'</a> ' : '') . $this->generateGlobalButtons() . '
 </div>';
-		}
 
 		// Return "no records found" message
 		if ($objRow->numRows < 1)
@@ -4707,7 +4700,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$result = $objRow->fetchAllAssoc();
 
 			$return .= ((\Input::get('act') == 'select') ? '
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form tl_edit_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
+<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_select">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').'
@@ -5019,137 +5012,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 
 	/**
-	 * Build the sort panel and return it as string
-	 *
-	 * @return string
-	 */
-	protected function panel()
-	{
-		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
-		{
-			return '';
-		}
-
-		// Reset all filters
-		if (isset($_POST['filter_reset']) && \Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
-			/** @var AttributeBagInterface $objSessionBag */
-			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
-
-			$data = $objSessionBag->all();
-
-			unset($data['filter'][$this->strTable]);
-			unset($data['filter'][$this->strTable.'_'.CURRENT_ID]);
-			unset($data['sorting'][$this->strTable]);
-			unset($data['search'][$this->strTable]);
-
-			$objSessionBag->replace($data);
-
-			$this->reload();
-		}
-
-		$intFilterPanel = 0;
-		$arrPanels = array();
-		$arrPanes = \StringUtil::trimsplit(';', $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout']);
-
-		foreach ($arrPanes as $strPanel)
-		{
-			$panels = '';
-			$arrSubPanels = \StringUtil::trimsplit(',', $strPanel);
-
-			foreach ($arrSubPanels as $strSubPanel)
-			{
-				$panel = '';
-
-				// Regular panels
-				if ($strSubPanel == 'search' || $strSubPanel == 'limit' || $strSubPanel == 'sort')
-				{
-					$panel = $this->{$strSubPanel . 'Menu'}();
-				}
-
-				// Multiple filter subpanels can be defined to split the fields across panels
-				elseif ($strSubPanel == 'filter')
-				{
-					$panel = $this->{$strSubPanel . 'Menu'}(++$intFilterPanel);
-				}
-
-				// Call the panel_callback
-				else
-				{
-					$arrCallback = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panel_callback'][$strSubPanel];
-
-					if (is_array($arrCallback))
-					{
-						$this->import($arrCallback[0]);
-						$panel = $this->{$arrCallback[0]}->{$arrCallback[1]}($this);
-					}
-					elseif (is_callable($arrCallback))
-					{
-						$panel = $arrCallback($this);
-					}
-				}
-
-				// Add the panel if it is not empty
-				if ($panel != '')
-				{
-					$panels = $panel . $panels;
-				}
-			}
-
-			// Add the group if it is not empty
-			if ($panels != '')
-			{
-				$arrPanels[] = $panels;
-			}
-		}
-
-		if (empty($arrPanels))
-		{
-			return '';
-		}
-
-		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
-			$this->reload();
-		}
-
-		$return = '';
-		$intTotal = count($arrPanels);
-		$intLast = $intTotal - 1;
-
-		for ($i=0; $i<$intTotal; $i++)
-		{
-			$submit = '';
-
-			if ($i == $intLast)
-			{
-				$submit = '
-<div class="tl_submit_panel tl_subpanel">
-  <button name="filter" id="filter" class="tl_img_submit filter_apply" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['apply'] . '</button>
-  <button name="filter_reset" id="filter_reset" value="1" class="tl_img_submit filter_reset" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['reset'] . '</button>
-</div>';
-			}
-
-			$return .= '
-<div class="tl_panel cf">
-  ' . $submit . $arrPanels[$i] . '
-</div>';
-		}
-
-		$return = '
-<form action="'.ampersand(\Environment::get('request'), true).'" class="tl_form" method="post">
-<div class="tl_formbody">
-  <input type="hidden" name="FORM_SUBMIT" value="tl_filters">
-  <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
-  ' . $return . '
-</div>
-</form>';
-
-		return $return;
-	}
-
-
-	/**
 	 * Return a search form that allows to search results using regular expressions
 	 *
 	 * @return string
@@ -5287,7 +5149,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		/** @var AttributeBagInterface $objSessionBag */
 		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
-		$this->bid = 'tl_buttons_a';
 		$session = $objSessionBag->all();
 		$orderBy = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'];
 		$firstOrderBy = preg_replace('/\s+.*$/', '', $orderBy[0]);
@@ -5505,7 +5366,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
 
 		$fields = '';
-		$this->bid = 'tl_buttons_a';
 		$sortingFields = array();
 		$session = $objSessionBag->all();
 		$filter = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4) ? $this->strTable.'_'.CURRENT_ID : $this->strTable;
@@ -6140,13 +6000,17 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Predefined node set (see #3563)
 		if (isset($attributes['rootNodes']))
 		{
-			$arrRoot = (array) $attributes['rootNodes'];
+			$arrRoot = $this->eliminateNestedPages((array) $attributes['rootNodes']);
 
-			// Allow only those roots that are allowed in root nodes
+			// Calculate the intersection of the root nodes with the mounted nodes (see #1001)
 			if (!empty($this->root) && $arrRoot != $this->root)
 			{
-				$arrRoot = array_intersect($arrRoot, array_merge($this->root, $this->Database->getChildRecords($this->root, $this->strTable)));
-				$arrRoot = $this->eliminateNestedPages($arrRoot);
+				$arrRoot = $this->eliminateNestedPages(
+					array_intersect(
+						array_merge($arrRoot, $this->Database->getChildRecords($arrRoot, $this->strTable)),
+						array_merge($this->root, $this->Database->getChildRecords($this->root, $this->strTable))
+					)
+				);
 			}
 
 			$this->root = $arrRoot;

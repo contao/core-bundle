@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\Tests\HttpKernel\Bundle;
 use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Tests the ContaoModuleBundle class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ContaoModuleBundleTest extends TestCase
 {
     /**
@@ -26,41 +23,29 @@ class ContaoModuleBundleTest extends TestCase
     protected $bundle;
 
     /**
-     * Creates a new Contao module bundle.
+     * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->bundle = new ContaoModuleBundle('foobar', $this->getRootDir().'/app');
+        $this->bundle = new ContaoModuleBundle('foobar', $this->getFixturesDir().'/app');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle', $this->bundle);
     }
 
-    /**
-     * Tests the getPath() method.
-     */
-    public function testGetPath()
+    public function testReturnsTheModulePath(): void
     {
-        $this->assertSame(
-            $this->getRootDir().'/system/modules/foobar',
-            $this->bundle->getPath()
-        );
+        $this->assertSame($this->getFixturesDir().'/system/modules/foobar', $this->bundle->getPath());
     }
 
-    /**
-     * Tests that an exception is thrown if the module folder does not exist.
-     */
-    public function testModuleFolderDoesNotExist()
+    public function testFailsIfTheModuleFolderDoesNotExist(): void
     {
         $this->expectException('LogicException');
 
-        $this->bundle = new ContaoModuleBundle('invalid', $this->getRootDir().'/app');
+        $this->bundle = new ContaoModuleBundle('invalid', $this->getFixturesDir().'/app');
     }
 }

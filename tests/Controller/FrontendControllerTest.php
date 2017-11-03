@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,41 +13,27 @@
 namespace Contao\CoreBundle\Tests\Controller;
 
 use Contao\CoreBundle\Controller\FrontendController;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Tests the FrontendController class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class FrontendControllerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $controller = new FrontendController();
 
         $this->assertInstanceOf('Contao\CoreBundle\Controller\FrontendController', $controller);
     }
 
-    /**
-     * Tests the controller actions.
-     */
-    public function testActions()
+    public function testReturnsAResponseInTheActionMethods(): void
     {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        $container = $this->mockKernel()->getContainer();
-        $container->set('contao.framework', $framework);
+        $container = $this->mockContainer();
+        $container->set('contao.framework', $this->mockContaoFramework());
 
         $controller = new FrontendController();
         $controller->setContainer($container);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->indexAction());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->cronAction());
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->shareAction());
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $controller->shareAction());
     }
 }

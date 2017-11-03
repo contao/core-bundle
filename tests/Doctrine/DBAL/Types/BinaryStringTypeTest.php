@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,15 +13,10 @@
 namespace Contao\CoreBundle\Tests\Doctrine\DBAL\Types;
 
 use Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType;
-use Contao\CoreBundle\Tests\TestCase;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the BinaryStringType class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class BinaryStringTypeTest extends TestCase
 {
     /**
@@ -30,31 +27,29 @@ class BinaryStringTypeTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
+
         Type::addType(BinaryStringType::NAME, BinaryStringType::class);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->type = Type::getType(BinaryStringType::NAME);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType', $this->type);
     }
 
-    /**
-     * Tests that getSqlDeclaration() returns a binary definition for fixed length fields.
-     */
-    public function testGetSQLDeclarationWithFixedLength()
+    public function testReturnsABinaryDefinitionForAFixedLengthField(): void
     {
         $fieldDefinition = ['fixed' => true];
 
@@ -78,10 +73,7 @@ class BinaryStringTypeTest extends TestCase
         $this->type->getSQLDeclaration($fieldDefinition, $platform);
     }
 
-    /**
-     * Tests that getSqlDeclaration() returns a blob definition for variable length fields.
-     */
-    public function testGetSQLDeclarationWithVariableLength()
+    public function testReturnsABlobDefinitionForAVariableLengthField(): void
     {
         $fieldDefinition = ['fixed' => false];
 
@@ -105,21 +97,13 @@ class BinaryStringTypeTest extends TestCase
         $this->type->getSQLDeclaration($fieldDefinition, $platform);
     }
 
-    /**
-     * Tests the name.
-     */
-    public function testName()
+    public function testReturnsTheCorrectName(): void
     {
         $this->assertSame(BinaryStringType::NAME, $this->type->getName());
     }
 
-    /**
-     * Tests the custom type requires an SQL hint.
-     */
-    public function testRequiresSQLCommentHint()
+    public function testRequiresAnSqlCommentHintForTheCustomType(): void
     {
-        $platform = $this->getMockForAbstractClass(AbstractPlatform::class);
-
-        $this->assertTrue($this->type->requiresSQLCommentHint($platform));
+        $this->assertTrue($this->type->requiresSQLCommentHint($this->getMockForAbstractClass(AbstractPlatform::class)));
     }
 }

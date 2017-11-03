@@ -1,5 +1,5 @@
-/**
- * Contao Open Source CMS
+/*!
+ * This file is part of Contao.
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
@@ -67,6 +67,21 @@ p {
 	border:1px solid #ddd;
 	background:#fcfcfc;
 	padding:9px;
+}
+#sql_message {
+	margin-bottom:1em;
+	padding:1em;
+	background:#ffc;
+	border:1px solid #fc0;
+}
+#sql_message > :last-child {
+	margin-bottom:0;
+}
+#sql_message ul {
+	margin:0 0 1em 2em;
+}
+#sql_message li {
+	list-style:initial;
 }
 #sql_table {
 	margin:-9px 0 0;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,11 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * Monolog processor for Contao.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class ContaoTableProcessor
 {
     /**
@@ -44,14 +41,12 @@ class ContaoTableProcessor
     private $anonymizeIp;
 
     /**
-     * Constructor.
-     *
      * @param RequestStack          $requestStack
      * @param TokenStorageInterface $tokenStorage
      * @param ScopeMatcher          $scopeMatcher
      * @param bool                  $anonymizeIp
      */
-    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, $anonymizeIp = true)
+    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, bool $anonymizeIp = true)
     {
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
@@ -66,7 +61,7 @@ class ContaoTableProcessor
      *
      * @return array
      */
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
         if (!isset($record['context']['contao']) || !($record['context']['contao'] instanceof ContaoContext)) {
             return $record;
@@ -74,7 +69,7 @@ class ContaoTableProcessor
 
         $context = $record['context']['contao'];
         $request = $this->requestStack->getCurrentRequest();
-        $level = isset($record['level']) ? $record['level'] : 0;
+        $level = $record['level'] ?? 0;
 
         $this->updateAction($context, $level);
         $this->updateIp($context, $request);
@@ -94,7 +89,7 @@ class ContaoTableProcessor
      * @param ContaoContext $context
      * @param int           $level
      */
-    private function updateAction(ContaoContext $context, $level)
+    private function updateAction(ContaoContext $context, int $level): void
     {
         if (null !== $context->getAction()) {
             return;
@@ -113,12 +108,12 @@ class ContaoTableProcessor
      * @param ContaoContext $context
      * @param Request|null  $request
      */
-    private function updateIp(ContaoContext $context, Request $request = null)
+    private function updateIp(ContaoContext $context, Request $request = null): void
     {
         $ip = $context->getIp();
 
         if (null === $ip) {
-            $ip = null === $request ? '127.0.0.1' : $request->getClientIp();
+            $ip = null === $request ? '127.0.0.1' : (string) $request->getClientIp();
         }
 
         if ($this->anonymizeIp) {
@@ -134,13 +129,13 @@ class ContaoTableProcessor
      * @param ContaoContext $context
      * @param Request|null  $request
      */
-    private function updateBrowser(ContaoContext $context, Request $request = null)
+    private function updateBrowser(ContaoContext $context, Request $request = null): void
     {
         if (null !== $context->getBrowser()) {
             return;
         }
 
-        $context->setBrowser(null === $request ? 'N/A' : $request->server->get('HTTP_USER_AGENT'));
+        $context->setBrowser(null === $request ? 'N/A' : (string) $request->server->get('HTTP_USER_AGENT'));
     }
 
     /**
@@ -148,7 +143,7 @@ class ContaoTableProcessor
      *
      * @param ContaoContext $context
      */
-    private function updateUsername(ContaoContext $context)
+    private function updateUsername(ContaoContext $context): void
     {
         if (null !== $context->getUsername()) {
             return;
@@ -165,7 +160,7 @@ class ContaoTableProcessor
      * @param ContaoContext $context
      * @param Request|null  $request
      */
-    private function updateSource(ContaoContext $context, Request $request = null)
+    private function updateSource(ContaoContext $context, Request $request = null): void
     {
         if (null !== $context->getSource()) {
             return;
@@ -181,7 +176,7 @@ class ContaoTableProcessor
      *
      * @return string
      */
-    private function anonymizeIp($ip)
+    private function anonymizeIp(string $ip): string
     {
         if ('127.0.0.1' === $ip || '::1' === $ip) {
             return $ip;

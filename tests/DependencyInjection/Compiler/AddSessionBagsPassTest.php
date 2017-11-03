@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,27 +19,16 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-/**
- * Tests the AddSessionBagsPass class.
- *
- * @author Leo Feyer <https:/github.com/leofeyer>
- */
 class AddSessionBagsPassTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $pass = new AddSessionBagsPass();
 
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass', $pass);
     }
 
-    /**
-     * Tests processing the pass.
-     */
-    public function testProcess()
+    public function testAddsTheSessionBags(): void
     {
         $container = new ContainerBuilder();
         $container->setDefinition('session', new Definition(Session::class));
@@ -66,10 +57,7 @@ class AddSessionBagsPassTest extends TestCase
         $this->assertSame('contao.session.contao_frontend', (string) $methodCalls[1][1][0]);
     }
 
-    /**
-     * Tests processing the pass without a session.
-     */
-    public function testProcessWithoutSession()
+    public function testDoesNotAddsTheSessionBagsIfThereIsNoSession(): void
     {
         $container = new ContainerBuilder();
 

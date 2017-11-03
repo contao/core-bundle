@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,32 +13,26 @@
 namespace Contao\CoreBundle\Tests\Twig;
 
 use Contao\BackendCustom;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Tests the ContaoTemplateExtension class.
- *
- * @author Jim Schmid <https://github.com/sheeep>
- */
 class ContaoTemplateExtensionTest extends TestCase
 {
-    /**
-     * Tests the renderContaoBackendTemplate() method.
-     */
-    public function testRenderContaoBackendTemplate()
+    public function testCanBeInstantiated(): void
     {
-        $backendRoute = $this
-            ->getMockBuilder(BackendCustom::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getTemplateObject', 'run'])
-            ->getMock()
-        ;
+        $extension = $this->mockExtension();
 
+        $this->assertInstanceOf('Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension', $extension);
+    }
+
+    public function testRendersTheContaoBackendTemplate(): void
+    {
         $template = new \stdClass();
+        $backendRoute = $this->createMock(BackendCustom::class);
 
         $backendRoute
             ->expects($this->once())
@@ -50,70 +46,61 @@ class ContaoTemplateExtensionTest extends TestCase
             ->willReturn(new Response())
         ;
 
-        $request = new Request();
-        $request->attributes->set('_scope', 'backend');
+        $framework = $this->mockContaoFramework();
 
-        $requestStack = new RequestStack();
-        $requestStack->push($request);
+        $framework
+            ->method('createInstance')
+            ->with(BackendCustom::class)
+            ->willReturn($backendRoute)
+        ;
 
-        $framework = $this->mockContaoFramework(null, null, [], [
-            BackendCustom::class => $backendRoute,
-        ]);
-
-        $scopeMatcher = $this->mockScopeMatcher();
-        $extension = new ContaoTemplateExtension($requestStack, $framework, $scopeMatcher);
-
-        $extension->renderContaoBackendTemplate([
-            'a' => 'a',
-            'b' => 'b',
-            'c' => 'c',
-        ]);
+        $extension = $this->mockExtension($framework);
+        $extension->renderContaoBackendTemplate(['a' => 'a', 'b' => 'b', 'c' => 'c']);
 
         $this->assertSame('a', $template->a);
         $this->assertSame('b', $template->b);
         $this->assertSame('c', $template->c);
     }
 
-    /**
-     * Tests the getFunctions() method.
-     */
-    public function testGetFunctions()
+    public function testAddsTheRenderContaoBackEndTemplateFunction(): void
     {
-        $request = new Request();
-        $request->attributes->set('_scope', 'backend');
+        $functions = $this->mockExtension()->getFunctions();
 
-        $requestStack = new RequestStack();
-        $requestStack->push($request);
-
-        $framework = $this->mockContaoFramework(null, null, [], []);
-        $scopeMatcher = $this->mockScopeMatcher();
-
-        $extension = new ContaoTemplateExtension($requestStack, $framework, $scopeMatcher);
-        $functions = $extension->getFunctions();
-
-        $renderBaseTemplateFunction = array_filter($functions, function (\Twig_SimpleFunction $function) {
-            return $function->getName() === 'render_contao_backend_template';
-        });
+        $renderBaseTemplateFunction = array_filter(
+            $functions,
+            function (\Twig_SimpleFunction $function): bool {
+                return 'render_contao_backend_template' === $function->getName();
+            }
+        );
 
         $this->assertCount(1, $renderBaseTemplateFunction);
     }
 
+    public function testDoesNotRenderTheBackEndTemplateIfNotInBackEndScope(): void
+    {
+        $this->assertEmpty($this->mockExtension(null, 'frontend')->renderContaoBackendTemplate());
+    }
+
     /**
-     * Tests the scope restriction.
+     * Mocks a Contao template extension with an optional scope.
+     *
+     * @param ContaoFrameworkInterface|null $framework
+     * @param string                        $scope
+     *
+     * @return ContaoTemplateExtension
      */
-    public function testScopeRestriction()
+    private function mockExtension(ContaoFrameworkInterface $framework = null, string $scope = 'backend'): ContaoTemplateExtension
     {
         $request = new Request();
-        $request->attributes->set('_scope', 'frontend');
+        $request->attributes->set('_scope', $scope);
 
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
-        $scopeMatcher = $this->mockScopeMatcher();
+        if (null === $framework) {
+            $framework = $this->mockContaoFramework();
+        }
 
-        $framework = $this->mockContaoFramework(null, null, [], []);
-        $extension = new ContaoTemplateExtension($requestStack, $framework, $scopeMatcher);
-
-        $this->assertEmpty($extension->renderContaoBackendTemplate());
+        return new ContaoTemplateExtension($requestStack, $framework, $this->mockScopeMatcher());
     }
 }

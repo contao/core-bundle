@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,12 +18,8 @@ use Contao\CoreBundle\Picker\PickerConfig;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the Picker class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class PickerTest extends TestCase
 {
     /**
@@ -32,43 +30,31 @@ class PickerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $factory = new MenuFactory();
+        $translator = $this->createMock(TranslatorInterface::class);
+
+        $translator
+            ->method('trans')
+            ->willReturn('Page picker')
+        ;
 
         $this->picker = new Picker(
             $factory,
-            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
+            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class), $translator)],
             new PickerConfig('page', [], 5, 'pagePicker')
         );
-
-        $GLOBALS['TL_LANG']['MSC']['pagePicker'] = 'Page picker';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        unset($GLOBALS['TL_LANG']);
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Picker\Picker', $this->picker);
     }
 
-    /**
-     * Tests the getConfig() method.
-     */
-    public function testGetConfig()
+    public function testReturnsTheConfiguration(): void
     {
         $config = $this->picker->getConfig();
 
@@ -76,10 +62,7 @@ class PickerTest extends TestCase
         $this->assertSame('page', $config->getContext());
     }
 
-    /**
-     * Tests the getMenu() method.
-     */
-    public function testGetMenu()
+    public function testReturnsTheMenu(): void
     {
         $menu = $this->picker->getMenu();
 
@@ -96,10 +79,7 @@ class PickerTest extends TestCase
         $this->assertSame($menu, $this->picker->getMenu());
     }
 
-    /**
-     * Tests the getCurrentProvider() method.
-     */
-    public function testGetCurrentProvider()
+    public function testReturnsTheCurrentProvider(): void
     {
         $provider = $this->picker->getCurrentProvider();
 
@@ -107,10 +87,7 @@ class PickerTest extends TestCase
         $this->assertSame('pagePicker', $provider->getName());
     }
 
-    /**
-     * Tests the getCurrentProvider() method without an active provider.
-     */
-    public function testGetCurrentProviderWithoutActiveProvider()
+    public function testReturnsNullIfThereIsNoCurrentProvider(): void
     {
         $factory = new MenuFactory();
 
@@ -123,18 +100,31 @@ class PickerTest extends TestCase
         $this->assertNull($picker->getCurrentProvider());
     }
 
-    /**
-     * Tests the getCurrentUrl() method.
-     */
-    public function testGetCurrentUrl()
+    public function testReturnsTheCurrentUrl(): void
     {
         $this->assertSame(null, $this->picker->getCurrentUrl());
     }
 
-    /**
-     * Tests the getCurrentUrl() method without menu items.
-     */
-    public function testGetCurrentUrlWithoutMenuItems()
+    public function testReturnsNullAsCurrentUrlIfThereIsNoCurrentMenuItem(): void
+    {
+        $factory = new MenuFactory();
+
+        $picker = new Picker(
+            $factory,
+            [
+                new PagePickerProvider(
+                    $factory,
+                    $this->createMock(RouterInterface::class),
+                    $this->createMock(TranslatorInterface::class)
+                ),
+            ],
+            new PickerConfig('page')
+        );
+
+        $this->assertSame(null, $picker->getCurrentUrl());
+    }
+
+    public function testFailsToReturnTheCurrentUrlIfThereAreNoMenuItems(): void
     {
         $picker = new Picker(new MenuFactory(), [], new PickerConfig('page', [], 5, 'pagePicker'));
 
@@ -142,21 +132,5 @@ class PickerTest extends TestCase
         $this->expectExceptionMessage('No picker menu items found');
 
         $picker->getCurrentUrl();
-    }
-
-    /**
-     * Tests the getCurrentUrl() method without an active menu item.
-     */
-    public function testGetCurrentUrlWithoutActiveMenuItem()
-    {
-        $factory = new MenuFactory();
-
-        $picker = new Picker(
-            $factory,
-            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
-            new PickerConfig('page')
-        );
-
-        $this->assertSame(null, $picker->getCurrentUrl());
     }
 }

@@ -169,7 +169,8 @@ class BackendUser extends \User
 			return true;
 		}
 
-		$route = \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_route');
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		$route = $request->attributes->get('_route');
 
 		if ($route == 'contao_backend_login')
 		{
@@ -179,9 +180,9 @@ class BackendUser extends \User
 		$parameters = array();
 
 		// Redirect to the last page visited upon login
-		if ($route == 'contao_backend' || $route == 'contao_backend_preview')
+		if ($request->query->count() > 0 && in_array($route, array('contao_backend', 'contao_backend_preview')))
 		{
-			$parameters['referer'] = base64_encode(\Environment::get('request'));
+			$parameters['referer'] = base64_encode($request->getRequestUri());
 		}
 
 		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
@@ -356,11 +357,25 @@ class BackendUser extends \User
 
 		$GLOBALS['TL_USERNAME'] = $this->username;
 
-		\System::getContainer()->get('request_stack')->getCurrentRequest()->setLocale($this->language);
-		\System::getContainer()->get('translator')->setLocale($this->language);
+		// Set the language
+		if ($this->language)
+		{
+			if (\System::getContainer()->has('session'))
+			{
+				$session = \System::getContainer()->get('session');
 
-		// Deprecated since Contao 4.0, to be removed in Contao 5.0
-		$GLOBALS['TL_LANGUAGE'] = str_replace('_', '-', $this->language);
+				if ($session->isStarted())
+				{
+					$session->set('_locale', $this->language);
+				}
+			}
+
+			\System::getContainer()->get('request_stack')->getCurrentRequest()->setLocale($this->language);
+			\System::getContainer()->get('translator')->setLocale($this->language);
+
+			// Deprecated since Contao 4.0, to be removed in Contao 5.0
+			$GLOBALS['TL_LANGUAGE'] = str_replace('_', '-', $this->language);
+		}
 
 		\Config::set('showHelp', $this->showHelp);
 		\Config::set('useRTE', $this->useRTE);

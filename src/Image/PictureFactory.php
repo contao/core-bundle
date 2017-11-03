@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -24,11 +26,6 @@ use Contao\Image\ResizeOptions;
 use Contao\ImageSizeItemModel;
 use Contao\ImageSizeModel;
 
-/**
- * Creates Picture objects.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class PictureFactory implements PictureFactoryInterface
 {
     /**
@@ -62,15 +59,13 @@ class PictureFactory implements PictureFactoryInterface
     private $defaultDensities = '';
 
     /**
-     * Constructor.
-     *
      * @param PictureGeneratorInterface $pictureGenerator
      * @param ImageFactoryInterface     $imageFactory
      * @param ContaoFrameworkInterface  $framework
      * @param bool                      $bypassCache
      * @param array                     $imagineOptions
      */
-    public function __construct(PictureGeneratorInterface $pictureGenerator, ImageFactoryInterface $imageFactory, ContaoFrameworkInterface $framework, $bypassCache, array $imagineOptions)
+    public function __construct(PictureGeneratorInterface $pictureGenerator, ImageFactoryInterface $imageFactory, ContaoFrameworkInterface $framework, bool $bypassCache, array $imagineOptions)
     {
         $this->pictureGenerator = $pictureGenerator;
         $this->imageFactory = $imageFactory;
@@ -82,7 +77,7 @@ class PictureFactory implements PictureFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function setDefaultDensities($densities)
+    public function setDefaultDensities($densities): self
     {
         $this->defaultDensities = (string) $densities;
 
@@ -92,7 +87,7 @@ class PictureFactory implements PictureFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($path, $size = null)
+    public function create($path, $size = null): PictureInterface
     {
         $attributes = [];
 
@@ -102,7 +97,7 @@ class PictureFactory implements PictureFactoryInterface
             $image = $this->imageFactory->create($path);
         }
 
-        if (is_array($size) && isset($size[2]) && 1 === substr_count($size[2], '_')) {
+        if (\is_array($size) && isset($size[2]) && 1 === substr_count($size[2], '_')) {
             $image->setImportantPart($this->imageFactory->getImportantPartFromLegacyMode($image, $size[2]));
             $size[2] = ResizeConfigurationInterface::MODE_CROP;
         }
@@ -131,9 +126,9 @@ class PictureFactory implements PictureFactoryInterface
      *
      * @return array<PictureConfiguration,array>
      */
-    private function createConfig($size)
+    private function createConfig($size): array
     {
-        if (!is_array($size)) {
+        if (!\is_array($size)) {
             $size = [0, 0, $size];
         }
 
@@ -201,7 +196,7 @@ class PictureFactory implements PictureFactoryInterface
      *
      * @return PictureConfigurationItem
      */
-    private function createConfigItem($imageSize)
+    private function createConfigItem($imageSize): PictureConfigurationItem
     {
         $configItem = new PictureConfigurationItem();
         $resizeConfig = new ResizeConfiguration();
@@ -236,7 +231,7 @@ class PictureFactory implements PictureFactoryInterface
      *
      * @return PictureInterface
      */
-    private function addImageAttributes(PictureInterface $picture, array $attributes)
+    private function addImageAttributes(PictureInterface $picture, array $attributes): PictureInterface
     {
         if (empty($attributes)) {
             return $picture;

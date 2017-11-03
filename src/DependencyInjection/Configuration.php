@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,13 +15,9 @@ namespace Contao\CoreBundle\DependencyInjection;
 use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
-/**
- * Adds the Contao configuration structure.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -30,18 +28,30 @@ class Configuration implements ConfigurationInterface
     /**
      * @var string
      */
+    private $projectDir;
+
+    /**
+     * @var string
+     */
     private $rootDir;
 
     /**
-     * Constructor.
-     *
-     * @param bool   $debug
-     * @param string $rootDir
+     * @var string
      */
-    public function __construct($debug, $rootDir)
+    private $defaultLocale;
+
+    /**
+     * @param bool   $debug
+     * @param string $projectDir
+     * @param string $rootDir
+     * @param string $defaultLocale
+     */
+    public function __construct(bool $debug, string $projectDir, string $rootDir, string $defaultLocale)
     {
         $this->debug = (bool) $debug;
+        $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
+        $this->defaultLocale = $defaultLocale;
     }
 
     /**
@@ -49,7 +59,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('contao');
@@ -58,11 +68,13 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('web_dir')
                     ->cannotBeEmpty()
-                    ->defaultValue($this->resolvePath($this->rootDir.'/web'))
+                    ->defaultValue($this->canonicalize($this->projectDir.'/web'))
                     ->validate()
-                        ->always(function ($value) {
-                            return $this->resolvePath($value);
-                        })
+                        ->always(
+                            function (string $value): string {
+                                return $this->canonicalize($value);
+                            }
+                        )
                     ->end()
                 ->end()
                 ->booleanNode('prepend_locale')
@@ -79,12 +91,14 @@ class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->defaultValue('files')
                     ->validate()
-                        ->ifTrue(function ($v) {
-                            return preg_match(
-                                '@^(app|assets|bin|contao|plugins|share|system|templates|var|vendor|web)(/|$)@',
-                                $v
-                            );
-                        })
+                        ->ifTrue(
+                            function (string $v): int {
+                                return preg_match(
+                                    '@^(app|assets|bin|contao|plugins|share|system|templates|var|vendor|web)(/|$)@',
+                                    $v
+                                );
+                            }
+                        )
                         ->thenInvalid('%s')
                     ->end()
                 ->end()
@@ -100,22 +114,28 @@ class Configuration implements ConfigurationInterface
                     ->max(32767)
                     ->defaultValue(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED)
                 ->end()
+                ->arrayNode('locales')
+                    ->prototype('scalar')->end()
+                    ->defaultValue($this->getLocales())
+                ->end()
                 ->arrayNode('image')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('bypass_cache')
-                            ->defaultValue($this->debug)
+                            ->defaultValue(false)
                         ->end()
                         ->scalarNode('target_path')
                             ->defaultNull()
                         ->end()
                         ->scalarNode('target_dir')
                             ->cannotBeEmpty()
-                            ->defaultValue($this->resolvePath($this->rootDir.'/assets/images'))
+                            ->defaultValue($this->canonicalize($this->projectDir.'/assets/images'))
                             ->validate()
-                                ->always(function ($value) {
-                                    return $this->resolvePath($value);
-                                })
+                                ->always(
+                                    function (string $value): string {
+                                        return $this->canonicalize($value);
+                                    }
+                                )
                             ->end()
                         ->end()
                         ->arrayNode('valid_extensions')
@@ -152,20 +172,72 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Resolves a path.
+     * Canonicalizes a path preserving the directory separators.
      *
      * @param string $value
      *
      * @return string
      */
-    private function resolvePath($value)
+    private function canonicalize(string $value): string
     {
-        $path = Path::canonicalize($value);
+        $resolved = [];
+        $chunks = preg_split('#([\\/]+)#', $value, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            $path = str_replace('/', '\\', $path);
+        for ($i = 0; $i < count($chunks); $i++) {
+            if ('.' === $chunks[$i]) {
+                ++$i;
+                continue;
+            }
+
+            // Reduce multiple slashes to one
+            if ('/' === substr($chunks[$i], 0, 1)) {
+                $resolved[] = '/';
+                continue;
+            }
+
+            // Reduce multiple backslashes to one
+            if ('\\' === substr($chunks[$i], 0, 1)) {
+                $resolved[] = '\\';
+                continue;
+            }
+
+            if ('..' === $chunks[$i]) {
+                ++$i;
+                array_pop($resolved);
+                array_pop($resolved);
+                continue;
+            }
+
+            $resolved[] = $chunks[$i];
         }
 
-        return $path;
+        return implode($resolved);
+    }
+
+    /**
+     * Returns the Contao locales.
+     *
+     * @return array
+     */
+    private function getLocales(): array
+    {
+        $dirs = [__DIR__.'/../Resources/contao/languages'];
+
+        // app/Resources/contao/languages
+        if (is_dir($this->rootDir.'/Resources/contao/languages')) {
+            $dirs[] = $this->rootDir.'/Resources/contao/languages';
+        }
+
+        // The default locale must be the first supported language (see contao/core#6533)
+        $languages = [$this->defaultLocale];
+
+        /** @var SplFileInfo[] $finder */
+        $finder = Finder::create()->directories()->depth(0)->name('/^[a-z]{2}(_[A-Z]{2})?$/')->in($dirs);
+
+        foreach ($finder as $file) {
+            $languages[] = $file->getFilename();
+        }
+
+        return array_values(array_unique($languages));
     }
 }

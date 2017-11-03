@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,44 +14,29 @@ namespace Contao\CoreBundle\Tests\Routing;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Routing\FrontendLoader;
-use PHPUnit\Framework\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\RouteCollection;
 
-/**
- * Tests the FrontendLoader class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class FrontendLoaderTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $loader = new FrontendLoader(false);
 
         $this->assertInstanceOf('Contao\CoreBundle\Routing\FrontendLoader', $loader);
     }
 
-    /**
-     * Tests the supports() method.
-     */
-    public function testSupports()
+    public function testSupportsTheContaoFrontEndRoute(): void
     {
         $loader = new FrontendLoader(false);
 
         $this->assertTrue($loader->supports('.', 'contao_frontend'));
     }
 
-    /**
-     * Tests that the dynamic routes have the correct scope.
-     */
-    public function testContainerScope()
+    public function testReturnsTheCorrectScope(): void
     {
         $loader = new FrontendLoader(false);
         $collection = $loader->load('.', 'bundles');
@@ -65,10 +52,7 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    /**
-     * Tests that the dynamic routes are mapped to the correct controller.
-     */
-    public function testController()
+    public function testReturnsTheDefaultController(): void
     {
         $loader = new FrontendLoader(false);
         $collection = $loader->load('.', 'bundles');
@@ -84,25 +68,22 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    public function testGenerateFrontendWithMissingAlias()
+    public function testFailsToGenerateTheFrontEndUrlIfTheAliasIsMissing(): void
     {
         $loader = new FrontendLoader(false);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->expectException(MissingMandatoryParametersException::class);
 
         $router->generate('contao_frontend');
     }
 
-    /**
-     * Tests generating  generating the "contao_frontend" route without locale.
-     */
-    public function testGenerateFrontendWithoutLocale()
+    public function testGeneratesTheFrontEndUrlWithoutLocale(): void
     {
         $loader = new FrontendLoader(false);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->assertSame(
             '/foobar.html',
@@ -110,14 +91,11 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    /**
-     * Tests generating  generating the "contao_frontend" route with locale.
-     */
-    public function testGenerateFrontendWithLocale()
+    public function testGeneratesTheFrontEndUrlWithLocale(): void
     {
         $loader = new FrontendLoader(true);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->assertSame(
             '/en/foobar.html',
@@ -125,28 +103,22 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    /**
-     * Tests generating the "contao_frontend" route with missing locale.
-     */
-    public function testGenerateFrontendWithMissingLocale()
+    public function testFailsToGenerateTheFrontEndUrlIfTheLocaleIsMissing(): void
     {
         $loader = new FrontendLoader(true);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->expectException(MissingMandatoryParametersException::class);
 
         $router->generate('contao_frontend', ['alias' => 'foobar']);
     }
 
-    /**
-     * Tests generating the "contao_index" route without locale.
-     */
-    public function testGenerateIndexWithoutLocale()
+    public function testGeneratesTheIndexUrlWithoutLocale(): void
     {
         $loader = new FrontendLoader(false);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->assertSame(
             '/',
@@ -154,14 +126,11 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    /**
-     * Tests generating the "contao_index" route with locale.
-     */
-    public function testGenerateIndexWithLocale()
+    public function testGeneratesTheIndexUrlWithLocale(): void
     {
         $loader = new FrontendLoader(true);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->assertSame(
             '/en/',
@@ -169,14 +138,11 @@ class FrontendLoaderTest extends TestCase
         );
     }
 
-    /**
-     * Tests generating the "contao_index" route with missing locale.
-     */
-    public function testGenerateIndexWithMissingLocale()
+    public function testFailsToGenerateTheIndexUrlIfTheLocaleIsMissing(): void
     {
         $loader = new FrontendLoader(true);
         $collection = $loader->load('.', 'bundles');
-        $router = $this->getRouter($collection);
+        $router = $this->mockRouter($collection);
 
         $this->expectException(MissingMandatoryParametersException::class);
 
@@ -184,14 +150,14 @@ class FrontendLoaderTest extends TestCase
     }
 
     /**
-     * Generates a router using the given RouteCollection.
+     * Mocks a router using the given route collection.
      *
      * @param RouteCollection $collection
      * @param string          $urlSuffix
      *
      * @return Router
      */
-    private function getRouter(RouteCollection $collection, $urlSuffix = '.html')
+    private function mockRouter(RouteCollection $collection, string $urlSuffix = '.html'): Router
     {
         $loader = $this->createMock(LoaderInterface::class);
 
@@ -200,19 +166,9 @@ class FrontendLoaderTest extends TestCase
             ->willReturn($collection)
         ;
 
-        $container = $this->createMock(ContainerInterface::class);
-
-        $container
-            ->method('getParameter')
-            ->with('contao.url_suffix')
-            ->willReturn($urlSuffix)
-        ;
-
-        $container
-            ->method('get')
-            ->with('routing.loader')
-            ->willReturn($loader)
-        ;
+        $container = $this->mockContainer();
+        $container->setParameter('contao.url_suffix', $urlSuffix);
+        $container->set('routing.loader', $loader);
 
         return new Router($container, '');
     }

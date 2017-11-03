@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,27 +15,16 @@ namespace Contao\CoreBundle\Tests\Exception;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the AjaxRedirectResponseException class.
- *
- * @author Christian Schiffler <https://github.com/discordier>
- */
 class AjaxRedirectResponseExceptionTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $exception = new AjaxRedirectResponseException('http://example.org');
 
         $this->assertInstanceOf('Contao\CoreBundle\Exception\AjaxRedirectResponseException', $exception);
     }
 
-    /**
-     * Tests the getResponse() method.
-     */
-    public function testGetResponse()
+    public function testSetsTheResponseStatusCodeAndAjaxLocation(): void
     {
         $exception = new AjaxRedirectResponseException('http://example.org');
 

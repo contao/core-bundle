@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,42 +15,36 @@ namespace Contao\CoreBundle\Tests\Command;
 use Contao\CoreBundle\Command\InstallCommand;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\FlockStore;
 
-/**
- * Tests the InstallCommand class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class InstallCommandTest extends TestCase
 {
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
+
         $fs = new Filesystem();
 
-        $fs->remove($this->getRootDir().'/assets/css');
-        $fs->remove($this->getRootDir().'/assets/images');
-        $fs->remove($this->getRootDir().'/assets/images_test');
-        $fs->remove($this->getRootDir().'/assets/js');
-        $fs->remove($this->getRootDir().'/files_test');
-        $fs->remove($this->getRootDir().'/system/cache');
-        $fs->remove($this->getRootDir().'/system/config');
-        $fs->remove($this->getRootDir().'/system/initialize.php');
-        $fs->remove($this->getRootDir().'/system/modules/.gitignore');
-        $fs->remove($this->getRootDir().'/system/tmp');
-        $fs->remove($this->getRootDir().'/templates');
-        $fs->remove($this->getRootDir().'/web/share');
+        $fs->remove($this->getTempDir().'/assets/css');
+        $fs->remove($this->getTempDir().'/assets/images');
+        $fs->remove($this->getTempDir().'/assets/images_test');
+        $fs->remove($this->getTempDir().'/assets/js');
+        $fs->remove($this->getTempDir().'/files_test');
+        $fs->remove($this->getTempDir().'/system/cache');
+        $fs->remove($this->getTempDir().'/system/config');
+        $fs->remove($this->getTempDir().'/system/modules/.gitignore');
+        $fs->remove($this->getTempDir().'/system/tmp');
+        $fs->remove($this->getTempDir().'/templates');
+        $fs->remove($this->getTempDir().'/web/share');
+        $fs->remove($this->getTempDir().'/web/system');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $command = new InstallCommand('contao:install');
 
@@ -56,45 +52,35 @@ class InstallCommandTest extends TestCase
         $this->assertSame('contao:install', $command->getName());
     }
 
-    /**
-     * Tests the installation.
-     */
-    public function testInstallation()
+    public function testCreatesTheContaoFolders(): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', $this->getRootDir());
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
-        $container->setParameter('contao.upload_path', 'files');
-        $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images');
+        $container = $this->mockContainer($this->getTempDir());
+        $container->set('filesystem', new Filesystem());
 
         $command = new InstallCommand('contao:install');
         $command->setContainer($container);
 
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
-        $display = $tester->getDisplay();
+        $output = $tester->getDisplay();
 
         $this->assertSame(0, $code);
-        $this->assertContains(' * templates', $display);
-        $this->assertContains(' * web/system', $display);
-        $this->assertContains(' * assets/css', $display);
-        $this->assertContains(' * assets/images', $display);
-        $this->assertContains(' * assets/js', $display);
-        $this->assertContains(' * system/cache', $display);
-        $this->assertContains(' * system/config', $display);
-        $this->assertContains(' * system/tmp', $display);
+        $this->assertContains(' * templates', $output);
+        $this->assertContains(' * web/system', $output);
+        $this->assertContains(' * assets/css', $output);
+        $this->assertContains(' * assets/images', $output);
+        $this->assertContains(' * assets/js', $output);
+        $this->assertContains(' * system/cache', $output);
+        $this->assertContains(' * system/config', $output);
+        $this->assertContains(' * system/tmp', $output);
     }
 
-    /**
-     * Tests the installation with a custom files and images directory.
-     */
-    public function testInstallationWithCustomPaths()
+    public function testHandlesCustomFilesAndImagesPaths(): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', $this->getRootDir());
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
+        $container = $this->mockContainer($this->getTempDir());
         $container->setParameter('contao.upload_path', 'files_test');
-        $container->setParameter('contao.image.target_dir', $this->getRootDir().'/assets/images_test');
+        $container->setParameter('contao.image.target_dir', $this->getTempDir().'/assets/images_test');
+        $container->set('filesystem', new Filesystem());
 
         $command = new InstallCommand('contao:install');
         $command->setContainer($container);
@@ -108,15 +94,16 @@ class InstallCommandTest extends TestCase
         $this->assertContains(' * assets/images_test', $display);
     }
 
-    /**
-     * Tests the lock.
-     */
-    public function testLock()
+    public function testIsLockedWhileRunning(): void
     {
-        $lock = new LockHandler('contao:install');
-        $lock->lock();
+        $factory = new Factory(new FlockStore(sys_get_temp_dir().'/'.md5($this->getTempDir())));
+
+        $lock = $factory->createLock('contao:install');
+        $lock->acquire();
 
         $command = new InstallCommand('contao:install');
+        $command->setContainer($this->mockContainer($this->getTempDir()));
+
         $tester = new CommandTester($command);
 
         $code = $tester->execute([]);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,11 +15,6 @@ namespace Contao\CoreBundle\Picker;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 
-/**
- * DCA picker.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class Picker implements PickerInterface
 {
     /**
@@ -41,8 +38,6 @@ class Picker implements PickerInterface
     private $menu;
 
     /**
-     * Constructor.
-     *
      * @param FactoryInterface          $menuFactory
      * @param PickerProviderInterface[] $providers
      * @param PickerConfig              $config
@@ -57,7 +52,7 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfig()
+    public function getConfig(): PickerConfig
     {
         return $this->config;
     }
@@ -65,7 +60,7 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getMenu()
+    public function getMenu(): ItemInterface
     {
         if (null !== $this->menu) {
             return $this->menu;
@@ -83,7 +78,7 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getCurrentProvider()
+    public function getCurrentProvider(): ?PickerProviderInterface
     {
         foreach ($this->providers as $provider) {
             if ($provider->isCurrent($this->config)) {
@@ -97,7 +92,7 @@ class Picker implements PickerInterface
     /**
      * {@inheritdoc}
      */
-    public function getCurrentUrl()
+    public function getCurrentUrl(): ?string
     {
         foreach ($this->providers as $provider) {
             if ($provider->supportsValue($this->config)) {

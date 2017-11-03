@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,18 +12,22 @@
 
 namespace Contao\CoreBundle\Tests\Contao;
 
+use Contao\Config;
+use Contao\CoreBundle\Image\ImageFactory;
+use Contao\CoreBundle\Image\LegacyResizer;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\File;
+use Contao\FilesModel;
+use Contao\Image\PictureGenerator;
+use Contao\Image\ResizeCalculator;
+use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Contao\Picture;
 use Contao\System;
+use Imagine\Gd\Imagine as ImagineGd;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the Picture class.
- *
- * @author Martin Auswöger <https://github.com/ausi>
- * @author Yanick Witschi <https://github.com/Toflar>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -29,100 +35,78 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class PictureTest extends TestCase
 {
-    private static $rootDir;
-
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        self::$rootDir = __DIR__.'/../../tmp';
+        parent::setUpBeforeClass();
 
         $fs = new Filesystem();
-        $fs->mkdir(self::$rootDir);
-        $fs->mkdir(self::$rootDir.'/assets');
-        $fs->mkdir(self::$rootDir.'/assets/images');
+        $fs->mkdir(static::getTempDir().'/assets');
+        $fs->mkdir(static::getTempDir().'/assets/images');
 
         foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'] as $subdir) {
-            $fs->mkdir(self::$rootDir.'/assets/images/'.$subdir);
+            $fs->mkdir(static::getTempDir().'/assets/images/'.$subdir);
         }
 
-        $fs->mkdir(self::$rootDir.'/system');
-        $fs->mkdir(self::$rootDir.'/system/tmp');
+        $fs->mkdir(static::getTempDir().'/system');
+        $fs->mkdir(static::getTempDir().'/system/tmp');
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function tearDownAfterClass()
-    {
-        $fs = new Filesystem();
-        $fs->remove(self::$rootDir);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        copy(__DIR__.'/../Fixtures/images/dummy.jpg', self::$rootDir.'/dummy.jpg');
+        copy(__DIR__.'/../Fixtures/images/dummy.jpg', $this->getTempDir().'/dummy.jpg');
 
         $GLOBALS['TL_CONFIG']['debugMode'] = false;
         $GLOBALS['TL_CONFIG']['gdMaxImgWidth'] = 3000;
         $GLOBALS['TL_CONFIG']['gdMaxImgHeight'] = 3000;
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpeg,jpg,svg,svgz';
 
-        define('TL_ERROR', 'ERROR');
-        define('TL_FILES_URL', 'http://example.com/');
-        define('TL_ROOT', self::$rootDir);
+        \define('TL_ERROR', 'ERROR');
+        \define('TL_FILES_URL', 'http://example.com/');
+        \define('TL_ROOT', $this->getTempDir());
 
-        $container = $this->mockContainerWithContaoScopes();
-        $this->addImageServicesToContainer($container, self::$rootDir);
-
-        System::setContainer($container);
+        System::setContainer($this->mockContainerWithImageServices());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
+            ->willReturnCallback(
+                function (string $key): ?string {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
 
                         case 'path':
                             return 'dummy.jpg';
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $this->assertInstanceOf('Contao\Picture', new Picture($fileMock));
     }
 
-    /**
-     * Tests the getTemplateData() method.
-     */
-    public function testGetTemplateData()
+    public function testReturnsTheTemplateData(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 0,
@@ -140,12 +124,9 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the getTemplateData() method with an img tag only.
-     */
-    public function testGetTemplateDataImgOnly()
+    public function testHandlesImages(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 100,
@@ -168,12 +149,9 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the getTemplateData() method with sources.
-     */
-    public function testGetTemplateDataWithSources()
+    public function testHandlesImagesWithSources(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 100,
@@ -231,12 +209,9 @@ class PictureTest extends TestCase
         );
     }
 
-    /**
-     * Tests the getTemplateData() method with densities.
-     */
-    public function testGetTemplateDataWithDensities()
+    public function testHandlesImagesWithDensities(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 100,
@@ -258,12 +233,9 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the getTemplateData() method with densities and sizes.
-     */
-    public function testGetTemplateDataWithDensitiesSizes()
+    public function testHandlesImagesWithDensitiesAndSizes(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 100,
@@ -287,14 +259,11 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the getTemplateData() method with encoded file names.
-     */
-    public function testGetTemplateDataUrlEncoded()
+    public function testEncodesFileNames(): void
     {
-        copy(__DIR__.'/../Fixtures/images/dummy.jpg', self::$rootDir.'/dummy with spaces.jpg');
+        copy(__DIR__.'/../Fixtures/images/dummy.jpg', $this->getTempDir().'/dummy with spaces.jpg');
 
-        $picture = new Picture(new \File('dummy with spaces.jpg'));
+        $picture = new Picture(new File('dummy with spaces.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 0,
@@ -312,12 +281,9 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Tests the getTemplateData() method with an old resize mode.
-     */
-    public function testGetTemplateDataOldResizeMode()
+    public function testSupportsTheOldResizeMode(): void
     {
-        $picture = new Picture(new \File('dummy.jpg'));
+        $picture = new Picture(new File('dummy.jpg'));
 
         $picture->setImageSize((object) [
             'width' => 100,
@@ -338,5 +304,45 @@ class PictureTest extends TestCase
         );
 
         $this->assertSame([], $pictureData['sources']);
+    }
+
+    /**
+     * Mocks a container with image services.
+     *
+     * @return ContainerBuilder
+     */
+    private function mockContainerWithImageServices(): ContainerBuilder
+    {
+        $framework = $this->mockContaoFramework([
+            Config::class => $this->mockConfiguredAdapter(['get' => 3000]),
+            FilesModel::class => $this->mockConfiguredAdapter(['findByPath' => null]),
+        ]);
+
+        $container = $this->mockContainer($this->getTempDir());
+        $container->setParameter('contao.web_dir', $this->getTempDir().'/web');
+        $container->setParameter('contao.image.target_dir', $this->getTempDir().'/assets/images');
+
+        $filesystem = new Filesystem();
+
+        $resizer = new LegacyResizer($container->getParameter('contao.image.target_dir'), new ResizeCalculator());
+        $resizer->setFramework($framework);
+
+        $imageFactory = new ImageFactory(
+            $resizer,
+            new ImagineGd(),
+            new ImagineSvg(),
+            $filesystem,
+            $framework,
+            $container->getParameter('contao.image.bypass_cache'),
+            $container->getParameter('contao.image.imagine_options'),
+            $container->getParameter('contao.image.valid_extensions')
+        );
+
+        $pictureGenerator = new PictureGenerator($resizer);
+
+        $container->set('contao.image.image_factory', $imageFactory);
+        $container->set('contao.image.picture_generator', $pictureGenerator);
+
+        return $container;
     }
 }

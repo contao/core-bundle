@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,27 +17,23 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\RegisterHookListenersPass;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-/**
- * Configures the Contao core bundle.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class ContaoCoreBundle extends Bundle
 {
-    const SCOPE_BACKEND = 'backend';
-    const SCOPE_FRONTEND = 'frontend';
+    public const SCOPE_BACKEND = 'backend';
+    public const SCOPE_FRONTEND = 'frontend';
 
     /**
      * {@inheritdoc}
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): ContaoCoreExtension
     {
         return new ContaoCoreExtension();
     }
@@ -43,7 +41,7 @@ class ContaoCoreBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function registerCommands(Application $application)
+    public function registerCommands(Application $application): void
     {
         // disable automatic command registration
     }
@@ -51,7 +49,7 @@ class ContaoCoreBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
@@ -64,5 +62,7 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(new AddImagineClassPass());
         $container->addCompilerPass(new DoctrineMigrationsPass());
         $container->addCompilerPass(new PickerProviderPass());
+        $container->addCompilerPass(new FragmentRegistryPass());
+        $container->addCompilerPass(new RegisterHookListenersPass());
     }
 }

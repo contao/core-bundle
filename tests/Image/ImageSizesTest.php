@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,15 +16,9 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Image\ImageSizes;
 use Contao\CoreBundle\Tests\TestCase;
-use Contao\System;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * Tests the ImageSizes class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class ImageSizesTest extends TestCase
 {
     /**
@@ -43,32 +39,33 @@ class ImageSizesTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
-        $framework = $this->mockContaoFramework();
-        $framework->initialize();
+        parent::setUp();
 
-        System::setContainer($this->mockContainerWithContaoScopes());
-
-        require_once __DIR__.'/../../src/Resources/contao/config/config.php';
+        $GLOBALS['TL_CROP'] = [
+            'relative' => [
+                'proportional', 'box',
+            ],
+            'exact' => [
+                'crop',
+                'left_top',    'center_top',    'right_top',
+                'left_center', 'center_center', 'right_center',
+                'left_bottom', 'center_bottom', 'right_bottom',
+            ],
+        ];
 
         $this->connection = $this->createMock(Connection::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->imageSizes = new ImageSizes($this->connection, $this->eventDispatcher, $framework);
+        $this->imageSizes = new ImageSizes($this->connection, $this->eventDispatcher, $this->mockContaoFramework());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Image\ImageSizes', $this->imageSizes);
     }
 
-    /**
-     * Tests getting all options with image sizes.
-     */
-    public function testGetAllOptionsWithImageSizes()
+    public function testReturnsAllOptionsWithImageSizes(): void
     {
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_ALL);
         $this->expectExampleImageSizes();
@@ -80,10 +77,7 @@ class ImageSizesTest extends TestCase
         $this->assertArrayHasKey('42', $options['image_sizes']);
     }
 
-    /**
-     * Tests getting all options without image sizes.
-     */
-    public function testGetAllOptionsWithoutImageSizes()
+    public function testReturnsAllOptionsWithoutImageSizes(): void
     {
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_ALL);
         $this->expectImageSizes([]);
@@ -94,10 +88,7 @@ class ImageSizesTest extends TestCase
         $this->assertArrayNotHasKey('image_sizes', $options);
     }
 
-    /**
-     * Tests getting the options for an admin user.
-     */
-    public function testGetOptionsForAdminUser()
+    public function testReturnsTheAdminUserOptions(): void
     {
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_USER);
         $this->expectExampleImageSizes();
@@ -112,10 +103,7 @@ class ImageSizesTest extends TestCase
         $this->assertArraySubset($GLOBALS['TL_CROP'], $options);
     }
 
-    /**
-     * Tests getting all options for a regular user.
-     */
-    public function testGetOptionsForRegularUser()
+    public function testReturnsTheRegularUserOptions(): void
     {
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_USER);
         $this->expectExampleImageSizes();
@@ -152,7 +140,7 @@ class ImageSizesTest extends TestCase
      *
      * @param string $event
      */
-    private function expectEvent($event)
+    private function expectEvent($event): void
     {
         $this->eventDispatcher
             ->expects($this->atLeastOnce())
@@ -166,28 +154,27 @@ class ImageSizesTest extends TestCase
      *
      * @param array $imageSizes
      */
-    private function expectImageSizes(array $imageSizes)
+    private function expectImageSizes(array $imageSizes): void
     {
         $this->connection
             ->expects($this->atLeastOnce())
             ->method('fetchAll')
-            ->willReturn($imageSizes);
+            ->willReturn($imageSizes)
+        ;
     }
 
     /**
      * Adds expected example image sizes to the database connection mock object.
      */
-    private function expectExampleImageSizes()
+    private function expectExampleImageSizes(): void
     {
-        $this->expectImageSizes(
+        $this->expectImageSizes([
             [
-                [
-                    'id' => '42',
-                    'name' => 'foobar',
-                    'width' => '',
-                    'height' => '',
-                ],
-            ]
-        );
+                'id' => '42',
+                'name' => 'foobar',
+                'width' => '',
+                'height' => '',
+            ],
+        ]);
     }
 }

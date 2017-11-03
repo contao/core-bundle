@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,12 +15,11 @@ namespace Contao\CoreBundle\Tests\Contao;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\Environment;
 use Contao\System;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Tests the Environment class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- *
  * @group contao3
  */
 class EnvironmentTest extends TestCase
@@ -26,31 +27,39 @@ class EnvironmentTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         Environment::reset();
         Environment::set('path', '/core');
 
+        $request = new Request();
+        $request->server->set('REMOTE_ADDR', '123.456.789.0');
+        $request->server->set('SCRIPT_NAME', '/core/index.php');
+        $request->server->set('HTTPS', 'on');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $container = new ContainerBuilder();
+        $container->set('request_stack', $requestStack);
+
+        System::setContainer($container);
+
         require __DIR__.'/../../src/Resources/contao/config/default.php';
         require __DIR__.'/../../src/Resources/contao/config/agents.php';
     }
 
     /**
-     * Returns the normalized root directory.
-     *
      * @return string
      */
-    public function getRootDir()
+    public function getRootDir(): string
     {
-        return strtr(parent::getRootDir(), '\\', '/');
+        return strtr(parent::getFixturesDir(), '\\', '/');
     }
 
-    /**
-     * Tests the mod_php environment.
-     */
-    public function testApache()
+    public function testHandlesModPhp(): void
     {
         $this->setSapi('apache');
 
@@ -76,10 +85,7 @@ class EnvironmentTest extends TestCase
         $this->runTests();
     }
 
-    /**
-     * Tests the cgi_fcgi environment.
-     */
-    public function testCgiFcgi()
+    public function testHandlesCgiFcgi(): void
     {
         $this->setSapi('cgi_fcgi');
 
@@ -109,10 +115,7 @@ class EnvironmentTest extends TestCase
         $this->runTests();
     }
 
-    /**
-     * Tests the fpm_fcgi environment.
-     */
-    public function testFpmFcgi()
+    public function testHandlesFpmFcgi(): void
     {
         $this->setSapi('fpm_fcgi');
 
@@ -140,20 +143,8 @@ class EnvironmentTest extends TestCase
         $this->runTests();
     }
 
-    /**
-     * Runs the actual tests.
-     */
-    protected function runTests()
+    private function runTests(): void
     {
-        $container = $this->mockContainerWithContaoScopes();
-        $request = $container->get('request_stack')->getCurrentRequest();
-
-        $request->server->set('REMOTE_ADDR', '123.456.789.0');
-        $request->server->set('SCRIPT_NAME', '/core/index.php');
-        $request->server->set('HTTPS', 'on');
-
-        System::setContainer($container);
-
         $agent = Environment::get('agent');
 
         $this->assertSame('mac', $agent->os);
@@ -189,11 +180,9 @@ class EnvironmentTest extends TestCase
     }
 
     /**
-     * Overrides the SAPI value.
-     *
      * @param string $sapi
      */
-    private function setSapi($sapi)
+    private function setSapi(string $sapi): void
     {
         $reflection = new \ReflectionClass(Environment::class);
 

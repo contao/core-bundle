@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,10 +12,8 @@
 
 namespace Contao\CoreBundle\Tests\Security;
 
-use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Security\Authentication\ContaoToken;
 use Contao\CoreBundle\Security\ContaoAuthenticator;
-use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -22,28 +22,16 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-/**
- * Tests the ContaoAuthenticator class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- * @author Andreas Schempp <https://github.com/aschempp>
- */
-class ContaoAuthenticatorTest extends TestCase
+class ContaoAuthenticatorTest extends SecurityTestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\ContaoAuthenticator', $authenticator);
     }
 
-    /**
-     * Tests creating an authentication token.
-     */
-    public function testCreateToken()
+    public function testCreatesTheToken(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
         $token = $authenticator->createToken(new Request(), 'frontend');
@@ -53,13 +41,10 @@ class ContaoAuthenticatorTest extends TestCase
         $this->assertSame('anon.', $token->getUsername());
     }
 
-    /**
-     * Tests authenticating a token.
-     */
-    public function testAuthenticateToken()
+    public function testAuthenticatesTheToken(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
-        $authenticator->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
+        $authenticator->setContainer($this->mockContainerWithScope('frontend'));
 
         $provider = $this->mockUserProvider();
 
@@ -78,13 +63,10 @@ class ContaoAuthenticatorTest extends TestCase
         $this->assertSame($token, $authenticator->authenticateToken($token, $provider, 'console'));
     }
 
-    /**
-     * Tests authenticating an invalid token.
-     */
-    public function testAuthenticateInvalidToken()
+    public function testFailsToAuthenticateAnInvalidToken(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
-        $authenticator->setContainer($this->mockContainerWithContaoScopes(ContaoCoreBundle::SCOPE_FRONTEND));
+        $authenticator->setContainer($this->mockContainerWithScope('frontend'));
 
         $this->expectException(AuthenticationException::class);
 
@@ -93,10 +75,7 @@ class ContaoAuthenticatorTest extends TestCase
         );
     }
 
-    /**
-     * Tests authenticating a token without the container being set.
-     */
-    public function testAuthenticateTokenWithoutContainer()
+    public function testFailsToAuthenticateATokenIfThereIsNoContainerContainer(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
 
@@ -107,10 +86,7 @@ class ContaoAuthenticatorTest extends TestCase
         );
     }
 
-    /**
-     * Tests the token support.
-     */
-    public function testSupportsToken()
+    public function testChecksIfATokenIsSupported(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
 
@@ -123,43 +99,13 @@ class ContaoAuthenticatorTest extends TestCase
     }
 
     /**
-     * Mocks a user provider object.
-     *
-     * @return UserProviderInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function mockUserProvider()
-    {
-        $user = $this->mockUser();
-
-        $provider = $this->createMock(UserProviderInterface::class);
-
-        $provider
-            ->method('loadUserByUsername')
-            ->willReturnCallback(function ($username) use ($user) {
-                if ('frontend' === $username || 'backend' === $username) {
-                    return $user;
-                }
-
-                throw new UsernameNotFoundException();
-            })
-        ;
-
-        return $provider;
-    }
-
-    /**
      * Mocks a user object.
      *
      * @return User|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockUser()
+    private function mockUser(): User
     {
-        $user = $this
-            ->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['authenticate'])
-            ->getMock()
-        ;
+        $user = $this->createPartialMock(User::class, ['authenticate']);
 
         $user
             ->method('authenticate')
@@ -167,5 +113,31 @@ class ContaoAuthenticatorTest extends TestCase
         ;
 
         return $user;
+    }
+
+    /**
+     * Mocks a user provider object.
+     *
+     * @return UserProviderInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockUserProvider(): UserProviderInterface
+    {
+        $user = $this->mockUser();
+        $provider = $this->createMock(UserProviderInterface::class);
+
+        $provider
+            ->method('loadUserByUsername')
+            ->willReturnCallback(
+                function (string $username) use ($user): User {
+                    if ('frontend' === $username || 'backend' === $username) {
+                        return $user;
+                    }
+
+                    throw new UsernameNotFoundException();
+                }
+            )
+        ;
+
+        return $provider;
     }
 }

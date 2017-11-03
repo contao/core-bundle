@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,34 +15,23 @@ namespace Contao\CoreBundle\Tests\DataCollector;
 use Contao\ContentImage;
 use Contao\ContentText;
 use Contao\CoreBundle\DataCollector\ContaoDataCollector;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\LayoutModel;
+use Contao\PageModel;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Tests the ContaoDataCollector class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ContaoDataCollectorTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $collector = new ContaoDataCollector([]);
 
         $this->assertInstanceOf('Contao\CoreBundle\DataCollector\ContaoDataCollector', $collector);
     }
 
-    /**
-     * Tests the collect() method in the back end scope.
-     */
-    public function testCollectWitoutPageObject()
+    public function testCollectsDataInBackEnd(): void
     {
         $GLOBALS['TL_DEBUG'] = [
             'classes_set' => [System::class],
@@ -76,36 +67,43 @@ class ContaoDataCollectorTest extends TestCase
         unset($GLOBALS['TL_DEBUG']);
     }
 
-    /**
-     * Tests the collect() method in the front end scope.
-     */
-    public function testCollectWithPageObject()
+    public function testCollectsDataInFrontEnd(): void
     {
-        $layout = new \stdClass();
-        $layout->name = 'Default';
-        $layout->id = 2;
-        $layout->template = 'fe_page';
+        $layout = $this->createMock(LayoutModel::class);
 
-        $adapter = $this
-            ->getMockBuilder(Adapter::class)
-            ->setMethods(['__call'])
-            ->disableOriginalConstructor()
-            ->getMock()
+        $layout
+            ->method('__get')
+            ->willReturnCallback(
+                function (string $key) {
+                    switch ($key) {
+                        case 'name':
+                            return 'Default';
+
+                        case 'id':
+                            return 2;
+
+                        case 'template':
+                            return 'fe_page';
+                    }
+
+                    return null;
+                }
+            )
         ;
 
-        $adapter
-            ->expects($this->any())
-            ->method('__call')
-            ->willReturn($layout)
+        $GLOBALS['objPage'] = $this->createMock(PageModel::class);
+
+        $GLOBALS['objPage']
+            ->method('__get')
+            ->willReturn(2)
         ;
 
-        global $objPage;
-
-        $objPage = new \stdClass();
-        $objPage->layoutId = 2;
+        $framework = $this->mockContaoFramework([
+            LayoutModel::class => $this->mockConfiguredAdapter(['findByPk' => $layout]),
+        ]);
 
         $collector = new ContaoDataCollector([]);
-        $collector->setFramework($this->mockContaoFramework(null, null, [LayoutModel::class => $adapter]));
+        $collector->setFramework($framework);
         $collector->collect(new Request(), new Response());
 
         $this->assertSame(
@@ -124,10 +122,7 @@ class ContaoDataCollectorTest extends TestCase
         unset($GLOBALS['objPage']);
     }
 
-    /**
-     * Tests that an empty array is returned if $this->data is not an array.
-     */
-    public function testWithNonArrayData()
+    public function testReturnsAnEmtpyArrayIfTheDataIsNotAnArray(): void
     {
         $collector = new ContaoDataCollector([]);
         $collector->unserialize('N;');
@@ -135,10 +130,7 @@ class ContaoDataCollectorTest extends TestCase
         $this->assertSame([], $collector->getAdditionalData());
     }
 
-    /**
-     * Tests that an empty array is returned if the key is unknown.
-     */
-    public function testWithUnknownKey()
+    public function testReturnsAnEmptyArrayIfTheKeyIsUnknown(): void
     {
         $collector = new ContaoDataCollector([]);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,17 +20,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class DoctrineMigrationsPass implements CompilerPassInterface
 {
-    const DIFF_COMMAND_ID = 'console.command.contao_corebundle_command_doctrinemigrationsdiffcommand';
-
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$this->hasMigrationsBundle($container)) {
             return;
@@ -47,7 +44,7 @@ class DoctrineMigrationsPass implements CompilerPassInterface
         // Required if Symfony's compiler pass has already handled the "console.command" tags
         if ($container->hasParameter('console.command.ids')) {
             $ids = $container->getParameter('console.command.ids');
-            $ids[] = static::DIFF_COMMAND_ID;
+            $ids[] = DoctrineMigrationsDiffCommand::COMMAND_ID;
 
             $container->setParameter('console.command.ids', $ids);
         }
@@ -60,8 +57,8 @@ class DoctrineMigrationsPass implements CompilerPassInterface
      *
      * @return bool
      */
-    private function hasMigrationsBundle(ContainerBuilder $container)
+    private function hasMigrationsBundle(ContainerBuilder $container): bool
     {
-        return in_array(DoctrineMigrationsBundle::class, $container->getParameter('kernel.bundles'), true);
+        return \in_array(DoctrineMigrationsBundle::class, $container->getParameter('kernel.bundles'), true);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,14 +14,9 @@ namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\BackendTemplate;
 use Contao\CoreBundle\Tests\TestCase;
-use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the Template class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -30,35 +27,32 @@ class TemplateTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $fs = new Filesystem();
-        $fs->mkdir($this->getRootDir().'/templates');
+        $fs->mkdir($this->getFixturesDir().'/templates');
 
-        define('TL_ROOT', $this->getRootDir());
-        define('TL_MODE', 'BE');
+        \define('TL_ROOT', $this->getFixturesDir());
+        \define('TL_MODE', 'BE');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        $fs = new Filesystem();
-        $fs->remove($this->getRootDir().'/templates');
-
         parent::tearDown();
+
+        $fs = new Filesystem();
+        $fs->remove($this->getFixturesDir().'/templates');
     }
 
-    /**
-     * Tests the parse() method.
-     */
-    public function testParse()
+    public function testReplacesTheVariables(): void
     {
         file_put_contents(
-            $this->getRootDir().'/templates/test_template.html5',
+            $this->getFixturesDir().'/templates/test_template.html5',
             '<?= $this->value ?>'
         );
 
@@ -70,13 +64,10 @@ class TemplateTest extends TestCase
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests the parse() method.
-     */
-    public function testParseWithException()
+    public function testHandlesExceptions(): void
     {
         file_put_contents(
-            $this->getRootDir().'/templates/test_template.html5',
+            $this->getFixturesDir().'/templates/test_template.html5',
             'test<?php throw new Exception ?>'
         );
 
@@ -88,7 +79,7 @@ class TemplateTest extends TestCase
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -96,12 +87,9 @@ class TemplateTest extends TestCase
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests the parse() method.
-     */
-    public function testParseWithExceptionInBlock()
+    public function testHandlesExceptionsInsideBlocks(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->block('a');
@@ -122,7 +110,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -130,12 +118,9 @@ EOF
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests the parse() method.
-     */
-    public function testParseWithExceptionInBlockExtended()
+    public function testHandlesExceptionsInParentTemplate(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_parent.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_parent.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->block('a');
@@ -154,7 +139,7 @@ EOF
 EOF
         );
 
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->extend('test_parent');
@@ -180,7 +165,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 
@@ -188,14 +173,11 @@ EOF
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    /**
-     * Tests the parse() method.
-     */
-    public function testParseNestedBlock()
+    public function testParsesNestedBlocks(): void
     {
-        file_put_contents($this->getRootDir().'/templates/test_parent.html5', '');
+        file_put_contents($this->getFixturesDir().'/templates/test_parent.html5', '');
 
-        file_put_contents($this->getRootDir().'/templates/test_template.html5', <<<'EOF'
+        file_put_contents($this->getFixturesDir().'/templates/test_template.html5', <<<'EOF'
 <?php
     echo 'test1';
     $this->extend('test_parent');
@@ -219,7 +201,7 @@ EOF
         try {
             $template->parse();
             $this->fail('Parse should throw an exception');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Ignore
         }
 

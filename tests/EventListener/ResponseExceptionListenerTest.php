@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,36 +14,26 @@ namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\EventListener\ResponseExceptionListener;
 use Contao\CoreBundle\Exception\ResponseException;
-use Contao\CoreBundle\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-/**
- * Tests the ResponseExceptionListener class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ResponseExceptionListenerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $listener = new ResponseExceptionListener();
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\ResponseExceptionListener', $listener);
     }
 
-    /**
-     * Tests passing a response exception.
-     */
-    public function testResponseException()
+    public function testAddsAResponseToTheEvent(): void
     {
         $event = new GetResponseForExceptionEvent(
-            $this->mockKernel(),
+            $this->createMock(KernelInterface::class),
             new Request(),
             HttpKernelInterface::MASTER_REQUEST,
             new ResponseException(new Response('Foo'))
@@ -58,13 +50,10 @@ class ResponseExceptionListenerTest extends TestCase
         $this->assertSame('Foo', $response->getContent());
     }
 
-    /**
-     * Tests passing a non-response exception.
-     */
-    public function testNonResponseException()
+    public function testDoesNotAddAResponseToTheEventIfTheExceptionIsNotAResponseException(): void
     {
         $event = new GetResponseForExceptionEvent(
-            $this->mockKernel(),
+            $this->createMock(KernelInterface::class),
             new Request(),
             HttpKernelInterface::MASTER_REQUEST,
             new \RuntimeException()

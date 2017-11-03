@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,7 +14,7 @@ namespace Contao\CoreBundle\Tests\Doctrine\Schema;
 
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\EventListener\DoctrineSchemaListener;
-use Contao\CoreBundle\Tests\DoctrineTestCase;
+use Contao\CoreBundle\Tests\Doctrine\DoctrineTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Event\SchemaIndexDefinitionEventArgs;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
@@ -21,28 +23,16 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
 
-/**
- * Tests the DoctrineSchemaListener class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class DoctrineSchemaListenerTest extends DoctrineTestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
-        $provider = $this->createMock(DcaSchemaProvider::class);
-        $listener = new DoctrineSchemaListener($provider);
+        $listener = new DoctrineSchemaListener($this->createMock(DcaSchemaProvider::class));
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\DoctrineSchemaListener', $listener);
     }
 
-    /**
-     * Tests the postGenerateSchema() method.
-     */
-    public function testPostGenerateSchema()
+    public function testAppendsToAnExistingSchema(): void
     {
         $framework = $this->mockContaoFrameworkWithInstaller(
             [
@@ -54,27 +44,19 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
             ]
         );
 
-        $provider = new DcaSchemaProvider(
-            $framework,
-            $this->mockDoctrineRegistry()
-        );
-
         $schema = new Schema();
         $event = new GenerateSchemaEventArgs($this->createMock(EntityManagerInterface::class), $schema);
 
         $this->assertFalse($schema->hasTable('tl_files'));
 
-        $listener = new DoctrineSchemaListener($provider);
+        $listener = new DoctrineSchemaListener(new DcaSchemaProvider($framework, $this->mockDoctrineRegistry()));
         $listener->postGenerateSchema($event);
 
         $this->assertTrue($schema->hasTable('tl_files'));
         $this->assertTrue($schema->getTable('tl_files')->hasColumn('path'));
     }
 
-    /**
-     * Tests the onSchemaIndexDefinition() method with subpart.
-     */
-    public function testOnSchemaIndexDefinitionWithSubpart()
+    public function testChangesTheIndexIfThereIsASubpart(): void
     {
         $connection = $this->createMock(Connection::class);
 
@@ -144,10 +126,7 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
         $this->assertSame(['path(333)'], $index->getColumns());
     }
 
-    /**
-     * Tests the onSchemaIndexDefinition() method without subpart.
-     */
-    public function testOnSchemaIndexDefinitionWithoutSubpart()
+    public function testDoesNotChangeTheIndexIfThereIsNoSubpart(): void
     {
         $connection = $this->createMock(Connection::class);
 
@@ -203,10 +182,7 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
         $listener->onSchemaIndexDefinition($event);
     }
 
-    /**
-     * Tests that the onSchemaIndexDefinition() method ignores the primary key.
-     */
-    public function testOnSchemaIndexDefinitionIgnoresPrimaryKey()
+    public function testDoesNotChangeTheIndexOfThePrimaryKeyColumn(): void
     {
         $connection = $this->createMock(Connection::class);
 
@@ -241,10 +217,7 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
         $listener->onSchemaIndexDefinition($event);
     }
 
-    /**
-     * Tests that the onSchemaIndexDefinition() method ignores non MySQL platforms.
-     */
-    public function testOnSchemaIndexDefinitionIgnoresNonMySqlPlatform()
+    public function testDoesNotChangeTheIndexOnDatabasePlatformsOtherThanMysql(): void
     {
         $connection = $this->createMock(Connection::class);
 
@@ -286,13 +259,13 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
      *
      * @return array
      */
-    private function getIndexEventArg($name)
+    private function getIndexEventArg($name): array
     {
         return [
             'name' => $name,
-            'columns' => [($name === 'PRIMARY' ? 'id' : $name)],
+            'columns' => ['PRIMARY' === $name ? 'id' : $name],
             'unique' => false,
-            'primary' => ($name === 'PRIMARY'),
+            'primary' => 'PRIMARY' === $name,
             'flags' => [],
             'options' => [],
         ];

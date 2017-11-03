@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,18 +12,16 @@
 
 namespace Contao\CoreBundle\Tests\Contao;
 
+use Contao\CoreBundle\Image\LegacyResizer;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\File;
 use Contao\Image;
+use Contao\Image\ResizeCalculator;
 use Contao\System;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the Image class.
- *
- * @author Martin Auswöger <https://github.com/ausi>
- * @author Yanick Witschi <https://github.com/Toflar>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -30,105 +30,80 @@ use Symfony\Component\Filesystem\Filesystem;
 class ImageTest extends TestCase
 {
     /**
-     * @var string
-     */
-    private static $rootDir;
-
-    /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        self::$rootDir = dirname(dirname(__DIR__)).'/tmp';
+        parent::setUpBeforeClass();
 
         $fs = new Filesystem();
-        $fs->mkdir(self::$rootDir);
-        $fs->mkdir(self::$rootDir.'/assets');
-        $fs->mkdir(self::$rootDir.'/assets/images');
+        $fs->mkdir(static::getTempDir().'/assets');
+        $fs->mkdir(static::getTempDir().'/assets/images');
 
         foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'] as $subdir) {
-            $fs->mkdir(self::$rootDir.'/assets/images/'.$subdir);
+            $fs->mkdir(static::getTempDir().'/assets/images/'.$subdir);
         }
 
-        $fs->mkdir(self::$rootDir.'/system');
-        $fs->mkdir(self::$rootDir.'/system/tmp');
+        $fs->mkdir(static::getTempDir().'/system');
+        $fs->mkdir(static::getTempDir().'/system/tmp');
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function tearDownAfterClass()
-    {
-        $fs = new Filesystem();
-        $fs->remove(self::$rootDir);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        copy(__DIR__.'/../Fixtures/images/dummy.jpg', self::$rootDir.'/dummy.jpg');
+        copy(__DIR__.'/../Fixtures/images/dummy.jpg', $this->getTempDir().'/dummy.jpg');
 
         $GLOBALS['TL_CONFIG']['debugMode'] = false;
         $GLOBALS['TL_CONFIG']['gdMaxImgWidth'] = 3000;
         $GLOBALS['TL_CONFIG']['gdMaxImgHeight'] = 3000;
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpeg,jpg,svg,svgz';
 
-        define('TL_ERROR', 'ERROR');
-        define('TL_ROOT', self::$rootDir);
+        \define('TL_ERROR', 'ERROR');
+        \define('TL_ROOT', $this->getTempDir());
 
-        $container = $this->mockContainerWithContaoScopes();
-        $this->addImageServicesToContainer($container, self::$rootDir);
-
-        System::setContainer($container);
+        System::setContainer($this->mockContainerWithImageServices());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testConstruct()
+    public function testCanBeInstantiated(): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
+            ->willReturnCallback(
+                function (string $key): ?string {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
 
                         case 'path':
                             return 'dummy.jpg';
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $this->assertInstanceOf('Contao\Image', new Image($fileMock));
     }
 
-    /**
-     * Tests the object instantiation with a non-existent file.
-     */
-    public function testConstructWithNonexistentFile()
+    public function testFailsIfTheFileDoesNotExist(): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(false))
+            ->willReturn(false)
         ;
 
         $this->expectException('InvalidArgumentException');
@@ -136,31 +111,26 @@ class ImageTest extends TestCase
         new Image($fileMock);
     }
 
-    /**
-     * Tests the object instantiation with an invalid extension.
-     */
-    public function testConstructWithInvalidExtension()
+    public function testFailsIfTheFileExtensionIsInvalid(): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
-                    switch ($key) {
-                        case 'extension':
-                            return 'foobar';
-
-                        default:
-                            return null;
+            ->willReturnCallback(
+                function (string $key): ?string {
+                    if ('extension' === $key) {
+                        return 'foobar';
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $this->expectException('InvalidArgumentException');
@@ -169,36 +139,24 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Tests the deprecated methods of the Image class.
-     */
-    public function testGetDeprecatedInvalidImages()
-    {
-        $this->assertNull(Image::get('', 100, 100));
-        $this->assertNull(Image::get(0, 100, 100));
-        $this->assertNull(Image::get(null, 100, 100));
-    }
-
-    /**
-     * Tests resizing without an important part.
-     *
      * @param array $arguments
      * @param array $expectedResult
      *
      * @dataProvider getComputeResizeDataWithoutImportantPart
      */
-    public function testComputeResizeWithoutImportantPart($arguments, $expectedResult)
+    public function testResizesImagesWithoutImportantPart($arguments, $expectedResult): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) use ($arguments) {
+            ->willReturnCallback(
+                function (string $key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
@@ -211,12 +169,11 @@ class ImageTest extends TestCase
 
                         case 'viewHeight':
                             return $arguments[3];
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -247,11 +204,9 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Provides the data for the testComputeResizeWithoutImportantPart() method.
-     *
      * @return array
      */
-    public function getComputeResizeDataWithoutImportantPart()
+    public function getComputeResizeDataWithoutImportantPart(): array
     {
         return [
             'No dimensions' => [
@@ -632,26 +587,24 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Tests resizing with an important part.
-     *
      * @param array $arguments
      * @param array $expectedResult
      *
      * @dataProvider getComputeResizeDataWithImportantPart
      */
-    public function testComputeResizeWithImportantPart($arguments, $expectedResult)
+    public function testResizesImagesWithImportantPart($arguments, $expectedResult): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) use ($arguments) {
+            ->willReturnCallback(
+                function (string $key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
@@ -664,12 +617,11 @@ class ImageTest extends TestCase
 
                         case 'viewHeight':
                             return $arguments[3];
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -683,11 +635,9 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Provides the data for the testComputeResizeWithImportantPart() method.
-     *
      * @return array
      */
-    public function getComputeResizeDataWithImportantPart()
+    public function getComputeResizeDataWithImportantPart(): array
     {
         return [
             'No dimensions zoom 0' => [
@@ -825,22 +775,19 @@ class ImageTest extends TestCase
         ];
     }
 
-    /**
-     * Tests the setters and getters.
-     */
-    public function testSettersAndGetters()
+    public function testSupportsReadingAndWritingValues(): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
+            ->willReturnCallback(
+                function (string $key) {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
@@ -855,12 +802,11 @@ class ImageTest extends TestCase
                         case 'height':
                         case 'viewHeight':
                             return 100;
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -958,26 +904,24 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Tests the getCacheName() method.
-     *
      * @param array  $arguments
      * @param string $expectedCacheName
      *
      * @dataProvider getCacheName
      */
-    public function testGetCacheName($arguments, $expectedCacheName)
+    public function testReturnsTheCacheName($arguments, $expectedCacheName): void
     {
         $fileMock = $this->createMock(File::class);
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) use ($arguments) {
+            ->willReturnCallback(
+                function (string $key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
@@ -998,12 +942,11 @@ class ImageTest extends TestCase
                         case 'height':
                         case 'viewHeight':
                             return 200;
-
-                        default:
-                            return null;
                     }
+
+                    return null;
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -1017,11 +960,9 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Provides the data for the testGetCacheName() method.
-     *
      * @return array
      */
-    public function getCacheName()
+    public function getCacheName(): array
     {
         // target width, target height, file name (path), resize mode, zoom level, mtime, important part
         // expected cache name
@@ -1066,82 +1007,57 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Tests the setZoomLevel() with a negative out of bounds value.
-     */
-    public function testSetZoomOutOfBoundsNegative()
-    {
-        $fileMock = $this->createMock(File::class);
-
-        $fileMock
-            ->method('exists')
-            ->will($this->returnValue(true))
-        ;
-
-        $fileMock
-            ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
-                    switch ($key) {
-                        case 'extension':
-                            return 'jpg';
-
-                        default:
-                            return null;
-                    }
-                }
-            ))
-        ;
-
-        $imageObj = new Image($fileMock);
-
-        $this->expectException('InvalidArgumentException');
-
-        $imageObj->setZoomLevel(-1);
-    }
-
-    /**
-     * Tests the setZoomLevel() method with a positive out of bounds value.
-     */
-    public function testSetZoomOutOfBoundsPositive()
-    {
-        $fileMock = $this->createMock(File::class);
-
-        $fileMock
-            ->method('exists')
-            ->will($this->returnValue(true))
-        ;
-
-        $fileMock
-            ->method('__get')
-            ->will($this->returnCallback(
-                function ($key) {
-                    switch ($key) {
-                        case 'extension':
-                            return 'jpg';
-
-                        default:
-                            return null;
-                    }
-                }
-            ))
-        ;
-
-        $imageObj = new Image($fileMock);
-
-        $this->expectException('InvalidArgumentException');
-
-        $imageObj->setZoomLevel(101);
-    }
-
-    /**
-     * Tests the legacy get() method.
+     * @param int $value
      *
+     * @dataProvider getZoomLevel
+     */
+    public function testFailsIfTheZoomValueIsOutOfBounds($value): void
+    {
+        $fileMock = $this->createMock(File::class);
+
+        $fileMock
+            ->method('exists')
+            ->willReturn(true)
+        ;
+
+        $fileMock
+            ->method('__get')
+            ->willReturnCallback(
+                function (string $key): ?string {
+                    if ('extension' === $key) {
+                        return 'jpg';
+                    }
+
+                    return null;
+                }
+            )
+        ;
+
+        $imageObj = new Image($fileMock);
+
+        $this->expectException('InvalidArgumentException');
+
+        $imageObj->setZoomLevel($value);
+    }
+
+    /**
+     * @return array
+     */
+    public function getZoomLevel(): array
+    {
+        return [
+            'Underflow' => [-1],
+            'Overflow' => [101],
+        ];
+    }
+
+    /**
      * @param array $arguments
      * @param array $expectedResult
      *
      * @dataProvider getGetLegacy
      */
-    public function testGetLegacy($arguments, $expectedResult)
+    public function testFactorsImagesInTheLegacyMethod($arguments, $expectedResult): void
     {
         $result = Image::get($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]);
 
@@ -1149,11 +1065,9 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Provides the data for the testGetLegacy() method.
-     *
      * @return array
      */
-    public function getGetLegacy()
+    public function getGetLegacy(): array
     {
         // original image, target width, target height, resize mode, target, force override
         // expected result
@@ -1169,15 +1083,20 @@ class ImageTest extends TestCase
         ];
     }
 
+    public function testDoesNotFactorImagesInTheLegacyMethodIfTheArgumentIsInvalid(): void
+    {
+        $this->assertNull(Image::get('', 100, 100));
+        $this->assertNull(Image::get(0, 100, 100));
+        $this->assertNull(Image::get(null, 100, 100));
+    }
+
     /**
-     * Tests the legacy resize() method.
-     *
      * @param array $arguments
      * @param array $expectedResult
      *
      * @dataProvider getResizeLegacy
      */
-    public function testResizeLegacy($arguments, $expectedResult)
+    public function testResizesImagesInTheLegacyMethod($arguments, $expectedResult): void
     {
         $result = Image::resize($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
 
@@ -1185,11 +1104,9 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Provides the data for the testGetLegacy() method.
-     *
      * @return array
      */
-    public function getResizeLegacy()
+    public function getResizeLegacy(): array
     {
         // original image, target width, target height, resize mode
         // expected result
@@ -1205,64 +1122,52 @@ class ImageTest extends TestCase
         ];
     }
 
-    /**
-     * Tests resizing an image which already matches the given dimensions.
-     */
-    public function testExecuteResizeNoResizeNeeded()
+    public function testDoesNotResizeMatchingImages(): void
     {
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(200)->setTargetHeight(200);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame($resultFile->width, 200);
         $this->assertSame($resultFile->height, 200);
     }
 
-    /**
-     * Tests resizing an image which has to be cropped.
-     */
-    public function testExecuteResizeStandardCropResize()
+    public function testCropsImages(): void
     {
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame($resultFile->width, 100);
         $this->assertSame($resultFile->height, 100);
     }
 
-    /**
-     * Tests resizing an image which has to be cropped and has a target defined.
-     */
-    public function testExecuteResizeStandardCropResizeAndTarget()
+    public function testCropsImagesWithTargetPath(): void
     {
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100)->setTargetPath('dummy_foobar.jpg');
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame($resultFile->width, 100);
         $this->assertSame($resultFile->height, 100);
         $this->assertSame($resultFile->path, 'dummy_foobar.jpg');
     }
 
-    /**
-     * Tests resizing an image which has to be cropped and has an existing target defined.
-     */
-    public function testExecuteResizeStandardCropResizeAndFileExistsAlready()
+    public function testCropsImagesWithExistingTargetPath(): void
     {
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100)->setTargetPath('dummy_foobar.jpg');
@@ -1272,19 +1177,16 @@ class ImageTest extends TestCase
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame($resultFile->width, 100);
         $this->assertSame($resultFile->height, 100);
     }
 
-    /**
-     * Tests resizing an SVG image.
-     */
-    public function testExecuteResizeSvg()
+    public function testResizesSvgImages(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svg',
+            $this->getTempDir().'/dummy.svg',
             '<?xml version="1.0" encoding="utf-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
             <svg
@@ -1296,13 +1198,13 @@ class ImageTest extends TestCase
             ></svg>'
         );
 
-        $file = new \File('dummy.svg');
+        $file = new File('dummy.svg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame(100, $resultFile->width);
         $this->assertSame(100, $resultFile->height);
@@ -1317,13 +1219,10 @@ class ImageTest extends TestCase
         $this->assertSame('100', $doc->documentElement->firstChild->getAttribute('height'));
     }
 
-    /**
-     * Tests resizing an SVG image with percentage based dimensions.
-     */
-    public function testExecuteResizeSvgPercentageDimensions()
+    public function testResizesSvgImagesWithPercentageDimensions(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svg',
+            $this->getTempDir().'/dummy.svg',
             '<?xml version="1.0" encoding="utf-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
             <svg
@@ -1335,13 +1234,13 @@ class ImageTest extends TestCase
             ></svg>'
         );
 
-        $file = new \File('dummy.svg');
+        $file = new File('dummy.svg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame(100, $resultFile->width);
         $this->assertSame(100, $resultFile->height);
@@ -1356,13 +1255,10 @@ class ImageTest extends TestCase
         $this->assertSame('100', $doc->documentElement->firstChild->getAttribute('height'));
     }
 
-    /**
-     * Tests resizing an SVG image without dimensions.
-     */
-    public function testExecuteResizeSvgWithoutDimensions()
+    public function testResizesSvgImagesWithoutDimensions(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svg',
+            $this->getTempDir().'/dummy.svg',
             '<?xml version="1.0" encoding="utf-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
             <svg
@@ -1372,13 +1268,13 @@ class ImageTest extends TestCase
             ></svg>'
         );
 
-        $file = new \File('dummy.svg');
+        $file = new File('dummy.svg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame(100, $resultFile->width);
         $this->assertSame(100, $resultFile->height);
@@ -1393,13 +1289,10 @@ class ImageTest extends TestCase
         $this->assertSame('100', $doc->documentElement->firstChild->getAttribute('height'));
     }
 
-    /**
-     * Tests resizing an SVG image without a view box.
-     */
-    public function testExecuteResizeSvgWithoutViewBox()
+    public function testResizesSvgImagesWithoutViewBox(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svg',
+            $this->getTempDir().'/dummy.svg',
             '<?xml version="1.0" encoding="utf-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
             <svg
@@ -1410,13 +1303,13 @@ class ImageTest extends TestCase
             ></svg>'
         );
 
-        $file = new \File('dummy.svg');
+        $file = new File('dummy.svg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame(100, $resultFile->width);
         $this->assertSame(100, $resultFile->height);
@@ -1431,13 +1324,10 @@ class ImageTest extends TestCase
         $this->assertSame('100', $doc->documentElement->firstChild->getAttribute('height'));
     }
 
-    /**
-     * Tests resizing an SVG image without a view box and dimensions.
-     */
-    public function testExecuteResizeSvgWithoutViewBoxAndDimensions()
+    public function testResizesSvgImagesWithoutViewBoxAndDimensions(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svg',
+            $this->getTempDir().'/dummy.svg',
             '<?xml version="1.0" encoding="utf-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
             <svg
@@ -1446,24 +1336,21 @@ class ImageTest extends TestCase
             ></svg>'
         );
 
-        $file = new \File('dummy.svg');
+        $file = new File('dummy.svg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
 
         $this->assertSame($file->path, $resultFile->path);
     }
 
-    /**
-     * Tests resizing an SVGZ image.
-     */
-    public function testExecuteResizeSvgz()
+    public function testResizesSvgzImages(): void
     {
         file_put_contents(
-            self::$rootDir.'/dummy.svgz',
+            $this->getTempDir().'/dummy.svgz',
             gzencode(
                 '<?xml version="1.0" encoding="utf-8"?>
                 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -1477,13 +1364,13 @@ class ImageTest extends TestCase
             )
         );
 
-        $file = new \File('dummy.svgz');
+        $file = new File('dummy.svgz');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
         $imageObj->executeResize();
 
-        $resultFile = new \File($imageObj->getResizedPath());
+        $resultFile = new File($imageObj->getResizedPath());
         $this->assertSame(100, $resultFile->width);
         $this->assertSame(100, $resultFile->height);
 
@@ -1497,16 +1384,13 @@ class ImageTest extends TestCase
         $this->assertSame('100', $doc->documentElement->firstChild->getAttribute('height'));
     }
 
-    /**
-     * Tests the executeResize hook.
-     */
-    public function testExecuteResizeHook()
+    public function testExecutesTheResizeHook(): void
     {
         $GLOBALS['TL_HOOKS'] = [
-            'executeResize' => [[get_class($this), 'executeResizeHookCallback']],
+            'executeResize' => [[\get_class($this), 'executeResizeHookCallback']],
         ];
 
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         $imageObj = new Image($file);
         $imageObj->setTargetWidth(100)->setTargetHeight(100);
@@ -1530,7 +1414,7 @@ class ImageTest extends TestCase
         $imageObj = new Image($file);
         $imageObj->setTargetWidth($file->width)->setTargetHeight($file->height);
 
-        file_put_contents(self::$rootDir.'/target.jpg', '');
+        file_put_contents($this->getTempDir().'/target.jpg', '');
 
         $imageObj->setTargetPath('target.jpg');
         $imageObj->executeResize();
@@ -1544,13 +1428,11 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Returns a custom image path.
-     *
      * @param object $imageObj The image object
      *
      * @return string The image path
      */
-    public static function executeResizeHookCallback($imageObj)
+    public static function executeResizeHookCallback($imageObj): string
     {
         // Do not include $cacheName as it is dynamic (mtime)
         $path = 'assets/'
@@ -1560,7 +1442,7 @@ class ImageTest extends TestCase
             .'_'.$imageObj->getTargetHeight()
             .'_'.$imageObj->getResizeMode()
             .'_'.$imageObj->getTargetPath()
-            .'_'.str_replace('\\', '-', get_class($imageObj))
+            .'_'.str_replace('\\', '-', \get_class($imageObj))
             .'.jpg'
         ;
 
@@ -1569,12 +1451,9 @@ class ImageTest extends TestCase
         return $path;
     }
 
-    /**
-     * Tests the getImage hook.
-     */
-    public function testGetImageHook()
+    public function testExecutesTheGetImageHook(): void
     {
-        $file = new \File('dummy.jpg');
+        $file = new File('dummy.jpg');
 
         // Build cache before adding the hook
         $imageObj = new Image($file);
@@ -1582,7 +1461,7 @@ class ImageTest extends TestCase
         $imageObj->executeResize();
 
         $GLOBALS['TL_HOOKS'] = [
-            'getImage' => [[get_class($this), 'getImageHookCallback']],
+            'getImage' => [[\get_class($this), 'getImageHookCallback']],
         ];
 
         $imageObj = new Image($file);
@@ -1618,8 +1497,6 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Returns a custom image path.
-     *
      * @param string $originalPath
      * @param int    $targetWidth
      * @param int    $targetHeight
@@ -1631,7 +1508,7 @@ class ImageTest extends TestCase
      *
      * @return string
      */
-    public static function getImageHookCallback($originalPath, $targetWidth, $targetHeight, $resizeMode, $cacheName, $fileObj, $targetPath, $imageObj)
+    public static function getImageHookCallback($originalPath, $targetWidth, $targetHeight, $resizeMode, $cacheName, $fileObj, $targetPath, $imageObj): string
     {
         // Do not include $cacheName as it is dynamic (mtime)
         $path = 'assets/'
@@ -1640,9 +1517,9 @@ class ImageTest extends TestCase
             .'_'.$targetWidth
             .'_'.$targetHeight
             .'_'.$resizeMode
-            .'_'.str_replace('\\', '-', get_class($fileObj))
+            .'_'.str_replace('\\', '-', \get_class($fileObj))
             .'_'.$targetPath
-            .'_'.str_replace('\\', '-', get_class($imageObj))
+            .'_'.str_replace('\\', '-', \get_class($imageObj))
             .'.jpg'
         ;
 
@@ -1652,24 +1529,20 @@ class ImageTest extends TestCase
     }
 
     /**
-     * Tests the getPixelValue() method.
-     *
      * @param string $value
      * @param int    $expected
      *
      * @dataProvider getGetPixelValueData
      */
-    public function testGetPixelValue($value, $expected)
+    public function testReadsThePixelValue($value, $expected): void
     {
         $this->assertSame($expected, Image::getPixelValue($value));
     }
 
     /**
-     * Provides the data for the testGetPixelValue() method.
-     *
      * @return array
      */
-    public function getGetPixelValueData()
+    public function getGetPixelValueData(): array
     {
         return [
             'No unit' => ['1234.5', 1235],
@@ -1683,5 +1556,25 @@ class ImageTest extends TestCase
             'mm' => [(25.4 / 6).'mm', 16],
             'invalid' => ['abc', 0],
         ];
+    }
+
+    /**
+     * Mocks a container with image services.
+     *
+     * @return ContainerBuilder
+     */
+    private function mockContainerWithImageServices(): ContainerBuilder
+    {
+        $container = $this->mockContainer($this->getTempDir());
+        $container->setParameter('contao.image.target_dir', $this->getTempDir().'/assets/images');
+        $container->setParameter('contao.web_dir', $this->getTempDir().'/web');
+
+        $resizer = new LegacyResizer($container->getParameter('contao.image.target_dir'), new ResizeCalculator());
+        $resizer->setFramework($this->mockContaoFramework());
+
+        $container->set('contao.image.resizer', $resizer);
+        $container->set('filesystem', new Filesystem());
+
+        return $container;
     }
 }

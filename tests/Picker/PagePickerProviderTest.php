@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,18 +15,14 @@ namespace Contao\CoreBundle\Tests\Picker;
 use Contao\BackendUser;
 use Contao\CoreBundle\Picker\PagePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the PagePickerProvider class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
-class PagePickerProviderTest extends TestCase
+class PagePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var PagePickerProvider
@@ -34,7 +32,7 @@ class PagePickerProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,39 +48,28 @@ class PagePickerProviderTest extends TestCase
         $router
             ->method('generate')
             ->willReturnCallback(
-                function ($name, array $params) {
+                function (string $name, array $params): string {
                     return $name.'?'.http_build_query($params);
                 }
             )
         ;
 
-        $this->provider = new PagePickerProvider($menuFactory, $router);
+        $translator = $this->createMock(TranslatorInterface::class);
 
-        $GLOBALS['TL_LANG']['MSC']['pagePicker'] = 'Page picker';
+        $translator
+            ->method('trans')
+            ->willReturn('Page picker')
+        ;
+
+        $this->provider = new PagePickerProvider($menuFactory, $router, $translator);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        unset($GLOBALS['TL_LANG']);
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Picker\PagePickerProvider', $this->provider);
     }
 
-    /**
-     * Tests the createMenuItem() method.
-     */
-    public function testCreateMenuItem()
+    public function testCreatesTheMenuItem(): void
     {
         $picker = json_encode([
             'context' => 'link',
@@ -91,7 +78,7 @@ class PagePickerProviderTest extends TestCase
             'value' => '',
         ]);
 
-        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+        if (\function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
             $picker = $encoded;
         }
 
@@ -101,72 +88,34 @@ class PagePickerProviderTest extends TestCase
                 'linkAttributes' => ['class' => 'pagePicker'],
                 'current' => true,
                 'uri' => 'contao_backend?do=page&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
-            ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'pagePicker'))
+            ],
+            $this->provider->createMenuItem(new PickerConfig('link', [], '', 'pagePicker'))
         );
     }
 
-    /**
-     * Tests the isCurrent() method.
-     */
-    public function testIsCurrent()
+    public function testChecksIfAMenuItemIsCurrent(): void
     {
         $this->assertTrue($this->provider->isCurrent(new PickerConfig('page', [], '', 'pagePicker')));
         $this->assertFalse($this->provider->isCurrent(new PickerConfig('page', [], '', 'filePicker')));
-
         $this->assertTrue($this->provider->isCurrent(new PickerConfig('link', [], '', 'pagePicker')));
         $this->assertFalse($this->provider->isCurrent(new PickerConfig('link', [], '', 'filePicker')));
     }
 
-    /**
-     * Tests the getName() method.
-     */
-    public function testGetName()
+    public function testReturnsTheCorrectName(): void
     {
         $this->assertSame('pagePicker', $this->provider->getName());
     }
 
-    /**
-     * Tests the supportsContext() method.
-     */
-    public function testSupportsContext()
+    public function testChecksIfAContextIsSupported(): void
     {
-        $user = $this
-            ->getMockBuilder(BackendUser::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hasAccess'])
-            ->getMock()
-        ;
-
-        $user
-            ->method('hasAccess')
-            ->willReturn(true)
-        ;
-
-        $token = $this->createMock(TokenInterface::class);
-
-        $token
-            ->method('getUser')
-            ->willReturn($user)
-        ;
-
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
-        $tokenStorage
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        $this->provider->setTokenStorage($tokenStorage);
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('page'));
         $this->assertTrue($this->provider->supportsContext('link'));
         $this->assertFalse($this->provider->supportsContext('file'));
     }
 
-    /**
-     * Tests the supportsContext() method without token storage.
-     */
-    public function testSupportsContextWithoutTokenStorage()
+    public function testFailsToCheckTheContextIfThereIsNoTokenStorage(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('No token storage provided');
@@ -174,10 +123,7 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without token.
-     */
-    public function testSupportsContextWithoutToken()
+    public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
@@ -194,10 +140,7 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without a user object.
-     */
-    public function testSupportsContextWithoutUser()
+    public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -221,30 +164,20 @@ class PagePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsValue() method.
-     */
-    public function testSupportsValue()
+    public function testChecksIfAValueIsSupported(): void
     {
         $this->assertTrue($this->provider->supportsValue(new PickerConfig('page', [], 5)));
         $this->assertFalse($this->provider->supportsValue(new PickerConfig('page', [], '{{article_url::5}}')));
-
         $this->assertTrue($this->provider->supportsValue(new PickerConfig('link', [], '{{link_url::5}}')));
         $this->assertFalse($this->provider->supportsValue(new PickerConfig('link', [], '{{article_url::5}}')));
     }
 
-    /**
-     * Tests the getDcaTable() method.
-     */
-    public function testGetDcaTable()
+    public function testReturnsTheDcaTable(): void
     {
         $this->assertSame('tl_page', $this->provider->getDcaTable());
     }
 
-    /**
-     * Tests the getDcaAttributes() method.
-     */
-    public function testGetDcaAttributes()
+    public function testReturnsTheDcaAttributes(): void
     {
         $extra = [
             'fieldType' => 'checkbox',
@@ -274,10 +207,7 @@ class PagePickerProviderTest extends TestCase
         );
     }
 
-    /**
-     * Tests the convertDcaValue() method.
-     */
-    public function testConvertDcaValue()
+    public function testConvertsTheDcaValue(): void
     {
         $this->assertSame(5, $this->provider->convertDcaValue(new PickerConfig('page'), 5));
         $this->assertSame('{{link_url::5}}', $this->provider->convertDcaValue(new PickerConfig('link'), 5));

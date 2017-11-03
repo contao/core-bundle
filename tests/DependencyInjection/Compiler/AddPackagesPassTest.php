@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,29 +16,18 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * Tests the AddPackagesPass class.
- *
- * @author Andreas Schempp <http://github.com/aschempp>
- */
 class AddPackagesPassTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
-        $pass = new AddPackagesPass($this->getRootDir().'/vendor/composer/installed.json');
+        $pass = new AddPackagesPass($this->getFixturesDir().'/vendor/composer/installed.json');
 
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass', $pass);
     }
 
-    /**
-     * Tests processing the pass.
-     */
-    public function testProcess()
+    public function testAddsThePackages(): void
     {
-        $pass = new AddPackagesPass($this->getRootDir().'/vendor/composer/installed.json');
+        $pass = new AddPackagesPass($this->getFixturesDir().'/vendor/composer/installed.json');
         $container = new ContainerBuilder();
 
         $pass->process($container);
@@ -48,18 +39,17 @@ class AddPackagesPassTest extends TestCase
         $this->assertInternalType('array', $packages);
         $this->assertArrayHasKey('contao/test-bundle1', $packages);
         $this->assertArrayHasKey('contao/test-bundle2', $packages);
-        $this->assertArrayNotHasKey('contao/test-bundle3', $packages);
+        $this->assertArrayHasKey('contao/test-bundle3', $packages);
+        $this->assertArrayNotHasKey('contao/test-bundle4', $packages);
 
         $this->assertSame('1.0.0', $packages['contao/test-bundle1']);
         $this->assertSame('dev-develop', $packages['contao/test-bundle2']);
+        $this->assertSame('1.1.x-dev', $packages['contao/test-bundle3']);
     }
 
-    /**
-     * Tests processing the pass without the JSON file.
-     */
-    public function testFileNotFound()
+    public function testAddsAnEmptyArrayIfThereIsNoJsonFile(): void
     {
-        $pass = new AddPackagesPass($this->getRootDir().'/vendor/composer/invalid.json');
+        $pass = new AddPackagesPass($this->getFixturesDir().'/vendor/composer/invalid.json');
         $container = new ContainerBuilder();
 
         $pass->process($container);

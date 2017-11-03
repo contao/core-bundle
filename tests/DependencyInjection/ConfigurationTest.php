@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -25,17 +27,14 @@ class ConfigurationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->configuration = new Configuration(false, $this->getRootDir().'/app');
+        $this->configuration = new Configuration(false, $this->getTempDir(), $this->getTempDir().'/app', 'en');
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Configuration', $this->configuration);
 
@@ -44,38 +43,29 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
     }
 
-    /**
-     * Tests the path resolving.
-     */
-    public function testPathResolving()
+    public function testResolvesThePaths(): void
     {
         $params = [
             'contao' => [
-                'web_dir' => $this->getRootDir().'/foo/../web',
+                'web_dir' => $this->getTempDir().'/foo/bar/../../web',
                 'image' => [
-                    'target_dir' => $this->getRootDir().'/foo/../assets/images',
+                    'target_dir' => $this->getTempDir().'/foo/../assets//./images',
                 ],
             ],
         ];
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
 
-        $this->assertSame(strtr($this->getRootDir().'/web', '/', DIRECTORY_SEPARATOR), $configuration['web_dir']);
-
-        $this->assertSame(
-            strtr($this->getRootDir().'/assets/images', '/', DIRECTORY_SEPARATOR),
-            $configuration['image']['target_dir']
-        );
+        $this->assertSame($this->getTempDir().'/web', $configuration['web_dir']);
+        $this->assertSame($this->getTempDir().'/assets/images', $configuration['image']['target_dir']);
     }
 
     /**
-     * Tests an invalid upload path.
-     *
      * @param string $uploadPath
      *
      * @dataProvider invalidUploadPathProvider
      */
-    public function testInvalidUploadPath($uploadPath)
+    public function testFailsIfTheUploadPathIsInvalid(string $uploadPath): void
     {
         $params = [
             'contao' => [
@@ -90,11 +80,9 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * Provides the data for the testInvalidUploadPath() method.
-     *
      * @return array
      */
-    public function invalidUploadPathProvider()
+    public function invalidUploadPathProvider(): array
     {
         return [
             [''],

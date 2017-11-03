@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,54 +16,34 @@ use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Finder\Finder;
 
-/**
- * Tests the ResourceFinder class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ResourceFinderTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $finder = new ResourceFinder();
 
         $this->assertInstanceOf('Contao\CoreBundle\Config\ResourceFinder', $finder);
     }
 
-    /**
-     * Tests the find() method.
-     */
-    public function testFind()
+    public function testReturnsAFinderObject(): void
     {
         $finder = new ResourceFinder([]);
 
         $this->assertInstanceOf(Finder::class, $finder->find());
-    }
 
-    /**
-     * Tests the findIn() method.
-     */
-    public function testFindIn()
-    {
         $finder = new ResourceFinder([
-            $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao',
-            $this->getRootDir().'/system/modules/foobar',
+            $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao',
+            $this->getFixturesDir().'/system/modules/foobar',
         ]);
 
         $this->assertInstanceOf(Finder::class, $finder->findIn('config'));
     }
 
-    /**
-     * Tests the findIn() method with an invalid subpath.
-     */
-    public function testFindInInvalidSubpath()
+    public function testFailsIfTheSubpathIsInvalid(): void
     {
         $finder = new ResourceFinder([
-            $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao',
-            $this->getRootDir().'/system/modules/foobar',
+            $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao',
+            $this->getFixturesDir().'/system/modules/foobar',
         ]);
 
         $this->expectException('InvalidArgumentException');

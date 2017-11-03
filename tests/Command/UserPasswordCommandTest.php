@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,7 +12,6 @@
 
 namespace Contao\CoreBundle\Tests\Command;
 
-use Contao\Config;
 use Contao\CoreBundle\Command\UserPasswordCommand;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Tests\TestCase;
@@ -21,13 +22,9 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * Tests the UserPasswordCommandTest class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class UserPasswordCommandTest extends TestCase
 {
     /**
@@ -43,38 +40,30 @@ class UserPasswordCommandTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            [Encryption::class => $this->mockEncryptionAdapter()]
-        );
+        parent::setUp();
 
-        $connection = $this->createMock(Connection::class);
+        $framework = $this->mockContaoFramework([
+            Encryption::class => $this->mockEncryptionAdapter(),
+        ]);
 
-        $this->container = $this->mockContainerWithContaoScopes();
+        $this->container = new ContainerBuilder();
         $this->container->set('contao.framework', $framework);
-        $this->container->set('database_connection', $connection);
+        $this->container->set('database_connection', $this->createMock(Connection::class));
 
         $this->command = new UserPasswordCommand();
         $this->command->setContainer($this->container);
         $this->command->setApplication(new Application());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Command\UserPasswordCommand', $this->command);
         $this->assertSame('contao:user:password', $this->command->getName());
     }
 
-    /**
-     * Tests the command configuration.
-     */
-    public function testConfiguration()
+    public function testDefinesUsernameAndPassword(): void
     {
         $this->assertNotEmpty($this->command->getDescription());
 
@@ -84,10 +73,7 @@ class UserPasswordCommandTest extends TestCase
         $this->assertTrue($definition->hasOption('password'));
     }
 
-    /**
-     * Tests the execution with a password argument.
-     */
-    public function testExecutionWithPasswordArgument()
+    public function testTakesAPasswordAsArgument(): void
     {
         $code = (new CommandTester($this->command))
             ->execute(
@@ -101,10 +87,7 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(0, $code);
     }
 
-    /**
-     * Tests the execution with the password dialog.
-     */
-    public function testExecutionWithPasswordDialog()
+    public function testAsksForThePasswordIfNotGiven(): void
     {
         $question = $this->createMock(QuestionHelper::class);
 
@@ -120,16 +103,13 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(0, $code);
     }
 
-    /**
-     * Tests the execution with differing passwords.
-     */
-    public function testExecutionWithDifferingPasswords()
+    public function testFailsIfThePasswordsDoNotMatch(): void
     {
         $question = $this->createMock(QuestionHelper::class);
 
         $question
             ->method('ask')
-            ->willReturnOnConsecutiveCalls(['12345678', '87654321'])
+            ->willReturnOnConsecutiveCalls('12345678', '87654321')
         ;
 
         $this->command->getHelperSet()->set($question, 'question');
@@ -140,10 +120,7 @@ class UserPasswordCommandTest extends TestCase
         (new CommandTester($this->command))->execute(['username' => 'foobar']);
     }
 
-    /**
-     * Tests the command without a username.
-     */
-    public function testExceptionWhenMissingUsername()
+    public function testFailsWithoutUsername(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please provide the username as argument.');
@@ -151,10 +128,7 @@ class UserPasswordCommandTest extends TestCase
         (new CommandTester($this->command))->execute([]);
     }
 
-    /**
-     * Tests the command without a password.
-     */
-    public function testExitCodeWithoutPassword()
+    public function testFailsWithoutPasswordIfNotInteractive(): void
     {
         $code = (new CommandTester($this->command))
             ->execute(
@@ -166,11 +140,10 @@ class UserPasswordCommandTest extends TestCase
         $this->assertSame(1, $code);
     }
 
-    /**
-     * Tests the minimum password length.
-     */
-    public function testMinimumPasswordLength()
+    public function testRequiresAMinimumPasswordLength(): void
     {
+        unset($GLOBALS['TL_CONFIG']['minPasswordLength']);
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The password must be at least 8 characters long.');
 
@@ -185,31 +158,14 @@ class UserPasswordCommandTest extends TestCase
         ;
     }
 
-    /**
-     * Tests a custom minimum password length.
-     */
-    public function testCustomPasswordLength()
+    public function testHandlesACustomMinimumPasswordLength(): void
     {
-        $framework = $this->mockContaoFramework(
-            null,
-            null,
-            [
-                Config::class => $this->mockConfigAdapter(16),
-                Encryption::class => $this->mockEncryptionAdapter(),
-            ]
-        );
-
-        $container = $this->mockContainerWithContaoScopes();
-        $container->set('contao.framework', $framework);
-
-        $command = new UserPasswordCommand();
-        $command->setContainer($container);
-        $command->setApplication(new Application());
+        $GLOBALS['TL_CONFIG']['minPasswordLength'] = 16;
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The password must be at least 16 characters long.');
 
-        (new CommandTester($command))
+        (new CommandTester($this->command))
             ->execute(
                 [
                     'username' => 'foobar',
@@ -220,10 +176,7 @@ class UserPasswordCommandTest extends TestCase
         ;
     }
 
-    /**
-     * Tests an invalid username.
-     */
-    public function testDatabaseUserNotFound()
+    public function testFailsIfTheUsernameIsUnknown(): void
     {
         $connection = $this->container->get('database_connection');
 
@@ -248,14 +201,12 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * Tests the database update.
-     *
      * @param string $username
      * @param string $password
      *
      * @dataProvider usernamePasswordProvider
      */
-    public function testDatabaseUpdate($username, $password)
+    public function testUpdatesTheDatabaseOnSuccess(string $username, string $password): void
     {
         $connection = $this->container->get('database_connection');
 
@@ -282,11 +233,9 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * Provides username and password data.
-     *
      * @return array
      */
-    public function usernamePasswordProvider()
+    public function usernamePasswordProvider(): array
     {
         return [
             [
@@ -305,23 +254,19 @@ class UserPasswordCommandTest extends TestCase
      *
      * @return Adapter|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function mockEncryptionAdapter()
+    private function mockEncryptionAdapter(): Adapter
     {
-        $encryption = $this
-            ->getMockBuilder(Adapter::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hash'])
-            ->getMock();
+        $adapter = $this->mockAdapter(['hash']);
 
-        $encryption
+        $adapter
             ->method('hash')
             ->willReturnCallback(
-                function ($password) {
-                    return 'HA$HED-'.$password.'-HA$HED';
+                function (string $value): ?string {
+                    return 'HA$HED-'.$value.'-HA$HED';
                 }
             )
         ;
 
-        return $encryption;
+        return $adapter;
     }
 }

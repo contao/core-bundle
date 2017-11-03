@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,21 +13,13 @@
 namespace Contao\CoreBundle\Tests\Command;
 
 use Contao\CoreBundle\Command\FilesyncCommand;
-use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\FlockStore;
 
-/**
- * Tests the FilesyncCommand class.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- */
-class FilesyncCommandTest extends TestCase
+class FilesyncCommandTest extends CommandTestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $command = new FilesyncCommand('contao:filesync');
 
@@ -33,12 +27,10 @@ class FilesyncCommandTest extends TestCase
         $this->assertSame('contao:filesync', $command->getName());
     }
 
-    /**
-     * Tests the output.
-     */
-    public function testOutput()
+    public function testOutputsTheConfirmationMessage(): void
     {
         $command = new FilesyncCommand('contao:filesync');
+        $command->setApplication($this->mockApplication());
         $command->setFramework($this->mockContaoFramework());
 
         $tester = new CommandTester($command);
@@ -48,15 +40,15 @@ class FilesyncCommandTest extends TestCase
         $this->assertContains('Synchronization complete (see sync.log).', $tester->getDisplay());
     }
 
-    /**
-     * Tests the lock.
-     */
-    public function testLock()
+    public function testIsLockedWhileRunning(): void
     {
-        $lock = new LockHandler('contao:filesync');
-        $lock->lock();
+        $factory = new Factory(new FlockStore(sys_get_temp_dir().'/'.md5($this->getFixturesDir())));
+
+        $lock = $factory->createLock('contao:filesync');
+        $lock->acquire();
 
         $command = new FilesyncCommand('contao:filesync');
+        $command->setApplication($this->mockApplication());
         $command->setFramework($this->mockContaoFramework());
 
         $tester = new CommandTester($command);

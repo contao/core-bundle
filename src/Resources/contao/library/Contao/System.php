@@ -552,7 +552,8 @@ abstract class System
 		}
 
 		asort($arrAux);
-		$arrBackendLanguages = scan(__DIR__ . '/../../languages');
+
+		$arrBackendLanguages = \System::getContainer()->getParameter('contao.locales');
 
 		foreach (array_keys($arrAux) as $strKey)
 		{
@@ -719,7 +720,14 @@ abstract class System
 	public static function getSessionHash($strCookie)
 	{
 		$container = static::getContainer();
-		$strHash = $container->get('session')->getId();
+		$session = $container->get('session');
+
+		if (!$session->isStarted())
+		{
+			$session->start();
+		}
+
+		$strHash = $session->getId();
 
 		if (!$container->getParameter('contao.security.disable_ip_check'))
 		{

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,20 +16,12 @@ use Contao\CoreBundle\Analyzer\HtaccessAnalyzer;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
 
-/**
- * Tests the HtaccessAnalyzer class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class HtaccessAnalyzerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $file = new SplFileInfo(
-            $this->getRootDir().'/system/modules/foobar/assets/.htaccess',
+            $this->getFixturesDir().'/system/modules/foobar/assets/.htaccess',
             'system/modules/foobar/assets',
             'system/modules/foobar/assets/.htaccess'
         );
@@ -37,13 +31,10 @@ class HtaccessAnalyzerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Analyzer\HtaccessAnalyzer', $htaccess);
     }
 
-    /**
-     * Tests a file that grants access.
-     */
-    public function testGrantsAccess()
+    public function testReadsTheAccessConfigurationFromTheHtaccesFile(): void
     {
         $file = new SplFileInfo(
-            $this->getRootDir().'/system/modules/foobar/assets/.htaccess',
+            $this->getFixturesDir().'/system/modules/foobar/assets/.htaccess',
             'system/modules/foobar/assets',
             'system/modules/foobar/assets/.htaccess'
         );
@@ -53,7 +44,7 @@ class HtaccessAnalyzerTest extends TestCase
         $this->assertTrue($htaccess->grantsAccess());
 
         $file = new SplFileInfo(
-            $this->getRootDir().'/system/modules/foobar/html/.htaccess',
+            $this->getFixturesDir().'/system/modules/foobar/html/.htaccess',
             'system/modules/foobar/html',
             'system/modules/foobar/html/.htaccess'
         );
@@ -61,15 +52,9 @@ class HtaccessAnalyzerTest extends TestCase
         $htaccess = new HtaccessAnalyzer($file);
 
         $this->assertTrue($htaccess->grantsAccess());
-    }
 
-    /**
-     * Tests a file that does not grant access.
-     */
-    public function testDoesNotGrantAccess()
-    {
         $file = new SplFileInfo(
-            $this->getRootDir().'/system/modules/foobar/private/.htaccess',
+            $this->getFixturesDir().'/system/modules/foobar/private/.htaccess',
             'system/modules/foobar/private',
             'system/modules/foobar/private/.htaccess'
         );
@@ -79,10 +64,7 @@ class HtaccessAnalyzerTest extends TestCase
         $this->assertFalse($htaccess->grantsAccess());
     }
 
-    /**
-     * Tests adding an invalid file.
-     */
-    public function testInvalidFile()
+    public function testThrowsAnExceptionIfTheFileIsNotAnHtaccessFile(): void
     {
         $this->expectException('InvalidArgumentException');
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -23,7 +25,6 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\PageError404;
 use Contao\StringUtil;
-use Contao\System;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -33,12 +34,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * Renders pretty error screens for exceptions.
- *
- * @author Christian Schiffler <https://github.com/discordier>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class PrettyErrorScreenListener
 {
     /**
@@ -80,8 +75,6 @@ class PrettyErrorScreenListener
     ];
 
     /**
-     * Constructor.
-     *
      * @param bool                     $prettyErrorScreens
      * @param \Twig_Environment        $twig
      * @param ContaoFrameworkInterface $framework
@@ -102,7 +95,7 @@ class PrettyErrorScreenListener
      *
      * @param GetResponseForExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         if (!$event->isMasterRequest() || 'html' !== $event->getRequest()->getRequestFormat()) {
             return;
@@ -116,7 +109,7 @@ class PrettyErrorScreenListener
      *
      * @param GetResponseForExceptionEvent $event
      */
-    private function handleException(GetResponseForExceptionEvent $event)
+    private function handleException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
 
@@ -147,7 +140,7 @@ class PrettyErrorScreenListener
      *
      * @param GetResponseForExceptionEvent $event
      */
-    private function renderBackendException(GetResponseForExceptionEvent $event)
+    private function renderBackendException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
 
@@ -161,7 +154,7 @@ class PrettyErrorScreenListener
      * @param int                          $type
      * @param GetResponseForExceptionEvent $event
      */
-    private function renderErrorScreenByType($type, GetResponseForExceptionEvent $event)
+    private function renderErrorScreenByType($type, GetResponseForExceptionEvent $event): void
     {
         static $processing;
 
@@ -185,7 +178,7 @@ class PrettyErrorScreenListener
      *
      * @return Response|null
      */
-    private function getResponseFromPageHandler($type)
+    private function getResponseFromPageHandler($type): ?Response
     {
         $this->framework->initialize();
 
@@ -212,7 +205,7 @@ class PrettyErrorScreenListener
      *
      * @param GetResponseForExceptionEvent $event
      */
-    private function renderErrorScreenByException(GetResponseForExceptionEvent $event)
+    private function renderErrorScreenByException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
         $statusCode = $this->getStatusCodeForException($exception);
@@ -234,7 +227,7 @@ class PrettyErrorScreenListener
      *
      * @return string|null
      */
-    private function getTemplateForException(\Exception $exception)
+    private function getTemplateForException(\Exception $exception): ?string
     {
         foreach ($this->mapper as $class => $template) {
             if ($exception instanceof $class) {
@@ -252,7 +245,7 @@ class PrettyErrorScreenListener
      * @param int                          $statusCode
      * @param GetResponseForExceptionEvent $event
      */
-    private function renderTemplate($template, $statusCode, GetResponseForExceptionEvent $event)
+    private function renderTemplate($template, $statusCode, GetResponseForExceptionEvent $event): void
     {
         if (!$this->prettyErrorScreens) {
             return;
@@ -261,14 +254,10 @@ class PrettyErrorScreenListener
         $view = '@ContaoCore/Error/'.$template.'.html.twig';
         $parameters = $this->getTemplateParameters($view, $statusCode, $event);
 
-        if (null === $parameters) {
+        try {
+            $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
+        } catch (\Twig_Error $e) {
             $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
-        } else {
-            try {
-                $event->setResponse(new Response($this->twig->render($view, $parameters), $statusCode));
-            } catch (\Twig_Error $e) {
-                $event->setResponse(new Response($this->twig->render('@ContaoCore/Error/error.html.twig'), 500));
-            }
         }
     }
 
@@ -279,14 +268,10 @@ class PrettyErrorScreenListener
      * @param int                          $statusCode
      * @param GetResponseForExceptionEvent $event
      *
-     * @return array|null
+     * @return array
      */
-    private function getTemplateParameters($view, $statusCode, GetResponseForExceptionEvent $event)
+    private function getTemplateParameters($view, $statusCode, GetResponseForExceptionEvent $event): ?array
     {
-        if (null === ($labels = $this->loadLanguageStrings())) {
-            return null;
-        }
-
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
 
@@ -295,7 +280,6 @@ class PrettyErrorScreenListener
         return [
             'statusCode' => $statusCode,
             'statusName' => Response::$statusTexts[$statusCode],
-            'error' => $labels,
             'template' => $view,
             'base' => $event->getRequest()->getBasePath(),
             'adminEmail' => '&#109;&#97;&#105;&#108;&#116;&#111;&#58;'.$encoded,
@@ -304,29 +288,11 @@ class PrettyErrorScreenListener
     }
 
     /**
-     * Loads the language strings.
-     *
-     * @return array|null
-     */
-    private function loadLanguageStrings()
-    {
-        $this->framework->initialize();
-
-        System::loadLanguageFile('exception');
-
-        if (!isset($GLOBALS['TL_LANG']['XPT'])) {
-            return null;
-        }
-
-        return $GLOBALS['TL_LANG']['XPT'];
-    }
-
-    /**
      * Logs the exception.
      *
      * @param \Exception $exception
      */
-    private function logException(\Exception $exception)
+    private function logException(\Exception $exception): void
     {
         if (null === $this->logger) {
             return;
@@ -340,7 +306,7 @@ class PrettyErrorScreenListener
      *
      * @return bool
      */
-    private function isBackendUser()
+    private function isBackendUser(): bool
     {
         $token = $this->tokenStorage->getToken();
 
@@ -364,8 +330,12 @@ class PrettyErrorScreenListener
      *
      * @return int
      */
-    private function getStatusCodeForException(\Exception $exception)
+    private function getStatusCodeForException(\Exception $exception): int
     {
-        return $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+        if ($exception instanceof HttpException) {
+            return (int) $exception->getStatusCode();
+        }
+
+        return 500;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,12 +19,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * Stores the referer in the session.
- *
- * @author Yanick Witschi <https://github.com/toflar>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class StoreRefererListener
 {
     /**
@@ -45,8 +41,6 @@ class StoreRefererListener
     private $scopeMatcher;
 
     /**
-     * Constructor.
-     *
      * @param SessionInterface                     $session
      * @param TokenStorageInterface                $tokenStorage
      * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
@@ -65,7 +59,7 @@ class StoreRefererListener
      *
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
@@ -91,7 +85,7 @@ class StoreRefererListener
      *
      * @param Request $request
      */
-    private function storeBackendReferer(Request $request)
+    private function storeBackendReferer(Request $request): void
     {
         if (!$this->canModifyBackendSession($request)) {
             return;
@@ -121,7 +115,7 @@ class StoreRefererListener
      *
      * @return bool
      */
-    private function canModifyBackendSession(Request $request)
+    private function canModifyBackendSession(Request $request): bool
     {
         return !$request->query->has('act')
             && !$request->query->has('key')
@@ -141,18 +135,18 @@ class StoreRefererListener
      *
      * @return array
      */
-    private function prepareBackendReferer($refererId, array $referers = null)
+    private function prepareBackendReferer(string $refererId, array $referers = null): array
     {
-        if (!is_array($referers)) {
+        if (!\is_array($referers)) {
             $referers = [];
         }
 
-        if (!isset($referers[$refererId]) || !is_array($referers[$refererId])) {
-            $referers[$refererId] = ['last' => ''];
+        if (!isset($referers[$refererId]) || !\is_array($referers[$refererId])) {
+            $referers[$refererId] = end($referers) ?: ['last' => ''];
         }
 
         // Make sure we never have more than 25 different referer URLs
-        while (count($referers) >= 25) {
+        while (\count($referers) >= 25) {
             array_shift($referers);
         }
 
@@ -164,7 +158,7 @@ class StoreRefererListener
      *
      * @param Request $request
      */
-    private function storeFrontendReferer(Request $request)
+    private function storeFrontendReferer(Request $request): void
     {
         $refererOld = $this->session->get('referer');
 
@@ -188,7 +182,7 @@ class StoreRefererListener
      *
      * @return bool
      */
-    private function canModifyFrontendSession(Request $request, array $referer = null)
+    private function canModifyFrontendSession(Request $request, array $referer = null): bool
     {
         return (null !== $referer)
             && !$request->query->has('pdf')
@@ -208,8 +202,8 @@ class StoreRefererListener
      *
      * @return string
      */
-    private function getRelativeRequestUri(Request $request)
+    private function getRelativeRequestUri(Request $request): string
     {
-        return (string) substr($request->getRequestUri(), strlen($request->getBasePath()) + 1);
+        return (string) substr($request->getRequestUri(), \strlen($request->getBasePath()) + 1);
     }
 }

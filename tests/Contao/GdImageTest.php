@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,16 +13,12 @@
 namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\File;
 use Contao\GdImage;
 use Contao\System;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Tests the GdImage class.
- *
- * @author Martin Auswöger <https://github.com/ausi>
- * @author Yanick Witschi <https://github.com/Toflar>
- *
  * @group contao3
  *
  * @runTestsInSeparateProcesses
@@ -29,45 +27,18 @@ use Symfony\Component\Filesystem\Filesystem;
 class GdImageTest extends TestCase
 {
     /**
-     * @var string
-     */
-    private static $rootDir;
-
-    /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
-    {
-        self::$rootDir = __DIR__.'/../../tmp';
-
-        $fs = new Filesystem();
-        $fs->mkdir(self::$rootDir);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function tearDownAfterClass()
-    {
-        $fs = new Filesystem();
-        $fs->remove(self::$rootDir);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        define('TL_ROOT', self::$rootDir);
-        System::setContainer($this->mockContainerWithContaoScopes());
+        \define('TL_ROOT', $this->getTempDir());
+
+        System::setContainer($this->mockContainer($this->getTempDir()));
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $resource = imagecreate(1, 1);
         $image = new GdImage($resource);
@@ -76,10 +47,7 @@ class GdImageTest extends TestCase
         $this->assertSame($resource, $image->getResource());
     }
 
-    /**
-     * Tests the fromDimensions() method.
-     */
-    public function testFromDimension()
+    public function testCreatesImagesFromDimensions(): void
     {
         $image = GdImage::fromDimensions(100, 100);
 
@@ -102,22 +70,20 @@ class GdImageTest extends TestCase
     }
 
     /**
-     * Tests the fromFile() method.
-     *
      * @param string $type
      *
      * @dataProvider getImageTypes
      */
-    public function testFromFile($type)
+    public function testCreatesImagesFromFiles(string $type): void
     {
         $image = imagecreatetruecolor(100, 100);
         imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 0));
 
         $method = 'image'.$type;
-        $method($image, self::$rootDir.'/test.'.$type);
+        $method($image, $this->getTempDir().'/test.'.$type);
         imagedestroy($image);
 
-        $image = GdImage::fromFile(new \File('test.'.$type));
+        $image = GdImage::fromFile(new File('test.'.$type));
 
         $this->assertInternalType('resource', $image->getResource());
         $this->assertSame(100, imagesx($image->getResource()));
@@ -125,25 +91,13 @@ class GdImageTest extends TestCase
     }
 
     /**
-     * Tests the fromFile() method with an invalid type.
-     */
-    public function testFromFileInvalidType()
-    {
-        $this->expectException('InvalidArgumentException');
-
-        GdImage::fromFile(new \File('test.xyz'));
-    }
-
-    /**
-     * Tests the saveToFile() method.
-     *
      * @param string $type
      *
      * @dataProvider getImageTypes
      */
-    public function testSaveToFile($type)
+    public function testSavesImagesToFiles(string $type): void
     {
-        $file = self::$rootDir.'/test.'.$type;
+        $file = $this->getTempDir().'/test.'.$type;
 
         $image = GdImage::fromDimensions(100, 100);
         $image->saveToFile($file);
@@ -156,9 +110,25 @@ class GdImageTest extends TestCase
     }
 
     /**
-     * Tests the copyTo() method.
+     * @return array
      */
-    public function testCopyTo()
+    public function getImageTypes(): array
+    {
+        return [
+            ['gif'],
+            ['jpeg'],
+            ['png'],
+        ];
+    }
+
+    public function testFailsIfTheFileTypeIsInvalid(): void
+    {
+        $this->expectException('InvalidArgumentException');
+
+        GdImage::fromFile(new File('test.xyz'));
+    }
+
+    public function testCopiesImages(): void
     {
         $image = imagecreatetruecolor(100, 100);
 
@@ -213,10 +183,7 @@ class GdImageTest extends TestCase
         );
     }
 
-    /**
-     * Tests the convertToPaletteImage() method.
-     */
-    public function testConvertToPaletteImage()
+    public function testConvertsImagesToPaletteImages(): void
     {
         $image = imagecreatetruecolor(100, 100);
 
@@ -246,10 +213,7 @@ class GdImageTest extends TestCase
         );
     }
 
-    /**
-     * Tests the convertToPaletteImage() method from a true color image.
-     */
-    public function testConvertToPaletteImageFromTrueColor()
+    public function testConvertsTrueColorImagesToPaletteImages(): void
     {
         $image = imagecreatetruecolor(100, 100);
 
@@ -277,10 +241,7 @@ class GdImageTest extends TestCase
         );
     }
 
-    /**
-     * Tests the countColors() method.
-     */
-    public function testCountColors()
+    public function testCountsTheImageColors(): void
     {
         $image = imagecreatetruecolor(100, 100);
         imagealphablending($image, false);
@@ -297,10 +258,7 @@ class GdImageTest extends TestCase
         $this->assertSame(2, $image->countColors(1));
     }
 
-    /**
-     * Tests the isSemitransparent() method.
-     */
-    public function testIsSemitransparent()
+    public function testRecognizesSemitransparentImages(): void
     {
         $image = imagecreatetruecolor(100, 100);
         imagealphablending($image, false);
@@ -321,19 +279,5 @@ class GdImageTest extends TestCase
 
         imagefill($image->getResource(), 0, 0, imagecolorallocatealpha($image->getResource(), 0, 0, 0, 0));
         $this->assertFalse($image->isSemitransparent());
-    }
-
-    /**
-     * Provides the image types for the tests.
-     *
-     * @return array
-     */
-    public function getImageTypes()
-    {
-        return [
-            ['gif'],
-            ['jpeg'],
-            ['png'],
-        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,19 +17,13 @@ use Contao\CoreBundle\Picker\FilePickerProvider;
 use Contao\CoreBundle\Picker\PagePickerProvider;
 use Contao\CoreBundle\Picker\PickerBuilder;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\MenuFactory;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the PickerBuilder class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
-class PickerBuilderTest extends TestCase
+class PickerBuilderTest extends ContaoTestCase
 {
     /**
      * @var PickerBuilder
@@ -37,7 +33,7 @@ class PickerBuilderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -51,26 +47,25 @@ class PickerBuilderTest extends TestCase
         $this->builder = new PickerBuilder(new MenuFactory(), $router, new RequestStack());
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Picker\PickerBuilder', $this->builder);
     }
 
-    /**
-     * Tests the create() method.
-     */
-    public function testCreate()
+    public function testCreatesAPickerObject(): void
     {
         $provider = new PagePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class));
-        $provider->setTokenStorage($this->mockTokenStorage());
+        $provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->builder->addProvider($provider);
 
         $this->builder->addProvider(
-            new FilePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class), __DIR__)
+            new FilePickerProvider(
+                new MenuFactory(),
+                $this->createMock(RouterInterface::class),
+                $this->createMock(TranslatorInterface::class),
+                __DIR__
+            )
         );
 
         $picker = $this->builder->create(new PickerConfig('page', ['providers' => ['pagePicker']]));
@@ -83,21 +78,15 @@ class PickerBuilderTest extends TestCase
         $this->assertSame(['providers' => ['pagePicker']], $config->getExtras());
     }
 
-    /**
-     * Tests the create() method without providers.
-     */
-    public function testCreateWithoutProviders()
+    public function testDoesNotCreateAPickerObjectIfThereAreNoProviders(): void
     {
         $this->assertNull($this->builder->create(new PickerConfig('page')));
     }
 
-    /**
-     * Tests the createFromData() method.
-     */
-    public function testCreateFromData()
+    public function testCreatesAPickerObjectFromData(): void
     {
         $provider = new PagePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class));
-        $provider->setTokenStorage($this->mockTokenStorage());
+        $provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->builder->addProvider($provider);
 
@@ -107,26 +96,20 @@ class PickerBuilderTest extends TestCase
         $this->assertSame('link', $picker->getConfig()->getContext());
     }
 
-    /**
-     * Tests the createFromData() method with an invalid argument.
-     */
-    public function testCreateFromDataWithInvalidArgument()
+    public function testDoesNotCreateAPickerObjectFromDataIfTheArgumentIsInvalid(): void
     {
         $provider = new PagePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class));
-        $provider->setTokenStorage($this->mockTokenStorage());
+        $provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->builder->addProvider($provider);
 
         $this->assertNull($this->builder->createFromData('invalid'));
     }
 
-    /**
-     * Tests the supportsContext() method.
-     */
-    public function testSupportsContext()
+    public function testChecksIfAContextIsSupported(): void
     {
         $provider = new PagePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class));
-        $provider->setTokenStorage($this->mockTokenStorage());
+        $provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->builder->addProvider($provider);
 
@@ -135,60 +118,18 @@ class PickerBuilderTest extends TestCase
         $this->assertFalse($this->builder->supportsContext('foo'));
     }
 
-    /**
-     * Tests the getUrl() method.
-     */
-    public function testGetUrl()
+    public function testReturnsThePickerUrl(): void
     {
         $provider = new PagePickerProvider(new MenuFactory(), $this->createMock(RouterInterface::class));
-        $provider->setTokenStorage($this->mockTokenStorage());
+        $provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->builder->addProvider($provider);
 
         $this->assertSame('/_contao/picker?context=page', $this->builder->getUrl('page', [], '{{link_url::5}}'));
     }
 
-    /**
-     * Tests the getUrl() method without a supported context.
-     */
-    public function testGetUrlWithoutSupportedContext()
+    public function testReturnsAnEmptyPickerUrlIfTheContextIsNotSupported(): void
     {
         $this->assertSame('', $this->builder->getUrl('foo'));
-    }
-
-    /**
-     * Returns a token storage mock.
-     *
-     * @return TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function mockTokenStorage()
-    {
-        $user = $this
-            ->getMockBuilder(BackendUser::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hasAccess'])
-            ->getMock()
-        ;
-
-        $user
-            ->method('hasAccess')
-            ->willReturn(true)
-        ;
-
-        $token = $this->createMock(TokenInterface::class);
-
-        $token
-            ->method('getUser')
-            ->willReturn($user)
-        ;
-
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
-        $tokenStorage
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        return $tokenStorage;
     }
 }

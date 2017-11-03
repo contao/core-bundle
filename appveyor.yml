@@ -11,8 +11,8 @@ init:
 
 install:
   - mkdir c:\php && cd c:\php
-  - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-5.6.29-Win32-VC11-x86.zip
-  - 7z x php-5.6.29-Win32-VC11-x86.zip -y >nul
+  - appveyor DownloadFile http://windows.php.net/downloads/releases/archives/php-7.1.10-Win32-VC14-x86.zip
+  - 7z x php-7.1.10-Win32-VC14-x86.zip -y >nul
   - del *.zip
   - copy php.ini-production php.ini
   - echo date.timezone="UTC" >> php.ini
@@ -33,6 +33,7 @@ install:
   - echo extension=php_xsl.dll >> php.ini
   - cd c:\projects\contao
   - php -r "readfile('http://getcomposer.org/installer');" | php
+  - IF %APPVEYOR_REPO_TAG%==true (SET COMPOSER_ROOT_VERSION=%APPVEYOR_REPO_TAG_NAME%) ELSE (SET COMPOSER_ROOT_VERSION=dev-%APPVEYOR_REPO_BRANCH%)
   - php composer.phar update --no-progress --no-interaction --ansi
 
 test_script:

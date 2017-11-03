@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,13 +15,6 @@ namespace Contao\CoreBundle\Tests\Config\Loader;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Tests\TestCase;
 
-/**
- * Tests the PhpFileLoader class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- * @author Yanick Witschi <https://github.com/Toflar>
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class PhpFileLoaderTest extends TestCase
 {
     /**
@@ -28,45 +23,36 @@ class PhpFileLoaderTest extends TestCase
     private $loader;
 
     /**
-     * Creates the PhpFileLoader object.
+     * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->loader = new PhpFileLoader();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Config\Loader\PhpFileLoader', $this->loader);
     }
 
-    /**
-     * Tests the supports() method.
-     */
-    public function testSupports()
+    public function testSupportsPhpFiles(): void
     {
         $this->assertTrue(
             $this->loader->supports(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php'
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php'
             )
         );
 
         $this->assertFalse(
             $this->loader->supports(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/default.xlf'
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/default.xlf'
             )
         );
     }
 
-    /**
-     * Tests the load() method.
-     */
-    public function testLoad()
+    public function testLoadsPhpFiles(): void
     {
         $expects = <<<'EOF'
 
@@ -76,7 +62,7 @@ EOF;
 
         $this->assertSame(
             $expects,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php')
+            $this->loader->load($this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/config/config.php')
         );
 
         $content = <<<'EOF'
@@ -101,14 +87,11 @@ EOF;
 
         $this->assertSame(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
+            $this->loader->load($this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test.php')
         );
     }
 
-    /**
-     * Test loading a file with a custom namespace.
-     */
-    public function testLoadNamespace()
+    public function testAddsCustomNamespaces(): void
     {
         $expects = <<<'EOF'
 
@@ -121,7 +104,23 @@ EOF;
         $this->assertSame(
             $expects,
             $this->loader->load(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_namespace.php',
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_namespace1.php',
+                'namespaced'
+            )
+        );
+
+        $expects = <<<'EOF'
+
+namespace {
+    $GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+}
+
+EOF;
+
+        $this->assertSame(
+            $expects,
+            $this->loader->load(
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_namespace2.php',
                 'namespaced'
             )
         );
@@ -137,20 +136,18 @@ EOF;
         $this->assertSame(
             $expects,
             $this->loader->load(
-                $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/tl_test.php',
                 'namespaced'
             )
         );
     }
 
     /**
-     * Tests loading a file with a declare(strict_types=1) statement.
-     *
      * @param string $file
      *
      * @dataProvider loadWithDeclareStatementsStrictType
      */
-    public function testLoadWithDeclareStatementsStrictType($file)
+    public function testStripsDeclareStrictTypes(string $file): void
     {
         $content = <<<'EOF'
 
@@ -174,16 +171,16 @@ EOF;
 
         $this->assertSame(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php')
+            $this->loader->load(
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php'
+            )
         );
     }
 
     /**
-     * Tests loading a file with a declare(strict_types=1) statement and a comment.
-     *
      * @dataProvider loadWithDeclareStatementsStrictType
      */
-    public function testLoadWithDeclareStatementsCommentsAreIgnored()
+    public function testIgnoresDeclareStatementsInComments(): void
     {
         $content = <<<'EOF'
 
@@ -213,18 +210,29 @@ EOF;
 
         $this->assertSame(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_declare3.php')
+            $this->loader->load(
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/tl_test_with_declare3.php'
+            )
         );
     }
 
     /**
-     * Tests loading a file with a declare(strict_types=1,ticks=1) statement.
-     *
+     * @return array
+     */
+    public function loadWithDeclareStatementsStrictType(): array
+    {
+        return [
+            ['tl_test_with_declare1'],
+            ['tl_test_with_declare2'],
+        ];
+    }
+
+    /**
      * @param string $file
      *
      * @dataProvider loadWithDeclareStatementsMultipleDefined
      */
-    public function testLoadWithDeclareStatementsMultipleDefined($file)
+    public function testPreservesOtherDeclareDefinitions(string $file): void
     {
         $content = <<<'EOF'
 
@@ -250,29 +258,16 @@ EOF;
 
         $this->assertSame(
             $content,
-            $this->loader->load($this->getRootDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php')
+            $this->loader->load(
+                $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/dca/'.$file.'.php'
+            )
         );
     }
 
     /**
-     * Provides the data for the declare(strict_types=1) tests.
-     *
      * @return array
      */
-    public function loadWithDeclareStatementsStrictType()
-    {
-        return [
-            ['tl_test_with_declare1'],
-            ['tl_test_with_declare2'],
-        ];
-    }
-
-    /**
-     * Provides the data for the declare(strict_types=1,ticks=1) tests.
-     *
-     * @return array
-     */
-    public function loadWithDeclareStatementsMultipleDefined()
+    public function loadWithDeclareStatementsMultipleDefined(): array
     {
         return [
             ['tl_test_with_declare4'],

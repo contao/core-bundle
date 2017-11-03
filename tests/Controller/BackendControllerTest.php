@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,7 +13,6 @@
 namespace Contao\CoreBundle\Tests\Controller;
 
 use Contao\CoreBundle\Controller\BackendController;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Picker\PickerBuilderInterface;
 use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\CoreBundle\Tests\TestCase;
@@ -19,33 +20,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-/**
- * Tests the BackendControllerTest class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class BackendControllerTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $controller = new BackendController();
 
         $this->assertInstanceOf('Contao\CoreBundle\Controller\BackendController', $controller);
     }
 
-    /**
-     * Tests the controller actions.
-     */
-    public function testActions()
+    public function testReturnsAResponseInTheActionMethods(): void
     {
-        $framework = $this->createMock(ContaoFrameworkInterface::class);
-
-        /** @var ContainerInterface $container */
-        $container = $this->mockKernel()->getContainer();
-        $container->set('contao.framework', $framework);
+        $container = $this->mockContainer();
+        $container->set('contao.framework', $this->mockContaoFramework());
 
         $controller = new BackendController();
         $controller->setContainer($container);
@@ -63,10 +50,7 @@ class BackendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->alertsAction());
     }
 
-    /**
-     * Tests the pickerAction() method.
-     */
-    public function testPickerAction()
+    public function testReturnsAResponseInThePickerActionMethod(): void
     {
         $picker = $this->createMock(PickerInterface::class);
 
@@ -104,10 +88,7 @@ class BackendControllerTest extends TestCase
         $this->assertSame(302, $response->getStatusCode());
     }
 
-    /**
-     * Tests the pickerAction() method with invalid picker extras.
-     */
-    public function testPickerActionWithInvalidPickerExtras()
+    public function testDoesNotReturnAResponseInThePickerActionMethodIfThePickerExtrasAreInvalid(): void
     {
         $controller = new BackendController();
 
@@ -120,10 +101,7 @@ class BackendControllerTest extends TestCase
         $controller->pickerAction($request);
     }
 
-    /**
-     * Tests the pickerAction() method with an unsupported context.
-     */
-    public function testPickerActionWithUnsupportedContext()
+    public function testDoesNotReturnAResponseInThePickerActionMethodIfThePickerContextIsUnsupported(): void
     {
         $builder = $this->createMock(PickerBuilderInterface::class);
 

@@ -1,11 +1,10 @@
-/**
- * Contao Open Source CMS
+/*!
+ * This file is part of Contao.
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
-
 
 /*
 ---
@@ -85,7 +84,6 @@ Request.Contao = new Class(
 // Deprecated since Contao 4.0, to be removed in Contao 5.0
 Request.Mixed = Request.Contao;
 
-
 /*
 ---
 
@@ -142,8 +140,9 @@ Tips.Contao = new Class(
 			obj[props[z]] = event.page[z] + this.options.offset[z];
 			if (obj[props[z]] < 0) bounds[z] = true;
 			if ((obj[props[z]] + tip[z] - scroll[z]) > size[z] - this.options.windowPadding[z]) {
-				if (z == 'x') // Ignore vertical boundaries
+				if (z == 'x') { // ignore vertical boundaries
 					obj[props[z]] = event.page[z] - this.options.offset[z] - tip[z];
+				}
 				bounds[z+'2'] = true;
 			}
 		}
@@ -168,7 +167,6 @@ Tips.Contao = new Class(
 		this.fireEvent('hide', [this.tip, element]);
 	}
 });
-
 
 /*
 ---
@@ -243,7 +241,6 @@ Class.refactor(Drag,
 	}
 });
 
-
 /*
 ---
 
@@ -311,7 +308,6 @@ Class.refactor(Sortables,
 		return clone;
 	}
 });
-
 
 /*
 ---

@@ -121,10 +121,16 @@ class InsertTags extends \Controller
 				{
 					/** @var FragmentHandler $fragmentHandler */
 					$fragmentHandler = \System::getContainer()->get('fragment.handler');
-					$strBuffer .= $fragmentHandler->render(new ControllerReference('contao.controller.insert_tags:renderAction',
-						['insertTag' => '{{' . $strTag . '}}'],
-						['pageId' => $objPage->id, 'request' => \Environment::get('request')]
-					), 'esi');
+
+					$strBuffer .= $fragmentHandler->render(
+						new ControllerReference(
+							'contao.controller.insert_tags:renderAction',
+							['insertTag' => '{{' . $strTag . '}}'],
+							['pageId' => $objPage->id, 'request' => \Environment::get('request')]
+						),
+						'esi'
+					);
+
 					continue;
 				}
 			}
@@ -403,13 +409,13 @@ class InsertTags extends \Controller
 
 								if ($objNext instanceof PageModel)
 								{
-									$strUrl = $objNext->getFrontendUrl();
+									$strUrl = in_array('absolute', $flags, true) ? $objNext->getAbsoluteUrl() : $objNext->getFrontendUrl();
 									break;
 								}
 								// DO NOT ADD A break; STATEMENT
 
 							default:
-								$strUrl = $objNextPage->getFrontendUrl();
+								$strUrl = in_array('absolute', $flags, true) ? $objNextPage->getAbsoluteUrl() : $objNextPage->getFrontendUrl();
 								break;
 						}
 
@@ -491,7 +497,8 @@ class InsertTags extends \Controller
 					}
 
 					/** @var PageModel $objPid */
-					$strUrl = $objPid->getFrontendUrl('/articles/' . ($objArticle->alias ?: $objArticle->id));
+					$params = '/articles/' . ($objArticle->alias ?: $objArticle->id);
+					$strUrl = in_array('absolute', $flags, true) ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params);
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -527,7 +534,6 @@ class InsertTags extends \Controller
 				// Last update
 				case 'last_update':
 					$strQuery = "SELECT MAX(tstamp) AS tc";
-
 					$bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 					if (isset($bundles['ContaoNewsBundle']))

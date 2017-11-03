@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -11,23 +13,15 @@
 namespace Contao\CoreBundle\Tests\Doctrine\Schema;
 
 use Contao\CoreBundle\Doctrine\Schema\MigrationsSchemaProvider;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Tests\TestCase;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-/**
- * Tests the DcaSchemaProvider class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
-class MigrationsSchemaProviderTest extends DcaSchemaProviderTest
+class MigrationsSchemaProviderTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $provider = new MigrationsSchemaProvider(
-            $this->createMock(ContaoFrameworkInterface::class),
+            $this->mockContaoFramework(),
             $this->createMock(Registry::class)
         );
 

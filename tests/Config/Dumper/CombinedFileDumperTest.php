@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,96 +17,81 @@ use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * Tests the CombinedFileDumper class.
- *
- * @author Andreas Schempp <https://github.com/aschempp>
- */
 class CombinedFileDumperTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
-        $filesystem = $this->createMock(Filesystem::class);
-        $fileLoader = $this->createMock(PhpFileLoader::class);
-
-        $this->assertInstanceOf(
-            'Contao\CoreBundle\Config\Dumper\CombinedFileDumper',
-            new CombinedFileDumper($filesystem, $fileLoader, $this->getCacheDir())
+        $dumper = new CombinedFileDumper(
+            $this->createMock(Filesystem::class),
+            $this->createMock(PhpFileLoader::class),
+            $this->getTempDir()
         );
+
+        $this->assertInstanceOf('Contao\CoreBundle\Config\Dumper\CombinedFileDumper', $dumper);
     }
 
-    /**
-     * Tests dumping a file.
-     */
-    public function testDump()
+    public function testDumpsTheDataIntoAFile(): void
     {
         $dumper = new CombinedFileDumper(
             $this->mockFilesystem("<?php\n\necho 'test';\n"),
             $this->mockLoader(),
-            $this->getCacheDir()
+            $this->getTempDir()
         );
 
         $dumper->dump(['test.php'], 'test.php');
     }
 
-    /**
-     * Tests setting a valid header.
-     */
-    public function testValidHeader()
+    public function testHandlesCustomHeaders(): void
     {
         $dumper = new CombinedFileDumper(
             $this->mockFilesystem("<?php\necho 'foo';\necho 'test';\n"),
             $this->mockLoader(),
-            $this->getCacheDir()
+            $this->getTempDir()
         );
 
         $dumper->setHeader("<?php\necho 'foo';");
         $dumper->dump(['test.php'], 'test.php');
     }
 
-    /**
-     * Tests setting an invalid header.
-     */
-    public function testInvalidHeader()
+    public function testFailsIfTheHeaderIsInvalid(): void
     {
+        $dumper = new CombinedFileDumper(
+            $this->createMock(Filesystem::class),
+            $this->createMock(PhpFileLoader::class),
+            $this->getTempDir()
+        );
+
         $this->expectException('InvalidArgumentException');
 
-        $filesystem = $this->createMock(Filesystem::class);
-        $fileLoader = $this->createMock(PhpFileLoader::class);
-
-        $dumper = new CombinedFileDumper($filesystem, $fileLoader, $this->getCacheDir());
         $dumper->setHeader('No opening PHP tag');
     }
 
     /**
-     * Returns a mocked filesystem object.
+     * Mocks the filesystem.
      *
      * @param mixed $expects
      *
      * @return Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockFilesystem($expects)
+    private function mockFilesystem($expects): Filesystem
     {
         $filesystem = $this->createMock(Filesystem::class);
 
         $filesystem
             ->expects($this->once())
             ->method('dumpFile')
-            ->with($this->getCacheDir().'/test.php', $expects)
+            ->with($this->getTempDir().'/test.php', $expects)
         ;
 
         return $filesystem;
     }
 
     /**
-     * Returns a mocked file loader object.
+     * Mocks a file loader.
      *
      * @return PhpFileLoader|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockLoader()
+    private function mockLoader(): PhpFileLoader
     {
         $loader = $this->createMock(PhpFileLoader::class);
 

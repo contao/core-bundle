@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,18 +15,13 @@ namespace Contao\CoreBundle\Tests\Picker;
 use Contao\BackendUser;
 use Contao\CoreBundle\Picker\ArticlePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-/**
- * Tests the ArticlePickerProvider class.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
-class ArticlePickerProviderTest extends TestCase
+class ArticlePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var ArticlePickerProvider
@@ -34,7 +31,27 @@ class ArticlePickerProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        $GLOBALS['TL_LANG']['MSC']['articlePicker'] = 'Article picker';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+
+        unset($GLOBALS['TL_LANG']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,39 +67,26 @@ class ArticlePickerProviderTest extends TestCase
         $router
             ->method('generate')
             ->willReturnCallback(
-                function ($name, array $params) {
+                function (string $name, array $params): string {
                     return $name.'?'.http_build_query($params);
                 }
             )
         ;
 
         $this->provider = new ArticlePickerProvider($menuFactory, $router);
-
-        $GLOBALS['TL_LANG']['MSC']['articlePicker'] = 'Article picker';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        unset($GLOBALS['TL_LANG']);
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
+    public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Picker\ArticlePickerProvider', $this->provider);
     }
 
     /**
-     * Tests the createMenuItem() method.
+     * @group legacy
+     *
+     * @expectedDeprecation Using a picker provider without injecting the translator service has been deprecated %s.
      */
-    public function testCreateMenuItem()
+    public function testCreatesTheMenuItem(): void
     {
         $picker = json_encode([
             'context' => 'link',
@@ -91,7 +95,7 @@ class ArticlePickerProviderTest extends TestCase
             'value' => '',
         ]);
 
-        if (function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
+        if (\function_exists('gzencode') && false !== ($encoded = @gzencode($picker))) {
             $picker = $encoded;
         }
 
@@ -101,68 +105,31 @@ class ArticlePickerProviderTest extends TestCase
                 'linkAttributes' => ['class' => 'articlePicker'],
                 'current' => true,
                 'uri' => 'contao_backend?do=article&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
-            ], $this->provider->createMenuItem(new PickerConfig('link', [], '', 'articlePicker'))
+            ],
+            $this->provider->createMenuItem(new PickerConfig('link', [], '', 'articlePicker'))
         );
     }
 
-    /**
-     * Tests the isCurrent() method.
-     */
-    public function testIsCurrent()
+    public function testChecksIfAMenuItemIsCurrent(): void
     {
         $this->assertTrue($this->provider->isCurrent(new PickerConfig('link', [], '', 'articlePicker')));
         $this->assertFalse($this->provider->isCurrent(new PickerConfig('link', [], '', 'filePicker')));
     }
 
-    /**
-     * Tests the getName() method.
-     */
-    public function testGetName()
+    public function testReturnsTheCorrectName(): void
     {
         $this->assertSame('articlePicker', $this->provider->getName());
     }
 
-    /**
-     * Tests the supportsContext() method.
-     */
-    public function testSupportsContext()
+    public function testChecksIfAContextIsSupported(): void
     {
-        $user = $this
-            ->getMockBuilder(BackendUser::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['hasAccess'])
-            ->getMock()
-        ;
-
-        $user
-            ->method('hasAccess')
-            ->willReturn(true)
-        ;
-
-        $token = $this->createMock(TokenInterface::class);
-
-        $token
-            ->method('getUser')
-            ->willReturn($user)
-        ;
-
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
-        $tokenStorage
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        $this->provider->setTokenStorage($tokenStorage);
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('link'));
         $this->assertFalse($this->provider->supportsContext('file'));
     }
 
-    /**
-     * Tests the supportsContext() method without token storage.
-     */
-    public function testSupportsContextWithoutTokenStorage()
+    public function testFailsToCheckTheContextIfThereIsNoTokenStorage(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('No token storage provided');
@@ -170,10 +137,7 @@ class ArticlePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without token.
-     */
-    public function testSupportsContextWithoutToken()
+    public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
@@ -190,10 +154,7 @@ class ArticlePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsContext() method without a user object.
-     */
-    public function testSupportsContextWithoutUser()
+    public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -217,27 +178,18 @@ class ArticlePickerProviderTest extends TestCase
         $this->provider->supportsContext('link');
     }
 
-    /**
-     * Tests the supportsValue() method.
-     */
-    public function testSupportsValue()
+    public function testChecksIfAValueIsSupported(): void
     {
         $this->assertTrue($this->provider->supportsValue(new PickerConfig('link', [], '{{article_url::5}}')));
         $this->assertFalse($this->provider->supportsValue(new PickerConfig('link', [], '{{link_url::5}}')));
     }
 
-    /**
-     * Tests the getDcaTable() method.
-     */
-    public function testGetDcaTable()
+    public function testReturnsTheDcaTable(): void
     {
         $this->assertSame('tl_article', $this->provider->getDcaTable());
     }
 
-    /**
-     * Tests the getDcaAttributes() method.
-     */
-    public function testGetDcaAttributes()
+    public function testReturnsTheDcaAttributes(): void
     {
         $this->assertSame(
             [
@@ -253,10 +205,7 @@ class ArticlePickerProviderTest extends TestCase
         );
     }
 
-    /**
-     * Tests the convertDcaValue() method.
-     */
-    public function testConvertDcaValue()
+    public function testConvertsTheDcaValue(): void
     {
         $this->assertSame('{{article_url::5}}', $this->provider->convertDcaValue(new PickerConfig('link'), 5));
     }
