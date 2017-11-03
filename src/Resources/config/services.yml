@@ -319,66 +319,6 @@ services:
         calls:
             - ["matchAttribute", ["_scope", "frontend"]]
 
-    contao.security.backend_user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoBackendUserProvider
-        public: false
-        arguments:
-            - "@contao.framework"
-
-    contao.security.authenticator:
-        class: Contao\CoreBundle\Security\ContaoAuthenticator
-        arguments:
-            - "@contao.framework"
-
-    contao.security.frontend_user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoFrontendUserProvider
-        public: false
-        arguments:
-            - "@contao.framework"
-
-    contao.security.user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoUserProvider
-        arguments:
-            - "@contao.framework"
-
-    contao.security.switch_user_button_generator:
-        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
-        arguments:
-            - "@security.authorization_checker"
-            - "@router"
-            - "@database_connection"
-            - "@templating"
-            - "@security.token_storage"
-
-    contao.security.preview_authenticator:
-        class: Contao\CoreBundle\Security\Authentication\ContaoPreviewAuthenticator
-        arguments:
-            - "@request_stack"
-            - "@session"
-            - "@security.token_storage"
-            - "@contao.security.frontend_user_provider"
-
-    contao.security.frontend_logout_success_handler:
-        class: Contao\CoreBundle\Security\LogoutSuccessHandler
-        arguments:
-            - "@router"
-
-    contao.security.frontend_failure_handler:
-        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
-        arguments:
-            - "@http_kernel"
-            - "@security.http_utils"
-            - []
-            - "@logger"
-            - "@session"
-
-    contao.security.frontend_success_handler:
-        class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
-        arguments:
-            - "@security.http_utils"
-            - []
-            - "@contao.framework"
-
     contao.image.imagine:
         class: Imagine\Gd\Imagine
 
@@ -478,3 +418,75 @@ services:
 
     contao.security.legacy_password_encoder:
         class: Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder
+
+    contao.security.backend_user_provider:
+        class: Contao\CoreBundle\Security\User\ContaoBackendUserProvider
+        public: false
+        arguments:
+            - "@contao.framework"
+
+    contao.security.authenticator:
+        class: Contao\CoreBundle\Security\ContaoAuthenticator
+        arguments:
+            - "@contao.routing.scope_matcher"
+
+    contao.security.frontend_user_provider:
+        class: Contao\CoreBundle\Security\User\ContaoFrontendUserProvider
+        public: false
+        arguments:
+            - "@contao.framework"
+
+    contao.security.user_provider:
+        class: Contao\CoreBundle\Security\User\ContaoUserProvider
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.scope_matcher"
+
+    contao.security.switch_user_button_generator:
+        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
+        arguments:
+            - "@security.authorization_checker"
+            - "@router"
+            - "@database_connection"
+            - "@templating"
+            - "@security.token_storage"
+
+    contao.security.preview_authenticator:
+        class: Contao\CoreBundle\Security\Authentication\ContaoPreviewAuthenticator
+        arguments:
+            - "@request_stack"
+            - "@session"
+            - "@security.token_storage"
+            - "@contao.security.frontend_user_provider"
+
+    contao.security.frontend_logout_success_handler:
+        class: Contao\CoreBundle\Security\LogoutSuccessHandler
+        arguments:
+            - "@router"
+
+    contao.security.frontend_failure_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
+        arguments:
+            - "@http_kernel"
+            - "@security.http_utils"
+            - []
+            - "@logger"
+            - "@session"
+
+    contao.security.frontend_success_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
+        arguments:
+            - "@security.http_utils"
+            - []
+            - "@contao.framework"
+
+    # We need to extend the DaoAuthenticationProvider to support a legacy hook
+    security.authentication.provider.dao:
+        class: Contao\CoreBundle\Security\Authentication\Provider\LegacyContaoAuthenticationProvider
+        abstract: true
+        arguments:
+            - ""
+            - ""
+            - ""
+            - "@security.encoder_factory"
+            - "%security.authentication.hide_user_not_found%"
