@@ -17,7 +17,6 @@ use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\TestBundle\ContaoTestBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class AddResourcesPathsPassTest extends TestCase
 {
@@ -30,13 +29,14 @@ class AddResourcesPathsPassTest extends TestCase
 
     public function testAddsTheResourcesPaths(): void
     {
-        $container = $this->mockContainer($this->getFixturesDir());
-
-        $container->setParameter('kernel.bundles', [
+        $bundles = [
             'FrameworkBundle' => FrameworkBundle::class,
             'ContaoTestBundle' => ContaoTestBundle::class,
             'foobar' => ContaoModuleBundle::class,
-        ]);
+        ];
+
+        $container = $this->mockContainer($this->getFixturesDir());
+        $container->setParameter('kernel.bundles', $bundles);
 
         $pass = new AddResourcesPathsPass();
         $pass->process($container);

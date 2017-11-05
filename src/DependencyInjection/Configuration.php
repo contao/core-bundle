@@ -181,9 +181,9 @@ class Configuration implements ConfigurationInterface
     private function canonicalize(string $value): string
     {
         $resolved = [];
-        $chunks = preg_split('#([\\/]+)#', $value, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+        $chunks = preg_split('#([\\\\/]+)#', $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
-        for ($i = 0; $i < count($chunks); $i++) {
+        for ($i = 0, $c = \count($chunks); $i < $c; ++$i) {
             if ('.' === $chunks[$i]) {
                 ++$i;
                 continue;
@@ -211,7 +211,7 @@ class Configuration implements ConfigurationInterface
             $resolved[] = $chunks[$i];
         }
 
-        return implode($resolved);
+        return rtrim(implode($resolved), '\/');
     }
 
     /**
