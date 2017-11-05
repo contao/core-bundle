@@ -2,7 +2,9 @@
 
 namespace Contao\Fixtures;
 
-class FrontendUser extends \Contao\User
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class FrontendUser extends \Contao\User implements UserInterface
 {
     public $authenticated = true;
 
@@ -19,5 +21,36 @@ class FrontendUser extends \Contao\User
     public function setUserFromDb()
     {
         // ignore
+    }
+
+    public static function loadUserByUsername($username)
+    {
+
+    }
+
+    public function getRoles()
+    {
+
+    }
+
+    public function getPassword()
+    {
+
+    }
+
+
+    public function getSalt()
+    {
+
+    }
+
+    public function getUsername()
+    {
+
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }

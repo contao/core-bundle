@@ -150,12 +150,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected $roles = array();
 
-	/** @var ContainerInterface $container */
-	protected $container;
-
-	/** @var FlashBagInterface $flashBag */
-	protected $flashBag;
-
 	/**
 	 * @var string
 	 */
@@ -166,11 +160,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected $encoder = false;
 
-	/**
-	 * @var bool
-	 */
-	protected $disable;
-
 
 	/**
 	 * Import the database object
@@ -179,9 +168,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	{
 		parent::__construct();
 		$this->import('Database');
-
-		$this->container = System::getContainer();
-		$this->flashBag = $this->container->get('session')->getFlashBag();
 	}
 
 
@@ -312,109 +298,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	{
 		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
-		/** @var Request $request */
-		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
-
-		// Check only POST requests
-		if ($request->getMethod() !== Request::METHOD_POST)
-		{
-			return false;
-		}
-
-		\System::loadLanguageFile('default');
-
-		$time = time();
-
-		// Set the user language
-		if (\Input::post('language'))
-		{
-			$this->language = \Input::post('language');
-		}
-
-		// Lock the account if there are too many login attempts
-		if ($this->loginCount < 1)
-		{
-			$this->locked = $time;
-			$this->loginCount = \Config::get('loginCount');
-			$this->save();
-
-			// Add a log entry and the error message, because checkAccountStatus() will not be called (see #4444)
-			$this->log('User "' . $this->username . '" has been locked for ' . ceil(\Config::get('lockPeriod') / 60) . ' minutes', __METHOD__, TL_ACCESS);
-			\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], ceil((($this->locked + \Config::get('lockPeriod')) - $time) / 60)));
-
-			// Send admin notification
-			if (\Config::get('adminEmail') != '')
-			{
-				$objEmail = new \Email();
-				$objEmail->subject = $GLOBALS['TL_LANG']['MSC']['lockedAccount'][0];
-				$objEmail->text = sprintf($GLOBALS['TL_LANG']['MSC']['lockedAccount'][1], $this->username, ((TL_MODE == 'FE') ? $this->firstname . " " . $this->lastname : $this->name), \Idna::decode(\Environment::get('base')), ceil(\Config::get('lockPeriod') / 60));
-				$objEmail->sendTo(\Config::get('adminEmail'));
-			}
-
-			return false;
-		}
-
-		// Check the account status
-		if ($this->checkAccountStatus() == false)
-		{
-			return false;
-		}
-
-		// The password has been generated with crypt()
-		if (\Encryption::test($this->password))
-		{
-			$blnAuthenticated = \Encryption::verify($request->request->get('password'), $this->password);
-		}
-		else
-		{
-			list($strPassword, $strSalt) = explode(':', $this->password);
-			$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1($request->request->get('password'))) : ($strPassword === sha1($strSalt . $request->request->get('password')));
-
-			// Store a SHA-512 encrpyted version of the password
-			if ($blnAuthenticated)
-			{
-				$this->password = \Encryption::hash($request->request->get('password'));
-			}
-		}
-
-		// HOOK: pass credentials to callback functions
-		if (!$blnAuthenticated && isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback)
-			{
-				$this->import($callback[0], 'objAuth', true);
-				$blnAuthenticated = $this->objAuth->{$callback[1]}(\Input::post('username', true), $request->request->get('password'), $this);
-
-				// Authentication successfull
-				if ($blnAuthenticated === true)
-				{
-					break;
-				}
-			}
-		}
-
-		// Redirect if the user could not be authenticated
-		if (!$blnAuthenticated)
-		{
-			--$this->loginCount;
-			$this->save();
-
-			\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-			$this->log('Invalid password submitted for username "' . $this->username . '"', __METHOD__, TL_ACCESS);
-
-			return false;
-		}
-
-		// Update the record
-		$this->lastLogin = $this->currentLogin;
-		$this->currentLogin = $time;
-		$this->loginCount = \Config::get('loginCount');
-		$this->save();
-
-		// Generate the session
-		$this->regenerateSessionId();
-		$this->generateSession();
-
 		return true;
 	}
 
@@ -423,60 +306,14 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Check the account status and return true if it is active
 	 *
 	 * @return boolean True if the account is active
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	protected function checkAccountStatus()
 	{
-		$time = time();
+		@trigger_error('Using User::checkAccountStatus() has been deprecated and will no longer work in Contao 5.0. Use the security.user_checker service instead.', E_USER_DEPRECATED);
 
-		// Check whether the account is locked
-		if (($this->locked + \Config::get('lockPeriod')) > $time)
-		{
-			\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], ceil((($this->locked + \Config::get('lockPeriod')) - $time) / 60)));
-
-			return false;
-		}
-
-		// Check whether the account is disabled
-		elseif ($this->disable)
-		{
-			\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-			$this->log('The account has been disabled', __METHOD__, TL_ACCESS);
-
-			return false;
-		}
-
-		// Check wether login is allowed (front end only)
-		elseif ($this instanceof FrontendUser && !$this->login)
-		{
-			\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-			$this->log('User "' . $this->username . '" is not allowed to log in', __METHOD__, TL_ACCESS);
-
-			return false;
-		}
-
-		// Check whether account is not active yet or anymore
-		elseif ($this->start != '' || $this->stop != '')
-		{
-			$time = \Date::floorToMinute($time);
-
-			if ($this->start != '' && $this->start > $time)
-			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-				$this->log('The account was not active yet (activation date: ' . \Date::parse(\Config::get('dateFormat'), $this->start) . ')', __METHOD__, TL_ACCESS);
-
-				return false;
-			}
-
-			if ($this->stop != '' && $this->stop <= ($time + 60))
-			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-				$this->log('The account was not active anymore (deactivation date: ' . \Date::parse(\Config::get('dateFormat'), $this->stop) . ')', __METHOD__, TL_ACCESS);
-
-				return false;
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 
@@ -523,52 +360,23 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Regenerate the session ID
 	 *
 	 * @throws \RuntimeException
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	protected function regenerateSessionId()
 	{
-		$container = \System::getContainer();
-		$strategy = $container->getParameter('security.authentication.session_strategy.strategy');
-
-		// Regenerate the session ID to harden against session fixation attacks
-		switch ($strategy)
-		{
-			case SessionAuthenticationStrategy::NONE:
-				break;
-
-			case SessionAuthenticationStrategy::MIGRATE:
-				$container->get('session')->migrate(false); // do not destroy the old session
-				break;
-
-			case SessionAuthenticationStrategy::INVALIDATE:
-				$container->get('session')->invalidate();
-				break;
-
-			default:
-				throw new \RuntimeException(sprintf('Invalid session authentication strategy "%s"', $strategy));
-		}
+		@trigger_error('Using User::regenerateSessionId() has been deprecated and will be removed in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
 
 	/**
 	 * Generate a session
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	protected function generateSession()
 	{
-		$time = time();
-
-		// Generate the cookie hash
-		$this->strHash = $this->getSessionHash($this->strCookie);
-
-		// Clean up old sessions
-		$this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
-					   ->execute(($time - \Config::get('sessionTimeout')), $this->strHash);
-
-		// Save the session in the database
-		$this->Database->prepare("INSERT INTO tl_session (pid, tstamp, name, sessionID, ip, hash) VALUES (?, ?, ?, ?, ?, ?)")
-					   ->execute($this->intId, $time, $this->strCookie, \System::getContainer()->get('session')->getId(), $this->strIp, $this->strHash);
-
-		// Set the authentication cookie
-		$this->setCookie($this->strCookie, $this->strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
+		@trigger_error('Using User::generateSession() has been deprecated and will be removed in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
 
@@ -579,57 +387,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function logout()
 	{
-		// Return if the user has been logged out already
-		if (!\Input::cookie($this->strCookie))
-		{
-			return false;
-		}
-
-		$intUserid = null;
-
-		// Find the session
-		$objSession = $this->Database->prepare("SELECT * FROM tl_session WHERE hash=?")
-									 ->limit(1)
-									 ->execute($this->strHash);
-
-		if ($objSession->numRows)
-		{
-			$this->strIp = $objSession->ip;
-			$this->strHash = $objSession->hash;
-			$intUserid = $objSession->pid;
-		}
-
-		$time = time();
-
-		// Remove the session from the database
-		$this->Database->prepare("DELETE FROM tl_session WHERE hash=?")
-					   ->execute($this->strHash);
-
-		// Remove cookie and hash
-		$this->setCookie($this->strCookie, $this->strHash, ($time - 86400), null, null, \Environment::get('ssl'), true);
-		$this->strHash = '';
-
-		\System::getContainer()->get('session')->invalidate();
-		\System::getContainer()->get('security.token_storage')->setToken(null);
-
-		// Add a log entry
-		if ($this->findBy('id', $intUserid) != false)
-		{
-			$GLOBALS['TL_USERNAME'] = $this->username;
-			$this->log('User "' . $this->username . '" has logged out', __METHOD__, TL_ACCESS);
-		}
-
-		// HOOK: post logout callback
-		if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback)
-			{
-				$this->import($callback[0], 'objLogout', true);
-				$this->objLogout->{$callback[1]}($this);
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 
@@ -673,9 +431,35 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 
 	/**
-	 * @inheritDoc
+	 * {@inheritdoc}
 	 */
 	abstract public function getRoles();
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function loadUserByUsername($username)
+	{
+		$user = new static();
+
+		// Load the user object
+		if ($user->findBy('username', $username) === false)
+		{
+			if (self::triggerLegacyImportUserHook($username, $user->strTable) === false)
+			{
+				return null;
+			}
+
+			if ($user->findBy('username', \Input::post('username')) === false)
+			{
+				return null;
+			}
+		}
+
+		$user->setUserFromDb();
+
+		return $user;
+	}
 
 
 	/**
@@ -798,7 +582,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isEnabled()
 	{
-		return !$this->disable;
+
+		return ! (bool) ($this->disable);
 	}
 
 
@@ -833,7 +618,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 
 	/**
-	 * @inheritDoc
+	 * {@inheritdoc}
 	 */
 	public function eraseCredentials() {}
 
@@ -870,9 +655,9 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 *
 	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
-	public static function triggerImportUserHook($username, $strTable)
+	public static function triggerLegacyImportUserHook($username, $strTable)
 	{
-		@trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.frontend_user_provider service or security.backend_user_provider service instead.', E_USER_DEPRECATED);
 
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();

@@ -20,11 +20,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
- * Legacy listener to maintain the postLogin hook.
- *
- * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+ * Interactive login listener to log successful login attempts.
  */
-class LegacyInteractiveLoginListener
+class InteractiveLoginListener
 {
     protected $logger;
 
@@ -33,24 +31,37 @@ class LegacyInteractiveLoginListener
         $this->logger = $logger;
     }
 
-    /**
-     * The postLogin hook is triggered after a user has logged in. This can be either in the back end or the front end.
-     * It passes the user object as argument and does not expect a return value.
-     *
-     * @param InteractiveLoginEvent $event
-     *
-     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-     */
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
-        @trigger_error('Using LegacyInteractiveLoginListener::onInteractiveLogin() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
-
         /** @var UserInterface $user */
         $user = $event->getAuthenticationToken()->getUser();
 
         if (!$user instanceof User) {
             return;
         }
+
+        $this->logger->info(
+            vsprintf(
+                'User %s has logged in.',
+                [$user->username]
+            ),
+            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+        );
+
+        $this->triggerLegacyPostLoginHook($user);
+    }
+
+    /**
+     * The postLogin hook is triggered after a user has logged in. This can be either in the back end or the front end.
+     * It passes the user object as argument and does not expect a return value.
+     *
+     * @param User $user
+     *
+     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+     */
+    protected function triggerLegacyPostLoginHook(User $user): void
+    {
+        @trigger_error('Using InteractiveLoginListener::triggerLegacyPostLoginHook() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
         // HOOK: post login callback
         if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
@@ -59,9 +70,5 @@ class LegacyInteractiveLoginListener
                 $user->objLogin->{$callback[1]}($user);
             }
         }
-
-        $this->logger->info(sprintf('User %s has logged in.', $user->username), [
-            'contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS),
-        ]);
     }
 }

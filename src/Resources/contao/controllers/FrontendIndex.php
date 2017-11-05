@@ -12,17 +12,8 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AccountExpiredException;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\Exception\DisabledException;
-use Symfony\Component\Security\Core\Exception\LockedException;
-use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -32,21 +23,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class FrontendIndex extends \Frontend
 {
-
-	/** @var ContainerInterface $container */
-	protected $container;
-
-	/** @var FlashBagInterface $flashBag */
-	protected $flashBag;
-
 	/**
 	 * Initialize the object
 	 */
 	public function __construct()
 	{
-		$this->container = System::getContainer();
-		$this->flashBag = $this->container->get('session')->getFlashBag();
-
 		/** @var TokenInterface $token */
 		$token = System::getContainer()->get('security.token_storage')->getToken();
 
@@ -71,8 +52,6 @@ class FrontendIndex extends \Frontend
 	 */
 	public function run()
 	{
-		$this->checkAuthentication();
-
 		$pageId = $this->getPageIdFromUrl();
 		$objRootPage = null;
 
@@ -356,38 +335,5 @@ class FrontendIndex extends \Frontend
 	protected function outputFromCache()
 	{
 		@trigger_error('Using FrontendIndex::outputFromCache() has been deprecated and will no longer work in Contao 5.0. Use the kernel.request event instead.', E_USER_DEPRECATED);
-	}
-
-	protected function checkAuthentication()
-	{
-		/** @var AuthenticationUtils $authenticationUtils */
-		$authenticationUtils = $this->container->get('security.authentication_utils');
-
-		$error = $authenticationUtils->getLastAuthenticationError();
-
-		if ($error instanceof DisabledException || $error instanceof AccountExpiredException || $error instanceof BadCredentialsException)
-		{
-			$this->flashBag->set('contao.FE.error', $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-		}
-
-		elseif ($error instanceof LockedException)
-		{
-			$time = time();
-
-			/** @var TokenStorageInterface $tokenStorage */
-			$tokenStorage = $this->container->get('security.token_storage');
-
-			$user = $tokenStorage->getToken()->getUser();
-
-			$this->flashBag->set('contao.FE.error', sprintf(
-				$GLOBALS['TL_LANG']['ERR']['accountLocked'],
-				ceil((($user->locked + Config::get('lockPeriod')) - $time) / 60)
-			));
-		}
-
-		elseif ($error instanceof \Exception)
-		{
-			throw $error;
-		}
 	}
 }

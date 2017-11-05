@@ -52,9 +52,6 @@ class PageLogout extends \Frontend
 
 		$session->set('_contao_logout_target', $strRedirect);
 
-		// TODO: fix/replace me
-		// $this->User->logout();
-
 		return new RedirectResponse($router->generate('contao_frontend_logout'));
 	}
 }

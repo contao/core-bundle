@@ -82,12 +82,6 @@ class ModuleLogin extends \Module
 			$session->getFlashBag()->set($this->strFlashType, $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
 		}
 
-		if ($this->User instanceof FrontendUser)
-		{
-			// To be removed in Contao 5.x, only for BC reasons
-			$this->User->login();
-		}
-
 		return parent::generate();
 	}
 
@@ -153,6 +147,7 @@ class ModuleLogin extends \Module
 			$this->Template->targetName = '_target_referer';
 			$this->Template->targetPath = $session->get('LAST_PAGE_VISITED');
 		}
+
 		elseif ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) instanceof PageModel)
 		{
 			/** @var PageModel $objTarget */

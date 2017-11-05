@@ -174,7 +174,7 @@ services:
             - { name: monolog.logger, channel: contao }
 
     contao.security.interactive_login_listener:
-        class: Contao\CoreBundle\EventListener\LegacyInteractiveLoginListener
+        class: Contao\CoreBundle\EventListener\InteractiveLoginListener
         arguments:
             - "@logger"
         tags:

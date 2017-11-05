@@ -179,47 +179,15 @@ class BackendUser extends User
 	/**
 	 * Redirect to the login screen if authentication fails
 	 *
+	 * @return boolean True if the user could be authenticated
+	 *
 	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function authenticate()
 	{
 		@trigger_error('Using BackendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
-		/** @var TokenInterface $token */
-		$token = \System::getContainer()->get('security.token_storage')->getToken();
-
-		// Do not redirect if authentication is successful
-		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
-		{
-			// HOOK: post authenticate callback
-			if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-			{
-				foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-				{
-					\System::importStatic($callback[0])->{$callback[1]}($this);
-				}
-			}
-
-			return true;
-		}
-
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-		$route = $request->attributes->get('_route');
-
-		if ($route == 'contao_backend_login')
-		{
-			return false;
-		}
-
-		$parameters = array();
-
-		// Redirect to the last page visited upon login
-		if ($request->query->count() > 0 && in_array($route, array('contao_backend', 'contao_backend_preview')))
-		{
-			$parameters['referer'] = base64_encode($request->getRequestUri());
-		}
-
-		throw new RedirectResponseException(\System::getContainer()->get('router')->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL));
+		return false;
 	}
 
 
@@ -604,26 +572,5 @@ class BackendUser extends User
 		}
 
 		return $this->roles;
-	}
-
-	public static function loadUserByUsername($username)
-	{
-		$user = new static();
-
-		// Load the user object
-		if ($user->findBy('username', $username) === false)
-		{
-			if (self::triggerImportUserHook($username, $user->strTable) === false) {
-				return null;
-			}
-
-			if ($user->findBy('username', \Input::post('username')) === false) {
-				return null;
-			}
-		}
-
-		$user->setUserFromDb();
-
-		return $user;
 	}
 }

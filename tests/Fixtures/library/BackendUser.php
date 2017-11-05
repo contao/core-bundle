@@ -23,7 +23,7 @@ class BackendUser extends \Contao\User implements UserInterface
         // ignore
     }
 
-    public static function loadUserByUsername()
+    public static function loadUserByUsername($username)
     {
 
     }

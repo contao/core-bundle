@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 /**
  * Class for handling the authentication for the Contao frontend preview.
  */
-class ContaoPreviewAuthenticator
+class FrontendPreviewAuthenticator
 {
     protected $requestStack;
     protected $session;

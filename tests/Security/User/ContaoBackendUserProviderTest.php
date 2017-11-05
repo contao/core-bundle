@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\Test\Security\User;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
-use Contao\CoreBundle\Security\User\ContaoBackendUserProvider;
+use Contao\CoreBundle\Security\User\BackendUserProvider;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,11 +24,11 @@ class ContaoBackendUserProviderTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testInstantiation()
+    public function testCanBeInstantiated()
     {
-        $provider = new ContaoBackendUserProvider($this->mockContaoFramework());
+        $provider = new BackendUserProvider($this->mockContaoFramework());
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\User\ContaoBackendUserProvider', $provider);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\User\BackendUserProvider', $provider);
     }
 
     /**
@@ -64,7 +64,7 @@ class ContaoBackendUserProviderTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework(null, null, [BackendUser::class => $adapter]);
-        $provider = new ContaoBackendUserProvider($framework);
+        $provider = new BackendUserProvider($framework);
 
         $this->assertInstanceOf(BackendUser::class, $provider->loadUserByUsername('test-user'));
         $this->assertInstanceOf(BackendUser::class, $provider->refreshUser($user));
@@ -91,13 +91,13 @@ class ContaoBackendUserProviderTest extends TestCase
 
         $framework = $this->mockContaoFramework(null, null, [BackendUser::class => $adapter]);
 
-        $provider = new ContaoBackendUserProvider($framework);
+        $provider = new BackendUserProvider($framework);
         $provider->loadUserByUsername('test-user');
     }
 
     public function testUnsupportedUserException()
     {
-        $provider = new ContaoBackendUserProvider($this->mockContaoFramework());
+        $provider = new BackendUserProvider($this->mockContaoFramework());
         $provider->refreshUser($this->getMock(UserInterface::class));
     }
 }

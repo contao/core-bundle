@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\User;
 
-use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\FrontendUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * Provides a Contao back end user object.
+ * Provides a Contao front end user object.
  */
-class ContaoBackendUserProvider implements UserProviderInterface
+class FrontendUserProvider implements UserProviderInterface
 {
     /**
      * @var ContaoFrameworkInterface
@@ -50,10 +50,10 @@ class ContaoBackendUserProvider implements UserProviderInterface
     {
         $this->framework->initialize();
 
-        /** @var BackendUser $adapter */
-        $adapter = $this->framework->getAdapter(BackendUser::class);
+        /** @var FrontendUser $adapter */
+        $adapter = $this->framework->getAdapter(FrontendUser::class);
 
-        if (($user = $adapter->loadUserByUsername($username)) instanceof BackendUser) {
+        if (($user = $adapter->loadUserByUsername($username)) instanceof FrontendUser) {
             return $user;
         }
 
@@ -66,12 +66,10 @@ class ContaoBackendUserProvider implements UserProviderInterface
      * {@inheritdoc}
      *
      * @param UserInterface $user
-     *
-     * @return UserInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
-        if (!$user instanceof BackendUser) {
+        if (!$user instanceof FrontendUser) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
@@ -89,6 +87,6 @@ class ContaoBackendUserProvider implements UserProviderInterface
      */
     public function supportsClass($class): bool
     {
-        return BackendUser::class === $class;
+        return FrontendUser::class === $class;
     }
 }

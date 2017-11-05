@@ -15,7 +15,6 @@ use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Knp\Bundle\TimeBundle\DateTimeFormatter;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -247,7 +246,7 @@ class BackendMain extends \Backend
 		$this->Template->logoutLink = $logoutLink;
 		$this->Template->logoutTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logoutBTTitle']);
 		$this->Template->user = $this->User;
-		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['user'] . ' ' . $GLOBALS['TL_USERNAME'];
+		$this->Template->username = $GLOBALS['TL_LANG']['MSC']['user'] . ' ' . $this->User->getUsername();
 		$this->Template->request = ampersand(\Environment::get('request'));
 		$this->Template->top = $GLOBALS['TL_LANG']['MSC']['backToTop'];
 		$this->Template->modules = $this->User->navigation();

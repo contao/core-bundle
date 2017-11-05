@@ -12,11 +12,16 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\Authentication;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
 use Contao\PageModel;
+use Contao\System;
+use Contao\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\HttpUtils;
@@ -26,7 +31,11 @@ use Symfony\Component\Security\Http\HttpUtils;
  */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
+    /** @var ContaoFrameworkInterface */
     protected $framework;
+
+    /** @var RouterInterface */
+    protected $router;
 
     /**
      * Constructor.
@@ -34,8 +43,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param HttpUtils                $httpUtils
      * @param array                    $options
      * @param ContaoFrameworkInterface $framework
+     * @param RouterInterface          $router
      */
-    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework)
+    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework, RouterInterface $router)
     {
         $options['always_use_default_target_path'] = false;
         $options['target_path_parameter'] = '_target_path';
@@ -43,6 +53,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         parent::__construct($httpUtils, $options);
 
         $this->framework = $framework;
+        $this->router = $router;
     }
 
     /**
@@ -62,6 +73,10 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         $user = $token->getUser();
 
+        if ($user instanceof User) {
+            $this->triggerLegacyPostAuthenticateHook($user);
+        }
+
         if ($user instanceof FrontendUser) {
             $groups = unserialize((string) $user->groups, false);
 
@@ -77,6 +92,42 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             }
         }
 
+        if ($user instanceof BackendUser) {
+            $route = $request->attributes->get('_route');
+
+            if ('contao_backend_login' !== $route) {
+                $parameters = [];
+                $routes = [
+                    'contao_backend',
+                    'contao_backend_preview',
+                ];
+
+                // Redirect to the last page visited upon login
+                if ($request->query->count() > 0 && in_array($route, $routes, true)) {
+                    $parameters['referer'] = base64_encode($request->getRequestUri());
+                }
+
+                return new RedirectResponse(
+                    $this->router->generate(
+                        'contao_backend_login', $parameters,
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    )
+                );
+            }
+        }
+
         return new RedirectResponse($this->determineTargetUrl($request));
+    }
+
+    protected function triggerLegacyPostAuthenticateHook(User $user): void
+    {
+        @trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+
+        // HOOK: post authenticate callback
+        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
+            foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
+                System::importStatic($callback[0])->{$callback[1]}($user);
+            }
+        }
     }
 }

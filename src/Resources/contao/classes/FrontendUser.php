@@ -143,24 +143,6 @@ class FrontendUser extends User
 	{
 		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
-		/** @var TokenInterface $token */
-		$token = \System::getContainer()->get('security.token_storage')->getToken();
-
-		// Do not redirect if authentication is successful
-		if ($token !== null && $token->getUser() === $this && $token->isAuthenticated())
-		{
-			// HOOK: post authenticate callback
-			if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate']))
-			{
-				foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback)
-				{
-					\System::importStatic($callback[0])->{$callback[1]}($this);
-				}
-			}
-
-			return true;
-		}
-
 		return false;
 	}
 
@@ -169,29 +151,14 @@ class FrontendUser extends User
 	 * Add the auto login resources
 	 *
 	 * @return boolean
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function login()
 	{
-		// Default routine
-		if (parent::login() == false)
-		{
-			return false;
-		}
+		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
-		// Set the auto login data
-		if (\Config::get('autologin') > 0 && \Input::post('autologin'))
-		{
-			$time = time();
-			$strToken = md5(uniqid(mt_rand(), true));
-
-			$this->createdOn = $time;
-			$this->autologin = $strToken;
-			$this->save();
-
-			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, \Environment::get('ssl'), true);
-		}
-
-		return true;
+		return false;
 	}
 
 
@@ -199,27 +166,14 @@ class FrontendUser extends User
 	 * Remove the auto login resources
 	 *
 	 * @return boolean
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function logout()
 	{
-		// Default routine
-		if (parent::logout() == false)
-		{
-			return false;
-		}
+		@trigger_error('Using User::logout() has been deprecated and will no longer work in Contao 5.0. Use the security.frontend_logout_success_handler service instead.', E_USER_DEPRECATED);
 
-		// Reset the auto login data
-		if ($this->blnRecordExists)
-		{
-			$this->autologin = null;
-			$this->createdOn = 0;
-			$this->save();
-		}
-
-		// Remove the auto login cookie
-		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, \Environment::get('ssl'), true);
-
-		return true;
+		return parent::logout();
 	}
 
 
@@ -324,26 +278,5 @@ class FrontendUser extends User
 	public function getRoles()
 	{
 		return $this->roles;
-	}
-
-	public static function loadUserByUsername($username)
-	{
-		$user = new static();
-
-		// Load the user object
-		if ($user->findBy('username', $username) === false)
-		{
-			if (self::triggerImportUserHook($username, $user->strTable) === false) {
-				return null;
-			}
-
-			if ($user->findBy('username', \Input::post('username')) === false) {
-				return null;
-			}
-		}
-
-		$user->setUserFromDb();
-
-		return $user;
 	}
 }
