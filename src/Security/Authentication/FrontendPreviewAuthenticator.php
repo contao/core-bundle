@@ -73,17 +73,11 @@ class FrontendPreviewAuthenticator
             // TODO:
         }
 
-        $roles = $user->getRoles();
-
-        if (!is_array($roles)) {
-            $roles = [$roles];
-        }
-
         $token = new UsernamePasswordToken(
             $user,
             null,
             $providerKey,
-            $roles
+            (array) $user->getRoles()
         );
 
         if (null === $token) {
