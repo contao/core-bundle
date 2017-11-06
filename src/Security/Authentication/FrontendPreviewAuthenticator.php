@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\Authentication;
 
+use Contao\User;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -66,16 +67,23 @@ class FrontendPreviewAuthenticator
         }
 
         try {
+            /** @var User $user */
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
             // TODO:
+        }
+
+        $roles = $user->getRoles();
+
+        if (!is_array($roles)) {
+            $roles = [$roles];
         }
 
         $token = new UsernamePasswordToken(
             $user,
             null,
             $providerKey,
-            $user->getRoles()
+            $roles
         );
 
         if (null === $token) {
