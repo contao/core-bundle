@@ -2728,12 +2728,12 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 						if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
 						{
-							$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom"');
+							$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px 0;vertical-align:bottom;max-width:320px;max-height:40px;width:auto;height:auto"');
 						}
 					}
 					catch (RuntimeException $e)
 					{
-						$thumbnail .= '<br><p class="broken-image" style="margin:0 0 2px -18px;max-width:400px;max-height:50px;width:auto;height:auto">Broken image!</p>';
+						$thumbnail .= '<br><p class="broken-image" style="margin:0 0 2px -18px">Broken image!</p>';
 					}
 				}
 			}
