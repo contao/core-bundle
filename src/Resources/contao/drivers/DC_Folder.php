@@ -2717,11 +2717,11 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 						// Inline the image if no preview image will be generated (see #636)
 						if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 400)
 						{
-							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" style="margin:0 0 2px -18px">';
+							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" style="margin:0 0 2px -18px;max-width:400px;max-height:50px;width:auto;height:auto">';
 						}
 						else
 						{
-							$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -18px"');
+							$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -18px;max-width:400px;max-height:50px;width:auto;height:auto"');
 						}
 
 						$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
@@ -2733,7 +2733,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					}
 					catch (RuntimeException $e)
 					{
-						$thumbnail .= '<br><p class="broken-image" style="margin:0 0 2px -18px">Broken image!</p>';
+						$thumbnail .= '<br><p class="broken-image" style="margin:0 0 2px -18px;max-width:400px;max-height:50px;width:auto;height:auto">Broken image!</p>';
 					}
 				}
 			}
