@@ -38,7 +38,6 @@ class FrontendIndex extends \Frontend
 		$isAuthenticated = $token !== null && $token->getUser() === $this->User && $token->isAuthenticated();
 
 		// Check whether a user is logged in
-
 		define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
 		define('FE_USER_LOGGED_IN', $isAuthenticated);
 	}
