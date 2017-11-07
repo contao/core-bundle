@@ -71,91 +71,103 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        $time = time();
-        $request = $this->requestStack->getCurrentRequest();
+        $this->checkLoginAttempts($user);
+        $this->checkIfAccountIsLocked($user);
+        $this->checkIfAccountIsDisabled($user);
+        $this->checkIfLoginIsAllowed($user);
+        $this->checkIfAccountIsActive($user);
+    }
 
-        // Lock the account if there are too many login attempts
+    /**
+     * {@inheritdoc}
+     */
+    public function checkPostAuth(UserInterface $user): void
+    {
+    }
+
+    /**
+     * Lock the account if there are too many login attempts.
+     *
+     * @param User $user
+     */
+    protected function checkLoginAttempts(User $user): void
+    {
         if ($user->loginCount < 1) {
+            $time = time();
             $user->locked = $time;
             $user->loginCount = (int) Config::get('loginCount');
             $user->save();
 
-            $this->session->getFlashBag()->set(
-                'contao.BE.error',
-                $this->translator->trans(
-                    'ERR.accountLocked',
-                    [ceil((((int) $user->locked + (int) Config::get('lockPeriod')) - $time) / 60)],
-                'contao_default'
-                )
-            );
+            $lockMinutes = ceil((int) Config::get('lockPeriod') / 60);
 
+            $this->setAccountLockedFlashBag($user);
             $this->logger->info(
-                vsprintf(
-                    'User %s has been locked for %s minutes',
-                    [
-                        $user->getUsername(),
-                        ceil((int) Config::get('lockPeriod') / 60),
-                    ]
-                ),
+                sprintf('User %s has been locked for %s minutes', $user->getUsername(), $lockMinutes),
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
             );
 
             // Send admin notification
             if (Config::get('adminEmail')) {
+                $request = $this->requestStack->getCurrentRequest();
+
+                if ($request && $this->scopeMatcher->isFrontendRequest($request)) {
+                    $realName = sprintf('%s %s', $user->firstname, $user->lastname);
+                } else {
+                    $realName = $user->name;
+                }
+
+                $website = Idna::decode(Environment::get('base'));
+                $lockMinutes = ceil(((int) Config::get('lockPeriod')) / 60);
+
+                $subject = $this->translator->trans('MSC.lockedAccount.0', [], 'contao_default');
+                $body = $this->translator->trans(
+                    'MSC.lockedAccount.1',
+                    [
+                        $user->getUsername(),
+                        $realName,
+                        $website,
+                        $lockMinutes,
+                    ],
+                    'contao_default'
+                );
+
                 $email = new \Swift_Message();
-                $email->setTo(Config::get('adminEmail'));
-                $email->setSubject(
-                    $this->translator->trans(
-                        'MSC.lockedAccount.0',
-                        [],
-                        'contao_default'
-                    )
-                );
-                $email->setBody(
-                    $this->translator->trans(
-                        'MSC.lockedAccount.1',
-                        [
-                            $user->getUsername(),
-                            ($this->scopeMatcher->isFrontendRequest($request) ? $user->firstname.' '.$user->lastname : $user->name),
-                            Idna::decode(Environment::get('base')),
-                            ceil(((int) Config::get('lockPeriod')) / 60),
-                        ],
-                        'contao_default'
-                    ),
-                    'text/plain'
-                );
+                $email
+                    ->setTo(Config::get('adminEmail'))
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/plain')
+                ;
 
                 $this->mailer->send($email);
             }
 
             throw new LockedException();
         }
+    }
 
-        // Check whether the account is locked
+    /**
+     * Check whether the account is locked.
+     *
+     * @param User $user
+     */
+    protected function checkIfAccountIsLocked(User $user): void
+    {
         if (false === $user->isAccountNonLocked()) {
-            $this->session->getFlashBag()->set(
-                'contao.BE.error',
-                $this->translator->trans(
-                    'ERR.accountLocked',
-                    [ceil((($user->locked + (int) Config::get('lockPeriod')) - $time) / 60)],
-                    'contao_default'
-                )
-            );
+            $this->setAccountLockedFlashBag($user);
 
             throw new LockedException();
         }
+    }
 
-        // Check whether the account is disabled
+    /**
+     * Check whether the account is disabled.
+     *
+     * @param User $user
+     */
+    protected function checkIfAccountIsDisabled(User $user): void
+    {
         if (false === $user->isEnabled()) {
-            $this->session->getFlashBag()->set(
-                'contao.BE.error',
-                $this->translator->trans(
-                    'ERR.invalidLogin',
-                    [],
-                    'contao_default'
-                )
-            );
-
+            $this->setInvalidLoginFlashBag();
             $this->logger->info(
                 'The account has been disabled',
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
@@ -163,18 +175,17 @@ class UserChecker implements UserCheckerInterface
 
             throw new DisabledException();
         }
+    }
 
-        // Check wether login is allowed (front end only)
+    /**
+     * Check wether login is allowed (front end only).
+     *
+     * @param User $user
+     */
+    protected function checkIfLoginIsAllowed(User $user): void
+    {
         if ($user instanceof FrontendUser && false === $user->login) {
-            $this->session->getFlashBag()->set(
-                'contao.BE.error',
-                $this->translator->trans(
-                    'ERR.invalidLogin',
-                    [],
-                    'contao_default'
-                )
-            );
-
+            $this->setInvalidLoginFlashBag();
             $this->logger->info(
                 vsprintf(
                     'User %s is not allowed to log in',
@@ -185,24 +196,24 @@ class UserChecker implements UserCheckerInterface
 
             throw new DisabledException();
         }
+    }
 
+    /**
+     * Check whether account is not active yet or anymore.
+     *
+     * @param User $user
+     */
+    protected function checkIfAccountIsActive(User $user): void
+    {
         $start = (int) $user->start;
         $stop = (int) $user->stop;
+        $time = time();
 
-        // Check whether account is not active yet or anymore
         if ($start || $stop) {
             $time = Date::floorToMinute($time);
 
             if ($start && $start > $time) {
-                $this->session->getFlashBag()->set(
-                    'contao.BE.error',
-                    $this->translator->trans(
-                        'ERR.invalidLogin',
-                        [],
-                        'contao_default'
-                    )
-                );
-
+                $this->setInvalidLoginFlashBag();
                 $this->logger->info(
                     vsprintf(
                         'The account was not active yet (activation date: %s)',
@@ -215,15 +226,7 @@ class UserChecker implements UserCheckerInterface
             }
 
             if ($stop && $stop <= ($time + 60)) {
-                $this->session->getFlashBag()->set(
-                    'contao.BE.error',
-                    $this->translator->trans(
-                        'ERR.invalidLogin',
-                        [],
-                        'contao_default'
-                    )
-                );
-
+                $this->setInvalidLoginFlashBag();
                 $this->logger->info(
                     vsprintf(
                         'The account was not active anymore (deactivation date: %s)',
@@ -238,9 +241,34 @@ class UserChecker implements UserCheckerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set Session Flash Bag with invalidLogin error message.
      */
-    public function checkPostAuth(UserInterface $user): void
+    protected function setInvalidLoginFlashBag(): void
     {
+        $this->session->getFlashBag()->set(
+            'contao.BE.error',
+            $this->translator->trans(
+                'ERR.invalidLogin',
+                [],
+                'contao_default'
+            )
+        );
+    }
+
+    /**
+     * Set Session Flash Bag with accountLocked error message.
+     *
+     * @param User $user
+     */
+    protected function setAccountLockedFlashBag(User $user): void
+    {
+        $this->session->getFlashBag()->set(
+            'contao.BE.error',
+            $this->translator->trans(
+                'ERR.accountLocked',
+                [ceil((($user->locked + (int) Config::get('lockPeriod')) - time()) / 60)],
+                'contao_default'
+            )
+        );
     }
 }

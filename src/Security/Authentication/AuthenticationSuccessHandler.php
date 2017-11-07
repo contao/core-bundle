@@ -73,14 +73,12 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         $user = $token->getUser();
 
-        if ($user instanceof User) {
-            $this->triggerLegacyPostAuthenticateHook($user);
-        }
-
         if ($user instanceof FrontendUser) {
+            $this->triggerLegacyPostAuthenticateHook($user);
+
             $groups = unserialize((string) $user->groups, false);
 
-            if (!empty($groups) && is_array($groups)) {
+            if (is_array($groups)) {
                 /** @var PageModel $pageModelAdapter */
                 $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
 
@@ -93,6 +91,8 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
 
         if ($user instanceof BackendUser) {
+            $this->triggerLegacyPostAuthenticateHook($user);
+
             $route = $request->attributes->get('_route');
 
             if ('contao_backend_login' !== $route) {
@@ -119,9 +119,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         return new RedirectResponse($this->determineTargetUrl($request));
     }
 
+    /**
+     * The postAuthenticate hook is triggered after a user was authenticated.
+     * It passes the user object as argument and does not expect a return value.
+     *
+     * @param User $user
+     *
+     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+     */
     protected function triggerLegacyPostAuthenticateHook(User $user): void
     {
-        @trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Extend the security.authentication_success_handler service instead.', E_USER_DEPRECATED);
 
         // HOOK: post authenticate callback
         if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
