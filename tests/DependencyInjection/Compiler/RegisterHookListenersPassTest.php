@@ -59,14 +59,12 @@ class RegisterHookListenersPassTest extends TestCase
 
     public function testGeneratesMethodNameIfNoneGiven(): void
     {
-        $definition = new Definition('Test\HookListener');
+        $attributes = [
+            'hook' => 'generatePage',
+        ];
 
-        $definition->addTag(
-            'contao.hook',
-            [
-                'hook' => 'initializeSystem',
-            ]
-        );
+        $definition = new Definition('Test\HookListener');
+        $definition->addTag('contao.hook', $attributes);
 
         $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
@@ -76,9 +74,9 @@ class RegisterHookListenersPassTest extends TestCase
 
         $this->assertSame(
             [
-                'initializeSystem' => [
+                'generatePage' => [
                     0 => [
-                        ['test.hook_listener', 'onInitializeSystem'],
+                        ['test.hook_listener', 'onGeneratePage'],
                     ],
                 ],
             ],

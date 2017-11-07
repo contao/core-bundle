@@ -97,6 +97,6 @@ class RegisterHookListenersPass implements CompilerPassInterface
             return (string) $attributes['method'];
         }
 
-        return 'on' . ucfirst($attributes['hook']);
+        return 'on'.ucfirst($attributes['hook']);
     }
 }
