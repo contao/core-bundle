@@ -263,7 +263,7 @@ class Theme extends \Backend
 			}
 
 			// HOOK: add custom logic
-			if (isset($GLOBALS['TL_HOOKS']['compareThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['compareThemeFiles']))
+			if (isset($GLOBALS['TL_HOOKS']['compareThemeFiles']) && \is_array($GLOBALS['TL_HOOKS']['compareThemeFiles']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['compareThemeFiles'] as $callback)
 				{
@@ -368,7 +368,7 @@ class Theme extends \Backend
 			}
 
 			// Sync the new folder(s)
-			if (!empty($arrNewFolders) && is_array($arrNewFolders))
+			if (!empty($arrNewFolders) && \is_array($arrNewFolders))
 			{
 				foreach ($arrNewFolders as $strFolder)
 				{
@@ -510,7 +510,7 @@ class Theme extends \Backend
 						{
 							$stylesheets = \StringUtil::deserialize($value);
 
-							if (is_array($stylesheets))
+							if (\is_array($stylesheets))
 							{
 								foreach (array_keys($stylesheets) as $key)
 								{
@@ -526,7 +526,7 @@ class Theme extends \Backend
 						{
 							$modules = \StringUtil::deserialize($value);
 
-							if (is_array($modules))
+							if (\is_array($modules))
 							{
 								foreach ($modules as $key=>$mod)
 								{
@@ -558,7 +558,7 @@ class Theme extends \Backend
 						{
 							$tmp = \StringUtil::deserialize($value);
 
-							if (is_array($tmp))
+							if (\is_array($tmp))
 							{
 								foreach ($tmp as $kk=>$vv)
 								{
@@ -596,7 +596,7 @@ class Theme extends \Backend
 						{
 							$tmp = \StringUtil::deserialize($value);
 
-							if (is_array($tmp))
+							if (\is_array($tmp))
 							{
 								foreach ($tmp as $kk=>$vv)
 								{
@@ -669,7 +669,7 @@ class Theme extends \Backend
 			\Message::addConfirmation(sprintf($GLOBALS['TL_LANG']['tl_theme']['theme_imported'], basename($strZipFile)));
 
 			// HOOK: add custom logic
-			if (isset($GLOBALS['TL_HOOKS']['extractThemeFiles']) && is_array($GLOBALS['TL_HOOKS']['extractThemeFiles']))
+			if (isset($GLOBALS['TL_HOOKS']['extractThemeFiles']) && \is_array($GLOBALS['TL_HOOKS']['extractThemeFiles']))
 			{
 				$intThemeId = empty($arrMapper['tl_theme']) ? null : reset($arrMapper['tl_theme']);
 
@@ -744,7 +744,7 @@ class Theme extends \Backend
 		$this->addTemplatesToArchive($objArchive, $objTheme->templates);
 
 		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['exportTheme']) && is_array($GLOBALS['TL_HOOKS']['exportTheme']))
+		if (isset($GLOBALS['TL_HOOKS']['exportTheme']) && \is_array($GLOBALS['TL_HOOKS']['exportTheme']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['exportTheme'] as $callback)
 			{
@@ -981,7 +981,7 @@ class Theme extends \Backend
 		// Add the folders
 		$arrFolders = \StringUtil::deserialize($objTheme->folders);
 
-		if (!empty($arrFolders) && is_array($arrFolders))
+		if (!empty($arrFolders) && \is_array($arrFolders))
 		{
 			$objFolders = \FilesModel::findMultipleByUuids($arrFolders);
 
@@ -1041,7 +1041,7 @@ class Theme extends \Backend
 			{
 				$arrFiles = \StringUtil::deserialize($v);
 
-				if (!empty($arrFiles) && is_array($arrFiles))
+				if (!empty($arrFiles) && \is_array($arrFiles))
 				{
 					$objFiles = \FilesModel::findMultipleByUuids($arrFiles);
 

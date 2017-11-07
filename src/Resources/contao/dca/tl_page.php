@@ -558,7 +558,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'cuser' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_page']['cuser'],
-			'default'                 => intval(Config::get('defaultUser')),
+			'default'                 => \intval(Config::get('defaultUser')),
 			'search'                  => true,
 			'exclude'                 => true,
 			'inputType'               => 'select',
@@ -570,7 +570,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'cgroup' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_page']['cgroup'],
-			'default'                 => intval(Config::get('defaultGroup')),
+			'default'                 => \intval(Config::get('defaultGroup')),
 			'search'                  => true,
 			'exclude'                 => true,
 			'inputType'               => 'select',
@@ -721,14 +721,14 @@ class tl_page extends Backend
 		$session = $objSession->all();
 
 		// Set the default page user and group
-		$GLOBALS['TL_DCA']['tl_page']['fields']['cuser']['default'] = intval(Config::get('defaultUser') ?: $this->User->id);
-		$GLOBALS['TL_DCA']['tl_page']['fields']['cgroup']['default'] = intval(Config::get('defaultGroup') ?: $this->User->groups[0]);
+		$GLOBALS['TL_DCA']['tl_page']['fields']['cuser']['default'] = \intval(Config::get('defaultUser') ?: $this->User->id);
+		$GLOBALS['TL_DCA']['tl_page']['fields']['cgroup']['default'] = \intval(Config::get('defaultGroup') ?: $this->User->groups[0]);
 
 		// Restrict the page tree
 		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = $this->User->pagemounts;
 
 		// Set allowed page IDs (edit multiple)
-		if (is_array($session['CURRENT']['IDS']))
+		if (\is_array($session['CURRENT']['IDS']))
 		{
 			$edit_all = array();
 			$delete_all = array();
@@ -762,7 +762,7 @@ class tl_page extends Backend
 		}
 
 		// Set allowed clipboard IDs
-		if (isset($session['CLIPBOARD']['tl_page']) && is_array($session['CLIPBOARD']['tl_page']['id']))
+		if (isset($session['CLIPBOARD']['tl_page']) && \is_array($session['CLIPBOARD']['tl_page']['id']))
 		{
 			$clipboard = array();
 
@@ -1145,7 +1145,7 @@ class tl_page extends Backend
 		$new_records = $objSessionBag->get('new_records');
 
 		// Not a new page
-		if (!$new_records || !is_array($new_records[$dc->table]) || !in_array($dc->id, $new_records[$dc->table]))
+		if (!$new_records || !\is_array($new_records[$dc->table]) || !in_array($dc->id, $new_records[$dc->table]))
 		{
 			return;
 		}
@@ -1555,10 +1555,10 @@ class tl_page extends Backend
 
 		if ($row['id'] > 0)
 		{
-			$return = $disablePA ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+			$return = $disablePA ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
 		}
 
-		return $return.($disablePI ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
+		return $return.($disablePI ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
 	}
 
 
@@ -1640,12 +1640,12 @@ class tl_page extends Backend
 				// Generate new alias through save callbacks
 				foreach ($GLOBALS['TL_DCA'][$dc->table]['fields']['alias']['save_callback'] as $callback)
 				{
-					if (is_array($callback))
+					if (\is_array($callback))
 					{
 						$this->import($callback[0]);
 						$strAlias = $this->{$callback[0]}->{$callback[1]}($strAlias, $dc);
 					}
-					elseif (is_callable($callback))
+					elseif (\is_callable($callback))
 					{
 						$strAlias = $callback($strAlias, $dc);
 					}
@@ -1705,7 +1705,7 @@ class tl_page extends Backend
 	 */
 	public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (strlen(Input::get('tid')))
+		if (\strlen(Input::get('tid')))
 		{
 			$this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
 			$this->redirect($this->getReferer());
@@ -1758,16 +1758,16 @@ class tl_page extends Backend
 		}
 
 		// Trigger the onload_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_page']['config']['onload_callback']))
+		if (\is_array($GLOBALS['TL_DCA']['tl_page']['config']['onload_callback']))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'] as $callback)
 			{
-				if (is_array($callback))
+				if (\is_array($callback))
 				{
 					$this->import($callback[0]);
 					$this->{$callback[0]}->{$callback[1]}($dc);
 				}
-				elseif (is_callable($callback))
+				elseif (\is_callable($callback))
 				{
 					$callback($dc);
 				}
@@ -1797,16 +1797,16 @@ class tl_page extends Backend
 		$objVersions->initialize();
 
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_page']['fields']['published']['save_callback']))
+		if (\is_array($GLOBALS['TL_DCA']['tl_page']['fields']['published']['save_callback']))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_page']['fields']['published']['save_callback'] as $callback)
 			{
-				if (is_array($callback))
+				if (\is_array($callback))
 				{
 					$this->import($callback[0]);
 					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
 				}
-				elseif (is_callable($callback))
+				elseif (\is_callable($callback))
 				{
 					$blnVisible = $callback($blnVisible, $dc);
 				}
@@ -1826,16 +1826,16 @@ class tl_page extends Backend
 		}
 
 		// Trigger the onsubmit_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback']))
+		if (\is_array($GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback']))
 		{
 			foreach ($GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'] as $callback)
 			{
-				if (is_array($callback))
+				if (\is_array($callback))
 				{
 					$this->import($callback[0]);
 					$this->{$callback[0]}->{$callback[1]}($dc);
 				}
-				elseif (is_callable($callback))
+				elseif (\is_callable($callback))
 				{
 					$callback($dc);
 				}

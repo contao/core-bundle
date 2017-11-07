@@ -661,7 +661,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
 		$self = new static();
 
 		// HOOK: pass credentials to callback functions

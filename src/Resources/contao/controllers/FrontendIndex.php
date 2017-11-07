@@ -38,6 +38,7 @@ class FrontendIndex extends \Frontend
 		$isAuthenticated = $token !== null && $token->getUser() === $this->User && $token->isAuthenticated();
 
 		// Check whether a user is logged in
+
 		define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
 		define('FE_USER_LOGGED_IN', $isAuthenticated);
 	}
@@ -153,7 +154,7 @@ class FrontendIndex extends \Frontend
 			}
 
 			// Store the page object
-			if (is_object($objNewPage))
+			if (\is_object($objNewPage))
 			{
 				$objPage = $objNewPage;
 			}
@@ -199,7 +200,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Inherit the settings from the parent pages if it has not been done yet
-		if (!is_bool($objPage->protected))
+		if (!\is_bool($objPage->protected))
 		{
 			$objPage->loadDetails();
 		}
@@ -249,7 +250,7 @@ class FrontendIndex extends \Frontend
 		{
 			$arrGroups = $objPage->groups; // required for empty()
 
-			if (!is_array($arrGroups) || empty($arrGroups) || !count(array_intersect($arrGroups, $this->User->groups)))
+			if (!\is_array($arrGroups) || empty($arrGroups) || !\count(array_intersect($arrGroups, $this->User->groups)))
 			{
 				$this->log('Page ID "' . $objPage->id . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')', __METHOD__, TL_ERROR);
 				throw new AccessDeniedException('Access denied: ' . \Environment::get('uri'));

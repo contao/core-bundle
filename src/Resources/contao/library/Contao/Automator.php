@@ -231,7 +231,7 @@ class Automator extends \System
 		}
 
 		// HOOK: preserve third party feeds
-		if (isset($GLOBALS['TL_HOOKS']['removeOldFeeds']) && is_array($GLOBALS['TL_HOOKS']['removeOldFeeds']))
+		if (isset($GLOBALS['TL_HOOKS']['removeOldFeeds']) && \is_array($GLOBALS['TL_HOOKS']['removeOldFeeds']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['removeOldFeeds'] as $callback)
 			{
@@ -338,7 +338,7 @@ class Automator extends \System
 			$arrPages = \Backend::findSearchablePages($objRoot->id, '', true);
 
 			// HOOK: take additional pages
-			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
+			if (isset($GLOBALS['TL_HOOKS']['getSearchablePages']) && \is_array($GLOBALS['TL_HOOKS']['getSearchablePages']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['getSearchablePages'] as $callback)
 				{
@@ -375,7 +375,7 @@ class Automator extends \System
 		$this->generateSitemap();
 
 		// HOOK: add custom jobs
-		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))
+		if (isset($GLOBALS['TL_HOOKS']['generateXmlFiles']) && \is_array($GLOBALS['TL_HOOKS']['generateXmlFiles']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['generateXmlFiles'] as $callback)
 			{

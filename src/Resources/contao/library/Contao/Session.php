@@ -194,7 +194,7 @@ class Session
 	 */
 	public function setData($arrData)
 	{
-		if (!is_array($arrData))
+		if (!\is_array($arrData))
 		{
 			throw new \Exception('Array required to set session data');
 		}
@@ -222,12 +222,12 @@ class Session
 	 */
 	public function appendData($varData)
 	{
-		if (is_object($varData))
+		if (\is_object($varData))
 		{
 			$varData = get_object_vars($varData);
 		}
 
-		if (!is_array($varData))
+		if (!\is_array($varData))
 		{
 			throw new \Exception('Array or object required to append session data');
 		}

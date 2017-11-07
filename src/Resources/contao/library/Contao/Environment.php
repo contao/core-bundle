@@ -175,9 +175,9 @@ class Environment
 
 		$strDocumentRoot .= strrev(implode('/', $arrUriSegments));
 
-		if (strlen($strDocumentRoot) < 2)
+		if (\strlen($strDocumentRoot) < 2)
 		{
-			$strDocumentRoot = substr($scriptFilename, 0, -(strlen($strDocumentRoot) + 1));
+			$strDocumentRoot = substr($scriptFilename, 0, -(\strlen($strDocumentRoot) + 1));
 		}
 
 		return str_replace('//', '/', strtr(realpath($strDocumentRoot), '\\', '/'));
@@ -261,7 +261,7 @@ class Environment
 			}
 		}
 
-		return array_slice(array_unique($arrLanguages), 0, 8);
+		return \array_slice(array_unique($arrLanguages), 0, 8);
 	}
 
 

@@ -46,7 +46,7 @@ class ContentMedia extends \ContentElement
 
 		$source = \StringUtil::deserialize($this->playerSRC);
 
-		if (!is_array($source) || empty($source))
+		if (!\is_array($source) || empty($source))
 		{
 			return '';
 		}
@@ -124,7 +124,7 @@ class ContentMedia extends \ContentElement
 		{
 			$arrMeta = \StringUtil::deserialize($objFiles->meta);
 
-			if (is_array($arrMeta) && isset($arrMeta[$strLanguage]))
+			if (\is_array($arrMeta) && isset($arrMeta[$strLanguage]))
 			{
 				$strTitle = $arrMeta[$strLanguage]['title'];
 			}
@@ -141,7 +141,7 @@ class ContentMedia extends \ContentElement
 
 		$size = \StringUtil::deserialize($this->playerSize);
 
-		if (!is_array($size) || empty($size[0]) || empty($size[1]))
+		if (!\is_array($size) || empty($size[0]) || empty($size[1]))
 		{
 			if ($this->Template->isVideo)
 			{
