@@ -207,34 +207,28 @@ class UserChecker implements UserCheckerInterface
     {
         $start = (int) $user->start;
         $stop = (int) $user->stop;
-        $time = time();
-        $isActive = true;
+        $time = Date::floorToMinute(time());
+        $notActiveYet = $start && $start > $time;
+        $wasNotActive = $stop && $stop <= ($time + 60);
         $logMessage = '';
-        $logContext = ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)];
 
-        if ($start || $stop) {
-            $time = Date::floorToMinute($time);
-
-            if ($start && $start > $time) {
-                $isActive = false;
-                $logMessage = sprintf(
-                    'The account was not active yet (activation date: %s)',
-                    Date::parse(Config::get('dateFormat'), $start)
-                );
-            }
-
-            if ($stop && $stop <= ($time + 60)) {
-                $isActive = false;
-                $logMessage = sprintf(
-                    'The account was not active anymore (deactivation date: %s)',
-                    [Date::parse(Config::get('dateFormat'), $stop)]
-                );
-            }
+        if ($notActiveYet) {
+            $logMessage = sprintf(
+                'The account was not active yet (activation date: %s)',
+                Date::parse(Config::get('dateFormat'), $start)
+            );
         }
 
-        if (false === $isActive) {
+        if ($wasNotActive) {
+            $logMessage = sprintf(
+                'The account was not active anymore (deactivation date: %s)',
+                Date::parse(Config::get('dateFormat'), $stop)
+            );
+        }
+
+        if ($notActiveYet || $wasNotActive) {
             $this->setInvalidLoginFlashBag();
-            $this->logger->info($logMessage, $logContext);
+            $this->logger->info($logMessage, ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]);
 
             throw new DisabledException();
         }

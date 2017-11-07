@@ -74,46 +74,76 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $user = $token->getUser();
 
         if ($user instanceof FrontendUser) {
-            $this->triggerLegacyPostAuthenticateHook($user);
-
-            $groups = unserialize((string) $user->groups, false);
-
-            if (is_array($groups)) {
-                /** @var PageModel $pageModelAdapter */
-                $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-
-                $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups($groups);
-
-                if ($groupPage instanceof PageModel) {
-                    return new RedirectResponse($groupPage->getAbsoluteUrl());
-                }
-            }
+            return $this->handleFrontendUser($request, $user);
         }
 
         if ($user instanceof BackendUser) {
-            $this->triggerLegacyPostAuthenticateHook($user);
+            return $this->handleBackendUser($request, $user);
+        }
 
-            $route = $request->attributes->get('_route');
+        return new RedirectResponse($this->determineTargetUrl($request));
+    }
 
-            if ('contao_backend_login' !== $route) {
-                $parameters = [];
-                $routes = [
-                    'contao_backend',
-                    'contao_backend_preview',
-                ];
+    /**
+     * Specific logic for successful authenticated FrontendUser
+     *
+     * @param Request $request
+     * @param FrontendUser $user
+     *
+     * @return RedirectResponse
+     */
+    protected function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
+    {
+        $this->triggerLegacyPostAuthenticateHook($user);
 
-                // Redirect to the last page visited upon login
-                if ($request->query->count() > 0 && in_array($route, $routes, true)) {
-                    $parameters['referer'] = base64_encode($request->getRequestUri());
-                }
+        $groups = unserialize((string) $user->groups, false);
 
-                return new RedirectResponse(
-                    $this->router->generate(
-                        'contao_backend_login', $parameters,
-                        UrlGeneratorInterface::ABSOLUTE_URL
-                    )
-                );
+        if (is_array($groups)) {
+            /** @var PageModel $pageModelAdapter */
+            $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
+
+            $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups($groups);
+
+            if ($groupPage instanceof PageModel) {
+                return new RedirectResponse($groupPage->getAbsoluteUrl());
             }
+        }
+
+        return new RedirectResponse($this->determineTargetUrl($request));
+    }
+
+    /**
+     * Specific logic for successful authenticated BackendUser
+     *
+     * @param Request $request
+     * @param BackendUser $user
+     *
+     * @return RedirectResponse
+     */
+    protected function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
+    {
+        $this->triggerLegacyPostAuthenticateHook($user);
+
+        $route = $request->attributes->get('_route');
+
+        if ('contao_backend_login' !== $route) {
+            $parameters = [];
+            $routes = [
+                'contao_backend',
+                'contao_backend_preview',
+            ];
+
+            // Redirect to the last page visited upon login
+            if ($request->query->count() > 0 && in_array($route, $routes, true)) {
+                $parameters['referer'] = base64_encode($request->getRequestUri());
+            }
+
+            return new RedirectResponse(
+                $this->router->generate(
+                    'contao_backend_login', $parameters,
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            );
         }
 
         return new RedirectResponse($this->determineTargetUrl($request));
