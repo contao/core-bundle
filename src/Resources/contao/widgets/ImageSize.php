@@ -162,7 +162,7 @@ class ImageSize extends \Widget
 	 */
 	public function generate()
 	{
-		if (!is_array($this->varValue))
+		if (!\is_array($this->varValue))
 		{
 			$this->varValue = array($this->varValue);
 		}
