@@ -208,35 +208,35 @@ class UserChecker implements UserCheckerInterface
         $start = (int) $user->start;
         $stop = (int) $user->stop;
         $time = time();
+        $isActive = true;
+        $logMessage = '';
+        $logContext = ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)];
 
         if ($start || $stop) {
             $time = Date::floorToMinute($time);
 
             if ($start && $start > $time) {
-                $this->setInvalidLoginFlashBag();
-                $this->logger->info(
-                    vsprintf(
-                        'The account was not active yet (activation date: %s)',
-                        [Date::parse(Config::get('dateFormat'), $start)]
-                    ),
-                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+                $isActive = false;
+                $logMessage = sprintf(
+                    'The account was not active yet (activation date: %s)',
+                    Date::parse(Config::get('dateFormat'), $start)
                 );
-
-                throw new DisabledException();
             }
 
             if ($stop && $stop <= ($time + 60)) {
-                $this->setInvalidLoginFlashBag();
-                $this->logger->info(
-                    vsprintf(
-                        'The account was not active anymore (deactivation date: %s)',
-                        [Date::parse(Config::get('dateFormat'), $stop)]
-                    ),
-                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+                $isActive = false;
+                $logMessage = sprintf(
+                    'The account was not active anymore (deactivation date: %s)',
+                    [Date::parse(Config::get('dateFormat'), $stop)]
                 );
-
-                throw new DisabledException();
             }
+        }
+
+        if (false === $isActive) {
+            $this->setInvalidLoginFlashBag();
+            $this->logger->info($logMessage, $logContext);
+
+            throw new DisabledException();
         }
     }
 
