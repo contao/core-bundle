@@ -41,10 +41,7 @@ class InteractiveLoginListener
         }
 
         $this->logger->info(
-            vsprintf(
-                'User %s has logged in.',
-                [$user->username]
-            ),
+            sprintf('User %s has logged in.', $user->username),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 

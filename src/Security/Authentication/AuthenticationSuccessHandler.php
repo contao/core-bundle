@@ -161,7 +161,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     {
         @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Extend the security.authentication_success_handler service instead.', E_USER_DEPRECATED);
 
-        // HOOK: post authenticate callback
         if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
             foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
                 System::importStatic($callback[0])->{$callback[1]}($user);

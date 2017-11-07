@@ -55,10 +55,7 @@ class LogoutHandler implements LogoutHandlerInterface
         }
 
         $this->logger->info(
-            vsprintf(
-                'User %s has logged out.',
-                [$user->username]
-            ),
+            sprintf('User %s has logged out.', $user->username),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
@@ -77,7 +74,6 @@ class LogoutHandler implements LogoutHandlerInterface
     {
         @trigger_error('Using LogoutHandler::triggerLegacyPostLogoutHook() has been deprecated and will no longer work in Contao 5.0. Use the security.logout_handler service instead.', E_USER_DEPRECATED);
 
-        // HOOK: post logout callback
         if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
                 $user->objLogout = System::importStatic($callback[0], 'objLogout', true);

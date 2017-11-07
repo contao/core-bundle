@@ -27,8 +27,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * ContaoAuthenticationProvider extends DaoAuthenticationProvider
- * to maintain some Brute-Force protection against the login form.
+ * ContaoAuthenticationProvider extends the existing Symfony DaoAuthenticationProvider
+ * to provide some Brute-Force protection against the login form.
  */
 class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 {
@@ -63,7 +63,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             }
 
             if (false === $this->triggerLegacyCheckCredentialsHook($user, $token)) {
-                --$user->loginCount;
+                $user->loginCount--;
                 $user->save();
 
                 $this->session->getFlashBag()->set(
@@ -76,10 +76,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 );
 
                 $this->logger->info(
-                    vsprintf(
-                        'Invalid password submitted for username %s',
-                        [$user->getUsername()]
-                    ),
+                    sprintf('Invalid password submitted for username %s', $user->getUsername()),
                     ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
                 );
 
@@ -104,7 +101,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     {
         @trigger_error('Using the checkCredentials hook has been deprecated and will no longer work in Contao 5.0. Use a custom AuthenticationProvider instead.', E_USER_DEPRECATED);
 
-        // HOOK: pass credentials to callback functions
         if (isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
             foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
                 $user->objAuth = System::importStatic($callback[0], 'objAuth', true);
