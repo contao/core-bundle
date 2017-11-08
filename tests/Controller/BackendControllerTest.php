@@ -61,6 +61,17 @@ class BackendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->alertsAction());
     }
 
+    public function testReturnsVoidInTheActionMethods(): void
+    {
+        $container = $this->mockContainer();
+        $container->set('contao.framework', $this->mockContaoFramework());
+
+        $controller = new BackendController();
+        $controller->setContainer($container);
+
+        $this->assertNull($controller->logoutAction());
+    }
+
     public function testReturnsAResponseInThePickerActionMethod(): void
     {
         $picker = $this->createMock(PickerInterface::class);
