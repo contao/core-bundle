@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -1793,6 +1794,8 @@ abstract class Controller extends \System
 	 * Set the static URL constants
 	 *
 	 * @param PageModel $objPage An optional page object
+	 *
+	 * @deprecated Deprecated in Contao 4.5, to be removed in Contao 5. Use the asset contexts instead.
 	 */
 	public static function setStaticUrls($objPage=null)
 	{
@@ -1809,23 +1812,27 @@ abstract class Controller extends \System
 
 		$arrConstants = array
 		(
-			'staticFiles'   => 'TL_FILES_URL',
-			'staticPlugins' => 'TL_ASSETS_URL'
+			'contao.assets.files_context'   => 'TL_FILES_URL',
+			'contao.assets.plugins_context' => 'TL_ASSETS_URL'
 		);
 
-		foreach ($arrConstants as $strKey=>$strConstant)
+		foreach ($arrConstants as $strService => $strConstant)
 		{
-			$url = ($objPage !== null) ? $objPage->$strKey : \Config::get($strKey);
+			$objContext = \System::getContainer()->get($strService);
 
-			if ($url == '' || \Config::get('debugMode'))
+			if ($objContext instanceof ContaoContext)
 			{
-				\define($strConstant, '');
+				$objContext->setPage($objPage);
+				$url = $objContext->getBasePath();
+
+				if ($url != '')
+				{
+					\define($strConstant, $url . '/');
+					continue;
+				}
 			}
-			else
-			{
-				$strProtocol = (($objPage !== null && $objPage->rootUseSSL) || \Environment::get('ssl')) ? 'https://' : 'http://';
-				\define($strConstant, $strProtocol . preg_replace('@https?://@', '', $url) . \Environment::get('path') . '/');
-			}
+
+			\define($strConstant, '');
 		}
 
 		// Deprecated since Contao 4.0, to be removed in Contao 5.0

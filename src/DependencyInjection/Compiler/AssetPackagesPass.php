@@ -51,7 +51,7 @@ class AssetPackagesPass implements CompilerPassInterface
         }
 
         $packages = $container->getDefinition('assets.packages');
-        $context = new Reference('contao.assets.assets_context');
+        $context = new Reference('contao.assets.plugins_context');
 
         foreach ($container->getParameter('kernel.packages') as $name => $version) {
             list($vendor, $packageName) = explode('/', $name, 2);
