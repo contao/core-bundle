@@ -416,7 +416,7 @@ services:
             - { name: twig.extension }
 
     contao.security.legacy_password_encoder:
-        class: Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder
+        class: Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder
 
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\BackendUserProvider

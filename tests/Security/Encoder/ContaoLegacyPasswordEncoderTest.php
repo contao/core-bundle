@@ -10,17 +10,17 @@
 
 namespace Contao\CoreBundle\Test\Security\Encoder;
 
-use Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder;
+use Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Security\Core\Encoder\BasePasswordEncoder;
 
 /**
- * Tests the BackendControllerTest class.
+ * Tests the ContaoLegacyPasswordEncoder class.
  */
-class LegacyPasswordEncoderTest extends TestCase
+class ContaoLegacyPasswordEncoderTest extends TestCase
 {
     /**
-     * @var LegacyPasswordEncoder
+     * @var ContaoLegacyPasswordEncoder
      */
     private $encoder;
 
@@ -28,7 +28,7 @@ class LegacyPasswordEncoderTest extends TestCase
     {
         parent::setUp();
 
-        $this->encoder = new LegacyPasswordEncoder();
+        $this->encoder = new ContaoLegacyPasswordEncoder();
     }
 
     /**
@@ -36,7 +36,7 @@ class LegacyPasswordEncoderTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Security\Encoder\LegacyPasswordEncoder', $this->encoder);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder', $this->encoder);
     }
 
     /**
@@ -57,6 +57,8 @@ class LegacyPasswordEncoderTest extends TestCase
     {
         $raw = random_bytes(BasePasswordEncoder::MAX_PASSWORD_LENGTH + 1);
         $salt = random_bytes(8);
+
+        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
 
         $this->encoder->encodePassword($raw, $salt);
     }
