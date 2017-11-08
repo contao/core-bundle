@@ -107,4 +107,12 @@ class BackendUserProviderTest extends TestCase
         $this->expectException('Symfony\Component\Security\Core\Exception\UnsupportedUserException');
         $provider->refreshUser($this->createMock(UserInterface::class));
     }
+
+    public function testSupportsOnlyBackendUserClass()
+    {
+        $provider = new BackendUserProvider($this->mockContaoFramework());
+
+        $this->assertTrue($provider->supportsClass('Contao\BackendUser'));
+        $this->assertFalse($provider->supportsClass('Contao\FrontendUser'));
+    }
 }
