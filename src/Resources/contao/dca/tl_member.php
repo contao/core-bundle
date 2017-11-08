@@ -641,7 +641,7 @@ class tl_member extends Backend
 	 *
 	 * @param DataContainer $dc
 	 *
-	 * @Deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function removeSession($dc)
 	{
