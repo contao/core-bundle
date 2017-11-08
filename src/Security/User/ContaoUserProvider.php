@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * Class ContaoUserProvider
+ * Class ContaoUserProvider.
  *
  * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  *             Use the BackendUserProvider or FrontendUserProvider service instead.

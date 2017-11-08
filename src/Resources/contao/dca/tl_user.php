@@ -827,6 +827,8 @@ class tl_user extends Backend
 	 * Remove the session if a user is deleted (see #5353)
 	 *
 	 * @param DataContainer $dc
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function removeSession(DataContainer $dc)
 	{

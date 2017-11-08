@@ -85,9 +85,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * Specific logic for successful authenticated FrontendUser
+     * Specific logic for successful authenticated FrontendUser.
      *
-     * @param Request $request
+     * @param Request      $request
      * @param FrontendUser $user
      *
      * @return RedirectResponse
@@ -96,7 +96,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     {
         $this->triggerLegacyPostAuthenticateHook($user);
 
-        $groups = unserialize((string) $user->groups, false);
+        $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
 
         if (is_array($groups)) {
             /** @var PageModel $pageModelAdapter */
@@ -113,9 +113,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * Specific logic for successful authenticated BackendUser
+     * Specific logic for successful authenticated BackendUser.
      *
-     * @param Request $request
+     * @param Request     $request
      * @param BackendUser $user
      *
      * @return RedirectResponse

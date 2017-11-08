@@ -70,7 +70,7 @@ class FrontendController extends Controller
      *
      * @Route("/_contao/logout", name="contao_frontend_logout")
      */
-    public function logoutAction()
+    public function logoutAction(): void
     {
     }
 
@@ -79,7 +79,7 @@ class FrontendController extends Controller
      *
      * @Route("/_contao/login", name="contao_frontend_login")
      */
-    public function loginAction()
+    public function loginAction(): void
     {
     }
 }

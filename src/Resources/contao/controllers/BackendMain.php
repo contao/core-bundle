@@ -61,13 +61,7 @@ class BackendMain extends \Backend
 		// Password change required
 		if ($this->User->pwChange)
 		{
-			$objSession = $this->Database->prepare("SELECT su FROM tl_session WHERE hash=?")
-										 ->execute($this->getSessionHash('BE_USER_AUTH'));
-
-			if (!$objSession->su)
-			{
-				$this->redirect('contao/password.php');
-			}
+			$this->redirect('contao/password.php');
 		}
 
 		// Front end redirect

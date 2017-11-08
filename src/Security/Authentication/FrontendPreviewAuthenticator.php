@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\Authentication;
 
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -38,13 +40,15 @@ class FrontendPreviewAuthenticator
      * @param SessionInterface      $session
      * @param TokenStorageInterface $tokenStorage
      * @param UserProviderInterface $userProvider
+     * @param LoggerInterface       $logger
      */
-    public function __construct(RequestStack $requestStack, SessionInterface $session, TokenStorageInterface $tokenStorage, UserProviderInterface $userProvider)
+    public function __construct(RequestStack $requestStack, SessionInterface $session, TokenStorageInterface $tokenStorage, UserProviderInterface $userProvider, LoggerInterface $logger)
     {
         $this->requestStack = $requestStack;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->userProvider = $userProvider;
+        $this->logger = $logger;
     }
 
     /**
@@ -70,7 +74,12 @@ class FrontendPreviewAuthenticator
             /** @var User $user */
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            // TODO:
+            $this->logger->info(
+                sprintf('FrontendUser with Username %s could not be found. Frontend authentication aborted.', $username),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
+
+            return;
         }
 
         $token = new UsernamePasswordToken(

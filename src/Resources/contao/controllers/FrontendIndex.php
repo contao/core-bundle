@@ -13,7 +13,6 @@ namespace Contao;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
 /**
@@ -28,18 +27,13 @@ class FrontendIndex extends \Frontend
 	 */
 	public function __construct()
 	{
-		/** @var TokenInterface $token */
-		$token = System::getContainer()->get('security.token_storage')->getToken();
-
 		// Load the user object before calling the parent constructor
 		$this->import('FrontendUser', 'User');
 		parent::__construct();
 
-		$isAuthenticated = $token !== null && $token->getUser() === $this->User && $token->isAuthenticated();
-
 		// Check whether a user is logged in
-		define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
-		define('FE_USER_LOGGED_IN', $isAuthenticated);
+		define('BE_USER_LOGGED_IN', $this->getAuthenticationStatus('_security_contao_backend'));
+		define('FE_USER_LOGGED_IN', $this->getAuthenticationStatus('_security_contao_frontend'));
 	}
 
 

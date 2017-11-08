@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
 /**
- * Class ContaoAuthenticator
+ * Class ContaoAuthenticator.
  *
  * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  */

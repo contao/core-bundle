@@ -12,6 +12,8 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
 /**
@@ -500,6 +502,9 @@ abstract class Frontend extends \Controller
 	 * @param string $strCookie
 	 *
 	 * @return boolean
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 *             Use getAuthenticationStatus() instead.
 	 */
 	protected function getLoginStatus($strCookie)
 	{
@@ -684,5 +689,54 @@ abstract class Frontend extends \Controller
 		@trigger_error('Using Frontend::getResponseFromCache() has been deprecated and will no longer work in Contao 5.0. Use proper response caching headers instead.', E_USER_DEPRECATED);
 
 		return null;
+	}
+
+	/**
+	 * Check authentication status based on sessionKey.
+	 *
+	 * @param string $sessionKey
+	 * @return bool
+	 *
+	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 */
+	protected function getAuthenticationStatus($sessionKey = '')
+	{
+		/** @var SessionInterface $session */
+		$session = \System::getContainer()->get('session');
+
+		if ($session->has($sessionKey) && $token = unserialize($session->get($sessionKey)))
+		{
+			/** @var TokenInterface $token */
+
+			// Validate the session ID and timeout
+			if ($token->isAuthenticated())
+			{
+				// Disable the cache if a back end user is logged in
+				if (TL_MODE == 'FE' && $sessionKey == '_security_contao_backend')
+				{
+					$_SESSION['DISABLE_CACHE'] = true;
+
+					// Always return false if we are not in preview mode (show hidden elements)
+					if (!\Input::cookie('FE_PREVIEW'))
+					{
+						return false;
+					}
+				}
+
+				// The session could be verified
+				return true;
+			}
+		}
+
+		// Reset the cache settings
+		if (TL_MODE == 'FE' && $sessionKey == '_security_contao_backend')
+		{
+			$_SESSION['DISABLE_CACHE'] = false;
+		}
+
+		// Remove the session if it is invalid to enable loading cached pages
+		$session->remove($sessionKey);
+
+		return false;
 	}
 }

@@ -63,7 +63,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             }
 
             if (false === $this->triggerLegacyCheckCredentialsHook($user, $token)) {
-                $user->loginCount--;
+                --$user->loginCount;
                 $user->save();
 
                 $this->session->getFlashBag()->set(

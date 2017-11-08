@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
- * Class ContaoToken
+ * Class ContaoToken.
  *
  * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  *             Use the UsernamePasswordToken instead.
