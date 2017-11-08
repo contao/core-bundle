@@ -171,7 +171,7 @@ class MetaWizard extends \Widget
 		// Add the remaining languages
 		foreach ($languages as $k=>$v)
 		{
-			$options[] = '<option value="' . $k . '"' . (in_array($k, $taken) ? ' disabled' : '') . '>' . $v . '</option>';
+			$options[] = '<option value="' . $k . '"' . (\in_array($k, $taken) ? ' disabled' : '') . '>' . $v . '</option>';
 		}
 
 		$return .= '

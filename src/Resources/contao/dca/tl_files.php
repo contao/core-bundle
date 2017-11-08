@@ -327,7 +327,7 @@ class tl_files extends Backend
 					}
 					else
 					{
-						if (($canDeleteOne || $canDeleteRecursive) && !in_array(\dirname($id), $folders))
+						if (($canDeleteOne || $canDeleteRecursive) && !\in_array(\dirname($id), $folders))
 						{
 							$delete_all[] = $id;
 						}
@@ -425,7 +425,7 @@ class tl_files extends Backend
 			return;
 		}
 
-		if (is_dir(TL_ROOT . '/' . $dc->id) || !in_array(strtolower(substr($dc->id, strrpos($dc->id, '.') + 1)), StringUtil::trimsplit(',', strtolower(Config::get('validImageTypes')))))
+		if (is_dir(TL_ROOT . '/' . $dc->id) || !\in_array(strtolower(substr($dc->id, strrpos($dc->id, '.') + 1)), StringUtil::trimsplit(',', strtolower(Config::get('validImageTypes')))))
 		{
 			$GLOBALS['TL_DCA'][$dc->table]['palettes'] = str_replace(',importantPartX,importantPartY,importantPartWidth,importantPartHeight', '', $GLOBALS['TL_DCA'][$dc->table]['palettes']);
 		}
@@ -618,7 +618,7 @@ class tl_files extends Backend
 
 		$objFile = new File($strDecoded);
 
-		if (!in_array($objFile->extension, StringUtil::trimsplit(',', strtolower(Config::get('editableFiles')))))
+		if (!\in_array($objFile->extension, StringUtil::trimsplit(',', strtolower(Config::get('editableFiles')))))
 		{
 			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}

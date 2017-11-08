@@ -86,7 +86,7 @@ class StyleSheets extends \Backend
 			}
 
 			// Preserve root files (is this still required now that scripts are in assets/css/scripts?)
-			if (\is_array(\Config::get('rootFiles')) && in_array($file, \Config::get('rootFiles')))
+			if (\is_array(\Config::get('rootFiles')) && \in_array($file, \Config::get('rootFiles')))
 			{
 				continue;
 			}
@@ -100,7 +100,7 @@ class StyleSheets extends \Backend
 			$objFile = new \File('assets/css/' . $file);
 
 			// Delete the old style sheet
-			if ($objFile->extension == 'css' && !in_array($objFile->filename, $arrStyleSheets))
+			if ($objFile->extension == 'css' && !\in_array($objFile->filename, $arrStyleSheets))
 			{
 				$objFile->delete();
 			}
@@ -805,42 +805,42 @@ class StyleSheets extends \Backend
 
 			if (\is_array($row['fontstyle']))
 			{
-				if (in_array('bold', $row['fontstyle']))
+				if (\in_array('bold', $row['fontstyle']))
 				{
 					$return .= $lb . 'font-weight:bold;';
 				}
 
-				if (in_array('italic', $row['fontstyle']))
+				if (\in_array('italic', $row['fontstyle']))
 				{
 					$return .= $lb . 'font-style:italic;';
 				}
 
-				if (in_array('normal', $row['fontstyle']))
+				if (\in_array('normal', $row['fontstyle']))
 				{
 					$return .= $lb . 'font-weight:normal;';
 				}
 
-				if (in_array('underline', $row['fontstyle']))
+				if (\in_array('underline', $row['fontstyle']))
 				{
 					$return .= $lb . 'text-decoration:underline;';
 				}
 
-				if (in_array('line-through', $row['fontstyle']))
+				if (\in_array('line-through', $row['fontstyle']))
 				{
 					$return .= $lb . 'text-decoration:line-through;';
 				}
 
-				if (in_array('overline', $row['fontstyle']))
+				if (\in_array('overline', $row['fontstyle']))
 				{
 					$return .= $lb. 'text-decoration:overline;';
 				}
 
-				if (in_array('notUnderlined', $row['fontstyle']))
+				if (\in_array('notUnderlined', $row['fontstyle']))
 				{
 					$return .= $lb . 'text-decoration:none;';
 				}
 
-				if (in_array('small-caps', $row['fontstyle']))
+				if (\in_array('small-caps', $row['fontstyle']))
 				{
 					$return .= $lb . 'font-variant:small-caps;';
 				}

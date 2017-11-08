@@ -166,7 +166,7 @@ abstract class System
 			{
 				$this->arrObjects[$strKey] = $container->get($strClass);
 			}
-			elseif (in_array('getInstance', get_class_methods($strClass)))
+			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				$this->arrObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
 			}
@@ -208,7 +208,7 @@ abstract class System
 			{
 				static::$arrStaticObjects[$strKey] = $container->get($strClass);
 			}
-			elseif (in_array('getInstance', get_class_methods($strClass)))
+			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				static::$arrStaticObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
 			}
@@ -557,7 +557,7 @@ abstract class System
 
 		foreach (array_keys($arrAux) as $strKey)
 		{
-			if ($blnInstalledOnly && !in_array($strKey, $arrBackendLanguages))
+			if ($blnInstalledOnly && !\in_array($strKey, $arrBackendLanguages))
 			{
 				continue;
 			}

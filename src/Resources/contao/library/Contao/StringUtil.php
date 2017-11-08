@@ -162,7 +162,7 @@ class StringUtil
 					}
 
 					// Skip empty tags
-					if (in_array($strTagName, $arrEmptyTags))
+					if (\in_array($strTagName, $arrEmptyTags))
 					{
 						continue;
 					}

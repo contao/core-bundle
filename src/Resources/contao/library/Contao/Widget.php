@@ -710,7 +710,7 @@ abstract class Widget extends \Controller
 
 		foreach (array_keys($this->arrAttributes) as $strKey)
 		{
-			if (!in_array($strKey, $arrStrip))
+			if (!\in_array($strKey, $arrStrip))
 			{
 				$strAttributes .= $this->getAttribute($strKey);
 			}
@@ -901,7 +901,7 @@ abstract class Widget extends \Controller
 					$textual = explode('_', $this->rgxp);
 					array_shift($textual);
 
-					if (in_array($varInput, $textual) || strncmp($varInput, '$', 1) === 0)
+					if (\in_array($varInput, $textual) || strncmp($varInput, '$', 1) === 0)
 					{
 						break;
 					}
@@ -1219,7 +1219,7 @@ abstract class Widget extends \Controller
 			return '';
 		}
 
-		return (\is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? ' selected' : '';
+		return (\is_array($varValues) ? \in_array($strOption, $varValues) : $strOption == $varValues) ? ' selected' : '';
 	}
 
 
@@ -1238,7 +1238,7 @@ abstract class Widget extends \Controller
 			return '';
 		}
 
-		return (\is_array($varValues) ? in_array($strOption, $varValues) : $strOption == $varValues) ? ' checked' : '';
+		return (\is_array($varValues) ? \in_array($strOption, $varValues) : $strOption == $varValues) ? ' checked' : '';
 	}
 
 
@@ -1341,7 +1341,7 @@ abstract class Widget extends \Controller
 		}
 
 		// Add Ajax event
-		if ($arrData['inputType'] == 'checkbox' && \is_array($GLOBALS['TL_DCA'][$strTable]['subpalettes']) && in_array($strField, array_keys($GLOBALS['TL_DCA'][$strTable]['subpalettes'])) && $arrData['eval']['submitOnChange'])
+		if ($arrData['inputType'] == 'checkbox' && \is_array($GLOBALS['TL_DCA'][$strTable]['subpalettes']) && \in_array($strField, array_keys($GLOBALS['TL_DCA'][$strTable]['subpalettes'])) && $arrData['eval']['submitOnChange'])
 		{
 			$arrAttributes['onclick'] = "AjaxRequest.toggleSubpalette(this, 'sub_".$strName."', '".$strField."')";
 		}
@@ -1429,7 +1429,7 @@ abstract class Widget extends \Controller
 		$arrAttributes['value'] = \StringUtil::deserialize($varValue);
 
 		// Convert timestamps
-		if ($varValue != '' && in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
+		if ($varValue != '' && \in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
 		{
 			$objDate = new \Date($varValue, \Date::getFormatFromRgxp($arrData['eval']['rgxp']));
 			$arrAttributes['value'] = $objDate->{$arrData['eval']['rgxp']};
@@ -1508,7 +1508,7 @@ abstract class Widget extends \Controller
 					return null;
 				}
 
-				if (in_array($sql['type'], array(Type::BIGINT, Type::DECIMAL, Type::INTEGER, Type::SMALLINT, Type::FLOAT)))
+				if (\in_array($sql['type'], array(Type::BIGINT, Type::DECIMAL, Type::INTEGER, Type::SMALLINT, Type::FLOAT)))
 				{
 					return 0;
 				}
@@ -1524,7 +1524,7 @@ abstract class Widget extends \Controller
 
 		$type = strtolower(preg_replace('/^([A-Za-z]+)(\(| ).*$/', '$1', $sql));
 
-		if (in_array($type, array('int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal')))
+		if (\in_array($type, array('int', 'integer', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'dec', 'decimal')))
 		{
 			return 0;
 		}

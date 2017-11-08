@@ -58,7 +58,7 @@ class ModuleBooknav extends \Module
 		/** @var PageModel $objPage */
 		global $objPage;
 
-		if (!$this->rootPage || !in_array($this->rootPage, $objPage->trail))
+		if (!$this->rootPage || !\in_array($this->rootPage, $objPage->trail))
 		{
 			return '';
 		}

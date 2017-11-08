@@ -146,7 +146,7 @@ class ImageSize extends \Widget
 					return true;
 				}
 			}
-			elseif (in_array($varInput, $arrValues))
+			elseif (\in_array($varInput, $arrValues))
 			{
 				return true;
 			}

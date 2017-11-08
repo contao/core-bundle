@@ -365,7 +365,7 @@ abstract class Backend extends \Controller
 		// Create the data container object
 		if ($strTable != '')
 		{
-			if (!in_array($strTable, $arrTables))
+			if (!\in_array($strTable, $arrTables))
 			{
 				throw new AccessDeniedException('Table "' . $strTable . '" is not allowed in module "' . $module . '".');
 			}
@@ -448,7 +448,7 @@ abstract class Backend extends \Controller
 			$this->Template->main .= $response;
 
 			// Add the name of the parent element
-			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
+			if (isset($_GET['table']) && \in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
 			{
 				if ($GLOBALS['TL_DCA'][$strTable]['config']['ptable'] != '')
 				{
@@ -510,7 +510,7 @@ abstract class Backend extends \Controller
 			}
 
 			// Add the name of the parent elements
-			if ($strTable && in_array($strTable, $arrTables) && $strTable != $arrTables[0])
+			if ($strTable && \in_array($strTable, $arrTables) && $strTable != $arrTables[0])
 			{
 				$trail = array();
 
@@ -518,7 +518,7 @@ abstract class Backend extends \Controller
 				$table = $strTable;
 				$ptable = (\Input::get('act') != 'edit') ? $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] : $strTable;
 
-				while ($ptable && !in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
+				while ($ptable && !\in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
 				{
 					$objRow = $this->Database->prepare("SELECT * FROM " . $ptable . " WHERE id=?")
 											 ->limit(1)
@@ -1189,7 +1189,7 @@ abstract class Backend extends \Controller
 			}
 
 			// Do not process twice
-			if (in_array($start, $processed))
+			if (\in_array($start, $processed))
 			{
 				continue;
 			}
@@ -1291,7 +1291,7 @@ abstract class Backend extends \Controller
 		// Limit nodes to the filemounts of the user
 		foreach ($this->eliminateNestedPaths($this->User->filemounts) as $path)
 		{
-			if (in_array($path, $processed))
+			if (\in_array($path, $processed))
 			{
 				continue;
 			}

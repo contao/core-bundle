@@ -116,7 +116,7 @@ class ContentDownloads extends \ContentElement
 			{
 				$objFile = new \File($objFiles->path);
 
-				if (!in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
+				if (!\in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 				{
 					continue;
 				}
@@ -192,7 +192,7 @@ class ContentDownloads extends \ContentElement
 
 					$objFile = new \File($objSubfiles->path);
 
-					if (!in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
+					if (!\in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 					{
 						continue;
 					}

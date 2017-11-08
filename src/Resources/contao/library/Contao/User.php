@@ -368,7 +368,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		@trigger_error('Using User::regenerateSessionId() has been deprecated and will be removed in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
-
 	/**
 	 * Generate a session
 	 *

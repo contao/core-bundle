@@ -970,7 +970,7 @@ class tl_content extends Backend
 		}
 
 		// The page is not mounted
-		if (!in_array($objPage->id, $pagemounts))
+		if (!\in_array($objPage->id, $pagemounts))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to modify article ID ' . $objPage->aid . ' on page ID ' . $objPage->id . '.');
 		}
@@ -1134,7 +1134,7 @@ class tl_content extends Backend
 		$class = 'limit_height';
 
 		// Remove the class if it is a wrapper element
-		if (in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['start']) || in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['separator']) || in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['stop']))
+		if (\in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['start']) || \in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['separator']) || \in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['stop']))
 		{
 			$class = '';
 
@@ -1145,7 +1145,7 @@ class tl_content extends Backend
 		}
 
 		// Add the group name if it is a single element (see #5814)
-		elseif (in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['single']))
+		elseif (\in_array($arrRow['type'], $GLOBALS['TL_WRAPPERS']['single']))
 		{
 			if (($group = $this->getContentElementGroup($arrRow['type'])) !== null)
 			{
@@ -1486,7 +1486,7 @@ class tl_content extends Backend
 		{
 			foreach ($this->User->pagemounts as $id)
 			{
-				if (!in_array($id, $arrRoot))
+				if (!\in_array($id, $arrRoot))
 				{
 					continue;
 				}

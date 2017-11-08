@@ -182,7 +182,7 @@ class Versions extends \Controller
 		{
 			$objModel = \FilesModel::findByPk($this->intPid);
 
-			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
+			if ($objModel !== null && \in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
 			{
 				$objFile = new \File($objModel->path);
 
@@ -303,7 +303,7 @@ class Versions extends \Controller
 		{
 			$objModel = \FilesModel::findByPk($this->intPid);
 
-			if ($objModel !== null && in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
+			if ($objModel !== null && \in_array($objModel->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
 			{
 				$objFile = new \File($objModel->path);
 
@@ -481,7 +481,7 @@ class Versions extends \Controller
 							continue;
 						}
 
-						$blnIsBinary = ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['inputType'] == 'fileTree' || in_array($k, $arrOrder));
+						$blnIsBinary = ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['inputType'] == 'fileTree' || \in_array($k, $arrOrder));
 
 						// Decrypt the values
 						if ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['eval']['encrypt'])

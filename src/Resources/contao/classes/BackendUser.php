@@ -10,10 +10,8 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
@@ -292,7 +290,7 @@ class BackendUser extends User
 		$chmod = \is_array($chmod) ? $chmod : array($chmod);
 		$permission = array('w'.$int);
 
-		if (in_array($row['cgroup'], $this->groups))
+		if (\in_array($row['cgroup'], $this->groups))
 		{
 			$permission[] = 'g'.$int;
 		}
@@ -406,7 +404,7 @@ class BackendUser extends User
 		}
 
 		// Merge permissions
-		$inherit = in_array($this->inherit, array('group', 'extend')) ? array_merge($always, $depends) : $always;
+		$inherit = \in_array($this->inherit, array('group', 'extend')) ? array_merge($always, $depends) : $always;
 		$time = \Date::floorToMinute();
 
 		foreach ((array) $this->groups as $id)

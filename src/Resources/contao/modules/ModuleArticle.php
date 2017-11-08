@@ -213,11 +213,11 @@ class ModuleArticle extends \Module
 			if (!empty($options) && \is_array($options))
 			{
 				$this->Template->printable = true;
-				$this->Template->printButton = in_array('print', $options);
-				$this->Template->pdfButton = in_array('pdf', $options);
-				$this->Template->facebookButton = in_array('facebook', $options);
-				$this->Template->twitterButton = in_array('twitter', $options);
-				$this->Template->gplusButton = in_array('gplus', $options);
+				$this->Template->printButton = \in_array('print', $options);
+				$this->Template->pdfButton = \in_array('pdf', $options);
+				$this->Template->facebookButton = \in_array('facebook', $options);
+				$this->Template->twitterButton = \in_array('twitter', $options);
+				$this->Template->gplusButton = \in_array('gplus', $options);
 			}
 		}
 

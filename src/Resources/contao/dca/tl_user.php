@@ -681,7 +681,7 @@ class tl_user extends Backend
 			{
 				$this->import('Automator');
 
-				if (in_array('purge_session', $arrPurge))
+				if (\in_array('purge_session', $arrPurge))
 				{
 					/** @var Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $objSessionBag */
 					$objSessionBag = System::getContainer()->get('session')->getBag('contao_backend');
@@ -689,13 +689,13 @@ class tl_user extends Backend
 					Message::addConfirmation($GLOBALS['TL_LANG']['tl_user']['sessionPurged']);
 				}
 
-				if (in_array('purge_images', $arrPurge))
+				if (\in_array('purge_images', $arrPurge))
 				{
 					$this->Automator->purgeImageCache();
 					Message::addConfirmation($GLOBALS['TL_LANG']['tl_user']['htmlPurged']);
 				}
 
-				if (in_array('purge_pages', $arrPurge))
+				if (\in_array('purge_pages', $arrPurge))
 				{
 					$this->Automator->purgePageCache();
 					Message::addConfirmation($GLOBALS['TL_LANG']['tl_user']['tempPurged']);

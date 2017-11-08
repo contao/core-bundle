@@ -413,12 +413,12 @@ abstract class Template extends \Controller
 		{
 			$typeMatch = array();
 
-			if (preg_match('/\stype\s*=\s*(?:(?J)(["\'])\s*(?<type>.*?)\s*\1|(?<type>[^\s>]+))/i', $strChunk, $typeMatch) && !in_array(strtolower($typeMatch['type']), static::$validJavaScriptTypes))
+			if (preg_match('/\stype\s*=\s*(?:(?J)(["\'])\s*(?<type>.*?)\s*\1|(?<type>[^\s>]+))/i', $strChunk, $typeMatch) && !\in_array(strtolower($typeMatch['type']), static::$validJavaScriptTypes))
 			{
 				return false;
 			}
 
-			if (preg_match('/\slanguage\s*=\s*(?:(?J)(["\'])\s*(?<type>.*?)\s*\1|(?<type>[^\s>]+))/i', $strChunk, $typeMatch) && !in_array('text/' . strtolower($typeMatch['type']), static::$validJavaScriptTypes))
+			if (preg_match('/\slanguage\s*=\s*(?:(?J)(["\'])\s*(?<type>.*?)\s*\1|(?<type>[^\s>]+))/i', $strChunk, $typeMatch) && !\in_array('text/' . strtolower($typeMatch['type']), static::$validJavaScriptTypes))
 			{
 				return false;
 			}

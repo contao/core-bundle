@@ -157,7 +157,7 @@ class FileSelector extends \Widget
 						{
 							if (strncmp($this->path . '/', $objRoot->path . '/', \strlen($this->path) + 1) === 0)
 							{
-								if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || in_array($objRoot->extension, $this->arrValidFileTypes))
+								if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || \in_array($objRoot->extension, $this->arrValidFileTypes))
 								{
 									$arrFound[] = $objRoot->path;
 								}
@@ -171,7 +171,7 @@ class FileSelector extends \Widget
 						// Show all files to admins
 						while ($objRoot->next())
 						{
-							if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || in_array($objRoot->extension, $this->arrValidFileTypes))
+							if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || \in_array($objRoot->extension, $this->arrValidFileTypes))
 							{
 								$arrFound[] = $objRoot->path;
 							}
@@ -190,7 +190,7 @@ class FileSelector extends \Widget
 								{
 									if (strncmp($path . '/', $objRoot->path . '/', \strlen($path) + 1) === 0)
 									{
-										if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || in_array($objRoot->extension, $this->arrValidFileTypes))
+										if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || \in_array($objRoot->extension, $this->arrValidFileTypes))
 										{
 											$arrFound[] = $objRoot->path;
 										}
@@ -464,13 +464,13 @@ class FileSelector extends \Widget
 				{
 					--$countFiles;
 				}
-				elseif (!empty($arrFound) && !in_array($currentFolder . '/' . $file, $arrFound) && !preg_grep('/^' . preg_quote($currentFolder . '/' . $file, '/') . '\//', $arrFound))
+				elseif (!empty($arrFound) && !\in_array($currentFolder . '/' . $file, $arrFound) && !preg_grep('/^' . preg_quote($currentFolder . '/' . $file, '/') . '\//', $arrFound))
 				{
 					--$countFiles;
 				}
 			}
 
-			if (!empty($arrFound) && $countFiles < 1 && !in_array($currentFolder, $arrFound))
+			if (!empty($arrFound) && $countFiles < 1 && !\in_array($currentFolder, $arrFound))
 			{
 				continue;
 			}
@@ -543,13 +543,13 @@ class FileSelector extends \Widget
 
 				$objFile = new \File($currentFile);
 
-				if (!empty($this->arrValidFileTypes) && !in_array($objFile->extension, $this->arrValidFileTypes))
+				if (!empty($this->arrValidFileTypes) && !\in_array($objFile->extension, $this->arrValidFileTypes))
 				{
 					continue;
 				}
 
 				// Ignore files not matching the search criteria
-				if (!empty($arrFound) && !in_array($currentFile, $arrFound))
+				if (!empty($arrFound) && !\in_array($currentFile, $arrFound))
 				{
 					continue;
 				}

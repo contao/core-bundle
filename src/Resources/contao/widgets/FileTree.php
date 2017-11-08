@@ -193,7 +193,7 @@ class FileTree extends \Widget
 				$objFile = new \File($objFile->path);
 				$extensions = \StringUtil::trimsplit(',', $this->extensions);
 
-				if (!in_array($objFile->extension, $extensions))
+				if (!\in_array($objFile->extension, $extensions))
 				{
 					$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['extensionsOnly'], $this->extensions));
 					break;
@@ -288,7 +288,7 @@ class FileTree extends \Widget
 								else
 								{
 									// Only show allowed download types
-									if (in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
+									if (\in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 									{
 										$arrValues[$objSubfiles->uuid] = \Image::getHtml($objFile->icon) . ' ' . $strInfo;
 									}
@@ -311,7 +311,7 @@ class FileTree extends \Widget
 							else
 							{
 								// Only show allowed download types
-								if (in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
+								if (\in_array($objFile->extension, $allowedDownload) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', $objFile->basename))
 								{
 									$arrValues[$objFiles->uuid] = \Image::getHtml($objFile->icon) . ' ' . $strInfo;
 								}

@@ -157,7 +157,7 @@ class Encryption
 	 */
 	protected static function initialize()
 	{
-		if (!in_array('mcrypt', get_loaded_extensions()))
+		if (!\in_array('mcrypt', get_loaded_extensions()))
 		{
 			throw new \Exception('The PHP mcrypt extension is not installed');
 		}

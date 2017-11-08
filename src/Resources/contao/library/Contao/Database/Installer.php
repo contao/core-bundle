@@ -149,7 +149,7 @@ class Installer extends \Controller
 		// Add or change fields
 		foreach ($sql_target as $k=>$v)
 		{
-			if (in_array($k, $create))
+			if (\in_array($k, $create))
 			{
 				continue;
 			}
@@ -216,7 +216,7 @@ class Installer extends \Controller
 		// Drop fields
 		foreach ($sql_current as $k=>$v)
 		{
-			if (!in_array($k, $drop))
+			if (!\in_array($k, $drop))
 			{
 				// Create definitions
 				if (\is_array($v['TABLE_CREATE_DEFINITIONS']))
@@ -273,7 +273,7 @@ class Installer extends \Controller
 
 		foreach ($files as $file)
 		{
-			if (in_array($file->getBasename(), $processed))
+			if (\in_array($file->getBasename(), $processed))
 			{
 				continue;
 			}
@@ -390,12 +390,12 @@ class Installer extends \Controller
 					}
 
 					// Default values
-					if (in_array(strtolower($field['type']), array('text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob')) || stristr($field['extra'], 'auto_increment') || $field['default'] === null || strtolower($field['null']) == 'null')
+					if (\in_array(strtolower($field['type']), array('text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob')) || stristr($field['extra'], 'auto_increment') || $field['default'] === null || strtolower($field['null']) == 'null')
 					{
 						unset($field['default']);
 					}
 					// Date/time constants (see #5089)
-					elseif (in_array(strtolower($field['default']), array('current_date', 'current_time', 'current_timestamp')))
+					elseif (\in_array(strtolower($field['default']), array('current_date', 'current_time', 'current_timestamp')))
 					{
 						$field['default'] = "default " . $field['default'];
 					}

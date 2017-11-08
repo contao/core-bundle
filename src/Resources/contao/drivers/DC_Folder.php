@@ -353,7 +353,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 							{
 								if (strncmp($root . '/', $objRoot->path . '/', \strlen($root) + 1) === 0)
 								{
-									if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || in_array($objRoot->extension, $this->arrValidFileTypes))
+									if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || \in_array($objRoot->extension, $this->arrValidFileTypes))
 									{
 										$arrFound[] = $objRoot->path;
 									}
@@ -368,7 +368,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 					{
 						while ($objRoot->next())
 						{
-							if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || in_array($objRoot->extension, $this->arrValidFileTypes))
+							if ($objRoot->type == 'folder' || empty($this->arrValidFileTypes) || \in_array($objRoot->extension, $this->arrValidFileTypes))
 							{
 								$arrFound[] = $objRoot->path;
 							}
@@ -1605,7 +1605,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 						continue;
 					}
 
-					if (!in_array($v, $fields))
+					if (!\in_array($v, $fields))
 					{
 						continue;
 					}
@@ -1879,7 +1879,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		$objFile = new \File($this->intId);
 
 		// Check whether file type is editable
-		if (!in_array($objFile->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
+		if (!\in_array($objFile->extension, \StringUtil::trimsplit(',', strtolower(\Config::get('editableFiles')))))
 		{
 			throw new AccessDeniedException('File type "' . $objFile->extension . '" (' . $this->intId . ') is not allowed to be edited.');
 		}
@@ -1961,7 +1961,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				}
 
 				// Purge the script cache (see #7005)
-				if (in_array($objFile->extension, array('css', 'scss', 'less', 'js')))
+				if (\in_array($objFile->extension, array('css', 'scss', 'less', 'js')))
 				{
 					$this->import('Automator');
 					$this->Automator->purgeScriptCache();
@@ -2156,7 +2156,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			$arrImageTypes = \StringUtil::trimsplit(',', strtolower(\Config::get('validImageTypes')));
 
 			// Remove potentially existing thumbnails (see #6641)
-			if (in_array(substr($this->strExtension, 1), $arrImageTypes))
+			if (\in_array(substr($this->strExtension, 1), $arrImageTypes))
 			{
 				foreach (glob(\System::getContainer()->getParameter('contao.image.target_dir') . '/*/' . $this->varValue . '-*' . $this->strExtension) as $strThumbnail)
 				{
@@ -2234,7 +2234,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		elseif ($this->blnIsDbAssisted && $this->objActiveRecord !== null)
 		{
 			// Convert date formats into timestamps
-			if ($varValue != '' && in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
+			if ($varValue != '' && \in_array($arrData['eval']['rgxp'], array('date', 'time', 'datim')))
 			{
 				$objDate = new \Date($varValue, \Date::getFormatFromRgxp($arrData['eval']['rgxp']));
 				$varValue = $objDate->tstamp;
@@ -2570,7 +2570,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					--$countFiles;
 				}
-				elseif (!empty($arrFound) && !in_array($currentFolder . '/' . $file, $arrFound) && !preg_grep('/^' . preg_quote($currentFolder . '/' . $file, '/') . '\//', $arrFound))
+				elseif (!empty($arrFound) && !\in_array($currentFolder . '/' . $file, $arrFound) && !preg_grep('/^' . preg_quote($currentFolder . '/' . $file, '/') . '\//', $arrFound))
 				{
 					--$countFiles;
 				}
@@ -2582,14 +2582,14 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 				{
 					$objFile =  new \File($currentFolder . '/' . $file);
 
-					if (!in_array($objFile->extension, $this->arrValidFileTypes))
+					if (!\in_array($objFile->extension, $this->arrValidFileTypes))
 					{
 						--$countFiles;
 					}
 				}
 			}
 
-			if (!empty($arrFound) && $countFiles < 1 && !in_array($currentFolder, $arrFound))
+			if (!empty($arrFound) && $countFiles < 1 && !\in_array($currentFolder, $arrFound))
 			{
 				continue;
 			}
@@ -2636,7 +2636,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			else
 			{
 				// Do not display buttons for mounted folders
-				if ($this->User->isAdmin || !in_array($currentFolder, $this->User->filemounts))
+				if ($this->User->isAdmin || !\in_array($currentFolder, $this->User->filemounts))
 				{
 					$return .= (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'fileNameEncoded'=>$strFolderNameEncoded), $this->strTable);
 				}
@@ -2677,13 +2677,13 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 			$objFile = new \File($currentFile);
 
-			if (!empty($this->arrValidFileTypes) && !in_array($objFile->extension, $this->arrValidFileTypes))
+			if (!empty($this->arrValidFileTypes) && !\in_array($objFile->extension, $this->arrValidFileTypes))
 			{
 				continue;
 			}
 
 			// Ignore files not matching the search criteria
-			if (!empty($arrFound) && !in_array($currentFile, $arrFound))
+			if (!empty($arrFound) && !\in_array($currentFile, $arrFound))
 			{
 				continue;
 			}
@@ -2872,7 +2872,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 		while (\is_array($this->arrFilemounts) && substr_count($path, '/') > 0)
 		{
-			if (in_array($path, $this->arrFilemounts))
+			if (\in_array($path, $this->arrFilemounts))
 			{
 				return true;
 			}
@@ -2912,7 +2912,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		{
 			$fileinfo = preg_replace('/.*\.(.*)$/ui', '$1', $strFile);
 
-			if (!in_array(strtolower($fileinfo), $this->arrValidFileTypes))
+			if (!\in_array(strtolower($fileinfo), $this->arrValidFileTypes))
 			{
 				throw new AccessDeniedException('File "' . $strFile . '" is not an allowed file type.');
 			}
@@ -2935,7 +2935,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 		{
 			$this->import('BackendUser', 'User');
 
-			if (!$this->User->isAdmin && in_array($strFile, $this->User->filemounts))
+			if (!$this->User->isAdmin && \in_array($strFile, $this->User->filemounts))
 			{
 				throw new AccessDeniedException('Attempt to edit, copy, move or delete the root folder "' . $strFile . '".');
 			}

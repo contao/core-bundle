@@ -139,7 +139,7 @@ class Image
 		$arrAllowedTypes = \StringUtil::trimsplit(',', strtolower(\Config::get('validImageTypes')));
 
 		// Check the file type
-		if (!in_array($this->fileObj->extension, $arrAllowedTypes))
+		if (!\in_array($this->fileObj->extension, $arrAllowedTypes))
 		{
 			throw new \InvalidArgumentException('Image type "' . $this->fileObj->extension . '" was not allowed to be processed');
 		}

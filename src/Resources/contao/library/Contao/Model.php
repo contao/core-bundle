@@ -447,7 +447,7 @@ abstract class Model
 			foreach ($this->arrModified as $k=>$v)
 			{
 				// Only set fields that exist in the DB
-				if (in_array($k, $arrFields))
+				if (\in_array($k, $arrFields))
 				{
 					$arrSet[$k] = $arrRow[$k];
 				}
@@ -486,7 +486,7 @@ abstract class Model
 			// Remove fields that do not exist in the DB
 			foreach ($arrSet as $k=>$v)
 			{
-				if (!in_array($k, $arrFields))
+				if (!\in_array($k, $arrFields))
 				{
 					unset($arrSet[$k]);
 				}
@@ -947,7 +947,7 @@ abstract class Model
 		$blnModel = false;
 		$arrColumn = (array) $strColumn;
 
-		if (\count($arrColumn) == 1 && ($arrColumn[0] === static::getPk() || in_array($arrColumn[0], static::getUniqueFields())))
+		if (\count($arrColumn) == 1 && ($arrColumn[0] === static::getPk() || \in_array($arrColumn[0], static::getUniqueFields())))
 		{
 			$blnModel = true;
 		}
@@ -1054,7 +1054,7 @@ abstract class Model
 		{
 			$arrColumn = (array) $arrOptions['column'];
 
-			if (\count($arrColumn) == 1 && ($arrColumn[0] == static::$strPk || in_array($arrColumn[0], static::getUniqueFields())))
+			if (\count($arrColumn) == 1 && ($arrColumn[0] == static::$strPk || \in_array($arrColumn[0], static::getUniqueFields())))
 			{
 				$varKey = \is_array($arrOptions['value']) ? $arrOptions['value'][0] : $arrOptions['value'];
 				$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $varKey, $arrColumn[0]);

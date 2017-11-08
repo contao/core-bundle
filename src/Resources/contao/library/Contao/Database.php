@@ -288,7 +288,7 @@ class Database
 			return false;
 		}
 
-		return in_array($strTable, $this->listTables($strDatabase, $blnNoCache));
+		return \in_array($strTable, $this->listTables($strDatabase, $blnNoCache));
 	}
 
 

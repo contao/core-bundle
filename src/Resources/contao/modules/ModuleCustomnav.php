@@ -153,7 +153,7 @@ class ModuleCustomnav extends \Module
 						break;
 				}
 
-				$trail = in_array($objModel->id, $objPage->trail);
+				$trail = \in_array($objModel->id, $objPage->trail);
 
 				// Active page
 				if ($objPage->id == $objModel->id && $href == \Environment::get('request'))

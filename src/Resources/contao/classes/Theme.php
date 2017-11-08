@@ -220,7 +220,7 @@ class Theme extends \Backend
 				foreach ($arrFieldNames as $name)
 				{
 					// Print a warning if a field is missing
-					if (!in_array($name, $arrDbFields[$table]))
+					if (!\in_array($name, $arrDbFields[$table]))
 					{
 						$blnHasError = true;
 						$return .= "\n  " . '<p class="tl_red" style="margin:0">'. sprintf($GLOBALS['TL_LANG']['tl_theme']['missing_field'], $table .'.'. $name) .'</p>';
@@ -419,7 +419,7 @@ class Theme extends \Backend
 				$table = $tables->item($i)->getAttribute('name');
 
 				// Skip invalid tables
-				if (!in_array($table, array_keys($arrLocks)))
+				if (!\in_array($table, array_keys($arrLocks)))
 				{
 					continue;
 				}
@@ -449,7 +449,7 @@ class Theme extends \Backend
 				$table = $tables->item($i)->getAttribute('name');
 
 				// Skip invalid tables
-				if (!in_array($table, array_keys($arrLocks)))
+				if (!\in_array($table, array_keys($arrLocks)))
 				{
 					continue;
 				}
@@ -592,7 +592,7 @@ class Theme extends \Backend
 						}
 
 						// Replace the file paths in multiSRC fields with their tl_files ID
-						elseif ($GLOBALS['TL_DCA'][$table]['fields'][$name]['inputType'] == 'fileTree' || in_array($name, $arrOrder))
+						elseif ($GLOBALS['TL_DCA'][$table]['fields'][$name]['inputType'] == 'fileTree' || \in_array($name, $arrOrder))
 						{
 							$tmp = \StringUtil::deserialize($value);
 
@@ -634,7 +634,7 @@ class Theme extends \Backend
 					// Skip fields that are not in the database (e.g. because of missing extensions)
 					foreach ($set as $k=>$v)
 					{
-						if (!in_array($k, $arrDbFields[$table]))
+						if (!\in_array($k, $arrDbFields[$table]))
 						{
 							unset($set[$k]);
 						}
@@ -1037,7 +1037,7 @@ class Theme extends \Backend
 			}
 
 			// Replace the IDs of multiSRC fields with their paths (see #4952)
-			elseif ($GLOBALS['TL_DCA'][$t]['fields'][$k]['inputType'] == 'fileTree' || in_array($k, $arrOrder))
+			elseif ($GLOBALS['TL_DCA'][$t]['fields'][$k]['inputType'] == 'fileTree' || \in_array($k, $arrOrder))
 			{
 				$arrFiles = \StringUtil::deserialize($v);
 

@@ -108,7 +108,7 @@ class InsertTags extends \Controller
 			$elements = explode('::', $tag);
 
 			// Load the value from cache
-			if (isset($arrCache[$strTag]) && !in_array('refresh', $flags))
+			if (isset($arrCache[$strTag]) && !\in_array('refresh', $flags))
 			{
 				$strBuffer .= $arrCache[$strTag];
 				continue;
@@ -117,7 +117,7 @@ class InsertTags extends \Controller
 			// Skip certain elements if the output will be cached
 			if ($blnCache)
 			{
-				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || in_array('uncached', $flags))
+				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || \in_array('uncached', $flags))
 				{
 					/** @var FragmentHandler $fragmentHandler */
 					$fragmentHandler = \System::getContainer()->get('fragment.handler');
@@ -617,7 +617,7 @@ class InsertTags extends \Controller
 					{
 						$langs = \StringUtil::trimsplit(',', $elements[1]);
 
-						if (in_array($objPage->language, $langs))
+						if (\in_array($objPage->language, $langs))
 						{
 							for (; $_rit<$_cnt; $_rit+=2)
 							{

@@ -184,7 +184,7 @@ class Form extends \Hybrid
 				// Unset the default value depending on the field type (see #4722)
 				if (!empty($arrData['value']))
 				{
-					if (!in_array('value', \StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$objField->type])))
+					if (!\in_array('value', \StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA']['tl_form_field']['palettes'][$objField->type])))
 					{
 						$arrData['value'] = '';
 					}
@@ -483,7 +483,7 @@ class Form extends \Hybrid
 					$arrSet[$k] = $v;
 
 					// Convert date formats into timestamps (see #6827)
-					if ($arrSet[$k] != '' && in_array($arrFields[$k]->rgxp, array('date', 'time', 'datim')))
+					if ($arrSet[$k] != '' && \in_array($arrFields[$k]->rgxp, array('date', 'time', 'datim')))
 					{
 						$objDate = new \Date($arrSet[$k], \Date::getFormatFromRgxp($arrFields[$k]->rgxp));
 						$arrSet[$k] = $objDate->tstamp;

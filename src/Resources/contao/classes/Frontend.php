@@ -258,7 +258,7 @@ abstract class Frontend extends \Controller
 			}
 
 			// Return false if the request contains an auto_item keyword (duplicate content) (see #4012)
-			if (\Config::get('useAutoItem') && in_array($arrFragments[$i], $GLOBALS['TL_AUTO_ITEM']))
+			if (\Config::get('useAutoItem') && \in_array($arrFragments[$i], $GLOBALS['TL_AUTO_ITEM']))
 			{
 				return false;
 			}
@@ -357,7 +357,7 @@ abstract class Frontend extends \Controller
 				elseif (($objPage = \PageModel::findFirstPublishedByPid($objRootPage->id)) !== null)
 				{
 					// Redirect if the page is not the language fall back or the alias is not "index" or "/" (see #8498 and #8560)
-					if (!$objRootPage->fallback || !in_array($objPage->alias, array('index', '/')))
+					if (!$objRootPage->fallback || !\in_array($objPage->alias, array('index', '/')))
 					{
 						static::redirect($objPage->getFrontendUrl(), 302);
 					}
@@ -419,7 +419,7 @@ abstract class Frontend extends \Controller
 		foreach ($arrGet as $k=>$v)
 		{
 			// Omit the key if it is an auto_item key (see #5037)
-			if (\Config::get('useAutoItem') && ($k == 'auto_item' || in_array($k, $GLOBALS['TL_AUTO_ITEM'])))
+			if (\Config::get('useAutoItem') && ($k == 'auto_item' || \in_array($k, $GLOBALS['TL_AUTO_ITEM'])))
 			{
 				$strParams = $strConnector . urlencode($v) . $strParams;
 			}
@@ -650,7 +650,7 @@ abstract class Frontend extends \Controller
 				// Do not index the page if certain parameters are set
 				foreach (array_keys($_GET) as $key)
 				{
-					if (in_array($key, $GLOBALS['TL_NOINDEX_KEYS']) || strncmp($key, 'page_', 5) === 0)
+					if (\in_array($key, $GLOBALS['TL_NOINDEX_KEYS']) || strncmp($key, 'page_', 5) === 0)
 					{
 						$blnIndex = false;
 						break;

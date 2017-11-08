@@ -154,7 +154,7 @@ class PageRegular extends \Frontend
 				}
 
 				// Generate the modules
-				if (in_array($arrModule['col'], $arrSections))
+				if (\in_array($arrModule['col'], $arrSections))
 				{
 					// Filter active sections (see #3273)
 					if ($arrModule['col'] == 'header' && $objLayout->rows != '2rwh' && $objLayout->rows != '3rw')
@@ -290,11 +290,11 @@ class PageRegular extends \Frontend
 		$arrFramework = \StringUtil::deserialize($objLayout->framework);
 
 		// Generate the CSS framework
-		if (\is_array($arrFramework) && in_array('layout.css', $arrFramework))
+		if (\is_array($arrFramework) && \in_array('layout.css', $arrFramework))
 		{
 			$strFramework = '';
 
-			if (in_array('responsive.css', $arrFramework))
+			if (\in_array('responsive.css', $arrFramework))
 			{
 				$this->Template->viewport = '<meta name="viewport" content="width=device-width,initial-scale=1.0">' . "\n";
 			}

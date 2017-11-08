@@ -254,7 +254,7 @@ class Automator extends \System
 
 				$objFile = new \File(\StringUtil::stripRootDir($shareDir) . '/' . $file);
 
-				if ($objFile->extension == 'xml' && !in_array($objFile->filename, $arrFeeds))
+				if ($objFile->extension == 'xml' && !\in_array($objFile->filename, $arrFeeds))
 				{
 					$objFile->delete();
 				}

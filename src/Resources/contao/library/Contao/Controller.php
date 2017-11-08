@@ -57,7 +57,7 @@ abstract class Controller extends \System
 		$arrAllowed = \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')));
 		array_push($arrAllowed, 'html5'); // see #3398
 
-		if (!in_array($strFormat, $arrAllowed))
+		if (!\in_array($strFormat, $arrAllowed))
 		{
 			throw new \InvalidArgumentException('Invalid output format ' . $strFormat);
 		}
@@ -400,7 +400,7 @@ abstract class Controller extends \System
 			{
 				$options = \StringUtil::deserialize($objRow->printable);
 
-				if (\is_array($options) && in_array('pdf', $options))
+				if (\is_array($options) && \in_array('pdf', $options))
 				{
 					$objArticle = new \ModuleArticle($objRow);
 					$objArticle->generatePdf();
@@ -608,13 +608,13 @@ abstract class Controller extends \System
 		}
 
 		// Page hidden from menu
-		if ($objPage->hide && !in_array($objPage->type, array('root', 'error_403', 'error_404')))
+		if ($objPage->hide && !\in_array($objPage->type, array('root', 'error_403', 'error_404')))
 		{
 			$sub += 2;
 		}
 
 		// Page protected
-		if ($objPage->protected && !in_array($objPage->type, array('root', 'error_403', 'error_404')))
+		if ($objPage->protected && !\in_array($objPage->type, array('root', 'error_403', 'error_404')))
 		{
 			$sub += 4;
 		}
@@ -1247,7 +1247,7 @@ abstract class Controller extends \System
 		$arrAllowedTypes = \StringUtil::trimsplit(',', strtolower(\Config::get('allowedDownload')));
 
 		// Check whether the file type is allowed to be downloaded
-		if (!in_array($objFile->extension, $arrAllowedTypes))
+		if (!\in_array($objFile->extension, $arrAllowedTypes))
 		{
 			throw new AccessDeniedException(sprintf('File type "%s" is not allowed', $objFile->extension));
 		}
@@ -1735,7 +1735,7 @@ abstract class Controller extends \System
 		{
 			if ($objFiles->type == 'file')
 			{
-				if (!in_array($objFiles->extension, $allowedDownload) || !is_file(TL_ROOT . '/' . $objFiles->path))
+				if (!\in_array($objFiles->extension, $allowedDownload) || !is_file(TL_ROOT . '/' . $objFiles->path))
 				{
 					continue;
 				}

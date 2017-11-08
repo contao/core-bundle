@@ -644,7 +644,7 @@ class Dbafs
 					}
 
 					// If another file has been mapped already, delete the entry (see #6008)
-					if (in_array($objFound->path, $arrMapped))
+					if (\in_array($objFound->path, $arrMapped))
 					{
 						$objLog->append("[Deleted] {$objFiles->path}");
 						$objFiles->delete();

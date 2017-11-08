@@ -338,7 +338,7 @@ class tl_user_group extends Backend
 
 		foreach ($files as $file)
 		{
-			if (in_array($file->getBasename(), $processed))
+			if (\in_array($file->getBasename(), $processed))
 			{
 				continue;
 			}

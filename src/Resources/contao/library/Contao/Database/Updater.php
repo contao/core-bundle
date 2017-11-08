@@ -394,7 +394,7 @@ class Updater extends \Controller
 				{
 					$arrSet['jquery'] = serialize(array('j_mediaelement'));
 				}
-				elseif (!in_array('j_mediaelement', $arrJQuery))
+				elseif (!\in_array('j_mediaelement', $arrJQuery))
 				{
 					$arrJQuery[] = 'j_mediaelement';
 					$arrSet['jquery'] = serialize($arrJQuery);
@@ -745,7 +745,7 @@ class Updater extends \Controller
 
 		foreach ($files as $file)
 		{
-			if (in_array($file->getBasename(), $processed))
+			if (\in_array($file->getBasename(), $processed))
 			{
 				continue;
 			}

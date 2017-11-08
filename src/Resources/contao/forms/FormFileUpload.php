@@ -163,7 +163,7 @@ class FormFileUpload extends \Widget implements \uploadable
 		$uploadTypes = \StringUtil::trimsplit(',', strtolower($this->extensions));
 
 		// File type is not allowed
-		if (!in_array($objFile->extension, $uploadTypes))
+		if (!\in_array($objFile->extension, $uploadTypes))
 		{
 			$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $objFile->extension));
 			unset($_FILES[$this->strName]);

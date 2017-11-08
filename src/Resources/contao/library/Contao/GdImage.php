@@ -74,7 +74,7 @@ class GdImage
 			$extension = 'jpeg';
 		}
 
-		if (in_array($extension, array('gif', 'jpeg', 'png')))
+		if (\in_array($extension, array('gif', 'jpeg', 'png')))
 		{
 			$function = 'imagecreatefrom' . $extension;
 		}

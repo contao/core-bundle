@@ -353,7 +353,7 @@ abstract class DataContainer extends \Backend
 				$newPaletteFields = \is_array($strPalette) ? $strPalette : \StringUtil::trimsplit('[,;]', $strPalette);
 
 				// Re-check the palette if the current field is a selector field
-				if (isset($GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']) && in_array($this->strField, $GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']))
+				if (isset($GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']) && \in_array($this->strField, $GLOBALS['TL_DCA'][$this->strTable]['palettes']['__selector__']))
 				{
 					// If the field value has changed, recompile the palette
 					if ($this->varValue != \Input::post($this->strInputName))
@@ -381,13 +381,13 @@ abstract class DataContainer extends \Backend
 			$paletteFields = array_intersect($postPaletteFields, $newPaletteFields);
 
 			// Deprecated since Contao 4.2, to be removed in Contao 5.0
-			if (!isset($_POST[$this->strInputName]) && in_array($this->strInputName, $paletteFields))
+			if (!isset($_POST[$this->strInputName]) && \in_array($this->strInputName, $paletteFields))
 			{
 				@trigger_error('Using FORM_FIELDS has been deprecated and will no longer work in Contao 5.0. Make sure to always submit at least an empty string in your widget.', E_USER_DEPRECATED);
 			}
 
 			// Validate and save the field
-			if (in_array($this->strInputName, $paletteFields) || \Input::get('act') == 'overrideAll')
+			if (\in_array($this->strInputName, $paletteFields) || \Input::get('act') == 'overrideAll')
 			{
 				$objWidget->validate();
 
@@ -534,12 +534,12 @@ abstract class DataContainer extends \Backend
 		{
 			$objWidget->wizard = $wizard;
 
-			if ($arrData['eval']['addWizardClass'] !== false && !in_array('wizard', $arrClasses))
+			if ($arrData['eval']['addWizardClass'] !== false && !\in_array('wizard', $arrClasses))
 			{
 				$arrClasses[] = 'wizard';
 			}
 		}
-		elseif (in_array('wizard', $arrClasses))
+		elseif (\in_array('wizard', $arrClasses))
 		{
 			unset($arrClasses[array_search('wizard', $arrClasses)]);
 		}
@@ -556,11 +556,11 @@ abstract class DataContainer extends \Backend
 		}
 
 		// Mark floated single checkboxes
-		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && in_array('w50', $arrClasses))
+		if ($arrData['inputType'] == 'checkbox' && !$arrData['eval']['multiple'] && \in_array('w50', $arrClasses))
 		{
 			$arrClasses[] = 'cbx';
 		}
-		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && in_array('wizard', $arrClasses))
+		elseif ($arrData['inputType'] == 'text' && $arrData['eval']['multiple'] && \in_array('wizard', $arrClasses))
 		{
 			$arrClasses[] = 'inline';
 		}
@@ -740,7 +740,7 @@ abstract class DataContainer extends \Backend
 
 		foreach (array_keys($_GET) as $strKey)
 		{
-			if (!in_array($strKey, $arrUnset))
+			if (!\in_array($strKey, $arrUnset))
 			{
 				$arrKeys[$strKey] = $strKey . '=' . \Input::get($strKey);
 			}
@@ -834,11 +834,11 @@ abstract class DataContainer extends \Backend
 
 				if ($dir == 'up')
 				{
-					$return .= ((is_numeric($strPrevious) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.\intval($strPrevious).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('up_.svg')).' ';
+					$return .= ((is_numeric($strPrevious) && (!\in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.\intval($strPrevious).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('up_.svg')).' ';
 				}
 				else
 				{
-					$return .= ((is_numeric($strNext) && (!in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.\intval($strNext).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('down_.svg')).' ';
+					$return .= ((is_numeric($strNext) && (!\in_array($arrRow['id'], $arrRootIds) || empty($GLOBALS['TL_DCA'][$strTable]['list']['sorting']['root']))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$arrRow['id']).'&amp;sid='.\intval($strNext).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ' : \Image::getHtml('down_.svg')).' ';
 				}
 			}
 		}

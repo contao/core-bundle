@@ -367,11 +367,11 @@ class File extends \System
 				break;
 
 			case 'isGdImage':
-				return in_array($this->extension, array('gif', 'jpg', 'jpeg', 'png'));
+				return \in_array($this->extension, array('gif', 'jpg', 'jpeg', 'png'));
 				break;
 
 			case 'isSvgImage':
-				return in_array($this->extension, array('svg', 'svgz'));
+				return \in_array($this->extension, array('svg', 'svgz'));
 				break;
 
 			case 'channels':

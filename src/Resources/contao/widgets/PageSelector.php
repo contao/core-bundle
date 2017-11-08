@@ -166,7 +166,7 @@ class PageSelector extends \Widget
 		// Unset the node if it is not within the predefined node set (see #5899)
 		if ($strNode > 0 && \is_array($this->rootNodes))
 		{
-			if (!in_array($strNode, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))
+			if (!\in_array($strNode, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))
 			{
 				$objSessionBag->remove('tl_page_picker');
 			}
@@ -384,7 +384,7 @@ class PageSelector extends \Widget
 		$folderAttribute = 'style="margin-left:20px"';
 		$session[$node][$id] = is_numeric($session[$node][$id]) ? $session[$node][$id] : 0;
 		$level = ($intMargin / $intSpacing + 1);
-		$blnIsOpen = (!empty($arrFound) || $session[$node][$id] == 1 || in_array($id, $this->arrNodes));
+		$blnIsOpen = (!empty($arrFound) || $session[$node][$id] == 1 || \in_array($id, $this->arrNodes));
 
 		if (!empty($childs))
 		{

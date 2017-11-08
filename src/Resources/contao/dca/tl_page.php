@@ -870,7 +870,7 @@ class tl_page extends Backend
 				$pagemounts = array_unique($pagemounts);
 
 				// Do not allow to paste after pages on the root level (pagemounts)
-				if ((Input::get('act') == 'cut' || Input::get('act') == 'cutAll') && Input::get('mode') == 1 && in_array(Input::get('pid'), $this->eliminateNestedPages($this->User->pagemounts)))
+				if ((Input::get('act') == 'cut' || Input::get('act') == 'cutAll') && Input::get('mode') == 1 && \in_array(Input::get('pid'), $this->eliminateNestedPages($this->User->pagemounts)))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to paste page ID ' . Input::get('id') . ' after mounted page ID ' . Input::get('pid') . ' (root level).');
 				}
@@ -878,7 +878,7 @@ class tl_page extends Backend
 				// Check each page
 				foreach ($ids as $i=>$id)
 				{
-					if (!in_array($id, $pagemounts))
+					if (!\in_array($id, $pagemounts))
 					{
 						$this->log('Page ID '. $id .' was not mounted', __METHOD__, TL_ERROR);
 
@@ -1134,7 +1134,7 @@ class tl_page extends Backend
 		}
 
 		// No title or not a regular page
-		if ($dc->activeRecord->title == '' || !in_array($dc->activeRecord->type, array('regular', 'error_403', 'error_404')))
+		if ($dc->activeRecord->title == '' || !\in_array($dc->activeRecord->type, array('regular', 'error_403', 'error_404')))
 		{
 			return;
 		}
@@ -1145,7 +1145,7 @@ class tl_page extends Backend
 		$new_records = $objSessionBag->get('new_records');
 
 		// Not a new page
-		if (!$new_records || !\is_array($new_records[$dc->table]) || !in_array($dc->id, $new_records[$dc->table]))
+		if (!$new_records || !\is_array($new_records[$dc->table]) || !\in_array($dc->id, $new_records[$dc->table]))
 		{
 			return;
 		}
@@ -1491,7 +1491,7 @@ class tl_page extends Backend
 		$disablePI = false;
 
 		// Disable all buttons if there is a circular reference
-		if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id']))))
+		if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || \in_array($row['id'], $arrClipboard['id']))))
 		{
 			$disablePA = true;
 			$disablePI = true;
@@ -1541,7 +1541,7 @@ class tl_page extends Backend
 			}
 
 			// Disable "paste after" button if the parent page is a root page and the user is not an administrator
-			if (!$disablePA && ($row['pid'] < 1 || in_array($row['id'], $dc->rootIds)))
+			if (!$disablePA && ($row['pid'] < 1 || \in_array($row['id'], $dc->rootIds)))
 			{
 				$disablePA = true;
 			}
@@ -1578,7 +1578,7 @@ class tl_page extends Backend
 	{
 		$root = func_get_arg(7);
 
-		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_DELETE_PAGE, $row) && ($this->User->isAdmin || !in_array($row['id'], $root))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_DELETE_PAGE, $row) && ($this->User->isAdmin || !\in_array($row['id'], $root))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 

@@ -468,7 +468,7 @@ class tl_form_field extends Backend
 
 			case 'create':
 			case 'select':
-				if (!\strlen(Input::get('id')) || !in_array(Input::get('id'), $root))
+				if (!\strlen(Input::get('id')) || !\in_array(Input::get('id'), $root))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access form ID ' . Input::get('id') . '.');
 				}
@@ -493,7 +493,7 @@ class tl_form_field extends Backend
 					$pid = $objField->pid;
 				}
 
-				if (!in_array($pid, $root))
+				if (!\in_array($pid, $root))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' form field ID ' . $id . ' to form ID ' . $pid . '.');
 				}
@@ -512,7 +512,7 @@ class tl_form_field extends Backend
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid form field ID ' . $id . '.');
 				}
 
-				if (!in_array($objField->pid, $root))
+				if (!\in_array($objField->pid, $root))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' form field ID ' . $id . ' of form ID ' . $objField->pid . '.');
 				}
@@ -523,7 +523,7 @@ class tl_form_field extends Backend
 			case 'overrideAll':
 			case 'cutAll':
 			case 'copyAll':
-				if (!in_array($id, $root))
+				if (!\in_array($id, $root))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access form ID ' . $id . '.');
 				}
@@ -549,7 +549,7 @@ class tl_form_field extends Backend
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "' . Input::get('act') . '".');
 				}
-				elseif (!in_array($id, $root))
+				elseif (!\in_array($id, $root))
 				{
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access form ID ' . $id . '.');
 				}
