@@ -19,6 +19,7 @@ use Doctrine\DBAL\Connection;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -68,17 +69,18 @@ class SwitchUserButtonGenerator
         }
 
         $stmt = $this->connection->prepare('SELECT id, username FROM tl_user WHERE id = :id');
-        $stmt->bindValue('id', $row['id']);
+        $stmt->bindValue('id', (int) $row['id']);
         $stmt->execute();
 
         if (0 === $stmt->rowCount()) {
             throw new UserNotFoundException('Invalid user ID'.$row['id']);
         }
 
+        /** @var UserInterface $tokenUser */
         $tokenUser = $this->tokenStorage->getToken()->getUser();
         $user = $stmt->fetch(\PDO::FETCH_OBJ);
 
-        if ($tokenUser->username === $user->username) {
+        if ($tokenUser->getUsername() === $user->username) {
             return '';
         }
 

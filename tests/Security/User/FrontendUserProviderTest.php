@@ -12,34 +12,34 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security\User;
 
-use Contao\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
-use Contao\CoreBundle\Security\User\BackendUserProvider;
+use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\FrontendUser;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Tests the BackendUserProvider class.
+ * Tests the FrontendUserProvider class.
  */
-class BackendUserProviderTest extends TestCase
+class FrontendUserProviderTest extends TestCase
 {
     /**
      * Tests the object instantiation.
      */
     public function testCanBeInstantiated(): void
     {
-        $provider = new BackendUserProvider($this->mockContaoFramework());
+        $provider = new FrontendUserProvider($this->mockContaoFramework());
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\User\BackendUserProvider', $provider);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\User\FrontendUserProvider', $provider);
     }
 
     /**
-     * Tests loading an existing backend user.
+     * Tests loading an existing frontend user.
      */
-    public function testCanLoadExistingBackendUserByUsername(): void
+    public function testCanLoadExistingFrontendUserByUsername(): void
     {
         $user = $this
-            ->getMockBuilder(BackendUser::class)
+            ->getMockBuilder(FrontendUser::class)
             ->disableOriginalConstructor()
             ->setMethods(['getUsername'])
             ->getMock()
@@ -65,17 +65,17 @@ class BackendUserProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $framework = $this->mockContaoFramework([BackendUser::class => $adapter]);
-        $provider = new BackendUserProvider($framework);
+        $framework = $this->mockContaoFramework([FrontendUser::class => $adapter]);
+        $provider = new FrontendUserProvider($framework);
 
-        $this->assertInstanceOf(BackendUser::class, $provider->loadUserByUsername('test-user'));
-        $this->assertInstanceOf(BackendUser::class, $provider->refreshUser($user));
+        $this->assertInstanceOf(FrontendUser::class, $provider->loadUserByUsername('test-user'));
+        $this->assertInstanceOf(FrontendUser::class, $provider->refreshUser($user));
     }
 
     /**
-     * Tests loading a non-existing backend user.
+     * Tests loading a non-existing frontend user.
      */
-    public function testCanNotLoadNonExistingBackendUserByUsername(): void
+    public function testCanNotLoadNonExistingFrontendUserByUsername(): void
     {
         $adapter = $this
             ->getMockBuilder(Adapter::class)
@@ -91,9 +91,9 @@ class BackendUserProviderTest extends TestCase
             ->willReturn(null)
         ;
 
-        $framework = $this->mockContaoFramework([BackendUser::class => $adapter]);
+        $framework = $this->mockContaoFramework([FrontendUser::class => $adapter]);
 
-        $provider = new BackendUserProvider($framework);
+        $provider = new FrontendUserProvider($framework);
 
         $this->expectException('Symfony\Component\Security\Core\Exception\UsernameNotFoundException');
         $provider->loadUserByUsername('test-user');
@@ -104,20 +104,20 @@ class BackendUserProviderTest extends TestCase
      */
     public function testCanNotLoadNonSupportedUser(): void
     {
-        $provider = new BackendUserProvider($this->mockContaoFramework());
+        $provider = new FrontendUserProvider($this->mockContaoFramework());
 
         $this->expectException('Symfony\Component\Security\Core\Exception\UnsupportedUserException');
         $provider->refreshUser($this->createMock(UserInterface::class));
     }
 
     /**
-     * Tests supporting only the BackendUser class.
+     * Tests supporting only the FrontendUser class.
      */
     public function testSupportsOnlyBackendUserClass(): void
     {
-        $provider = new BackendUserProvider($this->mockContaoFramework());
+        $provider = new FrontendUserProvider($this->mockContaoFramework());
 
-        $this->assertTrue($provider->supportsClass('Contao\BackendUser'));
-        $this->assertFalse($provider->supportsClass('Contao\FrontendUser'));
+        $this->assertTrue($provider->supportsClass('Contao\FrontendUser'));
+        $this->assertFalse($provider->supportsClass('Contao\BackendUser'));
     }
 }
