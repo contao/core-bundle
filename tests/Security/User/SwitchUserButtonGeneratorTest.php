@@ -29,20 +29,90 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class SwitchUserButtonGeneratorTest extends TestCase
 {
+    protected $authorizationChecker;
+    protected $router;
+    protected $connection;
+    protected $engine;
+    protected $tokenStorage;
+    protected $statement;
+    protected $token;
+    protected $tokenUser;
+    protected $user;
+
+    public function setUp()
+    {
+        $this->authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->router = $this->createMock(RouterInterface::class);
+        $this->connection = $this->createMock(Connection::class);
+        $this->engine = $this->createMock(EngineInterface::class);
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $this->statement = $this->createMock(Statement::class);
+        $this->token = $this->createMock(TokenInterface::class);
+        $this->tokenUser = $this->createMock(UserInterface::class);
+
+        $this->user = $this
+            ->getMockBuilder(User::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $this->user->username = 'foo';
+    }
+
+    private function setUpStatement($expectedRowCount)
+    {
+        $this->statement
+            ->expects($this->once())
+            ->method('bindValue')
+        ;
+
+        $this->statement
+            ->expects($this->once())
+            ->method('execute')
+        ;
+
+        $this->statement
+            ->expects($this->once())
+            ->method('rowCount')
+            ->willReturn($expectedRowCount)
+        ;
+    }
+
+    private function setUpToken($expectedUsername)
+    {
+        $this->tokenUser
+            ->expects($this->once())
+            ->method('getUsername')
+            ->willReturn($expectedUsername)
+        ;
+
+        $this->token
+            ->expects($this->once())
+            ->method('getUser')
+            ->willReturn($this->tokenUser)
+        ;
+
+        $this->tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($this->token)
+        ;
+    }
+
     /**
      * Tests the object instantiation.
      */
     public function testCanBeInstantiated(): void
     {
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $router = $this->createMock(RouterInterface::class);
-        $connection = $this->createMock(Connection::class);
-        $engine = $this->createMock(EngineInterface::class);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $switchUserButtonGenerator = new SwitchUserButtonGenerator(
+            $this->authorizationChecker,
+            $this->router,
+            $this->connection,
+            $this->engine,
+            $this->tokenStorage
+        );
 
-        $switchUserButtonGenerator = new SwitchUserButtonGenerator($authorizationChecker, $router, $connection, $engine, $tokenStorage);
-
-        $this->assertInstanceOf('Contao\CoreBundle\Security\User\SwitchUserButtonGenerator', $switchUserButtonGenerator);
+        $this->assertInstanceOf(SwitchUserButtonGenerator::class, $switchUserButtonGenerator);
     }
 
     /**
@@ -50,19 +120,19 @@ class SwitchUserButtonGeneratorTest extends TestCase
      */
     public function testReturnsEmptyStringIfUserHasNoRoleAllowedToSwitch(): void
     {
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $router = $this->createMock(RouterInterface::class);
-        $connection = $this->createMock(Connection::class);
-        $engine = $this->createMock(EngineInterface::class);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
-        $authorizationChecker
+        $this->authorizationChecker
             ->expects($this->once())
             ->method('isGranted')
             ->willReturn(false)
         ;
 
-        $switchUserButtonGenerator = new SwitchUserButtonGenerator($authorizationChecker, $router, $connection, $engine, $tokenStorage);
+        $switchUserButtonGenerator = new SwitchUserButtonGenerator(
+            $this->authorizationChecker,
+            $this->router,
+            $this->connection,
+            $this->engine,
+            $this->tokenStorage
+        );
 
         $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton([], '', '', '', ''));
     }
@@ -72,42 +142,27 @@ class SwitchUserButtonGeneratorTest extends TestCase
      */
     public function testThrowsUserNotFoundExceptionWhenUserIdIsInvalid(): void
     {
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $router = $this->createMock(RouterInterface::class);
-        $connection = $this->createMock(Connection::class);
-        $engine = $this->createMock(EngineInterface::class);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $statement = $this->createMock(Statement::class);
-
-        $authorizationChecker
+        $this->authorizationChecker
             ->expects($this->once())
             ->method('isGranted')
             ->willReturn(true)
         ;
 
-        $statement
-            ->expects($this->once())
-            ->method('bindValue')
-        ;
+        $this->setUpStatement(0);
 
-        $statement
-            ->expects($this->once())
-            ->method('execute')
-        ;
-
-        $statement
-            ->expects($this->once())
-            ->method('rowCount')
-            ->willReturn(0)
-        ;
-
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('prepare')
-            ->willReturn($statement)
+            ->willReturn($this->statement)
         ;
 
-        $switchUserButtonGenerator = new SwitchUserButtonGenerator($authorizationChecker, $router, $connection, $engine, $tokenStorage);
+        $switchUserButtonGenerator = new SwitchUserButtonGenerator(
+            $this->authorizationChecker,
+            $this->router,
+            $this->connection,
+            $this->engine,
+            $this->tokenStorage
+        );
 
         $this->expectException('Contao\CoreBundle\Exception\UserNotFoundException');
         $switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', '', '', '');
@@ -118,77 +173,35 @@ class SwitchUserButtonGeneratorTest extends TestCase
      */
     public function testReturnsEmptyStringWhenUserAndTokenNotMatch(): void
     {
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $router = $this->createMock(RouterInterface::class);
-        $connection = $this->createMock(Connection::class);
-        $engine = $this->createMock(EngineInterface::class);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $statement = $this->createMock(Statement::class);
-        $token = $this->createMock(TokenInterface::class);
-        $tokenUser = $this->createMock(UserInterface::class);
-
-        $user = $this
-            ->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
-        $tokenUser
-            ->expects($this->once())
-            ->method('getUsername')
-            ->willReturn('foo')
-        ;
-
-        $token
-            ->expects($this->once())
-            ->method('getUser')
-            ->willReturn($tokenUser)
-        ;
-
-        $user->username = 'foo';
-
-        $authorizationChecker
+        $this->authorizationChecker
             ->expects($this->once())
             ->method('isGranted')
             ->willReturn(true)
         ;
 
-        $statement
-            ->expects($this->once())
-            ->method('bindValue')
-        ;
+        $this->setUpToken('foo');
+        $this->setUpStatement(1);
 
-        $statement
-            ->expects($this->once())
-            ->method('execute')
-        ;
-
-        $statement
-            ->expects($this->once())
-            ->method('rowCount')
-            ->willReturn(1)
-        ;
-
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('prepare')
-            ->willReturn($statement)
+            ->willReturn($this->statement)
         ;
 
-        $tokenStorage
-            ->expects($this->once())
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        $statement
+        $this->statement
             ->expects($this->once())
             ->method('fetch')
             ->with(\PDO::FETCH_OBJ)
-            ->willReturn($user)
+            ->willReturn($this->user)
          ;
 
-        $switchUserButtonGenerator = new SwitchUserButtonGenerator($authorizationChecker, $router, $connection, $engine, $tokenStorage);
+        $switchUserButtonGenerator = new SwitchUserButtonGenerator(
+            $this->authorizationChecker,
+            $this->router,
+            $this->connection,
+            $this->engine,
+            $this->tokenStorage
+        );
 
         $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', '', '', ''));
     }
@@ -198,93 +211,52 @@ class SwitchUserButtonGeneratorTest extends TestCase
      */
     public function testReturnsButtonHtml(): void
     {
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $router = $this->createMock(RouterInterface::class);
-        $connection = $this->createMock(Connection::class);
-        $engine = $this->createMock(EngineInterface::class);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $statement = $this->createMock(Statement::class);
-        $token = $this->createMock(TokenInterface::class);
-        $tokenUser = $this->createMock(UserInterface::class);
-
-        $user = $this
-            ->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
-        $tokenUser
-            ->expects($this->once())
-            ->method('getUsername')
-            ->willReturn('foo')
-        ;
-
-        $token
-            ->expects($this->once())
-            ->method('getUser')
-            ->willReturn($tokenUser)
-        ;
-
-        $user->username = 'bar';
-        $url = sprintf('/contao?_switch_user=%s', $user->username);
-        $title = 'Switch to user ID 2';
-        $label = 'Switch user';
-        $image = '<img src="system/themes/flexible/icons/su.svg" width="16" height="16" alt="Switch user">';
-        $html = sprintf('<a href="%s" title="%s">%s</a>', $url, $title, $image);
-
-        $authorizationChecker
+        $this->authorizationChecker
             ->expects($this->once())
             ->method('isGranted')
             ->willReturn(true)
         ;
 
-        $statement
-            ->expects($this->once())
-            ->method('bindValue')
-        ;
+        $this->setUpToken('bar');
+        $this->setUpStatement(1);
 
-        $statement
-            ->expects($this->once())
-            ->method('execute')
-        ;
+        $url = sprintf('/contao?_switch_user=%s', $this->user->username);
+        $title = 'Switch to user ID 2';
+        $label = 'Switch user';
+        $image = '<img src="system/themes/flexible/icons/su.svg" width="16" height="16" alt="Switch user">';
+        $html = sprintf('<a href="%s" title="%s">%s</a>', $url, $title, $image);
 
-        $statement
-            ->expects($this->once())
-            ->method('rowCount')
-            ->willReturn(1)
-        ;
-
-        $connection
+        $this->connection
             ->expects($this->once())
             ->method('prepare')
-            ->willReturn($statement)
+            ->willReturn($this->statement)
         ;
 
-        $tokenStorage
-            ->expects($this->once())
-            ->method('getToken')
-            ->willReturn($token)
-        ;
-
-        $statement
+        $this->statement
             ->expects($this->once())
             ->method('fetch')
-            ->willReturn($user)
+            ->willReturn($this->user)
         ;
 
-        $router
+        $this->router
             ->expects($this->once())
             ->method('generate')
             ->willReturn($url)
         ;
 
-        $engine
+        $this->engine
             ->expects($this->once())
             ->method('render')
             ->willReturn($html)
         ;
 
-        $switchUserButtonGenerator = new SwitchUserButtonGenerator($authorizationChecker, $router, $connection, $engine, $tokenStorage);
+        $switchUserButtonGenerator = new SwitchUserButtonGenerator(
+            $this->authorizationChecker,
+            $this->router,
+            $this->connection,
+            $this->engine,
+            $this->tokenStorage
+        );
 
         $this->assertSame($html, $switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', $label, $title, ''));
     }
