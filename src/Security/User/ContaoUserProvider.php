@@ -65,11 +65,11 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      *
      * @return BackendUser|FrontendUser
      *
-     * @deprecated Using ContaoUserProvider::loadByUsername has been deprecated and will no longer work in Contao 5.0.
+     * @deprecated Using ContaoUserProvider::loadUserByUsername has been deprecated and will no longer work in Contao 5.0.
      */
     public function loadUserByUsername($username): User
     {
-        @trigger_error('Using ContaoUserProvider::loadByUsername has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+        @trigger_error('Using ContaoUserProvider::loadUserByUsername has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
         if ($this->isBackendUsername($username)) {
             $this->framework->initialize();
