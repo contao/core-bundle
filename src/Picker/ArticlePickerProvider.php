@@ -59,8 +59,6 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
         $attributes = ['fieldType' => 'radio'];
 
         if ('article' === $config->getContext()) {
-            $attributes = ['fieldType' => $config->getExtra('fieldType')];
-
             if ($fieldType = $config->getExtra('fieldType')) {
                 $attributes['fieldType'] = $fieldType;
             }
@@ -89,7 +87,7 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     public function convertDcaValue(PickerConfig $config, $value): string
     {
         if ('article' === $config->getContext()) {
-            return (string) $value;
+            return (int) $value;
         }
 
         return '{{article_url::'.$value.'}}';
