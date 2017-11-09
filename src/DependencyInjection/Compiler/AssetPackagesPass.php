@@ -12,14 +12,13 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\Asset\ContaoContext;
-use Contao\CoreBundle\Asset\ContaoAssetPackage;
-use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Adds asset packages to the container.
@@ -36,7 +35,44 @@ class AssetPackagesPass implements CompilerPassInterface
             return;
         }
 
+        $this->addBundles($container);
         $this->addComponents($container);
+    }
+
+    /**
+     * Adds each bundle with a public folder as asset package.
+     *
+     * @param ContainerBuilder $container
+     */
+    private function addBundles(ContainerBuilder $container)
+    {
+        $packages = $container->getDefinition('assets.packages');
+        $context = new Reference('contao.assets.plugins_context');
+
+        if ($container->hasDefinition('assets._version_default')) {
+            $version = new Reference('assets._version_default');
+        } else {
+            $version = new Reference('assets.empty_version_strategy');
+        }
+
+        /** @var Bundle $bundle */
+        foreach ($container->get('kernel')->getBundles() as $bundle) {
+            if (!is_dir($originDir = $bundle->getPath().'/Resources/public')) {
+                continue;
+            }
+
+            if ($extension = $bundle->getContainerExtension()) {
+                $packageName = $extension->getAlias();
+            } else {
+                $packageName = $this->getBundlePackageName($bundle);
+            }
+
+            $serviceId = 'assets._package_'.$packageName;
+            $basePath = 'bundles/' . $bundle->getName();
+            $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
+
+            $packages->addMethodCall('addPackage', [$packageName, new Reference($serviceId)]);
+        }
     }
 
     /**
@@ -108,5 +144,25 @@ class AssetPackagesPass implements CompilerPassInterface
         $container->setDefinition('assets._version_'.$name, $def);
 
         return new Reference('assets._version_'.$name);
+    }
+
+    /**
+     * Gets a package name from bundle name, trying to emulate what a bundle extension would look like.
+     *
+     * @param Bundle $bundle
+     *
+     * @return string
+     */
+    private function getBundlePackageName(Bundle $bundle): string
+    {
+        $className = get_class($this);
+
+        if ('Bundle' !== substr($className, -6)) {
+            return $bundle->getName();
+        }
+
+        $classBaseName = substr(strrchr($className, '\\'), 1, -6);
+
+        return Container::underscore($classBaseName);
     }
 }

@@ -66,7 +66,6 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
                         NelmioSecurityBundle::class,
                         SensioFrameworkExtraBundle::class,
                         HeaderReplayBundle::class,
-                        Terminal42AssetBundle::class,
                         ContaoManagerBundle::class,
                     ]
                 ),
