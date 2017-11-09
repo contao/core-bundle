@@ -12,7 +12,7 @@ namespace Contao\CoreBundle\EventListener\InsertTags;
 
 use Symfony\Component\Asset\Packages;
 
-class AssetsListener
+class AssetListener
 {
     /**
      * @var Packages

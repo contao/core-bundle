@@ -166,8 +166,8 @@ services:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     contao.listener.insert_tags.assets:
-        class: Contao\CoreBundle\EventListener\InsertTags\AssetsListener
+        class: Contao\CoreBundle\EventListener\InsertTags\AssetListener
         arguments:
             - "@assets.packages"
         tags:
-            - { name: contao.hook, hook: replaceInsertTags, method: onReplaceInsertTags }
+            - { name: contao.hook, hook: replaceInsertTags }
