@@ -43,6 +43,10 @@ class SwitchUserButtonGeneratorTest extends TestCase
     {
         $this->router = $this->createMock(RouterInterface::class);
         $this->engine = $this->createMock(EngineInterface::class);
+
+        $this->mockAuthorizationChecker();
+        $this->mockTokenStorage();
+        $this->mockConnection();
     }
 
     /**
@@ -50,10 +54,6 @@ class SwitchUserButtonGeneratorTest extends TestCase
      */
     public function testCanBeInstantiated(): void
     {
-        $this->mockAuthorizationChecker();
-        $this->mockTokenStorage();
-        $this->mockConnection();
-
         $switchUserButtonGenerator = new SwitchUserButtonGenerator(
             $this->authorizationChecker,
             $this->router,
@@ -71,8 +71,6 @@ class SwitchUserButtonGeneratorTest extends TestCase
     public function testReturnsEmptyStringIfUserHasNoRoleAllowedToSwitch(): void
     {
         $this->mockAuthorizationChecker(false);
-        $this->mockTokenStorage();
-        $this->mockConnection();
 
         $switchUserButtonGenerator = new SwitchUserButtonGenerator(
             $this->authorizationChecker,
@@ -91,7 +89,6 @@ class SwitchUserButtonGeneratorTest extends TestCase
     public function testThrowsUserNotFoundExceptionWhenUserIdIsInvalid(): void
     {
         $this->mockAuthorizationChecker(true);
-        $this->mockTokenStorage();
         $this->mockStatement(0);
         $this->mockConnection($this->statement);
 
@@ -149,12 +146,14 @@ class SwitchUserButtonGeneratorTest extends TestCase
         $this->router
             ->expects($this->once())
             ->method('generate')
+            ->with('contao_backend')
             ->willReturn($url)
         ;
 
         $this->engine
             ->expects($this->once())
             ->method('render')
+            ->with('@ContaoCore/Backend/switch_user.html.twig')
             ->willReturn($html)
         ;
 
@@ -289,6 +288,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->authorizationChecker
                 ->expects($this->once())
                 ->method('isGranted')
+                ->with('ROLE_ALLOWED_TO_SWITCH')
                 ->willReturn($isRoleSwitchGranted)
             ;
         }
