@@ -77,15 +77,14 @@ class ContaoContext implements ContextInterface
     public function getBasePath()
     {
         $request = $this->requestStack->getCurrentRequest();
-        $host = $this->getFieldValue();
 
-        if ($this->debug || '' === $host || null === $request) {
+        if ($this->debug || null === $request || '' === ($host = $this->getFieldValue())) {
             return '';
         }
 
         return sprintf(
             '%s://%s%s',
-            $this->isSecure() ? 'https://' : 'http://',
+            $this->isSecure() ? 'https' : 'http',
             preg_replace('@https?://@', '', $host),
             $request->getBasePath()
         );

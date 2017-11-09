@@ -68,7 +68,7 @@ class AssetPackagesPass implements CompilerPassInterface
             }
 
             $serviceId = 'assets._package_'.$packageName;
-            $basePath = 'bundles/' . $bundle->getName();
+            $basePath = 'bundles/' . preg_replace('/bundle$/', '', strtolower($bundle->getName()));
             $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
 
             $packages->addMethodCall('addPackage', [$packageName, new Reference($serviceId)]);
@@ -155,14 +155,12 @@ class AssetPackagesPass implements CompilerPassInterface
      */
     private function getBundlePackageName(Bundle $bundle): string
     {
-        $className = get_class($this);
+        $className = $bundle->getName();
 
-        if ('Bundle' !== substr($className, -6)) {
-            return $bundle->getName();
+        if ('Bundle' === substr($className, -6)) {
+            $className = substr($className, 0, -6);
         }
 
-        $classBaseName = substr(strrchr($className, '\\'), 1, -6);
-
-        return Container::underscore($classBaseName);
+        return Container::underscore($className);
     }
 }

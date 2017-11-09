@@ -17,6 +17,7 @@ use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\AssetPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
@@ -53,6 +54,43 @@ class ContaoCoreBundleTest extends TestCase
 
     public function testAddsTheCompilerPaths(): void
     {
+        $passes = [
+            AddPackagesPass::class,
+            AssetPackagesPass::class,
+            AddSessionBagsPass::class,
+            AddResourcesPathsPass::class,
+            AddImagineClassPass::class,
+            DoctrineMigrationsPass::class,
+            PickerProviderPass::class,
+            FragmentRegistryPass::class,
+            RegisterHookListenersPass::class,
+        ];
+
+        $container = $this->createMock(ContainerBuilder::class);
+
+        $container
+            ->expects($this->once())
+            ->method('getParameter')
+            ->with('kernel.root_dir')
+            ->willReturn($this->getFixturesDir().'/app')
+        ;
+
+        $container
+            ->expects($this->exactly(count($passes)))
+            ->method('addCompilerPass')
+            ->with(
+                $this->callback(function ($param) use ($passes) {
+                    return in_array(get_class($param), $passes);
+                })
+            )
+        ;
+
+        $bundle = new ContaoCoreBundle();
+        $bundle->build($container);
+    }
+
+    public function testAddsPackagesPassBeforeAssetPass()
+    {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.root_dir', $this->getFixturesDir().'/app');
 
@@ -66,13 +104,9 @@ class ContaoCoreBundleTest extends TestCase
             $classes[] = $reflection->getName();
         }
 
-        $this->assertContains(AddPackagesPass::class, $classes);
-        $this->assertContains(AddSessionBagsPass::class, $classes);
-        $this->assertContains(AddResourcesPathsPass::class, $classes);
-        $this->assertContains(AddImagineClassPass::class, $classes);
-        $this->assertContains(DoctrineMigrationsPass::class, $classes);
-        $this->assertContains(PickerProviderPass::class, $classes);
-        $this->assertContains(FragmentRegistryPass::class, $classes);
-        $this->assertContains(RegisterHookListenersPass::class, $classes);
+        $packagesPosition = array_search(AddPackagesPass::class, $classes, true);
+        $assetsPosition = array_search(AssetPackagesPass::class, $classes, true);
+
+        $this->assertTrue($packagesPosition < $assetsPosition);
     }
 }

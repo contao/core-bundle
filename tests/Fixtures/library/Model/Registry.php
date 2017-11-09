@@ -15,6 +15,11 @@ class Registry
         return static::$instance;
     }
 
+    public function isRegistered()
+    {
+        return false;
+    }
+
     public function count()
     {
         return 5;
