@@ -2717,7 +2717,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 						// Inline the image if no preview image will be generated (see #636)
 						if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 400)
 						{
-							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" style="margin:0 0 2px -18px;max-width:400px;max-height:50px;width:auto;height:auto">';
+							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" style="margin:0 0 2px -18px">';
 						}
 						else
 						{
