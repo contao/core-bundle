@@ -39,7 +39,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
     protected $tokenUser;
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->router = $this->createMock(RouterInterface::class);
         $this->engine = $this->createMock(EngineInterface::class);
@@ -170,13 +170,13 @@ class SwitchUserButtonGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks the Statement object
+     * Mocks the Statement object.
      *
      * @param null $expectedRowCount
      * @param bool $fetch
      * @param null $fetchReturn
      */
-    private function mockStatement($expectedRowCount = null, $fetch = false, $fetchReturn = null)
+    private function mockStatement($expectedRowCount = null, $fetch = false, $fetchReturn = null): void
     {
         $this->statement = $this->createMock(Statement::class);
 
@@ -209,11 +209,11 @@ class SwitchUserButtonGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks the TokenStorage service
+     * Mocks the TokenStorage service.
      *
      * @param null $expectedUsername
      */
-    private function mockTokenStorage($expectedUsername = null)
+    private function mockTokenStorage($expectedUsername = null): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->token = $this->createMock(TokenInterface::class);
@@ -241,11 +241,11 @@ class SwitchUserButtonGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks the User
+     * Mocks the User.
      *
      * @param null $expectedUsername
      */
-    private function mockUser($expectedUsername = null)
+    private function mockUser($expectedUsername = null): void
     {
         $this->user = $this
             ->getMockBuilder(User::class)
@@ -259,11 +259,11 @@ class SwitchUserButtonGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks the database connection object
+     * Mocks the database connection object.
      *
      * @param Statement|null $statement
      */
-    private function mockConnection(Statement $statement = null)
+    private function mockConnection(Statement $statement = null): void
     {
         $this->connection = $this->createMock(Connection::class);
 
@@ -277,11 +277,11 @@ class SwitchUserButtonGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks the AuthorizationChecker
+     * Mocks the AuthorizationChecker.
      *
      * @param bool|null $isRoleSwitchGranted
      */
-    private function mockAuthorizationChecker(bool $isRoleSwitchGranted = null)
+    private function mockAuthorizationChecker(bool $isRoleSwitchGranted = null): void
     {
         $this->authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
 
