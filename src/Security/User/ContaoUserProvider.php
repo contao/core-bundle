@@ -24,6 +24,8 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+@trigger_error('Using the ContaoUserProvider has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 /**
  * Class ContaoUserProvider.
  *
@@ -47,9 +49,13 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
     /**
      * @param ContaoFrameworkInterface $framework
      * @param ScopeMatcher             $scopeMatcher
+     *
+     * @deprecated Using the ContaoUserProvider has been deprecated and will no longer work in Contao 5.0.
      */
     public function __construct(ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher)
     {
+        @trigger_error('Using the ContaoUserProvider has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
     }
@@ -58,9 +64,13 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      * {@inheritdoc}
      *
      * @return BackendUser|FrontendUser
+     *
+     * @deprecated Using ContaoUserProvider::loadByUsername has been deprecated and will no longer work in Contao 5.0.
      */
     public function loadUserByUsername($username): User
     {
+        @trigger_error('Using ContaoUserProvider::loadByUsername has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         if ($this->isBackendUsername($username)) {
             $this->framework->initialize();
 
@@ -78,17 +88,25 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated Using ContaoUserProvider::refreshUser has been deprecated and will no longer work in Contao 5.0.
      */
     public function refreshUser(UserInterface $user): void
     {
+        @trigger_error('Using ContaoUserProvider::refreshUser has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         throw new UnsupportedUserException('Cannot refresh a Contao user.');
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated Using ContaoUserProvider::supportsClass has been deprecated and will no longer work in Contao 5.0.
      */
     public function supportsClass($class): bool
     {
+        @trigger_error('Using ContaoUserProvider::supportsClass has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         return is_subclass_of($class, User::class);
     }
 
@@ -98,9 +116,13 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      * @param string $username
      *
      * @return bool
+     *
+     * @deprecated Using ContaoUserProvider::isFrontendUsername has been deprecated and will no longer work in Contao 5.0.
      */
     private function isFrontendUsername(string $username): bool
     {
+        @trigger_error('Using ContaoUserProvider::isFrontendUsername has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         if (null === $this->container
             || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
         ) {
@@ -116,9 +138,13 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
      * @param string $username
      *
      * @return bool
+     *
+     * @deprecated Using ContaoUserProvider::isBackendUsername has been deprecated and will no longer work in Contao 5.0.
      */
     private function isBackendUsername(string $username): bool
     {
+        @trigger_error('Using ContaoUserProvider::isBackendUsername has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         if (null === $this->container
             || null === ($request = $this->container->get('request_stack')->getCurrentRequest())
         ) {

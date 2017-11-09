@@ -25,6 +25,8 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
+@trigger_error('Using the ContaoAuthenticator has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 /**
  * Class ContaoAuthenticator.
  *
@@ -41,9 +43,13 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
 
     /**
      * @param ScopeMatcher $scopeMatcher
+     *
+     * @deprecated Using the ContaoAuthenticator has been deprecated and will no longer work in Contao 5.0.
      */
     public function __construct(ScopeMatcher $scopeMatcher)
     {
+        @trigger_error('Using the ContaoAuthenticator has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         $this->scopeMatcher = $scopeMatcher;
     }
 
@@ -54,9 +60,13 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
      * @param string  $providerKey
      *
      * @return AnonymousToken
+     *
+     * @deprecated Using ContaoAuthenticator::createToken has been deprecated and will no longer work in Contao 5.0.
      */
     public function createToken(Request $request, $providerKey): AnonymousToken
     {
+        @trigger_error('Using ContaoAuthenticator::createToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         return new AnonymousToken($providerKey, 'anon.');
     }
 
@@ -70,9 +80,13 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
      * @throws AuthenticationException
      *
      * @return TokenInterface|ContaoToken|AnonymousToken
+     *
+     * @deprecated Using ContaoAuthenticator::authenticateToken has been deprecated and will no longer work in Contao 5.0.
      */
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey): TokenInterface
     {
+        @trigger_error('Using ContaoAuthenticator::authenticateToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         if ($this->canSkipAuthentication($token)) {
             return $token;
         }
@@ -101,9 +115,13 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
      * @param string         $providerKey
      *
      * @return bool
+     *
+     * @deprecated Using ContaoAuthenticator::supportsToken has been deprecated and will no longer work in Contao 5.0.
      */
     public function supportsToken(TokenInterface $token, $providerKey): bool
     {
+        @trigger_error('Using ContaoAuthenticator::supportsToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         return $token instanceof ContaoToken || $token instanceof AnonymousToken;
     }
 
@@ -115,9 +133,13 @@ class ContaoAuthenticator implements ContainerAwareInterface, SimplePreAuthentic
      * @throws \LogicException
      *
      * @return bool
+     *
+     * @deprecated Using ContaoAuthenticator::canSkipAuthentication has been deprecated and will no longer work in Contao 5.0.
      */
     private function canSkipAuthentication(TokenInterface $token): bool
     {
+        @trigger_error('Using ContaoAuthenticator::canSkipAuthentication has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
         if ($token instanceof ContaoToken) {
             return true;
         }
