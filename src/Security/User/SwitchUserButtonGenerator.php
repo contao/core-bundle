@@ -73,7 +73,7 @@ class SwitchUserButtonGenerator
         $stmt->execute();
 
         if (0 === $stmt->rowCount()) {
-            throw new UserNotFoundException('Invalid user ID'.$row['id']);
+            throw new UserNotFoundException('Invalid user ID '.$row['id']);
         }
 
         /** @var UserInterface $tokenUser */

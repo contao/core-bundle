@@ -38,9 +38,15 @@ class SwitchUserButtonGeneratorTest extends TestCase
     protected $token;
     protected $tokenUser;
     protected $user;
+    protected $row;
+    protected $title;
+    protected $label;
 
     public function setUp(): void
     {
+        $this->row = ['id' => 1];
+        $this->title = 'Switch to user ID 2';
+        $this->label = 'Switch user';
         $this->router = $this->createMock(RouterInterface::class);
         $this->engine = $this->createMock(EngineInterface::class);
 
@@ -62,7 +68,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->tokenStorage
         );
 
-        $this->assertInstanceOf(SwitchUserButtonGenerator::class, $switchUserButtonGenerator);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\User\SwitchUserButtonGenerator', $switchUserButtonGenerator);
     }
 
     /**
@@ -80,7 +86,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->tokenStorage
         );
 
-        $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton([], '', '', '', ''));
+        $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, ''));
     }
 
     /**
@@ -101,7 +107,8 @@ class SwitchUserButtonGeneratorTest extends TestCase
         );
 
         $this->expectException('Contao\CoreBundle\Exception\UserNotFoundException');
-        $switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', '', '', '');
+        $this->expectExceptionMessage('Invalid user ID 1');
+        $switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, '');
     }
 
     /**
@@ -123,7 +130,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->tokenStorage
         );
 
-        $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', '', '', ''));
+        $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, ''));
     }
 
     /**
@@ -138,10 +145,8 @@ class SwitchUserButtonGeneratorTest extends TestCase
         $this->mockConnection($this->statement);
 
         $url = sprintf('/contao?_switch_user=%s', $this->user->username);
-        $title = 'Switch to user ID 2';
-        $label = 'Switch user';
         $image = '<img src="system/themes/flexible/icons/su.svg" width="16" height="16" alt="Switch user">';
-        $html = sprintf('<a href="%s" title="%s">%s</a>', $url, $title, $image);
+        $html = sprintf('<a href="%s" title="%s">%s</a>', $url, $this->title, $image);
 
         $this->router
             ->expects($this->once())
@@ -153,7 +158,11 @@ class SwitchUserButtonGeneratorTest extends TestCase
         $this->engine
             ->expects($this->once())
             ->method('render')
-            ->with('@ContaoCore/Backend/switch_user.html.twig')
+            ->with('@ContaoCore/Backend/switch_user.html.twig', [
+                'url' => $url,
+                'title' => $this->title,
+                'image' => '',
+            ])
             ->willReturn($html)
         ;
 
@@ -165,7 +174,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->tokenStorage
         );
 
-        $this->assertSame($html, $switchUserButtonGenerator->generateSwitchUserButton(['id' => 1], '', $label, $title, ''));
+        $this->assertSame($html, $switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, ''));
     }
 
     /**
@@ -183,6 +192,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->statement
                 ->expects($this->once())
                 ->method('bindValue')
+                ->with('id', 1)
             ;
 
             $this->statement
@@ -270,6 +280,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->connection
                 ->expects($this->once())
                 ->method('prepare')
+                ->with('SELECT id, username FROM tl_user WHERE id = :id')
                 ->willReturn($statement)
             ;
         }
