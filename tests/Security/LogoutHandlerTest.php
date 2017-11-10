@@ -78,7 +78,7 @@ class LogoutHandlerTest extends TestCase
     }
 
     /**
-     * Tests the execution of the postLogoutHook
+     * Tests the execution of the postLogout hook
      */
     public function testExecutesThePostLogoutHook(): void
     {
@@ -95,7 +95,7 @@ class LogoutHandlerTest extends TestCase
     }
 
     /**
-     * postLogout Hook stub.
+     * postLogout hook stub.
      *
      * @param User $user
      */

@@ -20,6 +20,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 
 /**
@@ -146,6 +147,8 @@ class SwitchUserListenerTest extends TestCase
     private function mockSwitchUserEvent(string $expectedUsername = null): void
     {
         $request = new Request();
+
+        /** @var UserInterface $targetUser */
         $targetUser = $this->mockBackendUser($expectedUsername);
 
         $this->switchUserEvent = new SwitchUserEvent($request, $targetUser);
