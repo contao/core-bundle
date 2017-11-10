@@ -44,10 +44,6 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     public function logout(Request $request, Response $response, TokenInterface $token): void
     {
-        if (null === $token) {
-            return;
-        }
-
         $user = $token->getUser();
 
         if (!$user instanceof User) {
@@ -55,7 +51,7 @@ class LogoutHandler implements LogoutHandlerInterface
         }
 
         $this->logger->info(
-            sprintf('User %s has logged out.', $user->username),
+            sprintf('User %s has logged out.', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
