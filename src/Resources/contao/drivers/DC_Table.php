@@ -1142,7 +1142,11 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					}
 
 					$copy[$v][$objCTable->id]['pid'] = $insertID;
-					$copy[$v][$objCTable->id]['tstamp'] = $time;
+
+					if ($objCTable->tstamp)
+					{
+						$copy[$v][$objCTable->id]['tstamp'] = $time;
+					}
 				}
 			}
 		}
