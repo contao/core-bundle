@@ -47,7 +47,7 @@ class SwitchUserListener
         $targetUser = $event->getTargetUser();
 
         $this->logger->info(
-            sprintf('User %s has switched to user %s.', $user->username, $targetUser->username),
+            sprintf('User %s has switched to user %s.', $user->getUsername(), $targetUser->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
     }

@@ -223,9 +223,9 @@ class SwitchUserButtonGeneratorTest extends TestCase
     /**
      * Mocks the TokenStorage service.
      *
-     * @param null $expectedUsername
+     * @param null|string $expectedUsername
      */
-    private function mockTokenStorage($expectedUsername = null): void
+    private function mockTokenStorage(string $expectedUsername = null): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->token = $this->createMock(TokenInterface::class);
@@ -255,9 +255,9 @@ class SwitchUserButtonGeneratorTest extends TestCase
     /**
      * Mocks the User.
      *
-     * @param null $expectedUsername
+     * @param null|string $expectedUsername
      */
-    private function mockUser($expectedUsername = null): void
+    private function mockUser(string $expectedUsername = null): void
     {
         $this->user = $this
             ->getMockBuilder(User::class)

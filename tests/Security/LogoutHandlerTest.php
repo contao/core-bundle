@@ -154,11 +154,10 @@ class LogoutHandlerTest extends TestCase
     /**
      * Mocks the User with an optional username.
      *
-     * @param null $expectedUsername
-     *
+     * @param null|string $expectedUsername
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockUser($expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
+    private function mockUser(string $expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
     {
         $user = $this
             ->getMockBuilder(User::class)
