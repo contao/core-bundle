@@ -24,6 +24,9 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
      */
     private $encoder;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();

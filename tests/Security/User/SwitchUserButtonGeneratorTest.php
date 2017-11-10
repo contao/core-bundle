@@ -42,6 +42,9 @@ class SwitchUserButtonGeneratorTest extends TestCase
     protected $title;
     protected $label;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp(): void
     {
         $this->row = ['id' => 1];

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\User;
+use Contao\FrontendUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -62,6 +62,11 @@ class FrontendPreviewAuthenticator
         $providerKey = 'contao_frontend';
         $request = $this->requestStack->getCurrentRequest();
 
+        // check if a backend user is authenticated
+        if (null === $this->tokenStorage->getToken() || !$this->tokenStorage->getToken()->isAuthenticated()) {
+            return;
+        }
+
         if (null === $username) {
             return;
         }
@@ -71,7 +76,7 @@ class FrontendPreviewAuthenticator
         }
 
         try {
-            /** @var User $user */
+            /** @var FrontendUser $user */
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
             $this->logger->info(
@@ -89,7 +94,7 @@ class FrontendPreviewAuthenticator
             (array) $user->getRoles()
         );
 
-        if (null === $token) {
+        if (false === $token->isAuthenticated()) {
             if ($request->hasPreviousSession()) {
                 $this->session->remove($sessionKey);
             }

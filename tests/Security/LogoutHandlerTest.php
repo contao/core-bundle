@@ -31,6 +31,9 @@ class LogoutHandlerTest extends TestCase
     protected $response;
     protected $token;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp(): void
     {
         $this->request = new Request();

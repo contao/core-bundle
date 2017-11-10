@@ -27,6 +27,9 @@ class LogoutSuccessHandlerTest extends TestCase
     protected $session;
     protected $request;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp(): void
     {
         $this->router = $this->createMock(RouterInterface::class);
