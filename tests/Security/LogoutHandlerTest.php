@@ -98,6 +98,7 @@ class LogoutHandlerTest extends TestCase
      */
     public static function executePostLogoutHookCallback(User $user): void
     {
+        self::assertInstanceOf('Contao\User', $user);
     }
 
     /**
