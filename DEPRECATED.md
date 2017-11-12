@@ -45,6 +45,25 @@ $image = $container
 ;
 ```
 
+```php
+// Old syntax
+$data = Picture::create($path, $imageSize)->getTemplateData();
+
+// New syntax
+$container = System::getContainer();
+$rootDir = $container->getParameter('kernel.project_dir');
+
+$picture = $container
+    ->get('contao.image.picture_factory')
+    ->create($rootDir.'/'.$path, $imageSize)
+;
+
+$data = [
+    'img' => $picture->getImg($rootDir),
+    'sources' => $picture->getSources($rootDir),
+];
+```
+
 For more information see: https://github.com/contao/image/blob/master/README.md
 
 
@@ -221,8 +240,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class Test {
     private $requestStack;
     private $scopeMatcher;
- 
-    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher) {    
+
+    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher) {
         $this->requestStack = $requestStack;
         $this->scopeMatcher = $scopeMatcher;
     }
