@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -27,7 +29,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +39,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * Tests the object instantiation.
      */
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder', $this->encoder);
     }
@@ -45,7 +47,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * Tests the encodePassword method.
      */
-    public function testEncodePassword()
+    public function testEncodePassword(): void
     {
         $raw = random_bytes(16);
         $salt = random_bytes(8);
@@ -56,7 +58,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * Tests for the BadCredentialsException for too long password.
      */
-    public function testBadCredentialsException()
+    public function testBadCredentialsException(): void
     {
         $raw = random_bytes(BasePasswordEncoder::MAX_PASSWORD_LENGTH + 1);
         $salt = random_bytes(8);
@@ -69,7 +71,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * Tests the isPasswordValidMethod.
      */
-    public function testIsPasswordValid()
+    public function testIsPasswordValid(): void
     {
         $raw = random_bytes(16);
         $long = random_bytes(BasePasswordEncoder::MAX_PASSWORD_LENGTH + 1);

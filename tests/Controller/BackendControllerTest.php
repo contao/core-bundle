@@ -41,7 +41,7 @@ class BackendControllerTest extends TestCase
 
         $previewAuthenticator = $this->createMock(FrontendPreviewAuthenticator::class);
 
-        /** @var ContainerInterface $container */
+        /* @var ContainerInterface $container */
         $container->set('contao.security.frontend_preview_authenticator', $previewAuthenticator);
         $container->set('request_stack', $requestStack);
 

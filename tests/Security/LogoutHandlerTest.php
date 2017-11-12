@@ -67,7 +67,7 @@ class LogoutHandlerTest extends TestCase
     }
 
     /**
-     * Tests the logger message with a valid user given
+     * Tests the logger message with a valid user given.
      */
     public function testLoggerMessageWithValidUser(): void
     {
@@ -80,7 +80,7 @@ class LogoutHandlerTest extends TestCase
     }
 
     /**
-     * Tests the execution of the postLogout hook
+     * Tests the execution of the postLogout hook.
      */
     public function testExecutesThePostLogoutHook(): void
     {
@@ -157,6 +157,7 @@ class LogoutHandlerTest extends TestCase
      * Mocks the User with an optional username.
      *
      * @param null|string $expectedUsername
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function mockUser(string $expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
