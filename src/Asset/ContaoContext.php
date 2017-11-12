@@ -31,11 +31,6 @@ class ContaoContext implements ContextInterface
     private $debug;
 
     /**
-     * @var PageModel|null
-     */
-    private $page;
-
-    /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
@@ -52,33 +47,14 @@ class ContaoContext implements ContextInterface
     }
 
     /**
-     * Sets the current page model.
-     *
-     * @param PageModel|null $page
-     */
-    public function setPage(?PageModel $page)
-    {
-        $this->page = $page;
-    }
-
-    /**
-     * Gets the current page model.
-     *
-     * @return PageModel|null
-     */
-    public function getPage(): ?PageModel
-    {
-        return $this->page;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getBasePath()
     {
+        $page = $this->getPage();
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($this->debug || null === $request || '' === ($host = $this->getFieldValue())) {
+        if ($this->debug || null === $request || '' === ($host = $this->getFieldValue($page))) {
             return '';
         }
 
@@ -95,7 +71,9 @@ class ContaoContext implements ContextInterface
      */
     public function isSecure()
     {
-        if (null === $this->page) {
+        $page = $this->getPage();
+
+        if (null === $page) {
             $request = $this->requestStack->getCurrentRequest();
 
             if (null === $request) {
@@ -105,21 +83,39 @@ class ContaoContext implements ContextInterface
             return $request->isSecure();
         }
 
-        return (bool) $this->page->loadDetails()->rootUseSSL;
+        return (bool) $page->loadDetails()->rootUseSSL;
     }
 
     /**
+     * Gets the current page model.
+     *
+     * @return PageModel|null
+     */
+    private function getPage(): ?PageModel
+    {
+        if (isset($GLOBALS['objPage']) && $GLOBALS['objPage'] instanceof PageModel) {
+            return $GLOBALS['objPage'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets field value from page model or global config.
+     *
+     * @param PageModel|null $page
+     *
      * @return string
      */
-    private function getFieldValue(): string
+    private function getFieldValue(?PageModel $page): string
     {
-        if (null === $this->page) {
+        if (null === $page) {
             /** @var Config $config */
             $config = $this->framework->createInstance(Config::class);
 
             return (string) $config->get($this->field);
         }
 
-        return (string) $this->page->{$this->field};
+        return (string) $page->{$this->field};
     }
 }

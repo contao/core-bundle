@@ -21,6 +21,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContaoContextTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        unset($GLOBALS['objPage']);
+    }
+
     public function testCanBeInstantiated(): void
     {
         $context = new ContaoContext(
@@ -30,23 +37,6 @@ class ContaoContextTest extends TestCase
         );
 
         $this->assertInstanceOf('Contao\CoreBundle\Asset\ContaoContext', $context);
-    }
-
-    public function testCanSetAndGetPage()
-    {
-        Registry::getInstance();
-
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            'staticPlugins'
-        );
-
-        $page = $this->mockPageWithDetails();
-
-        $context->setPage($page);
-
-        $this->assertSame($page, $context->getPage());
     }
 
     public function testReturnsEmptyBasePathInDebugMode()
@@ -82,7 +72,7 @@ class ContaoContextTest extends TestCase
             'staticPlugins'
         );
 
-        $context->setPage($page);
+        $GLOBALS['objPage'] = $page;
 
         $this->assertSame('', $context->getBasePath());
     }
@@ -113,7 +103,7 @@ class ContaoContextTest extends TestCase
         $page->rootUseSSL = $useSSL;
         $page->staticPlugins = $domain;
 
-        $context->setPage($page);
+        $GLOBALS['objPage'] = $page;
 
         $this->assertSame($expected, $context->getBasePath());
     }
@@ -179,7 +169,7 @@ class ContaoContextTest extends TestCase
             ''
         );
 
-        $context->setPage($page);
+        $GLOBALS['objPage'] = $page;
 
         $page->rootUseSSL = true;
         $this->assertTrue($context->isSecure());
@@ -212,6 +202,9 @@ class ContaoContextTest extends TestCase
 
     private function mockPageWithDetails()
     {
+        // Necessary to load the aliased object
+        Registry::getInstance();
+
         $page = new PageModel();
 
         $page->type = 'root';

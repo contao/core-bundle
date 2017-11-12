@@ -1793,51 +1793,31 @@ abstract class Controller extends \System
 	/**
 	 * Set the static URL constants
 	 *
-	 * @param PageModel $objPage An optional page object
-	 *
 	 * @deprecated Deprecated in Contao 4.5, to be removed in Contao 5. Use the asset contexts instead.
 	 */
-	public static function setStaticUrls($objPage=null)
+	public static function setStaticUrls()
 	{
-		if (\defined('TL_FILES_URL'))
+		if (func_num_args() > 0)
 		{
-			return;
-		}
+			@trigger_error('Using Controller::setStaticUrls() has been deprecated and will no longer work in Contao 5.0. Use the asset contexts instead.', E_USER_DEPRECATED);
 
-		// Use the global object (see #5906)
-		if ($objPage === null)
-		{
-			global $objPage;
-		}
-
-		$arrConstants = array
-		(
-			'contao.assets.files_context'   => 'TL_FILES_URL',
-			'contao.assets.plugins_context' => 'TL_ASSETS_URL'
-		);
-
-		foreach ($arrConstants as $strService => $strConstant)
-		{
-			$objContext = \System::getContainer()->get($strService);
-
-			if ($objContext instanceof ContaoContext)
+			if (!isset($GLOBALS['objPage']))
 			{
-				$objContext->setPage($objPage);
-				$url = $objContext->getBasePath();
-
-				if ($url != '')
-				{
-					\define($strConstant, $url . '/');
-					continue;
-				}
+				$GLOBALS['objPage'] = func_get_arg(0);
 			}
-
-			\define($strConstant, '');
 		}
 
-		// Deprecated since Contao 4.0, to be removed in Contao 5.0
-		\define('TL_SCRIPT_URL', TL_ASSETS_URL);
-		\define('TL_PLUGINS_URL', TL_ASSETS_URL);
+		// Static URLs, deprecated since Contao 4.5, to be removed in Contao 5.0
+		if (!\defined('TL_FILES_URL'))
+		{
+			$pluginsUrl = \System::getContainer()->get('contao.assets.plugins_context')->getBasePath();
+			$filesUrl = \System::getContainer()->get('contao.assets.files_context')->getBasePath();
+
+			\define('TL_ASSETS_URL', $pluginsUrl ? $pluginsUrl.'/' : '');
+			\define('TL_FILES_URL', $filesUrl ? $filesUrl.'/' : '');
+			\define('TL_SCRIPT_URL', TL_ASSETS_URL);
+			\define('TL_PLUGINS_URL', TL_ASSETS_URL);
+		}
 	}
 
 
