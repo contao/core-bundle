@@ -41,6 +41,9 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     /** @var TranslatorInterface */
     protected $translator;
 
+    /** @var string */
+    protected $providerKey;
+
     public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
@@ -48,6 +51,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->logger = $logger;
         $this->session = $session;
         $this->translator = $translator;
+        $this->providerKey = $providerKey;
     }
 
     /**
@@ -67,7 +71,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 $user->save();
 
                 $this->session->getFlashBag()->set(
-                    'contao.BE.error',
+                    $this->getFlashType(),
                     $this->translator->trans(
                         'ERR.invalidLogin',
                         [],
@@ -112,5 +116,19 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         }
 
         return false;
+    }
+
+    /**
+     * Gets flash type from providerKey.
+     *
+     * @return string
+     */
+    private function getFlashType(): string
+    {
+        if ('contao_frontend' === $this->providerKey) {
+            return 'contao.FE.error';
+        }
+
+        return 'contao.BE.error';
     }
 }
