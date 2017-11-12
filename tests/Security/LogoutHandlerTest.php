@@ -36,6 +36,8 @@ class LogoutHandlerTest extends TestCase
      */
     public function setUp(): void
     {
+        unset($GLOBALS['TL_HOOKS']);
+
         $this->request = new Request();
         $this->response = new Response();
     }
@@ -159,12 +161,7 @@ class LogoutHandlerTest extends TestCase
      */
     private function mockUser(string $expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
     {
-        $user = $this
-            ->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getUsername'])
-            ->getMock()
-        ;
+        $user = $this->createPartialMock(User::class, ['getUsername']);
 
         if (null !== $expectedUsername) {
             $user->username = $expectedUsername;

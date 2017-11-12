@@ -30,6 +30,11 @@ class InteractiveLoginListenerTest extends TestCase
     protected $interactiveLoginEvent;
     protected $token;
 
+    public function setUp()
+    {
+        unset($GLOBALS['TL_HOOKS']);
+    }
+
     /**
      * Tests the object instantiation.
      */
