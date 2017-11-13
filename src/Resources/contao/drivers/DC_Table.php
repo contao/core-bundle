@@ -3845,15 +3845,11 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			if ($this->strTable != $table)
 			{
 				// Order the child table
-				if (is_array($this->orderBy) && strlen($this->orderBy[0]))
-				{
-					$arrOrder = $this->orderBy;
-				}
-				else if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields']) && strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'][0]))
+				if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields']) && strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'][0]))
 				{
 					$arrOrder = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'];
 				}
-				else if ($blnHasSorting)
+				elseif ($blnHasSorting)
 				{
 					$arrOrder = array('sorting');
 				}
