@@ -294,7 +294,7 @@ class PrettyErrorScreenListenerTest extends TestCase
     /**
      * Tests that the listener is bypassed if the request is not a Contao request.
      */
-    public function testDoesNothingIfItsNotAContaoRequest(): void
+    public function testDoesNothingIfItsNotAContaoRequest()
     {
         $event = new GetResponseForExceptionEvent(
             $this->mockKernel(),
@@ -311,7 +311,7 @@ class PrettyErrorScreenListenerTest extends TestCase
     /**
      * Tests that the listener is bypassed if the request is not a master request.
      */
-    public function testDoesNothingIfItsNotAMasterRequest(): void
+    public function testDoesNothingIfItsNotAMasterRequest()
     {
         $event = new GetResponseForExceptionEvent(
             $this->mockKernel(),
@@ -358,7 +358,7 @@ class PrettyErrorScreenListenerTest extends TestCase
      *
      * @return Request
      */
-    private function mockContaoRequest(string $scope = 'frontend'): Request
+    private function mockContaoRequest($scope = 'frontend')
     {
         $request = new Request();
         $request->attributes->set('_scope', $scope);
