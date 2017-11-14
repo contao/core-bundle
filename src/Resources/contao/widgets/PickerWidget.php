@@ -202,7 +202,7 @@ class PickerWidget extends \Widget
 		}
 		else
 		{
-			$extras = ['fieldType' => $this->fieldType];
+			$extras = ['fieldType' => $this->fieldType ?: 'radio'];
 
 			if (is_array($this->rootNodes))
 			{
