@@ -4,7 +4,9 @@ Deprecated features
 ### Image service
 
 The `Image` and `Picture` classes have been deprecated in favor of the image
-service. Here are two examples of how to use the service:
+and picture services. Here are three examples of how to use the services:
+
+#### Image::get()
 
 ```php
 // Old syntax
@@ -20,6 +22,8 @@ $image = $container
     ->getUrl($rootDir)
 ;
 ```
+
+#### Image::create()
 
 ```php
 // Old syntax
@@ -44,6 +48,8 @@ $image = $container
     ->getUrl($rootDir)
 ;
 ```
+
+#### Picture::create()
 
 ```php
 // Old syntax
