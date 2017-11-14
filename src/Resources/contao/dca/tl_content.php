@@ -726,7 +726,6 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 				'context'      => 'article', // Context for picker
 				'labelField'   => 'title', // Field for the label
 				'fieldType'    => 'radio', // Field type
-				'icon'         => 'article.svg', // Optional icon
 
 				// Custom record label callback (icon is added anyway)
 				'label_callback' => function (array $row) {

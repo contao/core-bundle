@@ -152,12 +152,6 @@ class PickerWidget extends \Widget
 			$label = $data['id'];
 		}
 
-		// Add the icon
-		if ($this->icon)
-		{
-			$label = sprintf('%s %s', \Image::getHtml($this->icon, '', 'style="vertical-align:middle;"'), $label);
-		}
-
 		return $label;
 	}
 
