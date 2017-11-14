@@ -84,7 +84,7 @@ class ArticlePickerProvider extends AbstractPickerProvider implements DcaPickerP
     /**
      * {@inheritdoc}
      */
-    public function convertDcaValue(PickerConfig $config, $value): string
+    public function convertDcaValue(PickerConfig $config, $value)
     {
         if ('article' === $config->getContext()) {
             return (int) $value;
