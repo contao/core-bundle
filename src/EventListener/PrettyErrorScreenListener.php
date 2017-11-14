@@ -21,6 +21,7 @@ use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\PageError404;
 use Contao\StringUtil;
 use Contao\System;
@@ -62,6 +63,11 @@ class PrettyErrorScreenListener
     private $tokenStorage;
 
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -86,14 +92,16 @@ class PrettyErrorScreenListener
      * @param \Twig_Environment        $twig
      * @param ContaoFrameworkInterface $framework
      * @param TokenStorageInterface    $tokenStorage
+     * @param ScopeMatcher             $scopeMatcher
      * @param LoggerInterface|null     $logger
      */
-    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
+    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, LoggerInterface $logger = null)
     {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
         $this->framework = $framework;
         $this->tokenStorage = $tokenStorage;
+        $this->scopeMatcher = $scopeMatcher;
         $this->logger = $logger;
     }
 
@@ -104,7 +112,15 @@ class PrettyErrorScreenListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (!$event->isMasterRequest() || 'html' !== $event->getRequest()->getRequestFormat()) {
+        if (!$this->scopeMatcher->isContaoRequest($event->getRequest())) {
+            return;
+        }
+
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        if ('html' !== $event->getRequest()->getRequestFormat()) {
             return;
         }
 
