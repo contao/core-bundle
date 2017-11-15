@@ -197,9 +197,9 @@ class PickerWidget extends \Widget
 		else
 		{
 			$extras = [
-			    'fieldType' => $this->fieldType ?: 'radio',
-                'source' => $this->strTable.'.'.$this->currentRecord,
-            ];
+				'fieldType' => $this->fieldType ?: 'radio',
+				'source' => $this->strTable.'.'.$this->currentRecord,
+			];
 
 			if (is_array($this->rootNodes))
 			{
