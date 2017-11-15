@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Fragment;
 
 use Contao\CoreBundle\Fragment\Reference\FragmentReference;
+use Contao\PageModel;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
@@ -74,7 +75,10 @@ class FragmentRenderer implements FragmentRendererInterface
      */
     private function preHandleFragment(FragmentReference $uri, FragmentConfig $config): void
     {
-        if (isset($GLOBALS['objPage']) && !isset($uri->attributes['pageModel'])) {
+        if (isset($GLOBALS['objPage'])
+            && $GLOBALS['objPage'] instanceof PageModel
+            && !isset($uri->attributes['pageModel'])
+        ) {
             $uri->attributes['pageModel'] = $GLOBALS['objPage']->id;
         }
 
