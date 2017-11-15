@@ -64,24 +64,21 @@ class RegisterFragmentsPass implements CompilerPassInterface
         foreach ($this->findAndSortTaggedServices($tag, $container) as $priority => $reference) {
             $definition = $container->findDefinition($reference);
             $tags = $definition->getTag($tag);
+            $definition->clearTag($tag);
 
-            foreach ($tags as &$attributes) {
+            foreach ($tags as $attributes) {
                 $attributes['type'] = $this->getFragmentType($definition, $attributes);
 
                 $identifier = sprintf('%s.%s', $tag, $attributes['type']);
-                $config = $this->createFragmentConfig($reference, $attributes);
+                $config = $this->createFragmentConfig($container, $reference, $attributes);
 
                 if (is_a($definition->getClass(), FragmentPreHandlerInterface::class, true)) {
                     $preHandlers[$identifier] = $reference;
                 }
 
                 $registry->addMethodCall('add', [$identifier, $config]);
+                $definition->addTag($tag, $attributes);
             }
-
-            unset($attributes);
-
-            $definition->clearTag($tag);
-            $definition->addTag($tag, $tags);
         }
 
         $this->addPreHandlers($container, $preHandlers);
@@ -90,20 +87,27 @@ class RegisterFragmentsPass implements CompilerPassInterface
     /**
      * Creates a fragment configuration.
      *
-     * @param Reference $reference
-     * @param array     $attributes
+     * @param ContainerBuilder $container
+     * @param Reference        $reference
+     * @param array            $attributes
      *
-     * @return FragmentConfig
+     * @return Reference
      */
-    protected function createFragmentConfig(Reference $reference, array $attributes): FragmentConfig
+    protected function createFragmentConfig(ContainerBuilder $container, Reference $reference, array $attributes): Reference
     {
-        $config = new FragmentConfig(
-            $this->getControllerName($reference, $attributes),
-            $attributes['renderStrategy'] ?? 'inline',
-            ['ignore_errors' => true]
+        $definition = new Definition(
+            FragmentConfig::class,
+            [
+                $this->getControllerName($reference, $attributes),
+                $attributes['renderStrategy'] ?? 'inline',
+                ['ignore_errors' => true]
+            ]
         );
 
-        return $config;
+        $serviceId = 'contao.fragment._config_'.ContainerBuilder::hash($definition);
+        $container->setDefinition($serviceId, $definition);
+
+        return new Reference($serviceId);
     }
 
     /**
@@ -157,10 +161,10 @@ class RegisterFragmentsPass implements CompilerPassInterface
         }
 
         $className = $definition->getClass();
-        $className = substr($className, strrchr($className, '\\') + 1);
+        $className = ltrim(strrchr($className, '\\'), '\\');
 
         if ('Controller' === substr($className, -10)) {
-            $className = substr($className, 1, -10);
+            $className = substr($className, 0, -10);
         }
 
         return Container::underscore($className);

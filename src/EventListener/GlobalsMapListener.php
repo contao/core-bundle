@@ -12,13 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\EventListener;
 
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-
-class GlobalsMapListener implements FrameworkAwareInterface
+class GlobalsMapListener
 {
-    use FrameworkAwareTrait;
-
     /**
      * @var array
      */
@@ -39,8 +34,6 @@ class GlobalsMapListener implements FrameworkAwareInterface
      */
     public function onInitializeSystem(): void
     {
-        $this->framework->initialize();
-
         $GLOBALS = array_merge_recursive($GLOBALS, $this->globals);
     }
 }
