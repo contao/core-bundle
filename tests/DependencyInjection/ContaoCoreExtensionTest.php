@@ -493,11 +493,11 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('onKernelResponse', $tags['kernel.event_listener'][1]['method']);
     }
 
-    public function testRegistersTheAssetInsertTagListener()
+    public function testRegistersTheAssetInsertTagListener(): void
     {
-        $this->assertTrue($this->container->has('contao.listener.insert_tags.assets'));
+        $this->assertTrue($this->container->has('contao.listener.insert_tags.asset'));
 
-        $definition = $this->container->getDefinition('contao.listener.insert_tags.assets');
+        $definition = $this->container->getDefinition('contao.listener.insert_tags.asset');
 
         $this->assertSame(AssetListener::class, $definition->getClass());
         $this->assertSame('assets.packages', (string) $definition->getArgument(0));
@@ -523,7 +523,7 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame(101, $tags['controller.argument_value_resolver'][0]['priority']);
     }
 
-    public function testRegistersTheAssetPluginContext()
+    public function testRegistersTheAssetPluginContext(): void
     {
         $this->assertTrue($this->container->has('contao.assets.plugins_context'));
 
@@ -536,7 +536,7 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('%kernel.debug%', $definition->getArgument(3));
     }
 
-    public function testRegistersTheAssetFilesContext()
+    public function testRegistersTheAssetFilesContext(): void
     {
         $this->assertTrue($this->container->has('contao.assets.files_context'));
 

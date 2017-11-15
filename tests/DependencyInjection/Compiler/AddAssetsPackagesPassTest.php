@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\DependencyInjection\Compiler;
 
-use Contao\CoreBundle\DependencyInjection\Compiler\AssetPackagesPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -24,19 +24,17 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;
 
-class AssetPackagesPassTest extends TestCase
+class AddAssetsPackagesPassTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $pass = new AssetPackagesPass();
+        $pass = new AddAssetsPackagesPass();
 
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\AssetPackagesPass', $pass);
+        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass', $pass);
     }
 
-    public function testAbortsIfAssetServiceDoesNotExist()
+    public function testAbortsIfTheAssetsPackagesServiceDoesNotExist(): void
     {
-        $pass = new AssetPackagesPass();
-
         $container = $this->createMock(ContainerBuilder::class);
 
         $container
@@ -51,47 +49,20 @@ class AssetPackagesPassTest extends TestCase
             ->method('getDefinition')
         ;
 
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
     }
 
-    public function testIgnoresBundlesWithoutPublicDir()
+    public function testIgnoresBundlesWithoutPublicFolder(): void
     {
-        $pass = new AssetPackagesPass();
-        $kernel = $this->createMock(Kernel::class);
         $bundle = $this->mockBundle('FooBarBundle', false);
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
-        $container->setDefinition('assets.packages', $definition);
-        $container->set('kernel', $kernel);
-
-        $kernel
-            ->expects($this->once())
-            ->method('getBundles')
-            ->willReturn([$bundle])
-        ;
 
         $bundle
             ->expects($this->never())
             ->method('getContainerExtension')
         ;
 
-        $pass->process($container);
-
-        $this->assertEmpty($container->getDefinition('assets.packages')->getMethodCalls());
-    }
-
-    public function testUsesBundleExtensionAliasForPackageName()
-    {
-        $pass = new AssetPackagesPass();
         $kernel = $this->createMock(Kernel::class);
-        $bundle = $this->mockBundle('BarBundle');
-        $extension = $this->createMock(ExtensionInterface::class);
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
-        $container->setDefinition('assets.packages', $definition);
-        $container->set('kernel', $kernel);
 
         $kernel
             ->expects($this->once())
@@ -99,11 +70,19 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn([$bundle])
         ;
 
-        $bundle
-            ->expects($this->once())
-            ->method('getContainerExtension')
-            ->willReturn($extension)
-        ;
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->set('kernel', $kernel);
+
+        $pass = new AddAssetsPackagesPass();
+        $pass->process($container);
+
+        $this->assertEmpty($container->getDefinition('assets.packages')->getMethodCalls());
+    }
+
+    public function testUsesTheBundleExtensionAliasAsPackageName(): void
+    {
+        $extension = $this->createMock(ExtensionInterface::class);
 
         $extension
             ->expects($this->once())
@@ -111,7 +90,29 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn('foo_bar')
         ;
 
+        $bundle = $this->mockBundle('BarBundle');
+
+        $bundle
+            ->expects($this->once())
+            ->method('getContainerExtension')
+            ->willReturn($extension)
+        ;
+
+        $kernel = $this->createMock(Kernel::class);
+
+        $kernel
+            ->expects($this->once())
+            ->method('getBundles')
+            ->willReturn([$bundle])
+        ;
+
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->set('kernel', $kernel);
+
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
+
         $calls = $container->getDefinition('assets.packages')->getMethodCalls();
 
         $this->assertCount(1, $calls);
@@ -125,23 +126,9 @@ class AssetPackagesPassTest extends TestCase
         $this->assertSame('contao.assets.plugins_context', (string) $service->getArgument(2));
     }
 
-    public function testFallsBackToBundleForPackageName()
+    public function testFallsBackToTheBundleNameAsPackageName(): void
     {
-        $pass = new AssetPackagesPass();
-        $kernel = $this->createMock(Kernel::class);
         $bundle = $this->mockBundle('FooBarBundle');
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
-        $container->setDefinition('assets.packages', $definition);
-        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
-        $container->set('kernel', $kernel);
-
-        $kernel
-            ->expects($this->once())
-            ->method('getBundles')
-            ->willReturn([$bundle])
-        ;
 
         $bundle
             ->expects($this->once())
@@ -149,7 +136,22 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn(null)
         ;
 
+        $kernel = $this->createMock(Kernel::class);
+
+        $kernel
+            ->expects($this->once())
+            ->method('getBundles')
+            ->willReturn([$bundle])
+        ;
+
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
+        $container->set('kernel', $kernel);
+
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
+
         $calls = $container->getDefinition('assets.packages')->getMethodCalls();
 
         $this->assertCount(1, $calls);
@@ -163,18 +165,10 @@ class AssetPackagesPassTest extends TestCase
         $this->assertSame('contao.assets.plugins_context', (string) $service->getArgument(2));
     }
 
-    public function testPrefersDefaultVersionStrategyForBundles()
+    public function testUsesTheDefaultVersionStrategyForBundles(): void
     {
-        $pass = new AssetPackagesPass();
-        $kernel = $this->createMock(Kernel::class);
         $bundle = $this->mockBundle('BarBundle');
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
-        $container->setDefinition('assets.packages', $definition);
-        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
-        $container->setDefinition('assets._version_default', new Definition(StaticVersionStrategy::class));
-        $container->set('kernel', $kernel);
+        $kernel = $this->createMock(Kernel::class);
 
         $kernel
             ->expects($this->once())
@@ -182,25 +176,26 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn([$bundle])
         ;
 
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
+        $container->setDefinition('assets._version_default', new Definition(StaticVersionStrategy::class));
+        $container->set('kernel', $kernel);
+
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition('assets._package_bar'));
 
         $service = $container->getDefinition('assets._package_bar');
+
         $this->assertSame('assets._version_default', (string) $service->getArgument(1));
     }
 
-    public function testSupportsBundleWithWrongSuffix()
+    public function testSupportsBundlesWithWrongSuffix(): void
     {
-        $pass = new AssetPackagesPass();
-        $kernel = $this->createMock(Kernel::class);
         $bundle = $this->mockBundle('FooBarPackage');
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
-        $container->setDefinition('assets.packages', $definition);
-        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
-        $container->set('kernel', $kernel);
+        $kernel = $this->createMock(Kernel::class);
 
         $kernel
             ->expects($this->once())
@@ -208,29 +203,29 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn([$bundle])
         ;
 
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->setDefinition('assets.empty_version_strategy', new Definition(EmptyVersionStrategy::class));
+        $container->set('kernel', $kernel);
+
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition('assets._package_foo_bar_package'));
 
         $service = $container->getDefinition('assets._package_foo_bar_package');
+
         $this->assertSame('bundles/foobarpackage', $service->getArgument(0));
     }
 
-    public function testRegistersComponents()
+    public function testRegistersTheContaoComponents(): void
     {
-        $pass = new AssetPackagesPass();
-        $kernel = $this->createMock(Kernel::class);
-        $container = $this->mockContainer();
-        $definition = new Definition(Packages::class);
-
         $composer = [
             'contao-components/foo' => '1.2.3',
             'vendor/bar' => '3.2.1',
         ];
 
-        $container->setDefinition('assets.packages', $definition);
-        $container->set('kernel', $kernel);
-        $container->setParameter('kernel.packages', $composer);
+        $kernel = $this->createMock(Kernel::class);
 
         $kernel
             ->expects($this->once())
@@ -238,6 +233,12 @@ class AssetPackagesPassTest extends TestCase
             ->willReturn([])
         ;
 
+        $container = $this->mockContainer();
+        $container->setDefinition('assets.packages', new Definition(Packages::class));
+        $container->set('kernel', $kernel);
+        $container->setParameter('kernel.packages', $composer);
+
+        $pass = new AddAssetsPackagesPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition('assets._package_contao-components/foo'));
@@ -246,37 +247,45 @@ class AssetPackagesPassTest extends TestCase
         $this->assertFalse($container->hasDefinition('assets._version_vendor/bar'));
 
         $service = $container->getDefinition('assets._package_contao-components/foo');
+
         $this->assertSame('assets._version_contao-components/foo', (string) $service->getArgument(1));
 
         $version = $container->getDefinition('assets._version_contao-components/foo');
+
         $this->assertSame('1.2.3', $version->getArgument(0));
     }
 
-    private function mockBundle($name, $tempDir = true)
+    /**
+     * Mocks a bundle.
+     *
+     * @param string $name
+     * @param bool   $addPublicFolder
+     *
+     * @return Bundle|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockBundle(string $name, bool $addPublicFolder = true): Bundle
     {
-        $builder = $this->getMockBuilder(Bundle::class);
-
-        $builder
+        /** @var Bundle|\PHPUnit_Framework_MockObject_MockObject $bundle */
+        $bundle = $this
+            ->getMockBuilder(Bundle::class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
             ->setMockClassName($name)
+            ->getMock()
         ;
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|Bundle $mock */
-        $mock = $builder->getMock();
-
-        $mock
+        $bundle
             ->expects($this->once())
             ->method('getPath')
-            ->willReturn(static::getTempDir().'/'.$mock->getName())
+            ->willReturn(static::getTempDir().'/'.$bundle->getName())
         ;
 
-        if ($tempDir) {
-            (new Filesystem())->mkdir(static::getTempDir().'/'.$mock->getName().'/Resources/public');
+        if ($addPublicFolder) {
+            (new Filesystem())->mkdir(static::getTempDir().'/'.$bundle->getName().'/Resources/public');
         }
 
-        return $mock;
+        return $bundle;
     }
 }

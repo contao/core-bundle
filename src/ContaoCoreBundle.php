@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle;
 
+use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
-use Contao\CoreBundle\DependencyInjection\Compiler\AssetPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
@@ -58,7 +58,9 @@ class ContaoCoreBundle extends Bundle
             new AddPackagesPass($container->getParameter('kernel.root_dir').'/../vendor/composer/installed.json')
         );
 
-        $container->addCompilerPass(new AssetPackagesPass()); // Must be after AddPackagesPass!
+        // Add the assets packages after the Composer packages
+        $container->addCompilerPass(new AddAssetsPackagesPass());
+
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
         $container->addCompilerPass(new AddImagineClassPass());

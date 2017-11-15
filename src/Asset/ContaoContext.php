@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Asset;
 
 use Contao\Config;
@@ -31,8 +41,6 @@ class ContaoContext implements ContextInterface
     private $debug;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      * @param RequestStack             $requestStack
      * @param string                   $field
@@ -51,39 +59,40 @@ class ContaoContext implements ContextInterface
      */
     public function getBasePath()
     {
-        $page = $this->getPage();
-        $request = $this->requestStack->getCurrentRequest();
-
-        if ($this->debug || null === $request || '' === ($host = $this->getFieldValue($page))) {
+        if ($this->debug) {
             return '';
         }
 
-        return sprintf(
-            '%s://%s%s',
-            $this->isSecure() ? 'https' : 'http',
-            preg_replace('@https?://@', '', $host),
-            $request->getBasePath()
-        );
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request || '' === ($staticUrl = $this->getFieldValue($this->getPage()))) {
+            return '';
+        }
+
+        $protocol = $this->isSecure() ? 'https' : 'http';
+        $relative = preg_replace('@https?://@', '', $staticUrl);
+
+        return sprintf('%s://%s%s', $protocol, $relative, $request->getBasePath());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isSecure()
+    public function isSecure(): bool
     {
         $page = $this->getPage();
 
-        if (null === $page) {
-            $request = $this->requestStack->getCurrentRequest();
-
-            if (null === $request) {
-                return false;
-            }
-
-            return $request->isSecure();
+        if (null !== $page) {
+            return (bool) $page->loadDetails()->rootUseSSL;
         }
 
-        return (bool) $page->loadDetails()->rootUseSSL;
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return false;
+        }
+
+        return $request->isSecure();
     }
 
     /**
@@ -109,13 +118,13 @@ class ContaoContext implements ContextInterface
      */
     private function getFieldValue(?PageModel $page): string
     {
-        if (null === $page) {
-            /** @var Config $config */
-            $config = $this->framework->createInstance(Config::class);
-
-            return (string) $config->get($this->field);
+        if (null !== $page) {
+            return (string) $page->{$this->field};
         }
 
-        return (string) $page->{$this->field};
+        /** @var Config $config */
+        $config = $this->framework->createInstance(Config::class);
+
+        return (string) $config->get($this->field);
     }
 }

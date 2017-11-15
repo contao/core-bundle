@@ -356,7 +356,7 @@ abstract class Template extends \Controller
 
 
 	/**
-	 * Returns an asset path.
+	 * Returns an asset path
 	 *
 	 * @param string      $path
 	 * @param string|null $packageName

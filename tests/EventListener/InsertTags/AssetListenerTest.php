@@ -25,10 +25,9 @@ class AssetListenerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\InsertTags\AssetListener', $listener);
     }
 
-    public function testReplacesAssetInsertTagWithPackageName()
+    public function testReplacesInsertTagsWithPackageName(): void
     {
         $packages = $this->createMock(Packages::class);
-        $listener = new AssetListener($packages);
 
         $packages
             ->expects($this->once())
@@ -37,15 +36,14 @@ class AssetListenerTest extends TestCase
             ->willReturnArgument(0)
         ;
 
-        $value = $listener->onReplaceInsertTags('asset::foo/bar::package');
+        $listener = new AssetListener($packages);
 
-        $this->assertSame('foo/bar', $value);
+        $this->assertSame('foo/bar', $listener->onReplaceInsertTags('asset::foo/bar::package'));
     }
 
-    public function testReplacesAssetInsertTagWithoutPackageName()
+    public function testReplacesInsertTagsWithoutPackageName(): void
     {
         $packages = $this->createMock(Packages::class);
-        $listener = new AssetListener($packages);
 
         $packages
             ->expects($this->once())
@@ -54,20 +52,21 @@ class AssetListenerTest extends TestCase
             ->willReturnArgument(0)
         ;
 
-        $value = $listener->onReplaceInsertTags('asset::foo/bar');
+        $listener = new AssetListener($packages);
 
-        $this->assertSame('foo/bar', $value);
+        $this->assertSame('foo/bar', $listener->onReplaceInsertTags('asset::foo/bar'));
     }
 
-    public function testIgnoresOtherInsertTags()
+    public function testIgnoresOtherInsertTags(): void
     {
         $packages = $this->createMock(Packages::class);
-        $listener = new AssetListener($packages);
 
         $packages
             ->expects($this->never())
             ->method('getUrl')
         ;
+
+        $listener = new AssetListener($packages);
 
         $this->assertFalse($listener->onReplaceInsertTags('env::pageTitle'));
     }

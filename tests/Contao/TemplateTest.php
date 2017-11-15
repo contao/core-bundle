@@ -211,9 +211,10 @@ EOF
         $this->assertSame($obLevel, ob_get_level());
     }
 
-    public function testSupportsAssetPackages(): void
+    public function testLoadsTheAssetsPackages(): void
     {
         $packages = $this->createMock(Packages::class);
+
         $packages
             ->expects($this->once())
             ->method('getUrl')

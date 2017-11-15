@@ -20,12 +20,8 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-/**
- * Adds asset packages to the container.
- */
-class AssetPackagesPass implements CompilerPassInterface
+class AddAssetsPackagesPass implements CompilerPassInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -40,11 +36,11 @@ class AssetPackagesPass implements CompilerPassInterface
     }
 
     /**
-     * Adds each bundle with a public folder as asset package.
+     * Adds every bundle with a public folder as assets package.
      *
      * @param ContainerBuilder $container
      */
-    private function addBundles(ContainerBuilder $container)
+    private function addBundles(ContainerBuilder $container): void
     {
         $packages = $container->getDefinition('assets.packages');
         $context = new Reference('contao.assets.plugins_context');
@@ -55,8 +51,10 @@ class AssetPackagesPass implements CompilerPassInterface
             $version = new Reference('assets.empty_version_strategy');
         }
 
-        /** @var Bundle $bundle */
-        foreach ($container->get('kernel')->getBundles() as $bundle) {
+        /** @var Bundle[] $bundles */
+        $bundles = $container->get('kernel')->getBundles();
+
+        foreach ($bundles as $bundle) {
             if (!is_dir($originDir = $bundle->getPath().'/Resources/public')) {
                 continue;
             }
@@ -68,15 +66,15 @@ class AssetPackagesPass implements CompilerPassInterface
             }
 
             $serviceId = 'assets._package_'.$packageName;
-            $basePath = 'bundles/' . preg_replace('/bundle$/', '', strtolower($bundle->getName()));
-            $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
+            $basePath = 'bundles/'.preg_replace('/bundle$/', '', strtolower($bundle->getName()));
 
+            $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
             $packages->addMethodCall('addPackage', [$packageName, new Reference($serviceId)]);
         }
     }
 
     /**
-     * Adds each Contao component as asset package.
+     * Adds the Contao components as assets packages.
      *
      * @param ContainerBuilder $container
      */
@@ -88,25 +86,26 @@ class AssetPackagesPass implements CompilerPassInterface
 
         $packages = $container->getDefinition('assets.packages');
         $context = new Reference('contao.assets.plugins_context');
+        $components = $container->getParameter('kernel.packages');
 
-        foreach ($container->getParameter('kernel.packages') as $name => $version) {
-            list($vendor, $packageName) = explode('/', $name, 2);
+        foreach ($components as $name => $version) {
+            [$vendor, $packageName] = explode('/', $name, 2);
 
             if ('contao-components' !== $vendor) {
                 continue;
             }
 
             $serviceId = 'assets._package_'.$name;
-            $basePath = 'assets/' . $packageName;
+            $basePath = 'assets/'.$packageName;
             $version = $this->createPackageVersion($container, $version, $name);
-            $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
 
+            $container->setDefinition($serviceId, $this->createPackageDefinition($basePath, $version, $context));
             $packages->addMethodCall('addPackage', [$name, new Reference($serviceId)]);
         }
     }
 
     /**
-     * Creates a definition for an asset package.
+     * Creates an assets package definition.
      *
      * @param string    $basePath
      * @param Reference $version
@@ -117,6 +116,7 @@ class AssetPackagesPass implements CompilerPassInterface
     private function createPackageDefinition(string $basePath, Reference $version, Reference $context): Definition
     {
         $package = new ChildDefinition('assets.path_package');
+
         $package
             ->setPublic(false)
             ->replaceArgument(0, $basePath)
@@ -128,7 +128,7 @@ class AssetPackagesPass implements CompilerPassInterface
     }
 
     /**
-     * Creates a version strategy for an asset package.
+     * Creates an asset package version strategy.
      *
      * @param ContainerBuilder $container
      * @param string           $version
@@ -147,7 +147,7 @@ class AssetPackagesPass implements CompilerPassInterface
     }
 
     /**
-     * Gets a package name from bundle name, trying to emulate what a bundle extension would look like.
+     * Returns a bundle package name emulating what a bundle extension would look like.
      *
      * @param Bundle $bundle
      *

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,7 +22,7 @@ class AssetListener
     private $packages;
 
     /**
-     * Constructor.
+     * @param Packages $packages
      */
     public function __construct(Packages $packages)
     {
@@ -28,18 +30,18 @@ class AssetListener
     }
 
     /**
-     * Replaces the {{asset::…}} insert tag.
+     * Replaces the "asset" insert tag.
      *
      * @param string $tag
      *
-     * @return string|bool
+     * @return string|false
      */
     public function onReplaceInsertTags(string $tag)
     {
         $chunks = explode('::', $tag);
 
         if ('asset' === $chunks[0]) {
-            return $this->packages->getUrl((string) $chunks[1], $chunks[2] ?? null);
+            return $this->packages->getUrl($chunks[1], $chunks[2] ?? null);
         }
 
         return false;

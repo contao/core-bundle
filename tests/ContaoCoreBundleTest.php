@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests;
 
 use Contao\CoreBundle\ContaoCoreBundle;
+use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
-use Contao\CoreBundle\DependencyInjection\Compiler\AssetPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\FragmentRegistryPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\PickerProviderPass;
@@ -56,7 +56,7 @@ class ContaoCoreBundleTest extends TestCase
     {
         $passes = [
             AddPackagesPass::class,
-            AssetPackagesPass::class,
+            AddAssetsPackagesPass::class,
             AddSessionBagsPass::class,
             AddResourcesPathsPass::class,
             AddImagineClassPass::class,
@@ -76,11 +76,11 @@ class ContaoCoreBundleTest extends TestCase
         ;
 
         $container
-            ->expects($this->exactly(count($passes)))
+            ->expects($this->exactly(\count($passes)))
             ->method('addCompilerPass')
             ->with(
                 $this->callback(function ($param) use ($passes) {
-                    return in_array(get_class($param), $passes);
+                    return \in_array(\get_class($param), $passes, true);
                 })
             )
         ;
@@ -89,7 +89,7 @@ class ContaoCoreBundleTest extends TestCase
         $bundle->build($container);
     }
 
-    public function testAddsPackagesPassBeforeAssetPass()
+    public function testAddsPackagesPassBeforeAssetsPackagesPass(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('kernel.root_dir', $this->getFixturesDir().'/app');
@@ -105,7 +105,7 @@ class ContaoCoreBundleTest extends TestCase
         }
 
         $packagesPosition = array_search(AddPackagesPass::class, $classes, true);
-        $assetsPosition = array_search(AssetPackagesPass::class, $classes, true);
+        $assetsPosition = array_search(AddAssetsPackagesPass::class, $classes, true);
 
         $this->assertTrue($packagesPosition < $assetsPosition);
     }

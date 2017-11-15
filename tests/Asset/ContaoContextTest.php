@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Asset;
 
+use Contao\Config;
 use Contao\CoreBundle\Asset\ContaoContext;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\Model\Registry;
 use Contao\PageModel;
@@ -21,78 +23,51 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContaoContextTest extends TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        unset($GLOBALS['objPage']);
-    }
-
     public function testCanBeInstantiated(): void
     {
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            'staticPlugins'
-        );
+        $context = $this->mockContaoContext('staticPlugins');
 
         $this->assertInstanceOf('Contao\CoreBundle\Asset\ContaoContext', $context);
     }
 
-    public function testReturnsEmptyBasePathInDebugMode()
+    public function testReturnsAnEmptyBasePathInDebugMode(): void
     {
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            'staticPlugins',
-            true
-        );
+        $context = new ContaoContext($this->mockContaoFramework(), new RequestStack(), 'staticPlugins', true);
 
         $this->assertSame('', $context->getBasePath());
     }
 
-    public function testReturnsEmptyBasePathWithoutRequest()
+    public function testReturnsAnEmptyBasePathIfThereIsNoRequest(): void
     {
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            'staticPlugins'
-        );
+        $context = $this->mockContaoContext('staticPlugins');
 
         $this->assertSame('', $context->getBasePath());
     }
 
-    public function testHandlesEmptyBasePathFromPage()
+    public function testReturnsAnEmptyBasePathIfThePageDoesNotDefineIt(): void
     {
         $page = $this->mockPageWithDetails();
-
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            'staticPlugins'
-        );
 
         $GLOBALS['objPage'] = $page;
 
+        $context = $this->mockContaoContext('staticPlugins');
+
         $this->assertSame('', $context->getBasePath());
+
+        unset($GLOBALS['objPage']);
     }
 
     /**
-     * @dataProvider basePathProvider
+     * @param string $domain
+     * @param bool   $useSSL
+     * @param string $basePath
+     * @param string $expected
+     *
+     * @dataProvider getBasePaths
      */
-    public function testReadsFromPage($domain, $useSSL, $basePath, $expected)
+    public function testReadsTheBasePathFromThePageModel(string $domain, bool $useSSL, string $basePath, string $expected): void
     {
         $request = $this->createMock(Request::class);
-        $requestStack = new RequestStack();
-        $page = $this->mockPageWithDetails();
-
-        $requestStack->push($request);
-
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            $requestStack,
-            'staticPlugins'
-        );
 
         $request
             ->expects($this->once())
@@ -100,38 +75,33 @@ class ContaoContextTest extends TestCase
             ->willReturn($basePath)
         ;
 
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $page = $this->mockPageWithDetails();
         $page->rootUseSSL = $useSSL;
         $page->staticPlugins = $domain;
 
         $GLOBALS['objPage'] = $page;
 
+        $context = $this->mockContaoContext('staticPlugins', $requestStack);
+
         $this->assertSame($expected, $context->getBasePath());
+
+        unset($GLOBALS['objPage']);
     }
 
     /**
-     * @dataProvider basePathProvider
+     * @param string $domain
+     * @param bool   $useSSL
+     * @param string $basePath
+     * @param string $expected
+     *
+     * @dataProvider getBasePaths
      */
-    public function testReadsFromConfigIfNoPageIsAvailable($domain, $useSSL, $basePath, $expected)
+    public function testReadsTheBasePathFromTheGlobalConfigurationIfThePageDoesNotDefineIt(string $domain, bool $useSSL, string $basePath, string $expected): void
     {
-        $config = $this->mockConfiguredAdapter(['get' => $domain]);
-        $framework = $this->mockContaoFramework();
         $request = $this->createMock(Request::class);
-        $requestStack = new RequestStack();
-
-        $requestStack->push($request);
-
-        $context = new ContaoContext(
-            $framework,
-            $requestStack,
-            'staticPlugins'
-        );
-
-        $framework
-            ->expects($this->once())
-            ->method('createInstance')
-            ->with('Contao\Config')
-            ->willReturn($config)
-        ;
 
         $request
             ->expects($this->once())
@@ -145,10 +115,25 @@ class ContaoContextTest extends TestCase
             ->willReturn($useSSL)
         ;
 
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $config = $this->mockConfiguredAdapter(['get' => $domain]);
+        $framework = $this->mockContaoFramework();
+
+        $framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->with(Config::class)
+            ->willReturn($config)
+        ;
+
+        $context = $this->mockContaoContext('staticPlugins', $requestStack, $framework);
+
         $this->assertSame($expected, $context->getBasePath());
     }
 
-    public function basePathProvider()
+    public function getBasePaths(): array
     {
         return [
             ['example.com', true, '', 'https://example.com'],
@@ -159,39 +144,33 @@ class ContaoContextTest extends TestCase
         ];
     }
 
-    public function testIsSecureFromPage()
+    public function testReadsTheSslConfigurationFromThePage(): void
     {
         $page = $this->mockPageWithDetails();
 
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            new RequestStack(),
-            ''
-        );
-
         $GLOBALS['objPage'] = $page;
+
+        $context = $this->mockContaoContext('');
 
         $page->rootUseSSL = true;
         $this->assertTrue($context->isSecure());
 
         $page->rootUseSSL = false;
         $this->assertFalse($context->isSecure());
+
+        unset($GLOBALS['objPage']);
     }
 
-    public function testIsSecureFromRequest()
+    public function testReadsTheSslConfigurationFromTheRequest(): void
     {
         $request = new Request();
-        $requestStack = new RequestStack();
 
-        $context = new ContaoContext(
-            $this->mockContaoFramework(),
-            $requestStack,
-            ''
-        );
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $context = $this->mockContaoContext('', $requestStack);
 
         $this->assertFalse($context->isSecure());
-
-        $requestStack->push($request);
 
         $request->server->set('HTTPS', 'on');
         $this->assertTrue($context->isSecure());
@@ -200,19 +179,43 @@ class ContaoContextTest extends TestCase
         $this->assertFalse($context->isSecure());
     }
 
-    private function mockPageWithDetails()
+    /**
+     * Mocks a page model with details.
+     *
+     * @return PageModel
+     */
+    private function mockPageWithDetails(): PageModel
     {
-        // Necessary to load the aliased object
+        // Ensure to use the fixtures class
         Registry::getInstance();
 
         $page = new PageModel();
-
         $page->type = 'root';
         $page->fallback = true;
         $page->staticPlugins = '';
 
-        $page->loadDetails();
+        return $page->loadDetails();
+    }
 
-        return $page;
+    /**
+     * Mocks a Contao context.
+     *
+     * @param string                        $field
+     * @param RequestStack|null             $requestStack
+     * @param ContaoFrameworkInterface|null $framework
+     *
+     * @return ContaoContext
+     */
+    private function mockContaoContext(string $field, RequestStack $requestStack = null, ContaoFrameworkInterface $framework = null): ContaoContext
+    {
+        if (null === $requestStack) {
+            $requestStack = new RequestStack();
+        }
+
+        if (null === $framework) {
+            $framework = $this->mockContaoFramework();
+        }
+
+        return new ContaoContext($framework, $requestStack, $field);
     }
 }

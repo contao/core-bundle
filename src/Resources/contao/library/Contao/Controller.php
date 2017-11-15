@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\AjaxRedirectResponseException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -1793,11 +1792,17 @@ abstract class Controller extends \System
 	/**
 	 * Set the static URL constants
 	 *
-	 * @deprecated Deprecated in Contao 4.5, to be removed in Contao 5. Use the asset contexts instead.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the asset contexts instead.
 	 */
 	public static function setStaticUrls()
 	{
-		if (func_num_args() > 0)
+		if (\defined('TL_FILES_URL'))
+		{
+			return;
+		}
+
+		if (\func_num_args() > 0)
 		{
 			@trigger_error('Using Controller::setStaticUrls() has been deprecated and will no longer work in Contao 5.0. Use the asset contexts instead.', E_USER_DEPRECATED);
 
@@ -1807,17 +1812,15 @@ abstract class Controller extends \System
 			}
 		}
 
-		// Static URLs, deprecated since Contao 4.5, to be removed in Contao 5.0
-		if (!\defined('TL_FILES_URL'))
-		{
-			$pluginsUrl = \System::getContainer()->get('contao.assets.plugins_context')->getBasePath();
-			$filesUrl = \System::getContainer()->get('contao.assets.files_context')->getBasePath();
+		$pluginsUrl = \System::getContainer()->get('contao.assets.plugins_context')->getBasePath();
+		$filesUrl = \System::getContainer()->get('contao.assets.files_context')->getBasePath();
 
-			\define('TL_ASSETS_URL', $pluginsUrl ? $pluginsUrl.'/' : '');
-			\define('TL_FILES_URL', $filesUrl ? $filesUrl.'/' : '');
-			\define('TL_SCRIPT_URL', TL_ASSETS_URL);
-			\define('TL_PLUGINS_URL', TL_ASSETS_URL);
-		}
+		\define('TL_ASSETS_URL', $pluginsUrl ? $pluginsUrl.'/' : '');
+		\define('TL_FILES_URL', $filesUrl ? $filesUrl.'/' : '');
+
+		// Deprecated since Contao 4.0, to be removed in Contao 5.0
+		\define('TL_SCRIPT_URL', TL_ASSETS_URL);
+		\define('TL_PLUGINS_URL', TL_ASSETS_URL);
 	}
 
 
