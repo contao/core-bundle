@@ -119,15 +119,7 @@ class ContaoContextTest extends TestCase
         $requestStack->push($request);
 
         $config = $this->mockConfiguredAdapter(['get' => $domain]);
-        $framework = $this->mockContaoFramework();
-
-        $framework
-            ->expects($this->once())
-            ->method('createInstance')
-            ->with(Config::class)
-            ->willReturn($config)
-        ;
-
+        $framework = $this->mockContaoFramework([Config::class => $config]);
         $context = $this->mockContaoContext('staticPlugins', $requestStack, $framework);
 
         $this->assertSame($expected, $context->getBasePath());

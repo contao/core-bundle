@@ -122,8 +122,10 @@ class ContaoContext implements ContextInterface
             return (string) $page->{$this->field};
         }
 
+        $this->framework->initialize();
+
         /** @var Config $config */
-        $config = $this->framework->createInstance(Config::class);
+        $config = $this->framework->getAdapter(Config::class);
 
         return (string) $config->get($this->field);
     }
