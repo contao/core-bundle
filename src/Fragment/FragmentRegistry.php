@@ -20,22 +20,12 @@ class FragmentRegistry implements FragmentRegistryInterface
     private $fragments = [];
 
     /**
-     * @var array
-     */
-    private $fragmentOptions = [];
-
-    /**
      * {@inheritdoc}
      */
-    public function addFragment(string $identifier, $fragment, array $options): FragmentRegistryInterface
+    public function add(string $identifier, FragmentConfig $config): FragmentRegistryInterface
     {
-        if (3 !== \count(array_intersect(array_keys($options), ['tag', 'type', 'controller']))) {
-            throw new \InvalidArgumentException('Missing the three basic options "tag", "type" and "controller".');
-        }
-
         // Override existing fragments with the same identifier
-        $this->fragments[$identifier] = $fragment;
-        $this->fragmentOptions[$identifier] = $options;
+        $this->fragments[$identifier] = $config;
 
         return $this;
     }
@@ -43,7 +33,25 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFragment(string $identifier)
+    public function remove(string $identifier): FragmentRegistryInterface
+    {
+        unset($this->fragments[$identifier]);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $identifier): bool
+    {
+        return isset($this->fragments[$identifier]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get(string $identifier): ?FragmentConfig
     {
         return $this->fragments[$identifier];
     }
@@ -51,26 +59,16 @@ class FragmentRegistry implements FragmentRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getOptions(string $identifier): array
+    public function all(): array
     {
-        return $this->fragmentOptions[$identifier];
+        return $this->fragments;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFragments(callable $filter = null): array
+    public function keys(): array
     {
-        $matches = [];
-
-        foreach ($this->fragments as $identifier => $fragment) {
-            if (null !== $filter && !$filter($identifier, $fragment)) {
-                continue;
-            }
-
-            $matches[$identifier] = $fragment;
-        }
-
-        return $matches;
+        return array_keys($this->fragments);
     }
 }

@@ -41,7 +41,7 @@ use Contao\CoreBundle\EventListener\HeaderReplay\UserSessionListener as HeaderRe
 use Contao\CoreBundle\EventListener\InsecureInstallationListener;
 use Contao\CoreBundle\EventListener\InsertTags\AssetListener;
 use Contao\CoreBundle\EventListener\LocaleListener;
-use Contao\CoreBundle\EventListener\MapFragmentsToGlobalsListener;
+use Contao\CoreBundle\EventListener\GlobalsMapListener;
 use Contao\CoreBundle\EventListener\MergeHttpHeadersListener;
 use Contao\CoreBundle\EventListener\PrettyErrorScreenListener;
 use Contao\CoreBundle\EventListener\RefererIdListener;
@@ -49,13 +49,7 @@ use Contao\CoreBundle\EventListener\ResponseExceptionListener;
 use Contao\CoreBundle\EventListener\StoreRefererListener;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\EventListener\UserSessionListener as EventUserSessionListener;
-use Contao\CoreBundle\Fragment\ContentElement\DefaultContentElementRenderer;
-use Contao\CoreBundle\Fragment\ContentElement\DelegatingContentElementRenderer;
 use Contao\CoreBundle\Fragment\FragmentRegistry;
-use Contao\CoreBundle\Fragment\FrontendModule\DefaultFrontendModuleRenderer;
-use Contao\CoreBundle\Fragment\FrontendModule\DelegatingFrontendModuleRenderer;
-use Contao\CoreBundle\Fragment\PageType\DefaultPageTypeRenderer;
-use Contao\CoreBundle\Fragment\PageType\DelegatingPageTypeRenderer;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Image\ImageFactory;
@@ -338,7 +332,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $definition = $this->container->getDefinition('contao.listener.map_fragments_to_globals');
 
-        $this->assertSame(MapFragmentsToGlobalsListener::class, $definition->getClass());
+        $this->assertSame(GlobalsMapListener::class, $definition->getClass());
         $this->assertTrue($definition->isPublic());
         $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(0));
     }
