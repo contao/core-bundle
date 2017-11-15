@@ -30,7 +30,7 @@ class MapFragmentsToGlobalsPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $elements = $this->getFragmentTags($container, ContentElementReference::TAG_NAME);
         $elements = $this->createGlobalsMapForTag($elements, 'TL_CTE', ContentProxy::class);

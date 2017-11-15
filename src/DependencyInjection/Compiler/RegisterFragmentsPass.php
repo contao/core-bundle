@@ -127,12 +127,12 @@ class RegisterFragmentsPass implements CompilerPassInterface
     }
 
     /**
-     * Adds additional factories to the preHandler ServiceLocator
+     * Adds additional factories to the preHandler ServiceLocator.
      *
      * @param ContainerBuilder $container
      * @param array            $handlers
      */
-    protected function addPreHandlers(ContainerBuilder $container, array $handlers)
+    protected function addPreHandlers(ContainerBuilder $container, array $handlers): void
     {
         if (!$container->hasDefinition('contao.fragment.pre_handlers')) {
             throw new \RuntimeException('Missing service definition for "contao.fragment.pre_handlers"');
@@ -157,7 +157,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
         }
 
         $className = $definition->getClass();
-        $className = substr($className, strrchr($className, '\\')+1);
+        $className = substr($className, strrchr($className, '\\') + 1);
 
         if ('Controller' === substr($className, -10)) {
             $className = substr($className, 1, -10);

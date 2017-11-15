@@ -72,7 +72,7 @@ class FragmentRenderer implements FragmentRendererInterface
      * @param FragmentReference $uri
      * @param FragmentConfig    $config
      */
-    private function preHandleFragment(FragmentReference $uri, FragmentConfig $config)
+    private function preHandleFragment(FragmentReference $uri, FragmentConfig $config): void
     {
         if (isset($GLOBALS['objPage']) && !isset($uri->attributes['pageModel'])) {
             $uri->attributes['pageModel'] = $GLOBALS['objPage']->id;

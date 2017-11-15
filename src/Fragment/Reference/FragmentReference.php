@@ -20,7 +20,7 @@ class FragmentReference extends ControllerReference
     /**
      * {@inheritdoc}
      */
-    public function __construct($fragment, array $attributes = array(), array $query = array())
+    public function __construct($fragment, array $attributes = [], array $query = [])
     {
         parent::__construct($fragment, $attributes, $query);
 
@@ -34,7 +34,7 @@ class FragmentReference extends ControllerReference
         return $this->isScope(ContaoCoreBundle::SCOPE_FRONTEND);
     }
 
-    public function setFrontend()
+    public function setFrontend(): void
     {
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_FRONTEND;
     }
@@ -44,7 +44,7 @@ class FragmentReference extends ControllerReference
         return $this->isScope(ContaoCoreBundle::SCOPE_BACKEND);
     }
 
-    public function setBackend()
+    public function setBackend(): void
     {
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_BACKEND;
     }
