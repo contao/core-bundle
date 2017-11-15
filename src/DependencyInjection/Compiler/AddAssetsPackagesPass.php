@@ -59,7 +59,6 @@ class AddAssetsPackagesPass implements CompilerPassInterface
             }
 
             $packageName = $this->getBundlePackageName($name);
-
             $serviceId = 'assets._package_'.$packageName;
             $basePath = 'bundles/'.preg_replace('/bundle$/', '', strtolower($name));
 
