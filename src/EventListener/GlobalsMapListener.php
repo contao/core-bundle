@@ -34,6 +34,6 @@ class GlobalsMapListener
      */
     public function onInitializeSystem(): void
     {
-        $GLOBALS = array_merge_recursive($GLOBALS, $this->globals);
+        $GLOBALS = array_replace_recursive($GLOBALS, $this->globals);
     }
 }

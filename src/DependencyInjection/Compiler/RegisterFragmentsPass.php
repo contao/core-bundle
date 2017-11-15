@@ -26,8 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Registers Contao fragments in the registry.
- *
- * For custom fragment tags, just override this class and replace the process() method.
+ * For custom fragment tags, create your own compiler pass by extending this class and replacing the process() method.
  */
 class RegisterFragmentsPass implements CompilerPassInterface
 {

@@ -26,9 +26,9 @@ class FrontendModuleReference extends FragmentReference
      */
     public function __construct(ModuleModel $model, string $inColumn = 'main')
     {
+        parent::__construct(self::TAG_NAME.'.'.$model->type);
+
         $this->attributes['moduleModel'] = $model->id;
         $this->attributes['inColumn'] = $inColumn;
-
-        parent::__construct(self::TAG_NAME.'.'.$model->type);
     }
 }
