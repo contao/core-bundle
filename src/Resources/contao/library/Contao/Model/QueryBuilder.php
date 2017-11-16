@@ -68,7 +68,7 @@ class QueryBuilder
 		// Where condition
 		if ($arrOptions['column'] !== null)
 		{
-			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . $arrOptions['column'] . "=?");
+			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . \Database::escapeColumnName($arrOptions['column']) . "=?");
 		}
 
 		// Group by

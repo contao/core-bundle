@@ -3138,12 +3138,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4)
 				{
-					$this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "='' WHERE pid=?")
+					$this->Database->prepare("UPDATE " . $this->strTable . " SET " . \Database::escapeColumnName($this->strField) . "='' WHERE pid=?")
 								   ->execute($this->activeRecord->pid);
 				}
 				else
 				{
-					$this->Database->execute("UPDATE " . $this->strTable . " SET " . $this->strField . "=''");
+					$this->Database->execute("UPDATE " . $this->strTable . " SET " . \Database::escapeColumnName($this->strField) . "=''");
 				}
 			}
 
@@ -3156,7 +3156,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$arrValues = $this->values;
 			array_unshift($arrValues, $varValue);
 
-			$objUpdateStmt = $this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "=? WHERE " . implode(' AND ', $this->procedure))
+			$objUpdateStmt = $this->Database->prepare("UPDATE " . $this->strTable . " SET " . \Database::escapeColumnName($this->strField) . "=? WHERE " . implode(' AND ', $this->procedure))
 											->execute($arrValues);
 
 			if ($objUpdateStmt->affectedRows)
