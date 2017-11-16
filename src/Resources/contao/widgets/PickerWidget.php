@@ -157,11 +157,11 @@ class PickerWidget extends \Widget
 
 
 	/**
-	 * Generate the widget and return it as string
+	 * Generate the records
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public function generate()
+	protected function generateRecords()
 	{
 		$arrValues = array();
 
@@ -176,6 +176,19 @@ class PickerWidget extends \Widget
 				$arrValues[$records->id] = $this->generateRecordLabel($records->row());
 			}
 		}
+
+		return $arrValues;
+	}
+
+
+	/**
+	 * Generate the widget and return it as string
+	 *
+	 * @return string
+	 */
+	public function generate()
+	{
+		$arrValues = $this->generateRecords();
 
 		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', array_keys($arrValues)).'">
   <div class="selector_container">' . (($this->sortable && count($arrValues) > 1) ? '
