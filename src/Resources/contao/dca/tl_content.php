@@ -717,7 +717,6 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['articleAlias'],
 			'exclude'                 => true,
 			'inputType'               => 'picker',
-			//'options_callback'        => array('tl_content', 'getArticleAlias'),
 			'eval'                    => array(
 				'mandatory'    => true,
 				'tl_class'     => 'clr',
@@ -736,11 +735,6 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 //				'fieldType'    => 'checkbox',
 //				'sortable'     => true,
             ),
-			// @todo – how to handle wizard?
-			'wizard' => array
-			(
-				array('tl_content', 'editArticleAlias')
-			),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'article' => array
