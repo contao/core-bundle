@@ -17,7 +17,7 @@ use Contao\FrontendUser;
 use Contao\User;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 @trigger_error('Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
@@ -67,7 +67,7 @@ class ContaoToken extends AbstractToken
      *
      * @param User $user
      *
-     * @return RoleInterface[]
+     * @return Role[]
      *
      * @deprecated Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.
      */
