@@ -356,6 +356,23 @@ abstract class Template extends \Controller
 
 
 	/**
+	 * Returns an asset path
+	 *
+	 * @param string      $path
+	 * @param string|null $packageName
+	 *
+	 * @return string
+	 */
+	public function asset($path, $packageName = null)
+	{
+		$url = \System::getContainer()->get('assets.packages')->getUrl($path, $packageName);
+
+		// Contao paths are relative to the <base> tag, so remove leading slashes
+		return ltrim($url, '/');
+	}
+
+
+	/**
 	 * Compile the template
 	 *
 	 * @internal Do not call this method in your code. It will be made private in Contao 5.0.

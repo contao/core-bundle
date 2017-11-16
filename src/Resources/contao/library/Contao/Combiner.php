@@ -229,7 +229,7 @@ class Combiner extends \System
 				}
 
 				// Add the media query (see #7070)
-				if ($arrFile['media'] != '' && $arrFile['media'] != 'all' && !$this->hasMediaTag($arrFile['name']))
+				if ($this->strMode == self::CSS && $arrFile['media'] != '' && $arrFile['media'] != 'all' && !$this->hasMediaTag($arrFile['name']))
 				{
 					$name .= '|' . $arrFile['media'];
 				}
@@ -294,7 +294,7 @@ class Combiner extends \System
 	{
 		if ($strUrl === null)
 		{
-			$strUrl = TL_ASSETS_URL;
+			$strUrl = \System::getContainer()->get('contao.assets.assets_context')->getStaticUrl();
 		}
 
 		$arrPrefix = array();
