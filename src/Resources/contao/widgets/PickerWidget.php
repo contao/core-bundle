@@ -128,6 +128,8 @@ class PickerWidget extends \Widget
 	 * @param array $data
 	 *
 	 * @return string
+	 *
+	 * @throws \RuntimeException
 	 */
 	protected function generateRecordLabel(array $data)
 	{
@@ -145,6 +147,11 @@ class PickerWidget extends \Widget
 		elseif ($this->labelField)
 		{
 			// Label field
+			if (!array_key_exists($this->labelField, $data))
+			{
+				throw new \RuntimeException(sprintf('The field "%s" does not exist in the data', $this->labelField));
+			}
+
 			$label = $data[$this->labelField];
 		}
 		else
