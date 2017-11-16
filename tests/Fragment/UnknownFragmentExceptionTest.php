@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\Exception;
+namespace Contao\CoreBundle\Tests\Fragment;
 
 use Contao\CoreBundle\Fragment\UnknownFragmentException;
 use PHPUnit\Framework\TestCase;

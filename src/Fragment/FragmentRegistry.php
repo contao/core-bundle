@@ -53,7 +53,7 @@ class FragmentRegistry implements FragmentRegistryInterface
      */
     public function get(string $identifier): ?FragmentConfig
     {
-        return $this->fragments[$identifier];
+        return $this->fragments[$identifier] ?? null;
     }
 
     /**

@@ -60,11 +60,7 @@ class FragmentRenderer implements FragmentRendererInterface
 
         $this->preHandleFragment($uri, $config);
 
-        return $this->fragmentHandler->render(
-            $uri,
-            $config->getRenderer(),
-            $config->getOptions()
-        );
+        return $this->fragmentHandler->render($uri, $config->getRenderer(), $config->getOptions());
     }
 
     /**

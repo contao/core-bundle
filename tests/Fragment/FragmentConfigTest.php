@@ -50,11 +50,19 @@ class FragmentConfigTest extends TestCase
 
         $this->assertSame(['foo' => 'bar'], $config->getOptions());
 
-        $config->setOptions([['foo' => 'baz']]);
+        $config->setOptions(['foo' => 'baz']);
         $this->assertSame(['foo' => 'baz'], $config->getOptions());
 
         $this->assertSame('baz', $config->getOption('foo'));
         $config->setOption('foo', 'bar');
         $this->assertSame('bar', $config->getOption('foo'));
+    }
+
+    public function testReturnsNullIfAnOptionIsNotSet()
+    {
+        $config = new FragmentConfig('', '', ['foo' => 'bar']);
+
+        $this->assertSame('bar', $config->getOption('foo'));
+        $this->assertNull($config->getOption('bar'));
     }
 }
