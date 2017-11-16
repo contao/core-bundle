@@ -240,7 +240,7 @@ class UserChecker implements UserCheckerInterface
     protected function setInvalidLoginFlashBag(): void
     {
         $this->session->getFlashBag()->set(
-            'contao.BE.error',
+            $this->getFlashType(),
             $this->translator->trans(
                 'ERR.invalidLogin',
                 [],
@@ -257,12 +257,34 @@ class UserChecker implements UserCheckerInterface
     protected function setAccountLockedFlashBag(User $user): void
     {
         $this->session->getFlashBag()->set(
-            'contao.BE.error',
+            $this->getFlashType(),
             $this->translator->trans(
                 'ERR.accountLocked',
                 [ceil((($user->locked + (int) Config::get('lockPeriod')) - time()) / 60)],
                 'contao_default'
             )
         );
+    }
+
+    /**
+     * Gets flash type from providerKey.
+     *
+     * @return string
+     */
+    private function getFlashType(): string
+    {
+        $type = '';
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        if ($request && $this->scopeMatcher->isFrontendRequest($request)) {
+            $type = 'contao.FE.error';
+        }
+
+        if ($request && $this->scopeMatcher->isBackendRequest($request)) {
+            $type = 'contao.BE.error';
+        }
+
+        return $type;
     }
 }
