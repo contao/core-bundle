@@ -427,6 +427,7 @@ services:
             - "@session"
             - "@security.token_storage"
             - "@contao.security.frontend_user_provider"
+            - "@logger"
 
     contao.security.logout_success_handler:
         class: Contao\CoreBundle\Security\LogoutSuccessHandler
