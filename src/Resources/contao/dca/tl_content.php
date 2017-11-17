@@ -1213,9 +1213,13 @@ class tl_content extends Backend
 	 * @param DataContainer $dc
 	 *
 	 * @return string
+	 *
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	public function editArticleAlias(DataContainer $dc)
 	{
+		@trigger_error('Using tl_content::editArticleAlias() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=article&amp;table=tl_content&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'][0]) . '</a>';
 	}
 
