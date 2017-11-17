@@ -660,10 +660,10 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertTrue($this->container->has('contao.controller_resolver'));
 
         $definition = $this->container->getDefinition('contao.controller_resolver');
-        $this->assertSame('contao.controller_resolver.inner', (string) $definition->getArgument(0));
-        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(1));
 
         $this->assertSame(ControllerResolver::class, $definition->getClass());
+        $this->assertSame('contao.controller_resolver.inner', (string) $definition->getArgument(0));
+        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(1));
     }
 
     public function testRegistersTheFragmentRegistry(): void
@@ -680,11 +680,11 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertTrue($this->container->has('contao.fragment.renderer'));
 
         $definition = $this->container->getDefinition('contao.fragment.renderer');
+
+        $this->assertSame(FragmentRenderer::class, $definition->getClass());
         $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(0));
         $this->assertSame('fragment.handler', (string) $definition->getArgument(1));
         $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(2));
-
-        $this->assertSame(FragmentRenderer::class, $definition->getClass());
     }
 
     public function testRegistersTheFragmentPreHandlers(): void

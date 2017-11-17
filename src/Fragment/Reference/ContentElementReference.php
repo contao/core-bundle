@@ -19,8 +19,6 @@ class ContentElementReference extends FragmentReference
     public const TAG_NAME = 'contao.content_element';
 
     /**
-     * Constructor.
-     *
      * @param ContentModel $model
      * @param string       $section
      */

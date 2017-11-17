@@ -32,12 +32,10 @@ class ControllerResolverTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface', $resolver);
     }
 
-    public function testSetControllerAttributeFromFragmentRegistry(): void
+    public function testSetsTheControllerAttributeFromTheFragmentRegistry(): void
     {
-        $request = new Request();
-        $registry = $this->createMock(FragmentRegistry::class);
-        $resolver = new ControllerResolver($this->createMock(ControllerResolverInterface::class), $registry);
         $config = new FragmentConfig('Foo\Bar\FooBarController');
+        $registry = $this->createMock(FragmentRegistry::class);
 
         $registry
             ->expects($this->once())
@@ -46,41 +44,43 @@ class ControllerResolverTest extends TestCase
             ->willReturn($config)
         ;
 
+        $request = new Request();
         $request->attributes->set('_controller', 'foo.bar');
 
+        $resolver = new ControllerResolver($this->createMock(ControllerResolverInterface::class), $registry);
         $resolver->getController($request);
 
         $this->assertSame('Foo\Bar\FooBarController', $request->attributes->get('_controller'));
     }
 
-    public function testForwardsControllerToDecoratedClass(): void
+    public function testForwardsTheControllerToTheDecoratedClass(): void
     {
         $decorated = $this->createMock(ControllerResolverInterface::class);
-        $resolver = new ControllerResolver($decorated, new FragmentRegistry());
 
         $decorated
             ->expects($this->once())
             ->method('getController')
         ;
 
+        $resolver = new ControllerResolver($decorated, new FragmentRegistry());
         $resolver->getController(new Request());
     }
 
     /**
      * @group legacy
      *
-     * @expectedDeprecation The Symfony\Component\HttpKernel\Controller\ControllerResolverInterface::getArguments method is deprecated (This method is deprecated as of 3.1 and will be removed in 4.0. Please use the {@see ArgumentResolverInterface} instead.).
+     * @expectedDeprecation The Symfony\Component\HttpKernel\Controller\ControllerResolverInterface::getArguments method is deprecated %s.
      */
     public function testForwardsArgumentsToDecoratedClass(): void
     {
         $decorated = $this->createMock(ControllerResolverInterface::class);
-        $resolver = new ControllerResolver($decorated, new FragmentRegistry());
 
         $decorated
             ->expects($this->once())
             ->method('getArguments')
         ;
 
+        $resolver = new ControllerResolver($decorated, new FragmentRegistry());
         $resolver->getArguments(new Request(), '');
     }
 }

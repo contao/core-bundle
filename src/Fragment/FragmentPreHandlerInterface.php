@@ -17,7 +17,7 @@ use Contao\CoreBundle\Fragment\Reference\FragmentReference;
 interface FragmentPreHandlerInterface
 {
     /**
-     * Allows modification of fragment references and config.
+     * Allows to modify the fragment reference and configuration.
      *
      * @param FragmentReference $uri
      * @param FragmentConfig    $config

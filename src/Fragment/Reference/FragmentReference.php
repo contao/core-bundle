@@ -29,30 +29,39 @@ class FragmentReference extends ControllerReference
         }
     }
 
-    public function isFrontend(): bool
-    {
-        return $this->isScope(ContaoCoreBundle::SCOPE_FRONTEND);
-    }
-
-    public function setFrontend(): void
+    /**
+     * Sets the front end scope.
+     */
+    public function setFrontendScope(): void
     {
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_FRONTEND;
     }
 
-    public function isBackend(): bool
+    /**
+     * Checks if the fragment is in front end scope.
+     *
+     * @return bool
+     */
+    public function isFrontendScope(): bool
     {
-        return $this->isScope(ContaoCoreBundle::SCOPE_BACKEND);
+        return ContaoCoreBundle::SCOPE_FRONTEND === $this->attributes['scope'];
     }
 
-    public function setBackend(): void
+    /**
+     * Sets the back end scope.
+     */
+    public function setBackendScope(): void
     {
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_BACKEND;
     }
 
-    private function isScope(string $scope): bool
+    /**
+     * Checks if the fragment is in back end scope.
+     *
+     * @return bool
+     */
+    public function isBackendScope(): bool
     {
-        $attributes = $this->attributes;
-
-        return isset($attributes['scope']) && $scope === $attributes['scope'];
+        return ContaoCoreBundle::SCOPE_BACKEND === $this->attributes['scope'];
     }
 }

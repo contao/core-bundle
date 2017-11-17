@@ -59,13 +59,6 @@ services:
         tags:
             - { name: kernel.cache_warmer }
 
-    contao.controller_resolver:
-        class: Contao\CoreBundle\HttpKernel\ControllerResolver
-        decorates: controller_resolver
-        arguments:
-            - "@contao.controller_resolver.inner"
-            - "@contao.fragment.registry"
-
     contao.controller.backend_csv_import:
         class: Contao\CoreBundle\Controller\BackendCsvImportController
         arguments:
@@ -80,6 +73,13 @@ services:
         arguments:
             - "@contao.framework"
         public: true
+
+    contao.controller_resolver:
+        class: Contao\CoreBundle\HttpKernel\ControllerResolver
+        decorates: controller_resolver
+        arguments:
+            - "@contao.controller_resolver.inner"
+            - "@contao.fragment.registry"
 
     contao.cors.website_roots_config_provider:
         class: Contao\CoreBundle\Cors\WebsiteRootsConfigProvider
@@ -101,6 +101,11 @@ services:
             - "@contao.framework"
             - "@doctrine"
 
+    contao.fragment.pre_handlers:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        arguments: [[]]
+        tags: ['container.service_locator']
+
     contao.fragment.registry:
         class: Contao\CoreBundle\Fragment\FragmentRegistry
 
@@ -110,11 +115,6 @@ services:
             - "@contao.fragment.registry"
             - "@fragment.handler"
             - "@contao.fragment.pre_handlers"
-
-    contao.fragment.pre_handlers:
-        class: Symfony\Component\DependencyInjection\ServiceLocator
-        arguments: [[]]
-        tags: ['container.service_locator']
 
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework

@@ -30,8 +30,6 @@ class FragmentConfig
     private $options;
 
     /**
-     * Constructor.
-     *
      * @param string $controller
      * @param string $renderer
      * @param array  $options
@@ -46,6 +44,8 @@ class FragmentConfig
     }
 
     /**
+     * Returns the controller.
+     *
      * @return string
      */
     public function getController(): string
@@ -54,6 +54,8 @@ class FragmentConfig
     }
 
     /**
+     * Sets the controller.
+     *
      * @param string $controller
      *
      * @return FragmentConfig
@@ -66,6 +68,8 @@ class FragmentConfig
     }
 
     /**
+     * Returns the renderer.
+     *
      * @return string
      */
     public function getRenderer(): string
@@ -74,6 +78,8 @@ class FragmentConfig
     }
 
     /**
+     * Sets the renderer.
+     *
      * @param string $renderer
      *
      * @return FragmentConfig
@@ -86,6 +92,8 @@ class FragmentConfig
     }
 
     /**
+     * Returns the options.
+     *
      * @return array
      */
     public function getOptions(): array
@@ -94,6 +102,8 @@ class FragmentConfig
     }
 
     /**
+     * Sets the options.
+     *
      * @param array $options
      *
      * @return FragmentConfig
@@ -106,6 +116,20 @@ class FragmentConfig
     }
 
     /**
+     * Returns a single option.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getOption(string $name)
+    {
+        return $this->options[$name] ?? null;
+    }
+
+    /**
+     * Sets a single option.
+     *
      * @param string $name
      * @param mixed  $option
      *
@@ -116,15 +140,5 @@ class FragmentConfig
         $this->options[$name] = $option;
 
         return $this;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed|null
-     */
-    public function getOption(string $name)
-    {
-        return $this->options[$name] ?? null;
     }
 }

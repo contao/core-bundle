@@ -26,14 +26,14 @@ class FragmentRegistryTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentRegistryInterface', $registry);
     }
 
-    public function testCanStoreFragmentConfig(): void
+    public function testReadsAndWritesTheFragmentConfiguration(): void
     {
         $registry = new FragmentRegistry();
-        $config = new FragmentConfig('foo.bar');
 
         $this->assertEmpty($registry->all());
         $this->assertFalse($registry->has('foo.bar'));
 
+        $config = new FragmentConfig('foo.bar');
         $registry->add('foo.bar', $config);
 
         $this->assertTrue($registry->has('foo.bar'));

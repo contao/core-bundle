@@ -70,7 +70,6 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(new PickerProviderPass());
         $container->addCompilerPass(new RegisterFragmentsPass());
         $container->addCompilerPass(new MapFragmentsToGlobalsPass());
-
         $container->addCompilerPass(new RegisterHookListenersPass(), PassConfig::TYPE_OPTIMIZE);
     }
 }

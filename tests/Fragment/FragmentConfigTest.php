@@ -24,37 +24,41 @@ class FragmentConfigTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentConfig', $config);
     }
 
-    public function testCanSetAndGetController(): void
+    public function testReadsAndWritesTheController(): void
     {
         $config = new FragmentConfig('foo');
 
         $this->assertSame('foo', $config->getController());
 
         $config->setController('bar');
+
         $this->assertSame('bar', $config->getController());
     }
 
-    public function testCanSetAndGetRenderer(): void
+    public function testReadsAndWritesTheRenderer(): void
     {
         $config = new FragmentConfig('', 'foo');
 
         $this->assertSame('foo', $config->getRenderer());
 
         $config->setRenderer('bar');
+
         $this->assertSame('bar', $config->getRenderer());
     }
 
-    public function testCanSetAndGetOptions(): void
+    public function testReadsAndWritesTheOptions(): void
     {
         $config = new FragmentConfig('', '', ['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $config->getOptions());
 
         $config->setOptions(['foo' => 'baz']);
-        $this->assertSame(['foo' => 'baz'], $config->getOptions());
 
+        $this->assertSame(['foo' => 'baz'], $config->getOptions());
         $this->assertSame('baz', $config->getOption('foo'));
+
         $config->setOption('foo', 'bar');
+
         $this->assertSame('bar', $config->getOption('foo'));
     }
 

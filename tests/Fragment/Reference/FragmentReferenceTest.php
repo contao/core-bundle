@@ -26,35 +26,37 @@ class FragmentReferenceTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerReference', $reference);
     }
 
-    public function testSetsDefaultScopeToFrontend(): void
+    public function testSetsTheDefaultScope(): void
     {
         $reference = new FragmentReference('');
 
         $this->assertSame(ContaoCoreBundle::SCOPE_FRONTEND, $reference->attributes['scope']);
     }
 
-    public function testDoesNotOverrideScopeIfItIsSet(): void
+    public function testDoesNotOverrideAGivenScope(): void
     {
         $reference = new FragmentReference('', ['scope' => 'foobar']);
 
         $this->assertSame('foobar', $reference->attributes['scope']);
     }
 
-    public function testCanSetAndGetScopes(): void
+    public function testReadsAndWritesScopes(): void
     {
         $reference = new FragmentReference('');
 
-        $this->assertTrue($reference->isFrontend());
+        $this->assertTrue($reference->isFrontendScope());
         $this->assertSame(ContaoCoreBundle::SCOPE_FRONTEND, $reference->attributes['scope']);
 
-        $reference->setBackend();
-        $this->assertTrue($reference->isBackend());
-        $this->assertFalse($reference->isFrontend());
+        $reference->setBackendScope();
+
+        $this->assertTrue($reference->isBackendScope());
+        $this->assertFalse($reference->isFrontendScope());
         $this->assertSame(ContaoCoreBundle::SCOPE_BACKEND, $reference->attributes['scope']);
 
-        $reference->setFrontend();
-        $this->assertTrue($reference->isFrontend());
-        $this->assertFalse($reference->isBackend());
+        $reference->setFrontendScope();
+
+        $this->assertTrue($reference->isFrontendScope());
+        $this->assertFalse($reference->isBackendScope());
         $this->assertSame(ContaoCoreBundle::SCOPE_FRONTEND, $reference->attributes['scope']);
     }
 }

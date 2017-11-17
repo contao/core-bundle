@@ -25,15 +25,16 @@ class GlobalsMapListenerTest extends TestCase
     }
 
     /**
-     * @dataProvider valuesDataProvider
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @param array $values
      * @param array $globals
      * @param array $expected
+     *
+     * @dataProvider getValuesData
+
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
-    public function testMergesValuesIntoGlobals(array $globals, array $values, array $expected): void
+    public function testMergesTheValuesIntoTheGlobalsArray(array $globals, array $values, array $expected): void
     {
         $GLOBALS = $globals;
 
@@ -43,7 +44,10 @@ class GlobalsMapListenerTest extends TestCase
         $this->assertSame($expected, $GLOBALS);
     }
 
-    public function valuesDataProvider(): array
+    /**
+     * @return array
+     */
+    public function getValuesData(): array
     {
         return [
             [

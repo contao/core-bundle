@@ -17,7 +17,7 @@ class GlobalsMapListener
     /**
      * @var array
      */
-    private $globals = [];
+    private $globals;
 
     /**
      * Constructor.

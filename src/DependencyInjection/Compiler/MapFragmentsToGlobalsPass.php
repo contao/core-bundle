@@ -32,11 +32,11 @@ class MapFragmentsToGlobalsPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        $elements = $this->getFragmentTags($container, ContentElementReference::TAG_NAME);
-        $elements = $this->createGlobalsMapForTag($elements, 'TL_CTE', ContentProxy::class);
+        $tags = $this->getFragmentTags($container, ContentElementReference::TAG_NAME);
+        $elements = $this->getGlobalsMap($tags, 'TL_CTE', ContentProxy::class);
 
-        $modules = $this->getFragmentTags($container, FrontendModuleReference::TAG_NAME);
-        $modules = $this->createGlobalsMapForTag($modules, 'FE_MOD', ModuleProxy::class);
+        $tags = $this->getFragmentTags($container, FrontendModuleReference::TAG_NAME);
+        $modules = $this->getGlobalsMap($tags, 'FE_MOD', ModuleProxy::class);
 
         $listener = new Definition(GlobalsMapListener::class, [array_merge($elements, $modules)]);
         $listener->addTag('contao.hook', ['hook' => 'initializeSystem', 'priority' => 255]);
@@ -45,7 +45,7 @@ class MapFragmentsToGlobalsPass implements CompilerPassInterface
     }
 
     /**
-     * Prepares the globals array map.
+     * Returns the globals array map.
      *
      * @param array  $tags
      * @param string $globalsKey
@@ -53,7 +53,7 @@ class MapFragmentsToGlobalsPass implements CompilerPassInterface
      *
      * @return array
      */
-    private function createGlobalsMapForTag(array $tags, string $globalsKey, string $proxyClass): array
+    private function getGlobalsMap(array $tags, string $globalsKey, string $proxyClass): array
     {
         $values = [];
 
@@ -65,10 +65,12 @@ class MapFragmentsToGlobalsPass implements CompilerPassInterface
     }
 
     /**
-     * Gets array of tag attributes from all services.
+     * Returns an array of tag attributes from all services.
      *
      * @param ContainerBuilder $container
      * @param string           $tag
+     *
+     * @throws InvalidConfigurationException
      *
      * @return array
      */

@@ -29,8 +29,6 @@ class ControllerResolver implements ControllerResolverInterface
     private $registry;
 
     /**
-     * Constructor.
-     *
      * @param ControllerResolverInterface $resolver
      * @param FragmentRegistry            $registry
      */

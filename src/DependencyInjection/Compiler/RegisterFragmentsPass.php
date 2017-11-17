@@ -26,7 +26,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Registers Contao fragments in the registry.
- * For custom fragment tags, create your own compiler pass by extending this class and replacing the process() method.
+ *
+ * For custom fragment tags, create your own compiler pass by extending this
+ * class and replacing the process() method.
  */
 class RegisterFragmentsPass implements CompilerPassInterface
 {
@@ -69,7 +71,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
                 $attributes['type'] = $this->getFragmentType($definition, $attributes);
 
                 $identifier = sprintf('%s.%s', $tag, $attributes['type']);
-                $config = $this->createFragmentConfig($container, $reference, $attributes);
+                $config = $this->getFragmentConfig($container, $reference, $attributes);
 
                 if (is_a($definition->getClass(), FragmentPreHandlerInterface::class, true)) {
                     $preHandlers[$identifier] = $reference;
@@ -84,7 +86,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
     }
 
     /**
-     * Creates a fragment configuration.
+     * Returns the fragment configuration.
      *
      * @param ContainerBuilder $container
      * @param Reference        $reference
@@ -92,7 +94,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
      *
      * @return Reference
      */
-    protected function createFragmentConfig(ContainerBuilder $container, Reference $reference, array $attributes): Reference
+    protected function getFragmentConfig(ContainerBuilder $container, Reference $reference, array $attributes): Reference
     {
         $definition = new Definition(
             FragmentConfig::class,
@@ -110,7 +112,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
     }
 
     /**
-     * Creates controller name from service and method name.
+     * Returns the controller name from the service and method name.
      *
      * @param Reference $reference
      * @param array     $attributes
@@ -130,10 +132,12 @@ class RegisterFragmentsPass implements CompilerPassInterface
     }
 
     /**
-     * Adds additional factories to the preHandler ServiceLocator.
+     * Adds additional factories to the pre_handlers service locator.
      *
      * @param ContainerBuilder $container
      * @param array            $handlers
+     *
+     * @throws \RuntimeException
      */
     protected function addPreHandlers(ContainerBuilder $container, array $handlers): void
     {
@@ -146,7 +150,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
     }
 
     /**
-     * Generates type from class name if not defined in the tag attributes.
+     * Returns the fragment type.
      *
      * @param Definition $definition
      * @param array      $attributes

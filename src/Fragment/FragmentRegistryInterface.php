@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Fragment;
 interface FragmentRegistryInterface
 {
     /**
-     * Adds a fragment. If a fragment with the same identifier already exists, it will be overwritten.
+     * Adds a fragment or overwrites an existing fragment with the same identifier.
      *
      * @param string         $identifier
      * @param FragmentConfig $config
@@ -34,7 +34,7 @@ interface FragmentRegistryInterface
     public function remove(string $identifier): self;
 
     /**
-     * Returns whether the registry has a fragment.
+     * Checks whether the registry has a fragment.
      *
      * @param string $identifier
      *

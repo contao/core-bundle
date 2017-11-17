@@ -19,8 +19,6 @@ class FrontendModuleReference extends FragmentReference
     public const TAG_NAME = 'contao.frontend_module';
 
     /**
-     * Constructor.
-     *
      * @param ModuleModel $model
      * @param string      $section
      */

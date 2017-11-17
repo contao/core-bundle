@@ -27,7 +27,7 @@ class ContentElementReferenceTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerReference', $reference);
     }
 
-    public function testCreatesControllerNameFromModelType(): void
+    public function testCreatesTheControllerNameFromTheModelType(): void
     {
         $model = new ContentModel();
         $model->type = 'foobar';
@@ -37,7 +37,7 @@ class ContentElementReferenceTest extends TestCase
         $this->assertSame(ContentElementReference::TAG_NAME.'.foobar', $reference->controller);
     }
 
-    public function testHasSectionAttribute(): void
+    public function testAddsTheSectionAttribute(): void
     {
         $model = new ContentModel();
         $model->type = 'foobar';

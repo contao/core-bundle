@@ -34,8 +34,6 @@ class FragmentRenderer implements FragmentRendererInterface
     private $preHandlers;
 
     /**
-     * Constructor.
-     *
      * @param FragmentRegistryInterface $fragmentRegistry
      * @param FragmentHandler           $fragmentHandler
      * @param ServiceLocator            $preHandlers
@@ -55,7 +53,7 @@ class FragmentRenderer implements FragmentRendererInterface
         $config = $this->fragmentRegistry->get($uri->controller);
 
         if (null === $config) {
-            throw new UnknownFragmentException(sprintf('Fragment with identifier "%s" was not found', $uri->controller));
+            throw new UnknownFragmentException(sprintf('Invalid fragment identifier "%s"', $uri->controller));
         }
 
         $this->preHandleFragment($uri, $config);
@@ -71,15 +69,22 @@ class FragmentRenderer implements FragmentRendererInterface
      */
     private function preHandleFragment(FragmentReference $uri, FragmentConfig $config): void
     {
-        if (isset($GLOBALS['objPage'])
-            && $GLOBALS['objPage'] instanceof PageModel
-            && !isset($uri->attributes['pageModel'])
-        ) {
+        if (!isset($uri->attributes['pageModel']) && $this->hasGlobalPageObject()) {
             $uri->attributes['pageModel'] = $GLOBALS['objPage']->id;
         }
 
         if ($this->preHandlers->has($uri->controller)) {
             $this->preHandlers->get($uri->controller)->preHandleFragment($uri, $config);
         }
+    }
+
+    /**
+     * Checks if there is a global page object.
+     *
+     * @return bool
+     */
+    private function hasGlobalPageObject(): bool
+    {
+        return isset($GLOBALS['objPage']) && $GLOBALS['objPage'] instanceof PageModel;
     }
 }
