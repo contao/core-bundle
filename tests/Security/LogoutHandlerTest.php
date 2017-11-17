@@ -76,7 +76,7 @@ class LogoutHandlerTest extends TestCase
      *
      * @group legacy
      *
-     * @expectedDeprecation Using LogoutHandler::triggerLegacyPostLogoutHook has been deprecated %s.
+     * @expectedDeprecation Using the postLogout hook has been deprecated %s.
      */
     public function testLoggerMessageWithValidUser(): void
     {
@@ -94,7 +94,7 @@ class LogoutHandlerTest extends TestCase
      *
      * @group legacy
      *
-     * @expectedDeprecation Using LogoutHandler::triggerLegacyPostLogoutHook has been deprecated %s.
+     * @expectedDeprecation Using the postLogout hook has been deprecated %s.
      */
     public function testExecutesThePostLogoutHook(): void
     {

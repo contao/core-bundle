@@ -282,7 +282,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function authenticate()
 	{
-		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
 
@@ -295,7 +295,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function login()
 	{
-		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
 		return true;
 	}
@@ -310,7 +310,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected function checkAccountStatus()
 	{
-		@trigger_error('Using User::checkAccountStatus() has been deprecated and will no longer work in Contao 5.0. Use the security.user_checker service instead.', E_USER_DEPRECATED);
+		@trigger_error('Using User::checkAccountStatus() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
 		return false;
 	}
@@ -364,7 +364,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected function regenerateSessionId()
 	{
-		@trigger_error('Using User::regenerateSessionId() has been deprecated and will be removed in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using User::regenerateSessionId() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
 	/**
@@ -374,7 +374,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	protected function generateSession()
 	{
-		@trigger_error('Using User::generateSession() has been deprecated and will be removed in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using User::generateSession() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 	}
 
 
@@ -385,6 +385,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function logout()
 	{
+		@trigger_error('Using User::logout() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 		return false;
 	}
 
@@ -654,7 +656,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	}
 
 	/**
-	 * Replacement method for the legacy importUser-Hook
+	 * Replacement method for the legacy importUser hook.
 	 *
 	 * @param $username
 	 * @param $password
@@ -662,10 +664,11 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * @return bool|static
 	 *
 	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 *             Use the contao.importUser event instead.
 	 */
 	public static function triggerLegacyImportUserHook($username, $password, $strTable)
 	{
-		@trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.frontend_user_provider service or security.backend_user_provider service instead.', E_USER_DEPRECATED);
+		@trigger_error('Using the importUser hook has been deprecated and will no longer work in Contao 5.0. Use the contao.importUser event instead.', E_USER_DEPRECATED);
 
 		$self = new static();
 
