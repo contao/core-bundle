@@ -48,6 +48,23 @@ class LogoutSuccessHandlerTest extends TestCase
     }
 
     /**
+     * Tests the handler if no session is given.
+     */
+    public function testRedirectWithoutSession(): void
+    {
+        $this->router
+            ->expects($this->once())
+            ->method('generate')
+            ->with('contao_root')
+            ->willReturn('/')
+        ;
+
+        $handler = new LogoutSuccessHandler($this->router);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
+    }
+
+    /**
      * Tests the handler if no logout target is given.
      */
     public function testRedirectWithoutLogoutTarget(): void

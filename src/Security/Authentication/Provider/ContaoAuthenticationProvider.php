@@ -72,6 +72,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 throw $badCredentialsException;
             }
 
+            /** @var CheckCredentialsEvent $event */
             $event = $this->eventDispatcher->dispatch(
                 CheckCredentialsEvent::NAME,
                 new CheckCredentialsEvent($token->getUsername(), $token->getCredentials(), $user)

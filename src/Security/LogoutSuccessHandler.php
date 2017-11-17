@@ -48,7 +48,7 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     {
         $session = $request->getSession();
 
-        if ($session->has('_contao_logout_target')) {
+        if ($session && $session->has('_contao_logout_target')) {
             return new RedirectResponse($session->get('_contao_logout_target'));
         }
 
