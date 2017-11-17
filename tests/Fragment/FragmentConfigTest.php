@@ -24,7 +24,7 @@ class FragmentConfigTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentConfig', $config);
     }
 
-    public function testCanSetAndGetController()
+    public function testCanSetAndGetController(): void
     {
         $config = new FragmentConfig('foo');
 
@@ -34,7 +34,7 @@ class FragmentConfigTest extends TestCase
         $this->assertSame('bar', $config->getController());
     }
 
-    public function testCanSetAndGetRenderer()
+    public function testCanSetAndGetRenderer(): void
     {
         $config = new FragmentConfig('', 'foo');
 
@@ -44,7 +44,7 @@ class FragmentConfigTest extends TestCase
         $this->assertSame('bar', $config->getRenderer());
     }
 
-    public function testCanSetAndGetOptions()
+    public function testCanSetAndGetOptions(): void
     {
         $config = new FragmentConfig('', '', ['foo' => 'bar']);
 
@@ -58,7 +58,7 @@ class FragmentConfigTest extends TestCase
         $this->assertSame('bar', $config->getOption('foo'));
     }
 
-    public function testReturnsNullIfAnOptionIsNotSet()
+    public function testReturnsNullIfAnOptionIsNotSet(): void
     {
         $config = new FragmentConfig('', '', ['foo' => 'bar']);
 

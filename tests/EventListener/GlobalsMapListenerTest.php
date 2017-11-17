@@ -49,7 +49,7 @@ class GlobalsMapListenerTest extends TestCase
             [
                 [],
                 ['foo' => 'bar'],
-                ['foo' => 'bar']
+                ['foo' => 'bar'],
             ],
             [
                 ['bar' => 'baz'],

@@ -26,7 +26,7 @@ class FragmentRegistryTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentRegistryInterface', $registry);
     }
 
-    public function testCanStoreFragmentConfig()
+    public function testCanStoreFragmentConfig(): void
     {
         $registry = new FragmentRegistry();
         $config = new FragmentConfig('foo.bar');

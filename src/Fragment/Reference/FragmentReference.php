@@ -29,7 +29,7 @@ class FragmentReference extends ControllerReference
         }
     }
 
-    public function isFrontend()
+    public function isFrontend(): bool
     {
         return $this->isScope(ContaoCoreBundle::SCOPE_FRONTEND);
     }
@@ -39,7 +39,7 @@ class FragmentReference extends ControllerReference
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_FRONTEND;
     }
 
-    public function isBackend()
+    public function isBackend(): bool
     {
         return $this->isScope(ContaoCoreBundle::SCOPE_BACKEND);
     }
@@ -49,7 +49,7 @@ class FragmentReference extends ControllerReference
         $this->attributes['scope'] = ContaoCoreBundle::SCOPE_BACKEND;
     }
 
-    private function isScope(string $scope)
+    private function isScope(string $scope): bool
     {
         $attributes = $this->attributes;
 

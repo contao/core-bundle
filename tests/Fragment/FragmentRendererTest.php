@@ -37,7 +37,7 @@ class FragmentRendererTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentRendererInterface', $renderer);
     }
 
-    public function testThrowsAnExceptionIfTheFragmentNameIsInvalid()
+    public function testThrowsAnExceptionIfTheFragmentNameIsInvalid(): void
     {
         $this->expectException(UnknownFragmentException::class);
 
@@ -50,7 +50,7 @@ class FragmentRendererTest extends TestCase
         $renderer->render(new FragmentReference('foo.bar'));
     }
 
-    public function testPassesRendererToTheFragmentHandler()
+    public function testPassesRendererToTheFragmentHandler(): void
     {
         $registry = new FragmentRegistry();
         $uri = new FragmentReference('foo.bar');
@@ -68,7 +68,7 @@ class FragmentRendererTest extends TestCase
         $renderer->render($uri);
     }
 
-    public function testPassesOptionsToTheFragmentHandler()
+    public function testPassesOptionsToTheFragmentHandler(): void
     {
         $registry = new FragmentRegistry();
         $uri = new FragmentReference('foo.bar');
@@ -90,7 +90,7 @@ class FragmentRendererTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testAddsPageIdFromGlobals()
+    public function testAddsPageIdFromGlobals(): void
     {
         $registry = new FragmentRegistry();
         $uri = new FragmentReference('foo.bar');
@@ -103,7 +103,7 @@ class FragmentRendererTest extends TestCase
             ->expects($this->once())
             ->method('render')
             ->with($this->callback(function () use ($uri) {
-                return isset($uri->attributes['pageModel']) && $uri->attributes['pageModel'] === 42;
+                return isset($uri->attributes['pageModel']) && 42 === $uri->attributes['pageModel'];
             }))
         ;
 
@@ -117,7 +117,7 @@ class FragmentRendererTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testDoesNotOverridePageIdInAttributes()
+    public function testDoesNotOverridePageIdInAttributes(): void
     {
         $registry = new FragmentRegistry();
         $uri = new FragmentReference('foo.bar', ['pageModel' => 99]);
@@ -130,7 +130,7 @@ class FragmentRendererTest extends TestCase
             ->expects($this->once())
             ->method('render')
             ->with($this->callback(function () use ($uri) {
-                return isset($uri->attributes['pageModel']) && $uri->attributes['pageModel'] === 99;
+                return isset($uri->attributes['pageModel']) && 99 === $uri->attributes['pageModel'];
             }))
         ;
 
@@ -140,7 +140,7 @@ class FragmentRendererTest extends TestCase
         $renderer->render($uri);
     }
 
-    public function testCallsPreHandlers()
+    public function testCallsPreHandlers(): void
     {
         $registry = new FragmentRegistry();
         $prehandler = $this->createMock(FragmentPreHandlerInterface::class);

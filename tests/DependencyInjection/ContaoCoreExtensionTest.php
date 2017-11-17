@@ -36,7 +36,6 @@ use Contao\CoreBundle\EventListener\CommandSchedulerListener;
 use Contao\CoreBundle\EventListener\CsrfTokenCookieListener;
 use Contao\CoreBundle\EventListener\DoctrineSchemaListener;
 use Contao\CoreBundle\EventListener\ExceptionConverterListener;
-use Contao\CoreBundle\EventListener\GlobalsMapListener;
 use Contao\CoreBundle\EventListener\HeaderReplay\PageLayoutListener;
 use Contao\CoreBundle\EventListener\HeaderReplay\UserSessionListener as HeaderReplayUserSessionListener;
 use Contao\CoreBundle\EventListener\InsecureInstallationListener;

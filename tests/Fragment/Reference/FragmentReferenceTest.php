@@ -26,21 +26,21 @@ class FragmentReferenceTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerReference', $reference);
     }
 
-    public function testSetsDefaultScopeToFrontend()
+    public function testSetsDefaultScopeToFrontend(): void
     {
         $reference = new FragmentReference('');
 
         $this->assertSame(ContaoCoreBundle::SCOPE_FRONTEND, $reference->attributes['scope']);
     }
 
-    public function testDoesNotOverrideScopeIfItIsSet()
+    public function testDoesNotOverrideScopeIfItIsSet(): void
     {
         $reference = new FragmentReference('', ['scope' => 'foobar']);
 
         $this->assertSame('foobar', $reference->attributes['scope']);
     }
 
-    public function testCanSetAndGetScopes()
+    public function testCanSetAndGetScopes(): void
     {
         $reference = new FragmentReference('');
 

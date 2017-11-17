@@ -27,7 +27,7 @@ class FrontendModuleReferenceTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerReference', $reference);
     }
 
-    public function testCreatesControllerNameFromModelType()
+    public function testCreatesControllerNameFromModelType(): void
     {
         $model = new ModuleModel();
         $model->type = 'foobar';
@@ -37,7 +37,7 @@ class FrontendModuleReferenceTest extends TestCase
         $this->assertSame(FrontendModuleReference::TAG_NAME.'.foobar', $reference->controller);
     }
 
-    public function testHasColumnAttribute()
+    public function testHasColumnAttribute(): void
     {
         $model = new ModuleModel();
         $model->type = 'foobar';

@@ -32,7 +32,7 @@ class ControllerResolverTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface', $resolver);
     }
 
-    public function testSetControllerAttributeFromFragmentRegistry()
+    public function testSetControllerAttributeFromFragmentRegistry(): void
     {
         $request = new Request();
         $registry = $this->createMock(FragmentRegistry::class);
@@ -53,7 +53,7 @@ class ControllerResolverTest extends TestCase
         $this->assertSame('Foo\Bar\FooBarController', $request->attributes->get('_controller'));
     }
 
-    public function testForwardsControllerToDecoratedClass()
+    public function testForwardsControllerToDecoratedClass(): void
     {
         $decorated = $this->createMock(ControllerResolverInterface::class);
         $resolver = new ControllerResolver($decorated, new FragmentRegistry());
@@ -71,7 +71,7 @@ class ControllerResolverTest extends TestCase
      *
      * @expectedDeprecation The Symfony\Component\HttpKernel\Controller\ControllerResolverInterface::getArguments method is deprecated (This method is deprecated as of 3.1 and will be removed in 4.0. Please use the {@see ArgumentResolverInterface} instead.).
      */
-    public function testForwardsArgumentsToDecoratedClass()
+    public function testForwardsArgumentsToDecoratedClass(): void
     {
         $decorated = $this->createMock(ControllerResolverInterface::class);
         $resolver = new ControllerResolver($decorated, new FragmentRegistry());
