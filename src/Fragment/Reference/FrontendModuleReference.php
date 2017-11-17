@@ -22,13 +22,13 @@ class FrontendModuleReference extends FragmentReference
      * Constructor.
      *
      * @param ModuleModel $model
-     * @param string      $inColumn
+     * @param string      $section
      */
-    public function __construct(ModuleModel $model, string $inColumn = 'main')
+    public function __construct(ModuleModel $model, string $section = 'main')
     {
         parent::__construct(self::TAG_NAME.'.'.$model->type);
 
         $this->attributes['moduleModel'] = $model->id;
-        $this->attributes['inColumn'] = $inColumn;
+        $this->attributes['section'] = $section;
     }
 }

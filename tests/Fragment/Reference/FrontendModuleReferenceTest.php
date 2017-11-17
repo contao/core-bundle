@@ -37,18 +37,18 @@ class FrontendModuleReferenceTest extends TestCase
         $this->assertSame(FrontendModuleReference::TAG_NAME.'.foobar', $reference->controller);
     }
 
-    public function testHasColumnAttribute(): void
+    public function testHasSectionAttribute(): void
     {
         $model = new ModuleModel();
         $model->type = 'foobar';
 
         $reference = new FrontendModuleReference($model);
-        $this->assertSame('main', $reference->attributes['inColumn']);
+        $this->assertSame('main', $reference->attributes['section']);
 
         $reference = new FrontendModuleReference($model, 'header');
-        $this->assertSame('header', $reference->attributes['inColumn']);
+        $this->assertSame('header', $reference->attributes['section']);
 
         $reference = new FrontendModuleReference($model, 'footer');
-        $this->assertSame('footer', $reference->attributes['inColumn']);
+        $this->assertSame('footer', $reference->attributes['section']);
     }
 }

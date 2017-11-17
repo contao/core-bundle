@@ -22,13 +22,13 @@ class ContentElementReference extends FragmentReference
      * Constructor.
      *
      * @param ContentModel $model
-     * @param string       $inColumn
+     * @param string       $section
      */
-    public function __construct(ContentModel $model, string $inColumn = 'main')
+    public function __construct(ContentModel $model, string $section = 'main')
     {
         parent::__construct(self::TAG_NAME.'.'.$model->type);
 
         $this->attributes['contentModel'] = $model->id;
-        $this->attributes['inColumn'] = $inColumn;
+        $this->attributes['section'] = $section;
     }
 }

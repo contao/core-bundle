@@ -37,18 +37,18 @@ class ContentElementReferenceTest extends TestCase
         $this->assertSame(ContentElementReference::TAG_NAME.'.foobar', $reference->controller);
     }
 
-    public function testHasColumnAttribute(): void
+    public function testHasSectionAttribute(): void
     {
         $model = new ContentModel();
         $model->type = 'foobar';
 
         $reference = new ContentElementReference($model);
-        $this->assertSame('main', $reference->attributes['inColumn']);
+        $this->assertSame('main', $reference->attributes['section']);
 
         $reference = new ContentElementReference($model, 'header');
-        $this->assertSame('header', $reference->attributes['inColumn']);
+        $this->assertSame('header', $reference->attributes['section']);
 
         $reference = new ContentElementReference($model, 'footer');
-        $this->assertSame('footer', $reference->attributes['inColumn']);
+        $this->assertSame('footer', $reference->attributes['section']);
     }
 }
