@@ -58,7 +58,7 @@ class InteractiveLoginListener
      */
     protected function triggerLegacyPostLoginHook(User $user): void
     {
-        @trigger_error('Using InteractiveLoginListener::triggerLegacyPostLoginHook() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
         // HOOK: post login callback
         if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin'])) {

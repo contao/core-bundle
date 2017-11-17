@@ -28,6 +28,10 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
 
     /**
      * {@inheritdoc}
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using ContaoLegacyPasswordEncoder has been deprecated %s.
      */
     public function setUp(): void
     {
@@ -46,6 +50,10 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
 
     /**
      * Tests the encodePassword method.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using ContaoLegacyPasswordEncoder::encodePassword has been deprecated %s.
      */
     public function testEncodePassword(): void
     {
@@ -57,6 +65,10 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
 
     /**
      * Tests for the BadCredentialsException for too long password.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using ContaoLegacyPasswordEncoder::encodePassword has been deprecated %s.
      */
     public function testBadCredentialsException(): void
     {
@@ -70,6 +82,10 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
 
     /**
      * Tests the isPasswordValidMethod.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using ContaoLegacyPasswordEncoder::isPasswordValid has been deprecated %s.
      */
     public function testIsPasswordValid(): void
     {

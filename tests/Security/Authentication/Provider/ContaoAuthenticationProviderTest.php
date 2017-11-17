@@ -102,6 +102,10 @@ class ContaoAuthenticationProviderTest extends TestCase
 
     /**
      * Tests if a BadCredentialsException is thrown with an invalid FrontendUser.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
     public function testThrowsBadCredentialsExceptionWithAFrontendUser(): void
     {
@@ -122,6 +126,10 @@ class ContaoAuthenticationProviderTest extends TestCase
 
     /**
      * Tests if a BadCredentialsException is thrown with an invalid BackendUser.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
     public function testThrowsBadCredentialsExceptionWithABackendUser(): void
     {
@@ -170,6 +178,10 @@ class ContaoAuthenticationProviderTest extends TestCase
 
     /**
      * Tests the execution of the checkCredentials hook.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
     public function testExecutesTheCheckCredentialsHook(): void
     {

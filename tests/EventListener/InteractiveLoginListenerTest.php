@@ -62,6 +62,10 @@ class InteractiveLoginListenerTest extends TestCase
 
     /**
      * Tests the logger message with a valid user given.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated %s.
      */
     public function testLoggerMessageWithValidUser(): void
     {
@@ -75,6 +79,10 @@ class InteractiveLoginListenerTest extends TestCase
 
     /**
      * Tests the execution of the postLogin hook.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated %s.
      */
     public function testExecutesThePostLoginHook(): void
     {

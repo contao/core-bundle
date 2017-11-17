@@ -21,6 +21,11 @@ use Symfony\Component\Security\Core\User\User;
 
 class ContaoUserProviderTest extends SecurityTestCase
 {
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testCanBeInstantiated(): void
     {
         $provider = $this->mockProvider('backend');
@@ -31,6 +36,10 @@ class ContaoUserProviderTest extends SecurityTestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
      */
     public function testProvidesTheBackEndUser(): void
     {
@@ -42,6 +51,10 @@ class ContaoUserProviderTest extends SecurityTestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
      */
     public function testProvidesTheFrontEndUser(): void
     {
@@ -50,6 +63,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $this->assertInstanceOf('Contao\FrontendUser', $provider->loadUserByUsername('frontend'));
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testFailsIfTheScopeIsInvalid(): void
     {
         $provider = $this->mockProvider('invalid');
@@ -59,6 +77,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $provider->loadUserByUsername('frontend');
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testFailsIfTheUsernameIsNotSupported(): void
     {
         $provider = $this->mockProvider('frontend');
@@ -68,6 +91,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $provider->loadUserByUsername('foo');
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testFailsIfTheUserIsRefreshed(): void
     {
         $provider = $this->mockProvider('frontend');
@@ -77,6 +105,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $provider->refreshUser(new User('foo', 'bar'));
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testChecksIfAClassIsSupported(): void
     {
         $provider = $this->mockProvider('frontend');
@@ -84,6 +117,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $this->assertTrue($provider->supportsClass(FrontendUser::class));
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testFailsToLoadTheBackEndUserIfThereIsNoContainer(): void
     {
         $provider = $this->mockProvider();
@@ -93,6 +131,11 @@ class ContaoUserProviderTest extends SecurityTestCase
         $provider->loadUserByUsername('backend');
     }
 
+    /**
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
+     */
     public function testFailsToLoadTheFrontEndUserIfThereIsNoContainer(): void
     {
         $provider = $this->mockProvider();
@@ -108,6 +151,10 @@ class ContaoUserProviderTest extends SecurityTestCase
      * @param string|null $scope
      *
      * @return ContaoUserProvider
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the ContaoUserProvider has been deprecated %s.
      */
     private function mockProvider(string $scope = null): ContaoUserProvider
     {

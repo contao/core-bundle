@@ -68,7 +68,7 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     protected function triggerLegacyPostLogoutHook(User $user): void
     {
-        @trigger_error('Using LogoutHandler::triggerLegacyPostLogoutHook() has been deprecated and will no longer work in Contao 5.0. Use the security.logout_handler service instead.', E_USER_DEPRECATED);
+        @trigger_error('Using LogoutHandler::triggerLegacyPostLogoutHook has been deprecated and will no longer work in Contao 5.0. Use the security.logout_handler service instead.', E_USER_DEPRECATED);
 
         if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
