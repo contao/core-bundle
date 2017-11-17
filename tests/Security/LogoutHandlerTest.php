@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security;
 
+use Contao\CoreBundle\Event\PostLogoutEvent;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -27,6 +29,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class LogoutHandlerTest extends TestCase
 {
     protected $logger;
+    protected $eventDispatcher;
     protected $request;
     protected $response;
     protected $token;
@@ -40,6 +43,8 @@ class LogoutHandlerTest extends TestCase
 
         $this->request = new Request();
         $this->response = new Response();
+
+        $this->mockEventDispatcher(false);
     }
 
     /**
@@ -48,7 +53,7 @@ class LogoutHandlerTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->mockLogger();
-        $handler = new LogoutHandler($this->logger);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutHandler', $handler);
     }
@@ -61,9 +66,9 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger();
         $this->mockToken(false);
 
-        $handler = new LogoutHandler($this->logger);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
 
-        $this->assertEmpty($handler->logout($this->request, $this->response, $this->token));
+        $handler->logout($this->request, $this->response, $this->token);
     }
 
     /**
@@ -75,12 +80,13 @@ class LogoutHandlerTest extends TestCase
      */
     public function testLoggerMessageWithValidUser(): void
     {
+        $this->mockEventDispatcher(true);
         $this->mockLogger('User username has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
 
-        $this->assertEmpty($handler->logout($this->request, $this->response, $this->token));
+        $handler->logout($this->request, $this->response, $this->token);
     }
 
     /**
@@ -96,12 +102,13 @@ class LogoutHandlerTest extends TestCase
             'postLogout' => [[\get_class($this), 'executePostLogoutHookCallback']],
         ];
 
+        $this->mockEventDispatcher(true);
         $this->mockLogger('User username has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
 
-        $this->assertEmpty($handler->logout($this->request, $this->response, $this->token));
+        $handler->logout($this->request, $this->response, $this->token);
     }
 
     /**
@@ -122,6 +129,13 @@ class LogoutHandlerTest extends TestCase
     private function mockLogger(string $message = null): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        if (null === $message) {
+            $this->logger
+                ->expects($this->never())
+                ->method('info')
+            ;
+        }
 
         if (null !== $message) {
             $context = [
@@ -182,5 +196,30 @@ class LogoutHandlerTest extends TestCase
         }
 
         return $user;
+    }
+
+    /**
+     * Mocks the event dispatcher.
+     *
+     * @param bool $expectsDispatchEvent
+     */
+    private function mockEventDispatcher(bool $expectsDispatchEvent): void
+    {
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        if (true === $expectsDispatchEvent) {
+            $this->eventDispatcher
+                ->expects($this->once())
+                ->method('dispatch')
+                ->with(PostLogoutEvent::NAME)
+            ;
+        }
+
+        if (false === $expectsDispatchEvent) {
+            $this->eventDispatcher
+                ->expects($this->never())
+                ->method('dispatch')
+            ;
+        }
     }
 }

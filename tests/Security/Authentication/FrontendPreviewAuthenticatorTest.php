@@ -88,7 +88,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser(null));
+        $authenticator->authenticateFrontendUser(null);
     }
 
     /**
@@ -109,7 +109,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser(null));
+        $authenticator->authenticateFrontendUser(null);
     }
 
     /**
@@ -130,7 +130,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser('username'));
+        $authenticator->authenticateFrontendUser('username');
     }
 
     /**
@@ -151,7 +151,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser('username'));
+        $authenticator->authenticateFrontendUser('username');
     }
 
     /**
@@ -172,7 +172,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser('username'));
+        $authenticator->authenticateFrontendUser('username');
     }
 
     /**
@@ -194,7 +194,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
             $this->logger
         );
 
-        $this->assertEmpty($authenticator->authenticateFrontendUser('username'));
+        $authenticator->authenticateFrontendUser('username');
         $this->assertTrue(strlen($this->session->get($sessionKey)) > 0);
 
         /** @var UsernamePasswordToken $token */
@@ -237,6 +237,13 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     private function mockLogger(string $message = null): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        if (null === $message) {
+            $this->logger
+                ->expects($this->never())
+                ->method('info')
+            ;
+        }
 
         if (null !== $message) {
             $context = [

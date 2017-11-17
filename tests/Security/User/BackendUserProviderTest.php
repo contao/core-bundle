@@ -68,8 +68,8 @@ class BackendUserProviderTest extends TestCase
         $framework = $this->mockContaoFramework([BackendUser::class => $adapter]);
         $provider = new BackendUserProvider($framework);
 
-        $this->assertInstanceOf(BackendUser::class, $provider->loadUserByUsername('test-user'));
-        $this->assertInstanceOf(BackendUser::class, $provider->refreshUser($user));
+        $this->assertInstanceOf('Contao\BackendUser', $provider->loadUserByUsername('test-user'));
+        $this->assertInstanceOf('Contao\BackendUser', $provider->refreshUser($user));
     }
 
     /**

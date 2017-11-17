@@ -439,6 +439,7 @@ services:
         class: Contao\CoreBundle\Security\LogoutHandler
         arguments:
             - "@logger"
+            - "@event_dispatcher"
 
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
@@ -456,6 +457,7 @@ services:
             - []
             - "@contao.framework"
             - "@router"
+            - "@event_dispatcher"
 
     security.authentication.provider.dao:
         class: Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider
@@ -469,6 +471,7 @@ services:
             - "@logger"
             - "@session"
             - "@translator"
+            - "@event_dispatcher"
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker

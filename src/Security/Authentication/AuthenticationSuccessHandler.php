@@ -13,11 +13,13 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Event\PostAuthenticateEvent;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
 use Contao\PageModel;
 use Contao\System;
 use Contao\User;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -37,6 +39,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     /** @var RouterInterface */
     protected $router;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * Constructor.
      *
@@ -44,8 +49,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param array                    $options
      * @param ContaoFrameworkInterface $framework
      * @param RouterInterface          $router
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework, RouterInterface $router)
+    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework, RouterInterface $router, EventDispatcherInterface $eventDispatcher)
     {
         $options['always_use_default_target_path'] = false;
         $options['target_path_parameter'] = '_target_path';
@@ -54,6 +60,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         $this->framework = $framework;
         $this->router = $router;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -95,6 +102,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
     {
         $this->triggerLegacyPostAuthenticateHook($user);
+        $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 
         $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
 
@@ -123,6 +131,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
     {
         $this->triggerLegacyPostAuthenticateHook($user);
+        $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 
         $route = $request->attributes->get('_route');
 

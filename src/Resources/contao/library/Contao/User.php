@@ -10,12 +10,11 @@
 
 namespace Contao;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Contao\CoreBundle\Event\ImportUserEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 
 /**
@@ -439,12 +438,21 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public static function loadUserByUsername($username)
 	{
+		/** @var EventDispatcherInterface $eventDispatcher */
+		$eventDispatcher = \System::getContainer()->get('event_dispatcher');
+
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		$password = $request->request->get('password');
+
 		$user = new static();
 
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
-			if (self::triggerLegacyImportUserHook($username, $user->strTable) === false)
+			$importUserEvent = $eventDispatcher->dispatch(ImportUserEvent::NAME, new ImportUserEvent($username, $password, $user->strTable));
+
+			if ($importUserEvent->getVote() === false && self::triggerLegacyImportUserHook($username, $password, $user->strTable) === false)
 			{
 				return null;
 			}
@@ -649,17 +657,16 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Replacement method for the legacy importUser-Hook
 	 *
 	 * @param $username
+	 * @param $password
 	 * @param $strTable
 	 * @return bool|static
 	 *
 	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
-	public static function triggerLegacyImportUserHook($username, $strTable)
+	public static function triggerLegacyImportUserHook($username, $password, $strTable)
 	{
 		@trigger_error('Using User::importUser() has been deprecated and will no longer work in Contao 5.0. Use the security.frontend_user_provider service or security.backend_user_provider service instead.', E_USER_DEPRECATED);
 
-		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 		$self = new static();
 
 		// HOOK: pass credentials to callback functions
@@ -668,7 +675,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
 			{
 				$self->import($callback[0], 'objImport', true);
-				$blnLoaded = $self->objImport->{$callback[1]}($username, $request->request->get('password'), $strTable);
+				$blnLoaded = $self->objImport->{$callback[1]}($username, $password, $strTable);
 
 				// Load successfull
 				if ($blnLoaded === true)

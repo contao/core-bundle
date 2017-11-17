@@ -26,8 +26,6 @@ use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Exception\DisabledException;
-use Symfony\Component\Security\Core\Exception\LockedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -82,7 +80,7 @@ class UserCheckerTest extends TestCase
             ->method('checkLoginAttempts')
         ;
 
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -93,7 +91,7 @@ class UserCheckerTest extends TestCase
         $userChecker = $this->getUserChecker();
         $user = $this->mockUser();
 
-        $this->assertEmpty($userChecker->checkPostAuth($user));
+        $userChecker->checkPostAuth($user);
     }
 
     /**
@@ -104,7 +102,7 @@ class UserCheckerTest extends TestCase
         $user = $this->mockUser(BackendUser::class, 3);
         $userChecker = $this->getUserChecker();
 
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -146,6 +144,7 @@ class UserCheckerTest extends TestCase
             'bar'
         );
 
+        $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.FE.error', 'This account has been locked! You can log in again in 5 minutes.');
         $this->mockSession(true);
         $this->mockRequestStack($request);
@@ -156,8 +155,8 @@ class UserCheckerTest extends TestCase
 
         System::setContainer($container);
 
-        $this->expectException(LockedException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -200,6 +199,7 @@ class UserCheckerTest extends TestCase
             'foo'
         );
 
+        $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
         $this->mockSession(true);
         $this->mockRequestStack($request);
@@ -210,8 +210,8 @@ class UserCheckerTest extends TestCase
 
         System::setContainer($container);
 
-        $this->expectException(LockedException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -238,8 +238,8 @@ class UserCheckerTest extends TestCase
         $user = $this->mockUser(BackendUser::class, 3, false, time());
         $userChecker = $this->getUserChecker();
 
-        $this->expectException(LockedException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -257,6 +257,7 @@ class UserCheckerTest extends TestCase
             'Login failed (note that usernames and passwords are case-sensitive)!'
         );
 
+        $this->mockLogger('The account has been disabled', 'checkIfAccountIsDisabled');
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
         $this->mockSession(true);
         $this->mockRequestStack($request);
@@ -264,8 +265,8 @@ class UserCheckerTest extends TestCase
         $user = $this->mockUser(BackendUser::class, 3, null, null, false);
         $userChecker = $this->getUserChecker();
 
-        $this->expectException(DisabledException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -300,8 +301,8 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException(DisabledException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -343,8 +344,8 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException(DisabledException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -387,8 +388,8 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException(DisabledException::class);
-        $this->assertEmpty($userChecker->checkPreAuth($user));
+        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $userChecker->checkPreAuth($user);
     }
 
     /**
@@ -400,6 +401,13 @@ class UserCheckerTest extends TestCase
     private function mockLogger(string $message = null, string $method = null): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        if (null === $message) {
+            $this->logger
+                ->expects($this->never())
+                ->method('info')
+            ;
+        }
 
         if (null !== $message) {
             $context = [

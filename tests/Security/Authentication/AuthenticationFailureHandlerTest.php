@@ -17,7 +17,6 @@ use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\HttpUtils;
 
 /**
@@ -57,7 +56,7 @@ class AuthenticationFailureHandlerTest extends TestCase
         $handler = new AuthenticationFailureHandler($httpKernel, $httpUtils);
 
         $response = $handler->onAuthenticationFailure($request, $authenticationException);
-        $authenticationError = $request->getSession()->get(Security::AUTHENTICATION_ERROR);
+        $authenticationError = $request->getSession()->get('_security.last_error');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertInstanceOf('Symfony\Component\Security\Core\Exception\AuthenticationException', $authenticationError);

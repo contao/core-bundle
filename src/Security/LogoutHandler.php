@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security;
 
+use Contao\CoreBundle\Event\PostLogoutEvent;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\System;
 use Contao\User;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -29,14 +31,19 @@ class LogoutHandler implements LogoutHandlerInterface
     /** @var LoggerInterface */
     protected $logger;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * Constructor.
      *
-     * @param LoggerInterface $logger
+     * @param LoggerInterface          $logger
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, EventDispatcherInterface $eventDispatcher)
     {
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -55,6 +62,7 @@ class LogoutHandler implements LogoutHandlerInterface
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
+        $this->eventDispatcher->dispatch(PostLogoutEvent::NAME, new PostLogoutEvent($user));
         $this->triggerLegacyPostLogoutHook($user);
     }
 

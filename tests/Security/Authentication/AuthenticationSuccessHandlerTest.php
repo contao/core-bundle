@@ -13,10 +13,12 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Event\PostAuthenticateEvent;
 use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
 use Contao\PageModel;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -31,6 +33,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
     protected $httpUtils;
     protected $framework;
     protected $router;
+    protected $eventDispatcher;
     protected $request;
     protected $token;
     protected $user;
@@ -52,8 +55,9 @@ class AuthenticationSuccessHandlerTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->mockRouter();
+        $this->mockEventDispatcher(false);
 
-        $handler = new AuthenticationSuccessHandler($this->httpUtils, [], $this->framework, $this->router);
+        $handler = new AuthenticationSuccessHandler($this->httpUtils, [], $this->framework, $this->router, $this->eventDispatcher);
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler', $handler);
     }
@@ -66,8 +70,9 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest(['_target_referer' => 'foobar']);
         $this->mockToken();
+        $this->mockEventDispatcher(false);
 
-        $handler = new AuthenticationSuccessHandler($this->httpUtils, [], $this->framework, $this->router);
+        $handler = new AuthenticationSuccessHandler($this->httpUtils, [], $this->framework, $this->router, $this->eventDispatcher);
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -82,12 +87,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest();
         $this->mockToken();
+        $this->mockEventDispatcher(false);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -108,12 +115,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest([], ['_route' => 'contao_backend_login']);
         $this->mockToken(BackendUser::class);
+        $this->mockEventDispatcher(true);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -138,12 +147,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest([], ['_route' => 'contao_backend_login']);
         $this->mockToken(BackendUser::class);
+        $this->mockEventDispatcher(true);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -168,12 +179,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest([], ['_route' => 'contao_backend_login']);
         $this->mockToken(FrontendUser::class);
+        $this->mockEventDispatcher(true);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -214,12 +227,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter('contao_backend_login', [], '/contao');
         $this->mockRequest([], ['_route' => 'contao_root']);
         $this->mockToken(BackendUser::class);
+        $this->mockEventDispatcher(true);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -240,6 +255,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter('contao_backend_login', ['referer' => 'L2NvbnRhbz9kbz1mb29iYXI='], '/contao?do=foobar');
         $this->mockRequest([], ['_route' => 'contao_backend'], ['do' => 'foobar']);
         $this->mockToken(BackendUser::class);
+        $this->mockEventDispatcher(true);
 
         $this->request->server->set('REQUEST_URI', '/contao?do=foobar');
 
@@ -247,7 +263,8 @@ class AuthenticationSuccessHandlerTest extends TestCase
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -268,12 +285,14 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest();
         $this->mockToken(FrontendUser::class);
+        $this->mockEventDispatcher(true);
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -294,6 +313,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest();
         $this->mockToken(FrontendUser::class, [1, 2, 3]);
+        $this->mockEventDispatcher(true);
 
         $adapter = $this->mockPageModelAdapter('findFirstActiveByMemberGroups', [1, 2, 3], null);
         $this->framework = $this->mockContaoFramework([PageModel::class => $adapter]);
@@ -302,7 +322,8 @@ class AuthenticationSuccessHandlerTest extends TestCase
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -323,6 +344,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRouter();
         $this->mockRequest();
         $this->mockToken(FrontendUser::class, [1, 2, 3]);
+        $this->mockEventDispatcher(true);
 
         $page = $this->createMock(PageModel::class);
         $page
@@ -338,7 +360,8 @@ class AuthenticationSuccessHandlerTest extends TestCase
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
             $this->framework,
-            $this->router
+            $this->router,
+            $this->eventDispatcher
         );
 
         $response = $handler->onAuthenticationSuccess($this->request, $this->token);
@@ -448,5 +471,30 @@ class AuthenticationSuccessHandlerTest extends TestCase
         ;
 
         return $adapter;
+    }
+
+    /**
+     * Mocks the event dispatcher.
+     *
+     * @param bool $expectsDispatchEvent
+     */
+    private function mockEventDispatcher(bool $expectsDispatchEvent): void
+    {
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        if (true === $expectsDispatchEvent) {
+            $this->eventDispatcher
+                ->expects($this->once())
+                ->method('dispatch')
+                ->with(PostAuthenticateEvent::NAME)
+            ;
+        }
+
+        if (false === $expectsDispatchEvent) {
+            $this->eventDispatcher
+                ->expects($this->never())
+                ->method('dispatch')
+            ;
+        }
     }
 }

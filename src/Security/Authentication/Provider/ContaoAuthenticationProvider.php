@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\Authentication\Provider;
 
+use Contao\CoreBundle\Event\CheckCredentialsEvent;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\System;
 use Contao\User;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -44,7 +46,10 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     /** @var string */
     protected $providerKey;
 
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator)
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -52,6 +57,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->session = $session;
         $this->translator = $translator;
         $this->providerKey = $providerKey;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -66,7 +72,12 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 throw $badCredentialsException;
             }
 
-            if (false === $this->triggerLegacyCheckCredentialsHook($user, $token)) {
+            $event = $this->eventDispatcher->dispatch(
+                CheckCredentialsEvent::NAME,
+                new CheckCredentialsEvent($token->getUsername(), $token->getCredentials(), $user)
+            );
+
+            if (false === $event->getVote() && false === $this->triggerLegacyCheckCredentialsHook($user, $token)) {
                 --$user->loginCount;
                 $user->save();
 

@@ -56,8 +56,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockInteractiveLoginEvent();
 
         $listener = new InteractiveLoginListener($this->logger);
-
-        $this->assertEmpty($listener->onInteractiveLogin($this->interactiveLoginEvent));
+        $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
     /**
@@ -73,8 +72,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockInteractiveLoginEvent('username');
 
         $listener = new InteractiveLoginListener($this->logger);
-
-        $this->assertEmpty($listener->onInteractiveLogin($this->interactiveLoginEvent));
+        $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
     /**
@@ -93,9 +91,8 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger('User username has logged in.');
         $this->mockInteractiveLoginEvent('username');
 
-        $handler = new InteractiveLoginListener($this->logger);
-
-        $this->assertEmpty($handler->onInteractiveLogin($this->interactiveLoginEvent));
+        $listener = new InteractiveLoginListener($this->logger);
+        $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
     /**
@@ -116,6 +113,13 @@ class InteractiveLoginListenerTest extends TestCase
     private function mockLogger(string $message = null): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        if (null === $message) {
+            $this->logger
+                ->expects($this->never())
+                ->method('info')
+            ;
+        }
 
         if (null !== $message) {
             $context = [
