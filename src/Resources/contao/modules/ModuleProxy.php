@@ -26,6 +26,10 @@ class ModuleProxy extends Module
 	{
 		$reference = new FrontendModuleReference($this->objModel, $this->strColumn);
 
+		if ('BE' === TL_MODE) {
+			$reference->setBackend();
+		}
+
 		return \System::getContainer()->get('contao.fragment.renderer')->render($reference);
 	}
 
