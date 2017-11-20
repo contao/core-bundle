@@ -19,6 +19,7 @@ use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
 use Contao\PageModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -117,6 +118,13 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockToken(BackendUser::class);
         $this->mockEventDispatcher(true);
 
+        $this->httpUtils
+            ->expects($this->once())
+            ->method('createRedirectResponse')
+            ->with($this->request, 'foobar')
+            ->willReturn(new RedirectResponse('foobar'))
+        ;
+
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,
             ['default_target_path' => 'foobar'],
@@ -148,6 +156,13 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $this->mockRequest([], ['_route' => 'contao_backend_login']);
         $this->mockToken(BackendUser::class);
         $this->mockEventDispatcher(true);
+
+        $this->httpUtils
+            ->expects($this->once())
+            ->method('createRedirectResponse')
+            ->with($this->request, 'foobar')
+            ->willReturn(new RedirectResponse('foobar'))
+        ;
 
         $handler = new AuthenticationSuccessHandler(
             $this->httpUtils,

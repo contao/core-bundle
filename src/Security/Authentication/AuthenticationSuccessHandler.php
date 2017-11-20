@@ -155,7 +155,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             );
         }
 
-        return new RedirectResponse($this->determineTargetUrl($request));
+        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }
 
     /**
