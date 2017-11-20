@@ -20,11 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BackendIndex extends \Backend
 {
-	/**
-	 * Flash type
-	 * @var string
-	 */
-	protected $strFlashType = 'contao.BE.error';
 
 	/**
 	 * Initialize the controller
