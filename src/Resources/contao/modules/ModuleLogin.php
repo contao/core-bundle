@@ -37,7 +37,7 @@ class ModuleLogin extends \Module
 	 * Flash type
 	 * @var string
 	 */
-	protected $strFlashType = 'contao.' . TL_MODE . '.error';
+	protected $strFlashType = 'contao.FE.error';
 
 
 	/**

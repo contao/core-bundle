@@ -422,7 +422,9 @@ services:
             - "@security.http_utils"
             - []
             - "@logger"
-            - "@session"
+            - "@contao.routing.scope_matcher"
+            - "@translator"
+
 
     contao.security.authentication_success_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler

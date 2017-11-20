@@ -21,6 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
 class BackendIndex extends \Backend
 {
 	/**
+	 * Flash type
+	 * @var string
+	 */
+	protected $strFlashType = 'contao.BE.error';
+
+	/**
 	 * Initialize the controller
 	 *
 	 * 1. Import the user
@@ -33,9 +39,6 @@ class BackendIndex extends \Backend
 	{
 		$this->import('BackendUser', 'User');
 		parent::__construct();
-
-		// Authenticate
-		$this->User->authenticate();
 
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('tl_user');

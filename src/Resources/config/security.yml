@@ -34,6 +34,7 @@ security:
                 check_path: contao_backend_login
                 default_target_path: contao_backend
                 success_handler: contao.security.authentication_success_handler
+                failure_handler: contao.security.authentication_failure_handler
                 username_parameter: username
                 password_parameter: password
 

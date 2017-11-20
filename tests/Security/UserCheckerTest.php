@@ -521,7 +521,7 @@ class UserCheckerTest extends TestCase
      */
     private function mockRequest(array $options = [], array $attributes = [], $query = []): Request
     {
-        $request = Request::create('https://localhost/core/index.phpw');
+        $request = new Request();
 
         foreach ($options as $key => $value) {
             $request->request->set($key, $value);
