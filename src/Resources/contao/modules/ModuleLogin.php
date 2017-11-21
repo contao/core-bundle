@@ -16,7 +16,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 /**
@@ -53,10 +52,6 @@ class ModuleLogin extends \Module
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		/** @var AuthenticationUtils $authenticationUtils */
-		$authenticationUtils = \System::getContainer()->get('security.authentication_utils');
-		$error = $authenticationUtils->getLastAuthenticationError();
-
 		if (TL_MODE == 'BE')
 		{
 			/** @var BackendTemplate|object $objTemplate */
@@ -75,11 +70,6 @@ class ModuleLogin extends \Module
 		if (!$request->isMethod(Request::METHOD_POST) && $this->redirectBack && ($strReferer = $this->getReferer()) != \Environment::get('request'))
 		{
 			$session->set('LAST_PAGE_VISITED', $strReferer);
-		}
-
-		if ($error)
-		{
-			$session->getFlashBag()->set($this->strFlashType, $GLOBALS['TL_LANG']['ERR']['invalidLogin']);
 		}
 
 		return parent::generate();
