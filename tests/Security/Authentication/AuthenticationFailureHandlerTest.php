@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler;
 use Contao\CoreBundle\Tests\TestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -74,6 +75,13 @@ class AuthenticationFailureHandlerTest extends TestCase
             ['referer' => '/']
         );
 
+        $this->httpUtils
+            ->expects($this->once())
+            ->method('createRedirectResponse')
+            ->with($request, '/')
+            ->willReturn(new RedirectResponse('/'))
+        ;
+
         $this->session = $this->mockSession();
 
         $request->setSession($this->session);
@@ -109,6 +117,13 @@ class AuthenticationFailureHandlerTest extends TestCase
         $request = $this->mockRequest(
             ['_scope' => 'backend']
         );
+
+        $this->httpUtils
+            ->expects($this->once())
+            ->method('createRedirectResponse')
+            ->with($request, '/contao/login')
+            ->willReturn(new RedirectResponse('/contao/login'))
+        ;
 
         $this->session = $this->mockSession();
 

@@ -70,7 +70,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             $this->translator->trans('ERR.invalidLogin', [], 'contao_default')
         );
 
-        return new RedirectResponse($this->determineRedirectTarget($request));
+        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }
 
     /**
@@ -80,7 +80,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      *
      * @return string
      */
-    protected function determineRedirectTarget(Request $request): string
+    protected function determineTargetUrl(Request $request): string
     {
         if ($this->scopeMatcher->isBackendRequest($request)) {
             return $request->getRequestUri();
