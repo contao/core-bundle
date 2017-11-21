@@ -2,6 +2,10 @@
 
 ### DEV
 
+ * Support media:content tags when generating feeds (see contao/news-bundle#7).
+ * Support wildcards in the "iflng" and "ifnlng" insert tags (see contao/core#8313).
+ * Add the FilesModel::findByPid() method (see #925).
+ * Support sorting enclosures (see contao/calendar-bundle#16).
  * Show the default value of overwritable fields as placeholder (see #1120). 
  * Also use STRONG instead of SPAN in the breadcrumb menu (see #1154).
  * Use the Symfony assets component for the Contao assets (see #1165).
