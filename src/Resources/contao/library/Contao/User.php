@@ -41,7 +41,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @property string  $email
  * @property string  $language
  * @property string  $backendTheme
- * @property boolean $limitWidth
+ * @property boolean $fullscreen
  * @property string  $uploader
  * @property boolean $showHelp
  * @property boolean $thumbnails
