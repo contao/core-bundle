@@ -27,15 +27,32 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class FrontendPreviewAuthenticator
 {
+    /**
+     * @var RequestStack
+     */
     protected $requestStack;
+
+    /**
+     * @var SessionInterface
+     */
     protected $session;
+
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
+
+    /**
+     * @var UserProviderInterface
+     */
     protected $userProvider;
+
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
     /**
-     * Constructor.
-     *
      * @param RequestStack          $requestStack
      * @param SessionInterface      $session
      * @param TokenStorageInterface $tokenStorage

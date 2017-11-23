@@ -29,17 +29,64 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class SwitchUserButtonGeneratorTest extends TestCase
 {
+    /**
+     * @var AuthorizationCheckerInterface
+     */
     protected $authorizationChecker;
+
+    /**
+     * @var RouterInterface
+     */
     protected $router;
+
+    /**
+     * @var Connection
+     */
     protected $connection;
+
+    /**
+     * @var EngineInterface
+     */
     protected $engine;
+
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
+
+    /**
+     * @var Statement
+     */
     protected $statement;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
+
+    /**
+     * @var UserInterface
+     */
     protected $tokenUser;
+
+    /**
+     * @var UserInterface
+     */
     protected $user;
+
+    /**
+     * @var array
+     */
     protected $row;
+
+    /**
+     * @var string
+     */
     protected $title;
+
+    /**
+     * @var string
+     */
     protected $label;
 
     /**

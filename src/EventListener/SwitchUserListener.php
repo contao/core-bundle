@@ -18,15 +18,22 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 
-/**
- * SwitchUserListener allows a user to impersonate another one temporarily
- * (like the Unix su command).
- */
 class SwitchUserListener
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
 
+    /**
+     * @param LoggerInterface       $logger
+     * @param TokenStorageInterface $tokenStorage
+     */
     public function __construct(LoggerInterface $logger, TokenStorageInterface $tokenStorage)
     {
         $this->logger = $logger;
@@ -34,7 +41,8 @@ class SwitchUserListener
     }
 
     /**
-     * Logs the switch to another user.
+     * SwitchUserListener allows a user to impersonate another one temporarily
+     * (like the Unix su command).
      *
      * @param SwitchUserEvent $event
      */

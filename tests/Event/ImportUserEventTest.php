@@ -18,10 +18,14 @@ use PHPUnit\Framework\TestCase;
 
 class ImportUserEventTest extends TestCase
 {
-    /** @var User */
+    /**
+     * @var User
+     */
     protected $user;
 
-    /** @var ImportUserEvent */
+    /**
+     * @var ImportUserEvent
+     */
     protected $event;
 
     /**

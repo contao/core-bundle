@@ -29,10 +29,14 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
-    /** @var ScopeMatcher */
+    /**
+     * @var ScopeMatcher
+     */
     protected $scopeMatcher;
 
-    /** @var TranslatorInterface */
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
     /**

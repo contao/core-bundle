@@ -18,10 +18,14 @@ use PHPUnit\Framework\TestCase;
 
 class PostLogoutEventTest extends TestCase
 {
-    /** @var User */
+    /**
+     * @var User
+     */
     protected $user;
 
-    /** @var PostLogoutEvent */
+    /**
+     * @var PostLogoutEvent
+     */
     protected $event;
 
     /**

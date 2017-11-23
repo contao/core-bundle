@@ -18,10 +18,14 @@ use PHPUnit\Framework\TestCase;
 
 class CheckCredentialsEventTest extends TestCase
 {
-    /** @var User */
+    /**
+     * @var User
+     */
     protected $user;
 
-    /** @var CheckCredentialsEvent */
+    /**
+     * @var CheckCredentialsEvent
+     */
     protected $event;
 
     /**

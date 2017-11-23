@@ -28,9 +28,24 @@ use Symfony\Component\Security\Http\Event\SwitchUserEvent;
  */
 class SwitchUserListenerTest extends TestCase
 {
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
+
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
+
+    /**
+     * @var SwitchUserEvent
+     */
     protected $switchUserEvent;
 
     /**

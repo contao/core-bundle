@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\PostAuthenticateEvent;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\HttpUtils;
 
 /**
@@ -31,12 +33,39 @@ use Symfony\Component\Security\Http\HttpUtils;
  */
 class AuthenticationSuccessHandlerTest extends TestCase
 {
+    /**
+     * @var HttpUtils
+     */
     protected $httpUtils;
+
+    /**
+     * @var ContaoFramework
+     */
     protected $framework;
+
+    /**
+     * @var RouterInterface
+     */
     protected $router;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
+
+    /**
+     * @var Request
+     */
     protected $request;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
+
+    /**
+     * @var UserInterface
+     */
     protected $user;
 
     /**

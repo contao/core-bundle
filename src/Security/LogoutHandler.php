@@ -28,15 +28,17 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
  */
 class LogoutHandler implements LogoutHandlerInterface
 {
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
-    /** @var EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
     /**
-     * Constructor.
-     *
      * @param LoggerInterface          $logger
      * @param EventDispatcherInterface $eventDispatcher
      */

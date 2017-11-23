@@ -30,8 +30,6 @@ class FrontendUserProvider implements UserProviderInterface
     private $framework;
 
     /**
-     * Constructor.
-     *
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(ContaoFrameworkInterface $framework)

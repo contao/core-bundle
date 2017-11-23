@@ -21,6 +21,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
@@ -35,20 +36,69 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ContaoAuthenticationProviderTest extends TestCase
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
+    /**
+     * @var UserProviderInterface
+     */
     protected $userProvider;
+
+    /**
+     * @var UserCheckerInterface
+     */
     protected $userChecker;
+
+    /**
+     * @var string
+     */
     protected $providerKey;
+
+    /**
+     * @var EncoderFactoryInterface
+     */
     protected $encoderFactory;
+
+    /**
+     * @var bool
+     */
     protected $hideUserNotFoundExceptions;
 
+    /**
+     * @var UserInterface
+     */
     protected $user;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
+
+    /**
+     * @var PasswordEncoderInterface
+     */
     protected $encoder;
+
+    /**
+     * @var FlashBagInterface
+     */
     protected $flashBag;
 
     /**

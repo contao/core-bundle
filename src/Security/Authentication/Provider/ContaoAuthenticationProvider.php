@@ -34,21 +34,42 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 {
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
-    /** @var Session */
+    /**
+     * @var Session
+     */
     protected $session;
 
-    /** @var TranslatorInterface */
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $providerKey;
 
-    /** @var EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
+    /**
+     * @param UserProviderInterface    $userProvider
+     * @param UserCheckerInterface     $userChecker
+     * @param string                   $providerKey
+     * @param EncoderFactoryInterface  $encoderFactory
+     * @param bool                     $hideUserNotFoundExceptions
+     * @param LoggerInterface          $logger
+     * @param Session                  $session
+     * @param TranslatorInterface      $translator
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);

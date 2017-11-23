@@ -26,10 +26,24 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
  */
 class InteractiveLoginListenerTest extends TestCase
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var InteractiveLoginEvent
+     */
     protected $interactiveLoginEvent;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp(): void
     {
         unset($GLOBALS['TL_HOOKS']);

@@ -19,18 +19,26 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-/**
- * Interactive login listener to log successful login attempts.
- */
 class InteractiveLoginListener
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * Interactive login listener to log successful login attempts.
+     *
+     * @param InteractiveLoginEvent $event
+     */
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
         /** @var UserInterface $user */

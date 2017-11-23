@@ -24,7 +24,7 @@ class ContaoLegacyPasswordEncoderTest extends TestCase
     /**
      * @var ContaoLegacyPasswordEncoder
      */
-    private $encoder;
+    protected $encoder;
 
     /**
      * {@inheritdoc}

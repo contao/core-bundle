@@ -33,18 +33,22 @@ use Symfony\Component\Security\Http\HttpUtils;
  */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
-    /** @var ContaoFrameworkInterface */
+    /**
+     * @var ContaoFrameworkInterface
+     */
     protected $framework;
 
-    /** @var RouterInterface */
+    /**
+     * @var RouterInterface
+     */
     protected $router;
 
-    /** @var EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
     /**
-     * Constructor.
-     *
      * @param HttpUtils                $httpUtils
      * @param array                    $options
      * @param ContaoFrameworkInterface $framework

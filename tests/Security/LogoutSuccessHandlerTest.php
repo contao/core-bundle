@@ -23,8 +23,19 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class LogoutSuccessHandlerTest extends TestCase
 {
+    /**
+     * @var RouterInterface
+     */
     protected $router;
+
+    /**
+     * @var SessionInterface
+     */
     protected $session;
+
+    /**
+     * @var Request
+     */
     protected $request;
 
     /**

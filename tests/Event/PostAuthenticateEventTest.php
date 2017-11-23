@@ -18,10 +18,14 @@ use PHPUnit\Framework\TestCase;
 
 class PostAuthenticateEventTest extends TestCase
 {
-    /** @var User */
+    /**
+     * @var User
+     */
     protected $user;
 
-    /** @var PostAuthenticateEvent */
+    /**
+     * @var PostAuthenticateEvent
+     */
     protected $event;
 
     /**

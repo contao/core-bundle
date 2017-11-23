@@ -27,15 +27,32 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class SwitchUserButtonGenerator
 {
+    /**
+     * @var AuthorizationCheckerInterface
+     */
     protected $authorizationChecker;
+
+    /**
+     * @var RouterInterface
+     */
     protected $router;
+
+    /**
+     * @var Connection
+     */
     protected $connection;
+
+    /**
+     * @var EngineInterface
+     */
     protected $twig;
+
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
 
     /**
-     * Constructor.
-     *
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param RouterInterface               $router
      * @param Connection                    $connection

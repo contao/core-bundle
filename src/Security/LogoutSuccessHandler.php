@@ -28,8 +28,6 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     protected $router;
 
     /**
-     * Constructor.
-     *
      * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)

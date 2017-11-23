@@ -34,24 +34,44 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class UserChecker implements UserCheckerInterface
 {
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
-    /** @var TranslatorInterface */
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
-    /** @var \Swift_Mailer */
+    /**
+     * @var \Swift_Mailer
+     */
     protected $mailer;
 
-    /** @var Session */
+    /**
+     * @var Session
+     */
     protected $session;
 
-    /** @var ScopeMatcher */
+    /**
+     * @var ScopeMatcher
+     */
     protected $scopeMatcher;
 
-    /** @var RequestStack */
+    /**
+     * @var RequestStack
+     */
     protected $requestStack;
 
+    /**
+     * @param LoggerInterface     $logger
+     * @param TranslatorInterface $translator
+     * @param \Swift_Mailer       $mailer
+     * @param Session             $session
+     * @param ScopeMatcher        $scopeMatcher
+     * @param RequestStack        $requestStack
+     */
     public function __construct(LoggerInterface $logger, TranslatorInterface $translator, \Swift_Mailer $mailer, Session $session, ScopeMatcher $scopeMatcher, RequestStack $requestStack)
     {
         $this->logger = $logger;

@@ -34,12 +34,39 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class UserCheckerTest extends TestCase
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
+
+    /**
+     * @var \Swift_Mailer
+     */
     protected $mailer;
+
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var FlashBagInterface
+     */
     protected $flashBag;
+
+    /**
+     * @var ScopeMatcher
+     */
     protected $scopeMatcher;
+
+    /**
+     * @var RequestStack
+     */
     protected $requestStack;
 
     /**

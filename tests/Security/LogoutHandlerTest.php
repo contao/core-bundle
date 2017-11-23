@@ -28,10 +28,29 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  */
 class LogoutHandlerTest extends TestCase
 {
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
+
+    /**
+     * @var Request
+     */
     protected $request;
+
+    /**
+     * @var Response
+     */
     protected $response;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
 
     /**

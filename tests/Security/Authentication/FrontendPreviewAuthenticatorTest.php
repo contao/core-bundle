@@ -32,13 +32,39 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
  */
 class FrontendPreviewAuthenticatorTest extends TestCase
 {
+    /**
+     * @var RequestStack
+     */
     protected $requestStack;
+
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
+
+    /**
+     * @var FrontendUserProvider
+     */
     protected $userProvider;
+
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var TokenInterface
+     */
     protected $token;
-    protected $tokenUser;
+
+    /**
+     * @var FrontendUser
+     */
     protected $user;
 
     /**
