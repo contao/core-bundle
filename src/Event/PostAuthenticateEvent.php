@@ -33,7 +33,7 @@ class PostAuthenticateEvent extends Event
     }
 
     /**
-     * Gets the user from the event.
+     * Returns the user from the event.
      *
      * @return User
      */

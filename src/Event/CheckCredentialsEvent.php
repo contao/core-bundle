@@ -39,6 +39,11 @@ class CheckCredentialsEvent extends Event
      */
     private $vote = false;
 
+    /**
+     * @param string $username
+     * @param string $credentials
+     * @param User   $user
+     */
     public function __construct(string $username, string $credentials, User $user)
     {
         $this->username = $username;
@@ -46,26 +51,51 @@ class CheckCredentialsEvent extends Event
         $this->user = $user;
     }
 
+    /**
+     * Returns the username.
+     *
+     * @return string
+     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
+    /**
+     * Returns the credentials.
+     *
+     * @return string
+     */
     public function getCredentials(): string
     {
         return $this->credentials;
     }
 
+    /**
+     * Returns the user object.
+     *
+     * @return User
+     */
     public function getUser(): User
     {
         return $this->user;
     }
 
+    /**
+     * Gives a vote for the event.
+     *
+     * @param bool $vote
+     */
     public function vote(bool $vote): void
     {
         $this->vote = $this->vote || $vote;
     }
 
+    /**
+     * Returns the voting result.
+     *
+     * @return bool
+     */
     public function getVote(): bool
     {
         return $this->vote;

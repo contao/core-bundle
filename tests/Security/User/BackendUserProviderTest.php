@@ -59,7 +59,7 @@ class BackendUserProviderTest extends TestCase
         ;
 
         $adapter
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('loadUserByUsername')
             ->with('test-user')
             ->willReturn($user)
@@ -69,6 +69,43 @@ class BackendUserProviderTest extends TestCase
         $provider = new BackendUserProvider($framework);
 
         $this->assertInstanceOf('Contao\BackendUser', $provider->loadUserByUsername('test-user'));
+    }
+
+    /**
+     * Tests if a supported backend user can be refreshed.
+     */
+    public function testCanRefreshASupportedBackendUser(): void
+    {
+        $user = $this
+            ->getMockBuilder(BackendUser::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getUsername'])
+            ->getMock()
+        ;
+
+        $user
+            ->expects($this->any())
+            ->method('getUsername')
+            ->willReturn('test-user')
+        ;
+
+        $adapter = $this
+            ->getMockBuilder(Adapter::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['loadUserByUsername'])
+            ->getMock()
+        ;
+
+        $adapter
+            ->expects($this->exactly(1))
+            ->method('loadUserByUsername')
+            ->with('test-user')
+            ->willReturn($user)
+        ;
+
+        $framework = $this->mockContaoFramework([BackendUser::class => $adapter]);
+        $provider = new BackendUserProvider($framework);
+
         $this->assertInstanceOf('Contao\BackendUser', $provider->refreshUser($user));
     }
 

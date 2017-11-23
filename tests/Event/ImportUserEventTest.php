@@ -84,6 +84,18 @@ class ImportUserEventTest extends TestCase
     }
 
     /**
+     * Tests the instantiation with possible null values.
+     */
+    public function testWithEmptyCredentialsAndEmptyTable(): void
+    {
+        $this->event = new ImportUserEvent('username', null, null);
+
+        $this->assertSame('username', $this->event->getUsername());
+        $this->assertNull($this->event->getCredentials());
+        $this->assertNull($this->event->getTable());
+    }
+
+    /**
      * Mocks the user.
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
