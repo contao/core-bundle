@@ -452,9 +452,16 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
+			// Return, if its not a real login attempt
+			if (!$request->isMethod(Request::METHOD_POST) && $password == null)
+			{
+				return null;
+			}
+
 			/** @var ImportUserEvent $importUserEvent */
 			$importUserEvent = $eventDispatcher->dispatch(ImportUserEvent::NAME, new ImportUserEvent($username, $password, $user->strTable));
 
+			// Check vote from new ImportUserEvent and trigger legacy hook
 			if ($importUserEvent->getVote() === false && self::triggerLegacyImportUserHook($username, $password, $user->strTable) === false)
 			{
 				return null;
