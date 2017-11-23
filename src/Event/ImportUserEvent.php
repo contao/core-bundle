@@ -39,11 +39,11 @@ class ImportUserEvent extends Event
     private $vote = false;
 
     /**
-     * @param string      $username
-     * @param string|null $credentials
-     * @param string|null $table
+     * @param string $username
+     * @param string $credentials
+     * @param string $table
      */
-    public function __construct(string $username, string $credentials = null, string $table = null)
+    public function __construct(string $username, string $credentials, string $table)
     {
         $this->username = $username;
         $this->credentials = $credentials;
@@ -63,9 +63,9 @@ class ImportUserEvent extends Event
     /**
      * Returns the credentials.
      *
-     * @return null|string
+     * @return string
      */
-    public function getCredentials(): ?string
+    public function getCredentials(): string
     {
         return $this->credentials;
     }
@@ -73,9 +73,9 @@ class ImportUserEvent extends Event
     /**
      * Returns the user table.
      *
-     * @return null|string
+     * @return string
      */
-    public function getTable(): ?string
+    public function getTable(): string
     {
         return $this->table;
     }
