@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\EventListener;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\System;
 use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,11 +27,18 @@ class InteractiveLoginListener
     protected $logger;
 
     /**
-     * @param LoggerInterface $logger
+     * @var ContaoFrameworkInterface
      */
-    public function __construct(LoggerInterface $logger)
+    private $framework;
+
+    /**
+     * @param LoggerInterface $logger
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(LoggerInterface $logger, ContaoFrameworkInterface $framework)
     {
         $this->logger = $logger;
+        $this->framework = $framework;
     }
 
     /**
@@ -71,8 +78,7 @@ class InteractiveLoginListener
         // HOOK: post login callback
         if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
-                $user->objLogin = System::importStatic($callback[0], 'objLogin', true);
-                $user->objLogin->{$callback[1]}($user);
+                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
             }
         }
     }

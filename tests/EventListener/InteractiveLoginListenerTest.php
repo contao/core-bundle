@@ -13,9 +13,10 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\User;
 
 use Contao\CoreBundle\EventListener\InteractiveLoginListener;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
-use PHPUnit\Framework\TestCase;
+use Contao\CoreBundle\Tests\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -42,11 +43,17 @@ class InteractiveLoginListenerTest extends TestCase
     protected $token;
 
     /**
+     * @var ContaoFramework
+     */
+    protected $framework;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         unset($GLOBALS['TL_HOOKS']);
+        $this->framework = $this->mockContaoFramework();
     }
 
     /**
@@ -56,7 +63,7 @@ class InteractiveLoginListenerTest extends TestCase
     {
         $this->mockLogger();
 
-        $listener = new InteractiveLoginListener($this->logger);
+        $listener = new InteractiveLoginListener($this->logger, $this->framework);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\InteractiveLoginListener', $listener);
     }
@@ -69,7 +76,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger();
         $this->mockInteractiveLoginEvent();
 
-        $listener = new InteractiveLoginListener($this->logger);
+        $listener = new InteractiveLoginListener($this->logger, $this->framework);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
@@ -85,7 +92,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger('User username has logged in.');
         $this->mockInteractiveLoginEvent('username');
 
-        $listener = new InteractiveLoginListener($this->logger);
+        $listener = new InteractiveLoginListener($this->logger, $this->framework);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
@@ -98,6 +105,12 @@ class InteractiveLoginListenerTest extends TestCase
      */
     public function testExecutesThePostLoginHook(): void
     {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
         $GLOBALS['TL_HOOKS'] = [
             'postLogin' => [[\get_class($this), 'executePostLoginHookCallback']],
         ];
@@ -105,7 +118,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger('User username has logged in.');
         $this->mockInteractiveLoginEvent('username');
 
-        $listener = new InteractiveLoginListener($this->logger);
+        $listener = new InteractiveLoginListener($this->logger, $this->framework);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
