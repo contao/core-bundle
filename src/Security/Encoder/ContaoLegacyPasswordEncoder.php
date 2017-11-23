@@ -34,7 +34,7 @@ class ContaoLegacyPasswordEncoder extends BasePasswordEncoder
         @trigger_error('Using ContaoLegacyPasswordEncoder::encodePassword has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
         if ($this->isPasswordTooLong($raw)) {
-            throw new BadCredentialsException('Invalid password.');
+            throw new BadCredentialsException('Password too long.');
         }
 
         return sha1($salt.$raw);

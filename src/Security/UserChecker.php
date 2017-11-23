@@ -161,7 +161,7 @@ class UserChecker implements UserCheckerInterface
                 $this->mailer->send($email);
             }
 
-            throw new LockedException();
+            throw new LockedException(sprintf('This account (%s) has been locked!', $user->getUsername()));
         }
     }
 
@@ -175,7 +175,7 @@ class UserChecker implements UserCheckerInterface
         if (false === $user->isAccountNonLocked()) {
             $this->setAccountLockedFlashBag($user);
 
-            throw new LockedException();
+            throw new LockedException(sprintf('This account (%s) has been locked!', $user->getUsername()));
         }
     }
 
@@ -193,7 +193,7 @@ class UserChecker implements UserCheckerInterface
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
             );
 
-            throw new DisabledException();
+            throw new DisabledException(sprintf('This account (%s) has been disabled!', $user->getUsername()));
         }
     }
 
@@ -214,7 +214,7 @@ class UserChecker implements UserCheckerInterface
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
             );
 
-            throw new DisabledException();
+            throw new DisabledException(sprintf('This user (%s) is not allowed to login.', $user->getUsername()));
         }
     }
 
@@ -250,7 +250,7 @@ class UserChecker implements UserCheckerInterface
             $this->setInvalidLoginFlashBag();
             $this->logger->info($logMessage, ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]);
 
-            throw new DisabledException();
+            throw new DisabledException(sprintf('This account (%s) is not active.', $user->getUsername()));
         }
     }
 
