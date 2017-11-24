@@ -28,15 +28,6 @@ class FormFieldsetStart extends \Widget
 
 
 	/**
-	 * Do not validate
-	 */
-	public function validate()
-	{
-		return;
-	}
-
-
-	/**
 	 * Parse the template file and return it as string
 	 *
 	 * @param array $arrAttributes An optional attributes array
@@ -66,6 +57,8 @@ class FormFieldsetStart extends \Widget
 	 */
 	public function generate()
 	{
-		return "  <fieldset" . ($this->strClass ? ' class="' . $this->strClass . '"' : '') . ">\n" . (($this->label != '') ? "  <legend>" . $this->label . "</legend>\n" : '');
+		return sprintf('<fieldset%s>%s',
+						($this->strClass ? ' class="' . $this->strClass . '"' : ''),
+						($this->label ? '<legend>' . $this->label . '</legend>' : ''));
 	}
 }

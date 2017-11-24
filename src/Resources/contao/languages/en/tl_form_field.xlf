@@ -15,16 +15,16 @@
         <source>A custom field to insert HTML code.</source>
       </trans-unit>
       <trans-unit id="FFL.fieldsetStart.0">
-        <source>Fieldset Start</source>
+        <source>Fieldset start</source>
       </trans-unit>
       <trans-unit id="FFL.fieldsetStart.1">
-        <source>Opening part of a container for form fields with an optional legend.</source>
+        <source>The opening part of a fieldset with an optional legend.</source>
       </trans-unit>
       <trans-unit id="FFL.fieldsetStop.0">
-        <source>Fieldset Stop/source>
+        <source>Fieldset stop</source>
       </trans-unit>
       <trans-unit id="FFL.fieldsetStop.1">
-        <source>Closing part of a container for form fields.</source>
+        <source>The closing part of a fieldset.</source>
       </trans-unit>
       <trans-unit id="FFL.text.0">
         <source>Text field</source>

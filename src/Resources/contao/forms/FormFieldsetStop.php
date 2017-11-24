@@ -28,15 +28,6 @@ class FormFieldsetStop extends \Widget
 
 
 	/**
-	 * Do not validate
-	 */
-	public function validate()
-	{
-		return;
-	}
-
-
-	/**
 	 * Parse the template file and return it as string
 	 *
 	 * @param array $arrAttributes An optional attributes array
@@ -65,6 +56,6 @@ class FormFieldsetStop extends \Widget
 	 */
 	public function generate()
 	{
-		return "  </fieldset>\n";
+		return '</fieldset>';
 	}
 }
