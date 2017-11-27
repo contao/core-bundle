@@ -881,7 +881,7 @@ abstract class Backend extends \Controller
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] .= '
 
-<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbAriaLabel'] . '" role="navigation">
+<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbMenu'] . '">
   <ul id="tl_breadcrumb">
     <li>' . implode(' › </li><li>', $arrLinks) . '</li>
   </ul>'
@@ -1055,9 +1055,9 @@ abstract class Backend extends \Controller
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['breadcrumb'] .= '
 
-<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbAriaLabel'] . '" role="navigation">
+<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbMenu'] . '">
   <ul id="tl_breadcrumb">
-    <li>' . implode(' &gt; </li><li>', $arrLinks) . '</li>
+    <li>' . implode(' › </li><li>', $arrLinks) . '</li>
   </ul>
 </nav>';
 	}
