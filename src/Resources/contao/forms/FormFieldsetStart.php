@@ -12,13 +12,11 @@ namespace Contao;
 
 
 /**
- * Class FormHtml
- *
- * @property string $html
+ * Class FormFieldsetStart
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormHtml extends \Widget
+class FormFieldsetStart extends \Widget
 {
 
 	/**
@@ -26,7 +24,7 @@ class FormHtml extends \Widget
 	 *
 	 * @var string
 	 */
-	protected $strTemplate = 'form_html';
+	protected $strTemplate = 'form_fieldsetStart';
 
 
 	/**
@@ -46,9 +44,14 @@ class FormHtml extends \Widget
 	 */
 	public function parse($arrAttributes=null)
 	{
+		// Return a wildcard in the back end
 		if (TL_MODE == 'BE')
 		{
-			$this->html = htmlspecialchars($this->html);
+			/** @var BackendTemplate|object $objTemplate */
+			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate->title = $this->label;
+
+			return $objTemplate->parse();
 		}
 
 		return parent::parse($arrAttributes);
@@ -62,6 +65,8 @@ class FormHtml extends \Widget
 	 */
 	public function generate()
 	{
-		return (TL_MODE == 'FE') ? $this->html : htmlspecialchars($this->html);
+		return sprintf('<fieldset%s>%s',
+						($this->strClass ? ' class="' . $this->strClass . '"' : ''),
+						($this->label ? '<legend>' . $this->label . '</legend>' : ''));
 	}
 }

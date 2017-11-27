@@ -1026,7 +1026,11 @@ var Backend =
 		var hgt = 0;
 
 		$$('div.limit_height').each(function(div) {
-			var toggler, button, size, style;
+			var parent = div.getParent('.tl_content'),
+				toggler, button, size, style;
+
+			// Return if the element is a wrapper
+			if (parent && (parent.hasClass('wrapper_start') || parent.hasClass('wrapper_stop'))) return;
 
 			if (hgt === 0) {
 				hgt = div.className.replace(/[^0-9]*/, '').toInt();
@@ -1266,29 +1270,40 @@ var Backend =
 			},
 			onSort: function(el) {
 				var ul = el.getParent('ul'),
-					wrapLevel = 0;
+					wrapLevel = 0, divs, i;
 
 				if (!ul) return;
 
-				ul.getChildren('li').each(function(el) {
-					var div = el.getFirst('div');
+				divs = ul.getChildren('li > div:first-child');
 
-					if (!div) return;
+				if (!divs) return;
 
-					if (div.hasClass('wrapper_stop') && wrapLevel > 0) {
+				for (i=0; i<divs.length; i++) {
+					if (divs[i].hasClass('wrapper_stop') && wrapLevel > 0) {
 						wrapLevel--;
 					}
 
-					div.className = div.className.replace(/(^|\s)indent[^\s]*/g, '');
+					divs[i].className = divs[i].className.replace(/(^|\s)indent[^\s]*/g, '');
 
 					if (wrapLevel > 0) {
-						div.addClass('indent').addClass('indent_' + wrapLevel);
+						divs[i].addClass('indent').addClass('indent_' + wrapLevel);
 					}
 
-					if (div.hasClass('wrapper_start')) {
+					if (divs[i].hasClass('wrapper_start')) {
 						wrapLevel++;
 					}
-				});
+
+					divs[i].removeClass('indent_first');
+					divs[i].removeClass('indent_last');
+
+					if (divs[i-1] && divs[i-1].hasClass('wrapper_start')) {
+						divs[i].addClass('indent_first');
+					}
+
+					if (divs[i+1] && divs[i+1].hasClass('wrapper_stop')) {
+						divs[i].addClass('indent_last');
+					}
+				}
 			},
 			handle: '.drag-handle'
 		});
