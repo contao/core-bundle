@@ -884,7 +884,7 @@ abstract class Backend extends \Controller
 <nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbMenu'] . '">
   <ul id="tl_breadcrumb">
     <li>' . implode(' › </li><li>', $arrLinks) . '</li>
-  </ul>'
+  </ul>
 </nav>';
 	}
 
