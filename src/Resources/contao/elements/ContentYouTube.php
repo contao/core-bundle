@@ -63,13 +63,47 @@ class ContentYouTube extends \ContentElement
 			$this->Template->size = ' width="' . $size[0] . '" height="' . $size[1] . '"';
 		}
 
-		$url = 'https://www.youtube.com/embed/' . $this->youtube;
+		$this->Template->src = $this->getYouTubeUrl();
+	}
+
+	/**
+	 * Gets YouTube URL based on configuration options.
+	 *
+	 * @return string
+	 */
+	private function getYouTubeUrl()
+	{
+		$query = array();
+		$options = \StringUtil::deserialize($this->youtubeOptions, true);
 
 		if ($this->autoplay)
 		{
-			$url .= '?autoplay=1';
+			$query['autoplay'] = '1';
 		}
 
-		$this->Template->src = $url;
+		if (!in_array('youtube_suggest', $options, true))
+		{
+			$query['rel'] = '0';
+		}
+
+		if (!in_array('youtube_controls', $options, true))
+		{
+			$query['controls'] = '0';
+		}
+
+		if (!in_array('youtube_intro', $options, true))
+		{
+			$query['showintro'] = '0';
+		}
+
+		$domain = in_array('youtube_privacy', $options, true) ? 'youtube-nocookie' : 'youtube';
+		$url = 'https://www.' . $domain . '.com/embed/' . $this->youtube;
+
+		if (!empty($query))
+		{
+			$url .= '?' . http_build_query($query);
+		}
+
+		return $url;
 	}
 }

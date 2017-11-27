@@ -627,6 +627,18 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			),
 			'sql'                     => "varchar(16) NOT NULL default ''"
 		),
+		'youtubeOptions' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['youtubeOptions'],
+			'default'                 => array('youtube_suggest', 'youtube_controls', 'youtube_intro'),
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'checkbox',
+			'options'                 => array('youtube_suggest', 'youtube_controls', 'youtube_intro', 'youtube_privacy'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
+			'eval'                    => array('multiple'=>true),
+			'sql'                     => "blob NULL"
+		),
 		'vimeo' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['vimeo'],

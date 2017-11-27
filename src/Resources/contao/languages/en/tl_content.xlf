@@ -308,6 +308,12 @@
       <trans-unit id="tl_content.youtube.1">
         <source>Please enter the YouTube video ID (e.g. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</source>
       </trans-unit>
+      <trans-unit id="tl_content.youtubeOptions.0">
+        <source>YouTube Embedd Options</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeOptions.1">
+        <source>Here you can configure how the YouTube player is embedded.</source>
+      </trans-unit>
       <trans-unit id="tl_content.vimeo.0">
         <source>Vimeo ID</source>
       </trans-unit>
@@ -511,6 +517,18 @@
       </trans-unit>
       <trans-unit id="tl_content.random">
         <source>Random order</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_suggest">
+        <source>Show suggested videos when the video finishes</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_controls">
+        <source>Show player controls</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_intro">
+        <source>Show video title and player actions</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_privacy">
+        <source>Enable privacy-enhanced mode</source>
       </trans-unit>
       <trans-unit id="tl_content.includeTemplate">
         <source>The &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
