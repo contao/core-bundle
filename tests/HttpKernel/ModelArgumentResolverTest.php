@@ -52,30 +52,6 @@ class ModelArgumentResolverTest extends TestCase
         }
     }
 
-    public function testResolvesTheModelWithoutSuffix(): void
-    {
-        $pageModel = new PageModel();
-        $pageModel->setRow(['id' => 42]);
-
-        $adapter = $this->mockConfiguredAdapter(['findByPk' => $pageModel]);
-        $framework = $this->mockContaoFramework([PageModel::class => $adapter]);
-
-        $request = Request::create('/foobar');
-        $request->attributes->set('pageModel', 42);
-        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_FRONTEND);
-
-        $metadata = new ArgumentMetadata('page', PageModel::class, false, false, '');
-
-        $resolver = new ModelArgumentResolver($framework, $this->mockScopeMatcher());
-        $generator = $resolver->resolve($request, $metadata);
-
-        $this->assertInstanceOf('Generator', $generator);
-
-        foreach ($generator as $resolved) {
-            $this->assertSame($pageModel, $resolved);
-        }
-    }
-
     public function testResolvesTheModelFromClassName(): void
     {
         $pageModel = new PageModel();

@@ -107,10 +107,6 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
             return $argument->getName();
         }
 
-        if ($request->attributes->has(lcfirst($argument->getName()).'Model')) {
-            return lcfirst($argument->getName()).'Model';
-        }
-
         $className = $this->stripNamespace($argument->getType());
         if ($request->attributes->has(lcfirst($className))) {
             return lcfirst($className);
