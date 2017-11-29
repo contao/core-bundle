@@ -82,12 +82,14 @@ class FragmentHandler extends BaseFragmentHandler
 
         $this->preHandleFragment($uri, $config);
 
-        if (!isset($this->initialized[$config->getRenderer()]) && $this->renderers->has($config->getRenderer())) {
-            $this->addRenderer($this->renderers->get($config->getRenderer()));
-            $this->initialized[$config->getRenderer()] = true;
+        $renderer = $config->getRenderer();
+
+        if (!isset($this->initialized[$renderer]) && $this->renderers->has($renderer)) {
+            $this->addRenderer($this->renderers->get($renderer));
+            $this->initialized[$renderer] = true;
         }
 
-        return parent::render($uri, $config->getRenderer(), $config->getOptions());
+        return parent::render($uri, $renderer, $config->getOptions());
     }
 
     /**

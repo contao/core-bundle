@@ -651,15 +651,6 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(1));
     }
 
-    public function testRegistersTheFragmentRegistry(): void
-    {
-        $this->assertTrue($this->container->has('contao.fragment.registry'));
-
-        $definition = $this->container->getDefinition('contao.fragment.registry');
-
-        $this->assertSame(FragmentRegistry::class, $definition->getClass());
-    }
-
     public function testRegistersTheFragmentHandler(): void
     {
         $this->assertTrue($this->container->has('contao.fragment.handler'));
@@ -667,11 +658,22 @@ class ContaoCoreExtensionTest extends TestCase
         $definition = $this->container->getDefinition('contao.fragment.handler');
 
         $this->assertSame(FragmentHandler::class, $definition->getClass());
+        $this->assertSame('fragment.handler', $definition->getDecoratedService()[0]);
+        $this->assertNull($definition->getArgument(0));
         $this->assertSame('contao.fragment.handler.inner', (string) $definition->getArgument(1));
         $this->assertSame('request_stack', (string) $definition->getArgument(2));
         $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(3));
         $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(4));
-        $this->assertSame('%kernel.debug%', (string) $definition->getArgument(5));
+        $this->assertSame('%kernel.debug%', $definition->getArgument(5));
+    }
+
+    public function testRegistersTheFragmentRegistry(): void
+    {
+        $this->assertTrue($this->container->has('contao.fragment.registry'));
+
+        $definition = $this->container->getDefinition('contao.fragment.registry');
+
+        $this->assertSame(FragmentRegistry::class, $definition->getClass());
     }
 
     public function testRegistersTheFragmentPreHandlers(): void
