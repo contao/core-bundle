@@ -17,7 +17,6 @@ use Contao\CoreBundle\Event\PostAuthenticateEvent;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
 use Contao\PageModel;
-use Contao\System;
 use Contao\User;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -177,7 +176,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
             foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
-                System::importStatic($callback[0])->{$callback[1]}($user);
+                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
             }
         }
     }

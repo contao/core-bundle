@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\PostAuthenticateEvent;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\CoreBundle\Tests\TestCase;
@@ -177,6 +178,12 @@ class AuthenticationSuccessHandlerTest extends TestCase
      */
     public function testExecutesThePostAuthenticateHookWithABackendUser(): void
     {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
         $GLOBALS['TL_HOOKS'] = [
             'postAuthenticate' => [[\get_class($this), 'executePostAuthenticateHookWithABackendUserCallback']],
         ];
@@ -216,6 +223,12 @@ class AuthenticationSuccessHandlerTest extends TestCase
      */
     public function testExecutesThePostAuthenticateHookWithAFrontendUser(): void
     {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
         $GLOBALS['TL_HOOKS'] = [
             'postAuthenticate' => [[\get_class($this), 'executePostAuthenticateHookWithAFrontendUserCallback']],
         ];
@@ -502,9 +515,9 @@ class AuthenticationSuccessHandlerTest extends TestCase
      * @param null        $with
      * @param null        $willReturn
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return Adapter
      */
-    private function mockPageModelAdapter(string $method = null, $with = null, $willReturn = null): \PHPUnit_Framework_MockObject_MockObject
+    private function mockPageModelAdapter(string $method = null, $with = null, $willReturn = null): Adapter
     {
         $adapter = $this->mockAdapter([$method]);
         $adapter
