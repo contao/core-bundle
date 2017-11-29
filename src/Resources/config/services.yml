@@ -454,6 +454,7 @@ services:
             - "@session"
             - "@translator"
             - "@event_dispatcher"
+            - "@contao.framework"
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
