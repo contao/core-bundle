@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security;
 
 use Contao\CoreBundle\Event\PostLogoutEvent;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
@@ -54,12 +55,18 @@ class LogoutHandlerTest extends TestCase
     protected $token;
 
     /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         unset($GLOBALS['TL_HOOKS']);
 
+        $this->framework = $this->mockContaoFramework();
         $this->request = new Request();
         $this->response = new Response();
 
@@ -72,7 +79,7 @@ class LogoutHandlerTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->mockLogger();
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutHandler', $handler);
     }
@@ -85,7 +92,7 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger();
         $this->mockToken(false);
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
 
         $handler->logout($this->request, $this->response, $this->token);
     }
@@ -103,7 +110,7 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger('User username has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
 
         $handler->logout($this->request, $this->response, $this->token);
     }
@@ -117,6 +124,12 @@ class LogoutHandlerTest extends TestCase
      */
     public function testExecutesThePostLogoutHook(): void
     {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
         $GLOBALS['TL_HOOKS'] = [
             'postLogout' => [[\get_class($this), 'executePostLogoutHookCallback']],
         ];
@@ -125,7 +138,7 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger('User username has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher);
+        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
 
         $handler->logout($this->request, $this->response, $this->token);
     }

@@ -420,6 +420,7 @@ services:
         arguments:
             - "@logger"
             - "@event_dispatcher"
+            - "@contao.framework"
 
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler

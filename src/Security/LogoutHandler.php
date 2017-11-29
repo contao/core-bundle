@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security;
 
 use Contao\CoreBundle\Event\PostLogoutEvent;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\System;
 use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -39,13 +39,20 @@ class LogoutHandler implements LogoutHandlerInterface
     protected $eventDispatcher;
 
     /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    /**
      * @param LoggerInterface          $logger
      * @param EventDispatcherInterface $eventDispatcher
+     * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(LoggerInterface $logger, EventDispatcherInterface $eventDispatcher)
+    public function __construct(LoggerInterface $logger, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
     {
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
+        $this->framework = $framework;
     }
 
     /**
@@ -83,8 +90,7 @@ class LogoutHandler implements LogoutHandlerInterface
 
         if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
-                $user->objLogout = System::importStatic($callback[0], 'objLogout', true);
-                $user->objLogout->{$callback[1]}($user);
+                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
             }
         }
     }
