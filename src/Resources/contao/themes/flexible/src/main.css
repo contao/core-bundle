@@ -298,15 +298,15 @@ body:not(.fullscreen) #container {
 }
 
 /* Data container */
-h1.main_headline {
+#main_headline {
 	margin:20px 0;
 	padding:0 16px;
 	font-size:1.1rem;
 }
-.popup h1.main_headline {
+.popup #main_headline {
 	display:none;
 }
-h1.main_headline span:nth-child(even) {
+#main_headline span:nth-child(even) {
 	font-weight:normal;
 }
 h2.sub_headline {
@@ -754,7 +754,7 @@ table.tl_listing {
 	border-top:1px solid #e9e9e9;
 }
 .tl_content.wrapper_start h1 {
-	margin:0 0 9px 6px;
+	margin-bottom:9px;
 }
 .tl_content.indent_1 {
 	margin-left:20px;
@@ -1894,7 +1894,7 @@ fieldset.collapsed > legend {
 	#main .content {
 		margin:15px 10px;
 	}
-	h1.main_headline {
+	#main_headline {
 		margin:15px 0;
 		padding:0 11px;
 	}

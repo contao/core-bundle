@@ -3752,7 +3752,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		for ($i=0, $c=\count($arrIds); $i<$c; $i++)
 		{
-			$return .= ' ' . trim($this->generateTree($table, $arrIds[$i], array('p'=>$arrIds[($i-1)], 'n'=>$arrIds[($i+1)]), $hasSorting, $margin, ($blnClipboard ? $arrClipboard : false), ($id == $arrClipboard ['id'] || (\is_array($arrClipboard ['id']) && \in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !\is_array($arrClipboard['id']) && \in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), $blnProtected));
+			$return .= ' ' . trim($this->generateTree($table, $arrIds[$i], array('p'=>$arrIds[($i-1)], 'n'=>$arrIds[($i+1)]), $hasSorting, $margin, ($blnClipboard ? $arrClipboard : false), ($id == $arrClipboard['id'] || (\is_array($arrClipboard['id']) && \in_array($id, $arrClipboard['id'])) || (!$blnPtable && !\is_array($arrClipboard['id']) && \in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), $blnProtected));
 		}
 
 		return $return;
@@ -3851,7 +3851,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$blnIsOpen = (!empty($arrFound) || $session[$node][$id] == 1);
 
 		// Always show selected nodes
-		if (!$blnIsOpen && !empty($this->arrPickerValue) && !empty(array_intersect($this->Database->getChildRecords([$id], $this->strTable), $this->arrPickerValue)))
+		if (!$blnIsOpen && !empty($this->arrPickerValue) && !empty(array_intersect($this->Database->getChildRecords(array($id), $this->strTable), $this->arrPickerValue)))
 		{
 			$blnIsOpen = true;
 		}
@@ -4117,8 +4117,10 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 			$return .= '
 <div class="tl_content_right">'.((\Input::get('act') == 'select' || $this->strPickerFieldType == 'checkbox') ? '
-<label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">' : ($blnClipboard ? ' <a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$objParent->id . (!$blnMultiboard ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][0]).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a>' : ((!$GLOBALS['TL_DCA'][$this->ptable]['config']['notEditable'] && $this->User->canEditFieldsOf($this->ptable)) ? '
-<a href="'.preg_replace('/&(amp;)?table=[^& ]*/i', (($this->ptable != '') ? '&amp;table='.$this->ptable : ''), $this->addToUrl('act=edit'.(\Input::get('nb') ? '&amp;nc=1' : ''))).'" class="edit" title="'.\StringUtil::specialchars(isset($GLOBALS['TL_LANG'][$this->ptable]['editmeta'][1]) ? $GLOBALS['TL_LANG'][$this->ptable]['editmeta'][1] : $GLOBALS['TL_LANG'][$this->strTable]['editheader'][1]).'">'.$imageEditHeader.'</a>' : '') . (($blnHasSorting && !$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable']) ? ' <a href="'.$this->addToUrl('act=create&amp;mode=2&amp;pid='.$objParent->id.'&amp;id='.$this->intId).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['pastenew'][0]).'">'.$imagePasteNew.'</a>' : ''))) . '
+<label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">' : ($blnClipboard ? '
+<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$objParent->id . (!$blnMultiboard ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][0]).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a>' : ((!$GLOBALS['TL_DCA'][$this->ptable]['config']['notEditable'] && $this->User->canEditFieldsOf($this->ptable)) ? '
+<a href="'.preg_replace('/&(amp;)?table=[^& ]*/i', (($this->ptable != '') ? '&amp;table='.$this->ptable : ''), $this->addToUrl('act=edit'.(\Input::get('nb') ? '&amp;nc=1' : ''))).'" class="edit" title="'.\StringUtil::specialchars(isset($GLOBALS['TL_LANG'][$this->ptable]['editmeta'][1]) ? $GLOBALS['TL_LANG'][$this->ptable]['editmeta'][1] : $GLOBALS['TL_LANG'][$this->strTable]['editheader'][1]).'">'.$imageEditHeader.'</a> ' . $this->generateHeaderButtons($objParent->row(), $this->ptable) : '') . (($blnHasSorting && !$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable']) ? '
+<a href="'.$this->addToUrl('act=create&amp;mode=2&amp;pid='.$objParent->id.'&amp;id='.$this->intId).'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG'][$this->strTable]['pastenew'][0]).'">'.$imagePasteNew.'</a>' : ''))) . '
 </div>';
 
 			// Format header fields

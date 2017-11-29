@@ -8,14 +8,6 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
-    contao.argument_resolver.model:
-        class: Contao\CoreBundle\ArgumentResolver\ModelResolver
-        arguments:
-            - "@contao.framework"
-        tags:
-            # The priority must be higher than the one of the request attribute value resolver (defaults to 100)
-            - { name: controller.argument_value_resolver, priority: 101 }
-
     contao.assets.assets_context:
         class: Contao\CoreBundle\Asset\ContaoContext
         arguments:
@@ -101,6 +93,17 @@ services:
             - "@contao.framework"
             - "@doctrine"
 
+    contao.fragment.handler:
+        class: Contao\CoreBundle\Fragment\FragmentHandler
+        decorates: fragment.handler
+        arguments:
+            - ~ # fragment renderer locator
+            - "@contao.fragment.handler.inner"
+            - "@request_stack"
+            - "@contao.fragment.registry"
+            - "@contao.fragment.pre_handlers"
+            - "%kernel.debug%"
+
     contao.fragment.pre_handlers:
         class: Symfony\Component\DependencyInjection\ServiceLocator
         arguments: [[]]
@@ -108,13 +111,6 @@ services:
 
     contao.fragment.registry:
         class: Contao\CoreBundle\Fragment\FragmentRegistry
-
-    contao.fragment.renderer:
-        class: Contao\CoreBundle\Fragment\FragmentRenderer
-        arguments:
-            - "@contao.fragment.registry"
-            - "@fragment.handler"
-            - "@contao.fragment.pre_handlers"
 
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework
@@ -169,6 +165,7 @@ services:
         class: Contao\Image\PictureGenerator
         arguments:
             - "@contao.image.resizer"
+            - "@contao.image.resize_calculator"
 
     contao.image.picture_factory:
         class: Contao\CoreBundle\Image\PictureFactory
@@ -198,6 +195,15 @@ services:
         class: Knp\Menu\Renderer\ListRenderer
         arguments:
             - "@contao.menu.matcher"
+
+    contao.model_argument_resolver:
+        class: Contao\CoreBundle\HttpKernel\ModelArgumentResolver
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.scope_matcher"
+        tags:
+            # The priority must be higher than the one of the request attribute value resolver (defaults to 100)
+            - { name: controller.argument_value_resolver, priority: 101 }
 
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
