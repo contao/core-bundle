@@ -595,9 +595,9 @@ class UserCheckerTest extends TestCase
      * @param string|null $lastname
      * @param string|null $name
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return UserInterface
      */
-    private function mockUser(string $class = null, int $loginCount = null, bool $isAccountNonLocked = null, int $locked = null, bool $isEnabled = null, bool $login = null, string $username = null, int $start = null, int $stop = null, string $firstname = null, string $lastname = null, string $name = null): \PHPUnit_Framework_MockObject_MockObject
+    private function mockUser(string $class = null, int $loginCount = null, bool $isAccountNonLocked = null, int $locked = null, bool $isEnabled = null, bool $login = null, string $username = null, int $start = null, int $stop = null, string $firstname = null, string $lastname = null, string $name = null): UserInterface
     {
         $user = $this->createMock(UserInterface::class);
 

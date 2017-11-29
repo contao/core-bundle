@@ -270,7 +270,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
     /**
      * Mocks the TokenStorage service.
      *
-     * @param null|string $expectedUsername
+     * @param string|null $expectedUsername
      */
     private function mockTokenStorage(string $expectedUsername = null): void
     {
@@ -302,7 +302,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
     /**
      * Mocks the User.
      *
-     * @param null|string $expectedUsername
+     * @param string|null $expectedUsername
      */
     private function mockUser(string $expectedUsername = null): void
     {

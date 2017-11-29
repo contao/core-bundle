@@ -57,10 +57,11 @@ class PostLogoutEventTest extends TestCase
     /**
      * Mocks the user.
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return User
      */
-    private function mockUser(): \PHPUnit_Framework_MockObject_MockObject
+    private function mockUser(): User
     {
+        /** @var User $user */
         $user = $this->createPartialMock('Contao\User', []);
 
         return $user;

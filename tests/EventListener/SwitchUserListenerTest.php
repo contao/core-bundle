@@ -102,7 +102,7 @@ class SwitchUserListenerTest extends TestCase
     /**
      * Mocks the TokenStorage service with an optional username.
      *
-     * @param null|string $expectedUsername
+     * @param string|null $expectedUsername
      */
     private function mockTokenStorage(string $expectedUsername = null): void
     {
@@ -129,11 +129,11 @@ class SwitchUserListenerTest extends TestCase
     /**
      * Mocks the User with an optional username.
      *
-     * @param null|string $expectedUsername
+     * @param string|null $expectedUsername
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return BackendUser
      */
-    private function mockBackendUser(string $expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
+    private function mockBackendUser(string $expectedUsername = null): BackendUser
     {
         $user = $this
             ->getMockBuilder(BackendUser::class)

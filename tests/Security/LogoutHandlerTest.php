@@ -197,12 +197,13 @@ class LogoutHandlerTest extends TestCase
     /**
      * Mocks the User with an optional username.
      *
-     * @param null|string $expectedUsername
+     * @param string|null $expectedUsername
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return User
      */
-    private function mockUser(string $expectedUsername = null): \PHPUnit_Framework_MockObject_MockObject
+    private function mockUser(string $expectedUsername = null): User
     {
+        /** @var User $user */
         $user = $this->createPartialMock(User::class, ['getUsername']);
 
         if (null !== $expectedUsername) {
