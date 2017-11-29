@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\DependencyInjection;
 
-use Contao\CoreBundle\ArgumentResolver\ModelResolver;
 use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\CoreBundle\Cache\ContaoCacheClearer;
 use Contao\CoreBundle\Cache\ContaoCacheWarmer;
@@ -48,11 +47,12 @@ use Contao\CoreBundle\EventListener\ResponseExceptionListener;
 use Contao\CoreBundle\EventListener\StoreRefererListener;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\EventListener\UserSessionListener as EventUserSessionListener;
+use Contao\CoreBundle\Fragment\FragmentHandler;
 use Contao\CoreBundle\Fragment\FragmentRegistry;
-use Contao\CoreBundle\Fragment\FragmentRenderer;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\HttpKernel\ControllerResolver;
+use Contao\CoreBundle\HttpKernel\ModelArgumentResolver;
 use Contao\CoreBundle\Image\ImageFactory;
 use Contao\CoreBundle\Image\ImageSizes;
 use Contao\CoreBundle\Image\LegacyResizer;
@@ -493,21 +493,6 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('replaceInsertTags', $tags['contao.hook'][0]['hook']);
     }
 
-    public function testRegistersTheArgumentResolverModel(): void
-    {
-        $this->assertTrue($this->container->has('contao.argument_resolver.model'));
-
-        $definition = $this->container->getDefinition('contao.argument_resolver.model');
-
-        $this->assertSame(ModelResolver::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-
-        $tags = $definition->getTags();
-
-        $this->assertArrayHasKey('controller.argument_value_resolver', $tags);
-        $this->assertSame(101, $tags['controller.argument_value_resolver'][0]['priority']);
-    }
-
     public function testRegistersTheAssetPluginContext(): void
     {
         $this->assertTrue($this->container->has('contao.assets.assets_context'));
@@ -666,6 +651,22 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(1));
     }
 
+    public function testRegistersTheFragmentHandler(): void
+    {
+        $this->assertTrue($this->container->has('contao.fragment.handler'));
+
+        $definition = $this->container->getDefinition('contao.fragment.handler');
+
+        $this->assertSame(FragmentHandler::class, $definition->getClass());
+        $this->assertSame('fragment.handler', $definition->getDecoratedService()[0]);
+        $this->assertNull($definition->getArgument(0));
+        $this->assertSame('contao.fragment.handler.inner', (string) $definition->getArgument(1));
+        $this->assertSame('request_stack', (string) $definition->getArgument(2));
+        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(3));
+        $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(4));
+        $this->assertSame('%kernel.debug%', $definition->getArgument(5));
+    }
+
     public function testRegistersTheFragmentRegistry(): void
     {
         $this->assertTrue($this->container->has('contao.fragment.registry'));
@@ -673,18 +674,6 @@ class ContaoCoreExtensionTest extends TestCase
         $definition = $this->container->getDefinition('contao.fragment.registry');
 
         $this->assertSame(FragmentRegistry::class, $definition->getClass());
-    }
-
-    public function testRegistersTheFragmentRenderer(): void
-    {
-        $this->assertTrue($this->container->has('contao.fragment.renderer'));
-
-        $definition = $this->container->getDefinition('contao.fragment.renderer');
-
-        $this->assertSame(FragmentRenderer::class, $definition->getClass());
-        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(0));
-        $this->assertSame('fragment.handler', (string) $definition->getArgument(1));
-        $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(2));
     }
 
     public function testRegistersTheFragmentPreHandlers(): void
@@ -788,6 +777,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $this->assertSame(PictureGenerator::class, $definition->getClass());
         $this->assertSame('contao.image.resizer', (string) $definition->getArgument(0));
+        $this->assertSame('contao.image.resize_calculator', (string) $definition->getArgument(1));
     }
 
     public function testRegistersTheImagePictureFactory(): void
@@ -847,6 +837,22 @@ class ContaoCoreExtensionTest extends TestCase
 
         $this->assertSame(ListRenderer::class, $definition->getClass());
         $this->assertSame('contao.menu.matcher', (string) $definition->getArgument(0));
+    }
+
+    public function testRegistersTheModelArgumentResolver(): void
+    {
+        $this->assertTrue($this->container->has('contao.model_argument_resolver'));
+
+        $definition = $this->container->getDefinition('contao.model_argument_resolver');
+
+        $this->assertSame(ModelArgumentResolver::class, $definition->getClass());
+        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
+        $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(1));
+
+        $tags = $definition->getTags();
+
+        $this->assertArrayHasKey('controller.argument_value_resolver', $tags);
+        $this->assertSame(101, $tags['controller.argument_value_resolver'][0]['priority']);
     }
 
     public function testRegistersTheMonologHandler(): void

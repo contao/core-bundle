@@ -253,11 +253,9 @@ class BackendUser extends User
 			$row['cuser'] = false;
 			$row['cgroup'] = false;
 
-			$objParentPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-											->limit(1)
-											->execute($pid);
+			$objParentPage = \PageModel::findById($pid);
 
-			while ($row['chmod'] === false && $pid > 0 && $objParentPage->numRows)
+			while ($objParentPage !== null && $row['chmod'] === false && $pid > 0)
 			{
 				$pid = $objParentPage->pid;
 
@@ -265,9 +263,7 @@ class BackendUser extends User
 				$row['cuser'] = $objParentPage->includeChmod ? $objParentPage->cuser : false;
 				$row['cgroup'] = $objParentPage->includeChmod ? $objParentPage->cgroup : false;
 
-				$objParentPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-												->limit(1)
-												->execute($pid);
+				$objParentPage = \PageModel::findById($pid);
 			}
 
 			// Set default values
@@ -300,7 +296,7 @@ class BackendUser extends User
 			$permission[] = 'u'.$int;
 		}
 
-		return (\count(array_intersect($permission, $chmod)) > 0);
+		return \count(array_intersect($permission, $chmod)) > 0;
 	}
 
 
@@ -318,7 +314,7 @@ class BackendUser extends User
 			return true;
 		}
 
-		return (\count(preg_grep('/^' . preg_quote($table, '/') . '::/', $this->alexf)) > 0);
+		return \count(preg_grep('/^' . preg_quote($table, '/') . '::/', $this->alexf)) > 0;
 	}
 
 
