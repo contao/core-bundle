@@ -31,7 +31,6 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
      */
     private $scopeMatcher;
 
-
     /**
      * @param ContaoFrameworkInterface $framework
      * @param ScopeMatcher             $scopeMatcher
@@ -82,7 +81,7 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
      */
     private function fetchModel(Request $request, ArgumentMetadata $argument): ?Model
     {
-        $name = $this->findArgumentName($request, $argument);
+        $name = $this->getArgumentName($request, $argument);
 
         if (null === $name) {
             return null;
@@ -95,21 +94,23 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
     }
 
     /**
-     * Finds the argument name from model class.
+     * Returns the argument name from the model class.
      *
+     * @param Request          $request
      * @param ArgumentMetadata $argument
      *
      * @return string|null
      */
-    private function findArgumentName(Request $request, ArgumentMetadata $argument): ?string
+    private function getArgumentName(Request $request, ArgumentMetadata $argument): ?string
     {
         if ($request->attributes->has($argument->getName())) {
             return $argument->getName();
         }
 
-        $className = $this->stripNamespace($argument->getType());
-        if ($request->attributes->has(lcfirst($className))) {
-            return lcfirst($className);
+        $className = lcfirst($this->stripNamespace($argument->getType()));
+
+        if ($request->attributes->has($className)) {
+            return $className;
         }
 
         return null;
@@ -125,7 +126,7 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
     private function stripNamespace(string $fqcn): string
     {
         if (false !== ($pos = strrpos($fqcn, '\\'))) {
-            return substr($fqcn, $pos+1);
+            return substr($fqcn, $pos + 1);
         }
 
         return $fqcn;
