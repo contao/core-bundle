@@ -101,12 +101,16 @@ services:
     contao.fragment.registry:
         class: Contao\CoreBundle\Fragment\FragmentRegistry
 
-    contao.fragment.renderer:
-        class: Contao\CoreBundle\Fragment\FragmentRenderer
+    contao.fragment.handler:
+        class: Contao\CoreBundle\Fragment\FragmentHandler
+        decorates: fragment.handler
         arguments:
+            - ""
+            - "@contao.fragment.handler.inner"
+            - "@request_stack"
             - "@contao.fragment.registry"
-            - "@fragment.handler"
             - "@contao.fragment.pre_handlers"
+            - "%kernel.debug%"
 
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework
