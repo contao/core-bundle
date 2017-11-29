@@ -35,7 +35,7 @@ class FragmentHandler extends BaseFragmentHandler
     /**
      * @var FragmentRegistryInterface
      */
-    protected $fragmentRegistry;
+    private $fragmentRegistry;
 
     /**
      * @var ContainerInterface
@@ -45,8 +45,7 @@ class FragmentHandler extends BaseFragmentHandler
     /**
      * @var array
      */
-    private $initialized = array();
-
+    private $initialized = [];
 
     /**
      * @param ContainerInterface        $renderers
@@ -69,7 +68,7 @@ class FragmentHandler extends BaseFragmentHandler
     /**
      * {@inheritdoc}
      */
-    public function render($uri, $renderer = 'inline', array $options = array()): ?string
+    public function render($uri, $renderer = 'inline', array $options = []): ?string
     {
         if (!$uri instanceof FragmentReference) {
             return $this->fragmentHandler->render($uri, $renderer, $options);

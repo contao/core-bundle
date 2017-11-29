@@ -47,8 +47,8 @@ use Contao\CoreBundle\EventListener\ResponseExceptionListener;
 use Contao\CoreBundle\EventListener\StoreRefererListener;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\EventListener\UserSessionListener as EventUserSessionListener;
+use Contao\CoreBundle\Fragment\FragmentHandler;
 use Contao\CoreBundle\Fragment\FragmentRegistry;
-use Contao\CoreBundle\Fragment\FragmentRenderer;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\HttpKernel\ControllerResolver;
@@ -660,16 +660,18 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame(FragmentRegistry::class, $definition->getClass());
     }
 
-    public function testRegistersTheFragmentRenderer(): void
+    public function testRegistersTheFragmentHandler(): void
     {
-        $this->assertTrue($this->container->has('contao.fragment.renderer'));
+        $this->assertTrue($this->container->has('contao.fragment.handler'));
 
-        $definition = $this->container->getDefinition('contao.fragment.renderer');
+        $definition = $this->container->getDefinition('contao.fragment.handler');
 
-        $this->assertSame(FragmentRenderer::class, $definition->getClass());
-        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(0));
-        $this->assertSame('fragment.handler', (string) $definition->getArgument(1));
-        $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(2));
+        $this->assertSame(FragmentHandler::class, $definition->getClass());
+        $this->assertSame('contao.fragment.handler.inner', (string) $definition->getArgument(1));
+        $this->assertSame('request_stack', (string) $definition->getArgument(2));
+        $this->assertSame('contao.fragment.registry', (string) $definition->getArgument(3));
+        $this->assertSame('contao.fragment.pre_handlers', (string) $definition->getArgument(4));
+        $this->assertSame('%kernel.debug%', (string) $definition->getArgument(5));
     }
 
     public function testRegistersTheFragmentPreHandlers(): void
