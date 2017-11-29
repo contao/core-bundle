@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication\Provider;
 
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\System;
 use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -60,6 +60,11 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     protected $eventDispatcher;
 
     /**
+     * @var ContaoFrameworkInterface
+     */
+    private $framework;
+
+    /**
      * @param UserProviderInterface    $userProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
@@ -69,8 +74,9 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param Session                  $session
      * @param TranslatorInterface      $translator
      * @param EventDispatcherInterface $eventDispatcher
+     * @param ContaoFrameworkInterface $framework
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher)
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -79,6 +85,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->translator = $translator;
         $this->providerKey = $providerKey;
         $this->eventDispatcher = $eventDispatcher;
+        $this->framework = $framework;
     }
 
     /**
@@ -141,9 +148,9 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
         if (isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
             foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
-                $user->objAuth = System::importStatic($callback[0], 'objAuth', true);
+                $objectInstance = $this->framework->createInstance($callback[0]);
 
-                if ($user->objAuth->{$callback[1]}($token->getUsername(), $token->getCredentials(), $user)) {
+                if ($objectInstance->{$callback[1]}($token->getUsername(), $token->getCredentials(), $user)) {
                     return true;
                 }
             }

@@ -32,7 +32,7 @@ class InteractiveLoginListener
     private $framework;
 
     /**
-     * @param LoggerInterface $logger
+     * @param LoggerInterface          $logger
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(LoggerInterface $logger, ContaoFrameworkInterface $framework)

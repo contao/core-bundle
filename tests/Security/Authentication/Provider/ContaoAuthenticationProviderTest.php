@@ -13,10 +13,11 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\Authentication\Provider;
 
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -102,19 +103,25 @@ class ContaoAuthenticationProviderTest extends TestCase
     protected $flashBag;
 
     /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         unset($GLOBALS['TL_HOOKS']);
 
+        $this->framework = $this->mockContaoFramework();
         $this->userProvider = $this->createMock(UserProviderInterface::class);
         $this->userChecker = $this->createMock(UserCheckerInterface::class);
         $this->providerKey = 'contao_frontend';
         $this->encoderFactory = $this->createMock(EncoderFactoryInterface::class);
         $this->hideUserNotFoundExceptions = false;
 
-        $this->mockSession();
+        $this->mockSessionMock();
         $this->mockLogger();
         $this->mockTranslator();
         $this->mockEventDispatcher(false);
@@ -169,7 +176,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator(true);
         $this->mockEncoder();
         $this->mockFlashBag('contao.FE.error');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockLogger('Invalid password submitted for username foobar');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
@@ -194,7 +201,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator(true);
         $this->mockEncoder();
         $this->mockFlashBag('contao.BE.error');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockLogger('Invalid password submitted for username foobar');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
@@ -230,7 +237,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator();
         $this->mockEncoder();
         $this->mockFlashBag();
-        $this->mockSession();
+        $this->mockSessionMock();
         $this->mockLogger();
         $this->mockEventDispatcher(true, 'foobar', '', $this->user, true);
 
@@ -263,6 +270,12 @@ class ContaoAuthenticationProviderTest extends TestCase
      */
     public function testExecutesTheCheckCredentialsHook(): void
     {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
         $GLOBALS['TL_HOOKS'] = [
             'checkCredentials' => [[\get_class($this), 'executeCheckCredentialsHookCallback']],
         ];
@@ -412,7 +425,8 @@ class ContaoAuthenticationProviderTest extends TestCase
             $this->logger,
             $this->session,
             $this->translator,
-            $this->eventDispatcher
+            $this->eventDispatcher,
+            $this->framework
         );
     }
 
@@ -497,11 +511,11 @@ class ContaoAuthenticationProviderTest extends TestCase
     }
 
     /**
-     * Mocks a session with an optional flashBag.
+     * Mocks a session mock with an optional flashBag.
      *
      * @param bool $withFlashBag
      */
-    private function mockSession(bool $withFlashBag = false): void
+    private function mockSessionMock(bool $withFlashBag = false): void
     {
         $this->session = $this->createMock(Session::class);
 
