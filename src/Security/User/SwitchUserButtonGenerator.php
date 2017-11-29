@@ -14,7 +14,6 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\CoreBundle\Exception\UserNotFoundException;
 use Contao\Image;
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -107,7 +106,7 @@ class SwitchUserButtonGenerator
 
         return $this->twig->render('@ContaoCore/Backend/switch_user.html.twig', [
             'url' => $url,
-            'title' => StringUtil::specialchars($title),
+            'title' => htmlspecialchars($title),
             'image' => Image::getHtml($icon, $label),
         ]);
     }
