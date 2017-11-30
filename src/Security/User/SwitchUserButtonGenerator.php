@@ -106,7 +106,7 @@ class SwitchUserButtonGenerator
 
         return $this->twig->render('@ContaoCore/Backend/switch_user.html.twig', [
             'url' => $url,
-            'title' => htmlspecialchars($title),
+            'title' => $title,
             'image' => Image::getHtml($icon, $label),
         ]);
     }
