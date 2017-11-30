@@ -436,7 +436,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
      */
     private function mockRequest(array $options = [], array $attributes = [], $query = []): void
     {
-        $this->request = new Request();
+        $this->request = Request::create('https://www.contao.org');
 
         foreach ($options as $key => $value) {
             $this->request->request->set($key, $value);

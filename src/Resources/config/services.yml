@@ -466,3 +466,4 @@ services:
             - "@session"
             - "@contao.routing.scope_matcher"
             - "@request_stack"
+            - "@contao.framework"

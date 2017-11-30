@@ -354,7 +354,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     private function mockRequestStack(bool $withSession = false): void
     {
         $this->requestStack = new RequestStack();
-        $request = new Request();
+        $request = Request::create('https://www.contao.org');
 
         if (true === $withSession) {
             $request->setSession($this->session);

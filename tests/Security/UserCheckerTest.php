@@ -13,19 +13,18 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Security\UserChecker;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
-use Contao\System;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestMatcher;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -70,17 +69,23 @@ class UserCheckerTest extends TestCase
     protected $requestStack;
 
     /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         unset($GLOBALS['TL_CONFIG']);
 
+        $this->framework = $this->mockContaoFramework();
         $this->mockLogger();
         $this->mockTranslator();
         $this->mockMailer();
-        $this->mockSession();
-        $this->mockScopeMatcher();
+        $this->mockSessionMock();
+        $this->scopeMatcher = $this->mockScopeMatcher();
         $this->mockRequestStack();
     }
 
@@ -99,6 +104,7 @@ class UserCheckerTest extends TestCase
      */
     public function testCheckPreAuthReturnsImmediateIfNoContaoUserIsGiven(): void
     {
+        /** @var UserCheckerInterface|\PHPUnit_Framework_MockObject_MockObject $userChecker */
         $userChecker = $this->createPartialMock(UserChecker::class, ['checkLoginAttempts']);
         $user = $this->mockUser();
 
@@ -137,6 +143,13 @@ class UserCheckerTest extends TestCase
      */
     public function testIfLockedExceptionIsThrownWhenAttemptingFrontendLoginWithAZeroLoginCount(): void
     {
+        $parameters = [
+            'foobar',
+            'foo bar',
+            'https://www.contao.org',
+            5,
+        ];
+
         $this->setGlobals('Y-m-d', 300, 'mail@example.com');
 
         $this->translator = $this->createMock(TranslatorInterface::class);
@@ -146,12 +159,12 @@ class UserCheckerTest extends TestCase
             ->withConsecutive(
                 ['ERR.accountLocked', [5], 'contao_default'],
                 ['MSC.lockedAccount.0', [], 'contao_default'],
-                []
+                ['MSC.lockedAccount.1', $parameters, 'contao_default']
             )
             ->willReturnOnConsecutiveCalls(
                 'This account has been locked! You can log in again in 5 minutes.',
                 'A Contao account has been locked',
-                ''
+                $this->getMailContent('foobar', 'foo bar', 'https://www.contao.org', 5)
             )
         ;
 
@@ -173,14 +186,9 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.FE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
-
-        $container = new ContainerBuilder();
-        $container->set('request_stack', $this->requestStack);
-
-        System::setContainer($container);
 
         $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
         $userChecker->checkPreAuth($user);
@@ -191,6 +199,13 @@ class UserCheckerTest extends TestCase
      */
     public function testIfLockedExceptionIsThrownWhenAttemptingBackendLoginWithAZeroLoginCount(): void
     {
+        $parameters = [
+            'foobar',
+            'foo',
+            'https://www.contao.org',
+            5,
+        ];
+
         $this->setGlobals('Y-m-d', 300, 'mail@example.com');
 
         $this->translator = $this->createMock(TranslatorInterface::class);
@@ -200,12 +215,12 @@ class UserCheckerTest extends TestCase
             ->withConsecutive(
                 ['ERR.accountLocked', [5], 'contao_default'],
                 ['MSC.lockedAccount.0', [], 'contao_default'],
-                []
+                ['MSC.lockedAccount.1', $parameters, 'contao_default']
             )
             ->willReturnOnConsecutiveCalls(
                 'This account has been locked! You can log in again in 5 minutes.',
                 'A Contao account has been locked',
-                ''
+                $this->getMailContent('foobar', 'foo', 'https://www.contao.org', 5)
             )
         ;
 
@@ -228,14 +243,9 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
-
-        $container = new ContainerBuilder();
-        $container->set('request_stack', $this->requestStack);
-
-        System::setContainer($container);
 
         $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
         $userChecker->checkPreAuth($user);
@@ -259,7 +269,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
 
         $user = $this->mockUser(BackendUser::class, 3, false, time());
@@ -286,7 +296,7 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('The account has been disabled', 'checkIfAccountIsDisabled');
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
 
         $user = $this->mockUser(BackendUser::class, 3, null, null, false);
@@ -312,7 +322,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger('User foobar is not allowed to log in', 'checkIfLoginIsAllowed');
 
@@ -351,7 +361,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
             sprintf('The account was not active yet (activation date: %s)', $tomorrow->format('Y-m-d')),
@@ -394,7 +404,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSession(true);
+        $this->mockSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
             sprintf('The account was not active anymore (deactivation date: %s)', $yesterday->format('Y-m-d')),
@@ -493,11 +503,11 @@ class UserCheckerTest extends TestCase
     }
 
     /**
-     * Mocks a session with an optional flashBag.
+     * Mocks a session mock with an optional flashBag.
      *
      * @param bool $withFlashBag
      */
-    private function mockSession(bool $withFlashBag = false): void
+    private function mockSessionMock(bool $withFlashBag = false): void
     {
         $this->session = $this->createMock(Session::class);
 
@@ -527,17 +537,6 @@ class UserCheckerTest extends TestCase
     }
 
     /**
-     * Mocks a ScopeMatcher.
-     */
-    private function mockScopeMatcher(): void
-    {
-        $this->scopeMatcher = new ScopeMatcher(
-            new RequestMatcher(null, null, null, null, ['_scope' => 'backend']),
-            new RequestMatcher(null, null, null, null, ['_scope' => 'frontend'])
-        );
-    }
-
-    /**
      * Mocks the request with options, attributes and query parameters.
      *
      * @param array $options
@@ -548,7 +547,7 @@ class UserCheckerTest extends TestCase
      */
     private function mockRequest(array $options = [], array $attributes = [], $query = []): Request
     {
-        $request = new Request();
+        $request = Request::create('https://www.contao.org');
 
         foreach ($options as $key => $value) {
             $request->request->set($key, $value);
@@ -686,7 +685,8 @@ class UserCheckerTest extends TestCase
             $this->mailer,
             $this->session,
             $this->scopeMatcher,
-            $this->requestStack
+            $this->requestStack,
+            $this->framework
         );
     }
 
@@ -712,5 +712,20 @@ class UserCheckerTest extends TestCase
             $_SERVER['SERVER_NAME'] = '';
             $_SERVER['SERVER_PORT'] = '';
         }
+    }
+
+    private function getMailContent(string $username, string $realname, string $website, int $locked): string
+    {
+        return <<<EOT
+The following Contao account has been locked for security reasons.
+
+Username: $username
+Real name: $realname
+Website: $website
+
+The account has been locked for $locked minutes, because the user has entered an invalid password three times in a row. After this period of time, the account will be unlocked automatically.
+
+This e-mail has been generated by Contao. You can not reply to it directly.
+EOT;
     }
 }

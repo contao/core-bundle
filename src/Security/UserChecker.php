@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security;
 
 use Contao\Config;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Date;
-use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Idna;
 use Contao\User;
@@ -65,14 +65,20 @@ class UserChecker implements UserCheckerInterface
     protected $requestStack;
 
     /**
-     * @param LoggerInterface     $logger
-     * @param TranslatorInterface $translator
-     * @param \Swift_Mailer       $mailer
-     * @param Session             $session
-     * @param ScopeMatcher        $scopeMatcher
-     * @param RequestStack        $requestStack
+     * @var ContaoFrameworkInterface
      */
-    public function __construct(LoggerInterface $logger, TranslatorInterface $translator, \Swift_Mailer $mailer, Session $session, ScopeMatcher $scopeMatcher, RequestStack $requestStack)
+    protected $framework;
+
+    /**
+     * @param LoggerInterface          $logger
+     * @param TranslatorInterface      $translator
+     * @param \Swift_Mailer            $mailer
+     * @param Session                  $session
+     * @param ScopeMatcher             $scopeMatcher
+     * @param RequestStack             $requestStack
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(LoggerInterface $logger, TranslatorInterface $translator, \Swift_Mailer $mailer, Session $session, ScopeMatcher $scopeMatcher, RequestStack $requestStack, ContaoFrameworkInterface $framework)
     {
         $this->logger = $logger;
         $this->translator = $translator;
@@ -80,6 +86,7 @@ class UserChecker implements UserCheckerInterface
         $this->session = $session;
         $this->scopeMatcher = $scopeMatcher;
         $this->requestStack = $requestStack;
+        $this->framework = $framework;
     }
 
     /**
@@ -112,13 +119,16 @@ class UserChecker implements UserCheckerInterface
      */
     protected function checkLoginAttempts(User $user): void
     {
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+
         if ($user->loginCount < 1) {
             $time = time();
             $user->locked = $time;
-            $user->loginCount = (int) Config::get('loginCount');
+            $user->loginCount = (int) $config->get('loginCount');
             $user->save();
 
-            $lockMinutes = ceil((int) Config::get('lockPeriod') / 60);
+            $lockMinutes = ceil((int) $config->get('lockPeriod') / 60);
 
             $this->setAccountLockedFlashBag($user);
             $this->logger->info(
@@ -127,17 +137,16 @@ class UserChecker implements UserCheckerInterface
             );
 
             // Send admin notification
-            if (Config::get('adminEmail')) {
-                $request = $this->requestStack->getCurrentRequest();
-
+            $request = $this->requestStack->getCurrentRequest();
+            if ($config->get('adminEmail')) {
                 if ($request && $this->scopeMatcher->isFrontendRequest($request)) {
                     $realName = sprintf('%s %s', $user->firstname, $user->lastname);
                 } else {
                     $realName = $user->name;
                 }
 
-                $website = Idna::decode(Environment::get('base'));
-                $lockMinutes = ceil(((int) Config::get('lockPeriod')) / 60);
+                $website = Idna::decode($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost());
+                $lockMinutes = ceil(((int) $config->get('lockPeriod')) / 60);
 
                 $subject = $this->translator->trans('MSC.lockedAccount.0', [], 'contao_default');
                 $body = $this->translator->trans(
@@ -153,7 +162,7 @@ class UserChecker implements UserCheckerInterface
 
                 $email = new \Swift_Message();
                 $email
-                    ->setTo(Config::get('adminEmail'))
+                    ->setTo($config->get('adminEmail'))
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                 ;
@@ -225,6 +234,9 @@ class UserChecker implements UserCheckerInterface
      */
     protected function checkIfAccountIsActive(User $user): void
     {
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+
         $start = (int) $user->start;
         $stop = (int) $user->stop;
         $time = Date::floorToMinute(time());
@@ -235,14 +247,14 @@ class UserChecker implements UserCheckerInterface
         if ($notActiveYet) {
             $logMessage = sprintf(
                 'The account was not active yet (activation date: %s)',
-                Date::parse(Config::get('dateFormat'), $start)
+                Date::parse($config->get('dateFormat'), $start)
             );
         }
 
         if ($wasNotActive) {
             $logMessage = sprintf(
                 'The account was not active anymore (deactivation date: %s)',
-                Date::parse(Config::get('dateFormat'), $stop)
+                Date::parse($config->get('dateFormat'), $stop)
             );
         }
 
@@ -276,11 +288,14 @@ class UserChecker implements UserCheckerInterface
      */
     protected function setAccountLockedFlashBag(User $user): void
     {
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+
         $this->session->getFlashBag()->set(
             $this->getFlashType(),
             $this->translator->trans(
                 'ERR.accountLocked',
-                [ceil((($user->locked + (int) Config::get('lockPeriod')) - time()) / 60)],
+                [ceil((($user->locked + (int) $config->get('lockPeriod')) - time()) / 60)],
                 'contao_default'
             )
         );

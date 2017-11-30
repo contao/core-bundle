@@ -179,7 +179,7 @@ class AuthenticationFailureHandlerTest extends TestCase
      */
     private function mockRequest(array $attributes = [], array $headers = []): Request
     {
-        $request = Request::create('http://localhost/contao/login');
+        $request = Request::create('https://www.contao.org/contao/login');
 
         foreach ($headers as $key => $value) {
             $request->headers->set($key, $value);
