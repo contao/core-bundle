@@ -148,7 +148,7 @@ class ModuleLogin extends \Module
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];
 		$this->Template->action = $router->generate('contao_frontend_login');
 		$this->Template->slabel = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['login']);
-		$this->Template->value = $session->get(Security::LAST_USERNAME);
+		$this->Template->value = \StringUtil::specialchars($session->get(Security::LAST_USERNAME));
 		$this->Template->formId = 'tl_login_' . $this->id;
 		$this->Template->autologin = ($this->autologin && \Config::get('autologin') > 0);
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];
