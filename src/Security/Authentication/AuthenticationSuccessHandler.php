@@ -104,6 +104,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     protected function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
     {
+        $this->framework->initialize();
         $this->triggerLegacyPostAuthenticateHook($user);
         $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 
@@ -133,6 +134,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     protected function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
     {
+        $this->framework->initialize();
         $this->triggerLegacyPostAuthenticateHook($user);
         $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 

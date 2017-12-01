@@ -119,6 +119,8 @@ class UserChecker implements UserCheckerInterface
      */
     protected function checkLoginAttempts(User $user): void
     {
+        $this->framework->initialize();
+
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
 

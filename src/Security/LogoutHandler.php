@@ -66,6 +66,8 @@ class LogoutHandler implements LogoutHandlerInterface
             return;
         }
 
+        $this->framework->initialize();
+
         $this->logger->info(
             sprintf('User %s has logged out.', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
