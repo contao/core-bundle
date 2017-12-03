@@ -218,10 +218,7 @@ class UserChecker implements UserCheckerInterface
         if ($user instanceof FrontendUser && false === $user->login) {
             $this->setInvalidLoginFlashBag();
             $this->logger->info(
-                vsprintf(
-                    'User %s is not allowed to log in',
-                    [$user->getUsername()]
-                ),
+                sprintf('User %s is not allowed to log in', $user->getUsername()),
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
             );
 
