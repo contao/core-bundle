@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\EventListener;
 
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
@@ -51,9 +52,17 @@ class InteractiveLoginListener
         /** @var UserInterface $user */
         $user = $event->getAuthenticationToken()->getUser();
 
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+
         if (!$user instanceof User) {
             return;
         }
+
+        $user->lastLogin = $user->currentLogin;
+        $user->currentLogin = time();
+        $user->loginCount = $config->get('loginCount');
+        $user->save();
 
         $this->logger->info(
             sprintf('User %s has logged in.', $user->getUsername()),

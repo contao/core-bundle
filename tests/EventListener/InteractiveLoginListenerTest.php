@@ -199,7 +199,7 @@ class InteractiveLoginListenerTest extends TestCase
             $user = $this
                 ->getMockBuilder(User::class)
                 ->disableOriginalConstructor()
-                ->setMethods(['getUsername'])
+                ->setMethods(['getUsername', 'save'])
                 ->getMock()
             ;
 
@@ -209,6 +209,11 @@ class InteractiveLoginListenerTest extends TestCase
                 ->expects($this->once())
                 ->method('getUsername')
                 ->willReturn($expectedUsername)
+            ;
+
+            $user
+                ->expects($this->once())
+                ->method('save')
             ;
         }
 
