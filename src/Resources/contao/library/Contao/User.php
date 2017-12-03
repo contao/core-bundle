@@ -611,6 +611,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	{
 		return serialize(array(
 			$this->id,
+			$this->tstamp,
 			$this->username,
 			$this->password,
 			$this->salt,
@@ -626,6 +627,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	{
 		list (
 			$this->id,
+			$this->tstamp,
 			$this->username,
 			$this->password,
 			$this->salt,
