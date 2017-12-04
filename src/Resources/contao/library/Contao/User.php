@@ -15,6 +15,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -98,7 +100,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends System implements AdvancedUserInterface, EncoderAwareInterface, \Serializable
+abstract class User extends System implements AdvancedUserInterface, EncoderAwareInterface, EquatableInterface, \Serializable
 {
 
 	/**
@@ -599,7 +601,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isEnabled()
 	{
-
 		return ! (bool) ($this->disable);
 	}
 
@@ -643,6 +644,30 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function isEqualTo(UserInterface $user)
+	{
+		if (!$user instanceof User)
+		{
+			return false;
+		}
+
+		if ($this->getRoles() !== $user->getRoles())
+		{
+			return false;
+		}
+
+		if ((int) $this->tstamp !== (int) $user->tstamp)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * Selects a matching encoder based on actual password.
 	 */
 	protected function selectEncoder()
@@ -664,6 +689,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			}
 		}
 	}
+
 
 	/**
 	 * Replacement method for the legacy importUser hook.
