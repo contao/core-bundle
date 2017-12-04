@@ -187,6 +187,7 @@ services:
         class: Contao\CoreBundle\EventListener\TokenLifetimeListener
         arguments:
             - "@security.token_storage"
+            - "@contao.routing.scope_matcher"
             - "%contao.security.token_lifetime%"
             - "@logger"
         tags:

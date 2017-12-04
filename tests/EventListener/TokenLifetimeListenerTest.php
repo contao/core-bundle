@@ -14,8 +14,9 @@ namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\EventListener\TokenLifetimeListener;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -31,6 +32,11 @@ class TokenLifetimeListenerTest extends TestCase
      * @var TokenStorageInterface
      */
     protected $tokenStorage;
+
+    /**
+     * @var ScopeMatcher
+     */
+    protected $scopeMatcher;
 
     /**
      * @var LoggerInterface
@@ -59,8 +65,9 @@ class TokenLifetimeListenerTest extends TestCase
     {
         $this->tokenLifetime = 3600;
         $this->mockLogger();
-        $this->mockTokenStorage();
+        $this->getTokenStorageMock();
         $this->mockGetResponseEvent();
+        $this->scopeMatcher = $this->mockScopeMatcher();
     }
 
     /**
@@ -68,7 +75,7 @@ class TokenLifetimeListenerTest extends TestCase
      */
     public function testCanBeInstantiated(): void
     {
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\TokenLifetimeListener', $listener);
     }
@@ -85,7 +92,7 @@ class TokenLifetimeListenerTest extends TestCase
             ->method('getToken')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -95,14 +102,14 @@ class TokenLifetimeListenerTest extends TestCase
     public function testImmediateReturnWhenNoUsernamePasswordTokenIsGiven(): void
     {
         $this->mockGetResponseEvent();
-        $this->mockTokenStorage(true, TokenInterface::class);
+        $this->getTokenStorageMock(true, TokenInterface::class);
 
         $this->token
             ->expects($this->never())
             ->method('getUser')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -112,14 +119,14 @@ class TokenLifetimeListenerTest extends TestCase
     public function testImmediateReturnWhenNoContaoUserIsGiven(): void
     {
         $this->mockGetResponseEvent();
-        $this->mockTokenStorage(true);
+        $this->getTokenStorageMock(true);
 
         $this->token
             ->expects($this->never())
             ->method('hasAttribute')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -130,9 +137,9 @@ class TokenLifetimeListenerTest extends TestCase
     {
         $this->tokenLifetime = null;
         $this->mockGetResponseEvent();
-        $this->mockTokenStorage(true);
+        $this->getTokenStorageMock(true);
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, 3600, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, 3600, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -142,7 +149,7 @@ class TokenLifetimeListenerTest extends TestCase
     public function testIfLifetimeGetsUpdatedIfLifetimeIsStillValid(): void
     {
         $this->mockGetResponseEvent();
-        $this->mockTokenStorage(true);
+        $this->getTokenStorageMock(true);
 
         $this->token
             ->expects($this->once())
@@ -163,7 +170,7 @@ class TokenLifetimeListenerTest extends TestCase
             ->willReturn(time() + 5000)
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -173,7 +180,7 @@ class TokenLifetimeListenerTest extends TestCase
     public function testIfTokenGetsRevokedAfterInacitivty(): void
     {
         $this->mockGetResponseEvent();
-        $this->mockTokenStorage(true);
+        $this->getTokenStorageMock(true);
         $this->mockLogger('User foobar has been automatically logged out due to inactivity');
 
         $this->token
@@ -202,7 +209,7 @@ class TokenLifetimeListenerTest extends TestCase
             ->with(null)
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->tokenLifetime, $this->logger);
+        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
         $listener->onKernelRequest($this->getResponseEvent);
     }
 
@@ -237,7 +244,7 @@ class TokenLifetimeListenerTest extends TestCase
      * @param bool   $withToken
      * @param string $tokenClass
      */
-    private function mockTokenStorage(bool $withToken = false, string $tokenClass = UsernamePasswordToken::class): void
+    private function getTokenStorageMock(bool $withToken = false, string $tokenClass = UsernamePasswordToken::class): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->token = $this->createMock($tokenClass);
@@ -287,6 +294,7 @@ class TokenLifetimeListenerTest extends TestCase
     {
         $kernel = $this->createMock(KernelInterface::class);
         $request = new Request();
+        $request->attributes->set('_scope', 'backend');
 
         $this->getResponseEvent = new GetResponseEvent($kernel, $request, $requestType);
     }

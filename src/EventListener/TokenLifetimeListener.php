@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -26,6 +26,11 @@ class TokenLifetimeListener
      * @var TokenStorageInterface
      */
     protected $tokenStorage;
+
+    /**
+     * @var ScopeMatcher
+     */
+    protected $scopeMatcher;
 
     /**
      * @var int
@@ -39,12 +44,14 @@ class TokenLifetimeListener
 
     /**
      * @param TokenStorageInterface $tokenStorage
+     * @param ScopeMatcher          $scopeMatcher
      * @param int                   $tokenLifetime
      * @param LoggerInterface       $logger
      */
-    public function __construct(TokenStorageInterface $tokenStorage, int $tokenLifetime, LoggerInterface $logger)
+    public function __construct(TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, int $tokenLifetime, LoggerInterface $logger)
     {
         $this->tokenStorage = $tokenStorage;
+        $this->scopeMatcher = $scopeMatcher;
         $this->tokenLifetime = $tokenLifetime;
         $this->logger = $logger;
     }
@@ -56,7 +63,7 @@ class TokenLifetimeListener
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
             return;
         }
 
