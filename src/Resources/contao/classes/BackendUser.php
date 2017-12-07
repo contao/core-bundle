@@ -119,9 +119,10 @@ class BackendUser extends User
 	public static function getInstance()
 	{
 		/** @var TokenInterface $token */
-		$token = System::getContainer()->get('security.token_storage')->getToken();
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
-		if ($token !== null && is_a($token->getUser(), get_called_class()))
+		// Try to load token from security storage
+		if ($token !== null && is_a($token->getUser(), static::class))
 		{
 			return $token->getUser();
 		}

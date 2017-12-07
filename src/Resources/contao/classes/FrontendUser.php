@@ -78,7 +78,8 @@ class FrontendUser extends User
         /** @var TokenInterface $token */
         $token = \System::getContainer()->get('security.token_storage')->getToken();
 
-        if ($token !== null && is_a($token->getUser(), get_called_class()))
+        // Try to load user from security storage
+        if ($token !== null && is_a($token->getUser(), static::class))
         {
             return $token->getUser();
         }
