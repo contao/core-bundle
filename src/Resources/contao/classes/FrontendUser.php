@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
@@ -24,6 +25,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  */
 class FrontendUser extends User
 {
+
+	/**
+	 * Symfony Security session key
+	 * @var string
+	 */
+	const SESSION_KEY = '_security_contao_frontend';
 
 	/**
 	 * Current object instance (do not remove)
@@ -73,19 +80,31 @@ class FrontendUser extends User
 		$this->strHash = \Input::cookie($this->strCookie);
 	}
 
-    public static function getInstance()
-    {
-        /** @var TokenInterface $token */
-        $token = \System::getContainer()->get('security.token_storage')->getToken();
+	public static function getInstance()
+	{
+		/** @var TokenInterface $token */
+		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
-        // Try to load user from security storage
-        if ($token !== null && is_a($token->getUser(), static::class))
-        {
-            return $token->getUser();
-        }
+		// Try to load user from security storage
+		if ($token !== null && is_a($token->getUser(), static::class))
+		{
+			return $token->getUser();
+		}
 
-        return parent::getInstance();
-    }
+		/** @var SessionInterface $session */
+		$session = \System::getContainer()->get('session');
+
+		// Try to load possibly authenticated FrontendUser from session
+		if ($session->has(self::SESSION_KEY) && $token = unserialize($session->get(self::SESSION_KEY)))
+		{
+			if ($token->isAuthenticated())
+			{
+				return $token->getUser();
+			}
+		}
+
+		return parent::getInstance();
+	}
 
 
 	/**
