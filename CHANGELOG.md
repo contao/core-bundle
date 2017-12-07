@@ -1,7 +1,9 @@
 # Contao core bundle change log
 
-### DEV
+### 4.5.0-beta3 (2017-12-04)
 
+ * Use InnoDB as default storage engine (see #188).
+ * Use "utf8mb4" as default charset for MySQL (see #113).
  * Add roles and ARIA landmarks in the back end (see #768).
  * Add all the player options to the YouTube element (see #938).
  * Add the toggle icon of the parent record in parent view (see contao/core#2266).
@@ -18,7 +20,7 @@
  * Support wildcards in the "iflng" and "ifnlng" insert tags (see contao/core#8313).
  * Add the FilesModel::findByPid() method (see #925).
  * Support sorting enclosures (see contao/calendar-bundle#16).
- * Show the default value of overwritable fields as placeholder (see #1120). 
+ * Show the default value of overwritable fields as placeholder (see #1120).
  * Also use STRONG instead of SPAN in the breadcrumb menu (see #1154).
  * Use the Symfony assets component for the Contao assets (see #1165).
  * Do not log known exceptions with a pretty error screen (see #1139).
