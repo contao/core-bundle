@@ -90,7 +90,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             return $request->getRequestUri();
         }
 
-        return $request->headers->get('referer');
+        return (string) $request->headers->get('referer', '/', true);
     }
 
     /**
