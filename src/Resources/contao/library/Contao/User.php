@@ -474,7 +474,6 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 				return null;
 			}
 
-
 			// Check if a passwords needs rehashing (see contao/core#8820)
 			$blnNeedsRehash = true;
 
