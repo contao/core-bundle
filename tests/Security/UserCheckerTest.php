@@ -84,7 +84,7 @@ class UserCheckerTest extends TestCase
         $this->mockLogger();
         $this->mockTranslator();
         $this->mockMailer();
-        $this->mockSessionMock();
+        $this->createSessionMock();
         $this->scopeMatcher = $this->mockScopeMatcher();
         $this->mockRequestStack();
     }
@@ -186,7 +186,7 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.FE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
 
@@ -243,7 +243,7 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
 
@@ -269,7 +269,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
 
         $user = $this->mockUser(BackendUser::class, 3, false, time());
@@ -296,7 +296,7 @@ class UserCheckerTest extends TestCase
 
         $this->mockLogger('The account has been disabled', 'checkIfAccountIsDisabled');
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
 
         $user = $this->mockUser(BackendUser::class, 3, null, null, false);
@@ -322,7 +322,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger('User foobar is not allowed to log in', 'checkIfLoginIsAllowed');
 
@@ -361,7 +361,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
             sprintf('The account was not active yet (activation date: %s)', $tomorrow->format('Y-m-d')),
@@ -404,7 +404,7 @@ class UserCheckerTest extends TestCase
         );
 
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
             sprintf('The account was not active anymore (deactivation date: %s)', $yesterday->format('Y-m-d')),
@@ -507,7 +507,7 @@ class UserCheckerTest extends TestCase
      *
      * @param bool $withFlashBag
      */
-    private function mockSessionMock(bool $withFlashBag = false): void
+    private function createSessionMock(bool $withFlashBag = false): void
     {
         $this->session = $this->createMock(Session::class);
 

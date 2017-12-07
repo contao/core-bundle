@@ -30,7 +30,7 @@ class FrontendUser extends User
 	 * Symfony Security session key
 	 * @var string
 	 */
-	const SESSION_KEY = '_security_contao_frontend';
+	const SECURITY_SESSION_KEY = '_security_contao_frontend';
 
 	/**
 	 * Current object instance (do not remove)
@@ -95,7 +95,7 @@ class FrontendUser extends User
 		$session = \System::getContainer()->get('session');
 
 		// Try to load possibly authenticated FrontendUser from session
-		if ($session->has(self::SESSION_KEY) && $token = unserialize($session->get(self::SESSION_KEY)))
+		if ($session->has(self::SECURITY_SESSION_KEY) && $token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
 		{
 			if ($token->isAuthenticated())
 			{

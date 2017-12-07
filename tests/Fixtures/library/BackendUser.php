@@ -6,6 +6,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class BackendUser extends \Contao\User implements UserInterface
 {
+    const SECURITY_SESSION_KEY = '_security_contao_backend';
+
     public $isAdmin = true;
 
     public static function getInstance()

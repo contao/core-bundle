@@ -119,7 +119,7 @@ class RebuildIndex extends \Backend implements \executable
 				$this->setCookie('FE_AUTO_LOGIN', \Input::cookie('FE_AUTO_LOGIN'), ($time - 86400), null, null, \Environment::get('ssl'), true);
 
 				// Remove the Symfony frontend authentication token
-				\System::getContainer()->get('session')->remove('_security_contao_frontend');
+				\System::getContainer()->get('session')->remove(\FrontendUser::SECURITY_SESSION_KEY);
 			}
 
 			$strBuffer = '';

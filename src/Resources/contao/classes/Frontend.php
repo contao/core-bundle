@@ -712,7 +712,7 @@ abstract class Frontend extends \Controller
 			if ($token->isAuthenticated())
 			{
 				// Disable the cache if a back end user is logged in
-				if (TL_MODE == 'FE' && $sessionKey == '_security_contao_backend')
+				if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
 				{
 					$_SESSION['DISABLE_CACHE'] = true;
 
@@ -729,7 +729,7 @@ abstract class Frontend extends \Controller
 		}
 
 		// Reset the cache settings
-		if (TL_MODE == 'FE' && $sessionKey == '_security_contao_backend')
+		if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
 		{
 			$_SESSION['DISABLE_CACHE'] = false;
 		}

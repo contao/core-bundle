@@ -66,7 +66,7 @@ class BackendSwitch extends \Backend
 		$strHash = $this->getSessionHash('FE_USER_AUTH');
 
 		// Get the front end user
-		if ($session->has('_security_contao_frontend') && $token = unserialize($session->get('_security_contao_frontend')))
+		if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && $token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY)))
 		{
 			/** @var TokenInterface $token */
 			/** @var User $user */
@@ -119,7 +119,7 @@ class BackendSwitch extends \Backend
 					// Authenticate the new FrontendUser at the Symfony firewall
 					\System::getContainer()->get('contao.security.frontend_preview_authenticator')->authenticateFrontendUser(\Input::post('user'));
 
-					if ($session->has('_security_contao_frontend') && $token = unserialize($session->get('_security_contao_frontend')))
+					if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && $token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY)))
 					{
 						/** @var TokenInterface $token */
 						/** @var User $user */
@@ -137,7 +137,7 @@ class BackendSwitch extends \Backend
 						else
 						{
 							// Remove Symfony frontend authentication, if not allowed
-							$session->remove('_security_contao_frontend');
+							$session->remove(\FrontendUser::SECURITY_SESSION_KEY);
 						}
 					}
 				}
@@ -150,7 +150,7 @@ class BackendSwitch extends \Backend
 					$objTemplate->user = '';
 
 					// Remove the Symfony frontend authentication token
-					$session->remove('_security_contao_frontend');
+					$session->remove(\FrontendUser::SECURITY_SESSION_KEY);
 				}
 			}
 

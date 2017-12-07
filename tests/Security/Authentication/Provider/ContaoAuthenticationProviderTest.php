@@ -121,7 +121,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->encoderFactory = $this->createMock(EncoderFactoryInterface::class);
         $this->hideUserNotFoundExceptions = false;
 
-        $this->mockSessionMock();
+        $this->createSessionMock();
         $this->mockLogger();
         $this->mockTranslator();
         $this->mockEventDispatcher(false);
@@ -176,7 +176,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator(true);
         $this->mockEncoder();
         $this->mockFlashBag('contao.FE.error');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockLogger('Invalid password submitted for username foobar');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
@@ -201,7 +201,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator(true);
         $this->mockEncoder();
         $this->mockFlashBag('contao.BE.error');
-        $this->mockSessionMock(true);
+        $this->createSessionMock(true);
         $this->mockLogger('Invalid password submitted for username foobar');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
@@ -237,7 +237,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockTranslator();
         $this->mockEncoder();
         $this->mockFlashBag();
-        $this->mockSessionMock();
+        $this->createSessionMock();
         $this->mockLogger();
         $this->mockEventDispatcher(true, 'foobar', '', $this->user, true);
 
@@ -515,7 +515,7 @@ class ContaoAuthenticationProviderTest extends TestCase
      *
      * @param bool $withFlashBag
      */
-    private function mockSessionMock(bool $withFlashBag = false): void
+    private function createSessionMock(bool $withFlashBag = false): void
     {
         $this->session = $this->createMock(Session::class);
 

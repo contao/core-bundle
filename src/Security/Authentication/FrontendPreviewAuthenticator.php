@@ -75,7 +75,6 @@ class FrontendPreviewAuthenticator
      */
     public function authenticateFrontendUser($username = null): void
     {
-        $sessionKey = '_security_contao_frontend';
         $providerKey = 'contao_frontend';
         $request = $this->requestStack->getCurrentRequest();
 
@@ -113,10 +112,10 @@ class FrontendPreviewAuthenticator
 
         if (false === $token->isAuthenticated()) {
             if ($request->hasPreviousSession()) {
-                $this->session->remove($sessionKey);
+                $this->session->remove(FrontendUser::SECURITY_SESSION_KEY);
             }
         } else {
-            $this->session->set($sessionKey, serialize($token));
+            $this->session->set(FrontendUser::SECURITY_SESSION_KEY, serialize($token));
         }
     }
 }

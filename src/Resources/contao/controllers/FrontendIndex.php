@@ -32,8 +32,8 @@ class FrontendIndex extends \Frontend
 		parent::__construct();
 
 		// Check whether a user is logged in
-		define('BE_USER_LOGGED_IN', $this->getAuthenticationStatus('_security_contao_backend'));
-		define('FE_USER_LOGGED_IN', $this->getAuthenticationStatus('_security_contao_frontend'));
+		define('BE_USER_LOGGED_IN', $this->getAuthenticationStatus(\BackendUser::SECURITY_SESSION_KEY));
+		define('FE_USER_LOGGED_IN', $this->getAuthenticationStatus(\FrontendUser::SECURITY_SESSION_KEY));
 	}
 
 

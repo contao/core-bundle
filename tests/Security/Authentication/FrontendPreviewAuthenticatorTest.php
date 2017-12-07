@@ -10,13 +10,13 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Tests\Security;
+namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -72,7 +72,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->mockSession();
+        $this->createSessionMock();
     }
 
     /**
@@ -81,7 +81,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->mockRequestStack();
-        $this->mockTokenStorage();
+        $this->createTokenStorageMock();
         $this->mockLogger();
         $this->mockUserProvider();
 
@@ -102,7 +102,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testImmediateReturnIfNotAuthenticated(): void
     {
         $this->mockRequestStack();
-        $this->mockTokenStorage();
+        $this->createTokenStorageMock();
         $this->mockLogger();
         $this->mockUserProvider();
 
@@ -123,7 +123,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testImmediateReturnIfNoUsernameIsGiven(): void
     {
         $this->mockRequestStack();
-        $this->mockTokenStorage(true);
+        $this->createTokenStorageMock(true);
         $this->mockLogger();
         $this->mockUserProvider();
 
@@ -144,7 +144,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testImmediateReturnIfNoSessionIsGiven(): void
     {
         $this->mockRequestStack(false);
-        $this->mockTokenStorage(true);
+        $this->createTokenStorageMock(true);
         $this->mockLogger();
         $this->mockUserProvider();
 
@@ -165,7 +165,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testThrowsUsernameNotFoundException(): void
     {
         $this->mockRequestStack(true);
-        $this->mockTokenStorage(true);
+        $this->createTokenStorageMock(true);
         $this->mockLogger('FrontendUser with Username username could not be found. Frontend authentication aborted.');
         $this->mockUserProvider(false);
 
@@ -186,7 +186,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     public function testRemoveSessionKeyWhenTryToAuthenticateWithoutRole(): void
     {
         $this->mockRequestStack(true);
-        $this->mockTokenStorage(true);
+        $this->createTokenStorageMock(true);
         $this->mockLogger();
         $this->mockUserProvider(true, false);
 
@@ -208,7 +208,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     {
         $sessionKey = '_security_contao_frontend';
         $this->mockRequestStack(true);
-        $this->mockTokenStorage(true);
+        $this->createTokenStorageMock(true);
         $this->mockLogger();
         $this->mockUserProvider(true, true);
 
@@ -235,7 +235,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
      *
      * @param bool|null $expectedAuthentication
      */
-    private function mockTokenStorage(bool $expectedAuthentication = null): void
+    private function createTokenStorageMock(bool $expectedAuthentication = null): void
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->token = $this->createMock(TokenInterface::class);
@@ -366,7 +366,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     /**
      * Mocks a Session.
      */
-    private function mockSession(): void
+    private function createSessionMock(): void
     {
         $this->session = new Session(new MockArraySessionStorage());
         $this->session->setId('test-id');

@@ -73,7 +73,7 @@ class BackendUser extends User
 	 * Symfony Security session key
 	 * @var string
 	 */
-	const SESSION_KEY = '_security_contao_backend';
+	const SECURITY_SESSION_KEY = '_security_contao_backend';
 
 	/**
 	 * Current object instance (do not remove)
@@ -138,7 +138,7 @@ class BackendUser extends User
 		$session = \System::getContainer()->get('session');
 
 		// Try to load possibly authenticated BackendUser from session
-		if ($session->has(self::SESSION_KEY) && $token = unserialize($session->get(self::SESSION_KEY)))
+		if ($session->has(self::SECURITY_SESSION_KEY) && $token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
 		{
 			if ($token->isAuthenticated())
 			{
