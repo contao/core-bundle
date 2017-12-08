@@ -125,25 +125,37 @@ class BackendUser extends User
 
 	public static function getInstance()
 	{
+		if (static::$objInstance !== null)
+		{
+			return static::$objInstance;
+		}
+
 		/** @var TokenInterface $token */
 		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
 		// Try to load token from security storage
 		if ($token !== null && is_a($token->getUser(), static::class))
 		{
-			return $token->getUser();
+			return static::loadUserByUsername($token->getUser()->getUsername());
 		}
 
 		/** @var SessionInterface $session */
 		$session = \System::getContainer()->get('session');
 
-		// Try to load possibly authenticated BackendUser from session
-		if ($session->has(self::SECURITY_SESSION_KEY) && $token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
+		if (!$session->has(self::SECURITY_SESSION_KEY))
 		{
-			if ($token->isAuthenticated())
-			{
-				return $token->getUser();
-			}
+			return parent::getInstance();
+		}
+
+		// Try to load possibly authenticated BackendUser from session
+		if (!$token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
+		{
+			return parent::getInstance();
+		}
+
+		if ($token->isAuthenticated())
+		{
+			return static::loadUserByUsername($token->getUser()->getUsername());
 		}
 
 		return parent::getInstance();

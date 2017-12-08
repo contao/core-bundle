@@ -50,18 +50,24 @@ class BackendMain extends \Backend
 	 */
 	public function __construct()
 	{
+		/** @var AuthorizationCheckerInterface $authorizationChecker */
+		$authorizationChecker = \System::getContainer()->get('security.authorization_checker');
+
 		$this->import('BackendUser', 'User');
 		parent::__construct();
 
-		if (!\System::getContainer()->get('security.authorization_checker')->isGranted('ROLE_USER'))
+		if (!$authorizationChecker->isGranted('ROLE_USER'))
 		{
 			throw new AccessDeniedException('Access denied');
 		}
 
-		// Password change required
-		if ($this->User->pwChange)
+		if (!$authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN'))
 		{
-			$this->redirect('contao/password.php');
+			// Password change required
+			if ($this->User->pwChange)
+			{
+				$this->redirect('contao/password.php');
+			}
 		}
 
 		// Front end redirect
