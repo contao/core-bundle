@@ -84,11 +84,11 @@ class LogoutHandler implements LogoutHandlerInterface
      * @param User $user
      *
      * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-     *             Use the contao.postLogout event instead.
+     *             Use the contao.post_logout event instead.
      */
     protected function triggerLegacyPostLogoutHook(User $user): void
     {
-        @trigger_error('Using the postLogout hook has been deprecated and will no longer work in Contao 5.0. Use the contao.postLogout event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using the postLogout hook has been deprecated and will no longer work in Contao 5.0. Use the contao.post_logout event instead.', E_USER_DEPRECATED);
 
         if (isset($GLOBALS['TL_HOOKS']['postLogout']) && \is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {

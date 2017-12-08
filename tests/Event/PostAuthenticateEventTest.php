@@ -43,7 +43,7 @@ class PostAuthenticateEventTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Event\PostAuthenticateEvent', $this->event);
-        $this->assertSame('contao.postAuthenticate', PostAuthenticateEvent::NAME);
+        $this->assertSame('contao.post_authenticate', PostAuthenticateEvent::NAME);
     }
 
     /**

@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class CheckCredentialsEvent extends Event
 {
-    public const NAME = 'contao.checkCredentials';
+    public const NAME = 'contao.check_credentials';
 
     /**
      * @var string

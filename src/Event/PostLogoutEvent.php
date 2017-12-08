@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class PostLogoutEvent extends Event
 {
-    public const NAME = 'contao.postLogout';
+    public const NAME = 'contao.post_logout';
 
     /**
      * @var User

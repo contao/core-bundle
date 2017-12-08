@@ -224,10 +224,13 @@ class BackendMain extends \Backend
 		$router = \System::getContainer()->get('router');
 
 		// Generate the logout button
-		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN'))
+		{
 			$logout = $GLOBALS['TL_LANG']['MSC']['backBT'];
 			$logoutLink = $router->generate('contao_backend', array('_switch_user' => '_exit'));
-		} else {
+		}
+		else
+		{
 			$logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
 			$logoutLink = $router->generate('contao_backend_logout');
 		}

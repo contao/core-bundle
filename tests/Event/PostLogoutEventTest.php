@@ -43,7 +43,7 @@ class PostLogoutEventTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Event\PostLogoutEvent', $this->event);
-        $this->assertSame('contao.postLogout', PostLogoutEvent::NAME);
+        $this->assertSame('contao.post_logout', PostLogoutEvent::NAME);
     }
 
     /**

@@ -43,7 +43,7 @@ class CheckCredentialsEventTest extends TestCase
     public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Event\CheckCredentialsEvent', $this->event);
-        $this->assertSame('contao.checkCredentials', CheckCredentialsEvent::NAME);
+        $this->assertSame('contao.check_credentials', CheckCredentialsEvent::NAME);
     }
 
     /**

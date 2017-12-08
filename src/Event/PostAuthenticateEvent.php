@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class PostAuthenticateEvent extends Event
 {
-    public const NAME = 'contao.postAuthenticate';
+    public const NAME = 'contao.post_authenticate';
 
     /**
      * @var User

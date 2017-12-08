@@ -729,7 +729,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			return false;
 		}
 
-		@trigger_error('Using the "importUser" hook has been deprecated and will no longer work in Contao 5.0. Use the contao.importUser event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using the "importUser" hook has been deprecated and will no longer work in Contao 5.0. Use the contao.import_user event instead.', E_USER_DEPRECATED);
 
 		foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
 		{
