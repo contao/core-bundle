@@ -435,7 +435,10 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	/**
 	 * {@inheritdoc}
 	 */
-	abstract public function getRoles();
+	public function getRoles()
+	{
+		return array();
+	}
 
 	/**
 	 * {@inheritdoc}
