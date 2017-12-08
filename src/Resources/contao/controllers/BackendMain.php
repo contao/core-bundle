@@ -217,9 +217,11 @@ class BackendMain extends \Backend
 		/** @var RouterInterface $router */
 		$router = \System::getContainer()->get('router');
 
+		$logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
 		$logoutLink = $router->generate('contao_backend_logout');
 
 		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+			$logout = $GLOBALS['TL_LANG']['MSC']['exitUserBT'];
 			$logoutLink = $router->generate('contao_backend', [
 				'_switch_user' => '_exit',
 			]);
@@ -236,7 +238,7 @@ class BackendMain extends \Backend
 		$this->Template->profile = $GLOBALS['TL_LANG']['MSC']['profile'];
 		$this->Template->profileTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['profileTitle']);
 		$this->Template->pageOffset = \Input::cookie('BE_PAGE_OFFSET');
-		$this->Template->logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
+		$this->Template->logout = $logout;
 		$this->Template->logoutLink = $logoutLink;
 		$this->Template->logoutTitle = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logoutBTTitle']);
 		$this->Template->user = $this->User;
