@@ -638,7 +638,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			$this->username,
 			$this->password,
 			$this->salt,
-			$this->disable
+			$this->disable,
+			$this->admin
 		));
 	}
 
@@ -654,7 +655,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			$this->username,
 			$this->password,
 			$this->salt,
-			$this->disable
+			$this->disable,
+			$this->admin
 		) = unserialize($serialized);
 	}
 
