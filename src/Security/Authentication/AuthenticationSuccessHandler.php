@@ -105,7 +105,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
     {
         $this->framework->initialize();
-        $this->triggerLegacyPostAuthenticateHook($user);
+        $this->triggerPostAuthenticateHook($user);
         $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 
         $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
@@ -135,7 +135,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
     {
         $this->framework->initialize();
-        $this->triggerLegacyPostAuthenticateHook($user);
+        $this->triggerPostAuthenticateHook($user);
         $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
 
         $route = $request->attributes->get('_route');
@@ -168,18 +168,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * It passes the user object as argument and does not expect a return value.
      *
      * @param User $user
-     *
-     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-     *             Use the contao.post_authenticate event instead.
      */
-    protected function triggerLegacyPostAuthenticateHook(User $user): void
+    private function triggerPostAuthenticateHook(User $user): void
     {
+        if (empty($GLOBALS['TL_HOOKS']['postAuthenticate']) || !\is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
+            return;
+        }
+
         @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Use the contao.post_authenticate event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && \is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
-            foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
-                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
-            }
+        foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
+            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
         }
     }
 }

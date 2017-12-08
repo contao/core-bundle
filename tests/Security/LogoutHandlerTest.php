@@ -99,10 +99,6 @@ class LogoutHandlerTest extends TestCase
 
     /**
      * Tests the logger message with a valid user given.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postLogout hook has been deprecated %s.
      */
     public function testLoggerMessageWithValidUser(): void
     {

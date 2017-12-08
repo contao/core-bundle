@@ -163,10 +163,6 @@ class ContaoAuthenticationProviderTest extends TestCase
 
     /**
      * Tests if a BadCredentialsException is thrown with a FrontendUser and an invalid password.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
     public function testThrowsBadCredentialsExceptionWithAFrontendUser(): void
     {
@@ -188,10 +184,6 @@ class ContaoAuthenticationProviderTest extends TestCase
 
     /**
      * Tests if a BadCredentialsException is thrown with a BackendUser and an invalid password.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
     public function testThrowsBadCredentialsExceptionWithABackendUser(): void
     {
@@ -268,7 +260,7 @@ class ContaoAuthenticationProviderTest extends TestCase
      *
      * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
-    public function testExecutesTheCheckCredentialsHook(): void
+    public function testExecutesTheCheckCredentialsHookReturnsTrue(): void
     {
         $this->framework
             ->expects($this->once())
@@ -277,7 +269,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         ;
 
         $GLOBALS['TL_HOOKS'] = [
-            'checkCredentials' => [[\get_class($this), 'executeCheckCredentialsHookCallback']],
+            'checkCredentials' => [[\get_class($this), 'executeCheckCredentialsHookCallbackReturnsTrue']],
         ];
 
         $this->providerKey = 'contao_backend';
@@ -288,7 +280,43 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
-        $this->assertEmpty($authenticationProvider->checkAuthentication($this->user, $this->token));
+        $authenticationProvider->checkAuthentication($this->user, $this->token);
+    }
+
+    /**
+     * Tests the execution of the checkCredentials hook.
+     *
+     * @group legacy
+     *
+     * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
+     */
+    public function testExecutesTheCheckCredentialsHookReturnsFalse(): void
+    {
+        $this->framework
+            ->expects($this->once())
+            ->method('createInstance')
+            ->willReturn($this)
+        ;
+
+        $GLOBALS['TL_HOOKS'] = [
+            'checkCredentials' => [[\get_class($this), 'executeCheckCredentialsHookCallbackReturnsFalse']],
+        ];
+
+        $this->providerKey = 'contao_backend';
+        $this->mockUser('Contao\BackendUser', 'username');
+        $this->mockToken(false, 'username', 'password');
+        $this->mockEncoder(false);
+        $this->mockEventDispatcher(true, 'username', 'password', $this->user, false);
+        $this->mockFlashBag('contao.BE.error');
+        $this->mockTranslator(true);
+        $this->createSessionMock(true);
+
+        $this->mockLogger('Invalid password submitted for username username');
+
+        $authenticationProvider = $this->getProvider(null, null, $this->encoder);
+
+        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
     /**
@@ -300,13 +328,31 @@ class ContaoAuthenticationProviderTest extends TestCase
      *
      * @return bool
      */
-    public static function executeCheckCredentialsHookCallback(string $username, string $credentials, User $user): bool
+    public static function executeCheckCredentialsHookCallbackReturnsTrue(string $username, string $credentials, User $user): bool
     {
         self::assertSame('username', $username);
         self::assertSame('password', $credentials);
         self::assertInstanceOf('Contao\User', $user);
 
         return true;
+    }
+
+    /**
+     * checkCredentials hook stub.
+     *
+     * @param string $username
+     * @param string $credentials
+     * @param User   $user
+     *
+     * @return bool
+     */
+    public static function executeCheckCredentialsHookCallbackReturnsFalse(string $username, string $credentials, User $user): bool
+    {
+        self::assertSame('username', $username);
+        self::assertSame('password', $credentials);
+        self::assertInstanceOf('Contao\User', $user);
+
+        return false;
     }
 
     /**

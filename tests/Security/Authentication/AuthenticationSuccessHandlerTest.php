@@ -136,10 +136,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for BackendUser on login route.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleBackendUserOnLoginRoute(): void
     {
@@ -274,10 +270,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for BackendUser without last page visited.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleBackendUserWithoutLastPageVisited(): void
     {
@@ -302,10 +294,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for BackendUser with last page visited.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleBackendUserWithLastPageVisited(): void
     {
@@ -332,10 +320,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for FrontentUser without groups set.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleFrontendUserWithoutGroups(): void
     {
@@ -360,10 +344,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for FrontentUser with groups set but invalid group page.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleFrontendUserWithGroupsButInvalidGroupPage(): void
     {
@@ -391,10 +371,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
     /**
      * Tests the redirect response for FrontentUser with groups set and valid group page.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using the postAuthenticate hook has been deprecated %s.
      */
     public function testHandleFrontendUserWithGroupsAndValidGroupPage(): void
     {

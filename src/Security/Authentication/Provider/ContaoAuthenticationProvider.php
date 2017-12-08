@@ -108,7 +108,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 new CheckCredentialsEvent($token->getUsername(), $token->getCredentials(), $user)
             );
 
-            if (false === $event->getVote() && false === $this->triggerLegacyCheckCredentialsHook($user, $token)) {
+            if (false === $event->getVote() && false === $this->triggerCheckCredentialsHook($user, $token)) {
                 --$user->loginCount;
                 $user->save();
 
@@ -140,21 +140,20 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param UsernamePasswordToken $token
      *
      * @return bool
-     *
-     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-     *             Use the contao.check_credentials event instead.
      */
-    protected function triggerLegacyCheckCredentialsHook(User $user, UsernamePasswordToken $token): bool
+    private function triggerCheckCredentialsHook(User $user, UsernamePasswordToken $token): bool
     {
+        if (empty($GLOBALS['TL_HOOKS']['checkCredentials']) || !\is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
+            return false;
+        }
+
         @trigger_error('Using the checkCredentials hook has been deprecated and will no longer work in Contao 5.0. Use the contao.check_credentials event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['checkCredentials']) && \is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
-            foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
-                $objectInstance = $this->framework->createInstance($callback[0]);
+        foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
+            $objectInstance = $this->framework->createInstance($callback[0]);
 
-                if ($objectInstance->{$callback[1]}($token->getUsername(), $token->getCredentials(), $user)) {
-                    return true;
-                }
+            if ($objectInstance->{$callback[1]}($token->getUsername(), $token->getCredentials(), $user)) {
+                return true;
             }
         }
 

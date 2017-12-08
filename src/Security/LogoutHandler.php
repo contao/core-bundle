@@ -74,7 +74,7 @@ class LogoutHandler implements LogoutHandlerInterface
         );
 
         $this->eventDispatcher->dispatch(PostLogoutEvent::NAME, new PostLogoutEvent($user));
-        $this->triggerLegacyPostLogoutHook($user);
+        $this->triggerPostLogoutHook($user);
     }
 
     /**
@@ -82,18 +82,17 @@ class LogoutHandler implements LogoutHandlerInterface
      * It passes the user object as argument and does not expect a return value.
      *
      * @param User $user
-     *
-     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-     *             Use the contao.post_logout event instead.
      */
-    protected function triggerLegacyPostLogoutHook(User $user): void
+    protected function triggerPostLogoutHook(User $user): void
     {
+        if (empty($GLOBALS['TL_HOOKS']['postLogout']) || !\is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
+            return;
+        }
+
         @trigger_error('Using the postLogout hook has been deprecated and will no longer work in Contao 5.0. Use the contao.post_logout event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['postLogout']) && \is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
-            foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
-                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
-            }
+        foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
+            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
         }
     }
 }
