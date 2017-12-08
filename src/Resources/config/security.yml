@@ -18,7 +18,7 @@ security:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
 
-        install:
+        contao_install:
             pattern: ^/contao/install
             security: false
 
