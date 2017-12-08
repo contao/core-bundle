@@ -310,7 +310,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockFlashBag('contao.BE.error');
         $this->mockTranslator(true);
         $this->createSessionMock(true);
-
         $this->mockLogger('Invalid password submitted for username username');
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
