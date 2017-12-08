@@ -349,99 +349,6 @@ services:
     contao.csrf.token_storage:
         class: Contao\CoreBundle\Csrf\MemoryTokenStorage
 
-    contao.translation.translator:
-        class: Contao\CoreBundle\Translation\Translator
-        decorates: translator
-        arguments:
-            - "@contao.translation.translator.inner"
-            - "@contao.framework"
-
-    contao.twig.template_extension:
-        class: Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension
-        arguments:
-            - "@request_stack"
-            - "@contao.framework"
-            - "@contao.routing.scope_matcher"
-        tags:
-            - { name: twig.extension }
-
-    contao.security.legacy_password_encoder:
-        class: Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder
-
-    contao.security.backend_user_provider:
-        class: Contao\CoreBundle\Security\User\BackendUserProvider
-        public: false
-        arguments:
-            - "@contao.framework"
-
-    contao.security.authenticator:
-        class: Contao\CoreBundle\Security\ContaoAuthenticator
-        arguments:
-            - "@contao.routing.scope_matcher"
-
-    contao.security.frontend_user_provider:
-        class: Contao\CoreBundle\Security\User\FrontendUserProvider
-        public: false
-        arguments:
-            - "@contao.framework"
-
-    contao.security.user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoUserProvider
-        arguments:
-            - "@contao.framework"
-            - "@contao.routing.scope_matcher"
-
-    contao.security.switch_user_button_generator:
-        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
-        arguments:
-            - "@security.authorization_checker"
-            - "@router"
-            - "@database_connection"
-            - "@templating"
-            - "@security.token_storage"
-
-    contao.security.frontend_preview_authenticator:
-        class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
-        arguments:
-            - "@request_stack"
-            - "@session"
-            - "@security.token_storage"
-            - "@contao.security.frontend_user_provider"
-            - "@logger"
-
-    contao.security.logout_success_handler:
-        class: Contao\CoreBundle\Security\LogoutSuccessHandler
-        arguments:
-            - "@router"
-            - "@security.token_storage"
-
-    contao.security.logout_handler:
-        class: Contao\CoreBundle\Security\LogoutHandler
-        arguments:
-            - "@logger"
-            - "@event_dispatcher"
-            - "@contao.framework"
-
-    contao.security.authentication_failure_handler:
-        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
-        arguments:
-            - "@http_kernel"
-            - "@security.http_utils"
-            - []
-            - "@logger"
-            - "@contao.routing.scope_matcher"
-            - "@translator"
-
-
-    contao.security.authentication_success_handler:
-        class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
-        arguments:
-            - "@security.http_utils"
-            - []
-            - "@contao.framework"
-            - "@router"
-            - "@event_dispatcher"
-
     security.authentication.provider.dao:
         class: Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider
         abstract: true
@@ -457,6 +364,76 @@ services:
             - "@event_dispatcher"
             - "@contao.framework"
 
+    contao.security.authentication_failure_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
+        arguments:
+            - "@http_kernel"
+            - "@security.http_utils"
+            - []
+            - "@logger"
+            - "@contao.routing.scope_matcher"
+            - "@translator"
+
+    contao.security.authentication_success_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
+        arguments:
+            - "@security.http_utils"
+            - []
+            - "@contao.framework"
+            - "@router"
+            - "@event_dispatcher"
+
+    contao.security.authenticator:
+        class: Contao\CoreBundle\Security\ContaoAuthenticator
+        arguments:
+            - "@contao.routing.scope_matcher"
+
+    contao.security.backend_user_provider:
+        class: Contao\CoreBundle\Security\User\BackendUserProvider
+        public: false
+        arguments:
+            - "@contao.framework"
+
+    contao.security.frontend_preview_authenticator:
+        class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
+        arguments:
+            - "@request_stack"
+            - "@session"
+            - "@security.token_storage"
+            - "@contao.security.frontend_user_provider"
+            - "@logger"
+
+    contao.security.frontend_user_provider:
+        class: Contao\CoreBundle\Security\User\FrontendUserProvider
+        public: false
+        arguments:
+            - "@contao.framework"
+
+    contao.security.legacy_password_encoder:
+        class: Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder
+
+    contao.security.logout_handler:
+        class: Contao\CoreBundle\Security\LogoutHandler
+        arguments:
+            - "@logger"
+            - "@event_dispatcher"
+            - "@contao.framework"
+
+    contao.security.logout_success_handler:
+        class: Contao\CoreBundle\Security\LogoutSuccessHandler
+        arguments:
+            - "@router"
+            - "@security.token_storage"
+
+    contao.security.switch_user_button_generator:
+        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
+        arguments:
+            - "@security.authorization_checker"
+            - "@router"
+            - "@database_connection"
+            - "@templating"
+            - "@security.token_storage"
+
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
         arguments:
@@ -467,3 +444,25 @@ services:
             - "@contao.routing.scope_matcher"
             - "@request_stack"
             - "@contao.framework"
+
+    contao.security.user_provider:
+        class: Contao\CoreBundle\Security\User\ContaoUserProvider
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.scope_matcher"
+
+    contao.translation.translator:
+        class: Contao\CoreBundle\Translation\Translator
+        decorates: translator
+        arguments:
+            - "@contao.translation.translator.inner"
+            - "@contao.framework"
+
+    contao.twig.template_extension:
+        class: Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension
+        arguments:
+            - "@request_stack"
+            - "@contao.framework"
+            - "@contao.routing.scope_matcher"
+        tags:
+            - { name: twig.extension }

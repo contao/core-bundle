@@ -65,7 +65,7 @@ security:
                 remember_me: true
 
             remember_me:
-                secret:   '%secret%'
+                secret: '%secret%'
                 remember_me_parameter: autologin
 
             logout:

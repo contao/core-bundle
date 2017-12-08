@@ -63,7 +63,7 @@ class InteractiveLoginListenerTest extends TestCase
     {
         $this->mockLogger();
 
-        $listener = new InteractiveLoginListener($this->logger, $this->framework);
+        $listener = new InteractiveLoginListener($this->framework, $this->logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\InteractiveLoginListener', $listener);
     }
@@ -76,23 +76,19 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger();
         $this->mockInteractiveLoginEvent();
 
-        $listener = new InteractiveLoginListener($this->logger, $this->framework);
+        $listener = new InteractiveLoginListener($this->framework, $this->logger);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
     /**
      * Tests the logger message with a valid user given.
-     *
-     * @group legacy
-     *
-     * @expectedDeprecation Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated %s.
      */
     public function testLoggerMessageWithValidUser(): void
     {
         $this->mockLogger('User username has logged in.');
         $this->mockInteractiveLoginEvent('username');
 
-        $listener = new InteractiveLoginListener($this->logger, $this->framework);
+        $listener = new InteractiveLoginListener($this->framework, $this->logger);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 
@@ -101,7 +97,7 @@ class InteractiveLoginListenerTest extends TestCase
      *
      * @group legacy
      *
-     * @expectedDeprecation Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated %s.
+     * @expectedDeprecation Using the "postLogin" hook has been deprecated %s.
      */
     public function testExecutesThePostLoginHook(): void
     {
@@ -118,7 +114,7 @@ class InteractiveLoginListenerTest extends TestCase
         $this->mockLogger('User username has logged in.');
         $this->mockInteractiveLoginEvent('username');
 
-        $listener = new InteractiveLoginListener($this->logger, $this->framework);
+        $listener = new InteractiveLoginListener($this->framework, $this->logger);
         $listener->onInteractiveLogin($this->interactiveLoginEvent);
     }
 

@@ -121,6 +121,33 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 64 }
 
+    contao.listener.security.interactive_login:
+        class: Contao\CoreBundle\EventListener\InteractiveLoginListener
+        arguments:
+            - "@contao.framework"
+            - "@logger"
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
+
+    contao.listener.security.switch_user:
+        class: Contao\CoreBundle\EventListener\SwitchUserListener
+        arguments:
+            - "@security.token_storage"
+            - "@logger"
+        tags:
+            - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
+            - { name: monolog.logger, channel: contao }
+
+    contao.listener.security.token_lifetime:
+        class: Contao\CoreBundle\EventListener\TokenLifetimeListener
+        arguments:
+            - "@security.token_storage"
+            - "@contao.routing.scope_matcher"
+            - "%contao.security.token_lifetime%"
+            - "@logger"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     contao.listener.store_referer:
         class: Contao\CoreBundle\EventListener\StoreRefererListener
         arguments:
@@ -165,30 +192,3 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
-
-    contao.security.switch_user_listener:
-        class: Contao\CoreBundle\EventListener\SwitchUserListener
-        arguments:
-            - "@logger"
-            - "@security.token_storage"
-        tags:
-            - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
-            - { name: monolog.logger, channel: contao }
-
-    contao.security.interactive_login_listener:
-        class: Contao\CoreBundle\EventListener\InteractiveLoginListener
-        arguments:
-            - "@logger"
-            - "@contao.framework"
-        tags:
-            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
-
-    contao.security.token_lifetime_listener:
-        class: Contao\CoreBundle\EventListener\TokenLifetimeListener
-        arguments:
-            - "@security.token_storage"
-            - "@contao.routing.scope_matcher"
-            - "%contao.security.token_lifetime%"
-            - "@logger"
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

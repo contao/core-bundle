@@ -223,14 +223,13 @@ class BackendMain extends \Backend
 		/** @var RouterInterface $router */
 		$router = \System::getContainer()->get('router');
 
-		$logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
-		$logoutLink = $router->generate('contao_backend_logout');
-
+		// Generate the logout button
 		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-			$logout = $GLOBALS['TL_LANG']['MSC']['exitUserBT'];
-			$logoutLink = $router->generate('contao_backend', [
-				'_switch_user' => '_exit',
-			]);
+			$logout = $GLOBALS['TL_LANG']['MSC']['backBT'];
+			$logoutLink = $router->generate('contao_backend', array('_switch_user' => '_exit'));
+		} else {
+			$logout = $GLOBALS['TL_LANG']['MSC']['logoutBT'];
+			$logoutLink = $router->generate('contao_backend_logout');
 		}
 
 		$this->Template->theme = \Backend::getTheme();

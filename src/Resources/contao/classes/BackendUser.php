@@ -123,6 +123,12 @@ class BackendUser extends User
 		$this->strHash = \Input::cookie($this->strCookie);
 	}
 
+
+	/**
+	 * Instantiate a new user object
+	 *
+	 * @return static|User The object instance
+	 */
 	public static function getInstance()
 	{
 		if (static::$objInstance !== null)
@@ -147,8 +153,8 @@ class BackendUser extends User
 			return parent::getInstance();
 		}
 
-		// Try to load possibly authenticated BackendUser from session
-		if (!$token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
+		// Try to load a possibly authenticated back end user from the session
+		if (!($token = unserialize($session->get(self::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 		{
 			return parent::getInstance();
 		}
@@ -211,7 +217,8 @@ class BackendUser extends User
 	 *
 	 * @return boolean True if the user could be authenticated
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the security.authentication.success event instead.
 	 */
 	public function authenticate()
 	{
@@ -586,15 +593,15 @@ class BackendUser extends User
 		return $arrModules;
 	}
 
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getRoles()
 	{
 		if ($this->isAdmin)
 		{
-			return array(
-				'ROLE_USER',
-				'ROLE_ADMIN',
-				'ROLE_ALLOWED_TO_SWITCH',
-			);
+			return array('ROLE_USER', 'ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH');
 		}
 
 		return $this->roles;

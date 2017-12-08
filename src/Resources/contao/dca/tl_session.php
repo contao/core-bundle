@@ -8,13 +8,9 @@
  * @license LGPL-3.0+
  */
 
-@trigger_error('Using the tl_session table has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-
 
 /**
  * Table tl_session
- *
- * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
  */
 $GLOBALS['TL_DCA']['tl_session'] = array
 (

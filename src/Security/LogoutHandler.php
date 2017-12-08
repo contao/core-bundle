@@ -90,7 +90,7 @@ class LogoutHandler implements LogoutHandlerInterface
     {
         @trigger_error('Using the postLogout hook has been deprecated and will no longer work in Contao 5.0. Use the contao.postLogout event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['postLogout']) && is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
+        if (isset($GLOBALS['TL_HOOKS']['postLogout']) && \is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             foreach ($GLOBALS['TL_HOOKS']['postLogout'] as $callback) {
                 $this->framework->createInstance($callback[0])->{$callback[1]}($user);
             }

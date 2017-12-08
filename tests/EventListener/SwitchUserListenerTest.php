@@ -56,7 +56,7 @@ class SwitchUserListenerTest extends TestCase
         $this->mockLogger();
         $this->mockTokenStorage();
 
-        $listener = new SwitchUserListener($this->logger, $this->tokenStorage);
+        $listener = new SwitchUserListener($this->tokenStorage, $this->logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\SwitchUserListener', $listener);
     }
@@ -70,7 +70,7 @@ class SwitchUserListenerTest extends TestCase
         $this->mockTokenStorage('user1');
         $this->mockSwitchUserEvent('user2');
 
-        $listener = new SwitchUserListener($this->logger, $this->tokenStorage);
+        $listener = new SwitchUserListener($this->tokenStorage, $this->logger);
         $listener->onSwitchUser($this->switchUserEvent);
     }
 

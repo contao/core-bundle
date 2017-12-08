@@ -152,11 +152,13 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	protected $roles = array();
 
 	/**
+	 * Salt
 	 * @var string
 	 */
 	protected $salt;
 
 	/**
+	 * Encoder name
 	 * @var string
 	 */
 	protected $encoder = false;
@@ -280,11 +282,14 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 *
 	 * @return boolean True if the user could be authenticated
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the security.authentication.success event instead.
 	 */
 	public function authenticate()
 	{
-		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using User::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
+
+		return false;
 	}
 
 
@@ -293,11 +298,12 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 *
 	 * @return boolean True if the user could be logged in
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the security.interactive_login event instead.
 	 */
 	public function login()
 	{
-		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using User::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
 		return true;
 	}
@@ -308,7 +314,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 *
 	 * @return boolean True if the account is active
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	protected function checkAccountStatus()
 	{
@@ -360,9 +366,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	/**
 	 * Regenerate the session ID
 	 *
-	 * @throws \RuntimeException
-	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	protected function regenerateSessionId()
 	{
@@ -372,7 +376,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	/**
 	 * Generate a session
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	protected function generateSession()
 	{
@@ -384,6 +388,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 * Remove the authentication cookie and destroy the current session
 	 *
 	 * @return boolean True if the user could be logged out
+	 *
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	public function logout()
 	{
@@ -411,13 +417,13 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		$groups = \StringUtil::deserialize($this->arrData['groups']);
 
 		// No groups assigned
-		if (empty($groups) || !is_array($groups))
+		if (empty($groups) || !\is_array($groups))
 		{
 			return false;
 		}
 
 		// Group ID found
-		if (in_array($id, $groups))
+		if (\in_array($id, $groups))
 		{
 			return true;
 		}
@@ -440,6 +446,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		return array();
 	}
 
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -457,8 +464,8 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
-			// Return, if its not a real login attempt
-			if (!$request->isMethod(Request::METHOD_POST) && $password == null)
+			// Return if its not a real login attempt
+			if ($password === null && !$request->isMethod(Request::METHOD_POST))
 			{
 				return null;
 			}
@@ -467,7 +474,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			$importUserEvent = $eventDispatcher->dispatch(ImportUserEvent::NAME, new ImportUserEvent($username, $password, $user->strTable));
 
 			// Check vote from new ImportUserEvent and trigger legacy hook
-			if ($importUserEvent->getVote() === false && self::triggerLegacyImportUserHook($username, $password, $user->strTable) === false)
+			if ($importUserEvent->getVote() === false && self::triggerImportUserHook($username, $password, $user->strTable) === false)
 			{
 				return null;
 			}
@@ -534,12 +541,33 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 		return $this->arrData['password'];
 	}
 
+
 	/**
 	 * {@inheritdoc}
 	 */
 	public function setPassword($password)
 	{
 		$this->arrData['password'] = $password;
+
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getSalt()
+	{
+		return $this->salt;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setSalt($salt)
+	{
+		$this->salt = $salt;
 
 		return $this;
 	}
@@ -573,31 +601,11 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getSalt()
-	{
-		return $this->salt;
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setSalt($salt)
-	{
-		$this->salt = $salt;
-
-		return $this;
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
 	public function isAccountNonExpired()
 	{
 		$time = time();
 
-		return ($this->start == '' || $this->start < $time) && ($this->stop == '' || $this->stop > $time);
+		return (!$this->start || $this->start < $time) && (!$this->stop || $this->stop > $time);
 	}
 
 
@@ -626,7 +634,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isEnabled()
 	{
-		return ! (bool) ($this->disable);
+		return !$this->disable;
 	}
 
 
@@ -635,15 +643,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function serialize()
 	{
-		return serialize(array(
-			$this->id,
-			$this->tstamp,
-			$this->username,
-			$this->password,
-			$this->salt,
-			$this->disable,
-			$this->admin
-		));
+		return serialize(array($this->id, $this->tstamp, $this->username, $this->password, $this->salt, $this->disable, $this->admin));
 	}
 
 
@@ -652,15 +652,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function unserialize($serialized)
 	{
-		list (
-			$this->id,
-			$this->tstamp,
-			$this->username,
-			$this->password,
-			$this->salt,
-			$this->disable,
-			$this->admin
-		) = unserialize($serialized);
+		list($this->id, $this->tstamp, $this->username, $this->password, $this->salt, $this->disable, $this->admin) = unserialize($serialized, array('allowed_classes'=>false));
 	}
 
 
@@ -675,7 +667,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isEqualTo(UserInterface $user)
 	{
-		if (!$user instanceof User)
+		if (!$user instanceof self)
 		{
 			return false;
 		}
@@ -695,59 +687,59 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 
 	/**
-	 * Selects a matching encoder based on actual password.
+	 * Select a matching encoder based on the password
 	 */
 	protected function selectEncoder()
 	{
-		if ($this->encoder === false)
+		if ($this->encoder !== false)
 		{
-			if (\Encryption::test($this->arrData['password']))
-			{
-				$this->setEncoder('default');
-			}
+			return;
+		}
 
-			else
-			{
-				list($password, $salt) = explode(':', $this->getPassword());
+		if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $this->arrData['password']))
+		{
+			list($password, $salt) = explode(':', $this->getPassword());
 
-				$this->setEncoder('legacy');
-				$this->setPassword($password);
-				$this->setSalt($salt);
-			}
+			$this->setEncoder('legacy');
+			$this->setPassword($password);
+			$this->setSalt($salt);
+		}
+		else
+		{
+			$this->setEncoder('default');
 		}
 	}
 
 
 	/**
-	 * Replacement method for the legacy importUser hook.
+	 * Trigger the importUser hook
 	 *
 	 * @param $username
 	 * @param $password
 	 * @param $strTable
-	 * @return bool|static
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-	 *             Use the contao.importUser event instead.
+	 * @return bool|static
 	 */
-	public static function triggerLegacyImportUserHook($username, $password, $strTable)
+	public static function triggerImportUserHook($username, $password, $strTable)
 	{
-		@trigger_error('Using the importUser hook has been deprecated and will no longer work in Contao 5.0. Use the contao.importUser event instead.', E_USER_DEPRECATED);
-
 		$self = new static();
 
-		// HOOK: pass credentials to callback functions
-		if (isset($GLOBALS['TL_HOOKS']['importUser']) && is_array($GLOBALS['TL_HOOKS']['importUser']))
+		if (empty($GLOBALS['TL_HOOKS']['importUser']) || !\is_array($GLOBALS['TL_HOOKS']['importUser']))
 		{
-			foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
-			{
-				$self->import($callback[0], 'objImport', true);
-				$blnLoaded = $self->objImport->{$callback[1]}($username, $password, $strTable);
+			return false;
+		}
 
-				// Load successfull
-				if ($blnLoaded === true)
-				{
-					return true;
-				}
+		@trigger_error('Using the "importUser" hook has been deprecated and will no longer work in Contao 5.0. Use the contao.importUser event instead.', E_USER_DEPRECATED);
+
+		foreach ($GLOBALS['TL_HOOKS']['importUser'] as $callback)
+		{
+			$self->import($callback[0], 'objImport', true);
+			$blnLoaded = $self->objImport->{$callback[1]}($username, $password, $strTable);
+
+			// Load successfull
+			if ($blnLoaded === true)
+			{
+				return true;
 			}
 		}
 

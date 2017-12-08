@@ -67,7 +67,7 @@ class ModuleLogin extends \Module
 		}
 
 		// Set the last page visited (see #8632)
-		if (!$request->isMethod(Request::METHOD_POST) && $this->redirectBack && ($strReferer = $this->getReferer()) != \Environment::get('request'))
+		if ($this->redirectBack && !$request->isMethod(Request::METHOD_POST) && ($strReferer = $this->getReferer()) != \Environment::get('request'))
 		{
 			$session->set('LAST_PAGE_VISITED', $strReferer);
 		}
@@ -93,7 +93,6 @@ class ModuleLogin extends \Module
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		// Show logout form
 		// Do not redirect if authentication is successful
 		if ($token !== null && $token->getUser() instanceof FrontendUser && $token->isAuthenticated())
 		{
@@ -104,7 +103,7 @@ class ModuleLogin extends \Module
 			$this->Template->slabel = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logout']);
 			$this->Template->loggedInAs = sprintf($GLOBALS['TL_LANG']['MSC']['loggedInAs'], $this->User->username);
 			$this->Template->action = $router->generate('contao_frontend_logout');
-            $this->Template->targetPath = null;
+			$this->Template->targetPath = null;
 
 			if ($this->User->lastLogin > 0)
 			{
@@ -132,7 +131,7 @@ class ModuleLogin extends \Module
 		$this->Template->targetPath = $request->getRequestUri();
 
 		// Redirect to the last page visited
-		if ($this->redirectBack && $session->get('LAST_PAGE_VISITED') != '')
+		if ($this->redirectBack && $session->get('LAST_PAGE_VISITED'))
 		{
 			$this->Template->targetName = '_target_referer';
 			$this->Template->targetPath = $session->get('LAST_PAGE_VISITED');

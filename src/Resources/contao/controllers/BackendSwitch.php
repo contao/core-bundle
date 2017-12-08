@@ -60,15 +60,13 @@ class BackendSwitch extends \Backend
 			$this->getDatalistOptions();
 		}
 
-		$session = \System::getContainer()->get('session');
-
 		$strUser = '';
 		$strHash = $this->getSessionHash('FE_USER_AUTH');
+		$session = \System::getContainer()->get('session');
 
 		// Get the front end user
-		if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && $token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY)))
+		if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 		{
-			/** @var TokenInterface $token */
 			/** @var User $user */
 			$user = $token->getUser();
 
@@ -119,9 +117,8 @@ class BackendSwitch extends \Backend
 					// Authenticate the new FrontendUser at the Symfony firewall
 					\System::getContainer()->get('contao.security.frontend_preview_authenticator')->authenticateFrontendUser(\Input::post('user'));
 
-					if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && $token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY)))
+					if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 					{
-						/** @var TokenInterface $token */
 						/** @var User $user */
 						$user = $token->getUser();
 						$objUser = \MemberModel::findByUsername($user->getUsername());

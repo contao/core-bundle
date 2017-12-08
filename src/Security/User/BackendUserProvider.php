@@ -71,7 +71,7 @@ class BackendUserProvider implements UserProviderInterface
     {
         if (!$user instanceof BackendUser) {
             throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
         }
 

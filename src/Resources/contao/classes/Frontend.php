@@ -503,11 +503,13 @@ abstract class Frontend extends \Controller
 	 *
 	 * @return boolean
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 *             Use getAuthenticationStatus() instead.
 	 */
 	protected function getLoginStatus($strCookie)
 	{
+		@trigger_error('Using Frontend::getLoginStatus() has been deprecated and will no longer work in Contao 5.0. Use Frontend::getAuthenticationStatus() instead.', E_USER_DEPRECATED);
+
 		$cookie = \Input::cookie($strCookie);
 
 		if ($cookie === null)
@@ -692,10 +694,11 @@ abstract class Frontend extends \Controller
 	}
 
 	/**
-	 * Check authentication status based on sessionKey.
+	 * Check the authentication status based on the session key
 	 *
 	 * @param string $sessionKey
-	 * @return bool
+	 *
+	 * @return bool True if authenticated
 	 *
 	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
@@ -704,28 +707,23 @@ abstract class Frontend extends \Controller
 		/** @var SessionInterface $session */
 		$session = \System::getContainer()->get('session');
 
-		if ($session->has($sessionKey) && $token = unserialize($session->get($sessionKey)))
+		// Validate the session ID and timeout
+		if ($session->has($sessionKey) && ($token = unserialize($session->get($sessionKey))) instanceof TokenInterface && $token->isAuthenticated())
 		{
-			/** @var TokenInterface $token */
-
-			// Validate the session ID and timeout
-			if ($token->isAuthenticated())
+			// Disable the cache if a back end user is logged in
+			if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
 			{
-				// Disable the cache if a back end user is logged in
-				if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
+				$_SESSION['DISABLE_CACHE'] = true;
+
+				// Always return false if we are not in preview mode (show hidden elements)
+				if (!\Input::cookie('FE_PREVIEW'))
 				{
-					$_SESSION['DISABLE_CACHE'] = true;
-
-					// Always return false if we are not in preview mode (show hidden elements)
-					if (!\Input::cookie('FE_PREVIEW'))
-					{
-						return false;
-					}
+					return false;
 				}
-
-				// The session could be verified
-				return true;
 			}
+
+			// The session could be verified
+			return true;
 		}
 
 		// Reset the cache settings

@@ -221,7 +221,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         );
 
         $authenticator->authenticateFrontendUser('username');
-        $this->assertTrue(strlen($this->session->get($sessionKey)) > 0);
+        $this->assertTrue(\strlen($this->session->get($sessionKey)) > 0);
 
         /** @var UsernamePasswordToken $token */
         $token = @unserialize($this->session->get($sessionKey));

@@ -10,8 +10,6 @@
 
 namespace Contao;
 
-@trigger_error('Using the Contao\SessionModel class has been deprecated and will no longer work in Contao 5.0. Use the session service instead.', E_USER_DEPRECATED);
-
 
 /**
  * Reads and writes sessions
@@ -57,9 +55,6 @@ namespace Contao;
  * @method static integer countBySu($val, array $opt=array())
  *
  * @author Leo Feyer <https://github.com/leofeyer>
- *
- * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
- *             Use the session service instead.
  */
 class SessionModel extends \Model
 {

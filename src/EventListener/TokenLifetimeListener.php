@@ -86,10 +86,10 @@ class TokenLifetimeListener
         }
 
         $this->logger->info(
-            sprintf('User %s has been automatically logged out due to inactivity', $user->getUsername()),
+            sprintf('User %s has been logged out automatically due to inactivity.', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
-        $this->tokenStorage->setToken(null);
+        $this->tokenStorage->setToken();
     }
 }

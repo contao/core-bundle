@@ -69,7 +69,7 @@ class FrontendUserProvider implements UserProviderInterface
     {
         if (!$user instanceof FrontendUser) {
             throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
             );
         }
 

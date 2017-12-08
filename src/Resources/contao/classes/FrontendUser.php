@@ -80,6 +80,12 @@ class FrontendUser extends User
 		$this->strHash = \Input::cookie($this->strCookie);
 	}
 
+
+	/**
+	 * Instantiate a new user object
+	 *
+	 * @return static|User The object instance
+	 */
 	public static function getInstance()
 	{
 		if (static::$objInstance !== null)
@@ -105,7 +111,7 @@ class FrontendUser extends User
 		}
 
 		// Try to load possibly authenticated FrontendUser from session
-		if (!$token = unserialize($session->get(self::SECURITY_SESSION_KEY)))
+		if (!($token = unserialize($session->get(self::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 		{
 			return parent::getInstance();
 		}
@@ -169,11 +175,12 @@ class FrontendUser extends User
 	 *
 	 * @return boolean
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the security.authentication.success event instead.
 	 */
 	public function authenticate()
 	{
-		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using BackendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
 		return false;
 	}
@@ -184,11 +191,12 @@ class FrontendUser extends User
 	 *
 	 * @return boolean
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the security.interactive_login event instead.
 	 */
 	public function login()
 	{
-		@trigger_error('Using User::FrontendUser() has been deprecated and will no longer work in Contao 5.0', E_USER_DEPRECATED);
+		@trigger_error('Using User::FrontendUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
 		return false;
 	}
@@ -199,7 +207,7 @@ class FrontendUser extends User
 	 *
 	 * @return boolean
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	public function logout()
 	{
@@ -303,6 +311,7 @@ class FrontendUser extends User
 			}
 		}
 	}
+
 
 	/**
 	 * {@inheritdoc}

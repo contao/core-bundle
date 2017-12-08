@@ -66,20 +66,20 @@ class FrontendController extends Controller
     }
 
     /**
-     * Symfony will un-authenticate the user automatically by calling this route.
-     *
-     * @Route("/_contao/logout", name="contao_frontend_logout")
-     */
-    public function logoutAction(): void
-    {
-    }
-
-    /**
      * Symfony will authenticate the user automatically by calling this route.
      *
      * @Route("/_contao/login", name="contao_frontend_login")
      */
     public function loginAction(): void
+    {
+    }
+
+    /**
+     * Symfony will un-authenticate the user automatically by calling this route.
+     *
+     * @Route("/_contao/logout", name="contao_frontend_logout")
+     */
+    public function logoutAction(): void
     {
     }
 }

@@ -652,12 +652,12 @@ class tl_user extends Backend
 	 *
 	 * @throws Exception
 	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
-	 *             Use the switch_user_button_generator service instead.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use the contao.security.switch_user_button_generator service instead.
 	 */
 	public function switchUser($row, $href, $label, $title, $icon)
 	{
-		@trigger_error('Using tl_user->switchUser() has been deprecated and will no longer work in Contao 5.0. Use the switch_user_button_generator service instead', E_USER_DEPRECATED);
+		@trigger_error('Using tl_user::switchUser() has been deprecated and will no longer work in Contao 5.0. Use the contao.security.switch_user_button_generator service instead', E_USER_DEPRECATED);
 
 		return System::getContainer()->get('contao.security.switch_user_button_generator')->generateSwitchUserButton($row, $href, $label, $title, $icon);
 	}
@@ -826,8 +826,6 @@ class tl_user extends Backend
 	 * Remove the session if a user is deleted (see #5353)
 	 *
 	 * @param DataContainer $dc
-	 *
-	 * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
 	 */
 	public function removeSession(DataContainer $dc)
 	{

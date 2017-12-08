@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
 
@@ -33,6 +34,8 @@ class PageLogout extends \Frontend
 	{
 		/** @var RouterInterface $router */
 		$router = System::getContainer()->get('router');
+
+		/** @var Session $session */
 		$session = System::getContainer()->get('session');
 
 		$strRedirect = \Environment::get('base');

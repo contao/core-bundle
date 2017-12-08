@@ -110,7 +110,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
 
-        if (is_array($groups)) {
+        if (\is_array($groups)) {
             /** @var PageModel $pageModelAdapter */
             $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
 
@@ -148,7 +148,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             ];
 
             // Redirect to the last page visited upon login
-            if ($request->query->count() > 0 && in_array($route, $routes, true)) {
+            if ($request->query->count() > 0 && \in_array($route, $routes, true)) {
                 $parameters['referer'] = base64_encode($request->getRequestUri());
             }
 
@@ -176,7 +176,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     {
         @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Use the contao.postAuthenticate event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
+        if (isset($GLOBALS['TL_HOOKS']['postAuthenticate']) && \is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
             foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
                 $this->framework->createInstance($callback[0])->{$callback[1]}($user);
             }

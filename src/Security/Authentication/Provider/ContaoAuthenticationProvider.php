@@ -148,7 +148,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     {
         @trigger_error('Using the checkCredentials hook has been deprecated and will no longer work in Contao 5.0. Use the contao.checkCredentials event instead.', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TL_HOOKS']['checkCredentials']) && is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
+        if (isset($GLOBALS['TL_HOOKS']['checkCredentials']) && \is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
             foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
                 $objectInstance = $this->framework->createInstance($callback[0]);
 

@@ -17,47 +17,45 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class InteractiveLoginListener
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
     /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
 
     /**
-     * @param LoggerInterface          $logger
-     * @param ContaoFrameworkInterface $framework
+     * @var LoggerInterface
      */
-    public function __construct(LoggerInterface $logger, ContaoFrameworkInterface $framework)
+    protected $logger;
+
+    /**
+     * @param ContaoFrameworkInterface $framework
+     * @param LoggerInterface          $logger
+     */
+    public function __construct(ContaoFrameworkInterface $framework, LoggerInterface $logger)
     {
-        $this->logger = $logger;
         $this->framework = $framework;
+        $this->logger = $logger;
     }
 
     /**
-     * Interactive login listener to log successful login attempts.
+     * Logs successful login attempts.
      *
      * @param InteractiveLoginEvent $event
      */
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
-        /** @var UserInterface $user */
         $user = $event->getAuthenticationToken()->getUser();
-
-        /** @var Config $config */
-        $config = $this->framework->getAdapter(Config::class);
 
         if (!$user instanceof User) {
             return;
         }
+
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
 
         $user->lastLogin = $user->currentLogin;
         $user->currentLogin = time();
@@ -69,28 +67,30 @@ class InteractiveLoginListener
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
-        $this->triggerLegacyPostLoginHook($user);
+        $this->triggerPostLoginHook($user);
     }
 
     /**
-     * The postLogin hook is triggered after a user has logged in. This can be either in the back end or the front end.
-     * It passes the user object as argument and does not expect a return value.
+     * Triggers the postLogin hook.
+     *
+     * The postLogin hook is triggered after a user has logged in. This can
+     * be either in the back end or the front end. It passes the user object as
+     * argument and does not expect a return value.
      *
      * @param User $user
-     *
-     * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
      */
-    protected function triggerLegacyPostLoginHook(User $user): void
+    private function triggerPostLoginHook(User $user): void
     {
-        @trigger_error('Using InteractiveLoginListener::triggerLegacyPostLoginHook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
-
         $this->framework->initialize();
 
-        // HOOK: post login callback
-        if (isset($GLOBALS['TL_HOOKS']['postLogin']) && is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
-            foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
-                $this->framework->createInstance($callback[0])->{$callback[1]}($user);
-            }
+        if (empty($GLOBALS['TL_HOOKS']['postLogin']) || !\is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
+            return;
+        }
+
+        @trigger_error('Using the "postLogin" hook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+
+        foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
+            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
         }
     }
 }

@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Patchwork\Utf8;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
 @trigger_error('Using the logout module has been deprecated and will no longer work in Contao 5.0. Use the logout page instead.', E_USER_DEPRECATED);
@@ -57,6 +58,8 @@ class ModuleLogout extends \Module
 
 		/** @var RouterInterface $router */
 		$router = System::getContainer()->get('router');
+
+		/** @var Session $session */
 		$session = System::getContainer()->get('session');
 
 		$strRedirect = \Environment::get('base');
@@ -83,8 +86,5 @@ class ModuleLogout extends \Module
 	/**
 	 * Generate the module
 	 */
-	protected function compile()
-	{
-		return;
-	}
+	protected function compile() {}
 }
