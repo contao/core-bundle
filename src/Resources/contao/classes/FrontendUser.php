@@ -198,7 +198,7 @@ class FrontendUser extends User
 	{
 		@trigger_error('Using User::FrontendUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
-		return false;
+		return parent::login();
 	}
 
 
