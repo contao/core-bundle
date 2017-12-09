@@ -23,7 +23,7 @@ Edit your `composer.json` file and add the following:
 
 ```json
 "require": {
-    "contao/core-bundle": "^4.4"
+    "contao/core-bundle": "^4.5"
 },
 "config": {
     "component-dir": "assets"
