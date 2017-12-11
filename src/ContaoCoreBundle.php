@@ -58,10 +58,7 @@ class ContaoCoreBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new AddPackagesPass());
-
-        // Add the assets packages after the Composer packages
         $container->addCompilerPass(new AddAssetsPackagesPass());
-
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
         $container->addCompilerPass(new AddImagineClassPass());

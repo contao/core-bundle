@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
+use PackageVersions\Versions;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -80,9 +81,8 @@ class AddAssetsPackagesPass implements CompilerPassInterface
 
         $packages = $container->getDefinition('assets.packages');
         $context = new Reference('contao.assets.assets_context');
-        $components = $container->getParameter('kernel.packages');
 
-        foreach ($components as $name => $version) {
+        foreach (Versions::VERSIONS as $name => $version) {
             [$vendor, $packageName] = explode('/', $name, 2);
 
             if ('contao-components' !== $vendor) {
@@ -133,7 +133,7 @@ class AddAssetsPackagesPass implements CompilerPassInterface
     private function createPackageVersion(ContainerBuilder $container, string $version, string $name): Reference
     {
         $def = new ChildDefinition('assets.static_version_strategy');
-        $def->replaceArgument(0, $version);
+        $def->replaceArgument(0, substr($version, 0, strpos($version, '@')));
 
         $container->setDefinition('assets._version_'.$name, $def);
 
