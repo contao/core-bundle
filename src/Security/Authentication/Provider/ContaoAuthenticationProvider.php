@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication\Provider;
 
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
@@ -28,10 +29,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * ContaoAuthenticationProvider extends the existing Symfony DaoAuthenticationProvider
- * to provide some Brute-Force protection against the login form.
- */
 class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 {
     /**
@@ -104,7 +101,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
             /** @var CheckCredentialsEvent $event */
             $event = $this->eventDispatcher->dispatch(
-                CheckCredentialsEvent::NAME,
+                ContaoCoreEvents::CHECK_CREDENTIALS,
                 new CheckCredentialsEvent($token->getUsername(), $token->getCredentials(), $user)
             );
 
@@ -114,15 +111,11 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
                 $this->session->getFlashBag()->set(
                     $this->getFlashType(),
-                    $this->translator->trans(
-                        'ERR.invalidLogin',
-                        [],
-                        'contao_default'
-                    )
+                    $this->translator->trans('ERR.invalidLogin', [], 'contao_default')
                 );
 
                 $this->logger->info(
-                    sprintf('Invalid password submitted for username %s', $user->getUsername()),
+                    sprintf('Invalid password submitted for username "%s".', $user->getUsername()),
                     ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
                 );
 
@@ -132,9 +125,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     }
 
     /**
-     * The checkCredentials hook is triggered when a login attempt fails due to a wrong password.
-     * It passes the username and password as well as the user object as arguments and expects a boolean as return
-     * value.
+     * Triggers the checkCredentials hook.
      *
      * @param User                  $user
      * @param UsernamePasswordToken $token
@@ -161,7 +152,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     }
 
     /**
-     * Gets flash type from providerKey.
+     * Returns the flash type depending on the provider key.
      *
      * @return string
      */

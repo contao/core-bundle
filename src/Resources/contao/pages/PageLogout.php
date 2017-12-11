@@ -32,12 +32,6 @@ class PageLogout extends \Frontend
 	 */
 	public function getResponse($objPage)
 	{
-		/** @var RouterInterface $router */
-		$router = System::getContainer()->get('router');
-
-		/** @var Session $session */
-		$session = System::getContainer()->get('session');
-
 		$strRedirect = \Environment::get('base');
 
 		// Set last page visited
@@ -53,7 +47,12 @@ class PageLogout extends \Frontend
 			$strRedirect = $objTarget->getAbsoluteUrl();
 		}
 
+		/** @var Session $session */
+		$session = System::getContainer()->get('session');
 		$session->set('_contao_logout_target', $strRedirect);
+
+		/** @var RouterInterface $router */
+		$router = System::getContainer()->get('router');
 
 		return new RedirectResponse($router->generate('contao_frontend_logout'));
 	}

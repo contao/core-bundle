@@ -15,6 +15,24 @@ namespace Contao\CoreBundle\Event;
 final class ContaoCoreEvents
 {
     /**
+     * The contao.check_credentials event is triggered when a login attempt fails due to a wrong password.
+     *
+     * @var string
+     *
+     * @see CheckCredentialsEvent
+     */
+    public const CHECK_CREDENTIALS = 'contao.check_credentials';
+
+    /**
+     * The contao.backend_menu_build event is triggered when the backend menu is built.
+     *
+     * @var string
+     *
+     * @see MenuEvent
+     */
+    public const BACKEND_MENU_BUILD = 'contao.backend_menu_build';
+
+    /**
      * The contao.image_sizes_all event is triggered when the image sizes are generated.
      *
      * @var string
@@ -33,6 +51,33 @@ final class ContaoCoreEvents
     public const IMAGE_SIZES_USER = 'contao.image_sizes_user';
 
     /**
+     * The contao.import_user event is triggered when a username cannot be found in the database.
+     *
+     * @var string
+     *
+     * @see PreviewUrlCreateEvent
+     */
+    public const IMPORT_USER = 'contao.import_user';
+
+    /**
+     * The contao.post_authenticate event is triggered when a user has been authenticated.
+     *
+     * @var string
+     *
+     * @see PreviewUrlCreateEvent
+     */
+    public const POST_AUTHENTICATE = 'contao.post_authenticate';
+
+    /**
+     * The contao.post_logout event is triggered when a user has been authenticated.
+     *
+     * @var string
+     *
+     * @see PreviewUrlCreateEvent
+     */
+    public const POST_LOGOUT = 'contao.post_logout';
+
+    /**
      * The contao.preview_url_create event is triggered when the front end preview URL is generated.
      *
      * @var string
@@ -49,15 +94,6 @@ final class ContaoCoreEvents
      * @see PreviewUrlConvertEvent
      */
     public const PREVIEW_URL_CONVERT = 'contao.preview_url_convert';
-
-    /**
-     * The contao.backend_menu_build event is triggered when the backend menu is built.
-     *
-     * @var string
-     *
-     * @see MenuEvent
-     */
-    public const BACKEND_MENU_BUILD = 'contao.backend_menu_build';
 
     /**
      * The contao.slug_valid_characters event is triggered when the valid slug characters options are generated.

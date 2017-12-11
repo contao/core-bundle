@@ -40,41 +40,10 @@ class AuthenticationFailureHandlerTest extends TestCase
     protected $scopeMatcher;
 
     /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
      * @var FlashBagInterface
      */
     protected $flashBag;
 
-    /**
-     * @var HttpKernel
-     */
-    protected $httpKernel;
-
-    /**
-     * @var HttpUtils
-     */
-    protected $httpUtils;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp(): void
-    {
-        $this->httpKernel = $this->createMock(HttpKernel::class);
-        $this->httpUtils = $this->createMock(HttpUtils::class);
-
-        $this->session = $this->mockSession();
-        $this->scopeMatcher = $this->mockScopeMatcher();
-        $this->mockTranslator();
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $handler = $this->mockFailureHandler();
@@ -82,95 +51,80 @@ class AuthenticationFailureHandlerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler', $handler);
     }
 
-    /**
-     * Tests the redirect to referer on frontend authentication failure.
-     */
-    public function testRedirectsToRefererOnFrontendAuthenticationFailure(): void
+    public function testRedirectsToTheRefererUponFrontendAuthenticationFailure(): void
     {
-        $this->mockTranslator(
-            true,
+        $translator = $this->mockTranslator(
             'ERR.invalidLogin',
-            [],
-            'contao_default',
             'Login failed (note that usernames and passwords are case-sensitive)!'
         );
 
-        $request = $this->mockRequest(
-            ['_scope' => 'frontend'],
-            ['referer' => '/']
-        );
+        $request = $this->mockRequest(['_scope' => 'frontend'], ['referer' => '/']);
+        $request->setSession($this->mockSession());
 
-        $this->httpUtils
+        $utils = $this->createMock(HttpUtils::class);
+
+        $utils
             ->expects($this->once())
             ->method('createRedirectResponse')
             ->with($request, '/')
             ->willReturn(new RedirectResponse('/'))
         ;
 
-        $this->session = $this->mockSession();
+        $handler = $this->mockFailureHandler($translator, $utils);
+        $response = $handler->onAuthenticationFailure($request, new AuthenticationException());
+        $error = $request->getSession()->get('_security.last_error');
 
-        $request->setSession($this->session);
-        $authenticationException = new AuthenticationException();
-
-        $handler = $this->mockFailureHandler();
-        $response = $handler->onAuthenticationFailure($request, $authenticationException);
-
-        $authenticationError = $request->getSession()->get('_security.last_error');
+        $this->assertTrue($response->headers->contains('location', '/'));
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertInstanceOf('Symfony\Component\Security\Core\Exception\AuthenticationException', $error);
 
         /** @var FlashBagInterface $flashBag */
         $flashBag = $request->getSession()->getFlashBag();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertInstanceOf('Symfony\Component\Security\Core\Exception\AuthenticationException', $authenticationError);
-        $this->assertTrue($response->headers->contains('location', '/'));
-        $this->assertSame('Login failed (note that usernames and passwords are case-sensitive)!', $flashBag->get('contao.FE.error')[0]);
+        $this->assertSame(
+            'Login failed (note that usernames and passwords are case-sensitive)!',
+            $flashBag->get('contao.FE.error')[0]
+        );
     }
 
-    /**
-     * Tests the redirect to referer on frontend authentication failure.
-     */
-    public function testRedirectsToRequestUriOnBackendAuthenticationFailure(): void
+    public function testRedirectsToTheRequestUriUponBackendAuthenticationFailure(): void
     {
-        $this->mockTranslator(
-            true,
+        $translator = $this->mockTranslator(
             'ERR.invalidLogin',
-            [],
-            'contao_default',
             'Login failed (note that usernames and passwords are case-sensitive)!'
         );
 
-        $request = $this->mockRequest(
-            ['_scope' => 'backend']
-        );
+        $request = $this->mockRequest(['_scope' => 'backend']);
+        $request->setSession($this->mockSession());
 
-        $this->httpUtils
+        $utils = $this->createMock(HttpUtils::class);
+
+        $utils
             ->expects($this->once())
             ->method('createRedirectResponse')
             ->with($request, '/contao/login')
             ->willReturn(new RedirectResponse('/contao/login'))
         ;
 
-        $this->session = $this->mockSession();
+        $handler = $this->mockFailureHandler($translator, $utils);
+        $response = $handler->onAuthenticationFailure($request, new AuthenticationException());
+        $error = $request->getSession()->get('_security.last_error');
 
-        $request->setSession($this->session);
-        $authenticationException = new AuthenticationException();
-
-        $handler = $this->mockFailureHandler();
-        $response = $handler->onAuthenticationFailure($request, $authenticationException);
-
-        $authenticationError = $request->getSession()->get('_security.last_error');
+        $this->assertTrue($response->headers->contains('location', '/contao/login'));
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertInstanceOf('Symfony\Component\Security\Core\Exception\AuthenticationException', $error);
 
         /** @var FlashBagInterface $flashBag */
         $flashBag = $request->getSession()->getFlashBag();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertInstanceOf('Symfony\Component\Security\Core\Exception\AuthenticationException', $authenticationError);
-        $this->assertTrue($response->headers->contains('location', '/contao/login'));
-        $this->assertSame('Login failed (note that usernames and passwords are case-sensitive)!', $flashBag->get('contao.BE.error')[0]);
+        $this->assertSame(
+            'Login failed (note that usernames and passwords are case-sensitive)!',
+            $flashBag->get('contao.BE.error')[0]
+        );
     }
 
     /**
-     * Mocks the request with options, attributes and query parameters.
+     * Mocks a request with options, attributes and query parameters.
      *
      * @param array $attributes
      * @param array $headers
@@ -193,42 +147,49 @@ class AuthenticationFailureHandlerTest extends TestCase
     }
 
     /**
-     * Mocks a translator with an optional translation.
+     * Mocks a translator.
      *
-     * @param bool   $withTranslation
      * @param string $key
-     * @param array  $params
-     * @param string $domain
      * @param string $translated
+     *
+     * @return TranslatorInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockTranslator(bool $withTranslation = false, string $key = '', array $params = [], string $domain = 'contao_default', string $translated = ''): void
+    private function mockTranslator(string $key = '', string $translated = ''): TranslatorInterface
     {
-        $this->translator = $this->createMock(TranslatorInterface::class);
+        $translator = $this->createMock(TranslatorInterface::class);
 
-        if (true === $withTranslation) {
-            $this->translator
-                ->expects($this->once())
-                ->method('trans')
-                ->with($key, $params, $domain)
-                ->willReturn($translated)
-            ;
-        }
+        $translator
+            ->expects($this->once())
+            ->method('trans')
+            ->with($key)
+            ->willReturn($translated)
+        ;
+
+        return $translator;
     }
 
     /**
-     * Mocks a AuthenticationFailureHandler.
+     * Mocks an authentication failure handler.
+     *
+     * @param TranslatorInterface|null $translator
+     * @param HttpUtils|null           $utils
      *
      * @return AuthenticationFailureHandler
      */
-    private function mockFailureHandler(): AuthenticationFailureHandler
+    private function mockFailureHandler(TranslatorInterface $translator = null, HttpUtils $utils = null): AuthenticationFailureHandler
     {
-        return new AuthenticationFailureHandler(
-            $this->httpKernel,
-            $this->httpUtils,
-            [],
-            null,
-            $this->scopeMatcher,
-            $this->translator
-        );
+        $kernel = $this->createMock(HttpKernel::class);
+
+        if (null === $utils) {
+            $utils = $this->createMock(HttpUtils::class);
+        }
+
+        $scopeMatcher = $this->mockScopeMatcher();
+
+        if (null === $translator) {
+            $translator = $this->createMock(TranslatorInterface::class);
+        }
+
+        return new AuthenticationFailureHandler($kernel, $utils, [], null, $scopeMatcher, $translator);
     }
 }

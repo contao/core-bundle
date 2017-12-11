@@ -17,9 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-/**
- * Class with the custom Contao logout success handling logic.
- */
 class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
 {
     /**
@@ -36,7 +33,7 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     }
 
     /**
-     * Creates a custom redirecting Response object to send upon a successful logout.
+     * Redirects the user upon logout.
      *
      * @param Request $request
      *

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\User;
 
 use Contao\CoreBundle\EventListener\InteractiveLoginListener;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
@@ -22,86 +21,52 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-/**
- * Tests the InteractiveLoginListener class.
- */
 class InteractiveLoginListenerTest extends TestCase
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var InteractiveLoginEvent
-     */
-    protected $interactiveLoginEvent;
-
-    /**
-     * @var TokenInterface
-     */
-    protected $token;
-
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
-
     /**
      * {@inheritdoc}
      */
     public function setUp(): void
     {
         unset($GLOBALS['TL_HOOKS']);
-        $this->framework = $this->mockContaoFramework();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
-        $this->mockLogger();
-
-        $listener = new InteractiveLoginListener($this->framework, $this->logger);
+        $logger = $this->mockLogger();
+        $listener = new InteractiveLoginListener($this->mockContaoFramework(), $logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\InteractiveLoginListener', $listener);
     }
 
-    /**
-     * Tests if the listener immediatly returns if no user is available.
-     */
-    public function testImmediateReturnWhenNoUserIsGiven(): void
+    public function testReturnsImmediatelyIfThereIsNoUser(): void
     {
-        $this->mockLogger();
-        $this->mockInteractiveLoginEvent();
+        $logger = $this->mockLogger();
+        $event = $this->mockInteractiveLoginEvent();
 
-        $listener = new InteractiveLoginListener($this->framework, $this->logger);
-        $listener->onInteractiveLogin($this->interactiveLoginEvent);
+        $listener = new InteractiveLoginListener($this->mockContaoFramework(), $logger);
+        $listener->onInteractiveLogin($event);
+    }
+
+    public function testAddsALogEntryIfAValidUserIsGiven(): void
+    {
+        $logger = $this->mockLogger('User "username" has logged in.');
+        $event = $this->mockInteractiveLoginEvent('username');
+
+        $listener = new InteractiveLoginListener($this->mockContaoFramework(), $logger);
+        $listener->onInteractiveLogin($event);
     }
 
     /**
-     * Tests the logger message with a valid user given.
-     */
-    public function testLoggerMessageWithValidUser(): void
-    {
-        $this->mockLogger('User username has logged in.');
-        $this->mockInteractiveLoginEvent('username');
-
-        $listener = new InteractiveLoginListener($this->framework, $this->logger);
-        $listener->onInteractiveLogin($this->interactiveLoginEvent);
-    }
-
-    /**
-     * Tests the execution of the postLogin hook.
-     *
      * @group legacy
      *
      * @expectedDeprecation Using the "postLogin" hook has been deprecated %s.
      */
     public function testExecutesThePostLoginHook(): void
     {
-        $this->framework
+        $framework = $this->mockContaoFramework();
+
+        $framework
             ->expects($this->once())
             ->method('createInstance')
             ->willReturn($this)
@@ -111,16 +76,14 @@ class InteractiveLoginListenerTest extends TestCase
             'postLogin' => [[\get_class($this), 'executePostLoginHookCallback']],
         ];
 
-        $this->mockLogger('User username has logged in.');
-        $this->mockInteractiveLoginEvent('username');
+        $logger = $this->mockLogger('User "username" has logged in.');
+        $event = $this->mockInteractiveLoginEvent('username');
 
-        $listener = new InteractiveLoginListener($this->framework, $this->logger);
-        $listener->onInteractiveLogin($this->interactiveLoginEvent);
+        $listener = new InteractiveLoginListener($framework, $logger);
+        $listener->onInteractiveLogin($event);
     }
 
     /**
-     * postLogin Hook stub.
-     *
      * @param User $user
      */
     public static function executePostLoginHookCallback(User $user): void
@@ -129,103 +92,85 @@ class InteractiveLoginListenerTest extends TestCase
     }
 
     /**
-     * Mocks the logger service with an optional message.
+     * Mocks a logger service with an optional message.
      *
      * @param string|null $message
+     *
+     * @return LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockLogger(string $message = null): void
+    private function mockLogger(string $message = null): LoggerInterface
     {
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         if (null === $message) {
-            $this->logger
+            $logger
                 ->expects($this->never())
                 ->method('info')
             ;
+
+            return $logger;
         }
 
-        if (null !== $message) {
-            $context = [
-                'contao' => new ContaoContext(
-                    'Contao\CoreBundle\EventListener\InteractiveLoginListener::onInteractiveLogin',
-                    ContaoContext::ACCESS
-                ),
-            ];
+        $context = [
+            'contao' => new ContaoContext(
+                'Contao\CoreBundle\EventListener\InteractiveLoginListener::onInteractiveLogin',
+                ContaoContext::ACCESS
+            ),
+        ];
 
-            $this->logger
-                ->expects($this->once())
-                ->method('info')
-                ->with($message, $context)
-            ;
-        }
+        $logger
+            ->expects($this->once())
+            ->method('info')
+            ->with($message, $context)
+        ;
+
+        return $logger;
     }
 
     /**
-     * Mocks the Token class with an optional username.
+     * Mocks an interactive login event with an optional target username.
      *
-     * @param string|null $expectedUsername
+     * @param string|null $username
+     *
+     * @return InteractiveLoginEvent
      */
-    private function mockToken(string $expectedUsername = null): void
+    private function mockInteractiveLoginEvent(string $username = null): InteractiveLoginEvent
     {
-        $this->token = $this->createMock(TokenInterface::class);
-
-        if (null !== $expectedUsername) {
-            $user = $this->mockUser($expectedUsername);
-
-            $this->token
-                ->expects($this->once())
-                ->method('getUser')
-                ->willReturn($user)
-            ;
-        }
+        return new InteractiveLoginEvent(new Request(), $this->mockToken($username));
     }
 
     /**
-     * Mocks the User with an optional username.
+     * Mocks a token with an optional username.
      *
-     * @param string|null $expectedUsername
+     * @param string|null $username
      *
-     * @return User
+     * @return TokenInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockUser(string $expectedUsername = null): User
+    private function mockToken(string $username = null): TokenInterface
     {
-        $user = null;
+        $token = $this->createMock(TokenInterface::class);
 
-        if (null !== $expectedUsername) {
-            $user = $this
-                ->getMockBuilder(User::class)
-                ->disableOriginalConstructor()
-                ->setMethods(['getUsername', 'save'])
-                ->getMock()
-            ;
-
-            $user->username = $expectedUsername;
+        if (null !== $username) {
+            $user = $this->createPartialMock(User::class, ['getUsername', 'save']);
 
             $user
                 ->expects($this->once())
                 ->method('getUsername')
-                ->willReturn($expectedUsername)
+                ->willReturn($username)
             ;
 
             $user
                 ->expects($this->once())
                 ->method('save')
             ;
+
+            $token
+                ->expects($this->once())
+                ->method('getUser')
+                ->willReturn($user)
+            ;
         }
 
-        return $user;
-    }
-
-    /**
-     * Mocks the InteractiveLoginEvent with an optional target username.
-     *
-     * @param string|null $expectedUsername
-     */
-    private function mockInteractiveLoginEvent(string $expectedUsername = null): void
-    {
-        $request = new Request();
-        $this->mockToken($expectedUsername);
-
-        $this->interactiveLoginEvent = new InteractiveLoginEvent($request, $this->token);
+        return $token;
     }
 }

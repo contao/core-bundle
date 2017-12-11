@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\PostAuthenticateEvent;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
@@ -27,9 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\HttpUtils;
 
-/**
- * Class with the custom Contao authentication success handling logic.
- */
 class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
     /**
@@ -67,8 +65,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * This is called when an interactive authentication attempt succeeds.
-     * Manages the correct redirecting of the logged in user.
+     * Redirects the authenticated user.
      *
      * @param Request        $request
      * @param TokenInterface $token
@@ -95,7 +92,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * Specific logic for successful authenticated FrontendUser.
+     * Redirects an authenticated front end user.
      *
      * @param Request      $request
      * @param FrontendUser $user
@@ -106,14 +103,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     {
         $this->framework->initialize();
         $this->triggerPostAuthenticateHook($user);
-        $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
+        $this->eventDispatcher->dispatch(ContaoCoreEvents::POST_AUTHENTICATE, new PostAuthenticateEvent($user));
 
         $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
 
         if (\is_array($groups)) {
             /** @var PageModel $pageModelAdapter */
             $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-
             $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups($groups);
 
             if ($groupPage instanceof PageModel) {
@@ -125,7 +121,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * Specific logic for successful authenticated BackendUser.
+     * Redirects an authenticated back end user.
      *
      * @param Request     $request
      * @param BackendUser $user
@@ -136,12 +132,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     {
         $this->framework->initialize();
         $this->triggerPostAuthenticateHook($user);
-        $this->eventDispatcher->dispatch(PostAuthenticateEvent::NAME, new PostAuthenticateEvent($user));
+        $this->eventDispatcher->dispatch(ContaoCoreEvents::POST_AUTHENTICATE, new PostAuthenticateEvent($user));
 
         $route = $request->attributes->get('_route');
 
         if ('contao_backend_login' !== $route) {
             $parameters = [];
+
             $routes = [
                 'contao_backend',
                 'contao_backend_preview',
@@ -153,10 +150,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             }
 
             return new RedirectResponse(
-                $this->router->generate(
-                    'contao_backend_login', $parameters,
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                )
+                $this->router->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL)
             );
         }
 
@@ -164,8 +158,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * The postAuthenticate hook is triggered after a user was authenticated.
-     * It passes the user object as argument and does not expect a return value.
+     * Triggers the postAuthenticate hook.
      *
      * @param User $user
      */

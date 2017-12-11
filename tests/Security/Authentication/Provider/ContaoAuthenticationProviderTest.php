@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\Authentication\Provider;
 
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider;
@@ -173,7 +174,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEncoder();
         $this->mockFlashBag('contao.FE.error');
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username foobar');
+        $this->mockLogger('Invalid password submitted for username "foobar".');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
@@ -194,7 +195,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEncoder();
         $this->mockFlashBag('contao.BE.error');
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username foobar');
+        $this->mockLogger('Invalid password submitted for username "foobar".');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
@@ -310,7 +311,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockFlashBag('contao.BE.error');
         $this->mockTranslator(true);
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username username');
+        $this->mockLogger('Invalid password submitted for username "username".');
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
@@ -593,7 +594,7 @@ class ContaoAuthenticationProviderTest extends TestCase
             $this->eventDispatcher
                 ->expects($this->once())
                 ->method('dispatch')
-                ->with(CheckCredentialsEvent::NAME)
+                ->with(ContaoCoreEvents::CHECK_CREDENTIALS)
                 ->willReturn($checkCredentialsEvent)
             ;
         }

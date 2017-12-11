@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security;
 
-use Contao\CoreBundle\Event\PostLogoutEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\LogoutHandler;
@@ -103,7 +103,7 @@ class LogoutHandlerTest extends TestCase
     public function testLoggerMessageWithValidUser(): void
     {
         $this->mockEventDispatcher(true);
-        $this->mockLogger('User username has logged out.');
+        $this->mockLogger('User "username" has logged out.');
         $this->mockToken(true);
 
         $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
@@ -131,7 +131,7 @@ class LogoutHandlerTest extends TestCase
         ];
 
         $this->mockEventDispatcher(true);
-        $this->mockLogger('User username has logged out.');
+        $this->mockLogger('User "username" has logged out.');
         $this->mockToken(true);
 
         $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
@@ -240,7 +240,7 @@ class LogoutHandlerTest extends TestCase
             $this->eventDispatcher
                 ->expects($this->once())
                 ->method('dispatch')
-                ->with(PostLogoutEvent::NAME)
+                ->with(ContaoCoreEvents::POST_LOGOUT)
             ;
         }
 

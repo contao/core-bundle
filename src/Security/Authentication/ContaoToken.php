@@ -19,13 +19,11 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\Role;
 
-@trigger_error('Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+@trigger_error('Using the ContaoToken class has been deprecated and will no longer work in Contao 5.0. Use the UsernamePasswordToken class instead.', E_USER_DEPRECATED);
 
 /**
- * Class ContaoToken.
- *
- * @deprecated Deprecated since Contao 4.x, to be removed in Contao 5.0.
- *             Use the UsernamePasswordToken instead.
+ * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0; use
+ *             the UsernamePasswordToken class instead
  */
 class ContaoToken extends AbstractToken
 {
@@ -33,14 +31,10 @@ class ContaoToken extends AbstractToken
      * @param User $user
      *
      * @throws UsernameNotFoundException
-     *
-     * @deprecated Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.
      */
     public function __construct(User $user)
     {
-        @trigger_error('Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-
-        if (true !== $user->authenticate()) {
+        if (!$user->authenticate()) {
             throw new UsernameNotFoundException('Invalid Contao user given.');
         }
 
@@ -52,13 +46,9 @@ class ContaoToken extends AbstractToken
 
     /**
      * {@inheritdoc}
-     *
-     * @deprecated Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.
      */
     public function getCredentials(): string
     {
-        @trigger_error('Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-
         return '';
     }
 
@@ -68,13 +58,9 @@ class ContaoToken extends AbstractToken
      * @param User $user
      *
      * @return Role[]
-     *
-     * @deprecated Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.
      */
     private function getRolesFromUser(User $user): array
     {
-        @trigger_error('Using the ContaoToken has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-
         $roles = [];
 
         if ($user instanceof FrontendUser) {

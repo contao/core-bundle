@@ -16,8 +16,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ImportUserEvent extends Event
 {
-    public const NAME = 'contao.import_user';
-
     /**
      * @var string
      */

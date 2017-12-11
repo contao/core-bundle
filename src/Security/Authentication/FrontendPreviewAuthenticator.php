@@ -22,9 +22,6 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-/**
- * Class for handling the authentication for the Contao frontend preview.
- */
 class FrontendPreviewAuthenticator
 {
     /**
@@ -69,7 +66,7 @@ class FrontendPreviewAuthenticator
     }
 
     /**
-     * Authenticate a frontend user based on the username.
+     * Authenticates a front end user based on the username.
      *
      * @param null $username
      */
@@ -78,37 +75,27 @@ class FrontendPreviewAuthenticator
         $providerKey = 'contao_frontend';
         $request = $this->requestStack->getCurrentRequest();
 
-        // check if a backend user is authenticated
+        // Check if a back end user is authenticated
         if (null === $this->tokenStorage->getToken() || !$this->tokenStorage->getToken()->isAuthenticated()) {
             return;
         }
 
-        if (null === $username) {
-            return;
-        }
-
-        if (!$request->hasSession()) {
+        if (null === $username || !$request->hasSession()) {
             return;
         }
 
         try {
-            /** @var FrontendUser $user */
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
             $this->logger->info(
-                sprintf('FrontendUser with Username %s could not be found. Frontend authentication aborted.', $username),
+                sprintf('Could not find a front end user with the username "%s".', $username),
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
             );
 
             return;
         }
 
-        $token = new UsernamePasswordToken(
-            $user,
-            null,
-            $providerKey,
-            (array) $user->getRoles()
-        );
+        $token = new UsernamePasswordToken($user, null, $providerKey, (array) $user->getRoles());
 
         if (false === $token->isAuthenticated()) {
             if ($request->hasPreviousSession()) {

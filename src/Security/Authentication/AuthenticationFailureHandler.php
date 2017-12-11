@@ -24,9 +24,6 @@ use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureH
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Class with the custom Contao authentication failure handling logic.
- */
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**
@@ -90,11 +87,11 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             return $request->getRequestUri();
         }
 
-        return (string) $request->headers->get('referer', '/', true);
+        return (string) $request->headers->get('referer', '/');
     }
 
     /**
-     * Gets flash type from providerKey.
+     * Returns the flash type depending on the provider key.
      *
      * @param Request $request
      *

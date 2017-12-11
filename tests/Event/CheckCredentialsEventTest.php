@@ -19,11 +19,6 @@ use PHPUnit\Framework\TestCase;
 class CheckCredentialsEventTest extends TestCase
 {
     /**
-     * @var User
-     */
-    protected $user;
-
-    /**
      * @var CheckCredentialsEvent
      */
     protected $event;
@@ -33,70 +28,38 @@ class CheckCredentialsEventTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->user = $this->mockUser();
-        $this->event = new CheckCredentialsEvent('username', 'password', $this->user);
+        $user = $this->createMock(User::class);
+        $this->event = new CheckCredentialsEvent('username', 'password', $user);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Event\CheckCredentialsEvent', $this->event);
-        $this->assertSame('contao.check_credentials', CheckCredentialsEvent::NAME);
     }
 
-    /**
-     * Tests the return of the username.
-     */
-    public function testReturnsUsername(): void
+    public function testReturnsTheUsername(): void
     {
         $this->assertSame('username', $this->event->getUsername());
     }
 
-    /**
-     * Tests the return of the credentials.
-     */
-    public function testReturnsCredentials(): void
+    public function testReturnsTheCredentials(): void
     {
         $this->assertSame('password', $this->event->getCredentials());
     }
 
-    /**
-     * Tests the return of the user object.
-     */
-    public function testReturnsUser(): void
+    public function testReturnsTheUserObject(): void
     {
         $this->assertInstanceOf('Contao\User', $this->event->getUser());
     }
 
-    /**
-     * Tests, if the return value is false when never voted.
-     */
-    public function testReturnFalseWhenNeverVoted(): void
+    public function testReturnsFalseWhenNeverVoted(): void
     {
         $this->assertFalse($this->event->getVote());
     }
 
-    /**
-     * Tests, if the return value is true when at least one vote is positive.
-     */
-    public function testReturnsTrueWithAtLeastOnePositiveVote(): void
+    public function testReturnsTrueIfThereIsAtLeastOnePositiveVote(): void
     {
         $this->event->vote(true);
         $this->assertTrue($this->event->getVote());
-    }
-
-    /**
-     * Mocks the user.
-     *
-     * @return User
-     */
-    private function mockUser(): User
-    {
-        /** @var User $user */
-        $user = $this->createPartialMock('Contao\User', []);
-
-        return $user;
     }
 }

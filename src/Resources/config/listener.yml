@@ -136,7 +136,6 @@ services:
             - "@logger"
         tags:
             - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
-            - { name: monolog.logger, channel: contao }
 
     contao.listener.security.token_lifetime:
         class: Contao\CoreBundle\EventListener\TokenLifetimeListener

@@ -504,7 +504,7 @@ abstract class Frontend extends \Controller
 	 * @return boolean
 	 *
 	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
-	 *             Use getAuthenticationStatus() instead.
+	 *             Use Frontend::getAuthenticationStatus() instead.
 	 */
 	protected function getLoginStatus($strCookie)
 	{

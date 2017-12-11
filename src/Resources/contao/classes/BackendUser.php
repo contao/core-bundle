@@ -77,7 +77,7 @@ class BackendUser extends User
 
 	/**
 	 * Current object instance (do not remove)
-	 * @var object
+	 * @var BackendUser
 	 */
 	protected static $objInstance;
 

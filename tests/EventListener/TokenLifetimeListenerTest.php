@@ -14,7 +14,6 @@ namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\EventListener\TokenLifetimeListener;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
 use Psr\Log\LoggerInterface;
@@ -28,251 +27,190 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class TokenLifetimeListenerTest extends TestCase
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @var ScopeMatcher
-     */
-    protected $scopeMatcher;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var int
-     */
-    protected $tokenLifetime;
-
-    /**
-     * @var TokenInterface
-     */
-    protected $token;
-
-    /**
-     * @var GetResponseEvent
-     */
-    protected $getResponseEvent;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp(): void
-    {
-        $this->tokenLifetime = 3600;
-        $this->mockLogger();
-        $this->getTokenStorageMock();
-        $this->mockGetResponseEvent();
-        $this->scopeMatcher = $this->mockScopeMatcher();
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\TokenLifetimeListener', $listener);
+        $this->assertInstanceOf('Contao\CoreBundle\EventListener\TokenLifetimeListener', $this->mockListener());
     }
 
-    /**
-     * Tests if the listener immediatly returns if its not a master request.
-     */
-    public function testImmediateReturnWhenNotMasterRequest(): void
+    public function testReturnsImmediatelyItNotAMasterRequest(): void
     {
-        $this->mockGetResponseEvent(HttpKernelInterface::SUB_REQUEST);
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
-        $this->tokenStorage
+        $tokenStorage
             ->expects($this->never())
             ->method('getToken')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
+        $listener = $this->mockListener($tokenStorage);
+        $listener->onKernelRequest($this->mockGetResponseEvent(HttpKernelInterface::SUB_REQUEST));
     }
 
-    /**
-     * Tests if the listener immediatly returns if the token is not a UsernamePasswordToken.
-     */
-    public function testImmediateReturnWhenNoUsernamePasswordTokenIsGiven(): void
+    public function testReturnsImmediatelyItNotAUsernamePasswordToken(): void
     {
-        $this->mockGetResponseEvent();
-        $this->getTokenStorageMock(true, TokenInterface::class);
+        $token = $this->createMock(TokenInterface::class);
 
-        $this->token
+        $token
             ->expects($this->never())
             ->method('getUser')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($token)
+        ;
+
+        $listener = $this->mockListener($tokenStorage);
+        $listener->onKernelRequest($this->mockGetResponseEvent());
     }
 
-    /**
-     * Tests if the listener immediatly returns if the user is not a Contao user.
-     */
-    public function testImmediateReturnWhenNoContaoUserIsGiven(): void
+    public function testReturnsImmediatelyItNotAContaoUser(): void
     {
-        $this->mockGetResponseEvent();
-        $this->getTokenStorageMock(true);
+        $token = $this->createMock(UsernamePasswordToken::class);
 
-        $this->token
+        $token
             ->expects($this->never())
             ->method('hasAttribute')
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($token)
+        ;
+
+        $listener = $this->mockListener($tokenStorage);
+        $listener->onKernelRequest($this->mockGetResponseEvent());
     }
 
-    /**
-     * Tests if the listener sets the lifetime if lifetime is not set yet.
-     */
-    public function testIfLifetimeGetsSetWhenNoLifetimeIsSet(): void
+    public function testSetsTheTokenLifetime(): void
     {
-        $this->tokenLifetime = null;
-        $this->mockGetResponseEvent();
-        $this->getTokenStorageMock(true);
+        $token = $this->createMock(UsernamePasswordToken::class);
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, 3600, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
-    }
-
-    /**
-     * Tests if the listener updates the lifetime if lifetime is still valid.
-     */
-    public function testIfLifetimeGetsUpdatedIfLifetimeIsStillValid(): void
-    {
-        $this->mockGetResponseEvent();
-        $this->getTokenStorageMock(true);
-
-        $this->token
+        $token
             ->expects($this->once())
             ->method('getUser')
             ->willReturn($this->mockUser())
         ;
 
-        $this->token
+        $token
+            ->expects($this->once())
+            ->method('hasAttribute')
+            ->with('lifetime')
+            ->willReturn(false)
+        ;
+
+        $token
+            ->expects($this->once())
+            ->method('setAttribute')
+            ->with('lifetime')
+        ;
+
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($token)
+        ;
+
+        $listener = $this->mockListener($tokenStorage);
+        $listener->onKernelRequest($this->mockGetResponseEvent());
+    }
+
+    public function testUpdatesTheTokenLifetime(): void
+    {
+        $token = $this->createMock(UsernamePasswordToken::class);
+
+        $token
+            ->expects($this->once())
+            ->method('getUser')
+            ->willReturn($this->mockUser())
+        ;
+
+        $token
             ->expects($this->once())
             ->method('hasAttribute')
             ->with('lifetime')
             ->willReturn(true)
         ;
 
-        $this->token
+        $token
             ->expects($this->once())
             ->method('getAttribute')
-            ->willReturn(time() + 5000)
+            ->willReturn(time() + 3600)
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($token)
+        ;
+
+        $listener = $this->mockListener($tokenStorage);
+        $listener->onKernelRequest($this->mockGetResponseEvent());
     }
 
-    /**
-     * Tests if the listener revokes the token after inactivity.
-     */
-    public function testIfTokenGetsRevokedAfterInacitivty(): void
+    public function testRevokesTokenAfterInacitivty(): void
     {
-        $this->mockGetResponseEvent();
-        $this->getTokenStorageMock(true);
-        $this->mockLogger('User foobar has been logged out automatically due to inactivity.');
+        $token = $this->createMock(UsernamePasswordToken::class);
 
-        $this->token
+        $token
             ->expects($this->once())
             ->method('getUser')
             ->willReturn($this->mockUser('foobar'))
         ;
 
-        $this->token
+        $token
             ->expects($this->once())
             ->method('hasAttribute')
             ->with('lifetime')
             ->willReturn(true)
         ;
 
-        $this->token
+        $token
             ->expects($this->once())
             ->method('getAttribute')
             ->with('lifetime')
             ->willReturn(0)
         ;
 
-        $this->tokenStorage
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
             ->expects($this->once())
             ->method('setToken')
             ->with(null)
         ;
 
-        $listener = new TokenLifetimeListener($this->tokenStorage, $this->scopeMatcher, $this->tokenLifetime, $this->logger);
-        $listener->onKernelRequest($this->getResponseEvent);
+        $tokenStorage
+            ->expects($this->once())
+            ->method('getToken')
+            ->willReturn($token)
+        ;
+
+        $logger = $this->mockLoggerWithMessage('User foobar has been logged out automatically due to inactivity.');
+
+        $listener = $this->mockListener($tokenStorage, $logger);
+        $listener->onKernelRequest($this->mockGetResponseEvent());
     }
 
     /**
-     * Mocks the logger service with an optional message.
-     *
-     * @param string|null $message
-     */
-    private function mockLogger(string $message = null): void
-    {
-        $this->logger = $this->createMock(LoggerInterface::class);
-
-        if (null !== $message) {
-            $context = [
-                'contao' => new ContaoContext(
-                    'Contao\CoreBundle\EventListener\TokenLifetimeListener::onKernelRequest',
-                    ContaoContext::ACCESS
-                ),
-            ];
-
-            $this->logger
-                ->expects($this->once())
-                ->method('info')
-                ->with($message, $context)
-            ;
-        }
-    }
-
-    /**
-     * Mocks the TokenStorage service with an optional token lifetime.
-     *
-     * @param bool   $withToken
-     * @param string $tokenClass
-     */
-    private function getTokenStorageMock(bool $withToken = false, string $tokenClass = UsernamePasswordToken::class): void
-    {
-        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $this->token = $this->createMock($tokenClass);
-
-        if (true === $withToken) {
-            $this->tokenStorage
-                ->expects($this->once())
-                ->method('getToken')
-                ->willReturn($this->token)
-            ;
-        }
-    }
-
-    /**
-     * Mocks the User.
+     * Mocks a user object with an optional username.
      *
      * @param string|null $username
      *
-     * @return User
+     * @return User|\PHPUnit_Framework_MockObject_MockObject
      */
     private function mockUser(string $username = null): User
     {
-        $user = $this
-            ->getMockBuilder(User::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getUsername'])
-            ->getMock()
-        ;
+        $user = $this->createPartialMock(User::class, ['getUsername']);
 
         if (null !== $username) {
             $user
@@ -286,16 +224,67 @@ class TokenLifetimeListenerTest extends TestCase
     }
 
     /**
-     * Mocks the GetResponseEvent.
+     * Mocks a get response event.
      *
      * @param int $requestType
+     *
+     * @return GetResponseEvent
      */
-    private function mockGetResponseEvent(int $requestType = KernelInterface::MASTER_REQUEST): void
+    private function mockGetResponseEvent(int $requestType = KernelInterface::MASTER_REQUEST): GetResponseEvent
     {
         $kernel = $this->createMock(KernelInterface::class);
+
         $request = new Request();
         $request->attributes->set('_scope', 'backend');
 
-        $this->getResponseEvent = new GetResponseEvent($kernel, $request, $requestType);
+        return new GetResponseEvent($kernel, $request, $requestType);
+    }
+
+    /**
+     * Mocks the token lifetime listener.
+     *
+     * @param TokenStorageInterface|null $tokenStorage
+     * @param LoggerInterface|null       $logger
+     *
+     * @return TokenLifetimeListener
+     */
+    private function mockListener(TokenStorageInterface $tokenStorage = null, LoggerInterface $logger = null): TokenLifetimeListener
+    {
+        if (null === $tokenStorage) {
+            $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        }
+
+        if (null === $logger) {
+            $logger = $this->createMock(LoggerInterface::class);
+        }
+
+        return new TokenLifetimeListener($tokenStorage, $this->mockScopeMatcher(), 3600, $logger);
+    }
+
+    /**
+     * Mocks the logger service with a message.
+     *
+     * @param string $message
+     *
+     * @return LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockLoggerWithMessage(string $message): LoggerInterface
+    {
+        $context = [
+            'contao' => new ContaoContext(
+                'Contao\CoreBundle\EventListener\TokenLifetimeListener::onKernelRequest',
+                ContaoContext::ACCESS
+            ),
+        ];
+
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $logger
+            ->expects($this->once())
+            ->method('info')
+            ->with($message, $context)
+        ;
+
+        return $logger;
     }
 }

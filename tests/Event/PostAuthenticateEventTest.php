@@ -19,11 +19,6 @@ use PHPUnit\Framework\TestCase;
 class PostAuthenticateEventTest extends TestCase
 {
     /**
-     * @var User
-     */
-    protected $user;
-
-    /**
      * @var PostAuthenticateEvent
      */
     protected $event;
@@ -33,37 +28,16 @@ class PostAuthenticateEventTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->user = $this->mockUser();
-        $this->event = new PostAuthenticateEvent($this->user);
+        $this->event = new PostAuthenticateEvent($this->createMock(User::class));
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $this->assertInstanceOf('Contao\CoreBundle\Event\PostAuthenticateEvent', $this->event);
-        $this->assertSame('contao.post_authenticate', PostAuthenticateEvent::NAME);
     }
 
-    /**
-     * Tests the return of the user object.
-     */
-    public function testReturnsUser(): void
+    public function testReturnsTheUserObject(): void
     {
         $this->assertInstanceOf('Contao\User', $this->event->getUser());
-    }
-
-    /**
-     * Mocks the user.
-     *
-     * @return User
-     */
-    private function mockUser(): User
-    {
-        /** @var User $user */
-        $user = $this->createPartialMock('Contao\User', []);
-
-        return $user;
     }
 }

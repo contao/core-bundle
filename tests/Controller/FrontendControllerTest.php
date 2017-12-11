@@ -36,16 +36,4 @@ class FrontendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->cronAction());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $controller->shareAction());
     }
-
-    public function testReturnsVoidInTheActionMethods(): void
-    {
-        $container = $this->mockContainer();
-        $container->set('contao.framework', $this->mockContaoFramework());
-
-        $controller = new FrontendController();
-        $controller->setContainer($container);
-
-        $this->assertNull($controller->loginAction());
-        $this->assertNull($controller->logoutAction());
-    }
 }

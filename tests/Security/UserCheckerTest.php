@@ -184,7 +184,7 @@ class UserCheckerTest extends TestCase
             'bar'
         );
 
-        $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
+        $this->mockLogger('User "foobar" has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.FE.error', 'This account has been locked! You can log in again in 5 minutes.');
         $this->createSessionMock(true);
         $this->mockRequestStack($request);
@@ -241,7 +241,7 @@ class UserCheckerTest extends TestCase
             'foo'
         );
 
-        $this->mockLogger('User foobar has been locked for 5 minutes', 'checkLoginAttempts');
+        $this->mockLogger('User "foobar" has been locked for 5 minutes', 'checkLoginAttempts');
         $this->mockFlashBag('contao.BE.error', 'This account has been locked! You can log in again in 5 minutes.');
         $this->createSessionMock(true);
         $this->mockRequestStack($request);
@@ -324,7 +324,7 @@ class UserCheckerTest extends TestCase
         $this->mockFlashBag('contao.FE.error', 'Login failed (note that usernames and passwords are case-sensitive)!');
         $this->createSessionMock(true);
         $this->mockRequestStack($request);
-        $this->mockLogger('User foobar is not allowed to log in', 'checkIfLoginIsAllowed');
+        $this->mockLogger('User "foobar" is not allowed to log in', 'checkIfLoginIsAllowed');
 
         $user = $this->mockUser(
             FrontendUser::class,
@@ -364,7 +364,7 @@ class UserCheckerTest extends TestCase
         $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
-            sprintf('The account was not active yet (activation date: %s)', $tomorrow->format('Y-m-d')),
+            sprintf('The account is not active yet (activation date: %s)', $tomorrow->format('Y-m-d')),
             'checkIfAccountIsActive'
         );
 
@@ -407,7 +407,7 @@ class UserCheckerTest extends TestCase
         $this->createSessionMock(true);
         $this->mockRequestStack($request);
         $this->mockLogger(
-            sprintf('The account was not active anymore (deactivation date: %s)', $yesterday->format('Y-m-d')),
+            sprintf('The account is not active anymore (deactivation date: %s)', $yesterday->format('Y-m-d')),
             'checkIfAccountIsActive'
         );
 

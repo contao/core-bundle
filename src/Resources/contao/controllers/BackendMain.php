@@ -61,13 +61,10 @@ class BackendMain extends \Backend
 			throw new AccessDeniedException('Access denied');
 		}
 
-		if (!$authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN'))
+		// Password change required
+		if ($this->User->pwChange && !$authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN'))
 		{
-			// Password change required
-			if ($this->User->pwChange)
-			{
-				$this->redirect('contao/password.php');
-			}
+			$this->redirect('contao/password.php');
 		}
 
 		// Front end redirect

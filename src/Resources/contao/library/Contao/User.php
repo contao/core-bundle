@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\ImportUserEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -452,26 +453,26 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public static function loadUserByUsername($username)
 	{
-		/** @var EventDispatcherInterface $eventDispatcher */
-		$eventDispatcher = \System::getContainer()->get('event_dispatcher');
-
-		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-		$password = $request->request->get('password');
-
 		$user = new static();
 
 		// Load the user object
 		if ($user->findBy('username', $username) === false)
 		{
+			/** @var Request $request */
+			$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+			$password = $request->request->get('password');
+
 			// Return if its not a real login attempt
 			if ($password === null && !$request->isMethod(Request::METHOD_POST))
 			{
 				return null;
 			}
 
+			/** @var EventDispatcherInterface $eventDispatcher */
+			$eventDispatcher = \System::getContainer()->get('event_dispatcher');
+
 			/** @var ImportUserEvent $importUserEvent */
-			$importUserEvent = $eventDispatcher->dispatch(ImportUserEvent::NAME, new ImportUserEvent($username, $password, $user->strTable));
+			$importUserEvent = $eventDispatcher->dispatch(ContaoCoreEvents::IMPORT_USER, new ImportUserEvent($username, $password, $user->strTable));
 
 			// Check vote from new ImportUserEvent and trigger legacy hook
 			if ($importUserEvent->getVote() === false && self::triggerImportUserHook($username, $password, $user->strTable) === false)
@@ -483,28 +484,28 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 			{
 				return null;
 			}
+		}
 
-			// Check if a passwords needs rehashing (see contao/core#8820)
-			$blnNeedsRehash = true;
+		// Check if a passwords needs rehashing (see contao/core#8820)
+		$blnNeedsRehash = true;
 
-			// Handle old sha1() passwords with an optional salt
-			if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $user->password))
-			{
-				list($strPassword, $strSalt) = explode(':', $user->password);
-				$blnAuthenticated = ($strPassword === sha1($strSalt . $request->request->get('password')));
-			}
-			else
-			{
-				$blnAuthenticated = password_verify($request->request->get('password'), $user->password);
-				$blnNeedsRehash = password_needs_rehash($user->password, PASSWORD_DEFAULT);
-			}
+		// Handle old sha1() passwords with an optional salt
+		if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $user->password))
+		{
+			list($strPassword, $strSalt) = explode(':', $user->password);
+			$blnAuthenticated = ($strPassword === sha1($strSalt . $request->request->get('password')));
+		}
+		else
+		{
+			$blnAuthenticated = password_verify($request->request->get('password'), $user->password);
+			$blnNeedsRehash = password_needs_rehash($user->password, PASSWORD_DEFAULT);
+		}
 
-			// Re-hash the password if the algorithm has changed
-			if ($blnAuthenticated && $blnNeedsRehash)
-			{
-				$user->password = password_hash($request->request->get('password'), PASSWORD_DEFAULT);
-				$user->save();
-			}
+		// Re-hash the password if the algorithm has changed
+		if ($blnAuthenticated && $blnNeedsRehash)
+		{
+			$user->password = password_hash($request->request->get('password'), PASSWORD_DEFAULT);
+			$user->save();
 		}
 
 		$user->setUserFromDb();
@@ -614,9 +615,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isAccountNonLocked()
 	{
-		$time = time();
-
-		return ($this->locked + \Config::get('lockPeriod')) < $time;
+		return ($this->locked + \Config::get('lockPeriod')) < time();
 	}
 
 

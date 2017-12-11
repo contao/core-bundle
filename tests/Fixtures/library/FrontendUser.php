@@ -27,32 +27,31 @@ class FrontendUser extends \Contao\User implements UserInterface
 
     public static function loadUserByUsername($username)
     {
-
+        // ignore
     }
 
     public function getRoles()
     {
-
+        // ignore
     }
 
     public function getPassword()
     {
-
+        // ignore
     }
-
 
     public function getSalt()
     {
-
+        // ignore
     }
 
     public function getUsername()
     {
-
+        // ignore
     }
 
     public function eraseCredentials()
     {
-
+        // ignore
     }
 }

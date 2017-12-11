@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Patchwork\Utf8;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -46,12 +47,6 @@ class ModuleLogin extends \Module
 	 */
 	public function generate()
 	{
-		/** @var Session $session */
-		$session = \System::getContainer()->get('session');
-
-		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
-
 		if (TL_MODE == 'BE')
 		{
 			/** @var BackendTemplate|object $objTemplate */
@@ -66,9 +61,13 @@ class ModuleLogin extends \Module
 			return $objTemplate->parse();
 		}
 
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
 		// Set the last page visited (see #8632)
 		if ($this->redirectBack && !$request->isMethod(Request::METHOD_POST) && ($strReferer = $this->getReferer()) != \Environment::get('request'))
 		{
+			$session = \System::getContainer()->get('session');
 			$session->set('LAST_PAGE_VISITED', $strReferer);
 		}
 
@@ -81,17 +80,11 @@ class ModuleLogin extends \Module
 	 */
 	protected function compile()
 	{
-		/** @var Session $session */
-		$session = \System::getContainer()->get('session');
-
 		/** @var RouterInterface $router */
 		$router = \System::getContainer()->get('router');
 
 		/** @var TokenInterface $token */
 		$token = \System::getContainer()->get('security.token_storage')->getToken();
-
-		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		// Do not redirect if authentication is successful
 		if ($token !== null && $token->getUser() instanceof FrontendUser && $token->isAuthenticated())
@@ -118,6 +111,7 @@ class ModuleLogin extends \Module
 
 		if (\System::getContainer()->get('session')->isStarted())
 		{
+			/** @var FlashBagInterface $flashBag */
 			$flashBag = \System::getContainer()->get('session')->getFlashBag();
 
 			if ($flashBag->has($this->strFlashType))
@@ -127,8 +121,14 @@ class ModuleLogin extends \Module
 			}
 		}
 
+		/** @var Request $request */
+		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+
 		$this->Template->targetName = '_target_path';
 		$this->Template->targetPath = $request->getRequestUri();
+
+		/** @var Session $session */
+		$session = \System::getContainer()->get('session');
 
 		// Redirect to the last page visited
 		if ($this->redirectBack && $session->get('LAST_PAGE_VISITED'))
@@ -136,7 +136,6 @@ class ModuleLogin extends \Module
 			$this->Template->targetName = '_target_referer';
 			$this->Template->targetPath = $session->get('LAST_PAGE_VISITED');
 		}
-
 		elseif ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) instanceof PageModel)
 		{
 			/** @var PageModel $objTarget */

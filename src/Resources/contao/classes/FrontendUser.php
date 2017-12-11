@@ -180,7 +180,7 @@ class FrontendUser extends User
 	 */
 	public function authenticate()
 	{
-		@trigger_error('Using BackendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
 		return false;
 	}
@@ -196,7 +196,7 @@ class FrontendUser extends User
 	 */
 	public function login()
 	{
-		@trigger_error('Using User::FrontendUser() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+		@trigger_error('Using FrontendUser::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
 		return parent::login();
 	}

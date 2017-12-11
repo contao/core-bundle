@@ -21,9 +21,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Templating\EngineInterface;
 
-/**
- * Class for generating the switch user button.
- */
 class SwitchUserButtonGenerator
 {
     /**
@@ -68,7 +65,7 @@ class SwitchUserButtonGenerator
     }
 
     /**
-     * Generate a switch user button and return it as string.
+     * Generates the switch user button and returns it as string.
      *
      * @param array  $row
      * @param string $href
@@ -89,12 +86,13 @@ class SwitchUserButtonGenerator
         $stmt->execute();
 
         if (0 === $stmt->rowCount()) {
-            throw new UserNotFoundException('Invalid user ID '.$row['id']);
+            throw new UserNotFoundException(sprintf('Invalid user ID %s' , $row['id']));
         }
+
+        $user = $stmt->fetch(\PDO::FETCH_OBJ);
 
         /** @var UserInterface $tokenUser */
         $tokenUser = $this->tokenStorage->getToken()->getUser();
-        $user = $stmt->fetch(\PDO::FETCH_OBJ);
 
         if ($tokenUser->getUsername() === $user->username) {
             return '';

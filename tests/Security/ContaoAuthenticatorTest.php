@@ -27,7 +27,7 @@ class ContaoAuthenticatorTest extends SecurityTestCase
     /**
      * @group legacy
      *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
+     * @expectedDeprecation Using the ContaoAuthenticator class has been deprecated %s.
      */
     public function testCanBeInstantiated(): void
     {
@@ -36,11 +36,6 @@ class ContaoAuthenticatorTest extends SecurityTestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\ContaoAuthenticator', $authenticator);
     }
 
-    /**
-     * @group legacy
-     *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
-     */
     public function testCreatesTheToken(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
@@ -54,7 +49,7 @@ class ContaoAuthenticatorTest extends SecurityTestCase
     /**
      * @group legacy
      *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
+     * @expectedDeprecation Using the ContaoToken class has been deprecated %s.
      */
     public function testAuthenticatesTheToken(): void
     {
@@ -76,11 +71,6 @@ class ContaoAuthenticatorTest extends SecurityTestCase
         $this->assertSame($token, $authenticator->authenticateToken($token, $provider, 'console'));
     }
 
-    /**
-     * @group legacy
-     *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
-     */
     public function testFailsToAuthenticateAnInvalidToken(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
@@ -93,11 +83,6 @@ class ContaoAuthenticatorTest extends SecurityTestCase
         $authenticator->authenticateToken($token, $this->mockUserProvider(), 'console');
     }
 
-    /**
-     * @group legacy
-     *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
-     */
     public function testFailsToAuthenticateATokenIfThereIsNoContainerContainer(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
@@ -108,11 +93,6 @@ class ContaoAuthenticatorTest extends SecurityTestCase
         $authenticator->authenticateToken($token, $this->mockUserProvider(), 'frontend');
     }
 
-    /**
-     * @group legacy
-     *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
-     */
     public function testChecksIfATokenIsSupported(): void
     {
         $authenticator = new ContaoAuthenticator($this->mockScopeMatcher());
@@ -136,7 +116,7 @@ class ContaoAuthenticatorTest extends SecurityTestCase
      *
      * @group legacy
      *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
+     * @expectedDeprecation Using the ContaoAuthenticator class has been deprecated %s.
      */
     private function mockUser(): User
     {
@@ -157,7 +137,7 @@ class ContaoAuthenticatorTest extends SecurityTestCase
      *
      * @group legacy
      *
-     * @expectedDeprecation Using the ContaoAuthenticator has been deprecated %s.
+     * @expectedDeprecation Using the ContaoAuthenticator class has been deprecated %s.
      */
     private function mockUserProvider(): UserProviderInterface
     {

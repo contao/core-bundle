@@ -63,7 +63,7 @@ class InteractiveLoginListener
         $user->save();
 
         $this->logger->info(
-            sprintf('User %s has logged in.', $user->getUsername()),
+            sprintf('User "%s" has logged in.', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 
@@ -72,10 +72,6 @@ class InteractiveLoginListener
 
     /**
      * Triggers the postLogin hook.
-     *
-     * The postLogin hook is triggered after a user has logged in. This can
-     * be either in the back end or the front end. It passes the user object as
-     * argument and does not expect a return value.
      *
      * @param User $user
      */

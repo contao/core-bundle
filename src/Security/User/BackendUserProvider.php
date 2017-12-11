@@ -19,9 +19,6 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-/**
- * Provides a Contao back end user object.
- */
 class BackendUserProvider implements UserProviderInterface
 {
     /**
@@ -29,7 +26,7 @@ class BackendUserProvider implements UserProviderInterface
      */
     private $framework;
 
-    /***
+    /**
      * @param ContaoFrameworkInterface $framework
      */
     public function __construct(ContaoFrameworkInterface $framework)
@@ -39,10 +36,6 @@ class BackendUserProvider implements UserProviderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @param string $username
-     *
-     * @return UserInterface
      */
     public function loadUserByUsername($username): UserInterface
     {
@@ -55,17 +48,11 @@ class BackendUserProvider implements UserProviderInterface
             return $user;
         }
 
-        throw new UsernameNotFoundException(
-            sprintf('Username "%s" does not exist.', $username)
-        );
+        throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @param UserInterface $user
-     *
-     * @return UserInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
@@ -80,10 +67,6 @@ class BackendUserProvider implements UserProviderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @param string $class
-     *
-     * @return bool
      */
     public function supportsClass($class): bool
     {

@@ -33,15 +33,13 @@ class BackendControllerTest extends TestCase
 
     public function testReturnsAResponseInTheActionMethods(): void
     {
-        $container = $this->mockContainer();
-        $container->set('contao.framework', $this->mockContaoFramework());
-
         $requestStack = new RequestStack();
         $requestStack->push(new Request());
 
         $previewAuthenticator = $this->createMock(FrontendPreviewAuthenticator::class);
 
-        /* @var ContainerInterface $container */
+        $container = $this->mockContainer();
+        $container->set('contao.framework', $this->mockContaoFramework());
         $container->set('contao.security.frontend_preview_authenticator', $previewAuthenticator);
         $container->set('request_stack', $requestStack);
 
@@ -59,17 +57,6 @@ class BackendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->popupAction());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->switchAction());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $controller->alertsAction());
-    }
-
-    public function testReturnsVoidInTheActionMethods(): void
-    {
-        $container = $this->mockContainer();
-        $container->set('contao.framework', $this->mockContaoFramework());
-
-        $controller = new BackendController();
-        $controller->setContainer($container);
-
-        $this->assertNull($controller->logoutAction());
     }
 
     public function testReturnsAResponseInThePickerActionMethod(): void
