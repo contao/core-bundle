@@ -75,10 +75,6 @@ class AddAssetsPackagesPass implements CompilerPassInterface
      */
     private function addComponents(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('kernel.packages')) {
-            return;
-        }
-
         $packages = $container->getDefinition('assets.packages');
         $context = new Reference('contao.assets.assets_context');
 
