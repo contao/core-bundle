@@ -53,7 +53,7 @@ class LogoutSuccessHandlerTest extends TestCase
      */
     public function testCanBeInstantiated(): void
     {
-        $handler = new LogoutSuccessHandler($this->router);
+        $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutSuccessHandler', $handler);
     }
@@ -70,7 +70,7 @@ class LogoutSuccessHandlerTest extends TestCase
             ->willReturn('/')
         ;
 
-        $handler = new LogoutSuccessHandler($this->router);
+        $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }
@@ -95,7 +95,7 @@ class LogoutSuccessHandlerTest extends TestCase
             ->willReturn('/')
         ;
 
-        $handler = new LogoutSuccessHandler($this->router);
+        $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }
@@ -121,7 +121,7 @@ class LogoutSuccessHandlerTest extends TestCase
 
         $this->request->setSession($this->session);
 
-        $handler = new LogoutSuccessHandler($this->router);
+        $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }

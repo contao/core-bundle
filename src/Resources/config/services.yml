@@ -423,7 +423,7 @@ services:
         class: Contao\CoreBundle\Security\LogoutSuccessHandler
         arguments:
             - "@router"
-            - "@security.token_storage"
+            - "@contao.routing.scope_matcher"
 
     contao.security.switch_user_button_generator:
         class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
