@@ -762,7 +762,11 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 //				'fieldType'    => 'checkbox',
 //				'sortable'     => true,
             ),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'save_callback' => array
+			(
+				array('tl_content', 'saveArticleAlias'),
+			),
 		),
 		'article' => array
 		(
@@ -1297,6 +1301,25 @@ class tl_content extends Backend
 		}
 
 		return $arrAlias;
+	}
+
+
+	/**
+	 * Saves the article alias
+	 *
+	 * @param mixed         $varValue
+	 * @param DataContainer $dc
+	 *
+	 * @return mixed
+	 */
+	public function saveArticleAlias($varValue, DataContainer $dc)
+	{
+		if ($dc->activeRecord && $dc->activeRecord->pid == $varValue)
+		{
+			throw new \RuntimeException($GLOBALS['TL_LANG']['ERR']['circularPicker']);
+		}
+
+		return $varValue;
 	}
 
 
