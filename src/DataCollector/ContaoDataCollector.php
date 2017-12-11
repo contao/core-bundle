@@ -17,6 +17,7 @@ use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\LayoutModel;
 use Contao\Model\Registry;
 use Contao\PageModel;
+use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -26,26 +27,14 @@ class ContaoDataCollector extends DataCollector implements FrameworkAwareInterfa
     use FrameworkAwareTrait;
 
     /**
-     * @var array
-     */
-    private $packages;
-
-    /**
-     * @param array $packages
-     */
-    public function __construct(array $packages)
-    {
-        $this->packages = $packages;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
-        if (isset($this->packages['contao/core-bundle'])) {
-            $this->data = ['contao_version' => $this->packages['contao/core-bundle']];
-        }
+        $version = Versions::getVersion('contao/core-bundle');
+        $version = substr($version, 0, strpos($version, '@'));
+
+        $this->data = ['contao_version' => $version];
 
         $this->addSummaryData();
 
@@ -61,10 +50,6 @@ class ContaoDataCollector extends DataCollector implements FrameworkAwareInterfa
      */
     public function getContaoVersion(): string
     {
-        if (!isset($this->data['contao_version'])) {
-            return '';
-        }
-
         return $this->data['contao_version'];
     }
 

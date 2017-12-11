@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Command;
 
+use PackageVersions\Versions;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,13 +39,10 @@ class VersionCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $packages = $this->getContainer()->getParameter('kernel.packages');
+        $version = Versions::getVersion('contao/core-bundle');
+        $version = substr($version, 0, strpos($version, '@'));
 
-        if (!isset($packages['contao/core-bundle'])) {
-            return 1;
-        }
-
-        $output->writeln($packages['contao/core-bundle']);
+        $output->writeln($version);
 
         return 0;
     }

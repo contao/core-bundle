@@ -19,6 +19,7 @@ use Contao\CoreBundle\Tests\TestCase;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\System;
+use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,6 +32,10 @@ class ContaoDataCollectorTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\DataCollector\ContaoDataCollector', $collector);
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState false
+     */
     public function testCollectsDataInBackEnd(): void
     {
         $GLOBALS['TL_DEBUG'] = [
@@ -40,7 +45,10 @@ class ContaoDataCollectorTest extends TestCase
             'additional_data' => 'data',
         ];
 
-        $collector = new ContaoDataCollector(['contao/core-bundle' => '4.0.0']);
+        $version = Versions::getVersion('contao/core-bundle');
+        $version = substr($version, 0, strpos($version, '@'));
+
+        $collector = new ContaoDataCollector();
         $collector->collect(new Request(), new Response());
 
         $this->assertSame(['ContentText' => ContentText::class], $collector->getClassesAliased());
@@ -48,7 +56,7 @@ class ContaoDataCollectorTest extends TestCase
 
         $this->assertSame(
             [
-                'version' => '4.0.0',
+                'version' => $version,
                 'framework' => true,
                 'models' => 5,
                 'frontend' => false,
@@ -59,7 +67,7 @@ class ContaoDataCollectorTest extends TestCase
             $collector->getSummary()
         );
 
-        $this->assertSame('4.0.0', $collector->getContaoVersion());
+        $this->assertSame($version, $collector->getContaoVersion());
         $this->assertSame([System::class], $collector->getClassesSet());
         $this->assertSame(['additional_data' => 'data'], $collector->getAdditionalData());
         $this->assertSame('contao', $collector->getName());
@@ -81,13 +89,16 @@ class ContaoDataCollectorTest extends TestCase
 
         $GLOBALS['objPage'] = $this->mockClassWithProperties(PageModel::class, ['id' => 2]);
 
-        $collector = new ContaoDataCollector([]);
+        $version = Versions::getVersion('contao/core-bundle');
+        $version = substr($version, 0, strpos($version, '@'));
+
+        $collector = new ContaoDataCollector();
         $collector->setFramework($framework);
         $collector->collect(new Request(), new Response());
 
         $this->assertSame(
             [
-                'version' => '',
+                'version' => $version,
                 'framework' => false,
                 'models' => 0,
                 'frontend' => true,

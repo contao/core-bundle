@@ -14,6 +14,7 @@ use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Knp\Bundle\TimeBundle\DateTimeFormatter;
+use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -86,10 +87,11 @@ class BackendMain extends \Backend
 	 */
 	public function run()
 	{
-		$packages = System::getContainer()->getParameter('kernel.packages');
+		$version = Versions::getVersion('contao/core-bundle');
+		$version = substr($version, 0, strpos($version, '@'));
 
 		$this->Template = new \BackendTemplate('be_main');
-		$this->Template->version = $GLOBALS['TL_LANG']['MSC']['version'] . ' ' . $packages['contao/core-bundle'];
+		$this->Template->version = $GLOBALS['TL_LANG']['MSC']['version'] . ' ' . $version;
 		$this->Template->main = '';
 
 		// Ajax request

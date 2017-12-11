@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -52,9 +53,10 @@ class BackendCustom extends BackendMain
 	 */
 	public function run()
 	{
-		$packages = $this->getContainer()->getParameter('kernel.packages');
+		$version = Versions::getVersion('contao/core-bundle');
+		$version = substr($version, 0, strpos($version, '@'));
 
-		$this->Template->version = $packages['contao/core-bundle'];
+		$this->Template->version = $version;
 
 		// Ajax request
 		if ($_POST && \Environment::get('isAjaxRequest'))

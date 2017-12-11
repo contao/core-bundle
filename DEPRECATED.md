@@ -115,11 +115,11 @@ deprecated in Contao 4.0 and will no longer work in Contao 5.0.
 ### VERSION and BUILD
 
 The `VERSION` and `BUILD` constants have been deprecated in Contao 4.0 and will
-be removed in Contao 5.0. Use the `kernel.packages` parameter instead.
+be removed in Contao 5.0. Use the `ocramius/package-versions` classes instead.
 
 ```php
-$packages = System::getContainer()->getParameter('kernel.packages');
-$coreVersion = $packages['contao/core-bundle'];
+$coreVersion = \PackageVersions\Versions::getVersion('contao/core-bundle');
+$coreVersion = substr($coreVersion, 0, strpos($coreVersion, '@'));
 ```
 
 
