@@ -101,6 +101,33 @@ class LogoutSuccessHandlerTest extends TestCase
     }
 
     /**
+     * Tests the handler if a backend request is given.
+     */
+    public function testRedirectToBackendLogin(): void
+    {
+        $this->request->attributes->set('_scope', 'backend');
+
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->willReturn(false)
+        ;
+
+        $this->request->setSession($this->session);
+
+        $this->router
+            ->expects($this->once())
+            ->method('generate')
+            ->with('contao_backend_login')
+            ->willReturn('/contao/login')
+        ;
+
+        $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
+    }
+
+    /**
      * Tests the handler if a logout target is given.
      */
     public function testRedirectWithLogoutTarget(): void
