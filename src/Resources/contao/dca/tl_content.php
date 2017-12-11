@@ -1261,9 +1261,13 @@ class tl_content extends Backend
 	 * @param DataContainer $dc
 	 *
 	 * @return array
+	 *
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
 	 */
 	public function getArticleAlias(DataContainer $dc)
 	{
+		@trigger_error('Using tl_content::getArticleAlias() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+
 		$arrPids = array();
 		$arrAlias = array();
 
