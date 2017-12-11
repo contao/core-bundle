@@ -34,7 +34,7 @@ class StringUtilTest extends TestCase
         parent::setUp();
 
         \define('TL_ERROR', 'ERROR');
-        \define('TL_ROOT', $this->getRootDir());
+        \define('TL_ROOT', $this->getFixturesDir());
 
         $container = new ContainerBuilder();
         $container->set('monolog.logger.contao', new NullLogger());
@@ -356,19 +356,19 @@ class StringUtilTest extends TestCase
             ],
             '(<?)' => [
                 'This <? var_dump() ?> is a test.',
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
             '(<%)' => [
                 'This <% var_dump() ?> is a test.',
-                version_compare(PHP_VERSION, '7.0.0', '>=') || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
+                PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 'This <script language="php"> var_dump() </script> is a test.',
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
             '(<script language=\'php\'>)' => [
                 'This <script language=\'php\'> var_dump() </script> is a test.',
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
         ];
     }
@@ -400,30 +400,35 @@ class StringUtilTest extends TestCase
             ],
             '(<?)' => [
                 ['foo' => 'This <? var_dump() ?> is a test.'],
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
             '(<%)' => [
                 ['foo' => 'This <% var_dump() ?> is a test.'],
-                version_compare(PHP_VERSION, '7.0.0', '>=') || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
+                PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 ['foo' => 'This <script language="php"> var_dump() </script> is a test.'],
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
             '(<script language=\'php\'>)' => [
                 ['foo' => 'This <script language=\'php\'> var_dump() </script> is a test.'],
-                version_compare(PHP_VERSION, '7.0.0', '>='),
+                PHP_VERSION_ID >= 70000,
             ],
         ];
     }
 
     public function testDoesNotExecutePhpCodeInCombinedTokens(): void
     {
-        $this->assertSame('This is <?php echo "I am evil";?> evil', StringUtil::parseSimpleTokens('This is ##open####open2####close## evil', [
+        $data = [
             'open' => '<',
             'open2' => '?php echo "I am evil";',
             'close' => '?>',
-        ]));
+        ];
+
+        $this->assertSame(
+            'This is <?php echo "I am evil";?> evil',
+            StringUtil::parseSimpleTokens('This is ##open####open2####close## evil', $data)
+        );
     }
 
     /**
@@ -459,14 +464,14 @@ class StringUtilTest extends TestCase
 
     public function testStripsTheRootDirectory(): void
     {
-        $this->assertSame('', StringUtil::stripRootDir($this->getRootDir().'/'));
-        $this->assertSame('', StringUtil::stripRootDir($this->getRootDir().'\\'));
-        $this->assertSame('foo', StringUtil::stripRootDir($this->getRootDir().'/foo'));
-        $this->assertSame('foo', StringUtil::stripRootDir($this->getRootDir().'\foo'));
-        $this->assertSame('foo/', StringUtil::stripRootDir($this->getRootDir().'/foo/'));
-        $this->assertSame('foo\\', StringUtil::stripRootDir($this->getRootDir().'\foo\\'));
-        $this->assertSame('foo/bar', StringUtil::stripRootDir($this->getRootDir().'/foo/bar'));
-        $this->assertSame('foo\bar', StringUtil::stripRootDir($this->getRootDir().'\foo\bar'));
+        $this->assertSame('', StringUtil::stripRootDir($this->getFixturesDir().'/'));
+        $this->assertSame('', StringUtil::stripRootDir($this->getFixturesDir().'\\'));
+        $this->assertSame('foo', StringUtil::stripRootDir($this->getFixturesDir().'/foo'));
+        $this->assertSame('foo', StringUtil::stripRootDir($this->getFixturesDir().'\foo'));
+        $this->assertSame('foo/', StringUtil::stripRootDir($this->getFixturesDir().'/foo/'));
+        $this->assertSame('foo\\', StringUtil::stripRootDir($this->getFixturesDir().'\foo\\'));
+        $this->assertSame('foo/bar', StringUtil::stripRootDir($this->getFixturesDir().'/foo/bar'));
+        $this->assertSame('foo\bar', StringUtil::stripRootDir($this->getFixturesDir().'\foo\bar'));
     }
 
     public function testFailsIfThePathIsOutsideTheRootDirectory(): void
@@ -480,20 +485,20 @@ class StringUtilTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
 
-        StringUtil::stripRootDir(\dirname($this->getRootDir()).'/');
+        StringUtil::stripRootDir(\dirname($this->getFixturesDir()).'/');
     }
 
     public function testFailsIfThePathDoesNotMatch(): void
     {
         $this->expectException('InvalidArgumentException');
 
-        StringUtil::stripRootDir($this->getRootDir().'foo/');
+        StringUtil::stripRootDir($this->getFixturesDir().'foo/');
     }
 
     public function testFailsIfThePathHasNoTrailingSlash(): void
     {
         $this->expectException('InvalidArgumentException');
 
-        StringUtil::stripRootDir($this->getRootDir());
+        StringUtil::stripRootDir($this->getFixturesDir());
     }
 }

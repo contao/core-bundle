@@ -14,13 +14,12 @@ namespace Contao\CoreBundle\Tests\Config;
 
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\Tests\TestCase;
-use Symfony\Component\Finder\Finder;
 
 class ResourceFinderTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $finder = new ResourceFinder();
+        $finder = new ResourceFinder([]);
 
         $this->assertInstanceOf('Contao\CoreBundle\Config\ResourceFinder', $finder);
     }
@@ -29,24 +28,24 @@ class ResourceFinderTest extends TestCase
     {
         $finder = new ResourceFinder([]);
 
-        $this->assertInstanceOf(Finder::class, $finder->find());
+        $this->assertInstanceOf('Symfony\Component\Finder\Finder', $finder->find());
 
         $finder = new ResourceFinder([
-            $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao',
-            $this->getRootDir().'/system/modules/foobar',
+            $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao',
+            $this->getFixturesDir().'/system/modules/foobar',
         ]);
 
-        $this->assertInstanceOf(Finder::class, $finder->findIn('config'));
+        $this->assertInstanceOf('Symfony\Component\Finder\Finder', $finder->findIn('config'));
     }
 
     public function testFailsIfTheSubpathIsInvalid(): void
     {
         $finder = new ResourceFinder([
-            $this->getRootDir().'/vendor/contao/test-bundle/Resources/contao',
-            $this->getRootDir().'/system/modules/foobar',
+            $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao',
+            $this->getFixturesDir().'/system/modules/foobar',
         ]);
 
         $this->expectException('InvalidArgumentException');
-        $this->assertInstanceOf(Finder::class, $finder->findIn('foo'));
+        $this->assertInstanceOf('Symfony\Component\Finder\Finder', $finder->findIn('foo'));
     }
 }

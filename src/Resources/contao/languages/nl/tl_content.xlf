@@ -303,7 +303,7 @@
       </trans-unit>
       <trans-unit id="tl_content.embed.1">
         <source>Use the wildcard &quot;%s&quot; to embed the link in a phrase (e.g. &lt;em&gt;For more information please visit %s&lt;/em&gt;).</source>
-        <target>Gebruik de wildcard &quot;%s&quot; om de link te inbedden in een zin (b.v. &lt;em&gt;Voor meer informatie kunt u terecht op %s&lt;/ em&gt;).</target>
+        <target>Gebruik de wildcard &quot;%s&quot; om de link te inbedden in een zin (b.v. &lt;em&gt;Voor meer informatie kunt u terecht op %s&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.rel.0">
         <source>Lightbox</source>
@@ -329,14 +329,6 @@
         <source>Please select one or more files or folders from the files directory. If you select a folder, its files will be included automatically.</source>
         <target>Selecteer een of meerdere bestanden of mappen (bestanden in een map worden automatisch geselecteerd).</target>
       </trans-unit>
-      <trans-unit id="tl_content.orderSRC.0">
-        <source>Sort order</source>
-        <target>Sorteer-volgorde</target>
-      </trans-unit>
-      <trans-unit id="tl_content.orderSRC.1">
-        <source>The sort order of the items.</source>
-        <target>Sorteervolgorde van de items</target>
-      </trans-unit>
       <trans-unit id="tl_content.useHomeDir.0">
         <source>Use home directory</source>
         <target>Gebruik home directory</target>
@@ -359,7 +351,7 @@
       </trans-unit>
       <trans-unit id="tl_content.perPage.1">
         <source>The number of items per page. Set to 0 to disable pagination.</source>
-        <target>Geef het aantal resultaten per pagina op.</target>
+        <target>Het aantal items per pagina. Stel in op 0 om paginering uit te schakelen.</target>
       </trans-unit>
       <trans-unit id="tl_content.numberOfItems.0">
         <source>Total number of images</source>
@@ -448,6 +440,24 @@
       <trans-unit id="tl_content.autoplay.1">
         <source>Automatically play the video when the page loads.</source>
         <target>Speelt video automatisch af tijdens laden pagina.</target>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeOptions.0">
+        <source>Player options</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeOptions.1">
+        <source>Here you can select the player options.</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeStart.0">
+        <source>Start at</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeStart.1">
+        <source>Start playing the video at the given number of seconds. Set to 0 to disable.</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeStop.0">
+        <source>Stop at</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtubeStop.1">
+        <source>Stop playing the video at the given number of seconds. Set to 0 to disable.</source>
       </trans-unit>
       <trans-unit id="tl_content.sliderDelay.0">
         <source>Sliding interval</source>
@@ -696,6 +706,27 @@
       <trans-unit id="tl_content.includeTemplates">
         <source>The &lt;em&gt;%s&lt;/em&gt; or &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
         <target>De &lt;em&gt;%s&lt;/em&gt; of &lt;em&gt;%s&lt;/em&gt; template dient te worden opgenomen in de  pagina-lay-out.</target>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_cc_load_policy">
+        <source>Show captions by default</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_fs">
+        <source>Hide the fullscreen button</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_hl">
+        <source>Use the Contao page language</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_iv_load_policy">
+        <source>Hide annotations</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_modestbranding">
+        <source>Hide the YouTube logo</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_rel">
+        <source>Do not show related videos at the end</source>
+      </trans-unit>
+      <trans-unit id="tl_content.youtube_showinfo">
+        <source>Hide the top bar in the preview</source>
       </trans-unit>
       <trans-unit id="tl_content.new.0">
         <source>New element</source>

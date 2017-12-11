@@ -17,7 +17,6 @@ use Contao\CoreBundle\HttpKernel\Bundle\ContaoModuleBundle;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\TestBundle\ContaoTestBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class AddResourcesPathsPassTest extends TestCase
 {
@@ -30,23 +29,21 @@ class AddResourcesPathsPassTest extends TestCase
 
     public function testAddsTheResourcesPaths(): void
     {
-        $pass = new AddResourcesPathsPass();
-
-        $container = new ContainerBuilder();
-        $container->setParameter('kernel.project_dir', $this->getRootDir());
-        $container->setParameter('kernel.root_dir', $this->getRootDir().'/app');
-
-        $container->setParameter('kernel.bundles', [
+        $bundles = [
             'FrameworkBundle' => FrameworkBundle::class,
             'ContaoTestBundle' => ContaoTestBundle::class,
             'foobar' => ContaoModuleBundle::class,
-        ]);
+        ];
 
+        $container = $this->mockContainer($this->getFixturesDir());
+        $container->setParameter('kernel.bundles', $bundles);
+
+        $pass = new AddResourcesPathsPass();
         $pass->process($container);
 
         $this->assertTrue($container->hasParameter('contao.resources_paths'));
 
-        $path = $this->getRootDir().'/vendor/contao/test-bundle';
+        $path = $this->getFixturesDir().'/vendor/contao/test-bundle';
 
         if ('\\' === DIRECTORY_SEPARATOR) {
             $path = strtr($path, '/', '\\');
@@ -55,8 +52,8 @@ class AddResourcesPathsPassTest extends TestCase
         $this->assertSame(
             [
                 $path.'/Resources/contao',
-                $this->getRootDir().'/system/modules/foobar',
-                $this->getRootDir().'/app/Resources/contao',
+                $this->getFixturesDir().'/system/modules/foobar',
+                $this->getFixturesDir().'/app/Resources/contao',
             ],
             $container->getParameter('contao.resources_paths')
         );

@@ -81,18 +81,19 @@ class InsertTags extends \Controller
 		// The first letter must not be a reserved character of Twig, Mustache or similar template engines (see #805)
 		$tags = preg_split('~{{([\pL\pN][^{}]*)}}~u', $strBuffer, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-		if (count($tags) < 2)
+		if (\count($tags) < 2)
 		{
 			return \StringUtil::restoreBasicEntities($strBuffer);
 		}
 
 		$strBuffer = '';
+		$container = \System::getContainer();
 
 		// Create one cache per cache setting (see #7700)
 		static $arrItCache;
 		$arrCache = &$arrItCache[$blnCache];
 
-		for ($_rit=0, $_cnt=count($tags); $_rit<$_cnt; $_rit+=2)
+		for ($_rit=0, $_cnt=\count($tags); $_rit<$_cnt; $_rit+=2)
 		{
 			$strBuffer .= $tags[$_rit];
 			$strTag = $tags[$_rit+1];
@@ -108,7 +109,7 @@ class InsertTags extends \Controller
 			$elements = explode('::', $tag);
 
 			// Load the value from cache
-			if (isset($arrCache[$strTag]) && !in_array('refresh', $flags))
+			if (isset($arrCache[$strTag]) && !\in_array('refresh', $flags))
 			{
 				$strBuffer .= $arrCache[$strTag];
 				continue;
@@ -117,16 +118,16 @@ class InsertTags extends \Controller
 			// Skip certain elements if the output will be cached
 			if ($blnCache)
 			{
-				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || in_array('uncached', $flags))
+				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || \in_array('uncached', $flags))
 				{
 					/** @var FragmentHandler $fragmentHandler */
-					$fragmentHandler = \System::getContainer()->get('fragment.handler');
+					$fragmentHandler = $container->get('fragment.handler');
 
 					$strBuffer .= $fragmentHandler->render(
 						new ControllerReference(
 							'contao.controller.insert_tags:renderAction',
-							['insertTag' => '{{' . $strTag . '}}'],
-							['pageId' => $objPage->id, 'request' => \Environment::get('request')]
+							array('insertTag' => '{{' . $strTag . '}}'),
+							array('pageId' => $objPage->id, 'request' => \Environment::get('request'))
 						),
 						'esi'
 					);
@@ -195,7 +196,7 @@ class InsertTags extends \Controller
 				case 'label':
 					$keys = explode(':', $elements[1]);
 
-					if (count($keys) < 2)
+					if (\count($keys) < 2)
 					{
 						$arrCache[$strTag] = '';
 						break;
@@ -253,7 +254,7 @@ class InsertTags extends \Controller
 
 					\System::loadLanguageFile($file);
 
-					if (count($keys) == 2)
+					if (\count($keys) == 2)
 					{
 						$arrCache[$strTag] = $GLOBALS['TL_LANG'][$keys[0]][$keys[1]];
 					}
@@ -308,17 +309,17 @@ class InsertTags extends \Controller
 						{
 							$arrCache[$strTag] = \Date::parse(\Config::get('datimFormat'), $value);
 						}
-						elseif (is_array($value))
+						elseif (\is_array($value))
 						{
 							$arrCache[$strTag] = implode(', ', $value);
 						}
-						elseif (is_array($opts) && array_is_assoc($opts))
+						elseif (\is_array($opts) && array_is_assoc($opts))
 						{
 							$arrCache[$strTag] = isset($opts[$value]) ? $opts[$value] : $value;
 						}
-						elseif (is_array($rfrc))
+						elseif (\is_array($rfrc))
 						{
-							$arrCache[$strTag] = isset($rfrc[$value]) ? ((is_array($rfrc[$value])) ? $rfrc[$value][0] : $rfrc[$value]) : $value;
+							$arrCache[$strTag] = isset($rfrc[$value]) ? ((\is_array($rfrc[$value])) ? $rfrc[$value][0] : $rfrc[$value]) : $value;
 						}
 						else
 						{
@@ -346,7 +347,7 @@ class InsertTags extends \Controller
 						$strTitle = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
 						// No language files if the page is cached
-						if (!strlen($strTitle))
+						if (!\strlen($strTitle))
 						{
 							$strTitle = 'Go back';
 						}
@@ -409,13 +410,13 @@ class InsertTags extends \Controller
 
 								if ($objNext instanceof PageModel)
 								{
-									$strUrl = in_array('absolute', $flags, true) ? $objNext->getAbsoluteUrl() : $objNext->getFrontendUrl();
+									$strUrl = \in_array('absolute', $flags, true) ? $objNext->getAbsoluteUrl() : $objNext->getFrontendUrl();
 									break;
 								}
 								// DO NOT ADD A break; STATEMENT
 
 							default:
-								$strUrl = in_array('absolute', $flags, true) ? $objNextPage->getAbsoluteUrl() : $objNextPage->getFrontendUrl();
+								$strUrl = \in_array('absolute', $flags, true) ? $objNextPage->getAbsoluteUrl() : $objNextPage->getFrontendUrl();
 								break;
 						}
 
@@ -498,7 +499,7 @@ class InsertTags extends \Controller
 
 					/** @var PageModel $objPid */
 					$params = '/articles/' . ($objArticle->alias ?: $objArticle->id);
-					$strUrl = in_array('absolute', $flags, true) ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params);
+					$strUrl = \in_array('absolute', $flags, true) ? $objPid->getAbsoluteUrl($params) : $objPid->getFrontendUrl($params);
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -534,7 +535,7 @@ class InsertTags extends \Controller
 				// Last update
 				case 'last_update':
 					$strQuery = "SELECT MAX(tstamp) AS tc";
-					$bundles = \System::getContainer()->getParameter('kernel.bundles');
+					$bundles = $container->getParameter('kernel.bundles');
 
 					if (isset($bundles['ContaoNewsBundle']))
 					{
@@ -575,9 +576,9 @@ class InsertTags extends \Controller
 					$strRequest = \Environment::get('request');
 
 					// ESI request
-					if (preg_match('/^' . preg_quote(ltrim(\System::getContainer()->getParameter('fragment.path'), '/'), '/') . '/', $strRequest))
+					if (preg_match('/^' . preg_quote(ltrim($container->getParameter('fragment.path'), '/'), '/') . '/', $strRequest))
 					{
-						$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+						$request = $container->get('request_stack')->getCurrentRequest();
 						$strRequest = $request->query->get('request');
 					}
 
@@ -598,13 +599,32 @@ class InsertTags extends \Controller
 
 				// Conditional tags (if)
 				case 'iflng':
-					if ($elements[1] != '' && $elements[1] != $objPage->language)
+					if ($elements[1] != '')
 					{
-						for (; $_rit<$_cnt; $_rit+=2)
+						$langs = \StringUtil::trimsplit(',', $elements[1]);
+
+						// Check if there are wildcards (see #8313)
+						foreach ($langs as $k=>$v)
 						{
-							if ($tags[$_rit+1] == 'iflng' || $tags[$_rit+1] == 'iflng::' . $objPage->language)
+							if (substr($v, -1) == '*')
 							{
-								break;
+								$langs[$k] = substr($v, 0, -1);
+
+								if (\strlen($objPage->language) > 2 && substr($objPage->language, 0, 2) == $langs[$k])
+								{
+									$langs[] = $objPage->language;
+								}
+							}
+						}
+
+						if (!\in_array($objPage->language, $langs))
+						{
+							for (; $_rit<$_cnt; $_rit+=2)
+							{
+								if ($tags[$_rit+1] == 'iflng' || $tags[$_rit+1] == 'iflng::' . $objPage->language)
+								{
+									break;
+								}
 							}
 						}
 					}
@@ -617,7 +637,21 @@ class InsertTags extends \Controller
 					{
 						$langs = \StringUtil::trimsplit(',', $elements[1]);
 
-						if (in_array($objPage->language, $langs))
+						// Check if there are wildcards (see #8313)
+						foreach ($langs as $k=>$v)
+						{
+							if (substr($v, -1) == '*')
+							{
+								$langs[$k] = substr($v, 0, -1);
+
+								if (\strlen($objPage->language) > 2 && substr($objPage->language, 0, 2) == $langs[$k])
+								{
+									$langs[] = $objPage->language;
+								}
+							}
+						}
+
+						if (\in_array($objPage->language, $langs))
 						{
 							for (; $_rit<$_cnt; $_rit+=2)
 							{
@@ -664,17 +698,17 @@ class InsertTags extends \Controller
 							break;
 
 						case 'files_url':
-							$arrCache[$strTag] = TL_FILES_URL;
+							$arrCache[$strTag] = $container->get('contao.assets.files_context')->getStaticUrl();
 							break;
 
 						case 'assets_url':
 						case 'plugins_url':
 						case 'script_url':
-							$arrCache[$strTag] = TL_ASSETS_URL;
+							$arrCache[$strTag] = $container->get('contao.assets.assets_context')->getStaticUrl();
 							break;
 
 						case 'base_url':
-							$arrCache[$strTag] = \System::getContainer()->get('request_stack')->getCurrentRequest()->getBaseUrl();
+							$arrCache[$strTag] = $container->get('request_stack')->getCurrentRequest()->getBaseUrl();
 							break;
 					}
 					break;
@@ -838,7 +872,7 @@ class InsertTags extends \Controller
 						if (strtolower($elements[0]) == 'image')
 						{
 							$dimensions = '';
-							$src = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFile), array($width, $height, $mode))->getUrl(TL_ROOT);
+							$src = $container->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFile), array($width, $height, $mode))->getUrl(TL_ROOT);
 							$objFile = new \File(rawurldecode($src));
 
 							// Add the image dimensions
@@ -847,18 +881,19 @@ class InsertTags extends \Controller
 								$dimensions = ' width="' . \StringUtil::specialchars($imgSize[0]) . '" height="' . \StringUtil::specialchars($imgSize[1]) . '"';
 							}
 
-							$arrCache[$strTag] = '<img src="' . TL_FILES_URL . $src . '" ' . $dimensions . ' alt="' . \StringUtil::specialchars($alt) . '"' . (($class != '') ? ' class="' . \StringUtil::specialchars($class) . '"' : '') . '>';
+							$arrCache[$strTag] = '<img src="' . \Controller::addFilesUrlTo($src) . '" ' . $dimensions . ' alt="' . \StringUtil::specialchars($alt) . '"' . (($class != '') ? ' class="' . \StringUtil::specialchars($class) . '"' : '') . '>';
 						}
 
 						// Picture
 						else
 						{
-							$picture = \System::getContainer()->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $strFile, $size);
+							$staticUrl = $container->get('contao.assets.files_context')->getStaticUrl();
+							$picture = $container->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $strFile, $size);
 
 							$picture = array
 							(
-								'img' => $picture->getImg(TL_ROOT, TL_FILES_URL),
-								'sources' => $picture->getSources(TL_ROOT, TL_FILES_URL)
+								'img' => $picture->getImg(TL_ROOT, $staticUrl),
+								'sources' => $picture->getSources(TL_ROOT, $staticUrl)
 							);
 
 							$picture['alt'] = $alt;
@@ -880,7 +915,7 @@ class InsertTags extends \Controller
 								$attribute = ' data-lightbox="' . \StringUtil::specialchars(substr($rel, 8)) . '"';
 							}
 
-							$arrCache[$strTag] = '<a href="' . TL_FILES_URL . $strFile . '"' . (($alt != '') ? ' title="' . \StringUtil::specialchars($alt) . '"' : '') . $attribute . '>' . $arrCache[$strTag] . '</a>';
+							$arrCache[$strTag] = '<a href="' . \Controller::addFilesUrlTo($strFile) . '"' . (($alt != '') ? ' title="' . \StringUtil::specialchars($alt) . '"' : '') . $attribute . '>' . $arrCache[$strTag] . '</a>';
 						}
 					}
 					catch (\Exception $e)
@@ -951,7 +986,7 @@ class InsertTags extends \Controller
 
 				// HOOK: pass unknown tags to callback functions
 				default:
-					if (isset($GLOBALS['TL_HOOKS']['replaceInsertTags']) && is_array($GLOBALS['TL_HOOKS']['replaceInsertTags']))
+					if (isset($GLOBALS['TL_HOOKS']['replaceInsertTags']) && \is_array($GLOBALS['TL_HOOKS']['replaceInsertTags']))
 					{
 						foreach ($GLOBALS['TL_HOOKS']['replaceInsertTags'] as $callback)
 						{
@@ -967,7 +1002,7 @@ class InsertTags extends \Controller
 						}
 					}
 
-					\System::getContainer()
+					$container
 						->get('monolog.logger.contao')
 						->log(LogLevel::INFO, 'Unknown insert tag: ' . $strTag)
 					;
@@ -1020,7 +1055,7 @@ class InsertTags extends \Controller
 							break;
 
 						case 'flatten':
-							if (!is_array($arrCache[$strTag]))
+							if (!\is_array($arrCache[$strTag]))
 							{
 								break;
 							}
@@ -1045,7 +1080,7 @@ class InsertTags extends \Controller
 
 						// HOOK: pass unknown flags to callback functions
 						default:
-							if (isset($GLOBALS['TL_HOOKS']['insertTagFlags']) && is_array($GLOBALS['TL_HOOKS']['insertTagFlags']))
+							if (isset($GLOBALS['TL_HOOKS']['insertTagFlags']) && \is_array($GLOBALS['TL_HOOKS']['insertTagFlags']))
 							{
 								foreach ($GLOBALS['TL_HOOKS']['insertTagFlags'] as $callback)
 								{
@@ -1061,7 +1096,7 @@ class InsertTags extends \Controller
 								}
 							}
 
-							\System::getContainer()
+							$container
 								->get('monolog.logger.contao')
 								->log(LogLevel::INFO, 'Unknown insert tag flag: ' . $flag)
 							;

@@ -41,7 +41,6 @@ class FormExplanation extends \Widget
 	 */
 	public function validate()
 	{
-		return;
 	}
 
 
@@ -55,10 +54,10 @@ class FormExplanation extends \Widget
 		$this->text = \StringUtil::toHtml5($this->text);
 
 		// Add the static files URL to images
-		if (TL_FILES_URL != '')
+		if ($staticUrl = \System::getContainer()->get('contao.assets.files_context')->getStaticUrl())
 		{
 			$path = \Config::get('uploadPath') . '/';
-			$this->text = str_replace(' src="' . $path, ' src="' . TL_FILES_URL . $path, $this->text);
+			$this->text = str_replace(' src="' . $path, ' src="' . $staticUrl . $path, $this->text);
 		}
 
 		return \StringUtil::encodeEmail($this->text);

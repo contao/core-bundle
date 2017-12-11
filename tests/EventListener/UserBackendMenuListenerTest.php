@@ -15,7 +15,6 @@ namespace Contao\CoreBundle\Tests\EventListener;
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\MenuEvent;
 use Contao\CoreBundle\EventListener\UserBackendMenuListener;
-use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -95,18 +94,18 @@ class UserBackendMenuListenerTest extends TestCase
         $tree = $event->getTree();
 
         // Test root node
-        $this->assertInstanceOf(ItemInterface::class, $tree);
-        $this->assertSame(2, \count($tree->getChildren()));
+        $this->assertInstanceOf('Knp\Menu\ItemInterface', $tree);
+        $this->assertCount(2, $tree->getChildren());
 
         // Test category node
         $categoryNode = $tree->getChild('category1');
-        $this->assertInstanceOf(ItemInterface::class, $categoryNode);
-        $this->assertSame(2, \count($categoryNode->getChildren()));
+        $this->assertInstanceOf('Knp\Menu\ItemInterface', $categoryNode);
+        $this->assertCount(2, $categoryNode->getChildren());
 
         // Test module node
         $moduleNode = $categoryNode->getChild('node1');
-        $this->assertInstanceOf(ItemInterface::class, $moduleNode);
-        $this->assertSame(0, \count($moduleNode->getChildren()));
+        $this->assertInstanceOf('Knp\Menu\ItemInterface', $moduleNode);
+        $this->assertCount(0, $moduleNode->getChildren());
 
         // Test expanded/collapsed
         $this->assertTrue($tree->getChild('category1')->getDisplayChildren());
@@ -134,6 +133,6 @@ class UserBackendMenuListenerTest extends TestCase
 
         $tree = $event->getTree();
 
-        $this->assertSame(0, \count($tree->getChildren()));
+        $this->assertCount(0, $tree->getChildren());
     }
 }

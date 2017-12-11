@@ -12,15 +12,19 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Picker;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Picker\PagePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
+use Knp\Menu\MenuItem;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class PagePickerProviderTest extends PickerTestCase
+class PagePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var PagePickerProvider
@@ -38,7 +42,17 @@ class PagePickerProviderTest extends PickerTestCase
 
         $menuFactory
             ->method('createItem')
-            ->willReturnArgument(1)
+            ->willReturnCallback(
+                function (string $name, array $data) use ($menuFactory): ItemInterface {
+                    $item = new MenuItem($name, $menuFactory);
+                    $item->setLabel($data['label']);
+                    $item->setLinkAttributes($data['linkAttributes']);
+                    $item->setCurrent($data['current']);
+                    $item->setUri($data['uri']);
+
+                    return $item;
+                }
+            )
         ;
 
         $router = $this->createMock(RouterInterface::class);
@@ -80,15 +94,13 @@ class PagePickerProviderTest extends PickerTestCase
             $picker = $encoded;
         }
 
-        $this->assertSame(
-            [
-                'label' => 'Page picker',
-                'linkAttributes' => ['class' => 'pagePicker'],
-                'current' => true,
-                'uri' => 'contao_backend?do=page&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
-            ],
-            $this->provider->createMenuItem(new PickerConfig('link', [], '', 'pagePicker'))
-        );
+        $item = $this->provider->createMenuItem(new PickerConfig('link', [], '', 'pagePicker'));
+        $uri = 'contao_backend?do=page&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,');
+
+        $this->assertSame('Page picker', $item->getLabel());
+        $this->assertSame(['class' => 'pagePicker'], $item->getLinkAttributes());
+        $this->assertTrue($item->isCurrent());
+        $this->assertSame($uri, $item->getUri());
     }
 
     public function testChecksIfAMenuItemIsCurrent(): void
@@ -106,7 +118,7 @@ class PagePickerProviderTest extends PickerTestCase
 
     public function testChecksIfAContextIsSupported(): void
     {
-        $this->provider->setTokenStorage($this->mockTokenStorage());
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('page'));
         $this->assertTrue($this->provider->supportsContext('link'));
@@ -180,11 +192,13 @@ class PagePickerProviderTest extends PickerTestCase
         $extra = [
             'fieldType' => 'checkbox',
             'rootNodes' => [1, 2, 3],
+            'source' => 'tl_page.2',
         ];
 
         $this->assertSame(
             [
                 'fieldType' => 'checkbox',
+                'preserveRecord' => 'tl_page.2',
                 'rootNodes' => [1, 2, 3],
                 'value' => [5],
             ],

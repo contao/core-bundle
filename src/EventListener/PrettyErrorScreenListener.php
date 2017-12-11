@@ -23,6 +23,7 @@ use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\PageError404;
 use Contao\StringUtil;
 use Psr\Log\LoggerInterface;
@@ -57,6 +58,11 @@ class PrettyErrorScreenListener
     private $tokenStorage;
 
     /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -64,7 +70,7 @@ class PrettyErrorScreenListener
     /**
      * @var array
      */
-    private $mapper = [
+    private static $mapper = [
         ForwardPageNotFoundException::class => 'forward_page_not_found',
         IncompleteInstallationException::class => 'incomplete_installation',
         InsecureInstallationException::class => 'insecure_installation',
@@ -79,14 +85,16 @@ class PrettyErrorScreenListener
      * @param \Twig_Environment        $twig
      * @param ContaoFrameworkInterface $framework
      * @param TokenStorageInterface    $tokenStorage
+     * @param ScopeMatcher             $scopeMatcher
      * @param LoggerInterface|null     $logger
      */
-    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
+    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, LoggerInterface $logger = null)
     {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
         $this->framework = $framework;
         $this->tokenStorage = $tokenStorage;
+        $this->scopeMatcher = $scopeMatcher;
         $this->logger = $logger;
     }
 
@@ -97,7 +105,13 @@ class PrettyErrorScreenListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event): void
     {
-        if (!$event->isMasterRequest() || 'html' !== $event->getRequest()->getRequestFormat()) {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        $request = $event->getRequest();
+
+        if ('html' !== $request->getRequestFormat() || !$this->scopeMatcher->isContaoRequest($request)) {
             return;
         }
 
@@ -229,7 +243,7 @@ class PrettyErrorScreenListener
      */
     private function getTemplateForException(\Exception $exception): ?string
     {
-        foreach ($this->mapper as $class => $template) {
+        foreach (self::$mapper as $class => $template) {
             if ($exception instanceof $class) {
                 return $template;
             }
@@ -274,7 +288,6 @@ class PrettyErrorScreenListener
     {
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
-
         $encoded = StringUtil::encodeEmail($config->get('adminEmail'));
 
         return [
@@ -294,11 +307,33 @@ class PrettyErrorScreenListener
      */
     private function logException(\Exception $exception): void
     {
-        if (null === $this->logger) {
+        if (null === $this->logger || !$this->isLoggable($exception)) {
             return;
         }
 
         $this->logger->critical('An exception occurred.', ['exception' => $exception]);
+    }
+
+    /**
+     * Checks if an extension is loggable.
+     *
+     * @param \Exception $exception
+     *
+     * @return bool
+     */
+    private function isLoggable(\Exception $exception): bool
+    {
+        do {
+            if ($exception instanceof ForwardPageNotFoundException) {
+                return true;
+            }
+
+            if (isset(self::$mapper[\get_class($exception)])) {
+                return false;
+            }
+        } while (null !== ($exception = $exception->getPrevious()));
+
+        return true;
     }
 
     /**

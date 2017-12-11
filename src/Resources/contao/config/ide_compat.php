@@ -11,11 +11,13 @@
 // This file is not used in Contao. Its only purpose is to make PHP IDEs like
 // Eclipse, Zend Studio or PHPStorm realize the class origins, since the dynamic
 // class aliasing we are using is a bit too complex for them to understand.
+
 namespace {
-	define('TL_ROOT', __DIR__ . '/../../../../../');
-	define('TL_ASSETS_URL', 'http://localhost/');
-	define('TL_FILES_URL', 'http://localhost/');
+	\define('TL_ROOT', __DIR__ . '/../../../../../');
+	\define('TL_ASSETS_URL', 'http://localhost/');
+	\define('TL_FILES_URL', 'http://localhost/');
 }
+
 namespace {
 	class Ajax extends \Contao\Ajax {}
 	abstract class Backend extends \Contao\Backend {}
@@ -81,7 +83,8 @@ namespace {
 	class FormCaptcha extends \Contao\FormCaptcha {}
 	class FormCheckBox extends \Contao\FormCheckBox {}
 	class FormExplanation extends \Contao\FormExplanation {}
-	class FormFieldset extends \Contao\FormFieldset {}
+	class FormFieldsetStart extends \Contao\FormFieldsetStart {}
+	class FormFieldsetStop extends \Contao\FormFieldsetStop {}
 	class FormFileUpload extends \Contao\FormFileUpload {}
 	class FormHidden extends \Contao\FormHidden {}
 	class FormHtml extends \Contao\FormHtml {}
@@ -215,16 +218,19 @@ namespace {
 	class TrblField extends \Contao\TrblField {}
 	class Upload extends \Contao\Upload {}
 }
+
 namespace Database {
 	class Installer extends \Contao\Database\Installer {}
 	class Result extends \Contao\Database\Result {}
 	class Statement extends \Contao\Database\Statement {}
 	class Updater extends \Contao\Database\Updater {}
 }
+
 namespace Filter {
 	class SqlFiles extends \Contao\Filter\SqlFiles {}
 	class SyncExclude extends \Contao\Filter\SyncExclude {}
 }
+
 namespace Model {
 	class Collection extends \Contao\Model\Collection {}
 	class QueryBuilder extends \Contao\Model\QueryBuilder {}

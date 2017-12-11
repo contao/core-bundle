@@ -87,13 +87,13 @@ class Picture
 	 * Create a picture instance from the given image path and size
 	 *
 	 * @param string|File   $file The image path or File instance
-	 * @param array|integer $size  The image size as array (width, height, resize mode) or an tl_image_size ID
+	 * @param array|integer $size The image size as array (width, height, resize mode) or an tl_image_size ID
 	 *
 	 * @return static The created picture instance
 	 */
 	public static function create($file, $size=null)
 	{
-		if (is_string($file))
+		if (\is_string($file))
 		{
 			$file = new \File(rawurldecode($file));
 		}
@@ -102,14 +102,14 @@ class Picture
 		$picture = new static($file);
 
 		// tl_image_size ID as resize mode
-		if (is_array($size) && !empty($size[2]) && is_numeric($size[2]))
+		if (\is_array($size) && !empty($size[2]) && is_numeric($size[2]))
 		{
 			$size = (int) $size[2];
 		}
 
 		$imageSize = null;
 
-		if (!is_array($size))
+		if (!\is_array($size))
 		{
 			$imageSize = \ImageSizeModel::findByPk($size);
 
@@ -119,7 +119,7 @@ class Picture
 			}
 		}
 
-		if (is_array($size))
+		if (\is_array($size))
 		{
 			$size = $size + array(0, 0, 'crop');
 
@@ -235,6 +235,7 @@ class Picture
 		);
 
 		$container = \System::getContainer();
+		$staticUrl = $container->get('contao.assets.files_context')->getStaticUrl();
 
 		$picture = $container
 			->get('contao.image.picture_generator')
@@ -249,8 +250,8 @@ class Picture
 
 		return array
 		(
-			'img' => $picture->getImg(TL_ROOT, TL_FILES_URL),
-			'sources' => $picture->getSources(TL_ROOT, TL_FILES_URL),
+			'img' => $picture->getImg(TL_ROOT, $staticUrl),
+			'sources' => $picture->getSources(TL_ROOT, $staticUrl),
 		);
 	}
 

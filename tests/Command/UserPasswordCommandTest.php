@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Command;
 
 use Contao\CoreBundle\Command\UserPasswordCommand;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Tests\TestCase;
-use Contao\Encryption;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -44,12 +42,8 @@ class UserPasswordCommandTest extends TestCase
     {
         parent::setUp();
 
-        $framework = $this->mockContaoFramework([
-            Encryption::class => $this->mockEncryptionAdapter(),
-        ]);
-
         $this->container = new ContainerBuilder();
-        $this->container->set('contao.framework', $framework);
+        $this->container->set('contao.framework', $this->mockContaoFramework());
         $this->container->set('database_connection', $this->createMock(Connection::class));
 
         $this->command = new UserPasswordCommand();
@@ -75,14 +69,12 @@ class UserPasswordCommandTest extends TestCase
 
     public function testTakesAPasswordAsArgument(): void
     {
-        $code = (new CommandTester($this->command))
-            ->execute(
-                [
-                    'username' => 'foobar',
-                    '--password' => '12345678',
-                ]
-            )
-        ;
+        $input = [
+            'username' => 'foobar',
+            '--password' => '12345678',
+        ];
+
+        $code = (new CommandTester($this->command))->execute($input);
 
         $this->assertSame(0, $code);
     }
@@ -130,12 +122,7 @@ class UserPasswordCommandTest extends TestCase
 
     public function testFailsWithoutPasswordIfNotInteractive(): void
     {
-        $code = (new CommandTester($this->command))
-            ->execute(
-                ['username' => 'foobar'],
-                ['interactive' => false]
-            )
-        ;
+        $code = (new CommandTester($this->command))->execute(['username' => 'foobar'], ['interactive' => false]);
 
         $this->assertSame(1, $code);
     }
@@ -144,36 +131,30 @@ class UserPasswordCommandTest extends TestCase
     {
         unset($GLOBALS['TL_CONFIG']['minPasswordLength']);
 
+        $input = [
+            'username' => 'foobar',
+            '--password' => '123456',
+        ];
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The password must be at least 8 characters long.');
 
-        (new CommandTester($this->command))
-            ->execute(
-                [
-                    'username' => 'foobar',
-                    '--password' => '123456',
-                ],
-                ['interactive' => false]
-            )
-        ;
+        (new CommandTester($this->command))->execute($input, ['interactive' => false]);
     }
 
     public function testHandlesACustomMinimumPasswordLength(): void
     {
         $GLOBALS['TL_CONFIG']['minPasswordLength'] = 16;
 
+        $input = [
+            'username' => 'foobar',
+            '--password' => '123456789',
+        ];
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The password must be at least 16 characters long.');
 
-        (new CommandTester($this->command))
-            ->execute(
-                [
-                    'username' => 'foobar',
-                    '--password' => '123456789',
-                ],
-                ['interactive' => false]
-            )
-        ;
+        (new CommandTester($this->command))->execute($input, ['interactive' => false]);
     }
 
     public function testFailsIfTheUsernameIsUnknown(): void
@@ -186,18 +167,15 @@ class UserPasswordCommandTest extends TestCase
             ->willReturn(0)
         ;
 
+        $input = [
+            'username' => 'foobar',
+            '--password' => '12345678',
+        ];
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid username: foobar');
 
-        (new CommandTester($this->command))
-            ->execute(
-                [
-                    'username' => 'foobar',
-                    '--password' => '12345678',
-                ],
-                ['interactive' => false]
-            )
-        ;
+        (new CommandTester($this->command))->execute($input, ['interactive' => false]);
     }
 
     /**
@@ -215,21 +193,25 @@ class UserPasswordCommandTest extends TestCase
             ->method('update')
             ->with(
                 'tl_user',
-                ['password' => 'HA$HED-'.$password.'-HA$HED'],
+                $this->callback(
+                    function ($data) {
+                        $this->assertArrayHasKey('password', $data);
+                        $this->assertSame(PASSWORD_DEFAULT, password_get_info($data['password'])['algo']);
+
+                        return $data;
+                    }
+                ),
                 ['username' => $username]
             )
             ->willReturn(1)
         ;
 
-        (new CommandTester($this->command))
-            ->execute(
-                [
-                    'username' => $username,
-                    '--password' => $password,
-                ],
-                ['interactive' => false]
-            )
-        ;
+        $input = [
+            'username' => $username,
+            '--password' => $password,
+        ];
+
+        (new CommandTester($this->command))->execute($input, ['interactive' => false]);
     }
 
     /**
@@ -247,26 +229,5 @@ class UserPasswordCommandTest extends TestCase
                 'kevinjones',
             ],
         ];
-    }
-
-    /**
-     * Mocks an encryption adapter.
-     *
-     * @return Adapter|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function mockEncryptionAdapter(): Adapter
-    {
-        $adapter = $this->mockAdapter(['hash']);
-
-        $adapter
-            ->method('hash')
-            ->willReturnCallback(
-                function (string $value): ?string {
-                    return 'HA$HED-'.$value.'-HA$HED';
-                }
-            )
-        ;
-
-        return $adapter;
     }
 }

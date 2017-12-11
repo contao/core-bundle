@@ -647,6 +647,48 @@
         <source>Everybody</source>
         <target>Vsi</target>
       </trans-unit>
+      <trans-unit id="DATE.a">
+        <source>am</source>
+      </trans-unit>
+      <trans-unit id="DATE.A">
+        <source>AM</source>
+      </trans-unit>
+      <trans-unit id="DATE.d">
+        <source>DD</source>
+      </trans-unit>
+      <trans-unit id="DATE.j">
+        <source>D</source>
+      </trans-unit>
+      <trans-unit id="DATE.m">
+        <source>MM</source>
+      </trans-unit>
+      <trans-unit id="DATE.n">
+        <source>M</source>
+      </trans-unit>
+      <trans-unit id="DATE.y">
+        <source>YY</source>
+      </trans-unit>
+      <trans-unit id="DATE.Y">
+        <source>YYYY</source>
+      </trans-unit>
+      <trans-unit id="DATE.h">
+        <source>hh</source>
+      </trans-unit>
+      <trans-unit id="DATE.H">
+        <source>hh</source>
+      </trans-unit>
+      <trans-unit id="DATE.g">
+        <source>h</source>
+      </trans-unit>
+      <trans-unit id="DATE.G">
+        <source>h</source>
+      </trans-unit>
+      <trans-unit id="DATE.i">
+        <source>mm</source>
+      </trans-unit>
+      <trans-unit id="DATE.s">
+        <source>ss</source>
+      </trans-unit>
       <trans-unit id="DAYS.0">
         <source>Sunday</source>
         <target>Nedelja</target>
@@ -1690,6 +1732,9 @@ To sporočilo je bilo avtomatično generirarno iz Contao. Ne odgovarjajte na spo
       <trans-unit id="MSC.fileMeta">
         <source>Meta data</source>
       </trans-unit>
+      <trans-unit id="MSC.versioning">
+        <source>Version management</source>
+      </trans-unit>
       <trans-unit id="MSC.version">
         <source>Version</source>
         <target>Različica</target>
@@ -1834,6 +1879,9 @@ To sporočilo je bilo avtomatično generirarno iz Contao. Ne odgovarjajte na spo
       <trans-unit id="MSC.resetTitle">
         <source>Reset the filters</source>
         <target>Resetiraj filtre</target>
+      </trans-unit>
+      <trans-unit id="MSC.searchAndFilter">
+        <source>Search and filter functions</source>
       </trans-unit>
       <trans-unit id="MSC.mandatory">
         <source>Mandatory field</source>
@@ -2273,6 +2321,34 @@ To sporočilo je bilo avtomatično generirarno iz Contao. Ne odgovarjajte na spo
       </trans-unit>
       <trans-unit id="MSC.metaNoLanguages">
         <source>You have to add a root page in the site structure to enter file meta data.</source>
+      </trans-unit>
+      <trans-unit id="MSC.breadcrumbMenu">
+        <source>Breadcrumb menu</source>
+      </trans-unit>
+      <trans-unit id="MSC.mainNavigation">
+        <source>Main navigation</source>
+      </trans-unit>
+      <trans-unit id="MSC.headerNavigation">
+        <source>Header navigation</source>
+      </trans-unit>
+      <trans-unit id="MSC.pagination">
+        <source>Pagination menu</source>
+      </trans-unit>
+      <trans-unit id="MSC.validCharacters.unicodeLowercase">
+        <source>Unicode numbers and lowercase letters</source>
+      </trans-unit>
+      <trans-unit id="MSC.validCharacters.unicode">
+        <source>Unicode numbers and letters</source>
+      </trans-unit>
+      <trans-unit id="MSC.validCharacters.asciiLowercase">
+        <source>ASCII numbers and lowercase letters</source>
+      </trans-unit>
+      <trans-unit id="MSC.validCharacters.ascii">
+        <source>ASCII numbers and letters</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortOrder">
+        <source>Sort order</source>
+        <target>Vrstni red</target>
       </trans-unit>
       <trans-unit id="UNITS.0">
         <source>Byte</source>

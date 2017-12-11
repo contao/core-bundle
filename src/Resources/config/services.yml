@@ -8,13 +8,21 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
-    contao.argument_resolver.model:
-        class: Contao\CoreBundle\ArgumentResolver\ModelResolver
+    contao.assets.assets_context:
+        class: Contao\CoreBundle\Asset\ContaoContext
         arguments:
             - "@contao.framework"
-        tags:
-            # The priority must be higher than the one of the request attribute value resolver (defaults to 100)
-            - { name: controller.argument_value_resolver, priority: 101 }
+            - "@request_stack"
+            - 'staticPlugins'
+            - "%kernel.debug%"
+
+    contao.assets.files_context:
+        class: Contao\CoreBundle\Asset\ContaoContext
+        arguments:
+            - "@contao.framework"
+            - "@request_stack"
+            - 'staticFiles'
+            - "%kernel.debug%"
 
     contao.cache:
         class: Doctrine\Common\Cache\FilesystemCache
@@ -58,6 +66,13 @@ services:
             - "@contao.framework"
         public: true
 
+    contao.controller_resolver:
+        class: Contao\CoreBundle\HttpKernel\ControllerResolver
+        decorates: controller_resolver
+        arguments:
+            - "@contao.controller_resolver.inner"
+            - "@contao.fragment.registry"
+
     contao.cors.website_roots_config_provider:
         class: Contao\CoreBundle\Cors\WebsiteRootsConfigProvider
         arguments:
@@ -78,53 +93,35 @@ services:
             - "@contao.framework"
             - "@doctrine"
 
+    contao.fragment.handler:
+        class: Contao\CoreBundle\Fragment\FragmentHandler
+        decorates: fragment.handler
+        arguments:
+            - ~ # fragment renderer locator
+            - "@contao.fragment.handler.inner"
+            - "@request_stack"
+            - "@contao.fragment.registry"
+            - "@contao.fragment.pre_handlers"
+            - "%kernel.debug%"
+
+    contao.fragment.pre_handlers:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        arguments: [[]]
+        tags: ['container.service_locator']
+
     contao.fragment.registry:
         class: Contao\CoreBundle\Fragment\FragmentRegistry
 
-    contao.fragment.content_element_renderer:
-        alias: contao.fragment.content_element.delegating_renderer
-
-    contao.fragment.content_element.default_renderer:
-        class: Contao\CoreBundle\Fragment\ContentElement\DefaultContentElementRenderer
+    contao.framework:
+        class: Contao\CoreBundle\Framework\ContaoFramework
         arguments:
-            - "@contao.fragment.registry"
-            - "@fragment.handler"
             - "@request_stack"
-        tags:
-            { name: 'contao.fragment.content_element_renderer' }
-
-    contao.fragment.content_element.delegating_renderer:
-        class: Contao\CoreBundle\Fragment\ContentElement\DelegatingContentElementRenderer
-
-    contao.fragment.frontend_module_renderer:
-        alias: contao.fragment.frontend_module.delegating_renderer
-
-    contao.fragment.frontend_module.default_renderer:
-        class: Contao\CoreBundle\Fragment\FrontendModule\DefaultFrontendModuleRenderer
-        arguments:
-            - "@contao.fragment.registry"
-            - "@fragment.handler"
-            - "@request_stack"
-        tags:
-            { name: 'contao.fragment.frontend_module_renderer' }
-
-    contao.fragment.frontend_module.delegating_renderer:
-        class: Contao\CoreBundle\Fragment\FrontendModule\DelegatingFrontendModuleRenderer
-
-    contao.fragment.page_type_renderer:
-        alias: contao.fragment.page_type.delegating_renderer
-
-    contao.fragment.page_type.default_renderer:
-        class: Contao\CoreBundle\Fragment\PageType\DefaultPageTypeRenderer
-        arguments:
-            - "@contao.fragment.registry"
-            - "@fragment.handler"
-            - "@request_stack"
-        tags:
-            { name: 'contao.fragment.page_type_renderer' }
-
-    contao.fragment.page_type.delegating_renderer:
-        class: Contao\CoreBundle\Fragment\PageType\DelegatingPageTypeRenderer
+            - "@router"
+            - "@session"
+            - "@contao.routing.scope_matcher"
+            - "%kernel.project_dir%"
+            - "%contao.error_level%"
+        public: true
 
     contao.image.imagine:
         class: Imagine\Gd\Imagine
@@ -168,6 +165,7 @@ services:
         class: Contao\Image\PictureGenerator
         arguments:
             - "@contao.image.resizer"
+            - "@contao.image.resize_calculator"
 
     contao.image.picture_factory:
         class: Contao\CoreBundle\Image\PictureFactory
@@ -177,17 +175,6 @@ services:
             - "@contao.framework"
             - "%contao.image.bypass_cache%"
             - "%contao.image.imagine_options%"
-        public: true
-
-    contao.framework:
-        class: Contao\CoreBundle\Framework\ContaoFramework
-        arguments:
-            - "@request_stack"
-            - "@router"
-            - "@session"
-            - "@contao.routing.scope_matcher"
-            - "%kernel.project_dir%"
-            - "%contao.error_level%"
         public: true
 
     contao.menu.backend_menu_renderer:
@@ -208,6 +195,15 @@ services:
         class: Knp\Menu\Renderer\ListRenderer
         arguments:
             - "@contao.menu.matcher"
+
+    contao.model_argument_resolver:
+        class: Contao\CoreBundle\HttpKernel\ModelArgumentResolver
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.scope_matcher"
+        tags:
+            # The priority must be higher than the one of the request attribute value resolver (defaults to 100)
+            - { name: controller.argument_value_resolver, priority: 101 }
 
     contao.monolog.handler:
         class: Contao\CoreBundle\Monolog\ContaoTableHandler
@@ -231,7 +227,6 @@ services:
         arguments:
             - "@knp_menu.factory"
             - "@router"
-            - "@request_stack"
 
     contao.picker.page_provider:
         class: Contao\CoreBundle\Picker\PagePickerProvider

@@ -51,10 +51,8 @@ class Translator implements TranslatorInterface
             return $this->translator->trans($id, $parameters, $domain, $locale);
         }
 
-        $domain = substr($domain, 7);
-
         $this->framework->initialize();
-        $this->loadLanguageFile($domain);
+        $this->loadLanguageFile(substr($domain, 7));
 
         $translated = $this->getFromGlobals($id);
 
@@ -128,7 +126,6 @@ class Translator implements TranslatorInterface
     {
         /** @var System $system */
         $system = $this->framework->getAdapter(System::class);
-
         $system->loadLanguageFile($name);
     }
 }

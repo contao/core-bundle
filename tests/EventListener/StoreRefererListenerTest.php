@@ -45,13 +45,6 @@ class StoreRefererListenerTest extends TestCase
      */
     public function testStoresTheReferer(Request $request, ?array $currentReferer, ?array $expectedReferer): void
     {
-        $responseEvent = new FilterResponseEvent(
-            $this->createMock(KernelInterface::class),
-            $request,
-            HttpKernelInterface::MASTER_REQUEST,
-            new Response()
-        );
-
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
 
         $tokenStorage
@@ -64,7 +57,7 @@ class StoreRefererListenerTest extends TestCase
         $session->set('referer', $currentReferer);
 
         $listener = $this->mockListener($session, $tokenStorage);
-        $listener->onKernelResponse($responseEvent);
+        $listener->onKernelResponse($this->mockResponseEvent($request));
 
         $this->assertSame($expectedReferer, $session->get('referer'));
     }
@@ -72,7 +65,7 @@ class StoreRefererListenerTest extends TestCase
     /**
      * @return array
      */
-    public function refererStoredOnKernelResponseProvider()
+    public function refererStoredOnKernelResponseProvider(): array
     {
         $request = new Request();
         $request->attributes->set('_route', 'contao_backend');
@@ -163,12 +156,7 @@ class StoreRefererListenerTest extends TestCase
         ];
     }
 
-    /**
-     * @param AnonymousToken $noUserReturn
-     *
-     * @dataProvider noUserProvider
-     */
-    public function testDoesNotStoreTheRefererIfThereIsNoUser(AnonymousToken $noUserReturn = null): void
+    public function testDoesNotStoreTheRefererIfTheResponseIsNotOk(): void
     {
         $request = new Request();
         $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
@@ -177,9 +165,27 @@ class StoreRefererListenerTest extends TestCase
             $this->createMock(KernelInterface::class),
             $request,
             HttpKernelInterface::MASTER_REQUEST,
-            new Response()
+            new Response('', 404)
         );
 
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+
+        $tokenStorage
+            ->expects($this->never())
+            ->method('getToken')
+        ;
+
+        $listener = $this->mockListener(null, $tokenStorage);
+        $listener->onKernelResponse($responseEvent);
+    }
+
+    /**
+     * @param AnonymousToken $noUserReturn
+     *
+     * @dataProvider noUserProvider
+     */
+    public function testDoesNotStoreTheRefererIfThereIsNoUser(AnonymousToken $noUserReturn = null): void
+    {
         $session = $this->createMock(SessionInterface::class);
 
         $session
@@ -195,8 +201,11 @@ class StoreRefererListenerTest extends TestCase
             ->willReturn($noUserReturn)
         ;
 
+        $request = new Request();
+        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
+
         $listener = $this->mockListener($session, $tokenStorage);
-        $listener->onKernelResponse($responseEvent);
+        $listener->onKernelResponse($this->mockResponseEvent($request));
     }
 
     /**
@@ -212,18 +221,8 @@ class StoreRefererListenerTest extends TestCase
         ];
     }
 
-    public function testDoesNotStoreTheRefererUponSubrequests(): void
+    public function testDoesNotStoreTheRefererIfNotAContaoRequest(): void
     {
-        $request = new Request();
-        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
-
-        $responseEvent = new FilterResponseEvent(
-            $this->createMock(KernelInterface::class),
-            $request,
-            HttpKernelInterface::SUB_REQUEST,
-            new Response()
-        );
-
         $session = $this->createMock(SessionInterface::class);
 
         $session
@@ -232,21 +231,30 @@ class StoreRefererListenerTest extends TestCase
         ;
 
         $listener = $this->mockListener($session);
-        $listener->onKernelResponse($responseEvent);
+        $listener->onKernelResponse($this->mockResponseEvent());
+    }
+
+    public function testDoesNotStoreTheRefererUponSubrequests(): void
+    {
+        $session = $this->createMock(SessionInterface::class);
+
+        $session
+            ->expects($this->never())
+            ->method('set')
+        ;
+
+        $request = new Request();
+        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
+
+        $kernel = $this->createMock(KernelInterface::class);
+        $event = new FilterResponseEvent($kernel, $request, HttpKernelInterface::SUB_REQUEST, new Response());
+
+        $listener = $this->mockListener($session);
+        $listener->onKernelResponse($event);
     }
 
     public function testDoesNotStoreTheRefererIfTheBackEndSessionCannotBeModified(): void
     {
-        $request = new Request();
-        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
-
-        $responseEvent = new FilterResponseEvent(
-            $this->createMock(KernelInterface::class),
-            $request,
-            HttpKernelInterface::MASTER_REQUEST,
-            new Response()
-        );
-
         $session = $this->createMock(SessionInterface::class);
 
         $session
@@ -261,8 +269,11 @@ class StoreRefererListenerTest extends TestCase
             ->willReturn($this->createMock(ContaoToken::class))
         ;
 
+        $request = new Request();
+        $request->attributes->set('_scope', ContaoCoreBundle::SCOPE_BACKEND);
+
         $listener = $this->mockListener($session, $tokenStorage);
-        $listener->onKernelResponse($responseEvent);
+        $listener->onKernelResponse($this->mockResponseEvent($request));
     }
 
     /**
@@ -286,5 +297,23 @@ class StoreRefererListenerTest extends TestCase
         $trustResolver = new AuthenticationTrustResolver(AnonymousToken::class, RememberMeToken::class);
 
         return new StoreRefererListener($session, $tokenStorage, $trustResolver, $this->mockScopeMatcher());
+    }
+
+    /**
+     * Mocks a response event.
+     *
+     * @param Request|null $request
+     *
+     * @return FilterResponseEvent
+     */
+    private function mockResponseEvent(Request $request = null): FilterResponseEvent
+    {
+        $kernel = $this->createMock(KernelInterface::class);
+
+        if (null === $request) {
+            $request = new Request();
+        }
+
+        return new FilterResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new Response());
     }
 }

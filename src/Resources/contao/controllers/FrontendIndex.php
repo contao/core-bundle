@@ -33,8 +33,8 @@ class FrontendIndex extends \Frontend
 		parent::__construct();
 
 		// Check whether a user is logged in
-		define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
-		define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
+		\define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
+		\define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
 	}
 
 
@@ -148,7 +148,7 @@ class FrontendIndex extends \Frontend
 			}
 
 			// Store the page object
-			if (is_object($objNewPage))
+			if (\is_object($objNewPage))
 			{
 				$objPage = $objNewPage;
 			}
@@ -185,6 +185,33 @@ class FrontendIndex extends \Frontend
 			}
 		}
 
+		// Trigger the 404 page if an item is required but not given (see #8361)
+		if ($objPage->requireItem)
+		{
+			$hasItem = false;
+
+			if (\Config::get('useAutoItem'))
+			{
+				$hasItem = isset($_GET['auto_item']);
+			}
+			else
+			{
+				foreach ($GLOBALS['TL_AUTO_ITEM'] as $item)
+				{
+					if (isset($_GET[$item]))
+					{
+						$hasItem = true;
+						break;
+					}
+				}
+			}
+
+			if (!$hasItem)
+			{
+				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
+			}
+		}
+
 		// Load a website root page object (will redirect to the first active regular page)
 		if ($objPage->type == 'root')
 		{
@@ -194,7 +221,7 @@ class FrontendIndex extends \Frontend
 		}
 
 		// Inherit the settings from the parent pages if it has not been done yet
-		if (!is_bool($objPage->protected))
+		if (!\is_bool($objPage->protected))
 		{
 			$objPage->loadDetails();
 		}
@@ -244,7 +271,7 @@ class FrontendIndex extends \Frontend
 		{
 			$arrGroups = $objPage->groups; // required for empty()
 
-			if (!is_array($arrGroups) || empty($arrGroups) || !count(array_intersect($arrGroups, $this->User->groups)))
+			if (!\is_array($arrGroups) || empty($arrGroups) || !\count(array_intersect($arrGroups, $this->User->groups)))
 			{
 				$this->log('Page ID "' . $objPage->id . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')', __METHOD__, TL_ERROR);
 				throw new AccessDeniedException('Access denied: ' . \Environment::get('uri'));

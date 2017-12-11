@@ -34,7 +34,7 @@ class BackendTemplate extends \Template
 		$strBuffer = parent::parse();
 
 		// HOOK: add custom parse filters
-		if (isset($GLOBALS['TL_HOOKS']['parseBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['parseBackendTemplate']))
+		if (isset($GLOBALS['TL_HOOKS']['parseBackendTemplate']) && \is_array($GLOBALS['TL_HOOKS']['parseBackendTemplate']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['parseBackendTemplate'] as $callback)
 			{
@@ -57,15 +57,13 @@ class BackendTemplate extends \Template
 		// User agent class (see #3074 and #6277)
 		$this->ua = \Environment::get('agent')->class;
 
-		if (\Config::get('limitWidth'))
+		if (\Config::get('fullscreen'))
 		{
-			$this->ua .= ' lw';
+			$this->ua .= ' fullscreen';
 		}
 
-		$strWebDir = \System::getContainer()->getParameter('contao.web_dir');
-
 		// Style sheets
-		if (!empty($GLOBALS['TL_CSS']) && is_array($GLOBALS['TL_CSS']))
+		if (!empty($GLOBALS['TL_CSS']) && \is_array($GLOBALS['TL_CSS']))
 		{
 			$strStyleSheets = '';
 			$objCombiner = new \Combiner();
@@ -89,11 +87,11 @@ class BackendTemplate extends \Template
 				$strStyleSheets = \Template::generateStyleTag($objCombiner->getCombinedFile(), 'all') . $strStyleSheets;
 			}
 
-			$this->stylesheets = $strStyleSheets;
+			$this->stylesheets .= $strStyleSheets;
 		}
 
 		// JavaScripts
-		if (!empty($GLOBALS['TL_JAVASCRIPT']) && is_array($GLOBALS['TL_JAVASCRIPT']))
+		if (!empty($GLOBALS['TL_JAVASCRIPT']) && \is_array($GLOBALS['TL_JAVASCRIPT']))
 		{
 			$objCombiner = new \Combiner();
 			$objCombinerAsync = new \Combiner();
@@ -123,11 +121,11 @@ class BackendTemplate extends \Template
 				$strJavaScripts = \Template::generateScriptTag($objCombinerAsync->getCombinedFile(), true) . $strJavaScripts;
 			}
 
-			$this->javascripts = $strJavaScripts;
+			$this->javascripts .= $strJavaScripts;
 		}
 
 		// MooTools scripts (added at the page bottom)
-		if (!empty($GLOBALS['TL_MOOTOOLS']) && is_array($GLOBALS['TL_MOOTOOLS']))
+		if (!empty($GLOBALS['TL_MOOTOOLS']) && \is_array($GLOBALS['TL_MOOTOOLS']))
 		{
 			$strMootools = '';
 
@@ -136,14 +134,14 @@ class BackendTemplate extends \Template
 				$strMootools .= $script;
 			}
 
-			$this->mootools = $strMootools;
+			$this->mootools .= $strMootools;
 		}
 
 		$strBuffer = $this->parse();
 		$strBuffer = static::replaceOldBePaths($strBuffer);
 
 		// HOOK: add custom output filter
-		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
+		if (isset($GLOBALS['TL_HOOKS']['outputBackendTemplate']) && \is_array($GLOBALS['TL_HOOKS']['outputBackendTemplate']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['outputBackendTemplate'] as $callback)
 			{
@@ -165,6 +163,8 @@ class BackendTemplate extends \Template
 	 */
 	protected function getLocaleString()
 	{
+		$container = \System::getContainer();
+
 		return
 			'var Contao={'
 				. 'theme:"' . \Backend::getTheme() . '",'
@@ -175,10 +175,10 @@ class BackendTemplate extends \Template
 					. 'loading:"' . $GLOBALS['TL_LANG']['MSC']['loadingData'] . '",'
 					. 'apply:"' . $GLOBALS['TL_LANG']['MSC']['apply'] . '"'
 				. '},'
-				. 'script_url:"' . TL_ASSETS_URL . '",'
+				. 'script_url:"' . $container->get('contao.assets.assets_context')->getStaticUrl() . '",'
 				. 'path:"' . \Environment::get('path') . '",'
 				. 'request_token:"' . REQUEST_TOKEN . '",'
-				. 'referer_id:"' . \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id') . '"'
+				. 'referer_id:"' . $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id') . '"'
 			. '};';
 	}
 

@@ -14,8 +14,9 @@ namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\Combiner;
 use Contao\Config;
+use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\System;
-use PHPUnit\Framework\TestCase;
+use Contao\TestCase\ContaoTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,13 +27,8 @@ use Symfony\Component\Filesystem\Filesystem;
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class CombinerTest extends TestCase
+class CombinerTest extends ContaoTestCase
 {
-    /**
-     * @var string
-     */
-    private static $rootDir;
-
     /**
      * @var ContainerInterface
      */
@@ -45,26 +41,10 @@ class CombinerTest extends TestCase
     {
         parent::setUpBeforeClass();
 
-        self::$rootDir = sys_get_temp_dir().'/'.uniqid('CombinerTest_');
-
         $fs = new Filesystem();
-        $fs->mkdir(self::$rootDir);
-        $fs->mkdir(self::$rootDir.'/assets');
-        $fs->mkdir(self::$rootDir.'/assets/css');
-        $fs->mkdir(self::$rootDir.'/system');
-        $fs->mkdir(self::$rootDir.'/system/tmp');
-        $fs->mkdir(self::$rootDir.'/web');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
-
-        $fs = new Filesystem();
-        $fs->remove(self::$rootDir);
+        $fs->mkdir(static::getTempDir().'/assets/css');
+        $fs->mkdir(static::getTempDir().'/system/tmp');
+        $fs->mkdir(static::getTempDir().'/web');
     }
 
     /**
@@ -75,11 +55,18 @@ class CombinerTest extends TestCase
         parent::setUp();
 
         \define('TL_ERROR', 'ERROR');
-        \define('TL_ROOT', self::$rootDir);
-        \define('TL_ASSETS_URL', '');
+        \define('TL_ROOT', $this->getTempDir());
+
+        $context = $this->createMock(ContaoContext::class);
+
+        $context
+            ->method('getStaticUrl')
+            ->willReturn('')
+        ;
 
         $this->container = new ContainerBuilder();
-        $this->container->setParameter('contao.web_dir', self::$rootDir.'/web');
+        $this->container->setParameter('contao.web_dir', $this->getTempDir().'/web');
+        $this->container->set('contao.assets.assets_context', $context);
 
         System::setContainer($this->container);
     }
@@ -91,10 +78,10 @@ class CombinerTest extends TestCase
 
     public function testCombinesCssFiles(): void
     {
-        file_put_contents(static::$rootDir.'/file1.css', 'file1 { background: url("foo.bar") }');
-        file_put_contents(static::$rootDir.'/web/file2.css', 'web/file2');
-        file_put_contents(static::$rootDir.'/file3.css', 'file3');
-        file_put_contents(static::$rootDir.'/web/file3.css', 'web/file3');
+        file_put_contents($this->getTempDir().'/file1.css', 'file1 { background: url("foo.bar") }');
+        file_put_contents($this->getTempDir().'/web/file2.css', 'web/file2');
+        file_put_contents($this->getTempDir().'/file3.css', 'file3');
+        file_put_contents($this->getTempDir().'/web/file3.css', 'web/file3');
 
         $combiner = new Combiner();
         $combiner->add('file1.css');
@@ -113,9 +100,9 @@ class CombinerTest extends TestCase
 
         $this->assertRegExp('/^assets\/css\/file1\.css\+file2\.css\+file3\.css-[a-z0-9]+\.css$/', $combinedFile);
 
-        $this->assertSame(
-            "file1 { background: url(\"../../foo.bar\") }\n@media screen{\nweb/file2\n}\n@media screen{\nfile3\n}\n",
-            file_get_contents(static::$rootDir.'/'.$combinedFile)
+        $this->assertStringEqualsFile(
+            $this->getTempDir().'/'.$combinedFile,
+            "file1 { background: url(\"../../foo.bar\") }\n@media screen{\nweb/file2\n}\n@media screen{\nfile3\n}\n"
         );
 
         Config::set('debugMode', true);
@@ -215,9 +202,9 @@ EOF;
 
     public function testCombinesScssFiles(): void
     {
-        file_put_contents(static::$rootDir.'/file1.scss', '$color: red; @import "file1_sub";');
-        file_put_contents(static::$rootDir.'/file1_sub.scss', 'body { color: $color }');
-        file_put_contents(static::$rootDir.'/file2.scss', 'body { color: green }');
+        file_put_contents($this->getTempDir().'/file1.scss', '$color: red; @import "file1_sub";');
+        file_put_contents($this->getTempDir().'/file1_sub.scss', 'body { color: $color }');
+        file_put_contents($this->getTempDir().'/file2.scss', 'body { color: green }');
 
         $combiner = new Combiner();
         $combiner->add('file1.scss');
@@ -231,11 +218,9 @@ EOF;
             $combiner->getFileUrls()
         );
 
-        $combinedFile = $combiner->getCombinedFile();
-
-        $this->assertSame(
-            "body{color:red}\nbody{color:green}\n",
-            file_get_contents(static::$rootDir.'/'.$combinedFile)
+        $this->assertStringEqualsFile(
+            $this->getTempDir().'/'.$combiner->getCombinedFile(),
+            "body{color:red}\nbody{color:green}\n"
         );
 
         Config::set('debugMode', true);
@@ -248,8 +233,8 @@ EOF;
 
     public function testCombinesJsFiles(): void
     {
-        file_put_contents(static::$rootDir.'/file1.js', 'file1();');
-        file_put_contents(static::$rootDir.'/web/file2.js', 'file2();');
+        file_put_contents($this->getTempDir().'/file1.js', 'file1();');
+        file_put_contents($this->getTempDir().'/web/file2.js', 'file2();');
 
         $combiner = new Combiner();
         $combiner->add('file1.js');
@@ -266,7 +251,7 @@ EOF;
         $combinedFile = $combiner->getCombinedFile();
 
         $this->assertRegExp('/^assets\/js\/file1\.js\+file2\.js-[a-z0-9]+\.js$/', $combinedFile);
-        $this->assertSame("file1();\nfile2();\n", file_get_contents(static::$rootDir.'/'.$combinedFile));
+        $this->assertStringEqualsFile($this->getTempDir().'/'.$combinedFile, "file1();\nfile2();\n");
 
         Config::set('debugMode', true);
 

@@ -82,7 +82,7 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importListWizard(DataContainer $dc): Response
+    public function importListWizardAction(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
             function (array $data, array $row): array {
@@ -103,7 +103,7 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importTableWizard(DataContainer $dc): Response
+    public function importTableWizardAction(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
             function (array $data, array $row): array {
@@ -125,7 +125,7 @@ class BackendCsvImportController
      *
      * @return Response
      */
-    public function importOptionWizard(DataContainer $dc): Response
+    public function importOptionWizardAction(DataContainer $dc): Response
     {
         return $this->importFromTemplate(
             function (array $data, array $row): array {
@@ -169,7 +169,8 @@ class BackendCsvImportController
 
         $this->framework->initialize();
 
-        $uploader = new FileUpload();
+        /** @var FileUpload $uploader */
+        $uploader = $this->framework->createInstance(FileUpload::class);
         $template = $this->prepareTemplate($request, $uploader, $allowLinebreak);
 
         if (null !== $submitLabel) {
@@ -180,7 +181,9 @@ class BackendCsvImportController
             try {
                 $data = $this->fetchData($uploader, $request->request->get('separator'), $callback);
             } catch (\RuntimeException $e) {
-                Message::addError($e->getMessage());
+                /** @var Message $message */
+                $message = $this->framework->getAdapter(Message::class);
+                $message->addError($e->getMessage());
 
                 return new RedirectResponse($request->getUri(), 303);
             }

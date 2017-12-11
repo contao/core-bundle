@@ -37,6 +37,16 @@ class WidgetTest extends TestCase
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        \define('TL_MODE', 'FE');
+    }
+
+    /**
      * @param string $key
      * @param string $input
      * @param mixed  $value
@@ -51,9 +61,9 @@ class WidgetTest extends TestCase
         error_reporting($errorReporting & ~E_NOTICE);
 
         $widget = $this->createMock(Widget::class);
+
         $class = new \ReflectionClass(Widget::class);
         $method = $class->getMethod('getPost');
-
         $method->setAccessible(true);
 
         $_POST[$input] = $value;
@@ -134,7 +144,7 @@ class WidgetTest extends TestCase
         $this->assertNull($widget->value);
 
         $widget
-            ->setInputCallback(null)
+            ->setInputCallback()
             ->validate() // getPost() should be called once here
         ;
     }

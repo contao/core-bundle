@@ -52,6 +52,8 @@ class PageLayoutListenerTest extends TestCase
             )
         ;
 
+        $framework = $this->mockContaoFramework([Environment::class => $adapter]);
+
         $request = new Request();
         $request->attributes->set('_scope', 'frontend');
 
@@ -61,11 +63,7 @@ class PageLayoutListenerTest extends TestCase
 
         $event = new HeaderReplayEvent($request, new ResponseHeaderBag());
 
-        $listener = new PageLayoutListener(
-            $this->mockScopeMatcher(),
-            $this->mockContaoFramework([Environment::class => $adapter])
-        );
-
+        $listener = new PageLayoutListener($this->mockScopeMatcher(), $framework);
         $listener->onReplay($event);
 
         $this->assertSame($expectedHeaderValue, $event->getHeaders()->get('Contao-Page-Layout'));
@@ -74,7 +72,7 @@ class PageLayoutListenerTest extends TestCase
     /**
      * @return array
      */
-    public function onReplayProvider()
+    public function onReplayProvider(): array
     {
         return [
             'No cookie -> desktop' => [false, null, 'desktop'],

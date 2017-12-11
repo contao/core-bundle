@@ -16,7 +16,7 @@
     $objCombiner->add('system/themes/'. $this->theme .'/diff.css');
     echo $objCombiner->getCombinedFile();
   ?>">
-  <link rel="stylesheet" href="<?= TL_ASSETS_URL ?>system/themes/<?= $this->theme ?>/conflict.css">
+  <link rel="stylesheet" href="<?= Controller::addAssetsUrlTo('system/themes/'.$this->theme.'/conflict.css') ?>">
   <?= $this->stylesheets ?>
 
   <script><?= $this->getLocaleString() ?></script>
@@ -34,7 +34,7 @@
 <body class="<?= $this->ua ?>">
 
   <div id="container" class="cf">
-    <div id="main">
+    <main id="main">
       <h1><?= $this->h1 ?></h1>
       <p><?= $this->explain1 ?></p>
       <p><?= $this->explain2 ?></p>
@@ -42,7 +42,7 @@
       <div class="submit_container">
         <a href="<?= $this->href ?>" class="tl_submit"><?= $this->button ?></a>
       </div>
-    </div>
+    </main>
   </div>
 
 </body>

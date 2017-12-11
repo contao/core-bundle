@@ -279,23 +279,12 @@ class Date
 			throw new \Exception(sprintf('Invalid date format "%s"', $strFormat));
 		}
 
-		$arrCharacterMapper = array
-		(
-			'a' => 'am',
-			'A' => 'AM',
-			'd' => 'DD',
-			'j' => 'D',
-			'm' => 'MM',
-			'n' => 'M',
-			'y' => 'YY',
-			'Y' => 'YYYY',
-			'h' => 'hh',
-			'H' => 'hh',
-			'g' => 'h',
-			'G' => 'h',
-			'i' => 'mm',
-			's' => 'ss',
-		);
+		$arrCharacterMapper = array();
+
+		foreach ($GLOBALS['TL_LANG']['DATE'] as $k=>$v)
+		{
+			$arrCharacterMapper[$k] = $v;
+		}
 
 		$arrInputFormat = array();
 		$arrCharacters = str_split($strFormat);
@@ -618,7 +607,7 @@ class Date
 		$strReturn = static::resolveCustomModifiers($strDate);
 
 		// HOOK: add custom logic (see #4260)
-		if (isset($GLOBALS['TL_HOOKS']['parseDate']) && is_array($GLOBALS['TL_HOOKS']['parseDate']))
+		if (isset($GLOBALS['TL_HOOKS']['parseDate']) && \is_array($GLOBALS['TL_HOOKS']['parseDate']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['parseDate'] as $callback)
 			{

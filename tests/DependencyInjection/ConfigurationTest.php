@@ -31,7 +31,7 @@ class ConfigurationTest extends TestCase
     {
         parent::setUp();
 
-        $this->configuration = new Configuration(false, $this->getRootDir(), $this->getRootDir().'/app', 'en');
+        $this->configuration = new Configuration(false, $this->getTempDir(), $this->getTempDir().'/app', 'en');
     }
 
     public function testCanBeInstantiated(): void
@@ -43,31 +43,50 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
     }
 
-    public function testResolvesThePaths(): void
+    /**
+     * @param string $unix
+     * @param string $windows
+     *
+     * @dataProvider getPaths
+     */
+    public function testResolvesThePaths(string $unix, string $windows): void
     {
         $params = [
             'contao' => [
-                'web_dir' => $this->getRootDir().'/foo/../web',
+                'web_dir' => $unix,
                 'image' => [
-                    'target_dir' => $this->getRootDir().'/foo/../assets/images',
+                    'target_dir' => $windows,
                 ],
             ],
         ];
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
 
-        $this->assertSame(strtr($this->getRootDir().'/web', '/', DIRECTORY_SEPARATOR), $configuration['web_dir']);
+        $this->assertSame('/tmp/contao', $configuration['web_dir']);
+        $this->assertSame('C:\Temp\contao', $configuration['image']['target_dir']);
+    }
 
-        $this->assertSame(
-            strtr($this->getRootDir().'/assets/images', '/', DIRECTORY_SEPARATOR),
-            $configuration['image']['target_dir']
-        );
+    /**
+     * @return array
+     */
+    public function getPaths(): array
+    {
+        return [
+            ['/tmp/contao', 'C:\Temp\contao'],
+            ['/tmp/foo/../contao', 'C:\Temp\foo\..\contao'],
+            ['/tmp/foo/bar/../../contao', 'C:\Temp\foo\bar\..\..\contao'],
+            ['/tmp/./contao', 'C:\Temp\.\contao'],
+            ['/tmp//contao', 'C:\Temp\\\\contao'],
+            ['/tmp/contao/', 'C:\Temp\contao\\'],
+            ['/tmp/contao/.', 'C:\Temp\contao\.'],
+            ['/tmp/contao/foo/..', 'C:\Temp\contao\foo\..'],
+        ];
     }
 
     /**
      * @param string $uploadPath
      *
-     * @dataProvider invalidUploadPathProvider
+     * @dataProvider getInvalidUploadPaths
      */
     public function testFailsIfTheUploadPathIsInvalid(string $uploadPath): void
     {
@@ -86,7 +105,7 @@ class ConfigurationTest extends TestCase
     /**
      * @return array
      */
-    public function invalidUploadPathProvider(): array
+    public function getInvalidUploadPaths(): array
     {
         return [
             [''],

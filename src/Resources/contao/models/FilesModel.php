@@ -50,7 +50,6 @@ namespace Contao;
  * @method static FilesModel|null findOneByImportantPartHeight($val, array $opt=array())
  * @method static FilesModel|null findOneByMeta($val, array $opt=array())
  *
- * @method static Model\Collection|FilesModel[]|FilesModel|null findByPid($val, array $opt=array())
  * @method static Model\Collection|FilesModel[]|FilesModel|null findByTstamp($val, array $opt=array())
  * @method static Model\Collection|FilesModel[]|FilesModel|null findByType($val, array $opt=array())
  * @method static Model\Collection|FilesModel[]|FilesModel|null findByExtension($val, array $opt=array())
@@ -134,6 +133,28 @@ class FilesModel extends \Model
 
 
 	/**
+	 * Find a file by its parent ID
+	 *
+	 * @param mixed $intPid     The parent ID
+	 * @param array $arrOptions An optional options array
+	 *
+	 * @return Model\Collection|FilesModel[]|FilesModel|null A collection of models or null if there are no files
+	 */
+	public static function findByPid($intPid, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+
+		// Convert UUIDs to binary
+		if (\Validator::isStringUuid($intPid))
+		{
+			$intPid = \StringUtil::uuidToBin($intPid);
+		}
+
+		return static::findBy(array("$t.uuid=UNHEX(?)"), bin2hex($intPid), $arrOptions);
+	}
+
+
+	/**
 	 * Find multiple files by their IDs or UUIDs
 	 *
 	 * @param array $arrIds     An array of IDs or UUIDs
@@ -143,7 +164,7 @@ class FilesModel extends \Model
 	 */
 	public static function findMultipleByIds($arrIds, array $arrOptions=array())
 	{
-		if (!is_array($arrIds) || empty($arrIds))
+		if (!\is_array($arrIds) || empty($arrIds))
 		{
 			return null;
 		}
@@ -175,6 +196,17 @@ class FilesModel extends \Model
 			$strUuid = \StringUtil::uuidToBin($strUuid);
 		}
 
+		// Check the model registry (does not work by default due to UNHEX())
+		if (empty($arrOptions))
+		{
+			$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $strUuid, 'uuid');
+
+			if ($objModel !== null)
+			{
+				return $objModel;
+			}
+		}
+
 		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);
 	}
 
@@ -189,7 +221,7 @@ class FilesModel extends \Model
 	 */
 	public static function findMultipleByUuids($arrUuids, array $arrOptions=array())
 	{
-		if (!is_array($arrUuids) || empty($arrUuids))
+		if (!\is_array($arrUuids) || empty($arrUuids))
 		{
 			return null;
 		}
@@ -226,9 +258,9 @@ class FilesModel extends \Model
 	 */
 	public static function findByPath($path, array $arrOptions=array())
 	{
-		if (strncmp($path, TL_ROOT . '/', strlen(TL_ROOT) + 1) === 0)
+		if (strncmp($path, TL_ROOT . '/', \strlen(TL_ROOT) + 1) === 0)
 		{
-			$path = substr($path, strlen(TL_ROOT) + 1);
+			$path = substr($path, \strlen(TL_ROOT) + 1);
 		}
 
 		return static::findOneBy('path', $path, $arrOptions);
@@ -245,7 +277,7 @@ class FilesModel extends \Model
 	 */
 	public static function findMultipleByPaths($arrPaths, array $arrOptions=array())
 	{
-		if (!is_array($arrPaths) || empty($arrPaths))
+		if (!\is_array($arrPaths) || empty($arrPaths))
 		{
 			return null;
 		}
@@ -257,7 +289,7 @@ class FilesModel extends \Model
 			$arrOptions['order'] = \Database::getInstance()->findInSet("$t.path", $arrPaths);
 		}
 
-		return static::findBy(array("$t.path IN(" . implode(',', array_fill(0, count($arrPaths), '?')) . ")"), $arrPaths, $arrOptions);
+		return static::findBy(array("$t.path IN(" . implode(',', array_fill(0, \count($arrPaths), '?')) . ")"), $arrPaths, $arrOptions);
 	}
 
 
@@ -288,7 +320,7 @@ class FilesModel extends \Model
 	 */
 	public static function findMultipleByUuidsAndExtensions($arrUuids, $arrExtensions, array $arrOptions=array())
 	{
-		if (!is_array($arrUuids) || empty($arrUuids) || !is_array($arrExtensions) || empty($arrExtensions))
+		if (!\is_array($arrUuids) || empty($arrUuids) || !\is_array($arrExtensions) || empty($arrExtensions))
 		{
 			return null;
 		}

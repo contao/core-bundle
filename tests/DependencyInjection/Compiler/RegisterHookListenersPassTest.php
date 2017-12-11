@@ -30,16 +30,14 @@ class RegisterHookListenersPassTest extends TestCase
 
     public function testRegistersTheHookListeners(): void
     {
-        $definition = new Definition('Test\HookListener');
+        $attributes = [
+            'hook' => 'initializeSystem',
+            'method' => 'onInitializeSystem',
+            'priority' => 10,
+        ];
 
-        $definition->addTag(
-            'contao.hook',
-            [
-                'hook' => 'initializeSystem',
-                'method' => 'onInitializeSystem',
-                'priority' => 10,
-            ]
-        );
+        $definition = new Definition('Test\HookListener');
+        $definition->addTag('contao.hook', $attributes);
 
         $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
@@ -59,17 +57,42 @@ class RegisterHookListenersPassTest extends TestCase
         );
     }
 
+    public function testGeneratesMethodNameIfNoneGiven(): void
+    {
+        $attributes = [
+            'hook' => 'generatePage',
+        ];
+
+        $definition = new Definition('Test\HookListener');
+        $definition->addTag('contao.hook', $attributes);
+
+        $container = $this->getContainerBuilder();
+        $container->setDefinition('test.hook_listener', $definition);
+
+        $pass = new RegisterHookListenersPass();
+        $pass->process($container);
+
+        $this->assertSame(
+            [
+                'generatePage' => [
+                    0 => [
+                        ['test.hook_listener', 'onGeneratePage'],
+                    ],
+                ],
+            ],
+            $this->getHookListenersFromDefinition($container)[0]
+        );
+    }
+
     public function testSetsTheDefaultPriorityIfNoPriorityGiven(): void
     {
-        $definition = new Definition('Test\HookListener');
+        $attributes = [
+            'hook' => 'initializeSystem',
+            'method' => 'onInitializeSystem',
+        ];
 
-        $definition->addTag(
-            'contao.hook',
-            [
-                'hook' => 'initializeSystem',
-                'method' => 'onInitializeSystem',
-            ]
-        );
+        $definition = new Definition('Test\HookListener');
+        $definition->addTag('contao.hook', $attributes);
 
         $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);
@@ -210,37 +233,41 @@ class RegisterHookListenersPassTest extends TestCase
         );
     }
 
-    public function testFailsIfTheHookAttributeIsMissing(): void
+    public function testDoesNothingIfThereIsNoFramework(): void
     {
-        $definition = new Definition('Test\HookListener');
+        $container = $this->createMock(ContainerBuilder::class);
 
-        $definition->addTag(
-            'contao.hook',
-            [
-                'method' => 'onInitializeSystemAfter',
-            ]
-        );
+        $container
+            ->method('hasDefinition')
+            ->with('contao.framework')
+            ->willReturn(false)
+        ;
 
-        $container = $this->getContainerBuilder();
-        $container->setDefinition('test.hook_listener', $definition);
+        $container
+            ->expects($this->never())
+            ->method('findTaggedServiceIds')
+        ;
 
         $pass = new RegisterHookListenersPass();
-
-        $this->expectException(InvalidConfigurationException::class);
-
         $pass->process($container);
     }
 
-    public function testFailsIfTheMethodAttributeIsMissing(): void
+    public function testDoesNothingIfThereAreNoHooks(): void
+    {
+        $container = $this->getContainerBuilder();
+
+        $pass = new RegisterHookListenersPass();
+        $pass->process($container);
+
+        $definition = $container->getDefinition('contao.framework');
+
+        $this->assertEmpty($definition->getMethodCalls());
+    }
+
+    public function testFailsIfTheHookAttributeIsMissing(): void
     {
         $definition = new Definition('Test\HookListener');
-
-        $definition->addTag(
-            'contao.hook',
-            [
-                'hook' => 'initializeSystem',
-            ]
-        );
+        $definition->addTag('contao.hook', ['method' => 'onInitializeSystemAfter']);
 
         $container = $this->getContainerBuilder();
         $container->setDefinition('test.hook_listener', $definition);

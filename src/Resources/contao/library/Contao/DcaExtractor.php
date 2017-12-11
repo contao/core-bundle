@@ -304,7 +304,7 @@ class DcaExtractor extends \Controller
 		// Fields
 		foreach ($this->arrFields as $k=>$v)
 		{
-			if (is_array($v))
+			if (\is_array($v))
 			{
 				if (!isset($v['name']))
 				{
@@ -371,6 +371,10 @@ class DcaExtractor extends \Controller
 			elseif ($k == 'charset')
 			{
 				$return['TABLE_OPTIONS'] .= ' DEFAULT CHARSET=' . $v;
+			}
+			elseif ($k == 'collate')
+			{
+				$return['TABLE_OPTIONS'] .= ' COLLATE ' . $v;
 			}
 		}
 
@@ -467,7 +471,7 @@ class DcaExtractor extends \Controller
 
 			$arrTable = static::$arrSql[$this->strTable];
 
-			if (is_array($arrTable['TABLE_OPTIONS']))
+			if (\is_array($arrTable['TABLE_OPTIONS']))
 			{
 				$arrTable['TABLE_OPTIONS'] = $arrTable['TABLE_OPTIONS'][0]; // see #324
 			}
@@ -513,21 +517,28 @@ class DcaExtractor extends \Controller
 			return;
 		}
 
+		$params = \System::getContainer()->get('doctrine.dbal.default_connection')->getParams();
+
 		// Add the default engine and charset if none is given
 		if (empty($sql['engine']))
 		{
-			$sql['engine'] = 'MyISAM';
+			$sql['engine'] = $params['defaultTableOptions']['engine'] ?? 'InnoDB';
 		}
 		if (empty($sql['charset']))
 		{
-			$sql['charset'] = \Config::get('dbCharset');
+			$sql['charset'] = $params['defaultTableOptions']['charset'] ?? 'utf8mb4';
+		}
+		if (empty($sql['collate']))
+		{
+			$sql['collate'] = $params['defaultTableOptions']['collate'] ?? 'utf8mb4_unicode_ci';
 		}
 
 		// Meta
 		$this->arrMeta = array
 		(
-			'engine'  => $sql['engine'],
-			'charset' => $sql['charset']
+			'engine' => $sql['engine'],
+			'charset' => $sql['charset'],
+			'collate' => $sql['collate']
 		);
 
 		// Fields
@@ -557,7 +568,7 @@ class DcaExtractor extends \Controller
 		}
 
 		// Keys
-		if (!empty($sql['keys']) && is_array($sql['keys']))
+		if (!empty($sql['keys']) && \is_array($sql['keys']))
 		{
 			$this->arrKeys = array();
 

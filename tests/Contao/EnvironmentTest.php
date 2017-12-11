@@ -56,7 +56,7 @@ class EnvironmentTest extends TestCase
      */
     public function getRootDir(): string
     {
-        return strtr(parent::getRootDir(), '\\', '/');
+        return strtr(parent::getFixturesDir(), '\\', '/');
     }
 
     public function testHandlesModPhp(): void
@@ -185,7 +185,6 @@ class EnvironmentTest extends TestCase
     private function setSapi(string $sapi): void
     {
         $reflection = new \ReflectionClass(Environment::class);
-
         $property = $reflection->getProperty('strSapi');
         $property->setAccessible(true);
         $property->setValue($sapi);

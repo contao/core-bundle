@@ -14,19 +14,15 @@ namespace Contao\CoreBundle\Tests\Doctrine\Schema;
 
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\Tests\Doctrine\DoctrineTestCase;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Statement;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 class DcaSchemaProviderTest extends DoctrineTestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $provider = new DcaSchemaProvider(
-            $this->mockContaoFramework(),
-            $this->createMock(Registry::class)
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider', $provider);
+        $this->assertInstanceOf('Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider', $this->getProvider());
     }
 
     public function testHasAnEmptySchema(): void
@@ -51,8 +47,8 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $this->assertTrue($table->hasColumn('id'));
         $this->assertSame('integer', $table->getColumn('id')->getType()->getName());
-        $this->assertSame(true, $table->getColumn('id')->getNotnull());
-        $this->assertSame(false, $table->getColumn('id')->getFixed());
+        $this->assertTrue($table->getColumn('id')->getNotnull());
+        $this->assertFalse($table->getColumn('id')->getFixed());
 
         if (null !== ($default = $table->getColumn('id')->getDefault())) {
             $this->assertSame('0', $default);
@@ -60,14 +56,15 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $this->assertTrue($table->hasColumn('pid'));
         $this->assertSame('integer', $table->getColumn('pid')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('pid')->getNotnull());
-        $this->assertSame(false, $table->getColumn('pid')->getFixed());
+        $this->assertFalse($table->getColumn('pid')->getNotnull());
+        $this->assertFalse($table->getColumn('pid')->getFixed());
 
         $this->assertTrue($table->hasColumn('title'));
         $this->assertSame('string', $table->getColumn('title')->getType()->getName());
-        $this->assertSame(true, $table->getColumn('title')->getNotnull());
-        $this->assertSame(false, $table->getColumn('title')->getFixed());
+        $this->assertTrue($table->getColumn('title')->getNotnull());
+        $this->assertFalse($table->getColumn('title')->getFixed());
         $this->assertSame(128, $table->getColumn('title')->getLength());
+        $this->assertSame('utf8mb4_bin', $table->getColumn('title')->getPlatformOption('collation'));
 
         if (null !== ($default = $table->getColumn('title')->getDefault())) {
             $this->assertSame('', $default);
@@ -75,59 +72,59 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $this->assertTrue($table->hasColumn('uppercase'));
         $this->assertSame('string', $table->getColumn('uppercase')->getType()->getName());
-        $this->assertSame(true, $table->getColumn('uppercase')->getNotnull());
-        $this->assertSame(false, $table->getColumn('uppercase')->getFixed());
+        $this->assertTrue($table->getColumn('uppercase')->getNotnull());
+        $this->assertFalse($table->getColumn('uppercase')->getFixed());
         $this->assertSame(64, $table->getColumn('uppercase')->getLength());
         $this->assertSame('Foobar', $table->getColumn('uppercase')->getDefault());
 
         $this->assertTrue($table->hasColumn('teaser'));
         $this->assertSame('text', $table->getColumn('teaser')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('teaser')->getNotnull());
-        $this->assertSame(false, $table->getColumn('teaser')->getFixed());
+        $this->assertFalse($table->getColumn('teaser')->getNotnull());
+        $this->assertFalse($table->getColumn('teaser')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_TINYTEXT, $table->getColumn('teaser')->getLength());
 
         $this->assertTrue($table->hasColumn('description'));
         $this->assertSame('text', $table->getColumn('description')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('description')->getNotnull());
-        $this->assertSame(false, $table->getColumn('description')->getFixed());
+        $this->assertFalse($table->getColumn('description')->getNotnull());
+        $this->assertFalse($table->getColumn('description')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_TEXT, $table->getColumn('description')->getLength());
 
         $this->assertTrue($table->hasColumn('content'));
         $this->assertSame('text', $table->getColumn('content')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('content')->getNotnull());
-        $this->assertSame(false, $table->getColumn('content')->getFixed());
+        $this->assertFalse($table->getColumn('content')->getNotnull());
+        $this->assertFalse($table->getColumn('content')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_MEDIUMTEXT, $table->getColumn('content')->getLength());
 
         $this->assertTrue($table->hasColumn('price'));
         $this->assertSame('decimal', $table->getColumn('price')->getType()->getName());
-        $this->assertSame(true, $table->getColumn('price')->getNotnull());
-        $this->assertSame(false, $table->getColumn('price')->getFixed());
+        $this->assertTrue($table->getColumn('price')->getNotnull());
+        $this->assertFalse($table->getColumn('price')->getFixed());
         $this->assertSame(6, $table->getColumn('price')->getPrecision());
         $this->assertSame(2, $table->getColumn('price')->getScale());
         $this->assertSame('0.00', $table->getColumn('price')->getDefault());
 
         $this->assertTrue($table->hasColumn('thumb'));
         $this->assertSame('blob', $table->getColumn('thumb')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('thumb')->getNotnull());
-        $this->assertSame(false, $table->getColumn('thumb')->getFixed());
+        $this->assertFalse($table->getColumn('thumb')->getNotnull());
+        $this->assertFalse($table->getColumn('thumb')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_TINYBLOB, $table->getColumn('thumb')->getLength());
 
         $this->assertTrue($table->hasColumn('image'));
         $this->assertSame('blob', $table->getColumn('image')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('image')->getNotnull());
-        $this->assertSame(false, $table->getColumn('image')->getFixed());
+        $this->assertFalse($table->getColumn('image')->getNotnull());
+        $this->assertFalse($table->getColumn('image')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_BLOB, $table->getColumn('image')->getLength());
 
         $this->assertTrue($table->hasColumn('attachment'));
         $this->assertSame('blob', $table->getColumn('attachment')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('attachment')->getNotnull());
-        $this->assertSame(false, $table->getColumn('attachment')->getFixed());
+        $this->assertFalse($table->getColumn('attachment')->getNotnull());
+        $this->assertFalse($table->getColumn('attachment')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_MEDIUMBLOB, $table->getColumn('attachment')->getLength());
 
         $this->assertTrue($table->hasColumn('published'));
         $this->assertSame('string', $table->getColumn('published')->getType()->getName());
-        $this->assertSame(true, $table->getColumn('published')->getNotnull());
-        $this->assertSame(true, $table->getColumn('published')->getFixed());
+        $this->assertTrue($table->getColumn('published')->getNotnull());
+        $this->assertTrue($table->getColumn('published')->getFixed());
 
         if (null !== ($default = $table->getColumn('published')->getDefault())) {
             $this->assertSame('', $default);
@@ -147,7 +144,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
                         'TABLE_FIELDS' => [
                             'id' => "`id` int(10) NOT NULL default '0'",
                             'pid' => '`pid` int(10) NULL',
-                            'title' => "`title` varchar(128) NOT NULL default ''",
+                            'title' => "`title` varchar(128) COLLATE utf8mb4_bin NOT NULL default ''",
                             'uppercase' => "`uppercase` varchar(64) NOT NULL DEFAULT 'Foobar'",
                             'teaser' => '`teaser` tinytext NULL',
                             'description' => '`description` text NULL',
@@ -169,7 +166,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
                         'SCHEMA_FIELDS' => [
                             ['name' => 'id', 'type' => 'integer'],
                             ['name' => 'pid', 'type' => 'integer', 'notnull' => false],
-                            ['name' => 'title', 'type' => 'string', 'length' => 128],
+                            ['name' => 'title', 'type' => 'string', 'length' => 128, 'platformOptions' => ['collation' => 'utf8mb4_bin']],
                             ['name' => 'uppercase', 'type' => 'string', 'length' => 64, 'default' => 'Foobar'],
                             ['name' => 'teaser', 'type' => 'text', 'notnull' => false, 'length' => MySqlPlatform::LENGTH_LIMIT_TINYTEXT],
                             ['name' => 'description', 'type' => 'text', 'notnull' => false, 'length' => MySqlPlatform::LENGTH_LIMIT_TEXT],
@@ -192,7 +189,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
                         'TABLE_FIELDS' => [
                             'id' => "`id` int(10) NOT NULL default '0'",
                             'pid' => '`pid` int(10) NULL',
-                            'title' => "`title` varchar(128) NOT NULL default ''",
+                            'title' => "`title` varchar(128) COLLATE utf8mb4_bin NOT NULL default ''",
                             'uppercase' => "`uppercase` varchar(64) NOT NULL DEFAULT 'Foobar'",
                             'teaser' => '`teaser` tinytext NULL',
                             'description' => '`description` text NULL',
@@ -211,32 +208,68 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
     public function testReadsTheTableOptions(): void
     {
-        $provider = $this->getProvider(['tl_member' => ['TABLE_OPTIONS' => 'ENGINE=MyISAM DEFAULT CHARSET=utf8']]);
+        $options = 'ENGINE=InnoDB ROW_FORMAT=DYNAMIC';
+
+        $provider = $this->getProvider(
+            [
+                'tl_member' => [
+                    'TABLE_OPTIONS' => $options.' DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci',
+                ],
+            ]
+        );
+
         $schema = $provider->createSchema();
 
         $this->assertCount(1, $schema->getTableNames());
         $this->assertTrue($schema->hasTable('tl_member'));
 
-        $this->assertSame('MyISAM', $schema->getTable('tl_member')->getOption('engine'));
-        $this->assertSame('utf8', $schema->getTable('tl_member')->getOption('charset'));
+        $table = $schema->getTable('tl_member');
 
-        $provider = $this->getProvider([], ['tl_member' => ['TABLE_OPTIONS' => 'ENGINE=MyISAM DEFAULT CHARSET=utf8']]);
+        $this->assertSame('InnoDB', $table->getOption('engine'));
+        $this->assertSame('utf8', $table->getOption('charset'));
+        $this->assertSame('utf8_unicode_ci', $table->getOption('collate'));
+        $this->assertSame('DYNAMIC', $table->getOption('row_format'));
+
+        $provider = $this->getProvider(
+            [],
+            [
+                'tl_member' => [
+                    'TABLE_OPTIONS' => $options.' DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci',
+                ],
+            ]
+        );
+
         $schema = $provider->createSchema();
 
         $this->assertCount(1, $schema->getTableNames());
         $this->assertTrue($schema->hasTable('tl_member'));
 
-        $this->assertSame('MyISAM', $schema->getTable('tl_member')->getOption('engine'));
-        $this->assertSame('utf8', $schema->getTable('tl_member')->getOption('charset'));
+        $table = $schema->getTable('tl_member');
 
-        $provider = $this->getProvider(['tl_member' => ['TABLE_OPTIONS' => 'ENGINE=InnoDB DEFAULT CHARSET=Latin1']]);
+        $this->assertSame('InnoDB', $table->getOption('engine'));
+        $this->assertSame('utf8mb4', $table->getOption('charset'));
+        $this->assertSame('utf8mb4_unicode_ci', $table->getOption('collate'));
+        $this->assertSame('DYNAMIC', $table->getOption('row_format'));
+
+        $provider = $this->getProvider(
+            [
+                'tl_member' => [
+                    'TABLE_OPTIONS' => 'ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE latin1_general_ci',
+                ],
+            ]
+        );
+
         $schema = $provider->createSchema();
 
         $this->assertCount(1, $schema->getTableNames());
         $this->assertTrue($schema->hasTable('tl_member'));
 
-        $this->assertSame('InnoDB', $schema->getTable('tl_member')->getOption('engine'));
-        $this->assertSame('Latin1', $schema->getTable('tl_member')->getOption('charset'));
+        $table = $schema->getTable('tl_member');
+
+        $this->assertSame('MyISAM', $table->getOption('engine'));
+        $this->assertSame('latin1', $table->getOption('charset'));
+        $this->assertSame('latin1_general_ci', $table->getOption('collate'));
+        $this->assertFalse($table->hasOption('row_format'));
     }
 
     public function testCreatesTheTableDefinitions(): void
@@ -285,8 +318,22 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->assertSame(['firstname', 'lastname'], $table->getIndex('name')->getColumns());
     }
 
-    public function testHandlesIndexesWithKeyLength(): void
+    /**
+     * @param int   $actual
+     * @param int   $expected
+     * @param array $calls
+     *
+     * @dataProvider getIndexes
+     */
+    public function testHandlesIndexesWithKeyLength(int $actual, int $expected, array $calls): void
     {
+        $statement = $this->createMock(Statement::class);
+
+        $statement
+            ->method('fetch')
+            ->willReturnOnConsecutiveCalls(...$calls)
+        ;
+
         $provider = $this->getProvider(
             [
                 'tl_files' => [
@@ -294,10 +341,12 @@ class DcaSchemaProviderTest extends DoctrineTestCase
                         'path' => "`path` varchar(1022) NOT NULL default ''",
                     ],
                     'TABLE_CREATE_DEFINITIONS' => [
-                        'path' => 'KEY `path` (`path`(333))',
+                        'path' => 'KEY `path` (`path`('.$actual.'))',
                     ],
                 ],
-            ]
+            ],
+            [],
+            $statement
         );
 
         $schema = $provider->createSchema();
@@ -313,7 +362,68 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $this->assertTrue($table->hasIndex('path'));
         $this->assertFalse($table->getIndex('path')->isUnique());
-        $this->assertSame(['path(333)'], $table->getIndex('path')->getColumns());
+        $this->assertSame(['path('.$expected.')'], $table->getIndex('path')->getColumns());
+    }
+
+    /**
+     * @return array
+     */
+    public function getIndexes(): array
+    {
+        return [
+            [
+                333,
+                333,
+                [
+                    (object) ['Engine' => 'MyISAM'],
+                    (object) ['Collation' => 'utf8_unicode_ci'],
+                ],
+            ],
+            [
+                333,
+                250,
+                [
+                    (object) ['Engine' => 'MyISAM'],
+                    (object) ['Collation' => 'utf8mb4_unicode_ci'],
+                ],
+            ],
+            [
+                1022,
+                1022,
+                [
+                    (object) ['Engine' => 'InnoDB'],
+                    (object) ['Value' => 1],
+                    (object) ['Collation' => 'utf8_unicode_ci'],
+                ],
+            ],
+            [
+                1022,
+                768,
+                [
+                    (object) ['Engine' => 'InnoDB'],
+                    (object) ['Value' => 1],
+                    (object) ['Collation' => 'utf8mb4_unicode_ci'],
+                ],
+            ],
+            [
+                1022,
+                255,
+                [
+                    (object) ['Engine' => 'InnoDB'],
+                    (object) ['Value' => 0],
+                    (object) ['Collation' => 'utf8_unicode_ci'],
+                ],
+            ],
+            [
+                1022,
+                191,
+                [
+                    (object) ['Engine' => 'InnoDB'],
+                    (object) ['Value' => 0],
+                    (object) ['Collation' => 'utf8mb4_unicode_ci'],
+                ],
+            ],
+        ];
     }
 
     public function testHandlesFulltextIndexes(): void
@@ -340,8 +450,8 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $this->assertTrue($table->hasColumn('text'));
         $this->assertSame('text', $table->getColumn('text')->getType()->getName());
-        $this->assertSame(false, $table->getColumn('text')->getNotnull());
-        $this->assertSame(false, $table->getColumn('text')->getFixed());
+        $this->assertFalse($table->getColumn('text')->getNotnull());
+        $this->assertFalse($table->getColumn('text')->getFixed());
         $this->assertSame(MySqlPlatform::LENGTH_LIMIT_MEDIUMTEXT, $table->getColumn('text')->getLength());
 
         $this->assertTrue($table->hasIndex('text'));
@@ -387,5 +497,32 @@ class DcaSchemaProviderTest extends DoctrineTestCase
         $this->expectException('RuntimeException');
 
         $provider->createSchema();
+    }
+
+    public function testCreatesSchemaFromOrm(): void
+    {
+        $metadata = new ClassMetadata('tl_member');
+        $metadata->setTableName('tl_member');
+
+        $provider = new DcaSchemaProvider(
+            $this->mockContaoFrameworkWithInstaller(),
+            $this->mockDoctrineRegistryWithOrm([$metadata])
+        );
+
+        $schema = $provider->createSchema();
+
+        $this->assertInstanceOf('Doctrine\DBAL\Schema\Schema', $schema);
+    }
+
+    public function testDoesNotCreateTheSchemaFromOrmIfThereIsNoMetadata(): void
+    {
+        $provider = new DcaSchemaProvider(
+            $this->mockContaoFrameworkWithInstaller(),
+            $this->mockDoctrineRegistryWithOrm()
+        );
+
+        $schema = $provider->createSchema();
+
+        $this->assertInstanceOf('Doctrine\DBAL\Schema\Schema', $schema);
     }
 }

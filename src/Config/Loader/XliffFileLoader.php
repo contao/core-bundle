@@ -233,6 +233,10 @@ class XliffFileLoader extends Loader
         $data = &$GLOBALS['TL_LANG'];
 
         foreach ($chunks as $key) {
+            if (null === $data || !\is_array($data)) {
+                $data = [];
+            }
+
             $data = &$data[$key];
         }
 

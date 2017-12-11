@@ -12,14 +12,18 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Picker;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Picker\ArticlePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
+use Knp\Menu\MenuItem;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class ArticlePickerProviderTest extends PickerTestCase
+class ArticlePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var ArticlePickerProvider
@@ -57,7 +61,17 @@ class ArticlePickerProviderTest extends PickerTestCase
 
         $menuFactory
             ->method('createItem')
-            ->willReturnArgument(1)
+            ->willReturnCallback(
+                function (string $name, array $data) use ($menuFactory): ItemInterface {
+                    $item = new MenuItem($name, $menuFactory);
+                    $item->setLabel($data['label']);
+                    $item->setLinkAttributes($data['linkAttributes']);
+                    $item->setCurrent($data['current']);
+                    $item->setUri($data['uri']);
+
+                    return $item;
+                }
+            )
         ;
 
         $router = $this->createMock(RouterInterface::class);
@@ -97,15 +111,13 @@ class ArticlePickerProviderTest extends PickerTestCase
             $picker = $encoded;
         }
 
-        $this->assertSame(
-            [
-                'label' => 'Article picker',
-                'linkAttributes' => ['class' => 'articlePicker'],
-                'current' => true,
-                'uri' => 'contao_backend?do=article&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
-            ],
-            $this->provider->createMenuItem(new PickerConfig('link', [], '', 'articlePicker'))
-        );
+        $item = $this->provider->createMenuItem(new PickerConfig('link', [], '', 'articlePicker'));
+        $uri = 'contao_backend?do=article&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,');
+
+        $this->assertSame('Article picker', $item->getLabel());
+        $this->assertSame(['class' => 'articlePicker'], $item->getLinkAttributes());
+        $this->assertTrue($item->isCurrent());
+        $this->assertSame($uri, $item->getUri());
     }
 
     public function testChecksIfAMenuItemIsCurrent(): void
@@ -121,7 +133,7 @@ class ArticlePickerProviderTest extends PickerTestCase
 
     public function testChecksIfAContextIsSupported(): void
     {
-        $this->provider->setTokenStorage($this->mockTokenStorage());
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('link'));
         $this->assertFalse($this->provider->supportsContext('file'));

@@ -59,6 +59,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @property integer $cgroup
  * @property string  $chmod
  * @property boolean $noSearch
+ * @property boolean $requireItem
  * @property string  $cssClass
  * @property string  $sitemap
  * @property boolean $hide
@@ -282,7 +283,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.id=?");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -305,7 +306,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=?");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -329,7 +330,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$objDatabase = \Database::getInstance();
 
-		if (is_array($varLanguage))
+		if (\is_array($varLanguage))
 		{
 			$arrColumns = array("$t.type='root' AND ($t.dns=? OR $t.dns='')");
 
@@ -347,7 +348,7 @@ class PageModel extends \Model
 				$arrOptions['order'] = "$t.dns DESC" . (!empty($varLanguage) ? ", " . $objDatabase->findInSet("$t.language", array_reverse($varLanguage)) . " DESC" : "") . ", $t.sorting";
 			}
 
-			if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+			if (!static::isPreviewMode($arrOptions))
 			{
 				$time = \Date::floorToMinute();
 				$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -365,7 +366,7 @@ class PageModel extends \Model
 				$arrOptions['order'] = "$t.dns DESC, $t.fallback";
 			}
 
-			if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+			if (!static::isPreviewMode($arrOptions))
 			{
 				$time = \Date::floorToMinute();
 				$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -389,7 +390,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.type!='root' AND $t.type!='error_403' AND $t.type!='error_404'");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -407,7 +408,7 @@ class PageModel extends \Model
 	/**
 	 * Find the first published regular page by its parent ID
 	 *
-	 * @param integer $intPid The parent page's ID
+	 * @param integer $intPid     The parent page's ID
 	 * @param array   $arrOptions An optional options array
 	 *
 	 * @return PageModel|null The model or null if there is no published regular page
@@ -417,7 +418,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.type='regular'");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -445,7 +446,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.type='error_403'");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -473,7 +474,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.type='error_404'");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -498,7 +499,7 @@ class PageModel extends \Model
 	 */
 	public static function findByAliases($arrAliases, array $arrOptions=array())
 	{
-		if (!is_array($arrAliases) || empty($arrAliases))
+		if (!\is_array($arrAliases) || empty($arrAliases))
 		{
 			return null;
 		}
@@ -516,7 +517,7 @@ class PageModel extends \Model
 		$arrColumns = array("$t.alias IN('" . implode("','", array_filter($arrAliases)) . "')");
 
 		// Check the publication status (see #4652)
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -544,7 +545,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = !is_numeric($varId) ? array("$t.alias=?") : array("$t.id=?");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -589,7 +590,7 @@ class PageModel extends \Model
 	 */
 	public static function findPublishedRegularWithoutGuestsByIds($arrIds, array $arrOptions=array())
 	{
-		if (!is_array($arrIds) || empty($arrIds))
+		if (!\is_array($arrIds) || empty($arrIds))
 		{
 			return null;
 		}
@@ -602,7 +603,7 @@ class PageModel extends \Model
 			$arrColumns[] = "$t.guests=''";
 		}
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -635,7 +636,7 @@ class PageModel extends \Model
 			$arrColumns[] = "$t.guests=''";
 		}
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -674,7 +675,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.dns=? AND $t.fallback='1'");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -696,7 +697,7 @@ class PageModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.type=?");
 
-		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		if (!static::isPreviewMode($arrOptions))
 		{
 			$time = \Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
@@ -741,7 +742,7 @@ class PageModel extends \Model
 	 */
 	public static function findFirstActiveByMemberGroups($arrIds)
 	{
-		if (!is_array($arrIds) || empty($arrIds))
+		if (!\is_array($arrIds) || empty($arrIds))
 		{
 			return null;
 		}
@@ -1037,7 +1038,7 @@ class PageModel extends \Model
 		// Make the URL relative to the base path
 		if (0 === strpos($strUrl, '/'))
 		{
-			$strUrl = substr($strUrl, strlen(\Environment::get('path')) + 1);
+			$strUrl = substr($strUrl, \strlen(\Environment::get('path')) + 1);
 		}
 
 		$strUrl = $this->applyLegacyLogic($strUrl, $strParams);
@@ -1102,7 +1103,7 @@ class PageModel extends \Model
 		}
 
 		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))
+		if (isset($GLOBALS['TL_HOOKS']['generateFrontendUrl']) && \is_array($GLOBALS['TL_HOOKS']['generateFrontendUrl']))
 		{
 			@trigger_error('Using the "generateFrontendUrl" hook has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 

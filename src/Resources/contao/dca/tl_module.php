@@ -170,6 +170,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		'headline' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['headline'],
+			'default'                 => array('value'=>'', 'unit'=>'h2'),
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'inputUnit',
@@ -271,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		),
 		'orderPages' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['orderSRC'],
+			'label'                   => &$GLOBALS['TL_LANG']['MSC']['sortOrder'],
 			'sql'                     => "blob NULL"
 		),
 		'showHidden' => array
@@ -573,7 +574,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		),
 		'orderSRC' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_module']['orderSRC'],
+			'label'                   => &$GLOBALS['TL_LANG']['MSC']['sortOrder'],
 			'sql'                     => "blob NULL"
 		),
 		'html' => array
@@ -851,7 +852,7 @@ class tl_module extends Backend
 	 */
 	public function getForms()
 	{
-		if (!$this->User->isAdmin && !is_array($this->User->forms))
+		if (!$this->User->isAdmin && !\is_array($this->User->forms))
 		{
 			return array();
 		}
@@ -888,7 +889,7 @@ class tl_module extends Backend
 			$arrCustom = StringUtil::deserialize($objLayout->sections);
 
 			// Add the custom layout sections
-			if (!empty($arrCustom) && is_array($arrCustom))
+			if (!empty($arrCustom) && \is_array($arrCustom))
 			{
 				foreach ($arrCustom as $v)
 				{
@@ -993,7 +994,7 @@ class tl_module extends Backend
 	{
 		if (!trim($varValue))
 		{
-			$varValue = (is_array($GLOBALS['TL_LANG']['tl_module']['emailText']) ? $GLOBALS['TL_LANG']['tl_module']['emailText'][1] : $GLOBALS['TL_LANG']['tl_module']['emailText']);
+			$varValue = (\is_array($GLOBALS['TL_LANG']['tl_module']['emailText']) ? $GLOBALS['TL_LANG']['tl_module']['emailText'][1] : $GLOBALS['TL_LANG']['tl_module']['emailText']);
 		}
 
 		return $varValue;
@@ -1011,7 +1012,7 @@ class tl_module extends Backend
 	{
 		if (!trim($varValue))
 		{
-			$varValue = (is_array($GLOBALS['TL_LANG']['tl_module']['passwordText']) ? $GLOBALS['TL_LANG']['tl_module']['passwordText'][1] : $GLOBALS['TL_LANG']['tl_module']['passwordText']);
+			$varValue = (\is_array($GLOBALS['TL_LANG']['tl_module']['passwordText']) ? $GLOBALS['TL_LANG']['tl_module']['passwordText'][1] : $GLOBALS['TL_LANG']['tl_module']['passwordText']);
 		}
 
 		return $varValue;
@@ -1027,7 +1028,7 @@ class tl_module extends Backend
 	 */
 	public function listModule($row)
 	{
-		return '<div style="float:left">'. $row['name'] .' <span style="color:#999;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span>' . "</div>\n";
+		return '<div class="tl_content_left">'. $row['name'] .' <span style="color:#999;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span></div>';
 	}
 
 

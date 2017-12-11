@@ -20,13 +20,13 @@ $GLOBALS['BE_MOD'] = array
 		'article' => array
 		(
 			'tables'      => array('tl_article', 'tl_content'),
-			'table'       => array('contao.controller.backend_csv_import', 'importTableWizard'),
-			'list'        => array('contao.controller.backend_csv_import', 'importListWizard')
+			'table'       => array('contao.controller.backend_csv_import', 'importTableWizardAction'),
+			'list'        => array('contao.controller.backend_csv_import', 'importListWizardAction')
 		),
 		'form' => array
 		(
 			'tables'      => array('tl_form', 'tl_form_field'),
-			'option'      => array('contao.controller.backend_csv_import', 'importOptionWizard')
+			'option'      => array('contao.controller.backend_csv_import', 'importOptionWizardAction')
 		)
 	),
 
@@ -238,19 +238,20 @@ $GLOBALS['BE_FFL'] = array
  */
 $GLOBALS['TL_FFL'] = array
 (
-	'explanation' => 'FormExplanation',
-	'html'        => 'FormHtml',
-	'fieldset'    => 'FormFieldset',
-	'text'        => 'FormTextField',
-	'password'    => 'FormPassword',
-	'textarea'    => 'FormTextArea',
-	'select'      => 'FormSelectMenu',
-	'radio'       => 'FormRadioButton',
-	'checkbox'    => 'FormCheckBox',
-	'upload'      => 'FormFileUpload',
-	'hidden'      => 'FormHidden',
-	'captcha'     => 'FormCaptcha',
-	'submit'      => 'FormSubmit'
+    'explanation'   => 'FormExplanation',
+    'html'          => 'FormHtml',
+    'fieldsetStart' => 'FormFieldsetStart',
+    'fieldsetStop'  => 'FormFieldsetStop',
+    'text'          => 'FormTextField',
+    'password'      => 'FormPassword',
+    'textarea'      => 'FormTextArea',
+    'select'        => 'FormSelectMenu',
+    'radio'         => 'FormRadioButton',
+    'checkbox'      => 'FormCheckBox',
+    'upload'        => 'FormFileUpload',
+    'hidden'        => 'FormHidden',
+    'captcha'       => 'FormCaptcha',
+    'submit'        => 'FormSubmit',
 );
 
 
@@ -355,6 +356,10 @@ $GLOBALS['TL_PURGE'] = array
  */
 $GLOBALS['TL_CROP'] = array
 (
+	'image_sizes' => array
+	(
+		// will be added dynamically
+	),
 	'relative' => array
 	(
 		'proportional', 'box'
@@ -397,10 +402,6 @@ $GLOBALS['TL_HOOKS'] = array
 		array('Messages', 'versionCheck'),
 		array('Messages', 'maintenanceCheck'),
 		array('Messages', 'languageFallback')
-	),
-	'initializeSystem' => array
-	(
-		array('contao.listener.map_fragments_to_globals', 'onInitializeSystem')
 	)
 );
 
@@ -431,12 +432,14 @@ $GLOBALS['TL_WRAPPERS'] = array
 	'start' => array
 	(
 		'accordionStart',
-		'sliderStart'
+		'sliderStart',
+		'fieldsetStart'
 	),
 	'stop' => array
 	(
 		'accordionStop',
-		'sliderStop'
+		'sliderStop',
+		'fieldsetStop'
 	),
 	'single' => array
 	(

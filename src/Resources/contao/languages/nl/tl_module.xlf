@@ -255,7 +255,7 @@
       </trans-unit>
       <trans-unit id="tl_module.perPage.1">
         <source>The number of items per page. Set to 0 to disable pagination.</source>
-        <target>Geef het aantal resultaten per pagina op.</target>
+        <target>Het aantal items per pagina. Stel in op 0 om paginering uit te schakelen.</target>
       </trans-unit>
       <trans-unit id="tl_module.searchType.0">
         <source>Search form layout</source>
@@ -416,14 +416,6 @@
       <trans-unit id="tl_module.multiSRC.1">
         <source>Please select one or more files from the files directory.</source>
         <target>Selecteer een of meerdere bestanden uit de bestandsdirectory.</target>
-      </trans-unit>
-      <trans-unit id="tl_module.orderSRC.0">
-        <source>Sort order</source>
-        <target>Sorteer-volgorde</target>
-      </trans-unit>
-      <trans-unit id="tl_module.orderSRC.1">
-        <source>The sort order of the items.</source>
-        <target>Sorteervolgorde van de items</target>
       </trans-unit>
       <trans-unit id="tl_module.html.0">
         <source>HTML code</source>

@@ -301,7 +301,7 @@ abstract class Backend extends \Controller
 		{
 			if (isset($arrGroup[$module]))
 			{
-				$arrModule =& $arrGroup[$module];
+				$arrModule = &$arrGroup[$module];
 				break;
 			}
 		}
@@ -339,7 +339,7 @@ abstract class Backend extends \Controller
 			$objSession->set('CURRENT_ID', $id);
 		}
 
-		define('CURRENT_ID', (\Input::get('table') ? $id : \Input::get('id')));
+		\define('CURRENT_ID', (\Input::get('table') ? $id : \Input::get('id')));
 		$this->Template->headline = $GLOBALS['TL_LANG']['MOD'][$module][0];
 
 		// Add the module style sheet
@@ -365,7 +365,7 @@ abstract class Backend extends \Controller
 		// Create the data container object
 		if ($strTable != '')
 		{
-			if (!in_array($strTable, $arrTables))
+			if (!\in_array($strTable, $arrTables))
 			{
 				throw new AccessDeniedException('Table "' . $strTable . '" is not allowed in module "' . $module . '".');
 			}
@@ -448,7 +448,7 @@ abstract class Backend extends \Controller
 			$this->Template->main .= $response;
 
 			// Add the name of the parent element
-			if (isset($_GET['table']) && in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
+			if (isset($_GET['table']) && \in_array(\Input::get('table'), $arrTables) && \Input::get('table') != $arrTables[0])
 			{
 				if ($GLOBALS['TL_DCA'][$strTable]['config']['ptable'] != '')
 				{
@@ -458,11 +458,11 @@ abstract class Backend extends \Controller
 
 					if ($objRow->title != '')
 					{
-						$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
+						$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
 					}
 					elseif ($objRow->name != '')
 					{
-						$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
+						$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
 					}
 				}
 			}
@@ -472,7 +472,7 @@ abstract class Backend extends \Controller
 		}
 
 		// Default action
-		elseif (is_object($dc))
+		elseif (\is_object($dc))
 		{
 			$act = \Input::get('act');
 
@@ -510,7 +510,7 @@ abstract class Backend extends \Controller
 			}
 
 			// Add the name of the parent elements
-			if ($strTable && in_array($strTable, $arrTables) && $strTable != $arrTables[0])
+			if ($strTable && \in_array($strTable, $arrTables) && $strTable != $arrTables[0])
 			{
 				$trail = array();
 
@@ -518,7 +518,7 @@ abstract class Backend extends \Controller
 				$table = $strTable;
 				$ptable = (\Input::get('act') != 'edit') ? $GLOBALS['TL_DCA'][$strTable]['config']['ptable'] : $strTable;
 
-				while ($ptable && !in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
+				while ($ptable && !\in_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['mode'], array(5, 6)))
 				{
 					$objRow = $this->Database->prepare("SELECT * FROM " . $ptable . " WHERE id=?")
 											 ->limit(1)
@@ -594,7 +594,7 @@ abstract class Backend extends \Controller
 						// Handle new folders (see #7980)
 						if (strpos(\Input::get('id'), '__new__') !== false)
 						{
-							$this->Template->headline .= ' › <span>' . dirname(\Input::get('id')) . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['new'][1] . '</span>';
+							$this->Template->headline .= ' › <span>' . \dirname(\Input::get('id')) . '</span> › <span>' . $GLOBALS['TL_LANG'][$strTable]['new'][1] . '</span>';
 						}
 						else
 						{
@@ -659,7 +659,7 @@ abstract class Backend extends \Controller
 			if ($objPage->type == 'regular')
 			{
 				// Searchable and not protected
-				if ((!$objPage->noSearch || $blnIsSitemap) && (!$objPage->protected || \Config::get('indexProtected') && (!$blnIsSitemap || $objPage->sitemap == 'map_always')) && (!$blnIsSitemap || $objPage->sitemap != 'map_never'))
+				if ((!$objPage->noSearch || $blnIsSitemap) && (!$objPage->protected || \Config::get('indexProtected') && (!$blnIsSitemap || $objPage->sitemap == 'map_always')) && (!$blnIsSitemap || $objPage->sitemap != 'map_never') && !$objPage->requireItem)
 				{
 					$arrPages[] = $objPage->getAbsoluteUrl();
 
@@ -721,7 +721,7 @@ abstract class Backend extends \Controller
 		else
 		{
 			// HOOK: support custom modules
-			if (isset($GLOBALS['TL_HOOKS']['addFileMetaInformationToRequest']) && is_array($GLOBALS['TL_HOOKS']['addFileMetaInformationToRequest']))
+			if (isset($GLOBALS['TL_HOOKS']['addFileMetaInformationToRequest']) && \is_array($GLOBALS['TL_HOOKS']['addFileMetaInformationToRequest']))
 			{
 				foreach ($GLOBALS['TL_HOOKS']['addFileMetaInformationToRequest'] as $callback)
 				{
@@ -736,7 +736,7 @@ abstract class Backend extends \Controller
 					return;
 				}
 
-				if (is_object($objPage) && !($objPage instanceof PageModel))
+				if (\is_object($objPage) && !($objPage instanceof PageModel))
 				{
 					$objPage = \PageModel::findByPk($objPage->id);
 				}
@@ -881,9 +881,11 @@ abstract class Backend extends \Controller
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['breadcrumb'] .= '
 
-<ul id="tl_breadcrumb">
-  <li>' . implode(' › </li><li>', $arrLinks) . '</li>
-</ul>';
+<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbMenu'] . '">
+  <ul id="tl_breadcrumb">
+    <li>' . implode(' › </li><li>', $arrLinks) . '</li>
+  </ul>
+</nav>';
 	}
 
 
@@ -939,7 +941,7 @@ abstract class Backend extends \Controller
 		$strMessages = '';
 
 		// HOOK: add custom messages
-		if (isset($GLOBALS['TL_HOOKS']['getSystemMessages']) && is_array($GLOBALS['TL_HOOKS']['getSystemMessages']))
+		if (isset($GLOBALS['TL_HOOKS']['getSystemMessages']) && \is_array($GLOBALS['TL_HOOKS']['getSystemMessages']))
 		{
 			$arrMessages = array();
 
@@ -1053,9 +1055,11 @@ abstract class Backend extends \Controller
 		// Insert breadcrumb menu
 		$GLOBALS['TL_DCA']['tl_files']['list']['sorting']['breadcrumb'] .= '
 
-<ul id="tl_breadcrumb">
-  <li>' . implode(' › </li><li>', $arrLinks) . '</li>
-</ul>';
+<nav aria-label="' . $GLOBALS['TL_LANG']['MSC']['breadcrumbMenu'] . '">
+  <ul id="tl_breadcrumb">
+    <li>' . implode(' › </li><li>', $arrLinks) . '</li>
+  </ul>
+</nav>';
 	}
 
 
@@ -1094,12 +1098,12 @@ abstract class Backend extends \Controller
 	public static function getDcaPickerWizard($extras, $table, $field, $inputName)
 	{
 		$context = 'link';
-		$extras = is_array($extras) ? $extras : array();
-		$providers = (isset($extras['providers']) && is_array($extras['providers'])) ? $extras['providers'] : null;
+		$extras = \is_array($extras) ? $extras : array();
+		$providers = (isset($extras['providers']) && \is_array($extras['providers'])) ? $extras['providers'] : null;
 
 		if (isset($extras['context']))
 		{
-			$context = 'link';
+			$context = $extras['context'];
 			unset($extras['context']);
 		}
 
@@ -1110,7 +1114,7 @@ abstract class Backend extends \Controller
 			return '';
 		}
 
-		return ' <a href="' . ampersand($factory->getUrl($context, $extras)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
+		return ' <a href="' . ampersand($factory->getUrl($context, $extras)) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" id="pp_' . $inputName . '">' . \Image::getHtml((\is_array($extras) && isset($extras['icon']) ? $extras['icon'] : 'pickpage.svg'), $GLOBALS['TL_LANG']['MSC']['pagepicker']) . '</a>
   <script>
     $("pp_' . $inputName . '").addEvent("click", function(e) {
       e.preventDefault();
@@ -1139,7 +1143,7 @@ abstract class Backend extends \Controller
 			$arrCustom = \StringUtil::deserialize($objLayout->sections);
 
 			// Add the custom layout sections
-			if (!empty($arrCustom) && is_array($arrCustom))
+			if (!empty($arrCustom) && \is_array($arrCustom))
 			{
 				foreach ($arrCustom as $v)
 				{
@@ -1189,7 +1193,7 @@ abstract class Backend extends \Controller
 			}
 
 			// Do not process twice
-			if (in_array($start, $processed))
+			if (\in_array($start, $processed))
 			{
 				continue;
 			}
@@ -1291,7 +1295,7 @@ abstract class Backend extends \Controller
 		// Limit nodes to the filemounts of the user
 		foreach ($this->eliminateNestedPaths($this->User->filemounts) as $path)
 		{
-			if (in_array($path, $processed))
+			if (\in_array($path, $processed))
 			{
 				continue;
 			}
@@ -1368,7 +1372,7 @@ abstract class Backend extends \Controller
 			}
 		}
 
-		if (strlen($strFiles))
+		if (\strlen($strFiles))
 		{
 			return '<optgroup label="' . \StringUtil::specialchars($strFolder) . '">' . $strFiles . $strFolders . '</optgroup>';
 		}

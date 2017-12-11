@@ -34,7 +34,6 @@ class PickerTest extends TestCase
     {
         parent::setUp();
 
-        $factory = new MenuFactory();
         $translator = $this->createMock(TranslatorInterface::class);
 
         $translator
@@ -42,11 +41,12 @@ class PickerTest extends TestCase
             ->willReturn('Page picker')
         ;
 
-        $this->picker = new Picker(
-            $factory,
-            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class), $translator)],
-            new PickerConfig('page', [], 5, 'pagePicker')
-        );
+        $factory = new MenuFactory();
+        $router = $this->createMock(RouterInterface::class);
+        $provider = new PagePickerProvider($factory, $router, $translator);
+        $config = new PickerConfig('page', [], 5, 'pagePicker');
+
+        $this->picker = new Picker($factory, [$provider], $config);
     }
 
     public function testCanBeInstantiated(): void
@@ -90,43 +90,36 @@ class PickerTest extends TestCase
     public function testReturnsNullIfThereIsNoCurrentProvider(): void
     {
         $factory = new MenuFactory();
-
-        $picker = new Picker(
-            $factory,
-            [new PagePickerProvider($factory, $this->createMock(RouterInterface::class))],
-            new PickerConfig('page')
-        );
+        $router = $this->createMock(RouterInterface::class);
+        $provider = new PagePickerProvider($factory, $router);
+        $config = new PickerConfig('page');
+        $picker = new Picker($factory, [$provider], $config);
 
         $this->assertNull($picker->getCurrentProvider());
     }
 
     public function testReturnsTheCurrentUrl(): void
     {
-        $this->assertSame(null, $this->picker->getCurrentUrl());
+        $this->assertNull($this->picker->getCurrentUrl());
     }
 
     public function testReturnsNullAsCurrentUrlIfThereIsNoCurrentMenuItem(): void
     {
         $factory = new MenuFactory();
+        $router = $this->createMock(RouterInterface::class);
+        $translator = $this->createMock(TranslatorInterface::class);
+        $provider = new PagePickerProvider($factory, $router, $translator);
+        $config = new PickerConfig('page');
+        $picker = new Picker($factory, [$provider], $config);
 
-        $picker = new Picker(
-            $factory,
-            [
-                new PagePickerProvider(
-                    $factory,
-                    $this->createMock(RouterInterface::class),
-                    $this->createMock(TranslatorInterface::class)
-                ),
-            ],
-            new PickerConfig('page')
-        );
-
-        $this->assertSame(null, $picker->getCurrentUrl());
+        $this->assertNull($picker->getCurrentUrl());
     }
 
     public function testFailsToReturnTheCurrentUrlIfThereAreNoMenuItems(): void
     {
-        $picker = new Picker(new MenuFactory(), [], new PickerConfig('page', [], 5, 'pagePicker'));
+        $factory = new MenuFactory();
+        $config = new PickerConfig('page', [], 5, 'pagePicker');
+        $picker = new Picker($factory, [], $config);
 
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('No picker menu items found');

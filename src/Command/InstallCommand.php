@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Command;
 
-use Contao\CoreBundle\Util\SymlinkUtil;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +51,7 @@ class InstallCommand extends AbstractLockedCommand
     /**
      * @var array
      */
-    private $emptyDirs = [
+    private static $emptyDirs = [
         'system',
         'system/config',
         'templates',
@@ -62,7 +61,7 @@ class InstallCommand extends AbstractLockedCommand
     /**
      * @var array
      */
-    private $ignoredDirs = [
+    private static $ignoredDirs = [
         'assets/css',
         'assets/js',
         'system/cache',
@@ -104,8 +103,6 @@ class InstallCommand extends AbstractLockedCommand
             $this->io->listing($this->rows);
         }
 
-        $this->symlinkTcpdfConfig();
-
         return 0;
     }
 
@@ -114,7 +111,7 @@ class InstallCommand extends AbstractLockedCommand
      */
     private function addEmptyDirs(): void
     {
-        foreach ($this->emptyDirs as $path) {
+        foreach (self::$emptyDirs as $path) {
             $this->addEmptyDir($this->rootDir.'/'.sprintf($path, $this->webDir));
         }
 
@@ -142,7 +139,7 @@ class InstallCommand extends AbstractLockedCommand
      */
     private function addIgnoredDirs(): void
     {
-        foreach ($this->ignoredDirs as $path) {
+        foreach (self::$ignoredDirs as $path) {
             $this->addIgnoredDir($this->rootDir.'/'.sprintf($path, $this->webDir));
         }
 
@@ -166,19 +163,5 @@ class InstallCommand extends AbstractLockedCommand
             $path.'/.gitignore',
             "# Create the folder and ignore its content\n*\n!.gitignore\n"
         );
-    }
-
-    /**
-     * Symlinks the tcpdf.php config file to system/config.
-     */
-    private function symlinkTcpdfConfig(): void
-    {
-        SymlinkUtil::symlink(
-            'vendor/contao/core-bundle/src/Resources/contao/config/tcpdf.php',
-            'system/config/tcpdf.php',
-            $this->rootDir
-        );
-
-        $this->io->text("Symlinked the <comment>system/config/tcpdf.php</comment> file.\n");
     }
 }

@@ -64,7 +64,7 @@ class ContaoFrameworkTest extends TestCase
         $this->assertFalse(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('TL_PATH'));
         $this->assertSame('FE', TL_MODE);
-        $this->assertSame($this->getRootDir(), TL_ROOT);
+        $this->assertSame($this->getTempDir(), TL_ROOT);
         $this->assertSame('', TL_REFERER_ID);
         $this->assertSame('index.html', TL_SCRIPT);
         $this->assertSame('', TL_PATH);
@@ -101,7 +101,7 @@ class ContaoFrameworkTest extends TestCase
         $this->assertTrue(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('TL_PATH'));
         $this->assertSame('BE', TL_MODE);
-        $this->assertSame($this->getRootDir(), TL_ROOT);
+        $this->assertSame($this->getTempDir(), TL_ROOT);
         $this->assertSame('foobar', TL_REFERER_ID);
         $this->assertSame('contao/login', TL_SCRIPT);
         $this->assertSame('', TL_PATH);
@@ -127,9 +127,9 @@ class ContaoFrameworkTest extends TestCase
         $this->assertTrue(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('TL_PATH'));
         $this->assertNull(TL_MODE);
-        $this->assertSame($this->getRootDir(), TL_ROOT);
+        $this->assertSame($this->getTempDir(), TL_ROOT);
         $this->assertNull(TL_REFERER_ID);
-        $this->assertSame(null, TL_SCRIPT);
+        $this->assertNull(TL_SCRIPT);
         $this->assertNull(TL_PATH);
     }
 
@@ -167,10 +167,10 @@ class ContaoFrameworkTest extends TestCase
         $this->assertTrue(\defined('BE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('TL_PATH'));
-        $this->assertSame(null, TL_MODE);
-        $this->assertSame($this->getRootDir(), TL_ROOT);
+        $this->assertNull(TL_MODE);
+        $this->assertSame($this->getTempDir(), TL_ROOT);
         $this->assertSame('', TL_REFERER_ID);
-        $this->assertSame(null, TL_SCRIPT);
+        $this->assertNull(TL_SCRIPT);
         $this->assertSame('', TL_PATH);
         $this->assertSame('de', $GLOBALS['TL_LANGUAGE']);
     }
@@ -201,7 +201,7 @@ class ContaoFrameworkTest extends TestCase
         $this->assertTrue(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(\defined('TL_PATH'));
         $this->assertNull(TL_MODE);
-        $this->assertSame($this->getRootDir(), TL_ROOT);
+        $this->assertSame($this->getTempDir(), TL_ROOT);
         $this->assertSame('foobar', TL_REFERER_ID);
         $this->assertSame('contao/login', TL_SCRIPT);
         $this->assertSame('', TL_PATH);
@@ -319,23 +319,21 @@ class ContaoFrameworkTest extends TestCase
             $this->mockRouter('/contao/login'),
             $this->mockSession(),
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
 
-        $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
-
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(),
-                RequestToken::class => $this->mockRequestTokenAdapter(false),
-            ]
-        );
-
         $framework->setContainer($this->mockContainer());
+
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(),
+            RequestToken::class => $this->mockRequestTokenAdapter(false),
+        ];
+
+        $ref = new \ReflectionObject($framework);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
 
         $this->expectException(InvalidRequestTokenException::class);
 
@@ -362,23 +360,22 @@ class ContaoFrameworkTest extends TestCase
             $this->mockRouter('/contao/login'),
             $this->mockSession(),
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
 
-        $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
-
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(),
-                RequestToken::class => $this->mockRequestTokenAdapter(false),
-            ]
-        );
-
         $framework->setContainer($this->mockContainer());
+
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(),
+            RequestToken::class => $this->mockRequestTokenAdapter(false),
+        ];
+
+        $ref = new \ReflectionObject($framework);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
+
         $framework->initialize();
 
         $this->addToAssertionCount(1);  // does not throw an exception
@@ -404,9 +401,11 @@ class ContaoFrameworkTest extends TestCase
             $this->mockRouter('/contao/login'),
             $this->mockSession(),
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
+
+        $framework->setContainer($this->mockContainer());
 
         $adapter = $this->mockAdapter(['get', 'validate']);
 
@@ -420,19 +419,16 @@ class ContaoFrameworkTest extends TestCase
             ->method('validate')
         ;
 
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(),
+            RequestToken::class => $adapter,
+        ];
+
         $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
 
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(),
-                RequestToken::class => $adapter,
-            ]
-        );
-
-        $framework->setContainer($this->mockContainer());
         $framework->initialize();
     }
 
@@ -453,23 +449,21 @@ class ContaoFrameworkTest extends TestCase
             $this->mockRouter('/contao/login'),
             $this->mockSession(),
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
 
-        $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
-
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(false),
-                RequestToken::class => $this->mockRequestTokenAdapter(),
-            ]
-        );
-
         $framework->setContainer($this->mockContainer());
+
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(false),
+            RequestToken::class => $this->mockRequestTokenAdapter(),
+        ];
+
+        $ref = new \ReflectionObject($framework);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
 
         $this->expectException(IncompleteInstallationException::class);
 
@@ -497,23 +491,22 @@ class ContaoFrameworkTest extends TestCase
             $this->mockRouter('/contao/login'),
             $this->mockSession(),
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
 
-        $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
-
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(false),
-                RequestToken::class => $this->mockRequestTokenAdapter(),
-            ]
-        );
-
         $framework->setContainer($this->mockContainer());
+
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(false),
+            RequestToken::class => $this->mockRequestTokenAdapter(),
+        ];
+
+        $ref = new \ReflectionObject($framework);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
+
         $framework->initialize();
 
         $this->addToAssertionCount(1);  // does not throw an exception
@@ -596,7 +589,6 @@ class ContaoFrameworkTest extends TestCase
         $requestStack->push($request);
 
         $container = $this->mockContainer();
-        $container->set('request_stack', $requestStack);
         $container->set('test.listener', new \stdClass());
         $container->set('test.listener2', new \stdClass());
 
@@ -644,7 +636,7 @@ class ContaoFrameworkTest extends TestCase
             ],
         ];
 
-        $framework = $this->mockFramework($container->get('request_stack'), $this->mockRouter('/index.html'));
+        $framework = $this->mockFramework($requestStack, $this->mockRouter('/index.html'));
         $framework->setContainer($container);
         $framework->setHookListeners($listeners);
 
@@ -736,21 +728,19 @@ class ContaoFrameworkTest extends TestCase
             $router,
             $session,
             $this->mockScopeMatcher(),
-            $this->getRootDir(),
+            $this->getTempDir(),
             error_reporting()
         );
 
-        $ref = new \ReflectionObject($framework);
-        $adapters = $ref->getProperty('adapterCache');
-        $adapters->setAccessible(true);
+        $adapters = [
+            Config::class => $this->mockConfigAdapter(),
+            RequestToken::class => $this->mockRequestTokenAdapter(),
+        ];
 
-        $adapters->setValue(
-            $framework,
-            [
-                Config::class => $this->mockConfigAdapter(),
-                RequestToken::class => $this->mockRequestTokenAdapter(),
-            ]
-        );
+        $ref = new \ReflectionObject($framework);
+        $adapterCache = $ref->getProperty('adapterCache');
+        $adapterCache->setAccessible(true);
+        $adapterCache->setValue($framework, $adapters);
 
         return $framework;
     }
@@ -778,16 +768,8 @@ class ContaoFrameworkTest extends TestCase
 
         $config
             ->method('get')
-            ->willReturnCallback(
-                function (string $key) {
-                    switch ($key) {
-                        case 'timeZone':
-                            return 'Europe/Berlin';
-                    }
-
-                    throw new \Exception("Unknown key $key");
-                }
-            )
+            ->with('timeZone')
+            ->willReturn('Europe/Berlin')
         ;
 
         return $config;

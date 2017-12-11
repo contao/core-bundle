@@ -12,17 +12,21 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Picker;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Picker\FilePickerProvider;
 use Contao\CoreBundle\Picker\PickerConfig;
 use Contao\FilesModel;
 use Contao\StringUtil;
+use Contao\TestCase\ContaoTestCase;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
+use Knp\Menu\MenuItem;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class FilePickerProviderTest extends PickerTestCase
+class FilePickerProviderTest extends ContaoTestCase
 {
     /**
      * @var FilePickerProvider
@@ -40,7 +44,17 @@ class FilePickerProviderTest extends PickerTestCase
 
         $menuFactory
             ->method('createItem')
-            ->willReturnArgument(1)
+            ->willReturnCallback(
+                function (string $name, array $data) use ($menuFactory): ItemInterface {
+                    $item = new MenuItem($name, $menuFactory);
+                    $item->setLabel($data['label']);
+                    $item->setLinkAttributes($data['linkAttributes']);
+                    $item->setCurrent($data['current']);
+                    $item->setUri($data['uri']);
+
+                    return $item;
+                }
+            )
         ;
 
         $router = $this->createMock(RouterInterface::class);
@@ -54,25 +68,12 @@ class FilePickerProviderTest extends PickerTestCase
             )
         ;
 
-        $filesModel = $this->createMock(FilesModel::class);
+        $properties = [
+            'path' => '/foobar',
+            'uuid' => StringUtil::uuidToBin('82243f46-a4c3-11e3-8e29-000c29e44aea'),
+        ];
 
-        $filesModel
-            ->method('__get')
-            ->willReturnCallback(
-                function (string $key): ?string {
-                    switch ($key) {
-                        case 'path':
-                            return '/foobar';
-
-                        case 'uuid':
-                            return StringUtil::uuidToBin('82243f46-a4c3-11e3-8e29-000c29e44aea');
-                    }
-
-                    return null;
-                }
-            )
-        ;
-
+        $filesModel = $this->mockClassWithProperties(FilesModel::class, $properties);
         $adapter = $this->mockAdapter(['findByUuid', 'findByPath']);
 
         $adapter
@@ -115,15 +116,13 @@ class FilePickerProviderTest extends PickerTestCase
             $picker = $encoded;
         }
 
-        $this->assertSame(
-            [
-                'label' => 'File picker',
-                'linkAttributes' => ['class' => 'filePicker'],
-                'current' => true,
-                'uri' => 'contao_backend?do=files&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,'),
-            ],
-            $this->provider->createMenuItem(new PickerConfig('link', [], '', 'filePicker'))
-        );
+        $item = $this->provider->createMenuItem(new PickerConfig('link', [], '', 'filePicker'));
+        $uri = 'contao_backend?do=files&popup=1&picker='.strtr(base64_encode($picker), '+/=', '-_,');
+
+        $this->assertSame('File picker', $item->getLabel());
+        $this->assertSame(['class' => 'filePicker'], $item->getLinkAttributes());
+        $this->assertTrue($item->isCurrent());
+        $this->assertSame($uri, $item->getUri());
     }
 
     public function testChecksIfAMenuItemIsCurrent(): void
@@ -141,7 +140,7 @@ class FilePickerProviderTest extends PickerTestCase
 
     public function testChecksIfAContextIsSupported(): void
     {
-        $this->provider->setTokenStorage($this->mockTokenStorage());
+        $this->provider->setTokenStorage($this->mockTokenStorage(BackendUser::class));
 
         $this->assertTrue($this->provider->supportsContext('file'));
         $this->assertTrue($this->provider->supportsContext('link'));
