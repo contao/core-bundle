@@ -162,8 +162,7 @@ class AddAssetsPackagesPassTest extends TestCase
 
         $this->assertSame('assets._version_contao-components/contao', (string) $service->getArgument(1));
 
-        $version = Versions::getVersion('contao-components/contao');
-        $expectedVersion = substr($version, 0, strpos($version, '@'));
+        $expectedVersion = strtok(Versions::getVersion('contao-components/contao'), '@');
         $actualVersion = $container->getDefinition('assets._version_contao-components/contao')->getArgument(0);
 
         $this->assertSame($expectedVersion, $actualVersion);

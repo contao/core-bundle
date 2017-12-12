@@ -129,7 +129,7 @@ class AddAssetsPackagesPass implements CompilerPassInterface
     private function createPackageVersion(ContainerBuilder $container, string $version, string $name): Reference
     {
         $def = new ChildDefinition('assets.static_version_strategy');
-        $def->replaceArgument(0, substr($version, 0, strpos($version, '@')));
+        $def->replaceArgument(0, strtok($version, '@'));
 
         $container->setDefinition('assets._version_'.$name, $def);
 

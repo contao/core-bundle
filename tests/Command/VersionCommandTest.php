@@ -32,8 +32,7 @@ class VersionCommandTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $version = Versions::getVersion('contao/core-bundle');
-        $version = substr($version, 0, strpos($version, '@'));
+        $version = strtok(Versions::getVersion('contao/core-bundle'), '@');
 
         $command = new VersionCommand('contao:version');
         $command->setContainer($container);

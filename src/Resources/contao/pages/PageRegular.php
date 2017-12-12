@@ -399,8 +399,7 @@ class PageRegular extends \Frontend
 			{
 				try
 				{
-					$version = \PackageVersions\Versions::getVersion('contao-components/jquery');
-					$version = substr($version, 0, strpos($version, '@'));
+					$version = strtok(\PackageVersions\Versions::getVersion('contao-components/jquery'), '@');
 
 					$this->Template->mooScripts .= \Template::generateScriptTag('https://code.jquery.com/jquery-' . $version . '.min.js') . "\n";
 
@@ -428,8 +427,7 @@ class PageRegular extends \Frontend
 			{
 				try
 				{
-					$version = \PackageVersions\Versions::getVersion('contao-components/jquery');
-					$version = substr($version, 0, strpos($version, '@'));
+					$version = strtok(\PackageVersions\Versions::getVersion('contao-components/jquery'), '@');
 
 					if (version_compare($version, '1.5.1', '>'))
 					{

@@ -118,8 +118,7 @@ The `VERSION` and `BUILD` constants have been deprecated in Contao 4.0 and will
 be removed in Contao 5.0. Use the `ocramius/package-versions` classes instead.
 
 ```php
-$coreVersion = \PackageVersions\Versions::getVersion('contao/core-bundle');
-$coreVersion = substr($coreVersion, 0, strpos($coreVersion, '@'));
+$coreVersion = strtok(\PackageVersions\Versions::getVersion('contao/core-bundle'), '@');
 ```
 
 

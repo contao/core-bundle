@@ -87,8 +87,7 @@ class BackendMain extends \Backend
 	 */
 	public function run()
 	{
-		$version = Versions::getVersion('contao/core-bundle');
-		$version = substr($version, 0, strpos($version, '@'));
+		$version = strtok(Versions::getVersion('contao/core-bundle'), '@');
 
 		$this->Template = new \BackendTemplate('be_main');
 		$this->Template->version = $GLOBALS['TL_LANG']['MSC']['version'] . ' ' . $version;
