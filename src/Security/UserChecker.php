@@ -143,12 +143,11 @@ class UserChecker implements UserCheckerInterface
 
         // Send admin notification
         if ($config->get('adminEmail')) {
+            $realName = $user->name;
             $request = $this->requestStack->getCurrentRequest();
 
-            if ($request && $this->scopeMatcher->isFrontendRequest($request)) {
+            if ($this->scopeMatcher->isFrontendRequest($request)) {
                 $realName = sprintf('%s %s', $user->firstname, $user->lastname);
-            } else {
-                $realName = $user->name;
             }
 
             $website = Idna::decode($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost());

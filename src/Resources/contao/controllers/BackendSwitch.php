@@ -67,14 +67,7 @@ class BackendSwitch extends \Backend
 		// Get the front end user
 		if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 		{
-			/** @var User $user */
-			$user = $token->getUser();
-			$objUser = \MemberModel::findByUsername($user->getUsername());
-
-			if ($objUser !== null)
-			{
-				$strUser = $user->getUsername();
-			}
+			$strUser = $token->getUser()->getUsername();
 		}
 
 		$blnCanSwitchUser = ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg)));
@@ -116,9 +109,7 @@ class BackendSwitch extends \Backend
 
 					if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
 					{
-						/** @var User $user */
-						$user = $token->getUser();
-						$objUser = \MemberModel::findByUsername($user->getUsername());
+						$objUser = \MemberModel::findByUsername($token->getUser()->getUsername());
 
 						// Check the allowed member groups
 						if ($objUser !== null && ($this->User->isAdmin || \count(array_intersect(\StringUtil::deserialize($objUser->groups, true), $this->User->amg)) > 0))

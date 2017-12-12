@@ -87,5 +87,8 @@ class ModuleLogout extends \Module
 	/**
 	 * Generate the module
 	 */
-	protected function compile() {}
+	protected function compile()
+	{
+		return;
+	}
 }
