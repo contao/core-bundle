@@ -39,7 +39,7 @@ class VersionCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $version = strtok(Versions::getVersion('contao/core-bundle'), '@');
+        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
 
         $output->writeln($version);
 

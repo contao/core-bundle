@@ -31,7 +31,7 @@ class ContaoDataCollector extends DataCollector implements FrameworkAwareInterfa
      */
     public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
-        $version = strtok(Versions::getVersion('contao/core-bundle'), '@');
+        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
 
         $this->data = ['contao_version' => $version];
 

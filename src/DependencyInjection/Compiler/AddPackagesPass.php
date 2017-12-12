@@ -29,7 +29,7 @@ class AddPackagesPass implements CompilerPassInterface
         $packages = [];
 
         foreach (Versions::VERSIONS as $package => $version) {
-            $packages[$package] = strtok($version, '@');
+            $packages[$package] = strstr($version, '@', true);
         }
 
         $container->setParameter('kernel.packages', $packages);

@@ -45,7 +45,7 @@ class ContaoDataCollectorTest extends TestCase
             'additional_data' => 'data',
         ];
 
-        $version = strtok(Versions::getVersion('contao/core-bundle'), '@');
+        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
 
         $collector = new ContaoDataCollector();
         $collector->collect(new Request(), new Response());
@@ -88,7 +88,7 @@ class ContaoDataCollectorTest extends TestCase
 
         $GLOBALS['objPage'] = $this->mockClassWithProperties(PageModel::class, ['id' => 2]);
 
-        $version = strtok(Versions::getVersion('contao/core-bundle'), '@');
+        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
 
         $collector = new ContaoDataCollector();
         $collector->setFramework($framework);

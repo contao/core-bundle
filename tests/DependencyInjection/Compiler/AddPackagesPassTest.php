@@ -51,6 +51,6 @@ class AddPackagesPassTest extends TestCase
 
     private function getVersion(string $package): string
     {
-        return strtok(Versions::getVersion($package), '@');
+        return strstr(Versions::getVersion($package), '@', true);
     }
 }

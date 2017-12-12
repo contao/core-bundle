@@ -53,7 +53,7 @@ class BackendCustom extends BackendMain
 	 */
 	public function run()
 	{
-		$version = strtok(Versions::getVersion('contao/core-bundle'), '@');
+		$version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
 
 		$this->Template->version = $version;
 
