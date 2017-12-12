@@ -55,6 +55,8 @@ namespace Contao;
  * @method static integer countBySu($val, array $opt=array())
  *
  * @author Leo Feyer <https://github.com/leofeyer>
+ *
+ * @deprecated Deprecated since Contao 4.5, to be removed in 5.0. Use Symfony authentication instead.
  */
 class SessionModel extends \Model
 {
@@ -77,6 +79,8 @@ class SessionModel extends \Model
 	 */
 	public static function findByHashAndName($strHash, $strName, array $arrOptions=array())
 	{
+		@trigger_error('Deprecated since Contao 4.5, to be removed in 5.0. Use Symfony authentication instead.', E_USER_DEPRECATED);
+
 		$t = static::$strTable;
 
 		return static::findOneBy(array("$t.hash=?", "$t.name=?"), array($strHash, $strName), $arrOptions);

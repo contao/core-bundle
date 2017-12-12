@@ -126,7 +126,7 @@
         <target>Учини IP адресе анонимним</target>
       </trans-unit>
       <trans-unit id="tl_settings.privacyAnonymizeIp.1">
-        <source>Anonymize any IP address that is stored in the database, except in the &lt;em&gt;tl_session&lt;/em&gt; table (the IP address is bound to the session for security reasons).</source>
+        <source>Anonymize any IP address that is stored in the database.</source>
         <target>Сакриј све IP адресе које су сачуване у бази података, изузев табеле &lt;em&gt;tl_session&lt;/em&gt; (IP адреса је повезана са сесијом из сигурносних разлога).</target>
       </trans-unit>
       <trans-unit id="tl_settings.privacyAnonymizeGA.0">
