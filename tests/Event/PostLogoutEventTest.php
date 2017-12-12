@@ -21,7 +21,7 @@ class PostLogoutEventTest extends TestCase
     /**
      * @var PostLogoutEvent
      */
-    protected $event;
+    private $event;
 
     /**
      * {@inheritdoc}

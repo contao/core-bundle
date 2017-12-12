@@ -21,7 +21,7 @@ class CheckCredentialsEventTest extends TestCase
     /**
      * @var CheckCredentialsEvent
      */
-    protected $event;
+    private $event;
 
     /**
      * {@inheritdoc}
@@ -60,6 +60,7 @@ class CheckCredentialsEventTest extends TestCase
     public function testReturnsTrueIfThereIsAtLeastOnePositiveVote(): void
     {
         $this->event->vote(true);
+
         $this->assertTrue($this->event->getVote());
     }
 }

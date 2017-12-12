@@ -12,20 +12,17 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security\User;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * Tests the FrontendUserProvider class.
- */
 class FrontendUserProviderTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $provider = new FrontendUserProvider($this->mockContaoFramework());
@@ -33,11 +30,9 @@ class FrontendUserProviderTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\User\FrontendUserProvider', $provider);
     }
 
-    /**
-     * Tests loading an existing frontend user.
-     */
-    public function testCanLoadExistingFrontendUserByUsername(): void
+    public function testLoadsAnExistingFrontendUser(): void
     {
+        /** @var UserInterface|\PHPUnit_Framework_MockObject_MockObject $user */
         $user = $this
             ->getMockBuilder(FrontendUser::class)
             ->disableOriginalConstructor()
@@ -72,10 +67,7 @@ class FrontendUserProviderTest extends TestCase
         $this->assertInstanceOf('Contao\FrontendUser', $provider->refreshUser($user));
     }
 
-    /**
-     * Tests loading a non-existing frontend user.
-     */
-    public function testCanNotLoadNonExistingFrontendUserByUsername(): void
+    public function testFailsToLoadANonExistingFrontendUser(): void
     {
         $adapter = $this
             ->getMockBuilder(Adapter::class)
@@ -92,32 +84,27 @@ class FrontendUserProviderTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework([FrontendUser::class => $adapter]);
-
         $provider = new FrontendUserProvider($framework);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\UsernameNotFoundException');
+        $this->expectException(UsernameNotFoundException::class);
+
         $provider->loadUserByUsername('test-user');
     }
 
-    /**
-     * Tests loading a not supported user.
-     */
-    public function testCanNotLoadNonSupportedUser(): void
+    public function testFailsToLoadANonSupportedUser(): void
     {
         $provider = new FrontendUserProvider($this->mockContaoFramework());
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\UnsupportedUserException');
+        $this->expectException(UnsupportedUserException::class);
+
         $provider->refreshUser($this->createMock(UserInterface::class));
     }
 
-    /**
-     * Tests supporting only the FrontendUser class.
-     */
-    public function testSupportsOnlyBackendUserClass(): void
+    public function testSupportsOnlyFrontendUsers(): void
     {
         $provider = new FrontendUserProvider($this->mockContaoFramework());
 
-        $this->assertTrue($provider->supportsClass('Contao\FrontendUser'));
-        $this->assertFalse($provider->supportsClass('Contao\BackendUser'));
+        $this->assertTrue($provider->supportsClass(FrontendUser::class));
+        $this->assertFalse($provider->supportsClass(BackendUser::class));
     }
 }

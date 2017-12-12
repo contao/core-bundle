@@ -32,58 +32,58 @@ use Symfony\Component\Translation\TranslatorInterface;
 class UserChecker implements UserCheckerInterface
 {
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var \Swift_Mailer
      */
-    protected $mailer;
+    private $mailer;
 
     /**
      * @var Session
      */
-    protected $session;
+    private $session;
 
     /**
      * @var ScopeMatcher
      */
-    protected $scopeMatcher;
+    private $scopeMatcher;
 
     /**
      * @var RequestStack
      */
-    protected $requestStack;
+    private $requestStack;
 
     /**
      * @var ContaoFrameworkInterface
      */
-    protected $framework;
+    private $framework;
 
     /**
-     * @param LoggerInterface          $logger
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * @param TranslatorInterface      $translator
      * @param \Swift_Mailer            $mailer
      * @param Session                  $session
      * @param ScopeMatcher             $scopeMatcher
      * @param RequestStack             $requestStack
      * @param ContaoFrameworkInterface $framework
+     * @param LoggerInterface|null     $logger
      */
-    public function __construct(LoggerInterface $logger, TranslatorInterface $translator, \Swift_Mailer $mailer, Session $session, ScopeMatcher $scopeMatcher, RequestStack $requestStack, ContaoFrameworkInterface $framework)
+    public function __construct(TranslatorInterface $translator, \Swift_Mailer $mailer, Session $session, ScopeMatcher $scopeMatcher, RequestStack $requestStack, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
     {
-        $this->logger = $logger;
         $this->translator = $translator;
         $this->mailer = $mailer;
         $this->session = $session;
         $this->scopeMatcher = $scopeMatcher;
         $this->requestStack = $requestStack;
         $this->framework = $framework;
+        $this->logger = $logger;
     }
 
     /**
@@ -114,7 +114,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function checkLoginAttempts(User $user): void
+    private function checkLoginAttempts(User $user): void
     {
         if ($user->loginCount > 0) {
             return;
@@ -134,10 +134,12 @@ class UserChecker implements UserCheckerInterface
 
         $this->setAccountLockedFlashBag($user);
 
-        $this->logger->info(
-            sprintf('User "%s" has been locked for %s minutes', $user->getUsername(), $lockMinutes),
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-        );
+        if (null !== $this->logger) {
+            $this->logger->info(
+                sprintf('User "%s" has been locked for %s minutes', $user->getUsername(), $lockMinutes),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
+        }
 
         // Send admin notification
         if ($config->get('adminEmail')) {
@@ -177,7 +179,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function checkIfAccountIsLocked(User $user): void
+    private function checkIfAccountIsLocked(User $user): void
     {
         if (false !== $user->isAccountNonLocked()) {
             return;
@@ -193,7 +195,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function checkIfAccountIsDisabled(User $user): void
+    private function checkIfAccountIsDisabled(User $user): void
     {
         if (false !== $user->isEnabled()) {
             return;
@@ -201,10 +203,12 @@ class UserChecker implements UserCheckerInterface
 
         $this->setInvalidLoginFlashBag();
 
-        $this->logger->info(
-            'The account has been disabled',
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-        );
+        if (null !== $this->logger) {
+            $this->logger->info(
+                'The account has been disabled',
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
+        }
 
         throw new DisabledException(sprintf('This account (%s) has been disabled!', $user->getUsername()));
     }
@@ -214,7 +218,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function checkIfLoginIsAllowed(User $user): void
+    private function checkIfLoginIsAllowed(User $user): void
     {
         if ($user->login || !$user instanceof FrontendUser) {
             return;
@@ -222,10 +226,12 @@ class UserChecker implements UserCheckerInterface
 
         $this->setInvalidLoginFlashBag();
 
-        $this->logger->info(
-            sprintf('User "%s" is not allowed to log in', $user->getUsername()),
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-        );
+        if (null !== $this->logger) {
+            $this->logger->info(
+                sprintf('User "%s" is not allowed to log in', $user->getUsername()),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
+        }
 
         throw new DisabledException(sprintf('This user (%s) is not allowed to login.', $user->getUsername()));
     }
@@ -235,7 +241,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function checkIfAccountIsActive(User $user): void
+    private function checkIfAccountIsActive(User $user): void
     {
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
@@ -266,7 +272,10 @@ class UserChecker implements UserCheckerInterface
         }
 
         $this->setInvalidLoginFlashBag();
-        $this->logger->info($logMessage, ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]);
+
+        if (null !== $this->logger) {
+            $this->logger->info($logMessage, ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]);
+        }
 
         throw new DisabledException(sprintf('This account (%s) is not active.', $user->getUsername()));
     }
@@ -274,7 +283,7 @@ class UserChecker implements UserCheckerInterface
     /**
      * Adds the "invalid login" flash message.
      */
-    protected function setInvalidLoginFlashBag(): void
+    private function setInvalidLoginFlashBag(): void
     {
         $this->session->getFlashBag()->set(
             $this->getFlashType(),
@@ -287,7 +296,7 @@ class UserChecker implements UserCheckerInterface
      *
      * @param User $user
      */
-    protected function setAccountLockedFlashBag(User $user): void
+    private function setAccountLockedFlashBag(User $user): void
     {
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);

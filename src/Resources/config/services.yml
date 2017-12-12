@@ -353,32 +353,31 @@ services:
         class: Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider
         abstract: true
         arguments:
-            - ""
-            - ""
-            - ""
+            - ~ # User provider
+            - ~ # User checker
+            - ~ # Provider-shared key
             - "@security.encoder_factory"
             - "%security.authentication.hide_user_not_found%"
-            - "@logger"
             - "@session"
             - "@translator"
             - "@event_dispatcher"
             - "@contao.framework"
+            - "@logger"
 
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
         arguments:
             - "@http_kernel"
             - "@security.http_utils"
-            - []
-            - "@logger"
             - "@contao.routing.scope_matcher"
             - "@translator"
+            - []
+            - "@logger"
 
     contao.security.authentication_success_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
         arguments:
             - "@security.http_utils"
-            - []
             - "@contao.framework"
             - "@router"
             - "@event_dispatcher"
@@ -415,9 +414,9 @@ services:
     contao.security.logout_handler:
         class: Contao\CoreBundle\Security\LogoutHandler
         arguments:
-            - "@logger"
             - "@event_dispatcher"
             - "@contao.framework"
+            - "@logger"
 
     contao.security.logout_success_handler:
         class: Contao\CoreBundle\Security\LogoutSuccessHandler
@@ -431,19 +430,18 @@ services:
             - "@security.authorization_checker"
             - "@router"
             - "@database_connection"
-            - "@templating"
             - "@security.token_storage"
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
         arguments:
-            - "@logger"
             - "@translator"
             - "@mailer"
             - "@session"
             - "@contao.routing.scope_matcher"
             - "@request_stack"
             - "@contao.framework"
+            - "@logger"
 
     contao.security.user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider

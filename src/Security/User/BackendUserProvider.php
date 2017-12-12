@@ -56,13 +56,11 @@ class BackendUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
-        if (!$user instanceof BackendUser) {
-            throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', \get_class($user))
-            );
+        if ($user instanceof BackendUser) {
+            return $this->loadUserByUsername($user->getUsername());
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
     }
 
     /**

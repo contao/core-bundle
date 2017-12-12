@@ -24,40 +24,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-/**
- * Tests the LogoutHandler class.
- */
 class LogoutHandlerTest extends TestCase
 {
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var Request
      */
-    protected $request;
+    private $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    private $response;
 
     /**
      * @var TokenInterface
      */
-    protected $token;
+    private $token;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFrameworkInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $framework;
+    private $framework;
 
     /**
      * {@inheritdoc}
@@ -73,47 +70,34 @@ class LogoutHandlerTest extends TestCase
         $this->mockEventDispatcher(false);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $this->mockLogger();
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
+        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutHandler', $handler);
     }
 
-    /**
-     * Tests if the handler immediatly returns if no user is available.
-     */
-    public function testImmediateReturnIfNoUserIsGiven(): void
+    public function testReturnsImmediatelyIfThereIsNoUser(): void
     {
         $this->mockLogger();
-        $this->mockToken(false);
+        $this->mockToken();
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
-
+        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
-    /**
-     * Tests the logger message with a valid user given.
-     */
-    public function testLoggerMessageWithValidUser(): void
+    public function testAddsALogEntryIfThereIsAValidUser(): void
     {
         $this->mockEventDispatcher(true);
         $this->mockLogger('User "username" has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
-
+        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
     /**
-     * Tests the execution of the postLogout hook.
-     *
      * @group legacy
      *
      * @expectedDeprecation Using the postLogout hook has been deprecated %s.
@@ -134,14 +118,11 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger('User "username" has logged out.');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->logger, $this->eventDispatcher, $this->framework);
-
+        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
     /**
-     * postLogout hook stub.
-     *
      * @param User $user
      */
     public static function executePostLogoutHookCallback(User $user): void
@@ -212,7 +193,7 @@ class LogoutHandlerTest extends TestCase
      */
     private function mockUser(string $expectedUsername = null): User
     {
-        /** @var User $user */
+        /** @var User|\PHPUnit_Framework_MockObject_MockObject $user */
         $user = $this->createPartialMock(User::class, ['getUsername']);
 
         if (null !== $expectedUsername) {

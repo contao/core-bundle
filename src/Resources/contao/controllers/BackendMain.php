@@ -215,10 +215,10 @@ class BackendMain extends \Backend
 		}
 
 		/** @var AuthorizationCheckerInterface $authorizationChecker */
-		$authorizationChecker = \System::getContainer()->get('security.authorization_checker');
+		$authorizationChecker = $container->get('security.authorization_checker');
 
 		/** @var RouterInterface $router */
-		$router = \System::getContainer()->get('router');
+		$router = $container->get('router');
 
 		// Generate the logout button
 		if ($authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN'))
@@ -283,7 +283,7 @@ class BackendMain extends \Backend
 			elseif (\Input::get('do') != '')
 			{
 				$event = new PreviewUrlCreateEvent(\Input::get('do'), CURRENT_ID);
-				\System::getContainer()->get('event_dispatcher')->dispatch(ContaoCoreEvents::PREVIEW_URL_CREATE, $event);
+				$container->get('event_dispatcher')->dispatch(ContaoCoreEvents::PREVIEW_URL_CREATE, $event);
 
 				if (($strQuery = $event->getQuery()) !== null)
 				{

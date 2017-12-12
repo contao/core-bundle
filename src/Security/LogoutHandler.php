@@ -27,30 +27,30 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 class LogoutHandler implements LogoutHandlerInterface
 {
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var ContaoFrameworkInterface
      */
-    protected $framework;
+    private $framework;
 
     /**
-     * @param LoggerInterface          $logger
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * @param EventDispatcherInterface $eventDispatcher
      * @param ContaoFrameworkInterface $framework
+     * @param LoggerInterface|null     $logger
      */
-    public function __construct(LoggerInterface $logger, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
     {
-        $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
         $this->framework = $framework;
+        $this->logger = $logger;
     }
 
     /**
@@ -66,10 +66,12 @@ class LogoutHandler implements LogoutHandlerInterface
 
         $this->framework->initialize();
 
-        $this->logger->info(
-            sprintf('User "%s" has logged out.', $user->getUsername()),
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-        );
+        if (null !== $this->logger) {
+            $this->logger->info(
+                sprintf('User "%s" has logged out.', $user->getUsername()),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
+        }
 
         $this->eventDispatcher->dispatch(ContaoCoreEvents::POST_LOGOUT, new PostLogoutEvent($user));
         $this->triggerPostLogoutHook($user);
@@ -80,7 +82,7 @@ class LogoutHandler implements LogoutHandlerInterface
      *
      * @param User $user
      */
-    protected function triggerPostLogoutHook(User $user): void
+    private function triggerPostLogoutHook(User $user): void
     {
         if (empty($GLOBALS['TL_HOOKS']['postLogout']) || !\is_array($GLOBALS['TL_HOOKS']['postLogout'])) {
             return;

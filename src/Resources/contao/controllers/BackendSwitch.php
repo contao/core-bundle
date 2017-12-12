@@ -69,12 +69,9 @@ class BackendSwitch extends \Backend
 		{
 			/** @var User $user */
 			$user = $token->getUser();
+			$objUser = \MemberModel::findByUsername($user->getUsername());
 
-			$objUser = $this->Database->prepare("SELECT username FROM tl_member WHERE username=?")
-									  ->limit(1)
-									  ->execute($user->getUsername());
-
-			if ($objUser->numRows)
+			if ($objUser !== null)
 			{
 				$strUser = $user->getUsername();
 			}

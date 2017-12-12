@@ -26,12 +26,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		),
 		'onsubmit_callback' => array
 		(
-			array('tl_user', 'storeDateAdded'),
-			array('tl_user', 'checkRemoveSession')
-		),
-		'ondelete_callback' => array
-		(
-			array('tl_user', 'removeSession')
+			array('tl_user', 'storeDateAdded')
 		),
 		'sql' => array
 		(
@@ -800,42 +795,6 @@ class tl_user extends Backend
 
 		$this->Database->prepare("UPDATE tl_user SET dateAdded=? WHERE id=?")
 					   ->execute($time, $dc->id);
-	}
-
-
-	/**
-	 * Check whether the user session should be removed
-	 *
-	 * @param DataContainer $dc
-	 */
-	public function checkRemoveSession(DataContainer $dc)
-	{
-		if (!$dc->activeRecord)
-		{
-			return;
-		}
-
-		if ($dc->activeRecord->disable || ($dc->activeRecord->start != '' && $dc->activeRecord->start > time()) || ($dc->activeRecord->stop != '' && $dc->activeRecord->stop < time()))
-		{
-			$this->removeSession($dc);
-		}
-	}
-
-
-	/**
-	 * Remove the session if a user is deleted (see #5353)
-	 *
-	 * @param DataContainer $dc
-	 */
-	public function removeSession(DataContainer $dc)
-	{
-		if (!$dc->activeRecord)
-		{
-			return;
-		}
-
-		$this->Database->prepare("DELETE FROM tl_session WHERE name='BE_USER_AUTH' AND pid=?")
-					   ->execute($dc->activeRecord->id);
 	}
 
 

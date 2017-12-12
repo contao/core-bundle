@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security\User;
 
+use Contao\CoreBundle\Exception\UserNotFoundException;
 use Contao\CoreBundle\Security\User\SwitchUserButtonGenerator;
 use Contao\User;
 use Doctrine\DBAL\Connection;
@@ -22,72 +23,63 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Templating\EngineInterface;
 
-/**
- * Tests the SwitchUserButtonGenerator class.
- */
 class SwitchUserButtonGeneratorTest extends TestCase
 {
     /**
      * @var AuthorizationCheckerInterface
      */
-    protected $authorizationChecker;
+    private $authorizationChecker;
 
     /**
-     * @var RouterInterface
+     * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $router;
+    private $router;
 
     /**
      * @var Connection
      */
-    protected $connection;
-
-    /**
-     * @var EngineInterface
-     */
-    protected $engine;
+    private $connection;
 
     /**
      * @var TokenStorageInterface
      */
-    protected $tokenStorage;
+    private $tokenStorage;
 
     /**
      * @var Statement
      */
-    protected $statement;
+    private $statement;
 
     /**
      * @var TokenInterface
      */
-    protected $token;
+    private $token;
 
     /**
      * @var UserInterface
      */
-    protected $tokenUser;
+    private $tokenUser;
 
     /**
      * @var UserInterface
      */
-    protected $user;
+    private $user;
 
     /**
      * @var array
      */
-    protected $row;
+    private $row;
 
     /**
      * @var string
      */
-    protected $title;
+    private $title;
 
     /**
      * @var string
      */
-    protected $label;
+    private $label;
 
     /**
      * {@inheritdoc}
@@ -98,33 +90,25 @@ class SwitchUserButtonGeneratorTest extends TestCase
         $this->title = 'Switch to user ID 2';
         $this->label = 'Switch user';
         $this->router = $this->createMock(RouterInterface::class);
-        $this->engine = $this->createMock(EngineInterface::class);
 
         $this->mockAuthorizationChecker();
         $this->mockTokenStorage();
         $this->mockConnection();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $switchUserButtonGenerator = new SwitchUserButtonGenerator(
             $this->authorizationChecker,
             $this->router,
             $this->connection,
-            $this->engine,
             $this->tokenStorage
         );
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\User\SwitchUserButtonGenerator', $switchUserButtonGenerator);
     }
 
-    /**
-     * Tests empty string response if user has no role allowed to switch.
-     */
-    public function testReturnsEmptyStringIfUserHasNoRoleAllowedToSwitch(): void
+    public function testReturnsAnEmptyStringIfTheUserIsNotAllowedToSwitch(): void
     {
         $this->mockAuthorizationChecker(false);
 
@@ -132,17 +116,13 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->authorizationChecker,
             $this->router,
             $this->connection,
-            $this->engine,
             $this->tokenStorage
         );
 
         $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, ''));
     }
 
-    /**
-     * Tests UserNotFoundException thrown when user ID is invalid.
-     */
-    public function testThrowsUserNotFoundExceptionWhenUserIdIsInvalid(): void
+    public function testFailsIfTheUserIdIsInvalid(): void
     {
         $this->mockAuthorizationChecker(true);
         $this->mockStatement(0);
@@ -152,19 +132,16 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->authorizationChecker,
             $this->router,
             $this->connection,
-            $this->engine,
             $this->tokenStorage
         );
 
-        $this->expectException('Contao\CoreBundle\Exception\UserNotFoundException');
+        $this->expectException(UserNotFoundException::class);
         $this->expectExceptionMessage('Invalid user ID 1');
+
         $switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, '');
     }
 
-    /**
-     * Tests empty string response when user and token not match.
-     */
-    public function testReturnsEmptyStringWhenUserAndTokenNotMatch(): void
+    public function testReturnsAnEmptyStringIfUserAndTokenDoNotMatch(): void
     {
         $this->mockAuthorizationChecker(true);
         $this->mockTokenStorage('foobar');
@@ -176,17 +153,13 @@ class SwitchUserButtonGeneratorTest extends TestCase
             $this->authorizationChecker,
             $this->router,
             $this->connection,
-            $this->engine,
             $this->tokenStorage
         );
 
         $this->assertEmpty($switchUserButtonGenerator->generateSwitchUserButton($this->row, '', $this->label, $this->title, ''));
     }
 
-    /**
-     * Tests button html response.
-     */
-    public function testReturnsButtonHtml(): void
+    public function testReturnsTheSwitchUserButton(): void
     {
         $this->mockAuthorizationChecker(true);
         $this->mockTokenStorage('foobar');
@@ -195,8 +168,7 @@ class SwitchUserButtonGeneratorTest extends TestCase
         $this->mockConnection($this->statement);
 
         $url = sprintf('/contao?_switch_user=%s', $this->user->username);
-        $image = '<img src="system/themes/flexible/icons/su.svg" width="16" height="16" alt="Switch user">';
-        $html = sprintf('<a href="%s" title="%s">%s</a>', $url, $this->title, $image);
+        $html = sprintf('<a href="%s" title="%s"></a>', $url, $this->title);
 
         $this->router
             ->expects($this->once())
@@ -205,22 +177,10 @@ class SwitchUserButtonGeneratorTest extends TestCase
             ->willReturn($url)
         ;
 
-        $this->engine
-            ->expects($this->once())
-            ->method('render')
-            ->with('@ContaoCore/Backend/switch_user.html.twig', [
-                'url' => $url,
-                'title' => $this->title,
-                'image' => '',
-            ])
-            ->willReturn($html)
-        ;
-
         $switchUserButtonGenerator = new SwitchUserButtonGenerator(
             $this->authorizationChecker,
             $this->router,
             $this->connection,
-            $this->engine,
             $this->tokenStorage
         );
 

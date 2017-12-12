@@ -19,17 +19,17 @@ class ImportUserEvent extends Event
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $credentials;
+    private $credentials;
 
     /**
      * @var string
      */
-    protected $table;
+    private $table;
 
     /**
      * @var bool

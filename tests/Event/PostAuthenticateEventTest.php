@@ -21,7 +21,7 @@ class PostAuthenticateEventTest extends TestCase
     /**
      * @var PostAuthenticateEvent
      */
-    protected $event;
+    private $event;
 
     /**
      * {@inheritdoc}

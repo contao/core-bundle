@@ -369,6 +369,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
             ->with(ContaoCoreEvents::POST_AUTHENTICATE)
         ;
 
-        return new AuthenticationSuccessHandler($utils, $options, $framework, $router, $eventDispatcher);
+        return new AuthenticationSuccessHandler($utils, $framework, $router, $eventDispatcher, $options);
     }
 }

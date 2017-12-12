@@ -12,38 +12,18 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Security\Authentication;
 
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the AuthenticationFailureHandler class.
- */
 class AuthenticationFailureHandlerTest extends TestCase
 {
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var ScopeMatcher
-     */
-    protected $scopeMatcher;
-
-    /**
-     * @var FlashBagInterface
-     */
-    protected $flashBag;
-
     public function testCanBeInstantiated(): void
     {
         $handler = $this->mockFailureHandler();
@@ -190,6 +170,6 @@ class AuthenticationFailureHandlerTest extends TestCase
             $translator = $this->createMock(TranslatorInterface::class);
         }
 
-        return new AuthenticationFailureHandler($kernel, $utils, [], null, $scopeMatcher, $translator);
+        return new AuthenticationFailureHandler($kernel, $utils, $scopeMatcher, $translator);
     }
 }

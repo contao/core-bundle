@@ -20,7 +20,7 @@ class PostAuthenticateEvent extends Event
     /**
      * @var User
      */
-    protected $user;
+    private $user;
 
     /**
      * @param User $user

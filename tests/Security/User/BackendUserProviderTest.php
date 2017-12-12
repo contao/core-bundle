@@ -16,16 +16,13 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Security\User\BackendUserProvider;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\FrontendUser;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * Tests the BackendUserProvider class.
- */
 class BackendUserProviderTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $provider = new BackendUserProvider($this->mockContaoFramework());
@@ -33,10 +30,7 @@ class BackendUserProviderTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\User\BackendUserProvider', $provider);
     }
 
-    /**
-     * Tests loading an existing backend user.
-     */
-    public function testCanLoadExistingBackendUserByUsername(): void
+    public function testLoadsAnExistingBackendUser(): void
     {
         $user = $this
             ->getMockBuilder(BackendUser::class)
@@ -71,11 +65,9 @@ class BackendUserProviderTest extends TestCase
         $this->assertInstanceOf('Contao\BackendUser', $provider->loadUserByUsername('test-user'));
     }
 
-    /**
-     * Tests if a supported backend user can be refreshed.
-     */
-    public function testCanRefreshASupportedBackendUser(): void
+    public function testRefreshesAnExistingBackendUser(): void
     {
+        /** @var UserInterface|\PHPUnit_Framework_MockObject_MockObject $user */
         $user = $this
             ->getMockBuilder(BackendUser::class)
             ->disableOriginalConstructor()
@@ -109,10 +101,7 @@ class BackendUserProviderTest extends TestCase
         $this->assertInstanceOf('Contao\BackendUser', $provider->refreshUser($user));
     }
 
-    /**
-     * Tests loading a non-existing backend user.
-     */
-    public function testCanNotLoadNonExistingBackendUserByUsername(): void
+    public function testFailsToLoadANonExistingBackendUser(): void
     {
         $adapter = $this
             ->getMockBuilder(Adapter::class)
@@ -129,32 +118,27 @@ class BackendUserProviderTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework([BackendUser::class => $adapter]);
-
         $provider = new BackendUserProvider($framework);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\UsernameNotFoundException');
+        $this->expectException(UsernameNotFoundException::class);
+
         $provider->loadUserByUsername('test-user');
     }
 
-    /**
-     * Tests loading a not supported user.
-     */
-    public function testCanNotLoadNonSupportedUser(): void
+    public function testFailsToLoadANonSupportedUser(): void
     {
         $provider = new BackendUserProvider($this->mockContaoFramework());
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\UnsupportedUserException');
+        $this->expectException(UnsupportedUserException::class);
+
         $provider->refreshUser($this->createMock(UserInterface::class));
     }
 
-    /**
-     * Tests supporting only the BackendUser class.
-     */
-    public function testSupportsOnlyBackendUserClass(): void
+    public function testSupportsOnlyBackendUsers(): void
     {
         $provider = new BackendUserProvider($this->mockContaoFramework());
 
-        $this->assertTrue($provider->supportsClass('Contao\BackendUser'));
-        $this->assertFalse($provider->supportsClass('Contao\FrontendUser'));
+        $this->assertTrue($provider->supportsClass(BackendUser::class));
+        $this->assertFalse($provider->supportsClass(FrontendUser::class));
     }
 }

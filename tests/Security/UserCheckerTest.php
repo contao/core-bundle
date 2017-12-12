@@ -24,54 +24,53 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the UserChecker class.
- */
 class UserCheckerTest extends TestCase
 {
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var \Swift_Mailer
      */
-    protected $mailer;
+    private $mailer;
 
     /**
      * @var Session
      */
-    protected $session;
+    private $session;
 
     /**
      * @var FlashBagInterface
      */
-    protected $flashBag;
+    private $flashBag;
 
     /**
      * @var ScopeMatcher
      */
-    protected $scopeMatcher;
+    private $scopeMatcher;
 
     /**
      * @var RequestStack
      */
-    protected $requestStack;
+    private $requestStack;
 
     /**
      * @var ContaoFrameworkInterface
      */
-    protected $framework;
+    private $framework;
 
     /**
      * {@inheritdoc}
@@ -89,9 +88,6 @@ class UserCheckerTest extends TestCase
         $this->mockRequestStack();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $userChecker = $this->getUserChecker();
@@ -99,10 +95,7 @@ class UserCheckerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\UserCHecker', $userChecker);
     }
 
-    /**
-     * Tests if checkPreAuth() returns immediate if no Contao user is given.
-     */
-    public function testCheckPreAuthReturnsImmediateIfNoContaoUserIsGiven(): void
+    public function testReturnsImmediatelyIfNoContaoUserIsGiven(): void
     {
         /** @var UserCheckerInterface|\PHPUnit_Framework_MockObject_MockObject $userChecker */
         $userChecker = $this->createPartialMock(UserChecker::class, ['checkLoginAttempts']);
@@ -116,32 +109,23 @@ class UserCheckerTest extends TestCase
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests empty checkPostAuth().
-     */
-    public function testCheckPostAuth(): void
+    public function testChecksTheAccountAfterAuthentication(): void
     {
-        $userChecker = $this->getUserChecker();
         $user = $this->mockUser();
 
+        $userChecker = $this->getUserChecker();
         $userChecker->checkPostAuth($user);
     }
 
-    /**
-     * Tests a successful preAuth().
-     */
-    public function testASuccessfulPreAuth(): void
+    public function testChecksTheAccountBeforeAuthentication(): void
     {
         $user = $this->mockUser(BackendUser::class, 3);
-        $userChecker = $this->getUserChecker();
 
+        $userChecker = $this->getUserChecker();
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a LockedException is thrown when attempting frontend login with a zero login count.
-     */
-    public function testIfLockedExceptionIsThrownWhenAttemptingFrontendLoginWithAZeroLoginCount(): void
+    public function testThrowsALockedExceptionIfTheFrontendLoginCountIsZero(): void
     {
         $parameters = [
             'foobar',
@@ -190,14 +174,12 @@ class UserCheckerTest extends TestCase
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $this->expectException(LockedException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a LockedException is thrown when attempting backend login with a zero login count.
-     */
-    public function testIfLockedExceptionIsThrownWhenAttemptingBackendLoginWithAZeroLoginCount(): void
+    public function testThrowsALockedExceptionIfTheBackendLoginCountIsZero(): void
     {
         $parameters = [
             'foobar',
@@ -247,14 +229,12 @@ class UserCheckerTest extends TestCase
         $this->mockRequestStack($request);
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $this->expectException(LockedException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a LockedException is thrown when account is locked.
-     */
-    public function testIfLockedExceptionIsThrownWhenAccountIsLocked(): void
+    public function testThrowsALockedExceptionIfTheAccountIsLocked(): void
     {
         $this->setGlobals('Y-m-d', 300);
 
@@ -275,14 +255,12 @@ class UserCheckerTest extends TestCase
         $user = $this->mockUser(BackendUser::class, 3, false, time());
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\LockedException');
+        $this->expectException(LockedException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a DisabledException is thrown when the account is disabled.
-     */
-    public function testIfDisabledExceptionIsThrownWhenAccountIsDisabled(): void
+    public function testThrowsADisabledExceptionIfTheAccountHasBeenDisabled(): void
     {
         $request = $this->mockRequest([], ['_scope' => 'frontend']);
 
@@ -302,14 +280,12 @@ class UserCheckerTest extends TestCase
         $user = $this->mockUser(BackendUser::class, 3, null, null, false);
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $this->expectException(DisabledException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a DisabledException is thrown when frontend login is disabled.
-     */
-    public function testIfDisabledExceptionIsThrownWhenFrontendLoginIsDisabled(): void
+    public function testThrowsADisabledExceptionIfTheFrontendLoginIsDisabled(): void
     {
         $request = $this->mockRequest([], ['_scope' => 'frontend']);
 
@@ -338,14 +314,12 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $this->expectException(DisabledException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a DisabledException is thrown when the account is not active yet.
-     */
-    public function testIfDisabledExceptionIsThrownWhenAccountIsNotActiveYet(): void
+    public function testThrowsADisabledExceptionIfTheAccountIsNotActiveYet(): void
     {
         $this->setGlobals('Y-m-d');
 
@@ -381,14 +355,12 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $this->expectException(DisabledException::class);
+
         $userChecker->checkPreAuth($user);
     }
 
-    /**
-     * Tests, if a DisabledException is thrown when the account was not active.
-     */
-    public function testIfDisabledExceptionIsThrownWhenAccountWasNotActive(): void
+    public function testThrowsADisabledExceptionIfTheAccountIsNotActiveAnymore(): void
     {
         $this->setGlobals('Y-m-d');
 
@@ -425,7 +397,7 @@ class UserCheckerTest extends TestCase
 
         $userChecker = $this->getUserChecker();
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\DisabledException');
+        $this->expectException(DisabledException::class);
         $userChecker->checkPreAuth($user);
     }
 
@@ -545,7 +517,7 @@ class UserCheckerTest extends TestCase
      *
      * @return Request
      */
-    private function mockRequest(array $options = [], array $attributes = [], $query = []): Request
+    private function mockRequest(array $options = [], array $attributes = [], array $query = []): Request
     {
         $request = Request::create('https://www.contao.org');
 
@@ -680,13 +652,13 @@ class UserCheckerTest extends TestCase
     private function getUserChecker(): UserChecker
     {
         return new UserChecker(
-            $this->logger,
             $this->translator,
             $this->mailer,
             $this->session,
             $this->scopeMatcher,
             $this->requestStack,
-            $this->framework
+            $this->framework,
+            $this->logger
         );
     }
 
@@ -714,6 +686,16 @@ class UserCheckerTest extends TestCase
         }
     }
 
+    /**
+     * Returns the mail content.
+     *
+     * @param string $username
+     * @param string $realname
+     * @param string $website
+     * @param int    $locked
+     *
+     * @return string
+     */
     private function getMailContent(string $username, string $realname, string $website, int $locked): string
     {
         return <<<EOT

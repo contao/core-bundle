@@ -27,36 +27,36 @@ class FrontendPreviewAuthenticator
     /**
      * @var RequestStack
      */
-    protected $requestStack;
+    private $requestStack;
 
     /**
      * @var SessionInterface
      */
-    protected $session;
+    private $session;
 
     /**
      * @var TokenStorageInterface
      */
-    protected $tokenStorage;
+    private $tokenStorage;
 
     /**
      * @var UserProviderInterface
      */
-    protected $userProvider;
+    private $userProvider;
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface|null
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @param RequestStack          $requestStack
      * @param SessionInterface      $session
      * @param TokenStorageInterface $tokenStorage
      * @param UserProviderInterface $userProvider
-     * @param LoggerInterface       $logger
+     * @param LoggerInterface|null  $logger
      */
-    public function __construct(RequestStack $requestStack, SessionInterface $session, TokenStorageInterface $tokenStorage, UserProviderInterface $userProvider, LoggerInterface $logger)
+    public function __construct(RequestStack $requestStack, SessionInterface $session, TokenStorageInterface $tokenStorage, UserProviderInterface $userProvider, LoggerInterface $logger = null)
     {
         $this->requestStack = $requestStack;
         $this->session = $session;
@@ -87,10 +87,12 @@ class FrontendPreviewAuthenticator
         try {
             $user = $this->userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            $this->logger->info(
-                sprintf('Could not find a front end user with the username "%s".', $username),
-                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-            );
+            if (null !== $this->logger) {
+                $this->logger->info(
+                    sprintf('Could not find a front end user with the username "%s".', $username),
+                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+                );
+            }
 
             return;
         }

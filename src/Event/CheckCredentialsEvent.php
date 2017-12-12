@@ -20,17 +20,17 @@ class CheckCredentialsEvent extends Event
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $credentials;
+    private $credentials;
 
     /**
      * @var User
      */
-    protected $user;
+    private $user;
 
     /**
      * @var bool

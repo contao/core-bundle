@@ -23,15 +23,16 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     /**
      * @var RouterInterface
      */
-    protected $router;
+    private $router;
 
     /**
      * @var ScopeMatcher
      */
-    protected $scopeMatcher;
+    private $scopeMatcher;
 
     /**
      * @param RouterInterface $router
+     * @param ScopeMatcher    $scopeMatcher
      */
     public function __construct(RouterInterface $router, ScopeMatcher $scopeMatcher)
     {

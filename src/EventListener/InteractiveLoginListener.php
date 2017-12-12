@@ -24,12 +24,12 @@ class InteractiveLoginListener
     /**
      * @var ContaoFrameworkInterface
      */
-    protected $framework;
+    private $framework;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @param ContaoFrameworkInterface $framework

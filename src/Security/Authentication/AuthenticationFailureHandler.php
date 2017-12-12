@@ -29,22 +29,22 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
     /**
      * @var ScopeMatcher
      */
-    protected $scopeMatcher;
+    private $scopeMatcher;
 
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @param HttpKernelInterface  $httpKernel
      * @param HttpUtils            $httpUtils
-     * @param array                $options
-     * @param LoggerInterface|null $logger
      * @param ScopeMatcher         $scopeMatcher
      * @param TranslatorInterface  $translator
+     * @param array                $options
+     * @param LoggerInterface|null $logger
      */
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options, LoggerInterface $logger = null, ScopeMatcher $scopeMatcher, TranslatorInterface $translator)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, array $options = [], LoggerInterface $logger = null)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
 
@@ -81,7 +81,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      *
      * @return string
      */
-    protected function determineTargetUrl(Request $request): string
+    private function determineTargetUrl(Request $request): string
     {
         if ($this->scopeMatcher->isBackendRequest($request)) {
             return $request->getRequestUri();

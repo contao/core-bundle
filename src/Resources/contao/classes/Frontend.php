@@ -675,7 +675,7 @@ abstract class Frontend extends \Controller
 		if ($session->has($sessionKey) && ($token = unserialize($session->get($sessionKey))) instanceof TokenInterface && $token->isAuthenticated())
 		{
 			// Disable the cache if a back end user is logged in
-			if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
+			if (TL_MODE == 'FE' && $sessionKey == BackendUser::SECURITY_SESSION_KEY)
 			{
 				$_SESSION['DISABLE_CACHE'] = true;
 
@@ -691,7 +691,7 @@ abstract class Frontend extends \Controller
 		}
 
 		// Reset the cache settings
-		if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
+		if (TL_MODE == 'FE' && $sessionKey == BackendUser::SECURITY_SESSION_KEY)
 		{
 			$_SESSION['DISABLE_CACHE'] = false;
 		}

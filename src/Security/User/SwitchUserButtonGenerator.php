@@ -14,53 +14,46 @@ namespace Contao\CoreBundle\Security\User;
 
 use Contao\CoreBundle\Exception\UserNotFoundException;
 use Contao\Image;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Templating\EngineInterface;
 
 class SwitchUserButtonGenerator
 {
     /**
      * @var AuthorizationCheckerInterface
      */
-    protected $authorizationChecker;
+    private $authorizationChecker;
 
     /**
      * @var RouterInterface
      */
-    protected $router;
+    private $router;
 
     /**
      * @var Connection
      */
-    protected $connection;
-
-    /**
-     * @var EngineInterface
-     */
-    protected $twig;
+    private $connection;
 
     /**
      * @var TokenStorageInterface
      */
-    protected $tokenStorage;
+    private $tokenStorage;
 
     /**
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param RouterInterface               $router
      * @param Connection                    $connection
-     * @param EngineInterface               $twig
      * @param TokenStorageInterface         $tokenStorage
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router, Connection $connection, EngineInterface $twig, TokenStorageInterface $tokenStorage)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router, Connection $connection, TokenStorageInterface $tokenStorage)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->router = $router;
         $this->connection = $connection;
-        $this->twig = $twig;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -86,7 +79,7 @@ class SwitchUserButtonGenerator
         $stmt->execute();
 
         if (0 === $stmt->rowCount()) {
-            throw new UserNotFoundException(sprintf('Invalid user ID %s' , $row['id']));
+            throw new UserNotFoundException(sprintf('Invalid user ID %s', $row['id']));
         }
 
         $user = $stmt->fetch(\PDO::FETCH_OBJ);
@@ -95,17 +88,12 @@ class SwitchUserButtonGenerator
         $tokenUser = $this->tokenStorage->getToken()->getUser();
 
         if ($tokenUser->getUsername() === $user->username) {
-            return '';
+            return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon));
         }
 
-        $url = $this->router->generate('contao_backend', [
-            '_switch_user' => $user->username,
-        ]);
+        $url = $this->router->generate('contao_backend', ['_switch_user' => $user->username]);
+        $title = StringUtil::specialchars($title);
 
-        return $this->twig->render('@ContaoCore/Backend/switch_user.html.twig', [
-            'url' => $url,
-            'title' => $title,
-            'image' => Image::getHtml($icon, $label),
-        ]);
+        return sprintf('<a href="%s" title="%s">%s</a>', $url, $title, Image::getHtml($icon, $label));
     }
 }

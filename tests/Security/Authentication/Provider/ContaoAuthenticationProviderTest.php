@@ -12,101 +12,100 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security\Authentication\Provider;
 
+use Contao\BackendUser;
 use Contao\CoreBundle\Event\CheckCredentialsEvent;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\FrontendUser;
 use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * Tests the ContaoAuthenticationProvider class.
- */
 class ContaoAuthenticationProviderTest extends TestCase
 {
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var Session
      */
-    protected $session;
+    private $session;
 
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var UserProviderInterface
      */
-    protected $userProvider;
+    private $userProvider;
 
     /**
      * @var UserCheckerInterface
      */
-    protected $userChecker;
+    private $userChecker;
 
     /**
      * @var string
      */
-    protected $providerKey;
+    private $providerKey;
 
     /**
      * @var EncoderFactoryInterface
      */
-    protected $encoderFactory;
+    private $encoderFactory;
 
     /**
      * @var bool
      */
-    protected $hideUserNotFoundExceptions;
+    private $hideUserNotFoundExceptions;
 
     /**
      * @var UserInterface
      */
-    protected $user;
+    private $user;
 
     /**
-     * @var TokenInterface
+     * @var UsernamePasswordToken
      */
-    protected $token;
+    private $token;
 
     /**
      * @var PasswordEncoderInterface
      */
-    protected $encoder;
+    private $encoder;
 
     /**
      * @var FlashBagInterface
      */
-    protected $flashBag;
+    private $flashBag;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFrameworkInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $framework;
+    private $framework;
 
     /**
      * {@inheritdoc}
@@ -128,9 +127,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEventDispatcher(false);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $authenticationProvider = $this->getProvider();
@@ -141,15 +137,13 @@ class ContaoAuthenticationProviderTest extends TestCase
         );
     }
 
-    /**
-     * Tests if a BadCredentialsException is thrown with an invalid user.
-     */
-    public function testThrowsBadCredentialsExceptionWithAnInvalidUser(): void
+    public function testFailsIfTheUserIsInvalid(): void
     {
         $this->mockUser();
         $this->mockToken();
 
         $encoder = $this->createMock(PasswordEncoderInterface::class);
+
         $encoder
             ->expects($this->once())
             ->method('isPasswordValid')
@@ -158,17 +152,15 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         $authenticationProvider = $this->getProvider(null, null, $encoder);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $this->expectException(BadCredentialsException::class);
+
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
-    /**
-     * Tests if a BadCredentialsException is thrown with a FrontendUser and an invalid password.
-     */
-    public function testThrowsBadCredentialsExceptionWithAFrontendUser(): void
+    public function testFailsIfAFrontendUserEntersAnInvalidPassword(): void
     {
         $this->providerKey = 'contao_frontend';
-        $this->mockUser('Contao\FrontendUser', 'foobar');
+        $this->mockUser(FrontendUser::class, 'foobar');
         $this->mockToken(false, 'foobar', '');
         $this->mockTranslator(true);
         $this->mockEncoder();
@@ -179,17 +171,15 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $this->expectException(BadCredentialsException::class);
+
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
-    /**
-     * Tests if a BadCredentialsException is thrown with a BackendUser and an invalid password.
-     */
-    public function testThrowsBadCredentialsExceptionWithABackendUser(): void
+    public function testFailsIfABackendUserEntersAnInvalidPassword(): void
     {
         $this->providerKey = 'contao_backend';
-        $this->mockUser('Contao\BackendUser', 'foobar');
+        $this->mockUser(BackendUser::class, 'foobar');
         $this->mockToken(false, 'foobar', '');
         $this->mockTranslator(true);
         $this->mockEncoder();
@@ -200,32 +190,26 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $this->expectException(BadCredentialsException::class);
+
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
-    /**
-     * Tests a successful authentication of a BackendUser.
-     */
-    public function testSuccessfulBackendUserAuthentication(): void
+    public function testAuthenticatesBackendUsers(): void
     {
         $this->providerKey = 'contao_backend';
-        $this->mockUser('Contao\BackendUser');
+        $this->mockUser(BackendUser::class);
         $this->mockEncoder(true);
         $this->mockToken(true);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
-
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
-    /**
-     * Tests a successful authentication of a user when the vote of the CheckCredentialsEvent is positive.
-     */
-    public function testSuccessfulBackendUserAuthenticationWhenEventVoteIsPositive(): void
+    public function testAuthenticatesBackendUsersIfTheEventVoteIsPositive(): void
     {
         $this->providerKey = 'contao_backend';
-        $this->mockUser('Contao\BackendUser');
+        $this->mockUser(BackendUser::class);
         $this->mockToken(false, 'foobar', '');
         $this->mockTranslator();
         $this->mockEncoder();
@@ -235,33 +219,26 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEventDispatcher(true, 'foobar', '', $this->user, true);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
-
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
-    /**
-     * Tests a successful authentication of a FrontendUser.
-     */
-    public function testSuccessfulFrontendUserAuthentication(): void
+    public function testAuthenticatesFrontendUsers(): void
     {
         $this->providerKey = 'contao_frontend';
-        $this->mockUser('Contao\FrontendUser');
+        $this->mockUser(BackendUser::class);
         $this->mockEncoder(true);
         $this->mockToken(true);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
-
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
     /**
-     * Tests the execution of the checkCredentials hook.
-     *
      * @group legacy
      *
      * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
-    public function testExecutesTheCheckCredentialsHookReturnsTrue(): void
+    public function testAuthenticatesAUserIfTheCheckCredentialsHookReturnsTrue(): void
     {
         $this->framework
             ->expects($this->once())
@@ -274,24 +251,21 @@ class ContaoAuthenticationProviderTest extends TestCase
         ];
 
         $this->providerKey = 'contao_backend';
-        $this->mockUser('Contao\BackendUser');
+        $this->mockUser(BackendUser::class);
         $this->mockEncoder(false);
         $this->mockToken(false, 'username', 'password');
-        $this->mockEventDispatcher(true, 'username', 'password', $this->user, false);
+        $this->mockEventDispatcher(true, 'username', 'password', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
-
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
     /**
-     * Tests the execution of the checkCredentials hook.
-     *
      * @group legacy
      *
      * @expectedDeprecation Using the checkCredentials hook has been deprecated %s.
      */
-    public function testExecutesTheCheckCredentialsHookReturnsFalse(): void
+    public function testFailsToAuthenticateAUserIfTheCheckCredentialsHookReturnsFalse(): void
     {
         $this->framework
             ->expects($this->once())
@@ -304,10 +278,10 @@ class ContaoAuthenticationProviderTest extends TestCase
         ];
 
         $this->providerKey = 'contao_backend';
-        $this->mockUser('Contao\BackendUser', 'username');
+        $this->mockUser(BackendUser::class, 'username');
         $this->mockToken(false, 'username', 'password');
         $this->mockEncoder(false);
-        $this->mockEventDispatcher(true, 'username', 'password', $this->user, false);
+        $this->mockEventDispatcher(true, 'username', 'password', $this->user);
         $this->mockFlashBag('contao.BE.error');
         $this->mockTranslator(true);
         $this->createSessionMock(true);
@@ -315,7 +289,8 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
-        $this->expectException('Symfony\Component\Security\Core\Exception\BadCredentialsException');
+        $this->expectException(BadCredentialsException::class);
+
         $authenticationProvider->checkAuthentication($this->user, $this->token);
     }
 
@@ -332,7 +307,7 @@ class ContaoAuthenticationProviderTest extends TestCase
     {
         self::assertSame('username', $username);
         self::assertSame('password', $credentials);
-        self::assertInstanceOf('Contao\User', $user);
+        self::assertInstanceOf(BackendUser::class, $user);
 
         return true;
     }
@@ -350,7 +325,7 @@ class ContaoAuthenticationProviderTest extends TestCase
     {
         self::assertSame('username', $username);
         self::assertSame('password', $credentials);
-        self::assertInstanceOf('Contao\User', $user);
+        self::assertInstanceOf(BackendUser::class, $user);
 
         return false;
     }
@@ -468,11 +443,11 @@ class ContaoAuthenticationProviderTest extends TestCase
             $this->providerKey,
             $encoderFactory,
             $this->hideUserNotFoundExceptions,
-            $this->logger,
             $this->session,
             $this->translator,
             $this->eventDispatcher,
-            $this->framework
+            $this->framework,
+            $this->logger
         );
     }
 

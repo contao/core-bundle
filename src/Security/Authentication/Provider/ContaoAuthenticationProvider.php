@@ -32,29 +32,24 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 {
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var Session
      */
-    protected $session;
+    private $session;
 
     /**
      * @var TranslatorInterface
      */
-    protected $translator;
+    private $translator;
 
     /**
      * @var string
      */
-    protected $providerKey;
+    private $providerKey;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @var ContaoFrameworkInterface
@@ -62,18 +57,23 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     private $framework;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * @param UserProviderInterface    $userProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
      * @param EncoderFactoryInterface  $encoderFactory
      * @param bool                     $hideUserNotFoundExceptions
-     * @param LoggerInterface          $logger
      * @param Session                  $session
      * @param TranslatorInterface      $translator
      * @param EventDispatcherInterface $eventDispatcher
      * @param ContaoFrameworkInterface $framework
+     * @param LoggerInterface|null     $logger
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, LoggerInterface $logger, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework)
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -114,10 +114,12 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                     $this->translator->trans('ERR.invalidLogin', [], 'contao_default')
                 );
 
-                $this->logger->info(
-                    sprintf('Invalid password submitted for username "%s".', $user->getUsername()),
-                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-                );
+                if (null !== $this->logger) {
+                    $this->logger->info(
+                        sprintf('Invalid password submitted for username "%s".', $user->getUsername()),
+                        ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+                    );
+                }
 
                 throw $badCredentialsException;
             }

@@ -35,14 +35,14 @@ class ContaoUserProvider implements ContainerAwareInterface, UserProviderInterfa
     use ContainerAwareTrait;
 
     /**
-     * @var ScopeMatcher
-     */
-    protected $scopeMatcher;
-
-    /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
 
     /**
      * @param ContaoFrameworkInterface $framework

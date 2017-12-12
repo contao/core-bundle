@@ -33,26 +33,26 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     /**
      * @var ContaoFrameworkInterface
      */
-    protected $framework;
+    private $framework;
 
     /**
      * @var RouterInterface
      */
-    protected $router;
+    private $router;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * @param HttpUtils                $httpUtils
-     * @param array                    $options
      * @param ContaoFrameworkInterface $framework
      * @param RouterInterface          $router
      * @param EventDispatcherInterface $eventDispatcher
+     * @param array                    $options
      */
-    public function __construct(HttpUtils $httpUtils, array $options, ContaoFrameworkInterface $framework, RouterInterface $router, EventDispatcherInterface $eventDispatcher)
+    public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, RouterInterface $router, EventDispatcherInterface $eventDispatcher, array $options = [])
     {
         $options['always_use_default_target_path'] = false;
         $options['target_path_parameter'] = '_target_path';
@@ -99,7 +99,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      *
      * @return RedirectResponse
      */
-    protected function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
+    private function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
     {
         $this->framework->initialize();
         $this->triggerPostAuthenticateHook($user);
@@ -128,7 +128,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      *
      * @return RedirectResponse
      */
-    protected function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
+    private function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
     {
         $this->framework->initialize();
         $this->triggerPostAuthenticateHook($user);

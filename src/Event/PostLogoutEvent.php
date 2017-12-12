@@ -20,7 +20,7 @@ class PostLogoutEvent extends Event
     /**
      * @var User
      */
-    protected $user;
+    private $user;
 
     /**
      * @param User $user

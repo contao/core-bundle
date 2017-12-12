@@ -20,7 +20,7 @@ class ImportUserEventTest extends TestCase
     /**
      * @var ImportUserEvent
      */
-    protected $event;
+    private $event;
 
     /**
      * {@inheritdoc}
@@ -58,6 +58,7 @@ class ImportUserEventTest extends TestCase
     public function testReturnsTrueIfThereIsAtLeastOnePositiveVote(): void
     {
         $this->event->vote(true);
+
         $this->assertTrue($this->event->getVote());
     }
 }

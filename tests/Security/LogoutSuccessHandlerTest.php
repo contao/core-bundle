@@ -18,25 +18,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * Tests the LogoutSuccessHandler class.
- */
 class LogoutSuccessHandlerTest extends TestCase
 {
     /**
-     * @var RouterInterface
+     * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $router;
+    private $router;
 
     /**
-     * @var SessionInterface
+     * @var SessionInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $session;
+    private $session;
 
     /**
      * @var Request
      */
-    protected $request;
+    private $request;
 
     /**
      * {@inheritdoc}
@@ -48,9 +45,6 @@ class LogoutSuccessHandlerTest extends TestCase
         $this->request = new Request();
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testCanBeInstantiated(): void
     {
         $handler = new LogoutSuccessHandler($this->router, $this->mockScopeMatcher());
@@ -58,10 +52,7 @@ class LogoutSuccessHandlerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutSuccessHandler', $handler);
     }
 
-    /**
-     * Tests the handler if no session is given.
-     */
-    public function testRedirectWithoutSession(): void
+    public function testRedirectsToTheDefaultTargetIfThereIsNoSession(): void
     {
         $this->router
             ->expects($this->once())
@@ -75,10 +66,7 @@ class LogoutSuccessHandlerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }
 
-    /**
-     * Tests the handler if no logout target is given.
-     */
-    public function testRedirectWithoutLogoutTarget(): void
+    public function testRedirectsToTheDefaultTargetIfThereIsNoLogoutTarget(): void
     {
         $this->session
             ->expects($this->once())
@@ -100,10 +88,7 @@ class LogoutSuccessHandlerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }
 
-    /**
-     * Tests the handler if a backend request is given.
-     */
-    public function testRedirectToBackendLogin(): void
+    public function testRedirectsToTheBackendLogin(): void
     {
         $this->request->attributes->set('_scope', 'backend');
 
@@ -127,10 +112,7 @@ class LogoutSuccessHandlerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $handler->onLogoutSuccess($this->request));
     }
 
-    /**
-     * Tests the handler if a logout target is given.
-     */
-    public function testRedirectWithLogoutTarget(): void
+    public function testRedirectsToTheLogoutTarget(): void
     {
         $this->session
             ->expects($this->once())
