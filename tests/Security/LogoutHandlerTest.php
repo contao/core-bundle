@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Test\Security;
 
-use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -30,11 +28,6 @@ class LogoutHandlerTest extends TestCase
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
 
     /**
      * @var Request
@@ -66,14 +59,12 @@ class LogoutHandlerTest extends TestCase
         $this->framework = $this->mockContaoFramework();
         $this->request = new Request();
         $this->response = new Response();
-
-        $this->mockEventDispatcher(false);
     }
 
     public function testCanBeInstantiated(): void
     {
         $this->mockLogger();
-        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
+        $handler = new LogoutHandler($this->framework, $this->logger);
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\LogoutHandler', $handler);
     }
@@ -83,17 +74,16 @@ class LogoutHandlerTest extends TestCase
         $this->mockLogger();
         $this->mockToken();
 
-        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
+        $handler = new LogoutHandler($this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
     public function testAddsALogEntryIfThereIsAValidUser(): void
     {
-        $this->mockEventDispatcher(true);
         $this->mockLogger('User "username" has logged out');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
+        $handler = new LogoutHandler($this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
@@ -114,11 +104,10 @@ class LogoutHandlerTest extends TestCase
             'postLogout' => [[\get_class($this), 'executePostLogoutHookCallback']],
         ];
 
-        $this->mockEventDispatcher(true);
         $this->mockLogger('User "username" has logged out');
         $this->mockToken(true);
 
-        $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
+        $handler = new LogoutHandler($this->framework, $this->logger);
         $handler->logout($this->request, $this->response, $this->token);
     }
 
@@ -206,30 +195,5 @@ class LogoutHandlerTest extends TestCase
         }
 
         return $user;
-    }
-
-    /**
-     * Mocks the event dispatcher.
-     *
-     * @param bool $expectsDispatchEvent
-     */
-    private function mockEventDispatcher(bool $expectsDispatchEvent): void
-    {
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
-        if (true === $expectsDispatchEvent) {
-            $this->eventDispatcher
-                ->expects($this->once())
-                ->method('dispatch')
-                ->with(ContaoCoreEvents::POST_LOGOUT)
-            ;
-        }
-
-        if (false === $expectsDispatchEvent) {
-            $this->eventDispatcher
-                ->expects($this->never())
-                ->method('dispatch')
-            ;
-        }
     }
 }

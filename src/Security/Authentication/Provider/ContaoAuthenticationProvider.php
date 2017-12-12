@@ -12,13 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\Authentication\Provider;
 
-use Contao\CoreBundle\Event\CheckCredentialsEvent;
-use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\User;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -47,11 +44,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     private $providerKey;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
@@ -69,11 +61,10 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param bool                     $hideUserNotFoundExceptions
      * @param Session                  $session
      * @param TranslatorInterface      $translator
-     * @param EventDispatcherInterface $eventDispatcher
      * @param ContaoFrameworkInterface $framework
      * @param LoggerInterface|null     $logger
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, Session $session, TranslatorInterface $translator, EventDispatcherInterface $eventDispatcher, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, Session $session, TranslatorInterface $translator, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -81,7 +72,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->session = $session;
         $this->translator = $translator;
         $this->providerKey = $providerKey;
-        $this->eventDispatcher = $eventDispatcher;
         $this->framework = $framework;
     }
 
@@ -97,15 +87,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 throw $badCredentialsException;
             }
 
-            $this->framework->initialize();
-
-            /** @var CheckCredentialsEvent $event */
-            $event = $this->eventDispatcher->dispatch(
-                ContaoCoreEvents::CHECK_CREDENTIALS,
-                new CheckCredentialsEvent($token->getUsername(), $token->getCredentials(), $user)
-            );
-
-            if (false === $event->getVote() && false === $this->triggerCheckCredentialsHook($user, $token)) {
+            if (false === $this->triggerCheckCredentialsHook($user, $token)) {
                 --$user->loginCount;
                 $user->save();
 
@@ -136,6 +118,8 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      */
     private function triggerCheckCredentialsHook(User $user, UsernamePasswordToken $token): bool
     {
+        $this->framework->initialize();
+
         if (empty($GLOBALS['TL_HOOKS']['checkCredentials']) || !\is_array($GLOBALS['TL_HOOKS']['checkCredentials'])) {
             return false;
         }

@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\Authentication\Provider;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Event\CheckCredentialsEvent;
-use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider;
@@ -22,7 +20,6 @@ use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
 use Contao\User;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -51,11 +48,6 @@ class ContaoAuthenticationProviderTest extends TestCase
      * @var TranslatorInterface
      */
     private $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
 
     /**
      * @var UserProviderInterface
@@ -124,7 +116,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->createSessionMock();
         $this->mockLogger();
         $this->mockTranslator();
-        $this->mockEventDispatcher(false);
     }
 
     public function testCanBeInstantiated(): void
@@ -167,7 +158,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockFlashBag('contao.FE.error');
         $this->createSessionMock(true);
         $this->mockLogger('Invalid password submitted for username "foobar"');
-        $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
@@ -186,7 +176,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockFlashBag('contao.BE.error');
         $this->createSessionMock(true);
         $this->mockLogger('Invalid password submitted for username "foobar"');
-        $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 
@@ -201,22 +190,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockUser(BackendUser::class);
         $this->mockEncoder(true);
         $this->mockToken(true);
-
-        $authenticationProvider = $this->getProvider(null, null, $this->encoder);
-        $authenticationProvider->checkAuthentication($this->user, $this->token);
-    }
-
-    public function testAuthenticatesBackendUsersIfTheEventVoteIsPositive(): void
-    {
-        $this->providerKey = 'contao_backend';
-        $this->mockUser(BackendUser::class);
-        $this->mockToken(false, 'foobar', '');
-        $this->mockTranslator();
-        $this->mockEncoder();
-        $this->mockFlashBag();
-        $this->createSessionMock();
-        $this->mockLogger();
-        $this->mockEventDispatcher(true, 'foobar', '', $this->user, true);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
         $authenticationProvider->checkAuthentication($this->user, $this->token);
@@ -254,7 +227,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockUser(BackendUser::class);
         $this->mockEncoder(false);
         $this->mockToken(false, 'username', 'password');
-        $this->mockEventDispatcher(true, 'username', 'password', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
         $authenticationProvider->checkAuthentication($this->user, $this->token);
@@ -281,7 +253,6 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockUser(BackendUser::class, 'username');
         $this->mockToken(false, 'username', 'password');
         $this->mockEncoder(false);
-        $this->mockEventDispatcher(true, 'username', 'password', $this->user);
         $this->mockFlashBag('contao.BE.error');
         $this->mockTranslator(true);
         $this->createSessionMock(true);
@@ -385,7 +356,6 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         if (null !== $username) {
             $this->token
-                ->expects($this->atLeastOnce())
                 ->method('getUsername')
                 ->willReturn($username)
             ;
@@ -393,7 +363,6 @@ class ContaoAuthenticationProviderTest extends TestCase
 
         if (null !== $credentials) {
             $this->token
-                ->expects($this->any())
                 ->method('getCredentials')
                 ->willReturn($credentials)
             ;
@@ -445,7 +414,6 @@ class ContaoAuthenticationProviderTest extends TestCase
             $this->hideUserNotFoundExceptions,
             $this->session,
             $this->translator,
-            $this->eventDispatcher,
             $this->framework,
             $this->logger
         );
@@ -545,39 +513,6 @@ class ContaoAuthenticationProviderTest extends TestCase
                 ->expects($this->once())
                 ->method('getFlashBag')
                 ->willReturn($this->flashBag)
-            ;
-        }
-    }
-
-    /**
-     * Mocks the event dispatcher.
-     *
-     * @param bool      $expectsDispatchEvent
-     * @param string    $username
-     * @param string    $credentials
-     * @param User|null $user
-     * @param bool      $vote
-     */
-    private function mockEventDispatcher(bool $expectsDispatchEvent, string $username = '', string $credentials = '', User $user = null, bool $vote = false): void
-    {
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
-        if (true === $expectsDispatchEvent) {
-            $checkCredentialsEvent = new CheckCredentialsEvent($username, $credentials, $user);
-            $checkCredentialsEvent->vote($vote);
-
-            $this->eventDispatcher
-                ->expects($this->once())
-                ->method('dispatch')
-                ->with(ContaoCoreEvents::CHECK_CREDENTIALS)
-                ->willReturn($checkCredentialsEvent)
-            ;
-        }
-
-        if (false === $expectsDispatchEvent) {
-            $this->eventDispatcher
-                ->expects($this->never())
-                ->method('dispatch')
             ;
         }
     }

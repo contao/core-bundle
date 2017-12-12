@@ -360,7 +360,6 @@ services:
             - "%security.authentication.hide_user_not_found%"
             - "@session"
             - "@translator"
-            - "@event_dispatcher"
             - "@contao.framework"
             - "@logger"
 
@@ -380,7 +379,6 @@ services:
             - "@security.http_utils"
             - "@contao.framework"
             - "@router"
-            - "@event_dispatcher"
 
     contao.security.authenticator:
         class: Contao\CoreBundle\Security\ContaoAuthenticator
@@ -414,7 +412,6 @@ services:
     contao.security.logout_handler:
         class: Contao\CoreBundle\Security\LogoutHandler
         arguments:
-            - "@event_dispatcher"
             - "@contao.framework"
             - "@logger"
 

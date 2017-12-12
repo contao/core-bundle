@@ -10,9 +10,6 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ContaoCoreEvents;
-use Contao\CoreBundle\Event\ImportUserEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -470,14 +467,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 
 			$password = $request->request->get('password');
 
-			/** @var EventDispatcherInterface $eventDispatcher */
-			$eventDispatcher = \System::getContainer()->get('event_dispatcher');
-
-			/** @var ImportUserEvent $importUserEvent */
-			$importUserEvent = $eventDispatcher->dispatch(ContaoCoreEvents::IMPORT_USER, new ImportUserEvent($username, $password, $user->strTable));
-
-			// Check vote from new ImportUserEvent and trigger legacy hook
-			if ($importUserEvent->getVote() === false && self::triggerImportUserHook($username, $password, $user->strTable) === false)
+			if (self::triggerImportUserHook($username, $password, $user->strTable) === false)
 			{
 				return null;
 			}

@@ -13,13 +13,11 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Security\Authentication;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendUser;
 use Contao\PageModel;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -61,7 +59,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $request = $this->mockRequest();
         $token = $this->createMock(TokenInterface::class);
 
-        $handler = $this->mockSuccessHandler(false, ['default_target_path' => 'foobar']);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar']);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -82,7 +80,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
         $token = $this->mockToken(BackendUser::class);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], $utils);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], $utils);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -119,7 +117,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
             ->willReturn($this)
         ;
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], $utils, $framework);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], $utils, $framework);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -156,7 +154,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $request = $this->mockRequest([], ['_route' => 'contao_backend_login']);
         $token = $this->mockToken(FrontendUser::class);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], null, $framework);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], null, $framework);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -177,7 +175,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $token = $this->mockToken(BackendUser::class);
         $router = $this->mockRouter('contao_backend_login', [], '/contao');
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], null, null, $router);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], null, null, $router);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -197,7 +195,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
 
         $token = $this->mockToken(BackendUser::class);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], null, null, $router);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], null, null, $router);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -209,7 +207,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $request = $this->mockRequest();
         $token = $this->mockToken(FrontendUser::class);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar']);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar']);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -231,7 +229,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $request = $this->mockRequest();
         $token = $this->mockToken(FrontendUser::class, [1, 2, 3]);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], null, $framework);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], null, $framework);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -245,7 +243,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
         $request = $this->mockRequest();
         $token = $this->mockToken(FrontendUser::class, [1, 2, 3]);
 
-        $handler = $this->mockSuccessHandler(true, ['default_target_path' => 'foobar'], null, $framework);
+        $handler = $this->mockSuccessHandler(['default_target_path' => 'foobar'], null, $framework);
         $response = $handler->onAuthenticationSuccess($request, $token);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
@@ -339,7 +337,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
     /**
      * Mocks an authentication success handler.
      *
-     * @param bool                          $event
      * @param array                         $options
      * @param HttpUtils|null                $utils
      * @param ContaoFrameworkInterface|null $framework
@@ -347,7 +344,7 @@ class AuthenticationSuccessHandlerTest extends TestCase
      *
      * @return AuthenticationSuccessHandler
      */
-    private function mockSuccessHandler(bool $event = false, array $options = [], HttpUtils $utils = null, ContaoFrameworkInterface $framework = null, RouterInterface $router = null): AuthenticationSuccessHandler
+    private function mockSuccessHandler(array $options = [], HttpUtils $utils = null, ContaoFrameworkInterface $framework = null, RouterInterface $router = null): AuthenticationSuccessHandler
     {
         if (null === $utils) {
             $utils = $this->createMock(HttpUtils::class);
@@ -361,14 +358,6 @@ class AuthenticationSuccessHandlerTest extends TestCase
             $router = $this->createMock(RouterInterface::class);
         }
 
-        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
-        $eventDispatcher
-            ->expects($event ? $this->once() : $this->never())
-            ->method('dispatch')
-            ->with(ContaoCoreEvents::POST_AUTHENTICATE)
-        ;
-
-        return new AuthenticationSuccessHandler($utils, $framework, $router, $eventDispatcher, $options);
+        return new AuthenticationSuccessHandler($utils, $framework, $router, $options);
     }
 }
