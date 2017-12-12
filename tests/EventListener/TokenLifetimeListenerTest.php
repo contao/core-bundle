@@ -195,7 +195,7 @@ class TokenLifetimeListenerTest extends TestCase
             ->willReturn($token)
         ;
 
-        $logger = $this->mockLoggerWithMessage('User "foobar" has been logged out automatically due to inactivity.');
+        $logger = $this->mockLoggerWithMessage('User "foobar" has been logged out automatically due to inactivity');
 
         $listener = $this->mockListener($tokenStorage, $logger);
         $listener->onKernelRequest($this->mockGetResponseEvent());

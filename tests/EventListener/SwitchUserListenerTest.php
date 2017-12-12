@@ -34,7 +34,7 @@ class SwitchUserListenerTest extends TestCase
 
     public function testAddsALogEntryIfAUserSwitchesToAnotherUser(): void
     {
-        $logger = $this->mockLogger('User "user1" has switched to user "user2".');
+        $logger = $this->mockLogger('User "user1" has switched to user "user2"');
         $tokenStorage = $this->mockTokenStorage('user1');
         $event = $this->mockSwitchUserEvent('user2');
 

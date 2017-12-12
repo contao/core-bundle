@@ -116,7 +116,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
                 if (null !== $this->logger) {
                     $this->logger->info(
-                        sprintf('Invalid password submitted for username "%s".', $user->getUsername()),
+                        sprintf('Invalid password submitted for username "%s"', $user->getUsername()),
                         ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
                     );
                 }

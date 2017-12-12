@@ -90,7 +90,7 @@ class LogoutHandlerTest extends TestCase
     public function testAddsALogEntryIfThereIsAValidUser(): void
     {
         $this->mockEventDispatcher(true);
-        $this->mockLogger('User "username" has logged out.');
+        $this->mockLogger('User "username" has logged out');
         $this->mockToken(true);
 
         $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);
@@ -115,7 +115,7 @@ class LogoutHandlerTest extends TestCase
         ];
 
         $this->mockEventDispatcher(true);
-        $this->mockLogger('User "username" has logged out.');
+        $this->mockLogger('User "username" has logged out');
         $this->mockToken(true);
 
         $handler = new LogoutHandler($this->eventDispatcher, $this->framework, $this->logger);

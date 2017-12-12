@@ -166,7 +166,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEncoder();
         $this->mockFlashBag('contao.FE.error');
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username "foobar".');
+        $this->mockLogger('Invalid password submitted for username "foobar"');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
@@ -185,7 +185,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockEncoder();
         $this->mockFlashBag('contao.BE.error');
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username "foobar".');
+        $this->mockLogger('Invalid password submitted for username "foobar"');
         $this->mockEventDispatcher(true, 'foobar', '', $this->user);
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
@@ -285,7 +285,7 @@ class ContaoAuthenticationProviderTest extends TestCase
         $this->mockFlashBag('contao.BE.error');
         $this->mockTranslator(true);
         $this->createSessionMock(true);
-        $this->mockLogger('Invalid password submitted for username "username".');
+        $this->mockLogger('Invalid password submitted for username "username"');
 
         $authenticationProvider = $this->getProvider(null, null, $this->encoder);
 

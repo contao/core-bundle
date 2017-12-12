@@ -63,7 +63,7 @@ class InteractiveLoginListener
         $user->save();
 
         $this->logger->info(
-            sprintf('User "%s" has logged in.', $user->getUsername()),
+            sprintf('User "%s" has logged in', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
         );
 

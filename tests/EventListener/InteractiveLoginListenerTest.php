@@ -50,7 +50,7 @@ class InteractiveLoginListenerTest extends TestCase
 
     public function testAddsALogEntryIfAValidUserIsGiven(): void
     {
-        $logger = $this->mockLogger('User "username" has logged in.');
+        $logger = $this->mockLogger('User "username" has logged in');
         $event = $this->mockInteractiveLoginEvent('username');
 
         $listener = new InteractiveLoginListener($this->mockContaoFramework(), $logger);
@@ -76,7 +76,7 @@ class InteractiveLoginListenerTest extends TestCase
             'postLogin' => [[\get_class($this), 'executePostLoginHookCallback']],
         ];
 
-        $logger = $this->mockLogger('User "username" has logged in.');
+        $logger = $this->mockLogger('User "username" has logged in');
         $event = $this->mockInteractiveLoginEvent('username');
 
         $listener = new InteractiveLoginListener($framework, $logger);

@@ -148,7 +148,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     {
         $this->mockRequestStack(true);
         $this->createTokenStorageMock(true);
-        $this->mockLogger('Could not find a front end user with the username "username".');
+        $this->mockLogger('Could not find a front end user with the username "username"');
         $this->mockUserProvider(false);
 
         $authenticator = new FrontendPreviewAuthenticator(

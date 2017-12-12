@@ -274,10 +274,13 @@ class UserChecker implements UserCheckerInterface
         $this->setInvalidLoginFlashBag();
 
         if (null !== $this->logger) {
-            $this->logger->info($logMessage, ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]);
+            $this->logger->info(
+                $logMessage,
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+            );
         }
 
-        throw new DisabledException(sprintf('This account (%s) is not active.', $user->getUsername()));
+        throw new DisabledException(sprintf('This account (%s) is not active', $user->getUsername()));
     }
 
     /**
