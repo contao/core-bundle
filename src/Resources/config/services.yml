@@ -421,14 +421,6 @@ services:
             - "@router"
             - "@contao.routing.scope_matcher"
 
-    contao.security.switch_user_button_generator:
-        class: Contao\CoreBundle\Security\User\SwitchUserButtonGenerator
-        arguments:
-            - "@security.authorization_checker"
-            - "@router"
-            - "@database_connection"
-            - "@security.token_storage"
-
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
         arguments:

@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_user']['su'],
 				'href'                => 'key=su',
 				'icon'                => 'su.svg',
-				'button_callback'     => array('contao.security.switch_user_button_generator', 'generateSwitchUserButton')
+				'button_callback'     => array('tl_user', 'switchUser')
 			)
 		)
 	),
@@ -646,15 +646,25 @@ class tl_user extends Backend
 	 * @return string
 	 *
 	 * @throws Exception
-	 *
-	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
-	 *             Use the contao.security.switch_user_button_generator service instead.
 	 */
 	public function switchUser($row, $href, $label, $title, $icon)
 	{
-		@trigger_error('Using tl_user::switchUser() has been deprecated and will no longer work in Contao 5.0. Use the contao.security.switch_user_button_generator service instead', E_USER_DEPRECATED);
+		$authorizationChecker = System::getContainer()->get('security.authorization_checker');
 
-		return System::getContainer()->get('contao.security.switch_user_button_generator')->generateSwitchUserButton($row, $href, $label, $title, $icon);
+		if (!$authorizationChecker->isGranted('ROLE_ALLOWED_TO_SWITCH'))
+		{
+			return '';
+		}
+
+		if ($this->User->id == $row['id'])
+		{
+			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon));
+		}
+
+		$router = \System::getContainer()->get('router');
+		$url = $router->generate('contao_backend', array('_switch_user'=>$row['username']));
+
+		return '<a href="'.$url.'" title="'.StringUtil::specialchars($title).'">'.Image::getHtml($icon, $label).'</a> ';
 	}
 
 
