@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\DependencyInjection\Compiler;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Util\PackageUtil;
 use PackageVersions\Versions;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
@@ -162,7 +163,7 @@ class AddAssetsPackagesPassTest extends TestCase
 
         $this->assertSame('assets._version_contao-components/contao', (string) $service->getArgument(1));
 
-        $expectedVersion = strstr(Versions::getVersion('contao-components/contao'), '@', true);
+        $expectedVersion = PackageUtil::getVersion('contao-components/contao');
         $actualVersion = $container->getDefinition('assets._version_contao-components/contao')->getArgument(0);
 
         $this->assertSame($expectedVersion, $actualVersion);

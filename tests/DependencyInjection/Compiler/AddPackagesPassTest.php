@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\DependencyInjection\Compiler;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Util\PackageUtil;
 use PackageVersions\Versions;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -44,13 +45,8 @@ class AddPackagesPassTest extends TestCase
         $this->assertArrayHasKey($keys[2], $packages);
         $this->assertArrayNotHasKey('contao/test-bundle4', $packages);
 
-        $this->assertSame($this->getVersion($keys[0]), $packages[$keys[0]]);
-        $this->assertSame($this->getVersion($keys[1]), $packages[$keys[1]]);
-        $this->assertSame($this->getVersion($keys[2]), $packages[$keys[2]]);
-    }
-
-    private function getVersion(string $package): string
-    {
-        return strstr(Versions::getVersion($package), '@', true);
+        $this->assertSame(PackageUtil::getVersion($keys[0]), $packages[$keys[0]]);
+        $this->assertSame(PackageUtil::getVersion($keys[1]), $packages[$keys[1]]);
+        $this->assertSame(PackageUtil::getVersion($keys[2]), $packages[$keys[2]]);
     }
 }

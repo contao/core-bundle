@@ -16,10 +16,10 @@ use Contao\ContentImage;
 use Contao\ContentText;
 use Contao\CoreBundle\DataCollector\ContaoDataCollector;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\CoreBundle\Util\PackageUtil;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\System;
-use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,15 +27,11 @@ class ContaoDataCollectorTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $collector = new ContaoDataCollector([]);
+        $collector = new ContaoDataCollector();
 
         $this->assertInstanceOf('Contao\CoreBundle\DataCollector\ContaoDataCollector', $collector);
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState false
-     */
     public function testCollectsDataInBackEnd(): void
     {
         $GLOBALS['TL_DEBUG'] = [
@@ -45,13 +41,13 @@ class ContaoDataCollectorTest extends TestCase
             'additional_data' => 'data',
         ];
 
-        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
-
         $collector = new ContaoDataCollector();
         $collector->collect(new Request(), new Response());
 
         $this->assertSame(['ContentText' => ContentText::class], $collector->getClassesAliased());
         $this->assertSame(['ContentImage' => ContentImage::class], $collector->getClassesComposerized());
+
+        $version = PackageUtil::getVersion('contao/core-bundle');
 
         $this->assertSame(
             [
@@ -88,7 +84,7 @@ class ContaoDataCollectorTest extends TestCase
 
         $GLOBALS['objPage'] = $this->mockClassWithProperties(PageModel::class, ['id' => 2]);
 
-        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
+        $version = PackageUtil::getVersion('contao/core-bundle');
 
         $collector = new ContaoDataCollector();
         $collector->setFramework($framework);
@@ -116,7 +112,7 @@ class ContaoDataCollectorTest extends TestCase
 
     public function testReturnsAnEmtpyArrayIfTheDataIsNotAnArray(): void
     {
-        $collector = new ContaoDataCollector([]);
+        $collector = new ContaoDataCollector();
         $collector->unserialize('N;');
 
         $this->assertSame([], $collector->getAdditionalData());
@@ -124,7 +120,7 @@ class ContaoDataCollectorTest extends TestCase
 
     public function testReturnsAnEmptyArrayIfTheKeyIsUnknown(): void
     {
-        $collector = new ContaoDataCollector([]);
+        $collector = new ContaoDataCollector();
 
         $method = new \ReflectionMethod($collector, 'getData');
         $method->setAccessible(true);

@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
+use Contao\CoreBundle\Util\PackageUtil;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -399,7 +400,7 @@ class PageRegular extends \Frontend
 			{
 				try
 				{
-					$version = strstr(\PackageVersions\Versions::getVersion('contao-components/jquery'), '@', true);
+					$version = PackageUtil::getVersion('contao-components/jquery');
 
 					$this->Template->mooScripts .= \Template::generateScriptTag('https://code.jquery.com/jquery-' . $version . '.min.js') . "\n";
 
@@ -427,7 +428,7 @@ class PageRegular extends \Frontend
 			{
 				try
 				{
-					$version = strstr(\PackageVersions\Versions::getVersion('contao-components/jquery'), '@', true);
+					$version = PackageUtil::getVersion('contao-components/jquery');
 
 					if (version_compare($version, '1.5.1', '>'))
 					{

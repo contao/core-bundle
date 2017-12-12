@@ -14,10 +14,10 @@ namespace Contao\CoreBundle\DataCollector;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Util\PackageUtil;
 use Contao\LayoutModel;
 use Contao\Model\Registry;
 use Contao\PageModel;
-use PackageVersions\Versions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -31,9 +31,7 @@ class ContaoDataCollector extends DataCollector implements FrameworkAwareInterfa
      */
     public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
-        $version = strstr(Versions::getVersion('contao/core-bundle'), '@', true);
-
-        $this->data = ['contao_version' => $version];
+        $this->data = ['contao_version' => PackageUtil::getVersion('contao/core-bundle')];
 
         $this->addSummaryData();
 
