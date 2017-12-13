@@ -93,32 +93,20 @@ class FrontendUser extends User
 			return static::$objInstance;
 		}
 
-		/** @var TokenInterface $token */
-		$token = \System::getContainer()->get('security.token_storage')->getToken();
+		$objToken = \System::getContainer()->get('security.token_storage')->getToken();
 
 		// Try to load user from security storage
-		if ($token !== null && is_a($token->getUser(), static::class))
+		if ($objToken !== null && is_a($objToken->getUser(), static::class))
 		{
-			return static::loadUserByUsername($token->getUser()->getUsername());
-		}
-
-		/** @var SessionInterface $session */
-		$session = \System::getContainer()->get('session');
-
-		if (!$session->has(self::SECURITY_SESSION_KEY))
-		{
-			return parent::getInstance();
+			return static::loadUserByUsername($objToken->getUser()->getUsername());
 		}
 
 		// Try to load possibly authenticated FrontendUser from session
-		if (!($token = unserialize($session->get(self::SECURITY_SESSION_KEY))) instanceof TokenInterface)
-		{
-			return parent::getInstance();
-		}
+		$strUser = \System::getContainer()->get('contao.security.token_checker')->getUsername(self::SECURITY_SESSION_KEY);
 
-		if ($token->isAuthenticated())
+		if (null !== $strUser)
 		{
-			return static::loadUserByUsername($token->getUser()->getUsername());
+			return static::loadUserByUsername($strUser);
 		}
 
 		return parent::getInstance();
