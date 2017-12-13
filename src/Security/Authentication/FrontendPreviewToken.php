@@ -34,7 +34,7 @@ class FrontendPreviewToken extends AbstractToken
     /**
      * {@inheritdoc}
      */
-    public function getCredentials(): null
+    public function getCredentials()
     {
         return null;
     }

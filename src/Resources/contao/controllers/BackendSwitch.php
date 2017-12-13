@@ -93,6 +93,7 @@ class BackendSwitch extends \Backend
 			{
 				$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 				$strUser = (string) \Input::post('user');
+				$objTemplate->user = $strUser;
 
 				if (!$strUser || !$objAuthenticator->authenticateFrontendUser($strUser))
 				{
