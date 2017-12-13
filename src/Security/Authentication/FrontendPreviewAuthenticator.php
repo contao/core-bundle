@@ -18,7 +18,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -69,7 +68,7 @@ class FrontendPreviewAuthenticator
      * Authenticates a front end user based on the username.
      *
      * @param null $username
-     * 
+     *
      * @throws \RuntimeException
      */
     public function authenticateFrontendUser($username = null): void
@@ -97,6 +96,10 @@ class FrontendPreviewAuthenticator
 
         try {
             $user = $this->userProvider->loadUserByUsername($username);
+
+            if (!$user instanceof FrontendUser) {
+                throw new UsernameNotFoundException('User is not a front end user');
+            }
         } catch (UsernameNotFoundException $e) {
             if (null !== $this->logger) {
                 $this->logger->info(
@@ -108,7 +111,7 @@ class FrontendPreviewAuthenticator
             return;
         }
 
-        $token = new UsernamePasswordToken($user, null, 'contao_frontend', (array) $user->getRoles());
+        $token = new FrontendPreviewToken($user);
 
         if (false === $token->isAuthenticated()) {
             if ($request->hasPreviousSession()) {
