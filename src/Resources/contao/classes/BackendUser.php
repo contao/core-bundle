@@ -37,43 +37,43 @@ class BackendUser extends User
 	 * Edit page flag
 	 * @var string
 	 */
-	const CAN_EDIT_PAGE = 1;
+	public const CAN_EDIT_PAGE = 1;
 
 	/**
 	 * Edit page hierarchy flag
 	 * @var string
 	 */
-	const CAN_EDIT_PAGE_HIERARCHY = 2;
+	public const CAN_EDIT_PAGE_HIERARCHY = 2;
 
 	/**
 	 * Delete page flag
 	 * @var string
 	 */
-	const CAN_DELETE_PAGE = 3;
+	public const CAN_DELETE_PAGE = 3;
 
 	/**
 	 * Edit articles flag
 	 * @var string
 	 */
-	const CAN_EDIT_ARTICLES = 4;
+	public const CAN_EDIT_ARTICLES = 4;
 
 	/**
 	 * Edit article hierarchy flag
 	 * @var string
 	 */
-	const CAN_EDIT_ARTICLE_HIERARCHY = 5;
+	public const CAN_EDIT_ARTICLE_HIERARCHY = 5;
 
 	/**
 	 * Delete articles flag
 	 * @var string
 	 */
-	const CAN_DELETE_ARTICLES = 6;
+	public const CAN_DELETE_ARTICLES = 6;
 
 	/**
 	 * Symfony Security session key
 	 * @var string
 	 */
-	const SECURITY_SESSION_KEY = '_security_contao_backend';
+	public const SECURITY_SESSION_KEY = '_security_contao_backend';
 
 	/**
 	 * Current object instance (do not remove)
