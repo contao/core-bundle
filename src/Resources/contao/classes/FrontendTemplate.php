@@ -250,12 +250,9 @@ class FrontendTemplate extends \Template
 	 */
 	public function hasAuthenticatedBackendUser()
 	{
-		if (!isset($_COOKIE['BE_USER_AUTH']))
-		{
-			return false;
-		}
+		$objTokenChecker = \System::getContainer()->get('contao.security.token_checker');
 
-		return Input::cookie('BE_USER_AUTH') == $this->getSessionHash('BE_USER_AUTH');
+		return $objTokenChecker->isAuthenticated(\BackendUser::SECURITY_SESSION_KEY);
 	}
 
 

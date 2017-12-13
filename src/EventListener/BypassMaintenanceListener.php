@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Request;
+use Contao\BackendUser;
+use Contao\CoreBundle\Security\TokenChecker;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -24,9 +25,9 @@ class BypassMaintenanceListener
     private $session;
 
     /**
-     * @var bool
+     * @var TokenChecker
      */
-    private $disableIpCheck;
+    private $tokenChecker;
 
     /**
      * @var string
@@ -35,13 +36,13 @@ class BypassMaintenanceListener
 
     /**
      * @param SessionInterface $session
-     * @param bool             $disableIpCheck
+     * @param TokenChecker     $tokenChecker
      * @param string           $requestAttribute
      */
-    public function __construct(SessionInterface $session, bool $disableIpCheck, string $requestAttribute = '_bypass_maintenance')
+    public function __construct(SessionInterface $session, TokenChecker $tokenChecker, string $requestAttribute = '_bypass_maintenance')
     {
         $this->session = $session;
-        $this->disableIpCheck = $disableIpCheck;
+        $this->tokenChecker = $tokenChecker;
         $this->requestAttribute = $requestAttribute;
     }
 
@@ -54,34 +55,10 @@ class BypassMaintenanceListener
     {
         $request = $event->getRequest();
 
-        if (!$this->hasAuthenticatedBackendUser($request)) {
+        if (!$this->tokenChecker->isAuthenticated(BackendUser::SECURITY_SESSION_KEY)) {
             return;
         }
 
         $request->attributes->set($this->requestAttribute, true);
-    }
-
-    /**
-     * Checks if there is an authenticated back end user.
-     *
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function hasAuthenticatedBackendUser(Request $request): bool
-    {
-        if (!$request->cookies->has('BE_USER_AUTH')) {
-            return false;
-        }
-
-        $sessionHash = sha1(
-            sprintf(
-                '%s%sBE_USER_AUTH',
-                $this->session->getId(),
-                $this->disableIpCheck ? '' : $request->getClientIp()
-            )
-        );
-
-        return $request->cookies->get('BE_USER_AUTH') === $sessionHash;
     }
 }

@@ -402,6 +402,12 @@ services:
             - "@router"
             - "@contao.routing.scope_matcher"
 
+    contao.security.token_checker:
+        class: Contao\CoreBundle\Security\TokenChecker
+        public: true
+        arguments:
+            - "@session"
+
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
         arguments:
