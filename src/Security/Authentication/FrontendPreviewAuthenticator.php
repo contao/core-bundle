@@ -85,7 +85,7 @@ class FrontendPreviewAuthenticator
         }
 
         // Back end user does not have permission to log in front end users
-        if (!$backendUser->isAdmin && (!empty($backendUser->amg) && !\is_array($backendUser->amg))) {
+        if (!$backendUser->isAdmin && (empty($backendUser->amg) || !\is_array($backendUser->amg))) {
             return false;
         }
 

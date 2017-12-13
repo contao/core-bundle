@@ -84,6 +84,8 @@ use Contao\CoreBundle\Security\LogoutSuccessHandler;
 use Contao\CoreBundle\Security\User\BackendUserProvider;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Security\UserChecker;
+use Contao\CoreBundle\Security\User\BackendUserProvider;
+use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Contao\CoreBundle\Slug\ValidCharacters;
 use Contao\CoreBundle\Tests\TestCase;
@@ -236,7 +238,7 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame(BypassMaintenanceListener::class, $definition->getClass());
         $this->assertTrue($definition->isPrivate());
         $this->assertSame('session', (string) $definition->getArgument(0));
-        $this->assertSame('%contao.security.disable_ip_check%', (string) $definition->getArgument(1));
+        $this->assertSame('contao.security.token_checker', (string) $definition->getArgument(1));
 
         $tags = $definition->getTags();
 
@@ -308,7 +310,7 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame(HeaderReplayUserSessionListener::class, $definition->getClass());
         $this->assertTrue($definition->isPrivate());
         $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(0));
-        $this->assertSame('%contao.security.disable_ip_check%', (string) $definition->getArgument(1));
+        $this->assertSame('contao.security.token_checker', (string) $definition->getArgument(1));
 
         $tags = $definition->getTags();
 
@@ -1331,11 +1333,10 @@ class ContaoCoreExtensionTest extends TestCase
 
         $this->assertSame(FrontendPreviewAuthenticator::class, $definition->getClass());
         $this->assertTrue($definition->isPrivate());
-        $this->assertSame('request_stack', (string) $definition->getArgument(0));
-        $this->assertSame('session', (string) $definition->getArgument(1));
-        $this->assertSame('security.token_storage', (string) $definition->getArgument(2));
-        $this->assertSame('contao.security.frontend_user_provider', (string) $definition->getArgument(3));
-        $this->assertSame('logger', (string) $definition->getArgument(4));
+        $this->assertSame('session', (string) $definition->getArgument(0));
+        $this->assertSame('security.token_storage', (string) $definition->getArgument(1));
+        $this->assertSame('contao.security.frontend_user_provider', (string) $definition->getArgument(2));
+        $this->assertSame('logger', (string) $definition->getArgument(3));
     }
 
     public function testRegistersTheSecurityFrontendUserProvider(): void

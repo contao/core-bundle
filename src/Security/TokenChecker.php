@@ -12,22 +12,22 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class TokenChecker
 {
     /**
-     * @var Session
+     * @var SessionInterface
      */
     private $session;
 
     /**
      * Constructor.
      *
-     * @param Session $session
+     * @param SessionInterface $session
      */
-    public function __construct(Session $session)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }
