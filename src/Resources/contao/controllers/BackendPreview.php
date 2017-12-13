@@ -90,7 +90,7 @@ class BackendPreview extends \Backend
 		$objTemplate->url = $strUrl;
 
 		// Switch to a particular member (see #6546)
-		if (($strUser = (string) \Input::get('user')) && ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg))))
+		if (($strUser = \Input::get('user')) && ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg))))
 		{
 			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 

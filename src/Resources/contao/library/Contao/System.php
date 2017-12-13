@@ -717,11 +717,12 @@ abstract class System
 	 *
 	 * @return string The session hash
 	 *
-	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5. Use Symfony authentication instead.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
+	 *             Use Symfony authentication instead.
 	 */
 	public static function getSessionHash($strCookie)
 	{
-		@trigger_error('Deprecated since Contao 4.5, to be removed in Contao 5. Use Symfony authentication instead.');
+		@trigger_error('Using System::getSessionHash() has been deprecated and will no longer work in Contao 5.0. Use Symfony authentication instead.', E_USER_DEPRECATED);
 
 		$session = static::getContainer()->get('session');
 

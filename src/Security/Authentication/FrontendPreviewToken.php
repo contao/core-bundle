@@ -18,8 +18,6 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 class FrontendPreviewToken extends AbstractToken
 {
     /**
-     * Constructor.
-     *
      * @param FrontendUser $user
      */
     public function __construct(FrontendUser $user)

@@ -399,9 +399,9 @@ services:
 
     contao.security.token_checker:
         class: Contao\CoreBundle\Security\TokenChecker
-        public: true
         arguments:
             - "@session"
+        public: true
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker

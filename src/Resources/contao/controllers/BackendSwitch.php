@@ -91,14 +91,15 @@ class BackendSwitch extends \Backend
 			// Switch user accounts
 			if ($blnCanSwitchUser)
 			{
+				$strUser = \Input::post('user');
 				$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
-				$strUser = (string) \Input::post('user');
-				$objTemplate->user = $strUser;
 
 				if (!$strUser || !$objAuthenticator->authenticateFrontendUser($strUser))
 				{
 					$objAuthenticator->removeFrontendUser();
 				}
+
+				$objTemplate->user = $strUser;
 			}
 
 			$objTemplate->update = true;

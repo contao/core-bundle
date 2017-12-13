@@ -32,12 +32,10 @@ class BypassMaintenanceListenerTest extends TestCase
 
     public function testAddsTheRequestAttribute(): void
     {
-        $request = new Request();
-
         $kernel = $this->createMock(KernelInterface::class);
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-
+        $event = new GetResponseEvent($kernel, new Request(), HttpKernelInterface::MASTER_REQUEST);
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->once())
             ->method('isAuthenticated')
@@ -54,10 +52,9 @@ class BypassMaintenanceListenerTest extends TestCase
     public function testDoesNotAddTheRequestAttributeIfThereIsNoBackEndUser(): void
     {
         $kernel = $this->createMock(KernelInterface::class);
-        $request = new Request();
-        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-
+        $event = new GetResponseEvent($kernel, new Request(), HttpKernelInterface::MASTER_REQUEST);
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->once())
             ->method('isAuthenticated')

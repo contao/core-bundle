@@ -84,17 +84,14 @@ class FrontendPreviewAuthenticator
             return false;
         }
 
-        // Back end user does not have permission to log in front end users
+        // The back end user does not have permission to log in front end users
         if (!$backendUser->isAdmin && (empty($backendUser->amg) || !\is_array($backendUser->amg))) {
             return false;
         }
 
         try {
+            /** @var FrontendUser $frontendUser */
             $frontendUser = $this->userProvider->loadUserByUsername($username);
-
-            if (!$frontendUser instanceof FrontendUser) {
-                throw new UsernameNotFoundException('User is not a front end user');
-            }
         } catch (UsernameNotFoundException $e) {
             if (null !== $this->logger) {
                 $this->logger->info(
@@ -109,7 +106,7 @@ class FrontendPreviewAuthenticator
         $allowedGroups = StringUtil::deserialize($backendUser->amg, true);
         $frontendGroups = StringUtil::deserialize($frontendUser->groups, true);
 
-        // Back end user does not have permission to log in front end users with that group
+        // The front end user does not belong to a group that the back end user is allowed to log in
         if (!$backendUser->isAdmin && !\count(array_intersect($frontendGroups, $allowedGroups))) {
             return false;
         }

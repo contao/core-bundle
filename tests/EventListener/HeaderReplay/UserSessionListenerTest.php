@@ -25,7 +25,9 @@ class UserSessionListenerTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $listener = new UserSessionListener($this->mockScopeMatcher(), $this->createMock(TokenChecker::class));
+        $scopeMatcher = $this->mockScopeMatcher();
+        $tokenChecker = $this->createMock(TokenChecker::class);
+        $listener = new UserSessionListener($scopeMatcher, $tokenChecker);
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\UserSessionListener', $listener);
     }
@@ -45,12 +47,15 @@ class UserSessionListenerTest extends TestCase
         $request->setSession($session);
 
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->atLeastOnce())
             ->method('isAuthenticated')
-            ->willReturnCallback(function ($sessionKey) use ($sessionKeys) {
-                return $sessionKeys[$sessionKey];
-            })
+            ->willReturnCallback(
+                function (string $sessionKey) use ($sessionKeys): bool {
+                    return $sessionKeys[$sessionKey];
+                }
+            )
         ;
 
         $event = new HeaderReplayEvent($request, new ResponseHeaderBag());
@@ -76,8 +81,8 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotAddTheForceNoCacheHeaderIfNotInContaoScope(): void
     {
         $event = new HeaderReplayEvent(new Request(), new ResponseHeaderBag());
-
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->any())
             ->method('isAuthenticated')
@@ -96,6 +101,7 @@ class UserSessionListenerTest extends TestCase
         $request->attributes->set('_scope', 'frontend');
 
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->any())
             ->method('isAuthenticated')
@@ -117,6 +123,7 @@ class UserSessionListenerTest extends TestCase
         $request->setSession($this->mockSession());
 
         $tokenChecker = $this->createMock(TokenChecker::class);
+
         $tokenChecker
             ->expects($this->any())
             ->method('isAuthenticated')

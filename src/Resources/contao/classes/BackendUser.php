@@ -11,9 +11,7 @@
 namespace Contao;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 
 /**
@@ -138,13 +136,13 @@ class BackendUser extends User
 
 		$objToken = \System::getContainer()->get('security.token_storage')->getToken();
 
-		// Try to load user from security storage
+		// Load the user from the security storage
 		if ($objToken !== null && is_a($objToken->getUser(), static::class))
 		{
 			return static::loadUserByUsername($objToken->getUser()->getUsername());
 		}
 
-		// Try to load possibly authenticated FrontendUser from session
+		// Check for an authenticated user in the session
 		$strUser = \System::getContainer()->get('contao.security.token_checker')->getUsername(self::SECURITY_SESSION_KEY);
 
 		if ($strUser !== null)

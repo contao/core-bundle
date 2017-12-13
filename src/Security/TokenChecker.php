@@ -23,8 +23,6 @@ class TokenChecker
     private $session;
 
     /**
-     * Constructor.
-     *
      * @param SessionInterface $session
      */
     public function __construct(SessionInterface $session)
@@ -63,7 +61,7 @@ class TokenChecker
     }
 
     /**
-     * Gets the token from session storage.
+     * Gets the token from the session storage.
      *
      * @param string $sessionKey
      *
