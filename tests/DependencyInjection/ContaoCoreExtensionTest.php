@@ -84,8 +84,6 @@ use Contao\CoreBundle\Security\LogoutSuccessHandler;
 use Contao\CoreBundle\Security\User\BackendUserProvider;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Security\UserChecker;
-use Contao\CoreBundle\Security\User\BackendUserProvider;
-use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Contao\CoreBundle\Slug\ValidCharacters;
 use Contao\CoreBundle\Tests\TestCase;
