@@ -147,7 +147,7 @@ class BackendUser extends User
 		// Try to load possibly authenticated FrontendUser from session
 		$strUser = \System::getContainer()->get('contao.security.token_checker')->getUsername(self::SECURITY_SESSION_KEY);
 
-		if (null !== $strUser)
+		if ($strUser !== null)
 		{
 			return static::loadUserByUsername($strUser);
 		}

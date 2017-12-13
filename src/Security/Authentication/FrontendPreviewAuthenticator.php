@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Security\Authentication;
 use Contao\BackendUser;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\FrontendUser;
+use Contao\StringUtil;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -105,8 +106,8 @@ class FrontendPreviewAuthenticator
             return false;
         }
 
-        $allowedGroups = \StringUtil::deserialize($backendUser->amg, true);
-        $frontendGroups = \StringUtil::deserialize($frontendUser->groups, true);
+        $allowedGroups = StringUtil::deserialize($backendUser->amg, true);
+        $frontendGroups = StringUtil::deserialize($frontendUser->groups, true);
 
         // Back end user does not have permission to log in front end users with that group
         if (!$backendUser->isAdmin && !\count(array_intersect($frontendGroups, $allowedGroups))) {
