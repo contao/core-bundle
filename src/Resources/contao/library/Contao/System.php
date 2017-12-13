@@ -716,27 +716,21 @@ abstract class System
 	 * @param string $strCookie The cookie name
 	 *
 	 * @return string The session hash
+	 *
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5. Use Symfony authentication instead.
 	 */
 	public static function getSessionHash($strCookie)
 	{
-		$container = static::getContainer();
-		$session = $container->get('session');
+		@trigger_error('Deprecated since Contao 4.5, to be removed in Contao 5. Use Symfony authentication instead.');
+
+		$session = static::getContainer()->get('session');
 
 		if (!$session->isStarted())
 		{
 			$session->start();
 		}
 
-		$strHash = $session->getId();
-
-		if (!$container->getParameter('contao.security.disable_ip_check'))
-		{
-			$strHash .= \Environment::get('ip');
-		}
-
-		$strHash .= $strCookie;
-
-		return sha1($strHash);
+		return sha1($session->getId().$strCookie);
 	}
 
 
