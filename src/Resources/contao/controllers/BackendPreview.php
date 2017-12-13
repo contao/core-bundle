@@ -90,18 +90,12 @@ class BackendPreview extends \Backend
 		$objTemplate->url = $strUrl;
 
 		// Switch to a particular member (see #6546)
-		if (\Input::get('user') && ($this->User->isAdmin || \is_array($this->User->amg) && !empty($this->User->amg)))
+		if (($strUser = (string) \Input::get('user')) && ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg))))
 		{
-			$objUser = \MemberModel::findByUsername(\Input::get('user'));
+			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 
-			// Check the allowed member groups
-			if ($objUser !== null && ($this->User->isAdmin || \count(array_intersect(\StringUtil::deserialize($objUser->groups, true), $this->User->amg)) > 0))
-			{
-				$strHash = $this->getSessionHash('FE_USER_AUTH');
-
-				// Set the cookie
-				$this->setCookie('FE_USER_AUTH', $strHash, (time() + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-				$objTemplate->user = \Input::post('user');
+			if ($objAuthenticator->authenticateFrontendUser($strUser)) {
+				$objTemplate->user = $strUser;
 			}
 		}
 

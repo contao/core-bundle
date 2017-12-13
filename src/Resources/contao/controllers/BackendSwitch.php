@@ -60,21 +60,11 @@ class BackendSwitch extends \Backend
 			$this->getDatalistOptions();
 		}
 
-		$strUser = '';
-		$strHash = $this->getSessionHash('FE_USER_AUTH');
-		$session = \System::getContainer()->get('session');
-
-		// Get the front end user
-		if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
-		{
-			$strUser = $token->getUser()->getUsername();
-		}
-
 		$blnCanSwitchUser = ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg)));
 
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_switch');
-		$objTemplate->user = $strUser;
+		$objTemplate->user = (string) \System::getContainer()->get('contao.security.token_checker')->getUsername(\FrontendUser::SECURITY_SESSION_KEY);
 		$objTemplate->show = \Input::cookie('FE_PREVIEW');
 		$objTemplate->update = false;
 		$objTemplate->canSwitchUser = $blnCanSwitchUser;
@@ -101,40 +91,12 @@ class BackendSwitch extends \Backend
 			// Switch user accounts
 			if ($blnCanSwitchUser)
 			{
-			   // Log in the front end user
-				if (\Input::post('user'))
+				$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
+				$strUser = (string) \Input::post('user');
+
+				if (!$strUser || !$objAuthenticator->authenticateFrontendUser($strUser))
 				{
-					// Authenticate the new FrontendUser at the Symfony firewall
-					\System::getContainer()->get('contao.security.frontend_preview_authenticator')->authenticateFrontendUser(\Input::post('user'));
-
-					if ($session->has(\FrontendUser::SECURITY_SESSION_KEY) && ($token = unserialize($session->get(\FrontendUser::SECURITY_SESSION_KEY))) instanceof TokenInterface)
-					{
-						$objUser = \MemberModel::findByUsername($token->getUser()->getUsername());
-
-						// Check the allowed member groups
-						if ($objUser !== null && ($this->User->isAdmin || \count(array_intersect(\StringUtil::deserialize($objUser->groups, true), $this->User->amg)) > 0))
-						{
-							// Set the cookie
-							$this->setCookie('FE_USER_AUTH', $strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-							$objTemplate->user = \Input::post('user');
-						}
-						else
-						{
-							// Remove Symfony frontend authentication, if not allowed
-							$session->remove(\FrontendUser::SECURITY_SESSION_KEY);
-						}
-					}
-				}
-
-				// Log out the front end user
-				else
-				{
-					// Remove cookie
-					$this->setCookie('FE_USER_AUTH', $strHash, ($time - 86400), null, null, \Environment::get('ssl'), true);
-					$objTemplate->user = '';
-
-					// Remove the Symfony frontend authentication token
-					$session->remove(\FrontendUser::SECURITY_SESSION_KEY);
+					$objAuthenticator->removeFrontendUser();
 				}
 			}
 

@@ -377,7 +377,6 @@ services:
     contao.security.frontend_preview_authenticator:
         class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
         arguments:
-            - "@request_stack"
             - "@session"
             - "@security.token_storage"
             - "@contao.security.frontend_user_provider"

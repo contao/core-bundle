@@ -119,8 +119,7 @@ class RebuildIndex extends \Backend implements \executable
 			// Hide unpublished elements
 			$this->setCookie('FE_PREVIEW', 0, ($time - 86400), null, null, \Environment::get('ssl'), true);
 
-			// Calculate the hash
-			$strHash = $this->getSessionHash('FE_USER_AUTH');
+			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 
 			$strUser = \Input::get('user');
 
@@ -130,25 +129,16 @@ class RebuildIndex extends \Backend implements \executable
 				$objUser = $this->Database->prepare("SELECT username FROM tl_member WHERE id=?")
 										  ->execute($strUser);
 
-				if ($objUser->numRows)
+				if (!$objUser->numRows || !$objAuthenticator->authenticateFrontendUser($objUser->username))
 				{
-					// Authenticate the new FrontendUser on the Symfony firewall
-					\System::getContainer()->get('contao.security.frontend_preview_authenticator')->authenticateFrontendUser($objUser->username);
+					$objAuthenticator->removeFrontendUser();
 				}
-
-				// Set the cookie
-				$this->setCookie('FE_USER_AUTH', $strHash, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
 			}
 
 			// Log out the front end user
 			else
 			{
-				// Unset the cookies
-				$this->setCookie('FE_USER_AUTH', $strHash, ($time - 86400), null, null, \Environment::get('ssl'), true);
-				$this->setCookie('FE_AUTO_LOGIN', \Input::cookie('FE_AUTO_LOGIN'), ($time - 86400), null, null, \Environment::get('ssl'), true);
-
-				// Remove the Symfony frontend authentication token
-				\System::getContainer()->get('session')->remove(\FrontendUser::SECURITY_SESSION_KEY);
+				$objAuthenticator->removeFrontendUser();
 			}
 
 			$strBuffer = '';
