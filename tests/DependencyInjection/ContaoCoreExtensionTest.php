@@ -78,12 +78,10 @@ use Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler;
 use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator;
 use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider;
-use Contao\CoreBundle\Security\ContaoAuthenticator;
 use Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder;
 use Contao\CoreBundle\Security\LogoutHandler;
 use Contao\CoreBundle\Security\LogoutSuccessHandler;
 use Contao\CoreBundle\Security\User\BackendUserProvider;
-use Contao\CoreBundle\Security\User\ContaoUserProvider;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Security\UserChecker;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
@@ -1314,26 +1312,6 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('router', (string) $definition->getArgument(2));
     }
 
-    public function testRegistersTheSecurityAuthenticator(): void
-    {
-        $this->assertTrue($this->container->has('contao.security.authenticator'));
-
-        $definition = $this->container->getDefinition('contao.security.authenticator');
-
-        $this->assertSame(ContaoAuthenticator::class, $definition->getClass());
-        $this->assertTrue($definition->isPrivate());
-        $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(0));
-
-        $conditionals = $definition->getInstanceofConditionals();
-
-        $this->assertArrayHasKey(ContainerAwareInterface::class, $conditionals);
-
-        $childDefinition = $conditionals[ContainerAwareInterface::class];
-        $methodCalls = $childDefinition->getMethodCalls();
-
-        $this->assertSame('setContainer', $methodCalls[0][0]);
-    }
-
     public function testRegistersTheSecurityBackendUserProvider(): void
     {
         $this->assertTrue($this->container->has('contao.security.backend_user_provider'));
@@ -1420,27 +1398,6 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('request_stack', (string) $definition->getArgument(4));
         $this->assertSame('contao.framework', (string) $definition->getArgument(5));
         $this->assertSame('logger', (string) $definition->getArgument(6));
-    }
-
-    public function testRegistersTheSecurityUserProvider(): void
-    {
-        $this->assertTrue($this->container->has('contao.security.user_provider'));
-
-        $definition = $this->container->getDefinition('contao.security.user_provider');
-
-        $this->assertSame(ContaoUserProvider::class, $definition->getClass());
-        $this->assertTrue($definition->isPrivate());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-        $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(1));
-
-        $conditionals = $definition->getInstanceofConditionals();
-
-        $this->assertArrayHasKey(ContainerAwareInterface::class, $conditionals);
-
-        $childDefinition = $conditionals[ContainerAwareInterface::class];
-        $methodCalls = $childDefinition->getMethodCalls();
-
-        $this->assertSame('setContainer', $methodCalls[0][0]);
     }
 
     public function testRegistersTheContaoBackendSession(): void

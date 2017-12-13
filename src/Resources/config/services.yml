@@ -364,11 +364,6 @@ services:
             - "@contao.framework"
             - "@router"
 
-    contao.security.authenticator:
-        class: Contao\CoreBundle\Security\ContaoAuthenticator
-        arguments:
-            - "@contao.routing.scope_matcher"
-
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\BackendUserProvider
         arguments:
@@ -418,12 +413,6 @@ services:
             - "@request_stack"
             - "@contao.framework"
             - "@logger"
-
-    contao.security.user_provider:
-        class: Contao\CoreBundle\Security\User\ContaoUserProvider
-        arguments:
-            - "@contao.framework"
-            - "@contao.routing.scope_matcher"
 
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
