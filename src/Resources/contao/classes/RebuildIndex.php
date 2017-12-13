@@ -116,9 +116,6 @@ class RebuildIndex extends \Backend implements \executable
 			$this->import('Automator');
 			$this->Automator->purgeSearchTables();
 
-			// Hide unpublished elements
-			$this->setCookie('FE_PREVIEW', 0, ($time - 86400), null, null, \Environment::get('ssl'), true);
-
 			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 
 			$strUser = \Input::get('user');

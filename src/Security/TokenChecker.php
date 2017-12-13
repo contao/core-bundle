@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security;
 
+use Contao\CoreBundle\Security\Authentication\FrontendPreviewToken;
+use Contao\User;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -53,11 +55,25 @@ class TokenChecker
     {
         $token = $this->getToken($sessionKey);
 
-        if (null === $token) {
+        if (null === $token || !$token->getUser() instanceof User) {
             return null;
         }
 
-        return $token->getUsername();
+        return $token->getUser()->getUsername();
+    }
+
+    /**
+     * Returns whether the front end preview is active.
+     *
+     * @param string $sessionKey
+     *
+     * @return bool
+     */
+    public function showUnpublished(string $sessionKey): bool
+    {
+        $token = $this->getToken($sessionKey);
+
+        return $token instanceof FrontendPreviewToken && $token->showUnpublished();
     }
 
     /**

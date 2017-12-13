@@ -61,11 +61,12 @@ class FrontendPreviewAuthenticator
     /**
      * Authenticates a front end user based on the username.
      *
-     * @param string $username
+     * @param string|null $username
+     * @param bool        $showUnpublished
      *
      * @return bool
      */
-    public function authenticateFrontendUser(string $username): bool
+    public function authenticateFrontendUser(?string $username, bool $showUnpublished = false): bool
     {
         if (!$this->session->isStarted()) {
             return false;
@@ -89,29 +90,17 @@ class FrontendPreviewAuthenticator
             return false;
         }
 
-        try {
-            /** @var FrontendUser $frontendUser */
-            $frontendUser = $this->userProvider->loadUserByUsername($username);
-        } catch (UsernameNotFoundException $e) {
-            if (null !== $this->logger) {
-                $this->logger->info(
-                    sprintf('Could not find a front end user with the username "%s"', $username),
-                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
-                );
+        if (null === $username) {
+            $token = new FrontendPreviewToken(null, $showUnpublished);
+        } else {
+            $frontendUser = $this->loadFrontendUser($username, $backendUser);
+
+            if (null === $frontendUser) {
+                return false;
             }
 
-            return false;
+            $token = new FrontendPreviewToken($frontendUser, $showUnpublished);
         }
-
-        $allowedGroups = StringUtil::deserialize($backendUser->amg, true);
-        $frontendGroups = StringUtil::deserialize($frontendUser->groups, true);
-
-        // The front end user does not belong to a group that the back end user is allowed to log in
-        if (!$backendUser->isAdmin && !\count(array_intersect($frontendGroups, $allowedGroups))) {
-            return false;
-        }
-
-        $token = new FrontendPreviewToken($frontendUser);
 
         $this->session->set(FrontendUser::SECURITY_SESSION_KEY, serialize($token));
 
@@ -132,5 +121,39 @@ class FrontendPreviewAuthenticator
         $this->session->remove(FrontendUser::SECURITY_SESSION_KEY);
 
         return true;
+    }
+
+    /**
+     * Loads a user by username and check group access permissions.
+     *
+     * @param string      $username
+     * @param BackendUser $backendUser
+     *
+     * @return FrontendUser|null
+     */
+    private function loadFrontendUser(?string $username, BackendUser $backendUser): ?FrontendUser
+    {
+        try {
+            $frontendUser = $this->userProvider->loadUserByUsername($username);
+        } catch (UsernameNotFoundException $e) {
+            if (null !== $this->logger) {
+                $this->logger->info(
+                    sprintf('Could not find a front end user with the username "%s"', $username),
+                    ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS)]
+                );
+            }
+
+            return null;
+        }
+
+        $allowedGroups = StringUtil::deserialize($backendUser->amg, true);
+        $frontendGroups = StringUtil::deserialize($frontendUser->groups, true);
+
+        // The front end user does not belong to a group that the back end user is allowed to log in
+        if (!$backendUser->isAdmin && !\count(array_intersect($frontendGroups, $allowedGroups))) {
+            return null;
+        }
+
+        return $frontendUser;
     }
 }

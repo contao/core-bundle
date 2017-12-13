@@ -18,14 +18,25 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 class FrontendPreviewToken extends AbstractToken
 {
     /**
-     * @param FrontendUser $user
+     * @var bool
      */
-    public function __construct(FrontendUser $user)
+    private $showUnpublished;
+
+    /**
+     * @param FrontendUser|null $user
+     * @param bool              $showUnpublished
+     */
+    public function __construct(?FrontendUser $user, bool $showUnpublished)
     {
-        parent::__construct($user->getRoles());
+        if (null === $user) {
+            parent::__construct([]);
+            $this->setUser('anon.');
+        } else {
+            parent::__construct($user->getRoles());
+            $this->setUser($user);
+        }
 
-        $this->setUser($user);
-
+        $this->showUnpublished = $showUnpublished;
         parent::setAuthenticated(true);
     }
 
@@ -35,5 +46,31 @@ class FrontendPreviewToken extends AbstractToken
     public function getCredentials()
     {
         return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function showUnpublished(): bool
+    {
+        return $this->showUnpublished;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize([$this->showUnpublished, parent::serialize()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list($this->showUnpublished, $parentStr) = unserialize($serialized, ['allowed_classes' => true]);
+
+        parent::unserialize($parentStr);
     }
 }

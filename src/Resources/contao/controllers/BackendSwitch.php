@@ -61,51 +61,34 @@ class BackendSwitch extends \Backend
 		}
 
 		$blnCanSwitchUser = ($this->User->isAdmin || (!empty($this->User->amg) && \is_array($this->User->amg)));
-
-		/** @var BackendTemplate|object $objTemplate */
-		$objTemplate = new \BackendTemplate('be_switch');
-		$objTemplate->user = (string) \System::getContainer()->get('contao.security.token_checker')->getUsername(\FrontendUser::SECURITY_SESSION_KEY);
-		$objTemplate->show = \Input::cookie('FE_PREVIEW');
-		$objTemplate->update = false;
-		$objTemplate->canSwitchUser = $blnCanSwitchUser;
+		$objTokenChecker = \System::getContainer()->get('contao.security.token_checker');
+		$strUser = $objTokenChecker->getUsername(\FrontendUser::SECURITY_SESSION_KEY);
+		$blnShowUnpublished = $objTokenChecker->showUnpublished(\FrontendUser::SECURITY_SESSION_KEY);
+		$blnUpdate = false;
 
 		// Switch
 		if (\Input::post('FORM_SUBMIT') == 'tl_switch')
 		{
-			$time = time();
-
-			// Hide unpublished elements
-			if (\Input::post('unpublished') == 'hide')
-			{
-				$this->setCookie('FE_PREVIEW', 0, ($time - 86400), null, null, \Environment::get('ssl'), true);
-				$objTemplate->show = 0;
-			}
-
-			// Show unpublished elements
-			else
-			{
-				$this->setCookie('FE_PREVIEW', 1, ($time + \Config::get('sessionTimeout')), null, null, \Environment::get('ssl'), true);
-				$objTemplate->show = 1;
-			}
+			$blnUpdate = true;
+			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
+			$blnShowUnpublished = \Input::post('unpublished') != 'hide';
 
 			// Switch user accounts
-			if ($blnCanSwitchUser)
+			if ($blnCanSwitchUser && \Input::post('user'))
 			{
 				$strUser = \Input::post('user');
-				$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
-
-				if (!$strUser || !$objAuthenticator->authenticateFrontendUser($strUser))
-				{
-					$objAuthenticator->removeFrontendUser();
-				}
-
-				$objTemplate->user = $strUser;
 			}
 
-			$objTemplate->update = true;
+			$objAuthenticator->authenticateFrontendUser($strUser, $blnShowUnpublished);
 		}
 
-		// Default variables
+		/** @var BackendTemplate|object $objTemplate */
+		$objTemplate = new \BackendTemplate('be_switch');
+		$objTemplate->user = (string) $strUser;
+		$objTemplate->show = $blnShowUnpublished;
+		$objTemplate->update = $blnUpdate;
+		$objTemplate->canSwitchUser = $blnCanSwitchUser;
+
 		$objTemplate->theme = \Backend::getTheme();
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
