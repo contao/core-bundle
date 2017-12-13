@@ -48,7 +48,7 @@ class UserSessionListenerTest extends TestCase
         $tokenChecker
             ->expects($this->atLeastOnce())
             ->method('isAuthenticated')
-            ->willReturnCallback(function($sessionKey) use ($sessionKeys) {
+            ->willReturnCallback(function ($sessionKey) use ($sessionKeys) {
                 return $sessionKeys[$sessionKey];
             })
         ;

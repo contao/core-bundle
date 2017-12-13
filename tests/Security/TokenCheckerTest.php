@@ -26,7 +26,7 @@ class TokenCheckerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\TokenChecker', new TokenChecker($this->mockSession()));
     }
 
-    public function testIsAuthenticatedFromTokenInSession()
+    public function testIsAuthenticatedFromTokenInSession(): void
     {
         // A mock object cannot be serialized
         $token = new PreAuthenticatedToken('foobar', null, 'foobar', ['foobar']);
@@ -58,7 +58,7 @@ class TokenCheckerTest extends TestCase
         $this->assertTrue($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testIsNotAuthenticatedIfSessionIsNotStarted()
+    public function testIsNotAuthenticatedIfSessionIsNotStarted(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -73,7 +73,7 @@ class TokenCheckerTest extends TestCase
         $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testIsNotAuthenticatedIfSessionKeyDoesNotExist()
+    public function testIsNotAuthenticatedIfSessionKeyDoesNotExist(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -95,7 +95,7 @@ class TokenCheckerTest extends TestCase
         $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testChecksIfSessionContainsAToken()
+    public function testChecksIfSessionContainsAToken(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -124,7 +124,7 @@ class TokenCheckerTest extends TestCase
         $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testChecksIfTokenIsAuthenticated()
+    public function testChecksIfTokenIsAuthenticated(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -160,7 +160,7 @@ class TokenCheckerTest extends TestCase
         $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testUsernameIsNullWithoutTokenInSession()
+    public function testUsernameIsNullWithoutTokenInSession(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -175,7 +175,7 @@ class TokenCheckerTest extends TestCase
         $this->assertNull($tokenChecker->getUsername(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testUsernameFromTokenInSession()
+    public function testUsernameFromTokenInSession(): void
     {
         // A mock object cannot be serialized
         $token = new PreAuthenticatedToken('foobar', null, 'foobar', ['foobar']);

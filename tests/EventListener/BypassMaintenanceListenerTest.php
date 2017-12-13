@@ -25,8 +25,7 @@ class BypassMaintenanceListenerTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $session = $this->mockSession();
-        $listener = new BypassMaintenanceListener($session, new TokenChecker($session));
+        $listener = new BypassMaintenanceListener(new TokenChecker($this->mockSession()));
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\BypassMaintenanceListener', $listener);
     }
@@ -46,7 +45,7 @@ class BypassMaintenanceListenerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $listener = new BypassMaintenanceListener($this->mockSession(), $tokenChecker);
+        $listener = new BypassMaintenanceListener($tokenChecker);
         $listener->onKernelRequest($event);
 
         $this->assertTrue($event->getRequest()->attributes->get('_bypass_maintenance'));
@@ -66,7 +65,7 @@ class BypassMaintenanceListenerTest extends TestCase
             ->willReturn(false)
         ;
 
-        $listener = new BypassMaintenanceListener($this->mockSession(), $tokenChecker);
+        $listener = new BypassMaintenanceListener($tokenChecker);
         $listener->onKernelRequest($event);
 
         $this->assertFalse($event->getRequest()->attributes->has('_bypass_maintenance'));

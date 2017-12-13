@@ -26,7 +26,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class FrontendPreviewAuthenticatorTest extends TestCase
 {
-
     public function testCanBeInstantiated(): void
     {
         $authenticator = new FrontendPreviewAuthenticator(
@@ -39,7 +38,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator', $authenticator);
     }
 
-    public function testCannotAuthenticateIfTheSessionIsNotStarted()
+    public function testCannotAuthenticateIfTheSessionIsNotStarted(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -58,7 +57,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertFalse($authenticator->authenticateFrontendUser('foobar'));
     }
 
-    public function testCannotAuthenticateIfTokenStorageIsEmpty()
+    public function testCannotAuthenticateIfTokenStorageIsEmpty(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -84,7 +83,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertFalse($authenticator->authenticateFrontendUser('foobar'));
     }
 
-    public function testCannotAuthenticateIfTheTokenIsNotAuthenticated()
+    public function testCannotAuthenticateIfTheTokenIsNotAuthenticated(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -117,7 +116,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertFalse($authenticator->authenticateFrontendUser('foobar'));
     }
 
-    public function testCannotAuthenticateIfTheTokenDoesNotContainABackendUser()
+    public function testCannotAuthenticateIfTheTokenDoesNotContainABackendUser(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -157,9 +156,13 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     }
 
     /**
+     * @param bool  $isAdmin
+     * @param mixed $amg
+     * @param bool  $isValid
+     *
      * @dataProvider getChecksBackendUserAccessPermissionsData
      */
-    public function testChecksBackendUserAccessPermissions(bool $isAdmin, $amg, bool $isValid)
+    public function testChecksBackendUserAccessPermissions(bool $isAdmin, $amg, bool $isValid): void
     {
         $user = $this->createMock(BackendUser::class);
         $user->isAdmin = $isAdmin;
@@ -220,7 +223,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         ];
     }
 
-    public function testFailsAuthenticationIfUserIsNotFound()
+    public function testFailsAuthenticationIfUserIsNotFound(): void
     {
         $user = $this->createMock(BackendUser::class);
         $user->isAdmin = true;
@@ -270,9 +273,14 @@ class FrontendPreviewAuthenticatorTest extends TestCase
     }
 
     /**
+     * @param mixed $isAdmin
+     * @param mixed $amg
+     * @param mixed $groups
+     * @param bool  $isValid
+     *
      * @dataProvider getBackendUserAccessToFrontendGroupsData
      */
-    public function testBackendUserAccessToFrontendGroups($isAdmin, $amg, $groups, bool $isValid)
+    public function testBackendUserAccessToFrontendGroups($isAdmin, $amg, $groups, bool $isValid): void
     {
         $backendUser = $this->createMock(BackendUser::class);
         $backendUser->isAdmin = $isAdmin;
@@ -343,7 +351,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         ];
     }
 
-    public function testCannotRemoveIfSessionIsNotStarted()
+    public function testCannotRemoveIfSessionIsNotStarted(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -362,7 +370,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertFalse($authenticator->removeFrontendUser());
     }
 
-    public function testCannotRemoveIfSessionDoesNotContainAToken()
+    public function testCannotRemoveIfSessionDoesNotContainAToken(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session
@@ -388,7 +396,7 @@ class FrontendPreviewAuthenticatorTest extends TestCase
         $this->assertFalse($authenticator->removeFrontendUser());
     }
 
-    public function testRemovesTokenFromSession()
+    public function testRemovesTokenFromSession(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $session

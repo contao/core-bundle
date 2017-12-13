@@ -235,8 +235,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $this->assertSame(BypassMaintenanceListener::class, $definition->getClass());
         $this->assertTrue($definition->isPrivate());
-        $this->assertSame('session', (string) $definition->getArgument(0));
-        $this->assertSame('contao.security.token_checker', (string) $definition->getArgument(1));
+        $this->assertSame('contao.security.token_checker', (string) $definition->getArgument(0));
 
         $tags = $definition->getTags();
 

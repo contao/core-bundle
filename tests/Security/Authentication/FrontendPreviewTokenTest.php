@@ -33,7 +33,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\FrontendPreviewToken', $token);
     }
 
-    public function testIsAuthenticated()
+    public function testIsAuthenticated(): void
     {
         $user = $this->createMock(FrontendUser::class);
 
@@ -48,7 +48,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertTrue($token->isAuthenticated());
     }
 
-    public function testHasNoCredentials()
+    public function testHasNoCredentials(): void
     {
         $user = $this->createMock(FrontendUser::class);
 

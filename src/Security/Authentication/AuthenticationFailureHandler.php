@@ -59,7 +59,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      * @param AuthenticationException $exception
      *
      * @throws \RuntimeException
-     * 
+     *
      * @return RedirectResponse
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): RedirectResponse

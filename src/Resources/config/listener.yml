@@ -26,7 +26,6 @@ services:
     contao.listener.bypass_maintenance:
         class: Contao\CoreBundle\EventListener\BypassMaintenanceListener
         arguments:
-            - "@session"
             - "@contao.security.token_checker"
         tags:
             # The priority must be higher than the one of the Lexik maintenance bundle (defaults to 0)

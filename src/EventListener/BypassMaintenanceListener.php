@@ -14,16 +14,10 @@ namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Security\TokenChecker;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class BypassMaintenanceListener
 {
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
     /**
      * @var TokenChecker
      */
@@ -35,13 +29,11 @@ class BypassMaintenanceListener
     private $requestAttribute;
 
     /**
-     * @param SessionInterface $session
-     * @param TokenChecker     $tokenChecker
-     * @param string           $requestAttribute
+     * @param TokenChecker $tokenChecker
+     * @param string       $requestAttribute
      */
-    public function __construct(SessionInterface $session, TokenChecker $tokenChecker, string $requestAttribute = '_bypass_maintenance')
+    public function __construct(TokenChecker $tokenChecker, string $requestAttribute = '_bypass_maintenance')
     {
-        $this->session = $session;
         $this->tokenChecker = $tokenChecker;
         $this->requestAttribute = $requestAttribute;
     }
