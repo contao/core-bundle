@@ -177,8 +177,16 @@ class TokenCheckerTest extends TestCase
 
     public function testUsernameFromTokenInSession(): void
     {
+        $user = $this->createMock(FrontendUser::class);
+
+        $user
+            ->expects($this->any())
+            ->method('getUsername')
+            ->willReturn('foobar')
+        ;
+
         // A mock object cannot be serialized
-        $token = new PreAuthenticatedToken('foobar', null, 'foobar', ['foobar']);
+        $token = new PreAuthenticatedToken($user, null, 'foobar', ['foobar']);
 
         $session = $this->createMock(SessionInterface::class);
 
