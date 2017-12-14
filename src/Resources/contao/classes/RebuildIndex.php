@@ -126,16 +126,16 @@ class RebuildIndex extends \Backend implements \executable
 				$objUser = $this->Database->prepare("SELECT username FROM tl_member WHERE id=?")
 										  ->execute($strUser);
 
-				if (!$objUser->numRows || !$objAuthenticator->authenticateFrontendUser($objUser->username))
+				if (!$objUser->numRows || !$objAuthenticator->authenticateFrontendUser($objUser->username, false))
 				{
-					$objAuthenticator->removeFrontendUser();
+					$objAuthenticator->removeFrontendAuthentication();
 				}
 			}
 
 			// Log out the front end user
 			else
 			{
-				$objAuthenticator->removeFrontendUser();
+				$objAuthenticator->removeFrontendAuthentication();
 			}
 
 			$strBuffer = '';

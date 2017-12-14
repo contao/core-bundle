@@ -63,9 +63,9 @@ class BackendPreview extends \Backend
 		{
 			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
 
-			if (!$objAuthenticator->authenticateFrontendUser($strUser))
+			if (!$objAuthenticator->authenticateFrontendUser($strUser, false))
 			{
-				$objAuthenticator->removeFrontendUser();
+				$objAuthenticator->removeFrontendAuthentication();
 			}
 
 			$arrParameters = [];

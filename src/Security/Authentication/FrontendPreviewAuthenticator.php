@@ -61,27 +61,16 @@ class FrontendPreviewAuthenticator
     /**
      * Authenticates a front end user based on the username.
      *
-     * @param string|null $username
-     * @param bool        $showUnpublished
+     * @param string $username
+     * @param bool   $showUnpublished
      *
      * @return bool
      */
-    public function authenticateFrontendUser(?string $username, bool $showUnpublished = false): bool
+    public function authenticateFrontendUser(string $username, bool $showUnpublished): bool
     {
-        if (!$this->session->isStarted()) {
-            return false;
-        }
+        $backendUser = $this->loadBackendUser();
 
-        $token = $this->tokenStorage->getToken();
-
-        // Check if a back end user is authenticated
-        if (null === $token || !$token->isAuthenticated()) {
-            return false;
-        }
-
-        $backendUser = $token->getUser();
-
-        if (!$backendUser instanceof BackendUser) {
+        if (null === $backendUser) {
             return false;
         }
 
@@ -90,17 +79,13 @@ class FrontendPreviewAuthenticator
             return false;
         }
 
-        if (null === $username) {
-            $token = new FrontendPreviewToken(null, $showUnpublished);
-        } else {
-            $frontendUser = $this->loadFrontendUser($username, $backendUser);
+        $frontendUser = $this->loadFrontendUser($username, $backendUser);
 
-            if (null === $frontendUser) {
-                return false;
-            }
-
-            $token = new FrontendPreviewToken($frontendUser, $showUnpublished);
+        if (null === $frontendUser) {
+            return false;
         }
+
+        $token = new FrontendPreviewToken($frontendUser, $showUnpublished);
 
         $this->session->set(FrontendUser::SECURITY_SESSION_KEY, serialize($token));
 
@@ -108,11 +93,33 @@ class FrontendPreviewAuthenticator
     }
 
     /**
-     * Removes a front end user authentication from the session.
+     * Authenticates a front end guest.
+     *
+     * @param bool $showUnpublished
      *
      * @return bool
      */
-    public function removeFrontendUser(): bool
+    public function authenticateFrontendGuest(bool $showUnpublished): bool
+    {
+        $backendUser = $this->loadBackendUser();
+
+        if (null === $backendUser) {
+            return false;
+        }
+
+        $token = new FrontendPreviewToken(null, $showUnpublished);
+
+        $this->session->set(FrontendUser::SECURITY_SESSION_KEY, serialize($token));
+
+        return true;
+    }
+
+    /**
+     * Removes a front end authentication from the session.
+     *
+     * @return bool
+     */
+    public function removeFrontendAuthentication(): bool
     {
         if (!$this->session->isStarted() || !$this->session->has(FrontendUser::SECURITY_SESSION_KEY)) {
             return false;
@@ -121,6 +128,33 @@ class FrontendPreviewAuthenticator
         $this->session->remove(FrontendUser::SECURITY_SESSION_KEY);
 
         return true;
+    }
+
+    /**
+     * Loads the back end user.
+     *
+     * @return BackendUser|null
+     */
+    private function loadBackendUser(): ?BackendUser
+    {
+        if (!$this->session->isStarted()) {
+            return null;
+        }
+
+        $token = $this->tokenStorage->getToken();
+
+        // Check if a back end user is authenticated
+        if (null === $token || !$token->isAuthenticated()) {
+            return null;
+        }
+
+        $backendUser = $token->getUser();
+
+        if (!$backendUser instanceof BackendUser) {
+            return null;
+        }
+
+        return $backendUser;
     }
 
     /**
@@ -135,6 +169,10 @@ class FrontendPreviewAuthenticator
     {
         try {
             $frontendUser = $this->userProvider->loadUserByUsername($username);
+
+            if (!$frontendUser instanceof FrontendUser) {
+                throw new UsernameNotFoundException('User is not a FrontendUser instance');
+            }
         } catch (UsernameNotFoundException $e) {
             if (null !== $this->logger) {
                 $this->logger->info(

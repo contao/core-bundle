@@ -79,7 +79,14 @@ class BackendSwitch extends \Backend
 				$strUser = \Input::post('user');
 			}
 
-			$objAuthenticator->authenticateFrontendUser($strUser, $blnShowUnpublished);
+			if ($strUser)
+			{
+				$objAuthenticator->authenticateFrontendUser($strUser, $blnShowUnpublished);
+			}
+			else
+			{
+				$objAuthenticator->authenticateFrontendGuest($blnShowUnpublished);
+			}
 		}
 
 		/** @var BackendTemplate|object $objTemplate */
