@@ -81,6 +81,7 @@ use Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvi
 use Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder;
 use Contao\CoreBundle\Security\LogoutHandler;
 use Contao\CoreBundle\Security\LogoutSuccessHandler;
+use Contao\CoreBundle\Security\TokenChecker;
 use Contao\CoreBundle\Security\User\BackendUserProvider;
 use Contao\CoreBundle\Security\User\FrontendUserProvider;
 use Contao\CoreBundle\Security\UserChecker;
@@ -1379,6 +1380,17 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertTrue($definition->isPrivate());
         $this->assertSame('router', (string) $definition->getArgument(0));
         $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(1));
+    }
+
+    public function testRegistersTheSecurityTokenChecker(): void
+    {
+        $this->assertTrue($this->container->has('contao.security.token_checker'));
+
+        $definition = $this->container->getDefinition('contao.security.token_checker');
+
+        $this->assertSame(TokenChecker::class, $definition->getClass());
+        $this->assertTrue($definition->isPublic());
+        $this->assertSame('session', (string) $definition->getArgument(0));
     }
 
     public function testRegistersTheSecurityUserChecker(): void
