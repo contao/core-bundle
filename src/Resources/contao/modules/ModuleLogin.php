@@ -10,12 +10,13 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Security\Exception\LockedException;
 use Patchwork\Utf8;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 
 
@@ -32,12 +33,6 @@ class ModuleLogin extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_login';
-
-	/**
-	 * Flash type
-	 * @var string
-	 */
-	protected $strFlashType = 'contao.FE.error';
 
 
 	/**
@@ -111,13 +106,17 @@ class ModuleLogin extends \Module
 
 		if (\System::getContainer()->get('session')->isStarted())
 		{
-			/** @var FlashBagInterface $flashBag */
-			$flashBag = \System::getContainer()->get('session')->getFlashBag();
+			$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
 
-			if ($flashBag->has($this->strFlashType))
+			if ($exception instanceof LockedException)
 			{
 				$this->Template->hasError = true;
-				$this->Template->message = $flashBag->get($this->strFlashType)[0];
+				$this->Template->message = sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes());
+			}
+			else if ($exception instanceof AuthenticationException)
+			{
+				$this->Template->hasError = true;
+				$this->Template->message = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
 			}
 		}
 

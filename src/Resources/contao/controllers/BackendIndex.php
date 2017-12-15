@@ -10,7 +10,9 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Security\Exception\LockedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 
 /**
@@ -51,7 +53,7 @@ class BackendIndex extends \Backend
 		$objTemplate = new \BackendTemplate('be_login');
 
 		$objTemplate->theme = \Backend::getTheme();
-		$objTemplate->messages = \Message::generate();
+		$objTemplate->messages = $this->getLoginMessages();
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
 		$objTemplate->languages = \System::getLanguages(true); // backwards compatibility
@@ -70,5 +72,33 @@ class BackendIndex extends \Backend
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
 
 		return $objTemplate->getResponse();
+	}
+
+	/**
+	 * Gets the security messages for the login view.
+	 *
+	 * @return string
+	 */
+	private function getLoginMessages()
+	{
+		$strMessages = \Message::generateUnwrapped();
+
+		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+
+		if ($exception instanceof LockedException)
+		{
+			$strMessages .= '<p class="tl_error">' . sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()) . '</p>';
+		}
+		else if ($exception instanceof AuthenticationException)
+		{
+			$strMessages .= '<p class="tl_error">' . $GLOBALS['TL_LANG']['ERR']['invalidLogin'] . '</p>';
+		}
+
+		if (!empty($strMessages))
+		{
+			$strMessages = '<div class="tl_message">' . $strMessages . '</div>';
+		}
+
+		return $strMessages;
 	}
 }
