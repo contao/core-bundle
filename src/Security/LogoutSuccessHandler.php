@@ -12,32 +12,26 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security;
 
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
 {
     /**
-     * @var RouterInterface
+     * @var HttpUtils
      */
-    private $router;
+    private $httpUtils;
 
     /**
-     * @var ScopeMatcher
+     * @param HttpUtils $httpUtils
+     *
+     * @internal param RouterInterface $router
      */
-    private $scopeMatcher;
-
-    /**
-     * @param RouterInterface $router
-     * @param ScopeMatcher    $scopeMatcher
-     */
-    public function __construct(RouterInterface $router, ScopeMatcher $scopeMatcher)
+    public function __construct(HttpUtils $httpUtils)
     {
-        $this->router = $router;
-        $this->scopeMatcher = $scopeMatcher;
+        $this->httpUtils = $httpUtils;
     }
 
     /**
@@ -51,14 +45,10 @@ class LogoutSuccessHandler implements LogoutSuccessHandlerInterface
     {
         $session = $request->getSession();
 
-        if ($session && $session->has('_contao_logout_target')) {
-            return new RedirectResponse($session->get('_contao_logout_target'));
+        if (null !== $session && $session->has('_contao_logout_target')) {
+            return $this->httpUtils->createRedirectResponse($request, $session->get('_contao_logout_target'));
         }
 
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            return new RedirectResponse($this->router->generate('contao_backend_login'));
-        }
-
-        return new RedirectResponse($this->router->generate('contao_root'));
+        return $this->httpUtils->createRedirectResponse($request, 'contao_root');
     }
 }

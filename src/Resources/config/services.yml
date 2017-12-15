@@ -394,8 +394,7 @@ services:
     contao.security.logout_success_handler:
         class: Contao\CoreBundle\Security\LogoutSuccessHandler
         arguments:
-            - "@router"
-            - "@contao.routing.scope_matcher"
+            - "@security.http_utils"
 
     contao.security.token_checker:
         class: Contao\CoreBundle\Security\TokenChecker
