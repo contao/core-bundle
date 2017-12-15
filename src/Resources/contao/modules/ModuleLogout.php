@@ -56,12 +56,18 @@ class ModuleLogout extends \Module
 			return $objTemplate->parse();
 		}
 
+		// Set last page visited
+		if ($this->redirectBack)
+		{
+			$_SESSION['LAST_PAGE_VISITED'] = $this->getReferer();
+		}
+
 		$strRedirect = \Environment::get('base');
 
-		// Set last page visited
-		if ($this->redirectBack && $this->getReferer())
+		// Redirect to last page visited
+		if ($this->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))
 		{
-			$strRedirect = $this->getReferer();
+			$strRedirect = $_SESSION['LAST_PAGE_VISITED'];
 		}
 
 		// Redirect to jumpTo page

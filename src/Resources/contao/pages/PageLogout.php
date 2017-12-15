@@ -32,12 +32,18 @@ class PageLogout extends \Frontend
 	 */
 	public function getResponse($objPage)
 	{
+		// Set last page visited
+		if ($objPage->redirectBack)
+		{
+			$_SESSION['LAST_PAGE_VISITED'] = $this->getReferer();
+		}
+
 		$strRedirect = \Environment::get('base');
 
-		// Set last page visited
-		if ($objPage->redirectBack && $this->getReferer())
+		// Redirect to last page visited
+		if ($objPage->redirectBack && !empty($_SESSION['LAST_PAGE_VISITED']))
 		{
-			$strRedirect = $this->getReferer();
+			$strRedirect = $_SESSION['LAST_PAGE_VISITED'];
 		}
 
 		// Redirect to jumpTo page
