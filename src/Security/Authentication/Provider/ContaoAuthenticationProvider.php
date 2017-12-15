@@ -117,7 +117,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
         $user->lastLogin = $user->currentLogin;
         $user->currentLogin = time();
-        $user->loginCount = $config->get('loginCount');
+        $user->loginCount = (int) $config->get('loginCount');
         $user->save();
 
         $this->logAccess(sprintf('User "%s" has logged in', $user->getUsername()), $user);
@@ -160,6 +160,8 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
             return $exception;
         }
+
+        $user->save();
 
         return new BadCredentialsException(
             sprintf('Invalid password submitted for username "%s"', $user->getUsername()),
