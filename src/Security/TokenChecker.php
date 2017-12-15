@@ -17,6 +17,7 @@ use Contao\CoreBundle\Security\Authentication\FrontendPreviewToken;
 use Contao\FrontendUser;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class TokenChecker
 {

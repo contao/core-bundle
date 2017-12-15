@@ -401,6 +401,7 @@ services:
         class: Contao\CoreBundle\Security\TokenChecker
         arguments:
             - "@session"
+            - "@security.authentication.trust_resolver"
         public: true
 
     contao.security.user_checker:
