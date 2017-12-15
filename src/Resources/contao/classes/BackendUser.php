@@ -143,7 +143,7 @@ class BackendUser extends User
 		}
 
 		// Check for an authenticated user in the session
-		$strUser = \System::getContainer()->get('contao.security.token_checker')->getUsername(self::SECURITY_SESSION_KEY);
+		$strUser = \System::getContainer()->get('contao.security.token_checker')->getBackendUsername();
 
 		if ($strUser !== null)
 		{
