@@ -13,6 +13,7 @@ namespace Contao;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
+
 /**
  * Provide methods to manage front end controllers.
  *
@@ -507,12 +508,12 @@ abstract class Frontend extends \Controller
 
 		if ($strCookie == 'FE_USER_AUTH')
 		{
-			return $this->getAuthenticationStatus(\FrontendUser::SECURITY_SESSION_KEY);
+			return $this->getAuthenticationStatus(FrontendUser::SECURITY_SESSION_KEY);
 		}
 
 		if ($strCookie == 'BE_USER_AUTH')
 		{
-			return $this->getAuthenticationStatus(\BackendUser::SECURITY_SESSION_KEY);
+			return $this->getAuthenticationStatus(BackendUser::SECURITY_SESSION_KEY);
 		}
 
 		return false;
@@ -666,15 +667,15 @@ abstract class Frontend extends \Controller
 		$objTokenChecker = \System::getContainer()->get('contao.security.token_checker');
 
 		// Validate the session ID and timeout
-		if ($objTokenChecker->isAuthenticated($sessionKey))
+		if ($objTokenChecker->hasAuthenticatedToken($sessionKey))
 		{
 			// Disable the cache if a back end user is logged in
-			if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
+			if (TL_MODE == 'FE' && $sessionKey == BackendUser::SECURITY_SESSION_KEY)
 			{
 				$_SESSION['DISABLE_CACHE'] = true;
 
 				// Always return false if we are not in preview mode (show hidden elements)
-				if (!$objTokenChecker->showUnpublished(\FrontendUser::SECURITY_SESSION_KEY))
+				if (!$objTokenChecker->isPreviewMode(FrontendUser::SECURITY_SESSION_KEY))
 				{
 					return false;
 				}
@@ -685,7 +686,7 @@ abstract class Frontend extends \Controller
 		}
 
 		// Reset the cache settings
-		if (TL_MODE == 'FE' && $sessionKey == \BackendUser::SECURITY_SESSION_KEY)
+		if (TL_MODE == 'FE' && $sessionKey == BackendUser::SECURITY_SESSION_KEY)
 		{
 			$_SESSION['DISABLE_CACHE'] = false;
 		}

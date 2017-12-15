@@ -25,7 +25,7 @@ class BypassMaintenanceListenerTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $listener = new BypassMaintenanceListener(new TokenChecker($this->mockSession()));
+        $listener = new BypassMaintenanceListener($this->createMock(TokenChecker::class));
 
         $this->assertInstanceOf('Contao\CoreBundle\EventListener\BypassMaintenanceListener', $listener);
     }
@@ -38,7 +38,7 @@ class BypassMaintenanceListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->once())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->with(BackendUser::SECURITY_SESSION_KEY)
             ->willReturn(true)
         ;
@@ -57,7 +57,7 @@ class BypassMaintenanceListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->once())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->with(BackendUser::SECURITY_SESSION_KEY)
             ->willReturn(false)
         ;

@@ -50,7 +50,7 @@ class UserSessionListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->atLeastOnce())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->willReturnCallback(
                 function (string $sessionKey) use ($sessionKeys): bool {
                     return $sessionKeys[$sessionKey];
@@ -85,7 +85,7 @@ class UserSessionListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->any())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->willReturn(true)
         ;
 
@@ -104,7 +104,7 @@ class UserSessionListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->any())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->willReturn(true)
         ;
 
@@ -126,7 +126,7 @@ class UserSessionListenerTest extends TestCase
 
         $tokenChecker
             ->expects($this->any())
-            ->method('isAuthenticated')
+            ->method('hasAuthenticatedToken')
             ->willReturn(false)
         ;
 

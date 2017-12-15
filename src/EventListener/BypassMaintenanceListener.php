@@ -45,7 +45,7 @@ class BypassMaintenanceListener
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if (!$this->tokenChecker->isAuthenticated(BackendUser::SECURITY_SESSION_KEY)) {
+        if (!$this->tokenChecker->hasAuthenticatedToken(BackendUser::SECURITY_SESSION_KEY)) {
             return;
         }
 

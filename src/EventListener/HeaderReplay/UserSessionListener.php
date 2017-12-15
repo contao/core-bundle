@@ -43,8 +43,8 @@ class UserSessionListener
     }
 
     /**
-     * Sets the "force no cache" header on the replay response to disable reverse proxy
-     * caching if a back end user is logged in (front end preview mode).
+     * Sets the "force no cache" header on the replay response to disable reverse
+     * proxy caching if a user is logged in (front end preview mode).
      *
      * @param HeaderReplayEvent $event
      */
@@ -72,11 +72,11 @@ class UserSessionListener
             return false;
         }
 
-        if ($this->tokenChecker->isAuthenticated(BackendUser::SECURITY_SESSION_KEY)) {
+        if ($this->tokenChecker->hasAuthenticatedToken(BackendUser::SECURITY_SESSION_KEY)) {
             return true;
         }
 
-        if ($this->tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY)) {
+        if ($this->tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY)) {
             return true;
         }
 

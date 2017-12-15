@@ -158,20 +158,21 @@ class FrontendPreviewAuthenticator
     }
 
     /**
-     * Loads a user by username and check group access permissions.
+     * Loads the front end user and checks its group access permissions.
      *
      * @param string      $username
      * @param BackendUser $backendUser
      *
      * @return FrontendUser|null
      */
-    private function loadFrontendUser(?string $username, BackendUser $backendUser): ?FrontendUser
+    private function loadFrontendUser(string $username, BackendUser $backendUser): ?FrontendUser
     {
         try {
             $frontendUser = $this->userProvider->loadUserByUsername($username);
 
+            // Make sure the user provider returned a front end user
             if (!$frontendUser instanceof FrontendUser) {
-                throw new UsernameNotFoundException('User is not a FrontendUser instance');
+                throw new UsernameNotFoundException('User is not a front end user');
             }
         } catch (UsernameNotFoundException $e) {
             if (null !== $this->logger) {

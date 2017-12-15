@@ -26,7 +26,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\FrontendPreviewToken', $token);
     }
 
-    public function testCanAuthenticateUser(): void
+    public function testAuthenticatesUsers(): void
     {
         $user = $this->createMock(FrontendUser::class);
 
@@ -49,7 +49,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertSame('foobar', $roles[0]->getRole());
     }
 
-    public function testCanAuthenticateGuest(): void
+    public function testAuthenticatesGuests(): void
     {
         $token = new FrontendPreviewToken(null, false);
 
@@ -62,7 +62,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertCount(0, $roles);
     }
 
-    public function testStoresUnpublished(): void
+    public function testReturnsTheShowsUnpublishedStatus(): void
     {
         $token = new FrontendPreviewToken(null, true);
 
@@ -74,7 +74,7 @@ class FrontendPreviewTokenTest extends TestCase
         $this->assertTrue($unserialized->showUnpublished());
     }
 
-    public function testHasNoCredentials(): void
+    public function testDoesNotReturnCredentials(): void
     {
         $user = $this->createMock(FrontendUser::class);
 

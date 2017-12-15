@@ -117,7 +117,6 @@ class RebuildIndex extends \Backend implements \executable
 			$this->Automator->purgeSearchTables();
 
 			$objAuthenticator = \System::getContainer()->get('contao.security.frontend_preview_authenticator');
-
 			$strUser = \Input::get('user');
 
 			// Log in the front end user

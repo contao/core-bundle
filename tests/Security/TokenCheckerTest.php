@@ -23,14 +23,14 @@ class TokenCheckerTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Security\TokenChecker', new TokenChecker($this->mockSession()));
+        $tokenChecker = new TokenChecker($this->createMock(SessionInterface::class));
+
+        $this->assertInstanceOf('Contao\CoreBundle\Security\TokenChecker', $tokenChecker);
     }
 
-    public function testIsAuthenticatedFromTokenInSession(): void
+    public function testAuthenticatesAUserFromTheSessionToken(): void
     {
-        // A mock object cannot be serialized
         $token = new PreAuthenticatedToken('foobar', null, 'foobar', ['foobar']);
-
         $session = $this->createMock(SessionInterface::class);
 
         $session
@@ -55,10 +55,10 @@ class TokenCheckerTest extends TestCase
 
         $tokenChecker = new TokenChecker($session);
 
-        $this->assertTrue($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
+        $this->assertTrue($tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testIsNotAuthenticatedIfSessionIsNotStarted(): void
+    public function testDoesNotAuthenticateIfTheSessionIsNotStarted(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -70,10 +70,10 @@ class TokenCheckerTest extends TestCase
 
         $tokenChecker = new TokenChecker($session);
 
-        $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
+        $this->assertFalse($tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testIsNotAuthenticatedIfSessionKeyDoesNotExist(): void
+    public function testDoesNotAuthenticateIfTheSessionKeyDoesNotExist(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -92,10 +92,10 @@ class TokenCheckerTest extends TestCase
 
         $tokenChecker = new TokenChecker($session);
 
-        $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
+        $this->assertFalse($tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testChecksIfSessionContainsAToken(): void
+    public function testChecksIfTheSessionContainsAToken(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -121,10 +121,10 @@ class TokenCheckerTest extends TestCase
 
         $tokenChecker = new TokenChecker($session);
 
-        $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
+        $this->assertFalse($tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testChecksIfTokenIsAuthenticated(): void
+    public function testChecksIfTheSessionTokenIsAuthenticated(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -157,10 +157,10 @@ class TokenCheckerTest extends TestCase
 
         $tokenChecker = new TokenChecker($session);
 
-        $this->assertFalse($tokenChecker->isAuthenticated(FrontendUser::SECURITY_SESSION_KEY));
+        $this->assertFalse($tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testUsernameIsNullWithoutTokenInSession(): void
+    public function testDoesNotReturnAUsernameIfTheSessionDoesNotContainAToken(): void
     {
         $session = $this->createMock(SessionInterface::class);
 
@@ -175,7 +175,7 @@ class TokenCheckerTest extends TestCase
         $this->assertNull($tokenChecker->getUsername(FrontendUser::SECURITY_SESSION_KEY));
     }
 
-    public function testUsernameFromTokenInSession(): void
+    public function testReturnsTheUsernameFromTheSessionToken(): void
     {
         $user = $this->createMock(FrontendUser::class);
 
@@ -185,9 +185,7 @@ class TokenCheckerTest extends TestCase
             ->willReturn('foobar')
         ;
 
-        // A mock object cannot be serialized
         $token = new PreAuthenticatedToken($user, null, 'foobar', ['foobar']);
-
         $session = $this->createMock(SessionInterface::class);
 
         $session

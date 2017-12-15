@@ -39,7 +39,7 @@ class TokenChecker
      *
      * @return bool
      */
-    public function isAuthenticated(string $sessionKey): bool
+    public function hasAuthenticatedToken(string $sessionKey): bool
     {
         return null !== $this->getToken($sessionKey);
     }
@@ -63,13 +63,13 @@ class TokenChecker
     }
 
     /**
-     * Returns whether the front end preview is active.
+     * Checks whether the front end preview is active.
      *
      * @param string $sessionKey
      *
      * @return bool
      */
-    public function showUnpublished(string $sessionKey): bool
+    public function isPreviewMode(string $sessionKey): bool
     {
         $token = $this->getToken($sessionKey);
 
