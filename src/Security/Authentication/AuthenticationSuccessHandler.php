@@ -16,7 +16,6 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
 use Contao\PageModel;
-use Contao\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -91,8 +90,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     private function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
     {
-        $this->triggerPostAuthenticateHook($user);
-
         $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
 
         if (\is_array($groups)) {
@@ -118,8 +115,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     private function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
     {
-        $this->triggerPostAuthenticateHook($user);
-
         $route = $request->attributes->get('_route');
 
         if ('contao_backend_login' !== $route) {
@@ -141,25 +136,5 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
 
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    /**
-     * Triggers the postAuthenticate hook.
-     *
-     * @param User $user
-     */
-    private function triggerPostAuthenticateHook(User $user): void
-    {
-        $this->framework->initialize();
-
-        if (empty($GLOBALS['TL_HOOKS']['postAuthenticate']) || !\is_array($GLOBALS['TL_HOOKS']['postAuthenticate'])) {
-            return;
-        }
-
-        @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Use the contao.post_authenticate event instead.', E_USER_DEPRECATED);
-
-        foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
-            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
-        }
     }
 }

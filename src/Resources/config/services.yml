@@ -365,9 +365,10 @@ services:
             - "@router"
 
     contao.security.backend_user_provider:
-        class: Contao\CoreBundle\Security\User\BackendUserProvider
+        class: Contao\CoreBundle\Security\User\ContaoUserProvider
         arguments:
             - "@contao.framework"
+            - "\\Contao\\BackendUser"
 
     contao.security.frontend_preview_authenticator:
         class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
@@ -378,9 +379,10 @@ services:
             - "@logger"
 
     contao.security.frontend_user_provider:
-        class: Contao\CoreBundle\Security\User\FrontendUserProvider
+        class: Contao\CoreBundle\Security\User\ContaoUserProvider
         arguments:
             - "@contao.framework"
+            - "\\Contao\\FrontendUser"
 
     contao.security.legacy_password_encoder:
         class: Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder
