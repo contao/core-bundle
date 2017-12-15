@@ -72,11 +72,7 @@ class UserSessionListener
             return false;
         }
 
-        if ($this->tokenChecker->hasAuthenticatedToken(BackendUser::SECURITY_SESSION_KEY)) {
-            return true;
-        }
-
-        if ($this->tokenChecker->hasAuthenticatedToken(FrontendUser::SECURITY_SESSION_KEY)) {
+        if ($this->tokenChecker->hasBackendUser() || $this->tokenChecker->hasFrontendUser()) {
             return true;
         }
 
