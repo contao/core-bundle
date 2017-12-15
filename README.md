@@ -155,7 +155,7 @@ security:
             form_login:
                 login_path: contao_frontend_login
                 check_path: contao_frontend_login
-                default_target_path: contao_root
+                default_target_path: /
                 failure_handler: contao.security.authentication_failure_handler
                 success_handler: contao.security.authentication_success_handler
                 username_parameter: username
