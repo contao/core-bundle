@@ -342,19 +342,17 @@ services:
             - ~ # Provider-shared key
             - "@security.encoder_factory"
             - "%security.authentication.hide_user_not_found%"
-            - "@session"
-            - "@translator"
             - "@contao.framework"
+            - "@translator"
+            - "@request_stack"
+            - "@mailer"
             - "@logger"
 
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
         arguments:
-            - "@http_kernel"
             - "@security.http_utils"
             - "@contao.routing.scope_matcher"
-            - "@translator"
-            - []
             - "@logger"
 
     contao.security.authentication_success_handler:
@@ -408,11 +406,6 @@ services:
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\UserChecker
         arguments:
-            - "@translator"
-            - "@mailer"
-            - "@session"
-            - "@contao.routing.scope_matcher"
-            - "@request_stack"
             - "@contao.framework"
             - "@logger"
 

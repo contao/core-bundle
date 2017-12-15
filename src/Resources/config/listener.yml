@@ -134,14 +134,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 64 }
 
-    contao.listener.security.interactive_login:
-        class: Contao\CoreBundle\EventListener\InteractiveLoginListener
-        arguments:
-            - "@contao.framework"
-            - "@logger"
-        tags:
-            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
-
     contao.listener.security.switch_user:
         class: Contao\CoreBundle\EventListener\SwitchUserListener
         arguments:
