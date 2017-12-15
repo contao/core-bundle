@@ -161,13 +161,13 @@ class FrontendUser extends User
 	 * @return boolean
 	 *
 	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
-	 *             Use the security.authentication.success event instead.
+	 *             Use Symfony security instead.
 	 */
 	public function authenticate()
 	{
 		@trigger_error('Using FrontendUser::authenticate() has been deprecated and will no longer work in Contao 5.0. Use the security.authentication.success event instead.', E_USER_DEPRECATED);
 
-		return false;
+		return \System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
 	}
 
 
