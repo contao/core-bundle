@@ -140,8 +140,7 @@ security:
 
             logout:
                 path: contao_backend_logout
-                target: contao_backend
-                success_handler: contao.security.logout_success_handler
+                target: contao_backend_login
                 handlers:
                     - contao.security.logout_handler
 
@@ -156,7 +155,7 @@ security:
             form_login:
                 login_path: contao_frontend_login
                 check_path: contao_frontend_login
-                default_target_path: contao_index
+                default_target_path: contao_root
                 failure_handler: contao.security.authentication_failure_handler
                 success_handler: contao.security.authentication_success_handler
                 username_parameter: username
