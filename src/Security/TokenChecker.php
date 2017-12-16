@@ -29,7 +29,7 @@ class TokenChecker
     /**
      * @var AuthenticationTrustResolverInterface
      */
-    private $trustResolveer;
+    private $trustResolver;
 
     /**
      * @param SessionInterface                     $session
@@ -38,7 +38,7 @@ class TokenChecker
     public function __construct(SessionInterface $session, AuthenticationTrustResolverInterface $trustResolveer)
     {
         $this->session = $session;
-        $this->trustResolveer = $trustResolveer;
+        $this->trustResolver = $trustResolveer;
     }
 
     /**
@@ -116,7 +116,7 @@ class TokenChecker
             return null;
         }
 
-        if ($this->trustResolveer->isAnonymous($token)) {
+        if ($this->trustResolver->isAnonymous($token)) {
             return null;
         }
 
@@ -132,6 +132,12 @@ class TokenChecker
      */
     private function getUsername(string $userClass): ?string
     {
+        if (!\defined($userClass.'::SECURITY_SESSION_KEY')) {
+            throw new \RuntimeException(
+                sprintf('Class "%s" does not have a SECURITY_SESSION_KEY constant.', $userClass)
+            );
+        }
+
         $token = $this->getToken(\constant($userClass.'::SECURITY_SESSION_KEY'));
 
         if (null === $token || !is_a($token->getUser(), $userClass)) {
