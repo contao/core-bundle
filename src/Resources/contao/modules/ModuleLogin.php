@@ -17,7 +17,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
 
 
 /**
@@ -104,20 +103,17 @@ class ModuleLogin extends \Module
 			return;
 		}
 
-		if (\System::getContainer()->get('session')->isStarted())
-		{
-			$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
 
-			if ($exception instanceof LockedException)
-			{
-				$this->Template->hasError = true;
-				$this->Template->message = sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes());
-			}
-			else if ($exception instanceof AuthenticationException)
-			{
-				$this->Template->hasError = true;
-				$this->Template->message = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
-			}
+		if ($exception instanceof LockedException)
+		{
+			$this->Template->hasError = true;
+			$this->Template->message = sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes());
+		}
+		else if ($exception instanceof AuthenticationException)
+		{
+			$this->Template->hasError = true;
+			$this->Template->message = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
 		}
 
 		/** @var Request $request */
