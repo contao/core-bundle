@@ -90,7 +90,7 @@ class TokenChecker
      *
      * @return bool
      */
-    public function showUnpublished(): bool
+    public function isPreviewMode(): bool
     {
         $token = $this->getToken(FrontendUser::SECURITY_SESSION_KEY);
 

@@ -514,7 +514,7 @@ abstract class Frontend extends \Controller
 				$_SESSION['DISABLE_CACHE'] = true;
 
 				// Always return false if we are not in preview mode (show hidden elements)
-				if (!$objTokenChecker->showUnpublished())
+				if (!$objTokenChecker->isPreviewMode())
 				{
 					return false;
 				}
