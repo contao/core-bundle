@@ -53,8 +53,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, RouterInterface $router, array $options = [], LoggerInterface $logger = null)
     {
-        $options['always_use_default_target_path'] = false;
-        $options['target_path_parameter'] = '_target_path';
+        $this->defaultOptions['target_path_parameter'] = 'redirect';
 
         parent::__construct($httpUtils, $options);
 

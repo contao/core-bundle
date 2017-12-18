@@ -16,6 +16,9 @@ class ContaoLoginFactory extends FormLoginFactory
         unset(
             $this->options['username_parameter'],
             $this->options['password_parameter'],
+            $this->defaultSuccessHandlerOptions['target_path_parameter'],
+            $this->defaultSuccessHandlerOptions['use_referer'],
+            $this->defaultFailureHandlerOptions['failure_path_parameter']
         );
     }
 

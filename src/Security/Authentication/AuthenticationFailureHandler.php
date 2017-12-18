@@ -52,6 +52,7 @@ class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterf
         $this->httpUtils = $httpUtils;
         $this->scopeMatcher = $scopeMatcher;
         $this->logger = $logger;
+        $this->defaultOptions['failure_path_parameter'] = 'redirect';
     }
 
     /**
