@@ -13,8 +13,10 @@ class ContaoLoginFactory extends FormLoginFactory
     {
         parent::__construct();
 
-        $this->addOption('username_parameter', 'username');
-        $this->addOption('password_parameter', 'password');
+        unset(
+            $this->options['username_parameter'],
+            $this->options['password_parameter'],
+        );
     }
 
     /**
@@ -39,5 +41,27 @@ class ContaoLoginFactory extends FormLoginFactory
         ;
 
         return $provider;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createListener($container, $id, $config, $userProvider)
+    {
+        $listenerId = parent::createListener($container, $id, $config, $userProvider);
+
+        /** @var ContainerBuilder $container */
+        $container
+            ->getDefinition($listenerId)
+            ->replaceArgument(7, array_merge(
+                $container->getDefinition($listenerId)->getArgument(7),
+                [
+                    'username_parameter' => 'username',
+                    'password_parameter' => 'password',
+                ]
+            ))
+        ;
+
+        return $listenerId;
     }
 }
