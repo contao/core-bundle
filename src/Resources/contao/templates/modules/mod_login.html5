@@ -13,9 +13,8 @@
       <?php endif; ?>
       <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
       <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-      <?php if ($this->targetPath): ?>
-        <input type="hidden" name="<?= $this->targetName ?>" value="<?= StringUtil::specialchars($this->targetPath) ?>">
-      <?php endif; ?>
+      <input type="hidden" name="redirect" value="<?= StringUtil::specialchars($this->redirect) ?>">
+      <input type="hidden" name="redirectBack" value="<?= (int) $this->redirectBack ?>">
       <?php if ($this->logout): ?>
         <p class="login_info"><?= $this->loggedInAs ?><br><?= $this->lastLogin ?></p>
       <?php else: ?>
