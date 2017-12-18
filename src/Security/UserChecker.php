@@ -72,10 +72,7 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        /** @var Config $config */
-        $config = $this->framework->getAdapter(Config::class);
-
-        $lockedSeconds = $user->locked + (int) $config->get('lockPeriod') - time();
+        $lockedSeconds = $user->locked - time();
 
         $ex = new LockedException(
             $lockedSeconds,

@@ -609,7 +609,7 @@ abstract class User extends System implements AdvancedUserInterface, EncoderAwar
 	 */
 	public function isAccountNonLocked()
 	{
-		return ($this->locked + \Config::get('lockPeriod')) < time();
+		return $this->locked < time();
 	}
 
 

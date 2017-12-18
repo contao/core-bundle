@@ -136,11 +136,11 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             );
         }
 
-        $user->locked = time();
+        $user->locked = time() + $this->options['lock_period'];
         $user->loginCount = $this->options['login_attempts'];
         $user->save();
 
-        $lockedSeconds = $user->locked + $this->options['lock_period'] - time();
+        $lockedSeconds = $user->locked - time();
         $lockedMinutes = (int) ceil($lockedSeconds / 60);
 
         $this->sendLockedEmail($user, $lockedMinutes);
