@@ -346,7 +346,6 @@ services:
             - "@translator"
             - "@request_stack"
             - "@mailer"
-            - "@logger"
 
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
@@ -361,6 +360,8 @@ services:
             - "@security.http_utils"
             - "@contao.framework"
             - "@router"
+            - []
+            - "@logger"
 
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider

@@ -14,8 +14,10 @@ namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\FrontendUser;
 use Contao\PageModel;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -37,12 +39,18 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     private $router;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * @param HttpUtils                $httpUtils
      * @param ContaoFrameworkInterface $framework
      * @param RouterInterface          $router
      * @param array                    $options
+     * @param LoggerInterface|null     $logger
      */
-    public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, RouterInterface $router, array $options = [])
+    public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, RouterInterface $router, array $options = [], LoggerInterface $logger = null)
     {
         $options['always_use_default_target_path'] = false;
         $options['target_path_parameter'] = '_target_path';
@@ -51,6 +59,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         $this->framework = $framework;
         $this->router = $router;
+        $this->logger = $logger;
     }
 
     /**
@@ -63,6 +72,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse
     {
+        if (null !== $this->logger) {
+            $this->logger->info(
+                sprintf('User "%s" has logged in', $token->getUsername()),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $token->getUsername())]
+            );
+        }
+
         if ($request->request->has('_target_referer')) {
             return new RedirectResponse($request->request->get('_target_referer'));
         }

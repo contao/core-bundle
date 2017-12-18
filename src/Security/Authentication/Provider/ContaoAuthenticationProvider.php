@@ -14,12 +14,10 @@ namespace Contao\CoreBundle\Security\Authentication\Provider;
 
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Security\Exception\LockedException;
 use Contao\FrontendUser;
 use Contao\Idna;
 use Contao\User;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -54,11 +52,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     private $mailer;
 
     /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-    /**
      * @param UserProviderInterface    $userProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
@@ -68,9 +61,8 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param TranslatorInterface      $translator
      * @param RequestStack             $requestStack
      * @param \Swift_Mailer            $mailer
-     * @param LoggerInterface|null     $logger
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer, LoggerInterface $logger = null)
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer)
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -78,7 +70,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->mailer = $mailer;
-        $this->logger = $logger;
     }
 
     /**
@@ -102,8 +93,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
                 $exception = $this->onBadCredentials($user, $exception);
             }
 
-            $this->logAccess($exception->getMessage(), $user);
-
             throw $exception;
         }
 
@@ -119,8 +108,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $user->currentLogin = time();
         $user->loginCount = (int) $config->get('loginCount');
         $user->save();
-
-        $this->logAccess(sprintf('User "%s" has logged in', $user->getUsername()), $user);
 
         $this->triggerPostLoginHook($user);
     }
@@ -217,24 +204,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
 
             $this->mailer->send($email);
         }
-    }
-
-    /**
-     * Logs the access message to the Contao back end.
-     *
-     * @param string $message
-     * @param User   $user
-     */
-    private function logAccess(string $message, User $user)
-    {
-        if (null === $this->logger) {
-            return;
-        }
-
-        $this->logger->info(
-            $message,
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->getUsername())]
-        );
     }
 
     /**
