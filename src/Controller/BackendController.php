@@ -230,7 +230,8 @@ class BackendController extends Controller
      *
      * @Route("/contao/logout", name="contao_backend_logout")
      */
-    public function logoutAction(): void
+    public function logoutAction(): RedirectResponse
     {
+        return $this->redirectToRoute('contao_backend_login');
     }
 }
