@@ -32,33 +32,25 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     /**
      * @var ContaoFrameworkInterface
      */
-    private $framework;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    protected $framework;
 
     /**
      * @var LoggerInterface|null
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @param HttpUtils                $httpUtils
      * @param ContaoFrameworkInterface $framework
-     * @param RouterInterface          $router
-     * @param array                    $options
      * @param LoggerInterface|null     $logger
      */
-    public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, RouterInterface $router, array $options = [], LoggerInterface $logger = null)
+    public function __construct(HttpUtils $httpUtils, ContaoFrameworkInterface $framework, LoggerInterface $logger = null)
     {
         $this->defaultOptions['target_path_parameter'] = 'redirect';
 
-        parent::__construct($httpUtils, $options);
+        parent::__construct($httpUtils);
 
         $this->framework = $framework;
-        $this->router = $router;
         $this->logger = $logger;
     }
 
@@ -75,7 +67,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $user = $token->getUser();
 
         if (!$user instanceof User) {
-            return new RedirectResponse($this->determineTargetUrl($request));
+            return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
         }
 
         $this->framework->initialize();
@@ -92,78 +84,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
 
         $this->triggerPostLoginHook($user);
-
-        if ($request->request->has('_target_referer')) {
-            return new RedirectResponse($request->request->get('_target_referer'));
-        }
-
-        $user = $token->getUser();
-
-        if ($user instanceof FrontendUser) {
-            return $this->handleFrontendUser($request, $user);
-        }
-
-        if ($user instanceof BackendUser) {
-            return $this->handleBackendUser($request, $user);
-        }
-
-        return new RedirectResponse($this->determineTargetUrl($request));
-    }
-
-    /**
-     * Redirects an authenticated front end user.
-     *
-     * @param Request      $request
-     * @param FrontendUser $user
-     *
-     * @return RedirectResponse
-     */
-    private function handleFrontendUser(Request $request, FrontendUser $user): RedirectResponse
-    {
-        $groups = unserialize((string) $user->groups, ['allowed_classes' => false]);
-
-        if (\is_array($groups)) {
-            /** @var PageModel $pageModelAdapter */
-            $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-            $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups($groups);
-
-            if ($groupPage instanceof PageModel) {
-                return new RedirectResponse($groupPage->getAbsoluteUrl());
-            }
-        }
-
-        return new RedirectResponse($this->determineTargetUrl($request));
-    }
-
-    /**
-     * Redirects an authenticated back end user.
-     *
-     * @param Request     $request
-     * @param BackendUser $user
-     *
-     * @return RedirectResponse
-     */
-    private function handleBackendUser(Request $request, BackendUser $user): RedirectResponse
-    {
-        $route = $request->attributes->get('_route');
-
-        if ('contao_backend_login' !== $route) {
-            $parameters = [];
-
-            $routes = [
-                'contao_backend',
-                'contao_backend_preview',
-            ];
-
-            // Redirect to the last page visited upon login
-            if ($request->query->count() > 0 && \in_array($route, $routes, true)) {
-                $parameters['referer'] = base64_encode($request->getRequestUri());
-            }
-
-            return new RedirectResponse(
-                $this->router->generate('contao_backend_login', $parameters, UrlGeneratorInterface::ABSOLUTE_URL)
-            );
-        }
 
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
     }

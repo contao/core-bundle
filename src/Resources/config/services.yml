@@ -359,8 +359,13 @@ services:
         arguments:
             - "@security.http_utils"
             - "@contao.framework"
-            - "@router"
-            - []
+            - "@logger"
+
+    contao.security.frontend_authentication_success_handler:
+        class: Contao\CoreBundle\Security\Authentication\FrontendAuthenticationSuccessHandler
+        arguments:
+            - "@security.http_utils"
+            - "@contao.framework"
             - "@logger"
 
     contao.security.backend_user_provider:
