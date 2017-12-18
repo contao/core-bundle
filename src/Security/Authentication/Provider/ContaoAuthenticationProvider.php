@@ -52,6 +52,19 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     private $mailer;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * @var array
+     */
+    private $defaultOptions = array(
+        'login_attempts' => 3,
+        'lock_period' => 60 * 5,
+    );
+
+    /**
      * @param UserProviderInterface    $userProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
@@ -61,8 +74,9 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param TranslatorInterface      $translator
      * @param RequestStack             $requestStack
      * @param \Swift_Mailer            $mailer
+     * @param array                    $options
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer)
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer, array $options = [])
     {
         parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
 
@@ -70,6 +84,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->mailer = $mailer;
+        $this->options = array_merge($this->defaultOptions, $options);
     }
 
     /**
@@ -78,33 +93,25 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     public function checkAuthentication(UserInterface $user, UsernamePasswordToken $token): void
     {
         if (!$user instanceof User) {
-            throw new \RuntimeException('Cannot handle non-Contao users.');
+            parent::checkAuthentication($user, $token);
+            return;
         }
 
         try {
             parent::checkAuthentication($user, $token);
         } catch (AuthenticationException $exception) {
-            if ($exception instanceof BadCredentialsException) {
-                if ($this->triggerCheckCredentialsHook($user, $token)) {
-                    $this->onSuccess($user);
-                    return;
-                }
-
-                $exception = $this->onBadCredentials($user, $exception);
+            if (!$exception instanceof BadCredentialsException) {
+                throw $exception;
             }
 
-            throw $exception;
+            if (!$this->triggerCheckCredentialsHook($user, $token)) {
+                $exception = $this->onBadCredentials($user, $exception);
+
+                throw $exception;
+            }
         }
 
-        $this->onSuccess($user);
-    }
-
-    private function onSuccess(User $user)
-    {
-        /** @var Config $config */
-        $config = $this->framework->getAdapter(Config::class);
-
-        $user->loginCount = (int) $config->get('loginCount');
+        $user->loginCount = $this->options['login_attempts'];
         $user->save();
     }
 
@@ -121,14 +128,11 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         --$user->loginCount;
 
         if ($user->loginCount < 1) {
-            /** @var Config $config */
-            $config = $this->framework->getAdapter(Config::class);
-
             $user->locked = time();
-            $user->loginCount = (int) $config->get('loginCount');
+            $user->loginCount = (int) $this->options['login_attempts'];
             $user->save();
 
-            $lockedSeconds = $user->locked + (int) $config->get('lockPeriod') - time();
+            $lockedSeconds = $user->locked + $this->options['lock_period'] - time();
             $lockedMinutes = (int) ceil($lockedSeconds / 60);
 
             $this->sendLockedEmail($user, $lockedMinutes);
