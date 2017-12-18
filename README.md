@@ -133,6 +133,7 @@ security:
                 login_path: contao_backend_login
                 check_path: contao_backend_login
                 default_target_path: contao_backend
+                always_use_default_target_path: true
                 success_handler: contao.security.authentication_success_handler
                 failure_handler: contao.security.authentication_failure_handler
                 remember_me: false
@@ -154,9 +155,10 @@ security:
             contao_login:
                 login_path: contao_frontend_login
                 check_path: contao_frontend_login
-                default_target_path: /
+                default_target_path: contao_root
+                failure_path: contao_root
                 failure_handler: contao.security.authentication_failure_handler
-                success_handler: contao.security.authentication_success_handler
+                success_handler: contao.security.frontend_authentication_success_handler
                 remember_me: true
 
             remember_me:
@@ -165,7 +167,8 @@ security:
 
             logout:
                 path: contao_frontend_logout
-                success_handler: contao.security.logout_success_handler
+                target: contao_root
+                success_handler: contao.security.frontend_logout_success_handler
                 handlers:
                     - contao.security.logout_handler
 
