@@ -213,6 +213,18 @@ class BackendUser extends User
 		return \System::getContainer()->get('contao.security.token_checker')->hasBackendUser();
 	}
 
+	/**
+	 * Try to login the current user
+	 *
+	 * @return boolean True if the user could be logged in
+	 *
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0. Use Symfony security instead.
+	 */
+	public function login()
+	{
+		return \System::getContainer()->get('contao.security.token_checker')->hasBackendUser();
+	}
+
 
 	/**
 	 * Check whether the current user has a certain access right

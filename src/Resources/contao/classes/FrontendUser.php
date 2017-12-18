@@ -172,33 +172,17 @@ class FrontendUser extends User
 
 
 	/**
-	 * Add the auto login resources
+	 * Try to login the current user
 	 *
-	 * @return boolean
+	 * @return boolean True if the user could be logged in
 	 *
-	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
-	 *             Use the security.interactive_login event instead.
+	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0. Use Symfony security instead.
 	 */
 	public function login()
 	{
 		@trigger_error('Using FrontendUser::login() has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
 
-		return parent::login();
-	}
-
-
-	/**
-	 * Remove the auto login resources
-	 *
-	 * @return boolean
-	 *
-	 * @deprecated Deprecated since Contao 4.5, to be removed in Contao 5.0.
-	 */
-	public function logout()
-	{
-		@trigger_error('Using FrontendUser::logout() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
-
-		return parent::logout();
+		return \System::getContainer()->get('contao.security.token_checker')->hasFrontendUser();
 	}
 
 
