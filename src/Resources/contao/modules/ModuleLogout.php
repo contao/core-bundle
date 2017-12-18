@@ -62,6 +62,7 @@ class ModuleLogout extends \Module
 			$_SESSION['LAST_PAGE_VISITED'] = $this->getReferer();
 		}
 
+		$strLogoutUrl = \System::getContainer()->get('security.logout_url_generator')->getLogoutUrl();
 		$strRedirect = \Environment::get('base');
 
 		// Redirect to last page visited
@@ -77,14 +78,11 @@ class ModuleLogout extends \Module
 			$strRedirect = $objTarget->getAbsoluteUrl();
 		}
 
-		/** @var Session $session */
-		$session = System::getContainer()->get('session');
-		$session->set('_contao_logout_target', $strRedirect);
+		list ($strLogoutUrl, $strQuery) = explode('?', $strLogoutUrl);
 
-		/** @var RouterInterface $router */
-		$router = System::getContainer()->get('router');
+		$strQuery = ($strQuery ? '&' : '') . 'redirect=' . $strRedirect;
 
-		$this->redirect($router->generate('contao_frontend_logout'));
+		$this->redirect($strLogoutUrl.'?'.$strQuery);
 
 		return '';
 	}
