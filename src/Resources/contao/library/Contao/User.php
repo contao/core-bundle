@@ -87,7 +87,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @property boolean $login
  * @property boolean $assignDir
  * @property string  $homeDir
- * @property string  $autologin
  * @property integer $createdOn
  * @property string  $activation
  * @property string  $loginPage
