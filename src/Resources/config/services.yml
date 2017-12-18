@@ -333,7 +333,7 @@ services:
         calls:
             - ["matchAttribute", ["_scope", "frontend"]]
 
-    security.authentication.provider.dao:
+    contao.security.authentication_provider:
         class: Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider
         abstract: true
         arguments:
@@ -341,7 +341,6 @@ services:
             - ~ # User checker
             - ~ # Provider-shared key
             - "@security.encoder_factory"
-            - "%security.authentication.hide_user_not_found%"
             - "@contao.framework"
             - "@translator"
             - "@request_stack"

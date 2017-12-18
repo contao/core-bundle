@@ -69,16 +69,15 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
      * @param EncoderFactoryInterface  $encoderFactory
-     * @param bool                     $hideUserNotFoundExceptions
      * @param ContaoFrameworkInterface $framework
      * @param TranslatorInterface      $translator
      * @param RequestStack             $requestStack
      * @param \Swift_Mailer            $mailer
      * @param array                    $options
      */
-    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, $hideUserNotFoundExceptions, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer, array $options = [])
+    public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, EncoderFactoryInterface $encoderFactory, ContaoFrameworkInterface $framework, TranslatorInterface $translator, RequestStack $requestStack, \Swift_Mailer $mailer, array $options = [])
     {
-        parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, $hideUserNotFoundExceptions);
+        parent::__construct($userProvider, $userChecker, $providerKey, $encoderFactory, false);
 
         $this->framework = $framework;
         $this->translator = $translator;
@@ -127,34 +126,34 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     {
         --$user->loginCount;
 
-        if ($user->loginCount < 1) {
-            $user->locked = time();
-            $user->loginCount = (int) $this->options['login_attempts'];
+        if ($user->loginCount > 0) {
             $user->save();
 
-            $lockedSeconds = $user->locked + $this->options['lock_period'] - time();
-            $lockedMinutes = (int) ceil($lockedSeconds / 60);
-
-            $this->sendLockedEmail($user, $lockedMinutes);
-
-            $exception = new LockedException(
-                $lockedSeconds,
-                sprintf('User "%s" has been locked for %s minutes', $user->getUsername(), $lockedMinutes),
-                0,
+            return new BadCredentialsException(
+                sprintf('Invalid password submitted for username "%s"', $user->getUsername()),
+                $exception->getCode(),
                 $exception
             );
-            $exception->setUser($user);
-
-            return $exception;
         }
 
+        $user->locked = time();
+        $user->loginCount = $this->options['login_attempts'];
         $user->save();
 
-        return new BadCredentialsException(
-            sprintf('Invalid password submitted for username "%s"', $user->getUsername()),
-            $exception->getCode(),
+        $lockedSeconds = $user->locked + $this->options['lock_period'] - time();
+        $lockedMinutes = (int) ceil($lockedSeconds / 60);
+
+        $this->sendLockedEmail($user, $lockedMinutes);
+
+        $exception = new LockedException(
+            $lockedSeconds,
+            sprintf('User "%s" has been locked for %s minutes', $user->getUsername(), $lockedMinutes),
+            0,
             $exception
         );
+        $exception->setUser($user);
+
+        return $exception;
     }
 
     /**

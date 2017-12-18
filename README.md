@@ -129,14 +129,13 @@ security:
             switch_user: true
             logout_on_user_change: true
 
-            form_login:
+            contao_login:
                 login_path: contao_backend_login
                 check_path: contao_backend_login
                 default_target_path: contao_backend
                 success_handler: contao.security.authentication_success_handler
                 failure_handler: contao.security.authentication_failure_handler
-                username_parameter: username
-                password_parameter: password
+                remember_me: false
 
             logout:
                 path: contao_backend_logout
@@ -152,14 +151,12 @@ security:
             switch_user: false
             logout_on_user_change: true
 
-            form_login:
+            contao_login:
                 login_path: contao_frontend_login
                 check_path: contao_frontend_login
                 default_target_path: /
                 failure_handler: contao.security.authentication_failure_handler
                 success_handler: contao.security.authentication_success_handler
-                username_parameter: username
-                password_parameter: password
                 remember_me: true
 
             remember_me:
