@@ -16,11 +16,15 @@ use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\User;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class TokenLifetimeListener
+/**
+ * Temporary implementation until https://github.com/symfony/symfony/pull/12807 is available.
+ */
+class SessionExpirationListener
 {
     /**
      * @var TokenStorageInterface
@@ -33,11 +37,6 @@ class TokenLifetimeListener
     private $scopeMatcher;
 
     /**
-     * @var int
-     */
-    private $tokenLifetime;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -45,14 +44,12 @@ class TokenLifetimeListener
     /**
      * @param TokenStorageInterface $tokenStorage
      * @param ScopeMatcher          $scopeMatcher
-     * @param int                   $tokenLifetime
      * @param LoggerInterface       $logger
      */
-    public function __construct(TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, int $tokenLifetime, LoggerInterface $logger)
+    public function __construct(TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, LoggerInterface $logger)
     {
         $this->tokenStorage = $tokenStorage;
         $this->scopeMatcher = $scopeMatcher;
-        $this->tokenLifetime = $tokenLifetime;
         $this->logger = $logger;
     }
 
@@ -63,33 +60,37 @@ class TokenLifetimeListener
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if (!$this->scopeMatcher->isContaoMasterRequest($event)) {
+        $request = $event->getRequest();
+        $session = $request->getSession();
+
+        if (!$event->getRequest()->hasPreviousSession()
+            || null === $session
+            || !$session->isStarted()
+        ) {
             return;
         }
 
         $token = $this->tokenStorage->getToken();
 
-        if (!$token instanceof UsernamePasswordToken) {
+        if (!$this->scopeMatcher->isContaoMasterRequest($event)
+            || !$token instanceof TokenInterface
+            || !($user = $token->getUser()) instanceof User
+        ) {
             return;
         }
 
-        $user = $token->getUser();
-
-        if (!$user instanceof User) {
+        // Logout after 1 hour
+        if ((time() - $session->getMetadataBag()->getLastUsed()) < 3600) {
             return;
         }
 
-        if (!$token->hasAttribute('lifetime') || $token->getAttribute('lifetime') > time()) {
-            $token->setAttribute('lifetime', time() + $this->tokenLifetime);
-
-            return;
-        }
+        $this->tokenStorage->setToken(null);
 
         $this->logger->info(
             sprintf('User "%s" has been logged out automatically due to inactivity', $user->getUsername()),
             ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->getUsername())]
         );
 
-        $this->tokenStorage->setToken();
+        $event->setResponse(new RedirectResponse($request->getRequestUri()));
     }
 }
