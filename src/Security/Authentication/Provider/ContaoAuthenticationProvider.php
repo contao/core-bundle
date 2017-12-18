@@ -104,12 +104,8 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
 
-        $user->lastLogin = $user->currentLogin;
-        $user->currentLogin = time();
         $user->loginCount = (int) $config->get('loginCount');
         $user->save();
-
-        $this->triggerPostLoginHook($user);
     }
 
     /**
@@ -233,25 +229,5 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         }
 
         return false;
-    }
-
-    /**
-     * Triggers the postLogin hook.
-     *
-     * @param User $user
-     */
-    private function triggerPostLoginHook(User $user): void
-    {
-        $this->framework->initialize();
-
-        if (empty($GLOBALS['TL_HOOKS']['postLogin']) || !\is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
-            return;
-        }
-
-        @trigger_error('Using the "postLogin" hook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
-
-        foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
-            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
-        }
     }
 }

@@ -17,6 +17,7 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\FrontendUser;
 use Contao\PageModel;
+use Contao\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,12 +73,26 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse
     {
+        $user = $token->getUser();
+
+        if (!$user instanceof User) {
+            return new RedirectResponse($this->determineTargetUrl($request));
+        }
+
+        $this->framework->initialize();
+
+        $user->lastLogin = $user->currentLogin;
+        $user->currentLogin = time();
+        $user->save();
+
         if (null !== $this->logger) {
             $this->logger->info(
                 sprintf('User "%s" has logged in', $token->getUsername()),
                 ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $token->getUsername())]
             );
         }
+
+        $this->triggerPostLoginHook($user);
 
         if ($request->request->has('_target_referer')) {
             return new RedirectResponse($request->request->get('_target_referer'));
@@ -152,5 +167,23 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
 
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
+    }
+
+    /**
+     * Triggers the postLogin hook.
+     *
+     * @param User $user
+     */
+    private function triggerPostLoginHook(User $user): void
+    {
+        if (empty($GLOBALS['TL_HOOKS']['postLogin']) || !\is_array($GLOBALS['TL_HOOKS']['postLogin'])) {
+            return;
+        }
+
+        @trigger_error('Using the "postLogin" hook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+
+        foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
+            $this->framework->createInstance($callback[0])->{$callback[1]}($user);
+        }
     }
 }
