@@ -13,50 +13,27 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Authentication;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
+use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
 use Symfony\Component\Security\Http\HttpUtils;
 
-class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterface
+class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
-    /**
-     * @var HttpUtils
-     */
-    private $httpUtils;
-
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-    /**
-     * @param HttpUtils            $httpUtils
-     * @param ScopeMatcher         $scopeMatcher
-     * @param LoggerInterface|null $logger
-     */
-    public function __construct(HttpUtils $httpUtils, ScopeMatcher $scopeMatcher, LoggerInterface $logger = null)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null)
     {
-        $this->httpUtils = $httpUtils;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->logger = $logger;
         $this->defaultOptions['failure_path_parameter'] = 'redirect';
+
+        parent::__construct($httpKernel, $httpUtils, $options, $logger);
     }
 
     /**
-     * Stores the security exception in the session.
+     * Logs the security exception to the Contao back end.
      *
      * @param Request                 $request
      * @param AuthenticationException $exception
@@ -67,37 +44,16 @@ class AuthenticationFailureHandler implements AuthenticationFailureHandlerInterf
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): RedirectResponse
     {
-        $user = $exception instanceof AccountStatusException ? $exception->getUser() : null;
-        $username = $user instanceof UserInterface ? $user->getUsername() : '';
+        if (null !== $this->logger) {
+            $user = $exception instanceof AccountStatusException ? $exception->getUser() : null;
+            $username = $user instanceof UserInterface ? $user->getUsername() : $request->request->get('username');
 
-        $this->logger->info(
-            $exception->getMessage(),
-            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
-        );
-
-        /** @var Session $session */
-        $session = $request->getSession();
-
-        if (null !== $session) {
-            $session->set(Security::AUTHENTICATION_ERROR, $exception);
+            $this->logger->info(
+                $exception->getMessage(),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
+            );
         }
 
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    /**
-     * Determines the redirect target based on the request.
-     *
-     * @param Request $request
-     *
-     * @return string
-     */
-    private function determineTargetUrl(Request $request): string
-    {
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            return 'contao_backend_login';
-        }
-
-        return (string) $request->headers->get('referer', '/');
+        return parent::onAuthenticationFailure($request, $exception);
     }
 }

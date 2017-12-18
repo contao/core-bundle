@@ -349,8 +349,9 @@ services:
     contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
         arguments:
+            - "@http_kernel"
             - "@security.http_utils"
-            - "@contao.routing.scope_matcher"
+            - []
             - "@logger"
 
     contao.security.authentication_success_handler:
