@@ -359,6 +359,7 @@ services:
         arguments:
             - "@security.http_utils"
             - "@contao.framework"
+            - "@translator"
             - "@logger"
 
     contao.security.frontend_authentication_success_handler:
@@ -366,6 +367,7 @@ services:
         arguments:
             - "@security.http_utils"
             - "@contao.framework"
+            - "@translator"
             - "@logger"
 
     contao.security.backend_user_provider:
