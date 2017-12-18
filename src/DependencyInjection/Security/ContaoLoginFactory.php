@@ -1,6 +1,6 @@
 <?php
 
-namespace Contao\CoreBundle\Security\Factory;
+namespace Contao\CoreBundle\DependencyInjection\Security;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\FormLoginFactory;
 use Symfony\Component\DependencyInjection\ChildDefinition;
