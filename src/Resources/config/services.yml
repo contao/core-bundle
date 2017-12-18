@@ -392,13 +392,13 @@ services:
         class: Contao\CoreBundle\Security\Encoder\ContaoLegacyPasswordEncoder
 
     contao.security.logout_handler:
-        class: Contao\CoreBundle\Security\LogoutHandler
+        class: Contao\CoreBundle\Security\Logout\LogoutHandler
         arguments:
             - "@contao.framework"
             - "@logger"
 
-    contao.security.logout_success_handler:
-        class: Contao\CoreBundle\Security\LogoutSuccessHandler
+    contao.security.frontend_logout_success_handler:
+        class: Contao\CoreBundle\Security\Logout\FrontendLogoutSuccessHandler
         arguments:
             - "@security.http_utils"
 
