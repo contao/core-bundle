@@ -31,14 +31,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected $framework;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * @var LoggerInterface|null
      */
     protected $logger;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     /**
      * @param HttpUtils                $httpUtils

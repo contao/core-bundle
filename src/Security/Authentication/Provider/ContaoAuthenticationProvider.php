@@ -59,10 +59,10 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     /**
      * @var array
      */
-    private $defaultOptions = array(
+    private $defaultOptions = [
         'login_attempts' => 3,
         'lock_period' => 60 * 5,
-    );
+    ];
 
     /**
      * @param UserProviderInterface    $userProvider
@@ -93,6 +93,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     {
         if (!$user instanceof User) {
             parent::checkAuthentication($user, $token);
+
             return;
         }
 

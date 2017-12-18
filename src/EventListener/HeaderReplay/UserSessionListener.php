@@ -12,10 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\EventListener\HeaderReplay;
 
-use Contao\BackendUser;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Security\TokenChecker;
-use Contao\FrontendUser;
 use Symfony\Component\HttpFoundation\Request;
 use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;

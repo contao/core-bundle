@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2017 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\DependencyInjection\Security;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\FormLoginFactory;
@@ -62,7 +72,7 @@ class ContaoLoginFactory extends FormLoginFactory
     {
         $listenerId = parent::createListener($container, $id, $config, $userProvider);
 
-        /** @var ContainerBuilder $container */
+        /* @var ContainerBuilder $container */
         $container
             ->getDefinition($listenerId)
             ->replaceArgument(7, array_merge(

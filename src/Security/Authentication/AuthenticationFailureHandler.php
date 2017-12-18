@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\HttpUtils;
 
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
-    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null)
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = [], LoggerInterface $logger = null)
     {
         $this->defaultOptions['failure_path_parameter'] = 'redirect';
 

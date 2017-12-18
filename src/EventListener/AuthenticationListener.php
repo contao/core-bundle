@@ -37,7 +37,7 @@ class AuthenticationListener
      *
      * @param AuthenticationFailureEvent $event
      */
-    public function onAuthenticationFailure(AuthenticationFailureEvent $event)
+    public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
         if (null !== $this->logger) {
             return;
