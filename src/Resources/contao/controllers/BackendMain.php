@@ -252,7 +252,7 @@ class BackendMain extends \Backend
 		$this->Template->systemMessagesCount = substr_count($strSystemMessages, 'class="tl_');
 		$this->Template->systemErrorMessagesCount = substr_count($strSystemMessages, 'class="tl_error"');
 
-		$this->setImporsonatedLogout();
+		$this->setImpersonatedLogout();
 
 		// Front end preview links
 		if (\defined('CURRENT_ID') && CURRENT_ID != '')
@@ -283,7 +283,7 @@ class BackendMain extends \Backend
 	/**
 	 * Adjusts the logout link if the current user is impersonated.
 	 */
-	private function setImporsonatedLogout()
+	private function setImpersonatedLogout()
 	{
 		$token = \System::getContainer()->get('security.token_storage')->getToken();
 
