@@ -81,24 +81,17 @@ class BackendIndex extends \Backend
 	 */
 	private function getLoginMessages()
 	{
-		$strMessages = \Message::generateUnwrapped();
-
 		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
 
 		if ($exception instanceof LockedException)
 		{
-			$strMessages .= '<p class="tl_error">' . sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()) . '</p>';
+		    \Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()));
 		}
 		else if ($exception instanceof AuthenticationException)
 		{
-			$strMessages .= '<p class="tl_error">' . $GLOBALS['TL_LANG']['ERR']['invalidLogin'] . '</p>';
+            \Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
 		}
 
-		if (!empty($strMessages))
-		{
-			$strMessages = '<div class="tl_message">' . $strMessages . '</div>';
-		}
-
-		return $strMessages;
+		return \Message::generate();
 	}
 }
