@@ -33,6 +33,12 @@ class ModuleLogin extends \Module
 	 */
 	protected $strTemplate = 'mod_login';
 
+	/**
+	 * Flash type
+	 * @var string
+	 */
+	protected $strFlashType = 'contao.FE.error';
+
 
 	/**
 	 * Display a login form
