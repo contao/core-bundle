@@ -134,16 +134,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 64 }
 
-    contao.listener.session_expiration:
-        class: Contao\CoreBundle\EventListener\SessionExpirationListener
-        arguments:
-            - "@security.token_storage"
-            - "@contao.routing.scope_matcher"
-            - "@logger"
-        tags:
-            # The priority must be lower than the one of the Symfony firewall listener (defaults to 8)
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 7 }
-
     contao.listener.store_referer:
         class: Contao\CoreBundle\EventListener\StoreRefererListener
         arguments:

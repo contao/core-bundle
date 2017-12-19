@@ -12,8 +12,14 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Security\User;
 
+use Contao\BackendUser;
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\FrontendUser;
 use Contao\User;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,18 +33,36 @@ class ContaoUserProvider implements UserProviderInterface
     private $framework;
 
     /**
+     * @var Session
+     */
+    private $session;
+
+    /**
      * @var string
      */
     private $userClass;
 
     /**
-     * @param ContaoFrameworkInterface $framework
-     * @param string                   $userClass
+     * @var LoggerInterface|null
      */
-    public function __construct(ContaoFrameworkInterface $framework, string $userClass)
+    private $logger;
+
+    /**
+     * @param ContaoFrameworkInterface $framework
+     * @param Session                  $session
+     * @param string                   $userClass
+     * @param LoggerInterface|null     $logger
+     */
+    public function __construct(ContaoFrameworkInterface $framework, Session $session, string $userClass, LoggerInterface $logger = null)
     {
+        if ($userClass !== BackendUser::class && $userClass !== FrontendUser::class) {
+            throw new \RuntimeException(sprintf('Instances of "%s" are not supported.', $userClass));
+        }
+
         $this->framework = $framework;
+        $this->session = $session;
         $this->userClass = $userClass;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,7 +74,7 @@ class ContaoUserProvider implements UserProviderInterface
 
         /** @var User $adapter */
         $adapter = $this->framework->getAdapter($this->userClass);
-        $user = $user = $adapter->loadUserByUsername($username);
+        $user = $adapter->loadUserByUsername($username);
 
         if (is_a($user, $this->userClass)) {
             return $user;
@@ -62,19 +86,18 @@ class ContaoUserProvider implements UserProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function refreshUser(UserInterface $user): UserInterface
+    public function refreshUser(UserInterface $user)
     {
-        $this->framework->initialize();
-
-        if (is_a($user, $this->userClass)) {
-            $user = $this->loadUserByUsername($user->getUsername());
-
-            $this->triggerPostAuthenticateHook($user);
-
-            return $user;
+        if (!is_a($user, $this->userClass)) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        $user = $this->loadUserByUsername($user->getUsername());
+
+        $this->validateSessionLifetime($user);
+        $this->triggerPostAuthenticateHook($user);
+
+        return $user;
     }
 
     /**
@@ -83,6 +106,37 @@ class ContaoUserProvider implements UserProviderInterface
     public function supportsClass($class): bool
     {
         return $this->userClass === $class;
+    }
+
+    /**
+     * Validate the session lifetime and log the user out if the session has expired.
+     *
+     * @param UserInterface $user
+     */
+    private function validateSessionLifetime(UserInterface $user): void
+    {
+        if (!$this->session->isStarted()) {
+            return;
+        }
+
+        /** @var Config $config */
+        $config = $this->framework->getAdapter(Config::class);
+        $timeout = (int) $config->get('sessionTimeout');
+
+        if ($timeout > 0 && (time() - $this->session->getMetadataBag()->getLastUsed()) < $timeout) {
+            return;
+        }
+
+        if (null !== $this->logger) {
+            $this->logger->info(
+                sprintf('User "%s" has been logged out automatically due to inactivity', $user->getUsername()),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->getUsername())]
+            );
+        }
+
+        throw new UsernameNotFoundException(
+            sprintf('User "%s" has been logged out automatically due to inactivity', $user->getUsername())
+        );
     }
 
     /**

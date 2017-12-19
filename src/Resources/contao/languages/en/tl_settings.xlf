@@ -224,6 +224,12 @@
       <trans-unit id="tl_settings.logPeriod.1">
         <source>Here you can enter the storage time for log entries in seconds (14 days = 1209600 seconds).</source>
       </trans-unit>
+      <trans-unit id="tl_settings.sessionTimeout.0">
+        <source>Session timeout</source>
+      </trans-unit>
+      <trans-unit id="tl_settings.sessionTimeout.1">
+        <source>Here you can enter the maximum lifetime of a session in seconds (60 minutes = 3600 seconds).</source>
+      </trans-unit>
       <trans-unit id="tl_settings.defaultUser.0">
         <source>Default page owner</source>
       </trans-unit>
