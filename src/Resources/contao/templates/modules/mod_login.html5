@@ -13,12 +13,13 @@
       <?php endif; ?>
       <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
       <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-      <input type="hidden" name="redirect" value="<?= StringUtil::specialchars($this->redirect) ?>">
-      <input type="hidden" name="redirectBack" value="<?= (int) $this->redirectBack ?>">
+      <input type="hidden" name="_target_path" value="<?= StringUtil::specialchars($this->targetPath) ?>">
       <?php if ($this->logout): ?>
         <p class="login_info"><?= $this->loggedInAs ?><br><?= $this->lastLogin ?></p>
       <?php else: ?>
-        <div class="widget widget-text">
+          <input type="hidden" name="_always_use_target_path" value="<?= (int) $this->forceTargetPath?>">
+          <input type="hidden" name="_failure_path" value="<?= $this->failurePath ?>">
+          <div class="widget widget-text">
           <label for="username"><?= $this->username ?></label>
           <input type="text" name="username" id="username" class="text" value="<?= $this->value ?>" required><br>
         </div>

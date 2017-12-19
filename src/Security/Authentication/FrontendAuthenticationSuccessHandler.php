@@ -46,8 +46,8 @@ class FrontendAuthenticationSuccessHandler extends AuthenticationSuccessHandler
             return parent::determineTargetUrl($request);
         }
 
-        if (ParameterBagUtils::getRequestParameterValue($request, 'redirectBack')
-            && ($targetUrl = ParameterBagUtils::getRequestParameterValue($request, 'redirect'))
+        if (ParameterBagUtils::getRequestParameterValue($request, '_always_use_target_path')
+            && ($targetUrl = ParameterBagUtils::getRequestParameterValue($request, '_target_path'))
         ) {
             return $targetUrl;
         }

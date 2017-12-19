@@ -12,10 +12,7 @@ namespace Contao;
 
 use Contao\CoreBundle\Security\Exception\LockedException;
 use Patchwork\Utf8;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 
@@ -104,7 +101,7 @@ class ModuleLogin extends \Module
 			$this->Template->slabel = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logout']);
 			$this->Template->loggedInAs = sprintf($GLOBALS['TL_LANG']['MSC']['loggedInAs'], $this->User->username);
 			$this->Template->action = \System::getContainer()->get('security.logout_url_generator')->getLogoutPath();
-			$this->Template->redirect = $strRedirect;
+			$this->Template->targetPath = $strRedirect;
 
 			if ($this->User->lastLogin > 0)
 			{
@@ -152,7 +149,8 @@ class ModuleLogin extends \Module
 		$this->Template->formId = 'tl_login_' . $this->id;
 		$this->Template->autologin = $this->autologin;
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];
-		$this->Template->redirectBack = $blnRedirectBack;
-		$this->Template->redirect = $strRedirect;
+		$this->Template->forceTargetPath = $blnRedirectBack;
+		$this->Template->targetPath = $strRedirect;
+		$this->Template->failurePath = \Environment::get('base').\Environment::get('request');
 	}
 }
