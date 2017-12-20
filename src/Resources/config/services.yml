@@ -408,6 +408,11 @@ services:
             - "@contao.framework"
             - "@logger"
 
+    contao.security.rememberme_token_provider:
+        class: Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider
+        arguments:
+            - "@database_connection"
+
     contao.security.token_checker:
         class: Contao\CoreBundle\Security\TokenChecker
         arguments:
