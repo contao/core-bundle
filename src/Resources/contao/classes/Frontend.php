@@ -581,7 +581,7 @@ abstract class Frontend extends \Controller
 		$strText = $this->replaceInsertTags($strText, false);
 		$strText = strip_tags($strText);
 		$strText = str_replace("\n", ' ', $strText);
-		$strText = \StringUtil::substr($strText, 160);
+		$strText = \StringUtil::substr($strText, 230);
 
 		return trim($strText);
 	}
