@@ -57,7 +57,7 @@ class ContaoUserProvider implements UserProviderInterface
      */
     public function __construct(ContaoFrameworkInterface $framework, Session $session, string $userClass, LoggerInterface $logger = null)
     {
-        if ($userClass !== BackendUser::class && $userClass !== FrontendUser::class) {
+        if (BackendUser::class !== $userClass && FrontendUser::class !== $userClass) {
             throw new \RuntimeException(sprintf('Unsupported class "%s"', $userClass));
         }
 

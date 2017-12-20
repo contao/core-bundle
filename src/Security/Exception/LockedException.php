@@ -65,7 +65,7 @@ class LockedException extends BaseLockedException
     /**
      * {@inheritdoc}
      */
-    public function unserialize($str)
+    public function unserialize($str): void
     {
         [$this->lockedSeconds, $parentData] = unserialize($str, ['allowed_classes' => true]);
 
