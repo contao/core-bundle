@@ -34,15 +34,20 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): RedirectResponse
     {
-        if (null !== $this->logger) {
-            $user = $exception instanceof AccountStatusException ? $exception->getUser() : null;
-            $username = $user instanceof UserInterface ? $user->getUsername() : $request->request->get('username');
-
-            $this->logger->info(
-                $exception->getMessage(),
-                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
-            );
+        if (null === $this->logger) {
+            return parent::onAuthenticationFailure($request, $exception);
         }
+
+        if ($exception instanceof AccountStatusException && ($user = $exception->getUser()) instanceof UserInterface) {
+            $username = $user->getUsername();
+        } else {
+            $username = $request->request->get('username');
+        }
+
+        $this->logger->info(
+            $exception->getMessage(),
+            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
+        );
 
         return parent::onAuthenticationFailure($request, $exception);
     }

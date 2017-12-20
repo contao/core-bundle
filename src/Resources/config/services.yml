@@ -333,6 +333,14 @@ services:
         calls:
             - ["matchAttribute", ["_scope", "frontend"]]
 
+    contao.security.authentication_failure_handler:
+        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
+        arguments:
+            - "@http_kernel"
+            - "@security.http_utils"
+            - []
+            - "@logger"
+
     contao.security.authentication_provider:
         class: Contao\CoreBundle\Security\Authentication\Provider\ContaoAuthenticationProvider
         abstract: true
@@ -346,24 +354,8 @@ services:
             - "@request_stack"
             - "@mailer"
 
-    contao.security.authentication_failure_handler:
-        class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
-        arguments:
-            - "@http_kernel"
-            - "@security.http_utils"
-            - []
-            - "@logger"
-
     contao.security.authentication_success_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
-        arguments:
-            - "@security.http_utils"
-            - "@contao.framework"
-            - "@translator"
-            - "@logger"
-
-    contao.security.frontend_authentication_success_handler:
-        class: Contao\CoreBundle\Security\Authentication\FrontendAuthenticationSuccessHandler
         arguments:
             - "@security.http_utils"
             - "@contao.framework"
@@ -377,6 +369,19 @@ services:
             - "@session"
             - "Contao\\BackendUser"
             - "@logger"
+
+    contao.security.frontend_authentication_success_handler:
+        class: Contao\CoreBundle\Security\Authentication\FrontendAuthenticationSuccessHandler
+        arguments:
+            - "@security.http_utils"
+            - "@contao.framework"
+            - "@translator"
+            - "@logger"
+
+    contao.security.frontend_logout_success_handler:
+        class: Contao\CoreBundle\Security\Logout\FrontendLogoutSuccessHandler
+        arguments:
+            - "@security.http_utils"
 
     contao.security.frontend_preview_authenticator:
         class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
@@ -402,11 +407,6 @@ services:
         arguments:
             - "@contao.framework"
             - "@logger"
-
-    contao.security.frontend_logout_success_handler:
-        class: Contao\CoreBundle\Security\Logout\FrontendLogoutSuccessHandler
-        arguments:
-            - "@security.http_utils"
 
     contao.security.token_checker:
         class: Contao\CoreBundle\Security\TokenChecker

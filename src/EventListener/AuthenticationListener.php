@@ -33,13 +33,13 @@ class AuthenticationListener
     }
 
     /**
-     * Handles the security.authentication.failure event.
+     * Logs login attempts with unknown usernames.
      *
      * @param AuthenticationFailureEvent $event
      */
     public function onAuthenticationFailure(AuthenticationFailureEvent $event): void
     {
-        if (null !== $this->logger) {
+        if (null === $this->logger) {
             return;
         }
 
@@ -49,13 +49,15 @@ class AuthenticationListener
             $exception = $exception->getPrevious();
         }
 
-        if ($exception instanceof UsernameNotFoundException) {
-            $username = $exception->getUsername() ?: $event->getAuthenticationToken()->getUsername();
-
-            $this->logger->info(
-                sprintf('Could not find user "%s"', $username),
-                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
-            );
+        if (!$exception instanceof UsernameNotFoundException) {
+            return;
         }
+
+        $username = $exception->getUsername() ?: $event->getAuthenticationToken()->getUsername();
+
+        $this->logger->info(
+            sprintf('Could not find user "%s"', $username),
+            ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $username)]
+        );
     }
 }

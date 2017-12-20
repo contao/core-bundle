@@ -13,22 +13,21 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Security\Exception;
 
 use Symfony\Component\Security\Core\Exception\LockedException as BaseLockedException;
-use Throwable;
 
 class LockedException extends BaseLockedException
 {
     /**
-     * @var string
+     * @var int
      */
     private $lockedSeconds;
 
     /**
-     * @param int            $lockedSeconds
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param int             $lockedSeconds
+     * @param string          $message
+     * @param int             $code
+     * @param \Throwable|null $previous
      */
-    public function __construct(int $lockedSeconds, string $message = '', int $code = 0, Throwable $previous = null)
+    public function __construct(int $lockedSeconds, string $message = '', int $code = 0, \Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
@@ -68,7 +67,7 @@ class LockedException extends BaseLockedException
      */
     public function unserialize($str)
     {
-        list($this->lockedSeconds, $parentData) = unserialize($str, ['allowed_classes' => true]);
+        [$this->lockedSeconds, $parentData] = unserialize($str, ['allowed_classes' => true]);
 
         parent::unserialize($parentData);
     }

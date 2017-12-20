@@ -31,14 +31,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     protected $framework;
 
     /**
-     * @var LoggerInterface|null
-     */
-    protected $logger;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    protected $logger;
 
     /**
      * @param HttpUtils                $httpUtils
@@ -83,8 +83,8 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
         if (null !== $this->logger) {
             $this->logger->info(
-                sprintf('User "%s" has logged in', $token->getUsername()),
-                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $token->getUsername())]
+                sprintf('User "%s" has logged in', $user->username),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->username)]
             );
         }
 
@@ -104,7 +104,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             return;
         }
 
-        @trigger_error('Using the "postLogin" hook has been deprecated and will no longer work in Contao 5.0. Use the security.interactive_login event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using the "postLogin" hook has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
         foreach ($GLOBALS['TL_HOOKS']['postLogin'] as $callback) {
             $this->framework->createInstance($callback[0])->{$callback[1]}($user);
@@ -112,7 +112,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     }
 
     /**
-     * Stores the locale after user has logged in.
+     * Stores the locale after a user has logged in.
      *
      * @param Request $request
      * @param string  $locale

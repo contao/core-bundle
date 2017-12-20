@@ -282,6 +282,8 @@ class BackendMain extends \Backend
 
 	/**
 	 * Adjusts the logout link if the current user is impersonated.
+	 *
+	 * @throws \RuntimeException
 	 */
 	private function setImpersonatedLogout()
 	{
@@ -293,6 +295,7 @@ class BackendMain extends \Backend
 		}
 
 		$impersonatorUser = null;
+
 		foreach ($token->getRoles() as $role)
 		{
 			if ($role instanceof SwitchUserRole)
@@ -307,11 +310,17 @@ class BackendMain extends \Backend
 			return;
 		}
 
-		$firewallMap = \System::getContainer()->get('security.firewall.map');
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		// generate exit impersonation path from current request
-		if (null === $request || null === ($firewallConfig = $firewallMap->getFirewallConfig($request)) || null === ($switchUserConfig = $firewallConfig->getSwitchUser()))
+		if ($request === null)
+		{
+			throw new \RuntimeException('The request stack did not contain a request');
+		}
+
+		$firewallMap = \System::getContainer()->get('security.firewall.map');
+
+		// Generate the "exit impersonation" path from the current request
+		if (($firewallConfig = $firewallMap->getFirewallConfig($request)) === null || ($switchUserConfig = $firewallConfig->getSwitchUser()) === null)
 		{
 			return;
 		}

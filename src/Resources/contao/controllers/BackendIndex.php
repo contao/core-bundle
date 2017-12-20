@@ -49,11 +49,22 @@ class BackendIndex extends \Backend
 	 */
 	public function run()
 	{
+		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+
+		if ($exception instanceof LockedException)
+		{
+			\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()));
+		}
+		elseif ($exception instanceof AuthenticationException)
+		{
+			\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
+		}
+
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_login');
 
 		$objTemplate->theme = \Backend::getTheme();
-		$objTemplate->messages = $this->getLoginMessages();
+		$objTemplate->messages = \Message::generate();
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
 		$objTemplate->languages = \System::getLanguages(true); // backwards compatibility
@@ -72,26 +83,5 @@ class BackendIndex extends \Backend
 		$objTemplate->jsDisabled = $GLOBALS['TL_LANG']['MSC']['jsDisabled'];
 
 		return $objTemplate->getResponse();
-	}
-
-	/**
-	 * Gets the security messages for the login view.
-	 *
-	 * @return string
-	 */
-	private function getLoginMessages()
-	{
-		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
-
-		if ($exception instanceof LockedException)
-		{
-		    \Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()));
-		}
-		else if ($exception instanceof AuthenticationException)
-		{
-            \Message::addError($GLOBALS['TL_LANG']['ERR']['invalidLogin']);
-		}
-
-		return \Message::generate();
 	}
 }

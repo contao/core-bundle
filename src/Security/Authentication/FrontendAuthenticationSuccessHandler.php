@@ -18,12 +18,13 @@ use Contao\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\ParameterBagUtils;
 
 class FrontendAuthenticationSuccessHandler extends AuthenticationSuccessHandler
 {
     /**
-     * @var TokenInterface
+     * @var UserInterface
      */
     private $user;
 
@@ -54,7 +55,8 @@ class FrontendAuthenticationSuccessHandler extends AuthenticationSuccessHandler
 
         /** @var PageModel $pageModelAdapter */
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-        $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups(StringUtil::deserialize($this->user->groups, true));
+        $groups = StringUtil::deserialize($this->user->groups, true);
+        $groupPage = $pageModelAdapter->findFirstActiveByMemberGroups($groups);
 
         if ($groupPage instanceof PageModel) {
             return $groupPage->getAbsoluteUrl();

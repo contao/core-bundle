@@ -72,7 +72,13 @@ class TokenChecker
      */
     public function getFrontendUsername(): ?string
     {
-        return $this->getUsername(FrontendUser::class);
+        $token = $this->getToken(FrontendUser::SECURITY_SESSION_KEY);
+
+        if (null === $token || !$token->getUser() instanceof FrontendUser) {
+            return null;
+        }
+
+        return $token->getUser()->getUsername();
     }
 
     /**
@@ -82,7 +88,13 @@ class TokenChecker
      */
     public function getBackendUsername(): ?string
     {
-        return $this->getUsername(BackendUser::class);
+        $token = $this->getToken(BackendUser::SECURITY_SESSION_KEY);
+
+        if (null === $token || !$token->getUser() instanceof BackendUser) {
+            return null;
+        }
+
+        return $token->getUser()->getUsername();
     }
 
     /**
@@ -121,29 +133,5 @@ class TokenChecker
         }
 
         return $token;
-    }
-
-    /**
-     * Gets the username of a token in the session.
-     *
-     * @param string $userClass
-     *
-     * @return string|null
-     */
-    private function getUsername(string $userClass): ?string
-    {
-        if (!\defined($userClass.'::SECURITY_SESSION_KEY')) {
-            throw new \RuntimeException(
-                sprintf('Class "%s" does not have a SECURITY_SESSION_KEY constant.', $userClass)
-            );
-        }
-
-        $token = $this->getToken(\constant($userClass.'::SECURITY_SESSION_KEY'));
-
-        if (null === $token || !is_a($token->getUser(), $userClass)) {
-            return null;
-        }
-
-        return $token->getUser()->getUsername();
     }
 }

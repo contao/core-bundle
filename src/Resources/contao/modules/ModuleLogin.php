@@ -149,7 +149,7 @@ class ModuleLogin extends \Module
 		$this->Template->formId = 'tl_login_' . $this->id;
 		$this->Template->autologin = $this->autologin;
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];
-		$this->Template->forceTargetPath = $blnRedirectBack;
+		$this->Template->forceTargetPath = (int) $blnRedirectBack;
 		$this->Template->targetPath = $strRedirect;
 		$this->Template->failurePath = \Environment::get('base').\Environment::get('request');
 	}

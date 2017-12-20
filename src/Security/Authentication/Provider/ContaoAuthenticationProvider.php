@@ -57,14 +57,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     private $options;
 
     /**
-     * @var array
-     */
-    private $defaultOptions = [
-        'login_attempts' => 3,
-        'lock_period' => 60 * 5,
-    ];
-
-    /**
      * @param UserProviderInterface    $userProvider
      * @param UserCheckerInterface     $userChecker
      * @param string                   $providerKey
@@ -83,7 +75,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->mailer = $mailer;
-        $this->options = array_merge($this->defaultOptions, $options);
+        $this->options = array_merge(['login_attempts' => 3, 'lock_period' => 300], $options);
     }
 
     /**
@@ -105,9 +97,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             }
 
             if (!$this->triggerCheckCredentialsHook($user, $token)) {
-                $exception = $this->onBadCredentials($user, $exception);
-
-                throw $exception;
+                throw $this->onBadCredentials($user, $exception);
             }
         }
 
@@ -116,7 +106,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
     }
 
     /**
-     * Count the login attempts and lock the user if it reaches zero.
+     * Counts the login attempts and locks the user if it reaches zero.
      *
      * @param User                    $user
      * @param AuthenticationException $exception
@@ -152,16 +142,19 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             0,
             $exception
         );
+
         $exception->setUser($user);
 
         return $exception;
     }
 
     /**
-     * Sends an email to the administrator that the account has been locked.
+     * Notifies the administrator of the locked account.
      *
      * @param User $user
      * @param int  $lockedMinutes
+     *
+     * @throws \RuntimeException
      */
     private function sendLockedEmail(User $user, int $lockedMinutes): void
     {
@@ -170,7 +163,6 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
 
-        // Send admin notification
         if ($adminEmail = $config->get('adminEmail')) {
             $request = $this->requestStack->getMasterRequest();
 
@@ -222,7 +214,7 @@ class ContaoAuthenticationProvider extends DaoAuthenticationProvider
             return false;
         }
 
-        @trigger_error('Using the checkCredentials hook has been deprecated and will no longer work in Contao 5.0. Use the contao.check_credentials event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using the checkCredentials hook has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
         foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
             $objectInstance = $this->framework->createInstance($callback[0]);

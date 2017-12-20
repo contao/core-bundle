@@ -76,14 +76,16 @@ class UserChecker implements UserCheckerInterface
 
         $ex = new LockedException(
             $lockedSeconds,
-            sprintf('User "%s" has been locked for %s minutes', $user->getUsername(), ceil($lockedSeconds / 60))
+            sprintf('User "%s" has been locked for %s minutes', $user->username, ceil($lockedSeconds / 60))
         );
+
         $ex->setUser($user);
+
         throw $ex;
     }
 
     /**
-     * Check whether the account is disabled.
+     * Checks whether the account is disabled.
      *
      * @param User $user
      */
@@ -95,11 +97,12 @@ class UserChecker implements UserCheckerInterface
 
         $ex = new DisabledException('The account has been disabled');
         $ex->setUser($user);
+
         throw $ex;
     }
 
     /**
-     * Check wether login is allowed (front end only).
+     * Checks wether login is allowed (front end only).
      *
      * @param User $user
      */
@@ -109,13 +112,14 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        $ex = new DisabledException(sprintf('User "%s" is not allowed to log in', $user->getUsername()));
+        $ex = new DisabledException(sprintf('User "%s" is not allowed to log in', $user->username));
         $ex->setUser($user);
+
         throw $ex;
     }
 
     /**
-     * Check whether the account is not active yet or not anymore.
+     * Checks whether the account is not active yet or not anymore.
      *
      * @param User $user
      */
@@ -151,6 +155,7 @@ class UserChecker implements UserCheckerInterface
 
         $ex = new DisabledException($logMessage);
         $ex->setUser($user);
+
         throw $ex;
     }
 }

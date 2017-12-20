@@ -70,10 +70,6 @@ class UserSessionListener
             return false;
         }
 
-        if ($this->tokenChecker->hasBackendUser() || $this->tokenChecker->hasFrontendUser()) {
-            return true;
-        }
-
-        return false;
+        return $this->tokenChecker->hasBackendUser() || $this->tokenChecker->hasFrontendUser();
     }
 }

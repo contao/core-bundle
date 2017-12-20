@@ -504,6 +504,8 @@ abstract class Frontend extends \Controller
 	 */
 	protected function getLoginStatus($strCookie)
 	{
+		@trigger_error('Using Frontend::getLoginStatus() has been deprecated and will no longer work in Contao 5.0. Use Symfony security instead.', E_USER_DEPRECATED);
+
 		$objTokenChecker = \System::getContainer()->get('contao.security.token_checker');
 
 		if ($strCookie == 'BE_USER_AUTH' && $objTokenChecker->hasBackendUser())

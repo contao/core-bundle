@@ -38,7 +38,7 @@ class ContaoLoginFactory extends FormLoginFactory
     /**
      * {@inheritdoc}
      */
-    public function getKey()
+    public function getKey(): string
     {
         return 'contao-login';
     }
@@ -46,9 +46,10 @@ class ContaoLoginFactory extends FormLoginFactory
     /**
      * {@inheritdoc}
      */
-    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
+    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId): string
     {
         $provider = 'contao.security.authentication_provider.'.$id;
+
         $container
             ->setDefinition($provider, new ChildDefinition('contao.security.authentication_provider'))
             ->replaceArgument(0, new Reference($userProviderId))
@@ -68,20 +69,20 @@ class ContaoLoginFactory extends FormLoginFactory
     /**
      * {@inheritdoc}
      */
-    protected function createListener($container, $id, $config, $userProvider)
+    protected function createListener($container, $id, $config, $userProvider): string
     {
         $listenerId = parent::createListener($container, $id, $config, $userProvider);
 
         /* @var ContainerBuilder $container */
         $container
             ->getDefinition($listenerId)
-            ->replaceArgument(7, array_merge(
-                $container->getDefinition($listenerId)->getArgument(7),
-                [
-                    'username_parameter' => 'username',
-                    'password_parameter' => 'password',
-                ]
-            ))
+            ->replaceArgument(
+                7,
+                array_merge(
+                    $container->getDefinition($listenerId)->getArgument(7),
+                    ['username_parameter' => 'username', 'password_parameter' => 'password']
+                )
+            )
         ;
 
         return $listenerId;

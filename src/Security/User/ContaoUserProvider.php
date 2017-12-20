@@ -52,11 +52,13 @@ class ContaoUserProvider implements UserProviderInterface
      * @param Session                  $session
      * @param string                   $userClass
      * @param LoggerInterface|null     $logger
+     *
+     * @throws \RuntimeException
      */
     public function __construct(ContaoFrameworkInterface $framework, Session $session, string $userClass, LoggerInterface $logger = null)
     {
         if ($userClass !== BackendUser::class && $userClass !== FrontendUser::class) {
-            throw new \RuntimeException(sprintf('Instances of "%s" are not supported.', $userClass));
+            throw new \RuntimeException(sprintf('Unsupported class "%s"', $userClass));
         }
 
         $this->framework = $framework;
@@ -89,7 +91,7 @@ class ContaoUserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user)
     {
         if (!is_a($user, $this->userClass)) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(sprintf('Unsupported user class "%s".', \get_class($user)));
         }
 
         $user = $this->loadUserByUsername($user->getUsername());
@@ -109,11 +111,13 @@ class ContaoUserProvider implements UserProviderInterface
     }
 
     /**
-     * Validate the session lifetime and log the user out if the session has expired.
+     * Validates the session lifetime and logs the user out if the session has expired.
      *
-     * @param UserInterface $user
+     * @param User $user
+     *
+     * @throws UsernameNotFoundException
      */
-    private function validateSessionLifetime(UserInterface $user): void
+    private function validateSessionLifetime(User $user): void
     {
         if (!$this->session->isStarted()) {
             return;
@@ -129,13 +133,13 @@ class ContaoUserProvider implements UserProviderInterface
 
         if (null !== $this->logger) {
             $this->logger->info(
-                sprintf('User "%s" has been logged out automatically due to inactivity', $user->getUsername()),
-                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->getUsername())]
+                sprintf('User "%s" has been logged out automatically due to inactivity', $user->username),
+                ['contao' => new ContaoContext(__METHOD__, ContaoContext::ACCESS, $user->username)]
             );
         }
 
         throw new UsernameNotFoundException(
-            sprintf('User "%s" has been logged out automatically due to inactivity', $user->getUsername())
+            sprintf('User "%s" has been logged out automatically due to inactivity.', $user->username)
         );
     }
 
@@ -150,7 +154,7 @@ class ContaoUserProvider implements UserProviderInterface
             return;
         }
 
-        @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0. Use the contao.post_authenticate event instead.', E_USER_DEPRECATED);
+        @trigger_error('Using the postAuthenticate hook has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
         foreach ($GLOBALS['TL_HOOKS']['postAuthenticate'] as $callback) {
             $this->framework->createInstance($callback[0])->{$callback[1]}($user);
