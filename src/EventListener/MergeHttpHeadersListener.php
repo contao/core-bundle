@@ -123,7 +123,12 @@ class MergeHttpHeadersListener
      */
     private function fetchHttpHeaders(): void
     {
-        $this->headers = array_merge($this->headers, $this->headerStorage->all());
+        $headers = array_merge($this->headers, $this->headerStorage->all());
+
+        // Never merge cache-control headers, see https://github.com/contao/core-bundle/issues/1246
+        unset($headers['cache-control']);
+        
+        $this->headers = $headers;
         $this->headerStorage->clear();
     }
 

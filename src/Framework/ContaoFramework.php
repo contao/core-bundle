@@ -303,6 +303,13 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
         $this->includeHelpers();
         $this->includeBasicClasses();
 
+        // Start the session because that used to be the case. For BC reasons
+        // we always have to make sure the session is started because people
+        // are relying on $_SESSION to be present/working.
+        if (null !== ($session = $this->request->getSession())) {
+            $session->start();
+        }
+
         // Set the container
         System::setContainer($this->container);
 
