@@ -272,6 +272,9 @@ been removed in Contao 4.0.
 
 The `$_SESSION['TL_USER_LOGGED_IN']` flag has been removed.
 
+### $_SESSION['TL_LANGUAGE']
+
+The `$_SESSION['TL_LANGUAGE']` flag has been removed.
 
 ### PHP entry points
 
