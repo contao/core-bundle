@@ -17,7 +17,7 @@ use Contao\Config;
 use Contao\CoreBundle\Exception\IncompleteInstallationException;
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\Session\LegacySessionAccess;
+use Contao\CoreBundle\Session\LazySessionAccess;
 use Contao\Input;
 use Contao\RequestToken;
 use Contao\System;
@@ -366,7 +366,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
             return;
         }
 
-        $_SESSION = new LegacySessionAccess($this->session);
+        $_SESSION = new LazySessionAccess($this->session);
     }
 
     /**

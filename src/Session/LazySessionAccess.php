@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * Lazily initializes the session in case anyone uses the legacy
  * direct access via $_SESSION and just expecting it was started before.
  */
-class LegacySessionAccess implements \ArrayAccess, \Countable
+class LazySessionAccess implements \ArrayAccess, \Countable
 {
     /**
      * @var SessionInterface
@@ -89,7 +89,6 @@ class LegacySessionAccess implements \ArrayAccess, \Countable
      */
     private function ensureSessionStarted()
     {
-        var_dump(debug_backtrace(0, 5));
         @trigger_error('Accessing $_SESSION directly is deprecated and support will be dropped with Contao 5.0. Use the Symfony request instead to work with the session.', E_USER_DEPRECATED);
 
         if (!$this->session->isStarted()) {
