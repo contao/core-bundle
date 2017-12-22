@@ -91,9 +91,11 @@ class LazySessionAccess implements \ArrayAccess, \Countable
     {
         @trigger_error('Accessing $_SESSION directly is deprecated and support will be dropped with Contao 5.0. Use the Symfony request instead to work with the session.', E_USER_DEPRECATED);
 
-        if (!$this->session->isStarted()) {
-            $this->session->start();
+        if ($this->session->isStarted()) {
+            return;
         }
+
+        $this->session->start();
 
         $_SESSION['BE_DATA'] = $this->session->getBag('contao_backend');
         $_SESSION['FE_DATA'] = $this->session->getBag('contao_frontend');
