@@ -66,6 +66,10 @@ class LocaleListener
             return $this->formatLocaleId($request->attributes->get('_locale'));
         }
 
+        if (null !== ($session = $request->getSession()) && $session->has('_locale')) {
+            return $session->get('_locale');
+        }
+
         return $request->getPreferredLanguage($this->availableLocales);
     }
 
