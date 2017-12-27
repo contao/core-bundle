@@ -147,7 +147,7 @@ class MergeHttpHeadersListener
 
             $uniqueKey = $this->getUniqueKey($name);
             
-            // Never merge cache-control headers, see https://github.com/contao/core-bundle/issues/1246
+            // Never merge cache-control headers (see #1246)
             if ('cache-control' === $uniqueKey) {
                 continue;
             }
