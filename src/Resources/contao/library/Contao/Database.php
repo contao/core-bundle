@@ -235,7 +235,7 @@ class Database
 			$varSet = $this->resConnection->quote($varSet);
 		}
 
-		return "FIND_IN_SET(" . \Database::quoteColumnName($strKey) . ", " . $varSet . ")";
+		return "FIND_IN_SET(" . static::quoteColumnName($strKey) . ", " . $varSet . ")";
 	}
 
 
@@ -490,7 +490,7 @@ class Database
 	 */
 	public function isUniqueValue($strTable, $strField, $varValue, $intId=null)
 	{
-		$strQuery = "SELECT * FROM $strTable WHERE ".static::quoteColumnName($strField)."=?";
+		$strQuery = "SELECT * FROM $strTable WHERE " . static::quoteColumnName($strField) . "=?";
 
 		if ($intId !== null)
 		{
