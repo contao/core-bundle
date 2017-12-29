@@ -12,13 +12,16 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\FrontendCron;
 use Contao\FrontendIndex;
 use Contao\FrontendShare;
+use Contao\PageError403;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\LogoutException;
 
 /**
  * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
@@ -70,9 +73,24 @@ class FrontendController extends Controller
      *
      * @Route("/_contao/login", name="contao_frontend_login")
      */
-    public function loginAction(): RedirectResponse
+    public function loginAction(): Response
     {
-        return $this->redirectToRoute('contao_root');
+        $this->container->get('contao.framework')->initialize();
+
+        if (!isset($GLOBALS['TL_PTY']['error_403']) || !class_exists($GLOBALS['TL_PTY']['error_403'])) {
+            return $this->redirectToRoute('contao_root');
+        }
+
+        /** @var PageError403 $pageHandler */
+        $pageHandler = new $GLOBALS['TL_PTY']['error_403']();
+
+        try {
+            return $pageHandler->getResponse();
+        } catch (ResponseException $e) {
+            return $e->getResponse();
+        } catch (\Exception $e) {
+            return $this->redirectToRoute('contao_root');
+        }
     }
 
     /**
@@ -80,8 +98,8 @@ class FrontendController extends Controller
      *
      * @Route("/_contao/logout", name="contao_frontend_logout")
      */
-    public function logoutAction(): RedirectResponse
+    public function logoutAction(): void
     {
-        return $this->redirectToRoute('contao_root');
+        throw new LogoutException('User was not correctly logged out.');
     }
 }
