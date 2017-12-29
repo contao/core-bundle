@@ -366,6 +366,7 @@ services:
         class: Contao\CoreBundle\Security\Authentication\RememberMe\DatabaseTokenProvider
         arguments:
             - "@database_connection"
+            - "@request_stack"
 
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
