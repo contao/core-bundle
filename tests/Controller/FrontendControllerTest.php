@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Tests\Controller;
 use Contao\CoreBundle\Controller\FrontendController;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Exception\LogoutException;
 
 class FrontendControllerTest extends TestCase
 {
@@ -62,27 +63,13 @@ class FrontendControllerTest extends TestCase
         $this->assertSame('/', $response->getTargetUrl());
     }
 
-    public function testRedirectsToTheRootPageUponLogout(): void
+    public function testThrowsALogoutExceptionUponLogout(): void
     {
-        $router = $this->createMock(RouterInterface::class);
-
-        $router
-            ->expects($this->once())
-            ->method('generate')
-            ->with('contao_root')
-            ->willReturn('/')
-        ;
-
-        $container = $this->mockContainer();
-        $container->set('contao.framework', $this->mockContaoFramework());
-        $container->set('router', $router);
-
         $controller = new FrontendController();
-        $controller->setContainer($container);
 
-        $response = $controller->logoutAction();
+        $this->expectException(LogoutException::class);
+        $this->expectExceptionMessage('The user was not logged out correctly.');
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertSame('/', $response->getTargetUrl());
+        $controller->logoutAction();
     }
 }

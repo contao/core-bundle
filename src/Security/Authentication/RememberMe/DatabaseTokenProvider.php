@@ -166,7 +166,7 @@ class DatabaseTokenProvider implements TokenProviderInterface
     }
 
     /**
-     * Checks if the current request is a Header-Replay.
+     * Checks if the request is a header replay request.
      *
      * @return bool
      */
@@ -178,6 +178,6 @@ class DatabaseTokenProvider implements TokenProviderInterface
             return false;
         }
 
-        return in_array(HeaderReplayListener::CONTENT_TYPE, $request->getAcceptableContentTypes(), true);
+        return \in_array(HeaderReplayListener::CONTENT_TYPE, $request->getAcceptableContentTypes(), true);
     }
 }

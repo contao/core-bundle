@@ -71,6 +71,8 @@ class FrontendController extends Controller
     /**
      * Symfony will authenticate the user automatically by calling this route.
      *
+     * @return Response
+     *
      * @Route("/_contao/login", name="contao_frontend_login")
      */
     public function loginAction(): Response
@@ -96,10 +98,12 @@ class FrontendController extends Controller
     /**
      * Symfony will un-authenticate the user automatically by calling this route.
      *
+     * @throws LogoutException
+     *
      * @Route("/_contao/logout", name="contao_frontend_logout")
      */
     public function logoutAction(): void
     {
-        throw new LogoutException('User was not correctly logged out.');
+        throw new LogoutException('The user was not logged out correctly.');
     }
 }
