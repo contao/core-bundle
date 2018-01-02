@@ -19,14 +19,13 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 
 class DatabaseTokenProviderTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $provider = new DatabaseTokenProvider($this->createMock(Connection::class), new RequestStack());
+        $provider = new DatabaseTokenProvider($this->createMock(Connection::class));
 
         $this->assertInstanceOf(
             'Contao\CoreBundle\Security\Authentication\RememberMe\DatabaseTokenProvider',
@@ -77,7 +76,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->willReturn($stmt)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
         $token = $provider->loadTokenBySeries('series');
 
         $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\RememberMe\PersistentToken', $token);
@@ -106,7 +105,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->willReturn($stmt)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
 
         $this->expectException(TokenNotFoundException::class);
 
@@ -138,7 +137,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->with($sql, $values, $types)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
         $provider->deleteTokenBySeries('series');
     }
 
@@ -176,7 +175,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->willReturn(1)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
         $provider->updateToken('series', 'value', $dateTime);
 
         $this->addToAssertionCount(1); // does not throw an exception
@@ -192,7 +191,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->willReturn(0)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
 
         $this->expectException(TokenNotFoundException::class);
 
@@ -236,7 +235,7 @@ class DatabaseTokenProviderTest extends TestCase
             ->willReturn(1)
         ;
 
-        $provider = new DatabaseTokenProvider($connection, new RequestStack());
+        $provider = new DatabaseTokenProvider($connection);
         $provider->createNewToken($token);
     }
 }

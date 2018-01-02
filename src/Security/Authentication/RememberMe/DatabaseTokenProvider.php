@@ -14,11 +14,9 @@ namespace Contao\CoreBundle\Security\Authentication\RememberMe;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DoctrineType;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\RememberMe\PersistentTokenInterface;
 use Symfony\Component\Security\Core\Authentication\RememberMe\TokenProviderInterface;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
-use Terminal42\HeaderReplay\EventListener\HeaderReplayListener;
 
 class DatabaseTokenProvider implements TokenProviderInterface
 {
@@ -28,18 +26,11 @@ class DatabaseTokenProvider implements TokenProviderInterface
     private $connection;
 
     /**
-     * @var RequestStack
+     * @param Connection $connection
      */
-    private $requestStack;
-
-    /**
-     * @param Connection   $connection
-     * @param RequestStack $requestStack
-     */
-    public function __construct(Connection $connection, RequestStack $requestStack)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -101,10 +92,6 @@ class DatabaseTokenProvider implements TokenProviderInterface
      */
     public function updateToken($series, $tokenValue, \DateTime $lastUsed): void
     {
-        if ($this->isHeaderReplay()) {
-            return;
-        }
-
         $sql = '
             UPDATE
                 tl_remember_me
@@ -163,21 +150,5 @@ class DatabaseTokenProvider implements TokenProviderInterface
         ];
 
         $this->connection->executeUpdate($sql, $values, $types);
-    }
-
-    /**
-     * Checks if the request is a header replay request.
-     *
-     * @return bool
-     */
-    private function isHeaderReplay(): bool
-    {
-        $request = $this->requestStack->getMasterRequest();
-
-        if (null === $request) {
-            return false;
-        }
-
-        return \in_array(HeaderReplayListener::CONTENT_TYPE, $request->getAcceptableContentTypes(), true);
     }
 }

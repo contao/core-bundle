@@ -71,7 +71,7 @@ class FrontendController extends Controller
     /**
      * Symfony will authenticate the user automatically by calling this route.
      *
-     * @return Response
+     * @return RedirectResponse|Response
      *
      * @Route("/_contao/login", name="contao_frontend_login")
      */
