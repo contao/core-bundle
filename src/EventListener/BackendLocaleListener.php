@@ -14,14 +14,14 @@ namespace Contao\CoreBundle\EventListener;
 
 use Contao\BackendUser;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class BackendLocaleListener
 {
     /**
-     * @var TokenStorage
+     * @var TokenStorageInterface
      */
     private $tokenStorage;
 
@@ -31,17 +31,17 @@ class BackendLocaleListener
     private $translator;
 
     /**
-     * @param TokenStorage                 $tokenStorage
-     * @param TranslatorInterface          $translator
+     * @param TokenStorageInterface $tokenStorage
+     * @param TranslatorInterface   $translator
      */
-    public function __construct(TokenStorage $tokenStorage, TranslatorInterface $translator)
+    public function __construct(TokenStorageInterface $tokenStorage, TranslatorInterface $translator)
     {
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
     }
 
     /**
-     * Sets the default locale based on the request or session.
+     * Sets the default locale based on the user language.
      *
      * @param GetResponseEvent $event
      */
@@ -60,7 +60,8 @@ class BackendLocaleListener
         }
 
         $request = $event->getRequest();
-        $request->setLocale($user->language);
+        $request->attributes->set('_locale', $user->language);
+
         $this->translator->setLocale($user->language);
 
         // Deprecated since Contao 4.0, to be removed in Contao 5.0
