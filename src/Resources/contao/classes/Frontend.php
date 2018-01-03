@@ -514,14 +514,10 @@ abstract class Frontend extends \Controller
 
 		if ($strCookie == 'BE_USER_AUTH' && $objTokenChecker->hasBackendUser())
 		{
-			// Disable the cache if a back end user is logged in
-			if (TL_MODE == 'FE')
+			// Always return false if we are not in preview mode (show hidden elements)
+			if (TL_MODE == 'FE' && !$objTokenChecker->isPreviewMode())
 			{
-				// Always return false if we are not in preview mode (show hidden elements)
-				if (!$objTokenChecker->isPreviewMode())
-				{
-					return false;
-				}
+				return false;
 			}
 
 			return true;

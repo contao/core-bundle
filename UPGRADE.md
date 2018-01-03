@@ -27,6 +27,11 @@ element as container and a `<strong>` element to mark the active item:
 ```
 
 
+### $_SESSION['TL_LANGUAGE']
+
+The `$_SESSION['TL_LANGUAGE']` flag has been removed.
+
+
 Version 4.* to 4.3
 ------------------
 
@@ -272,9 +277,6 @@ been removed in Contao 4.0.
 
 The `$_SESSION['TL_USER_LOGGED_IN']` flag has been removed.
 
-### $_SESSION['TL_LANGUAGE']
-
-The `$_SESSION['TL_LANGUAGE']` flag has been removed.
 
 ### PHP entry points
 

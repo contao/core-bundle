@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Session\Attribute;
 
-use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
 use Contao\CoreBundle\Session\LazySessionAccess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
@@ -32,30 +31,29 @@ class LazySessionAccessTest extends TestCase
     /**
      * @group legacy
      *
-     * @expectedDeprecation Accessing $_SESSION directly is deprecated and support will be dropped with Contao 5.0. Use the Symfony request instead to work with the session.
+     * @expectedDeprecation Using $_SESSION has been deprecated %s.
      */
     public function testStartsSessionOnAccess(): void
     {
         $beBag = new AttributeBag();
         $beBag->setName('contao_backend');
+
         $feBag = new AttributeBag();
         $feBag->setName('contao_frontend');
 
         $session = new Session(new MockArraySessionStorage());
         $session->registerBag($beBag);
         $session->registerBag($feBag);
-        $accessor = new LazySessionAccess($session);
 
-        // Do not use $_SESSION here for maximum compat
-        $FOOBAR = $accessor;
+        $SESSION = new LazySessionAccess($session);
 
         $this->assertFalse($session->isStarted());
 
-        // In reality would be $_SESSION['foobar'] = 'test';
-        $FOOBAR['foobar'] = 'test';
+        $SESSION['foobar'] = 'test';
 
         $this->assertTrue($session->isStarted());
-
+        $this->assertSame($beBag, $_SESSION['BE_DATA']);
+        $this->assertSame($feBag, $_SESSION['FE_DATA']);
         $this->assertSame('test', $session->get('foobar'));
     }
 }

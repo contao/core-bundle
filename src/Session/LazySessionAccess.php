@@ -13,8 +13,7 @@ namespace Contao\CoreBundle\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * Lazily initializes the session in case anyone uses the legacy
- * direct access via $_SESSION and just expecting it was started before.
+ * Automatically starts the session if someone accesses $_SESSION.
  */
 class LazySessionAccess implements \ArrayAccess, \Countable
 {
@@ -24,8 +23,6 @@ class LazySessionAccess implements \ArrayAccess, \Countable
     private $session;
 
     /**
-     * LegacySessionAccess constructor.
-     *
      * @param SessionInterface $session
      */
     public function __construct(SessionInterface $session)
@@ -38,7 +35,7 @@ class LazySessionAccess implements \ArrayAccess, \Countable
      */
     public function offsetExists($offset)
     {
-        $this->ensureSessionStarted();
+        $this->startSession();
 
         return $this->session->has($offset);
     }
@@ -48,7 +45,7 @@ class LazySessionAccess implements \ArrayAccess, \Countable
      */
     public function offsetGet($offset)
     {
-        $this->ensureSessionStarted();
+        $this->startSession();
 
         return $this->session->get($offset);
     }
@@ -58,7 +55,7 @@ class LazySessionAccess implements \ArrayAccess, \Countable
      */
     public function offsetSet($offset, $value)
     {
-        $this->ensureSessionStarted();
+        $this->startSession();
 
         $this->session->set($offset, $value);
     }
@@ -68,7 +65,7 @@ class LazySessionAccess implements \ArrayAccess, \Countable
      */
     public function offsetUnset($offset)
     {
-        $this->ensureSessionStarted();
+        $this->startSession();
 
         $this->session->remove($offset);
     }
@@ -78,22 +75,17 @@ class LazySessionAccess implements \ArrayAccess, \Countable
      */
     public function count()
     {
-        $this->ensureSessionStarted();
+        $this->startSession();
 
-        return count($this->session->all());
+        return \count($this->session->all());
     }
 
     /**
-     * Ensures a session is initialized as soon as someone accesses
-     * $_SESSION and we can store certain attributes accordingly.
+     * Starts the session.
      */
-    private function ensureSessionStarted()
+    private function startSession()
     {
-        @trigger_error('Accessing $_SESSION directly is deprecated and support will be dropped with Contao 5.0. Use the Symfony request instead to work with the session.', E_USER_DEPRECATED);
-
-        if ($this->session->isStarted()) {
-            return;
-        }
+        @trigger_error('Using $_SESSION has been deprecated and will no longer work in Contao 5.0. Use the Symfony session instead.', E_USER_DEPRECATED);
 
         $this->session->start();
 
