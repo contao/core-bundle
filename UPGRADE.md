@@ -429,3 +429,40 @@ have to be published explicitly to be available via HTTP.
 In Contao 3, the alias of an article was automatically used as its CSS ID, if
 no custom CSS ID was defined. In Contao 4 the default CSS ID will be generated
 from its numeric ID, e.g. `article-1`.
+
+
+Version 3.* and 4.* to 4.5
+------------------
+
+### Database changes
+
+Contao 4.5 uses `InnoDB` as its default MySQL storage engine. If you need to use `MyISAM` instead, you can add the following to your `app/config/config.yml`:
+
+```yml
+doctrine:
+    dbal:
+        connections:
+            default:
+                default_table_options:
+                    engine: MyISAM
+```
+
+Contao 4.5 uses the `utf8mb4` collation by default and also needs the following settings in your MySQL server:
+
+```
+innodb_large_prefix = ON
+innodb_file_format = Barracuda
+innodb_file_per_table = ON
+```
+
+These settings are enabled by default in MySQL `5.7.7` and MariaDB `10.2`. If you are unable to use the `utf8mb4` collation or the aforementioned settings, you can add the following to your `app/config/config.yml` to switch back to the `utf8` collation:
+
+```yml
+doctrine:
+    dbal:
+        connections:
+            default:
+                default_table_options:
+                    charset: utf8
+                    collate: utf8_unicode_ci
+```
