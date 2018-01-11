@@ -63,8 +63,6 @@ class DcaSchemaProvider
      * Adds the DCA data to the Doctrine schema.
      *
      * @param Schema $schema
-     *
-     * @throws \LogicException
      */
     public function appendToSchema(Schema $schema): void
     {
@@ -80,10 +78,6 @@ class DcaSchemaProvider
 
                     // Use the binary collation if the "case_sensitive" option is set
                     if ($this->isCaseSensitive($config)) {
-                        if (isset($options['platformOptions']['collation'])) {
-                            throw new \LogicException('Cannot handle both a collation and the case_sensitive flag.');
-                        }
-
                         $options['platformOptions']['collation'] = $this->getBinaryCollation($table);
                     }
 
@@ -182,8 +176,6 @@ class DcaSchemaProvider
      * @param Table  $table
      * @param string $columnName
      * @param string $sql
-     *
-     * @throws \LogicException
      */
     private function parseColumnSql(Table $table, string $columnName, string $sql): void
     {
@@ -216,10 +208,6 @@ class DcaSchemaProvider
 
         // Use the binary collation if the BINARY flag is set (see #1286)
         if (0 === strncasecmp($def, 'binary ', 7)) {
-            if (null !== $collation) {
-                throw new \LogicException('Cannot handle both a collation and the binary flag.');
-            }
-
             $collation = $this->getBinaryCollation($table);
         }
 
