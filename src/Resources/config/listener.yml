@@ -179,3 +179,11 @@ services:
             - "@event_dispatcher"
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    contao.listener.datacontainer.theme:
+        class: Contao\CoreBundle\EventListener\DataContainer\Theme
+        arguments:
+            - '@request_stack'
+            - '@session'
+            - '@security.token_storage'
+            - '@contao.image.image_factory'
