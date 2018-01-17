@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\EventListener\DataContainer;
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Image\ImageFactory;
+use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\FilesModel;
 use Contao\Image;
 use Contao\StringUtil;
@@ -35,8 +35,8 @@ class Theme
     /** @var BackendUser */
     protected $user;
 
-    /** @var ImageFactory */
-    protected $image;
+    /** @var ImageFactoryInterface */
+    private $imageFactory;
 
     /**
      * Theme constructor.
@@ -44,18 +44,18 @@ class Theme
      * @param RequestStack          $requestStack
      * @param SessionInterface      $session
      * @param TokenStorageInterface $tokenStorage
-     * @param ImageFactory          $image
+     * @param ImageFactoryInterface $imageFactory
      */
     public function __construct(
         RequestStack $requestStack,
         SessionInterface $session,
         TokenStorageInterface $tokenStorage,
-        ImageFactory $image
+        ImageFactoryInterface $imageFactory
     ) {
         $this->requestStack = $requestStack;
         $this->session      = $session;
         $this->user         = $tokenStorage->getToken()->getUser();
-        $this->image        = $image;
+        $this->imageFactory = $imageFactory;
     }
 
     /**
@@ -108,7 +108,7 @@ class Theme
             return $label;
         }
 
-        $imageUrl = $this->image
+        $imageUrl = $this->imageFactory
             ->create(TL_ROOT . '/' . $objFile->path, [75, 50, 'center_top'])
             ->getUrl(TL_ROOT);
 

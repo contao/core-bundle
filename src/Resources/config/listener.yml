@@ -187,3 +187,4 @@ services:
             - '@session'
             - '@security.token_storage'
             - '@contao.image.image_factory'
+        public: true

@@ -30,16 +30,16 @@ $GLOBALS['TL_DCA']['tl_theme'] = array
 		),
 		'onload_callback' => array
 		(
-			array('contao.listener.datacontainer.theme', 'checkPermission'),
-			array('contao.listener.datacontainer.theme', 'updateStyleSheet')
+			array('contao.listener.datacontainer.theme', 'onCheckPermission'),
+			array('contao.listener.datacontainer.theme', 'onUpdateStyleSheet')
 		),
 		'oncopy_callback' => array
 		(
-			array('contao.listener.datacontainer.theme', 'scheduleUpdate')
+			array('contao.listener.datacontainer.theme', 'onScheduleUpdate')
 		),
 		'onsubmit_callback' => array
 		(
-			array('contao.listener.datacontainer.theme', 'scheduleUpdate')
+			array('contao.listener.datacontainer.theme', 'onScheduleUpdate')
 		)
 	),
 
@@ -57,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_theme'] = array
 		(
 			'fields'                  => array('name'),
 			'format'                  => '%s',
-			'label_callback'          => array('contao.listener.datacontainer.theme', 'addPreviewImage')
+			'label_callback'          => array('contao.listener.datacontainer.theme', 'onAddPreviewImage')
 		),
 		'global_operations' => array
 		(
@@ -66,14 +66,14 @@ $GLOBALS['TL_DCA']['tl_theme'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['importTheme'],
 				'href'                => 'key=importTheme',
 				'class'               => 'header_theme_import',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'importTheme')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onImportTheme')
 			),
 			'store' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['store'],
 				'href'                => 'key=themeStore',
 				'class'               => 'header_store',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'themeStore')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onThemeStore')
 			),
 			'all' => array
 			(
@@ -110,35 +110,35 @@ $GLOBALS['TL_DCA']['tl_theme'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['css'],
 				'href'                => 'table=tl_style_sheet',
 				'icon'                => 'css.svg',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'editCss')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onEditCss')
 			),
 			'modules' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['modules'],
 				'href'                => 'table=tl_module',
 				'icon'                => 'modules.svg',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'editModules')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onEditModules')
 			),
 			'layout' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['layout'],
 				'href'                => 'table=tl_layout',
 				'icon'                => 'layout.svg',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'editLayout')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onEditLayout')
 			),
 			'imageSizes' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['imageSizes'],
 				'href'                => 'table=tl_image_size',
 				'icon'                => 'sizes.svg',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'editImageSizes')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onEditImageSizes')
 			),
 			'exportTheme' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['exportTheme'],
 				'href'                => 'key=exportTheme',
 				'icon'                => 'theme_export.svg',
-				'button_callback'     => array('contao.listener.datacontainer.theme', 'exportTheme')
+				'button_callback'     => array('contao.listener.datacontainer.theme', 'onExportTheme')
 			)
 		)
 	),
