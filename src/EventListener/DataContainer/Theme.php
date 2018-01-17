@@ -23,6 +23,7 @@ use Contao\StyleSheets;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class Theme
 {
@@ -32,8 +33,8 @@ class Theme
     /** @var SessionInterface */
     protected $session;
 
-    /** @var BackendUser */
-    protected $user;
+    /** @var TokenInterface */
+    protected $token;
 
     /** @var ImageFactoryInterface */
     private $imageFactory;
@@ -54,7 +55,7 @@ class Theme
     ) {
         $this->requestStack = $requestStack;
         $this->session      = $session;
-        $this->user         = $tokenStorage->getToken()->getUser();
+        $this->token        = $tokenStorage->getToken();
         $this->imageFactory = $imageFactory;
     }
 
@@ -65,22 +66,31 @@ class Theme
      */
     public function onCheckPermission(): void
     {
-        if ($this->user->isAdmin) {
+        if (null === $this->token) {
+            return;
+        }
+        /** @var BackendUser $user */
+        $user = $this->token->getUser();
+
+        if ($user->isAdmin) {
             return;
         }
 
         $request = $this->requestStack->getCurrentRequest();
+        if (null === $request) {
+            return;
+        }
 
         // Check the theme import and export permissions (see #5835)
         switch ($request->get('key')) {
             case 'importTheme':
-                if (!$this->user->hasAccess('theme_import', 'themes')) {
+                if (!$user->hasAccess('theme_import', 'themes')) {
                     throw new AccessDeniedException('Not enough permissions to import themes.');
                 }
                 break;
 
             case 'exportTheme':
-                if (!$this->user->hasAccess('theme_import', 'themes')) {
+                if (!$user->hasAccess('theme_import', 'themes')) {
                     throw new AccessDeniedException('Not enough permissions to export themes.');
                 }
                 break;
@@ -192,7 +202,13 @@ class Theme
      */
     public function onImportTheme(string $href, string $label, string $title, string $class, string $attributes): string
     {
-        if (!$this->user->hasAccess('theme_import', 'themes')) {
+        if (null === $this->token) {
+            return '';
+        }
+        /** @var BackendUser $user */
+        $user = $this->token->getUser();
+
+        if (!$user->hasAccess('theme_import', 'themes')) {
             return '';
         }
 
@@ -364,7 +380,13 @@ class Theme
         string $icon,
         string $attributes
     ) {
-        if (!$this->user->hasAccess($field, 'themes')) {
+        if (null === $this->token) {
+            return '';
+        }
+        /** @var BackendUser $user */
+        $user = $this->token->getUser();
+
+        if (!$user->hasAccess($field, 'themes')) {
             return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
         }
 
