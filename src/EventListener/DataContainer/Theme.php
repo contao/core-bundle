@@ -146,7 +146,7 @@ class Theme
     public function onUpdateStyleSheet(): void
     {
         if ($this->session->get('style_sheet_update_all')) {
-            // todo: make updateStyleSheets() static
+            // todo: make stylesheet handling become a service
             $styleSheets = new StyleSheets();
             $styleSheets->updateStyleSheets();
         }
