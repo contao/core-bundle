@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\EventListener\DataContainer;
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\FilesModel;
 use Contao\Image;
@@ -39,6 +40,9 @@ class Theme
     /** @var ImageFactoryInterface */
     private $imageFactory;
 
+    /** @var ContaoFramework */
+    private $framework;
+
     /**
      * Theme constructor.
      *
@@ -57,6 +61,14 @@ class Theme
         $this->session      = $session;
         $this->token        = $tokenStorage->getToken();
         $this->imageFactory = $imageFactory;
+    }
+
+    /**
+     * @param ContaoFramework $framework
+     */
+    public function setFramework(ContaoFramework $framework): void
+    {
+        $this->framework = $framework;
     }
 
     /**
@@ -112,7 +124,9 @@ class Theme
             return $label;
         }
 
-        $objFile = FilesModel::findByUuid($row['screenshot']);
+        /** @var FilesModel $filesModel */
+        $filesModel = $this->framework->getAdapter('Contao\FilesModel');
+        $objFile    = $filesModel::findByUuid($row['screenshot']);
 
         if (null === $objFile) {
             return $label;

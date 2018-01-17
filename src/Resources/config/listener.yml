@@ -183,8 +183,10 @@ services:
     contao.listener.datacontainer.theme:
         class: Contao\CoreBundle\EventListener\DataContainer\Theme
         arguments:
-            - '@request_stack'
-            - '@session'
-            - '@security.token_storage'
-            - '@contao.image.image_factory'
+            - "@request_stack"
+            - "@session"
+            - "@security.token_storage"
+            - "@contao.image.image_factory"
+        calls:
+            - [setFramework, ["@contao.framework"]]
         public: true
