@@ -15,7 +15,8 @@ namespace Contao\CoreBundle\EventListener\DataContainer;
 use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\FilesModel;
 use Contao\Image;
@@ -26,8 +27,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class Theme
+class Theme implements FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     /** @var RequestStack */
     protected $requestStack;
 
@@ -39,9 +42,6 @@ class Theme
 
     /** @var ImageFactoryInterface */
     private $imageFactory;
-
-    /** @var ContaoFramework */
-    private $framework;
 
     /**
      * Theme constructor.
@@ -61,14 +61,6 @@ class Theme
         $this->session      = $session;
         $this->token        = $tokenStorage->getToken();
         $this->imageFactory = $imageFactory;
-    }
-
-    /**
-     * @param ContaoFramework $framework
-     */
-    public function setFramework(ContaoFramework $framework): void
-    {
-        $this->framework = $framework;
     }
 
     /**
@@ -126,7 +118,8 @@ class Theme
 
         /** @var FilesModel $filesModel */
         $filesModel = $this->framework->getAdapter('Contao\FilesModel');
-        $objFile    = $filesModel::findByUuid($row['screenshot']);
+        /** @noinspection StaticInvocationViaThisInspection */
+        $objFile = $filesModel->findByUuid($row['screenshot']);
 
         if (null === $objFile) {
             return $label;
