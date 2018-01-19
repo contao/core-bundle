@@ -3511,7 +3511,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		{
 			$fld = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? 'pid' : 'id';
 
-			$objRoot = $this->Database->prepare("SELECT DISTINCT $fld FROM {$this->strTable} WHERE " . implode(' AND ', $this->procedure))
+			$objRoot = $this->Database->prepare("SELECT DISTINCT " . \Database::quoteIdentifier($fld) . " FROM " . $this->strTable . " WHERE " . implode(' AND ', $this->procedure))
 									  ->execute($this->values);
 
 			if ($objRoot->numRows < 1)
@@ -5110,7 +5110,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']))
 			{
 				list($t, $f) = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']);
-				$this->procedure[] = "(" . sprintf($strPattern, \Database::quoteIdentifier($fld)) . " OR " . sprintf($strPattern, "(SELECT ".\Database::quoteIdentifier($f)." FROM $t WHERE $t.id={$this->strTable}.".\Database::quoteIdentifier($fld).")") . ")";
+				$this->procedure[] = "(" . sprintf($strPattern, \Database::quoteIdentifier($fld)) . " OR " . sprintf($strPattern, "(SELECT " . \Database::quoteIdentifier($f) . " FROM $t WHERE $t.id=" . $this->strTable . "." . \Database::quoteIdentifier($fld) . ")") . ")";
 				$this->values[] = $session['search'][$this->strTable]['value'];
 			}
 			else
