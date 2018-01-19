@@ -115,9 +115,9 @@ class ArrayAttributeBagTest extends TestCase
     }
 
     /**
-     * Tests the offsetGet() method.
+     * Tests that values are not referenced.
      */
-    public function testValuesAreNoReferenced()
+    public function testDoesNotReferenceValues()
     {
         $bag = new ArrayAttributeBag('foobar_storageKey');
         $bag->set('foo', 'bar');
