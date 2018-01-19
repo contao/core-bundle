@@ -732,8 +732,8 @@ class Database
 			return $strName;
 		}
 
-		// Not an identifier
-		if (!preg_match('/^[A-Za-z0-9_$]+$/', $strName))
+		// Not an identifier (AbstractPlatform::quoteIdentifier() handles table.column so also allow . here)
+		if (!preg_match('/^[A-Za-z0-9_$.]+$/', $strName))
 		{
 			return $strName;
 		}
