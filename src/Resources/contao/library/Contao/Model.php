@@ -394,7 +394,7 @@ abstract class Model
 	 */
 	public function markModified($strKey)
 	{
-		if (!isset($this->arrModified[$strKey]) && isset($this->arrData[$strKey]))
+		if (!array_key_exists($strKey,$this->arrModified) && array_key_exists($strKey,$this->arrData))
 		{
 			$this->arrModified[$strKey] = $this->arrData[$strKey];
 		}
