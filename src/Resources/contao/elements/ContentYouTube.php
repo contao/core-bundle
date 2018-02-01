@@ -66,7 +66,7 @@ class ContentYouTube extends ContentElement
 		{
 			$params[] = 'autoplay=1';
 		}
-
+		$domain = 'https://www.youtube.com';
 		$options = \StringUtil::deserialize($this->youtubeOptions);
 
 		if (\is_array($options))
@@ -78,6 +78,7 @@ class ContentYouTube extends ContentElement
 					case 'youtube_fs':
 					case 'youtube_rel':
 					case 'youtube_showinfo':
+					case 'youtube_controls':
 						$params[] = substr($option, 8) . '=0';
 						break;
 
@@ -87,6 +88,10 @@ class ContentYouTube extends ContentElement
 
 					case 'youtube_iv_load_policy':
 						$params[] = substr($option, 8) . '=3';
+						break;
+
+					case 'youtube_nocookie':
+						$domain = 'https://www.youtube-nocookie.com';
 						break;
 
 					default:
@@ -105,14 +110,20 @@ class ContentYouTube extends ContentElement
 			$params[] = 'end=' . (int) $this->youtubeStop;
 		}
 
-		$url = 'https://www.youtube.com/embed/' . $this->youtube;
+		$url = $domain . '/embed/' . $this->youtube;
 
 		if (!empty($params))
 		{
 			$url .= '?' . implode('&amp;', $params);
 		}
 
+		$this->Template->playerResponsive = $this->playerResponsive && $this->playerAspect;
+		if ($this->Template->playerResponsive) {
+			$this->cssID = [$this->cssID[0], trim($this->cssID[1] . ' responsive-video ratio-' . $this->playerAspect)];
+		}
+
 		$this->Template->src = $url;
+		$this->Template->caption = $this->playerCaption;
 	}
 }
 

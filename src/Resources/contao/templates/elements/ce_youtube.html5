@@ -1,7 +1,20 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
+<figure class="video_container" itemscope itemtype="http://schema.org/VideoObject" itemprop="associatedMedia">
 
+  <?php if ($this->playerResponsive): ?>
+  <div class="responsive-container">
+  <?php endif; ?>
   <iframe<?= $this->size ?> src="<?= $this->src ?>" allowfullscreen></iframe>
+  <?php if ($this->playerResponsive): ?>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($this->caption): ?>
+    <figcaption class="caption" itemprop="caption"><?= $this->caption ?></figcaption>
+  <?php endif; ?>
+
+</figure>
 
 <?php $this->endblock(); ?>

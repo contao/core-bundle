@@ -62,12 +62,52 @@ class ContentVimeo extends ContentElement
 
 		$url = 'https://player.vimeo.com/video/' . $this->vimeo;
 
+		$params = array();
 		if ($this->autoplay)
 		{
-			$url .= '?autoplay=1';
+			$params[] = 'autoplay=1';
+		}
+		$options = \StringUtil::deserialize($this->vimeoOptions);
+
+		if (\is_array($options))
+		{
+			foreach ($options as $option)
+			{
+				switch ($option)
+				{
+					case 'vimeo_portrait':
+					case 'vimeo_title':
+					case 'vimeo_byline':
+						$params[] = substr($option, 6) . '=0';
+						break;
+
+					default:
+						$params[] = substr($option, 6) . '=1';
+				}
+			}
+		}
+		if ($this->playerColor)
+		{
+			$params[] = 'color=' . $this->playerColor;
+		}
+
+		if (!empty($params))
+		{
+			$url .= '?' . implode('&amp;', $params);
+		}
+
+		if ($this->playerStart > 0)
+		{
+			$url .= '#t=' . (int) $this->playerStart . 's';
+		}
+
+		$this->Template->playerResponsive = $this->playerResponsive && $this->playerAspect;
+		if ($this->Template->playerResponsive) {
+			$this->cssID = [$this->cssID[0], trim($this->cssID[1] . ' responsive-video ratio-' . $this->playerAspect)];
 		}
 
 		$this->Template->src = $url;
+		$this->Template->caption = $this->playerCaption;
 	}
 }
 

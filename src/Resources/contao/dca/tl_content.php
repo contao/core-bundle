@@ -103,7 +103,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('type', 'addImage', 'sortable', 'useImage', 'overwriteMeta', 'protected'),
+		'__selector__'                => array('type', 'addImage', 'sortable', 'useImage', 'overwriteMeta', 'protected', 'youtubeResponsive', 'vimeoResponsive'),
 		'default'                     => '{type_legend},type',
 		'headline'                    => '{type_legend},type,headline;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
 		'text'                        => '{type_legend},type,headline;{text_legend},text;{image_legend},addImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
@@ -121,9 +121,9 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		'toplink'                     => '{type_legend},type;{link_legend},linkTitle;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
 		'image'                       => '{type_legend},type,headline;{source_legend},singleSRC,size,imagemargin,fullsize,overwriteMeta;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
 		'gallery'                     => '{type_legend},type,headline;{source_legend},multiSRC,sortBy,metaIgnore;{image_legend},size,imagemargin,perRow,fullsize,perPage,numberOfItems;{template_legend:hide},galleryTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,useHomeDir;{invisible_legend:hide},invisible,start,stop',
-		'player'                      => '{type_legend},type,headline;{source_legend},playerSRC;{poster_legend:hide},posterSRC;{player_legend},playerSize,autoplay;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
-		'youtube'                     => '{type_legend},type,headline;{source_legend},youtube;{player_legend},playerSize,autoplay,youtubeOptions,youtubeStart,youtubeStop;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
-		'vimeo'                       => '{type_legend},type,headline;{source_legend},vimeo;{player_legend},playerSize,autoplay;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
+		'player'                      => '{type_legend},type,headline;{source_legend},playerSRC;{poster_legend:hide},posterSRC;{player_legend},playerSize,autoplay,playerOptions,playerPreload,playerStart,playerStop,playerCaption,playerResponsive;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
+		'youtube'                     => '{type_legend},type,headline;{source_legend},youtube;{player_legend},playerSize,autoplay,youtubeOptions,playerStart,playerStop,playerCaption,playerResponsive;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
+		'vimeo'                       => '{type_legend},type,headline;{source_legend},vimeo;{player_legend},playerSize,autoplay,vimeoOptions,playerStart,playerCaption,playerColor,playerResponsive;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
 		'download'                    => '{type_legend},type,headline;{source_legend},singleSRC;{dwnconfig_legend},linkTitle,titleText;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
 		'downloads'                   => '{type_legend},type,headline;{source_legend},multiSRC,sortBy,metaIgnore;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,useHomeDir;{invisible_legend:hide},invisible,start,stop',
 		'alias'                       => '{type_legend},type;{include_legend},cteAlias;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop',
@@ -140,7 +140,8 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		'sortable'                    => 'sortIndex,sortOrder',
 		'useImage'                    => 'singleSRC,size,overwriteMeta',
 		'overwriteMeta'               => 'alt,imageTitle,imageUrl,caption',
-		'protected'                   => 'groups'
+		'protected'                   => 'groups',
+		'playerResponsive'            => 'playerAspect',
 	),
 
 	// Fields
@@ -661,31 +662,99 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'eval'                    => array('tl_class'=>'w50 m12'),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
+		'playerOptions' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerOptions'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'options'                 => array('player_nocontrols','player_loop','player_muted','player_playsinline'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
+			'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
+			'sql'                     => "text NULL"
+		),
+		'playerPreload' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerPreload'],
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'options'                 => array('auto', 'metadata', 'none'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content']['player_preload'],
+			'eval'                    => array('nospace'=>true, 'tl_class'=>'w50'),
+			'default'                 => 'none',
+			'sql'                     => "varchar(8) unsigned NOT NULL default 'none'"
+		),
+		'playerStart' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerStart'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'clr w50'),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'playerStop' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerStop'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50'),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'playerCaption' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerCaption'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('tl_class'=>'clr'),
+			'sql'                     => "varchar(255) unsigned NOT NULL default ''"
+		),
+		'playerResponsive' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerResponsive'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
+			'eval'                    => array('submitOnChange' => true, 'tl_class'=>'clr'),
+			'sql'                     => "char(1) NOT NULL default ''"
+		),
+		'playerAspect' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerAspect'],
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'options'                 => array('16-9', '21-9', '4-3', '3-2'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content']['player_aspect'],
+			'eval'                    => array('includeBlankOption' => true, 'nospace'=>true, 'tl_class'=>'w50'),
+			'default'                 => 'none',
+			'sql'                     => "varchar(8) unsigned NOT NULL default ''"
+		),
+		'playerColor' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['playerColor'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'text',
+			'eval'                    => array('maxlength'=>6, 'colorpicker'=>true, 'isHexColor'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50 wizard'),
+			'sql'                     => "varchar(64) NOT NULL default ''"
+		),
 		'youtubeOptions' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['youtubeOptions'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
-			'options'                 => array('youtube_cc_load_policy', 'youtube_fs', 'youtube_hl', 'youtube_iv_load_policy', 'youtube_modestbranding', 'youtube_rel', 'youtube_showinfo'),
+			'options'                 => array('youtube_controls', 'youtube_nocookie', 'youtube_cc_load_policy', 'youtube_fs', 'youtube_hl', 'youtube_iv_load_policy', 'youtube_modestbranding', 'youtube_rel', 'youtube_showinfo'),
 			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
 			'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
-		'youtubeStart' => array
+		'vimeoOptions' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['youtubeStart'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['vimeoOptions'],
 			'exclude'                 => true,
-			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50'),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'youtubeStop' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['youtubeStop'],
-			'exclude'                 => true,
-			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'natural', 'nospace'=>true, 'tl_class'=>'w50'),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+			'inputType'               => 'checkbox',
+			'options'                 => array('vimeo_loop', 'vimeo_portrait', 'vimeo_title', 'vimeo_byline'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_content'],
+			'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
+			'sql'                     => "text NULL"
 		),
 		'sliderDelay' => array
 		(
@@ -1121,6 +1190,13 @@ class tl_content extends Backend
 
 			case 'player':
 				Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_content']['includeTemplate'], 'js_mediaelement'));
+				// NO break!
+			case 'youtube':
+			case 'vimeo':
+				if ($objCte->playerResponsive)
+					{
+					Message::addInfo($GLOBALS['TL_LANG']['tl_content']['includeFrameworkVideo']);
+				}
 				break;
 
 			case 'table':
