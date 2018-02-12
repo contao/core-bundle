@@ -23,7 +23,9 @@ Edit your `composer.json` file and add the following:
 
 ```json
 "require": {
-    "contao/core-bundle": "^4.4"
+    "contao/core-bundle": "^4.4",
+    "contao/installation-bundle": "^4.4"
+    "php-http/guzzle6-adapter": "^1.1",
 },
 "config": {
     "component-dir": "assets"
@@ -38,22 +40,7 @@ Edit your `composer.json` file and add the following:
 ]
 ```
 
-Furthermore you need an explicit implementation of the `php-http/client-implementation` package (available packages see https://packagist.org/providers/php-http/client-implementation), for example use `php-http/guzzle6-adapter`:
-```json
-"require": {
-    "contao/core-bundle": "^4.4",
-    "php-http/guzzle6-adapter": "^1.1"
-},
-```
-
-If you want to use the Contao Install Tool, you have to require the installation-bundle:
-```json
-"require": {
-    "contao/core-bundle": "^4.4",
-    "php-http/guzzle6-adapter": "^1.1",
-    "contao/installation-bundle": "^4.4"
-},
-```
+**Note:** You can exchange the `php-http/guzzle6-adapter` with another implementation of the `php-http/client-implementation` package (for available packages see https://packagist.org/providers/php-http/client-implementation). 
 
 Then run `php composer.phar update` to install the vendor files.
 
@@ -84,9 +71,7 @@ class AppKernel extends Kernel
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Nelmio\SecurityBundle\NelmioSecurityBundle(),
             new Contao\CoreBundle\ContaoCoreBundle(),
-            
-            // Uncomment the following line, if you want to use the Contao Install Tool
-            // new Contao\InstallationBundle\ContaoInstallationBundle(),
+            new Contao\InstallationBundle\ContaoInstallationBundle(),
         ];
     }
 
@@ -110,14 +95,11 @@ Configuration
 Add the Contao routes to your `app/config/routing.yml` file:
 
 ```yml
-ContaoCoreBundle:
-    resource: "@ContaoCoreBundle/Resources/config/routing.yml"
-```
-
-If you want to use the install tool, you have to add the Contao Install Tool routes as well:
-```yml
 ContaoInstallationBundle:
     resource: "@ContaoInstallationBundle/Resources/config/routing.yml"
+
+ContaoCoreBundle:
+    resource: "@ContaoCoreBundle/Resources/config/routing.yml"
 ```
 
 Edit your `app/config/security.yml` file:
