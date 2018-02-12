@@ -23,9 +23,9 @@ Edit your `composer.json` file and add the following:
 
 ```json
 "require": {
-    "contao/core-bundle": "^4.4",
-    "contao/installation-bundle": "^4.4"
-    "php-http/guzzle6-adapter": "^1.1",
+    "contao/core-bundle": "4.4.*",
+    "contao/installation-bundle": "^4.4",
+    "php-http/guzzle6-adapter": "^1.1"
 },
 "config": {
     "component-dir": "assets"
@@ -40,9 +40,9 @@ Edit your `composer.json` file and add the following:
 ]
 ```
 
-**Note:** You can exchange the `php-http/guzzle6-adapter` with another implementation of the `php-http/client-implementation` package (for available packages see https://packagist.org/providers/php-http/client-implementation). 
-
 Then run `php composer.phar update` to install the vendor files.
+
+Note that you can exchange the `php-http/guzzle6-adapter` package with any other [HTTP client implementation][4]. If you already have an HTTP client implementation, you can omit the package entirely.
 
 
 Activation
@@ -179,10 +179,11 @@ Contao is licensed under the terms of the LGPLv3.
 Getting support
 ---------------
 
-Visit the [support page][4] to learn about the available support options.
+Visit the [support page][5] to learn about the available support options.
 
 
 [1]: https://contao.org
 [2]: https://symfony.com
 [3]: https://github.com/contao/managed-edition
-[4]: https://contao.org/en/support.html
+[4]: https://packagist.org/providers/php-http/client-implementation
+[5]: https://contao.org/en/support.html
