@@ -104,21 +104,30 @@ class FinalCacheHeadersListener
                 return;
             }
 
-            // a request for rendering insert tags
-            if (
-                // checks, inserttag should not be cached based on uncached pipe
-                strpos($insertTagAttribute, "|uncached")
+            $withoutBraces = str_replace(['{{', '}}'], '',$insertTagAttribute );
+            $flags = explode('|', $withoutBraces);
+            $tag = array_shift($flags);
+            $elements = explode('::', $tag);
 
-                // OR checks, inserttag should not be cached based on refrech pipe
-                || strpos($insertTagAttribute, "|refresh")
+            // a request for rendering insert tags
+            // exclude certain elements from being cached
+            if (
+                $elements[0] == 'date'
+                || $elements[0] == 'ua'
+                || $elements[0] == 'post'
+                || $elements[0] == 'file'
+                || $elements[1] == 'back'
+                || $elements[1] == 'referer'
+                || $elements[0] == 'request_token'
+                || $elements[0] == 'toggle_view'
+                || strncmp($elements[0], 'cache_', 6) === 0
+                || in_array('uncached', $flags)
+                || in_array('refresh', $flags)
             ) {
                 $response->setPrivate();
             } else {
-
                 $this->setCacheHeaders($request, $response);
-
             }
-
 
         } else if (
             // SECOND CASE
