@@ -33,6 +33,10 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
 
         $template->inColumn = $section;
 
+        if (is_array($classes = $request->attributes->get('classes'))) {
+            $template->class .= ' ' . implode(' ', $classes);
+        }
+
         return $this->getResponse($template, $module, $request);
     }
 }
