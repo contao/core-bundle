@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\DependencyInjection\Compiler;
 
+use Contao\CoreBundle\Controller\AbstractFragmentController;
 use Contao\CoreBundle\Fragment\FragmentConfig;
 use Contao\CoreBundle\Fragment\FragmentPreHandlerInterface;
 use Contao\CoreBundle\Fragment\Reference\ContentElementReference;
@@ -75,6 +76,10 @@ class RegisterFragmentsPass implements CompilerPassInterface
 
                 if (is_a($definition->getClass(), FragmentPreHandlerInterface::class, true)) {
                     $preHandlers[$identifier] = $reference;
+                }
+
+                if (is_a($definition->getClass(), AbstractFragmentController::class, true)) {
+                    $definition->addMethodCall('setFragmentOptions', [$attributes]);
                 }
 
                 $registry->addMethodCall('add', [$identifier, $config]);
