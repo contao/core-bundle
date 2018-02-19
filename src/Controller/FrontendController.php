@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
 /**
@@ -97,18 +98,7 @@ class FrontendController extends Controller
         } catch (ResponseException $e) {
             return $e->getResponse();
         } catch (InsufficientAuthenticationException $e) {
-            return new Response(
-                \System::getContainer()
-                    ->get('twig')
-                    ->render(
-                        '@Twig/Exception/error.html.twig',
-                        [
-                            'status_code' => 401,
-                            'status_text' => $e->getMessage(),
-                        ]
-                    ),
-                401
-            );
+            throw new UnauthorizedHttpException($e->getMessage());
         }
     }
 

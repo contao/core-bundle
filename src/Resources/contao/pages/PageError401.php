@@ -96,7 +96,7 @@ class PageError401 extends \Frontend
 		// Die if there is no page at all
 		if (null === $obj401)
 		{
-			throw new InsufficientAuthenticationException('Unauthorized');
+			throw new InsufficientAuthenticationException('Not authenticated');
 		}
 
 		// Forward to another page

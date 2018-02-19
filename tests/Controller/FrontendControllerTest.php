@@ -16,6 +16,8 @@ use Contao\CoreBundle\Controller\FrontendController;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\PageError401;
+use Contao\PageError401Exception;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
@@ -121,6 +123,54 @@ class FrontendControllerTest extends TestCase
         $this->assertTrue(FE_USER_LOGGED_IN);
         $this->assertTrue(\defined('BE_USER_LOGGED_IN'));
         $this->assertFalse(BE_USER_LOGGED_IN);
+
+        unset($GLOBALS['TL_PTY']);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testThrowsAnUnauthorizedHttpExceptionUponLogin(): void
+    {
+        $framework = $this->mockContaoFramework();
+
+        $framework
+            ->expects($this->once())
+            ->method('initialize')
+        ;
+
+        $tokenChecker = $this->createMock(TokenChecker::class);
+
+        $tokenChecker
+            ->expects($this->once())
+            ->method('hasFrontendUser')
+            ->willReturn(true)
+        ;
+
+        $tokenChecker
+            ->expects($this->once())
+            ->method('hasBackendUser')
+            ->willReturn(true)
+        ;
+
+        $tokenChecker
+            ->expects($this->once())
+            ->method('isPreviewMode')
+            ->willReturn(false)
+        ;
+
+        $container = $this->mockContainer();
+        $container->set('contao.framework', $framework);
+        $container->set('contao.security.token_checker', $tokenChecker);
+
+        $controller = new FrontendController();
+        $controller->setContainer($container);
+
+        $GLOBALS['TL_PTY']['error_401'] = PageError401Exception::class;
+
+        $this->expectException(UnauthorizedHttpException::class);
+
+        $controller->loginAction();
 
         unset($GLOBALS['TL_PTY']);
     }
