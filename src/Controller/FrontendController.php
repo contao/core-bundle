@@ -82,7 +82,7 @@ class FrontendController extends Controller
         $this->get('contao.framework')->initialize();
 
         if (!isset($GLOBALS['TL_PTY']['error_401']) || !class_exists($GLOBALS['TL_PTY']['error_401'])) {
-            return $this->redirectToRoute('contao_root');
+            throw new UnauthorizedHttpException('Not authorized');
         }
 
         $tokenChecker = $this->get('contao.security.token_checker');

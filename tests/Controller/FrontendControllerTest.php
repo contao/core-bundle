@@ -18,7 +18,6 @@ use Contao\CoreBundle\Tests\TestCase;
 use Contao\PageError401;
 use Contao\PageError401Exception;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
 class FrontendControllerTest extends TestCase
@@ -43,7 +42,7 @@ class FrontendControllerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $controller->shareAction());
     }
 
-    public function testRedirectsToTheRootPageUponLogin(): void
+    public function testThrowsAnExceptionUponLoginIfThereIsNoError401Page(): void
     {
         $framework = $this->mockContaoFramework();
 
@@ -52,26 +51,15 @@ class FrontendControllerTest extends TestCase
             ->method('initialize')
         ;
 
-        $router = $this->createMock(RouterInterface::class);
-
-        $router
-            ->expects($this->once())
-            ->method('generate')
-            ->with('contao_root')
-            ->willReturn('/')
-        ;
-
         $container = $this->mockContainer();
         $container->set('contao.framework', $framework);
-        $container->set('router', $router);
 
         $controller = new FrontendController();
         $controller->setContainer($container);
 
-        $response = $controller->loginAction();
+        $this->expectException(UnauthorizedHttpException::class);
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertSame('/', $response->getTargetUrl());
+        $controller->loginAction();
     }
 
     /**
@@ -130,7 +118,7 @@ class FrontendControllerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testThrowsAnUnauthorizedHttpExceptionUponLogin(): void
+    public function testThrowsAnExceptionUponLoginIfTheError401PageThrowsAnException(): void
     {
         $framework = $this->mockContaoFramework();
 

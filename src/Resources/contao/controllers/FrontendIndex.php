@@ -264,12 +264,15 @@ class FrontendIndex extends \Frontend
 		// Authenticate the user if the page is protected
 		if ($objPage->protected)
 		{
-			if (!\System::getContainer()->get('contao.security.token_checker')->hasFrontendUser())
+			$container = \System::getContainer();
+			$token = $container->get('security.token_storage')->getToken();
+
+			if ($container->get('security.authentication.trust_resolver')->isAnonymous($token))
 			{
 				throw new InsufficientAuthenticationException('Not authenticated: ' . \Environment::get('uri'));
 			}
 
-			if (!\System::getContainer()->get('security.authorization_checker')->isGranted('ROLE_MEMBER'))
+			if (!$container->get('security.authorization_checker')->isGranted('ROLE_MEMBER'))
 			{
 				throw new AccessDeniedException('Access denied: ' . \Environment::get('uri'));
 			}
