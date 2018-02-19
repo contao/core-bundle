@@ -29,11 +29,23 @@ class MakeServicesPublicPassTest extends TestCase
     public function testMakesTheServicesPublic(): void
     {
         $container = new ContainerBuilder();
-        $container->setDefinition('security.firewall.map', new Definition());
+        $container->setDefinition('security.firewall.map', (new Definition())->setPublic(false));
 
         $pass = new MakeServicesPublicPass();
         $pass->process($container);
 
         $this->assertTrue($container->getDefinition('security.firewall.map')->isPublic());
+    }
+    
+    public function testMakesAliasedServicesPublic(): void
+    {
+        $container = new ContainerBuilder();
+        $container->setDefinition('contao.fragment.handler', (new Definition())->setPublic(false));
+        $container->setAlias('fragment.handler', 'contao.fragment.handler');
+
+        $pass = new MakeServicesPublicPass();
+        $pass->process($container);
+
+        $this->assertTrue($container->getDefinition('contao.fragment.handler')->isPublic());
     }
 }
