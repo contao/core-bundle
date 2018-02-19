@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Tests\Controller;
 use Contao\CoreBundle\Controller\FrontendController;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\CoreBundle\Tests\TestCase;
-use Contao\PageError403;
+use Contao\PageError401;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
@@ -75,7 +75,7 @@ class FrontendControllerTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testRendersTheError403PageUponLogin(): void
+    public function testRendersTheError401PageUponLogin(): void
     {
         $framework = $this->mockContaoFramework();
 
@@ -111,12 +111,12 @@ class FrontendControllerTest extends TestCase
         $controller = new FrontendController();
         $controller->setContainer($container);
 
-        $GLOBALS['TL_PTY']['error_403'] = PageError403::class;
+        $GLOBALS['TL_PTY']['error_401'] = PageError401::class;
 
         $response = $controller->loginAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame(401, $response->getStatusCode());
         $this->assertTrue(\defined('FE_USER_LOGGED_IN'));
         $this->assertTrue(FE_USER_LOGGED_IN);
         $this->assertTrue(\defined('BE_USER_LOGGED_IN'));

@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Exception\InsufficientAuthenticationException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\FrontendCron;
 use Contao\FrontendIndex;
 use Contao\FrontendShare;
-use Contao\PageError403;
+use Contao\PageError401;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -79,7 +80,7 @@ class FrontendController extends Controller
     {
         $this->get('contao.framework')->initialize();
 
-        if (!isset($GLOBALS['TL_PTY']['error_403']) || !class_exists($GLOBALS['TL_PTY']['error_403'])) {
+        if (!isset($GLOBALS['TL_PTY']['error_401']) || !class_exists($GLOBALS['TL_PTY']['error_401'])) {
             return $this->redirectToRoute('contao_root');
         }
 
@@ -88,15 +89,26 @@ class FrontendController extends Controller
         \define('FE_USER_LOGGED_IN', $tokenChecker->hasFrontendUser());
         \define('BE_USER_LOGGED_IN', $tokenChecker->hasBackendUser() && $tokenChecker->isPreviewMode());
 
-        /** @var PageError403 $pageHandler */
-        $pageHandler = new $GLOBALS['TL_PTY']['error_403']();
+        /** @var PageError401 $pageHandler */
+        $pageHandler = new $GLOBALS['TL_PTY']['error_401']();
 
         try {
             return $pageHandler->getResponse();
         } catch (ResponseException $e) {
             return $e->getResponse();
-        } catch (\Exception $e) {
-            return $this->redirectToRoute('contao_root');
+        } catch (InsufficientAuthenticationException $e) {
+            return new Response(
+                \System::getContainer()
+                    ->get('twig')
+                    ->render(
+                        '@Twig/Exception/error.html.twig',
+                        [
+                            'status_code' => 401,
+                            'status_text' => $e->getMessage(),
+                        ]
+                    ),
+                401
+            );
         }
     }
 
