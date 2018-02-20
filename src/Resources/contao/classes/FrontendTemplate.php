@@ -103,7 +103,8 @@ class FrontendTemplate extends \Template
 		$response->setVary(array('Contao-Page-Layout'), false);
 		$response->headers->set('Contao-Page-Layout', $objPage->isMobile ? 'mobile' : 'desktop');
 
-		return $this->setCacheHeaders($response);
+		// removed setting cache headers here, to fix issue 1246
+        return $response;
 	}
 
 
@@ -254,6 +255,9 @@ class FrontendTemplate extends \Template
 	/**
 	 * Check whether there is an authenticated back end user
 	 *
+     * @deprecated Deprecated since Contao 4.4.14
+     *             Is now used in RestoreCacheHeaders Listener.
+     *
 	 * @return boolean True if there is an authenticated back end user
 	 */
 	public function hasAuthenticatedBackendUser()
@@ -362,40 +366,20 @@ class FrontendTemplate extends \Template
 	}
 
 
-	/**
-	 * Set the cache headers according to the page settings.
-	 *
-	 * @param Response $response The response object
-	 *
-	 * @return Response The response object
-	 */
-	private function setCacheHeaders(Response $response)
-	{
-		/** @var $objPage \PageModel */
-		global $objPage;
+    /**
+     * Set the cache headers according to the page settings.
+     *
+     * @param Response $response The response object
+     *
+     * @deprecated Deprecated since Contao 4.4.14
+     *             Will be set in the RestoreCacheHeaders Listener.
+     * @return Response The response object
+     */
+    private function setCacheHeaders(Response $response)
+    {
+        return $response;
+    }
 
-		if (($objPage->cache === false || $objPage->cache === 0) && ($objPage->clientCache === false || $objPage->clientCache === 0))
-		{
-			return $response->setPrivate();
-		}
 
-		// Do not cache the response if a user is logged in or the page is protected
-		// TODO: Add support for proxies so they can vary on member context
-		if (FE_USER_LOGGED_IN === true || BE_USER_LOGGED_IN === true || $objPage->protected || $this->hasAuthenticatedBackendUser())
-		{
-			return $response->setPrivate();
-		}
 
-		if ($objPage->clientCache > 0)
-		{
-			$response->setMaxAge($objPage->clientCache);
-		}
-
-		if ($objPage->cache > 0)
-		{
-			$response->setSharedMaxAge($objPage->cache);
-		}
-
-		return $response;
-	}
 }
