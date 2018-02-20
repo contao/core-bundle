@@ -39,7 +39,7 @@ class CsrfTokenCookieListenerTest extends TestCase
         $request->cookies = new ParameterBag([
             'csrf_foo' => 'bar',
             'not_csrf' => 'baz',
-            'csrf_bar' => 'bad value with invalid characters should be ignored "<>!&',
+            'csrf_bar' => '"<>!&', // ignore invalid characters
         ]);
 
         $requestEvent = $this->createMock(GetResponseEvent::class);
