@@ -175,7 +175,7 @@ class FormCaptcha extends \Widget
 
 		return array_map(function($hashTime) use($sum)
 		{
-			return hash('sha256', $sum.$hashTime.\System::getContainer()->getParameter('kernel.secret'));
+			return hash_hmac('sha256', $sum."\0".$hashTime, \System::getContainer()->getParameter('kernel.secret'));
 		}, array($time, $time - 1));
 	}
 
