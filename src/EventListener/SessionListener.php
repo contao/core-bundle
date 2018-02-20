@@ -30,8 +30,14 @@ class SessionListener implements EventSubscriberInterface
      */
     private $inner;
 
+    /**
+     * @var ContaoFrameworkInterface
+     */
     private $framework;
 
+    /**
+     * @var ScopeMatcher
+     */
     private $scopeMatcher;
 
     /**

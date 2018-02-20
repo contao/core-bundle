@@ -413,7 +413,6 @@ class ContaoCoreExtensionTest extends TestCase
         $definition = $this->container->getDefinition('contao.listener.session_listener');
 
         $this->assertSame(SessionListener::class, $definition->getClass());
-        $this->assertTrue($definition->isPrivate());
         $this->assertSame('session_listener', $definition->getDecoratedService()[0]);
         $this->assertSame('contao.listener.session_listener.inner', (string) $definition->getArgument(0));
         $this->assertSame('contao.framework', (string) $definition->getArgument(1));

@@ -95,7 +95,7 @@ class FrontendTemplate extends \Template
 	{
 		$this->blnCheckRequest = $blnCheckRequest;
 
-		/** @var PageModel $objPage */
+		/** @var $objPage \PageModel */
 		global $objPage;
 
 		// Vary on the page layout
@@ -371,7 +371,7 @@ class FrontendTemplate extends \Template
 	 */
 	private function setCacheHeaders(Response $response)
 	{
-		/** @var PageModel $objPage */
+		/** @var $objPage \PageModel */
 		global $objPage;
 
 		if (($objPage->cache === false || $objPage->cache === 0) && ($objPage->clientCache === false || $objPage->clientCache === 0))
