@@ -890,7 +890,7 @@ table.tl_listing {
 	background:#f6f6f8;
 }
 .tl_folder.tl_folder_dropping {
-	background-color: #ccc !important;
+	background-color:#ccc !important;
 }
 .tl_listing .tl_left {
 	flex-grow:1;
@@ -1748,17 +1748,17 @@ fieldset.collapsed > legend {
 	border-radius:2px;
 }
 .dropzone-filetree {
-	display: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	opacity: 0.8;
-	z-index: 1;
+	display:none;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	opacity:.8;
+	z-index:1;
 }
 .dropzone-filetree-enabled {
-	display: block;
+	display:block;
 }
 .dz-message span {
 	font-size:1.3125rem;

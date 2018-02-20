@@ -537,7 +537,8 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 						'FORM_SUBMIT' => 'tl_upload',
 						'action' => 'fileupload',
 					],
-				]).')</script>';
+				]).')</script>'
+			;
 		}
 
 		return $return;
