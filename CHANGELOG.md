@@ -2,6 +2,7 @@
 
 ## DEV
 
+ * Set the front end response cache headers in an event listener (see #1283).
  * Improve the folder hashing performance (see contao/core#8856).
 
 ## 4.4.14 (2018-02-14)
