@@ -25,7 +25,6 @@ use Contao\CoreBundle\Cors\WebsiteRootsConfigProvider;
 use Contao\CoreBundle\DataCollector\ContaoDataCollector;
 use Contao\CoreBundle\DependencyInjection\ContaoCoreExtension;
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
-use Contao\CoreBundle\EventListener\AddCacheHeadersListener;
 use Contao\CoreBundle\EventListener\AddToSearchIndexListener;
 use Contao\CoreBundle\EventListener\BypassMaintenanceListener;
 use Contao\CoreBundle\EventListener\CommandSchedulerListener;
@@ -37,6 +36,7 @@ use Contao\CoreBundle\EventListener\MergeHttpHeadersListener;
 use Contao\CoreBundle\EventListener\PrettyErrorScreenListener;
 use Contao\CoreBundle\EventListener\RefererIdListener;
 use Contao\CoreBundle\EventListener\ResponseExceptionListener;
+use Contao\CoreBundle\EventListener\SessionListener;
 use Contao\CoreBundle\EventListener\StoreRefererListener;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\EventListener\UserSessionListener;
@@ -175,28 +175,6 @@ class ContaoCoreExtensionTest extends TestCase
             ['contao.command.user_password_command', UserPasswordCommand::class],
             ['contao.command.version', VersionCommand::class],
         ];
-    }
-
-    /**
-     * Tests the contao.listener.add_cache_headers service.
-     */
-    public function testRegistersTheAddCacheHeadersListener()
-    {
-        $this->assertTrue($this->container->has('contao.listener.add_cache_headers'));
-
-        $definition = $this->container->getDefinition('contao.listener.add_cache_headers');
-
-        $this->assertSame(AddCacheHeadersListener::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-        $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(1));
-        $this->assertSame('%fragment.path%', (string) $definition->getArgument(2));
-
-        $tags = $definition->getTags();
-
-        $this->assertArrayHasKey('kernel.event_listener', $tags);
-        $this->assertSame('kernel.response', $tags['kernel.event_listener'][0]['event']);
-        $this->assertSame('onKernelResponse', $tags['kernel.event_listener'][0]['method']);
-        $this->assertSame(-1002, $tags['kernel.event_listener'][0]['priority']);
     }
 
     /**
@@ -423,6 +401,23 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('kernel.exception', $tags['kernel.event_listener'][0]['event']);
         $this->assertSame('onKernelException', $tags['kernel.event_listener'][0]['method']);
         $this->assertSame(64, $tags['kernel.event_listener'][0]['priority']);
+    }
+
+    /**
+     * Tests the contao.listener.session_listener service.
+     */
+    public function testRegistersTheSessionListener()
+    {
+        $this->assertTrue($this->container->has('contao.listener.session_listener'));
+
+        $definition = $this->container->getDefinition('contao.listener.session_listener');
+
+        $this->assertSame(SessionListener::class, $definition->getClass());
+        $this->assertTrue($definition->isPrivate());
+        $this->assertSame('session_listener', $definition->getDecoratedService()[0]);
+        $this->assertSame('contao.listener.session_listener.inner', (string) $definition->getArgument(0));
+        $this->assertSame('contao.framework', (string) $definition->getArgument(1));
+        $this->assertSame('contao.routing.scope_matcher', (string) $definition->getArgument(2));
     }
 
     /**

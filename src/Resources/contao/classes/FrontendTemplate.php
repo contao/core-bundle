@@ -103,7 +103,7 @@ class FrontendTemplate extends \Template
 		$response->setVary(array('Contao-Page-Layout'), false);
 		$response->headers->set('Contao-Page-Layout', $objPage->isMobile ? 'mobile' : 'desktop');
 
-		return $response;
+		return $this->setCacheHeaders($response);
 	}
 
 
@@ -359,5 +359,43 @@ class FrontendTemplate extends \Template
 		}
 
 		return '<div class="custom">' . "\n" . $sections . "\n" . '</div>' . "\n";
+	}
+
+
+	/**
+	 * Set the cache headers according to the page settings.
+	 *
+	 * @param Response $response The response object
+	 *
+	 * @return Response The response object
+	 */
+	private function setCacheHeaders(Response $response)
+	{
+		/** @var PageModel $objPage */
+		global $objPage;
+
+		if (($objPage->cache === false || $objPage->cache === 0) && ($objPage->clientCache === false || $objPage->clientCache === 0))
+		{
+			return $response->setPrivate();
+		}
+
+		// Do not cache the response if a user is logged in or the page is protected
+		// TODO: Add support for proxies so they can vary on member context
+		if (FE_USER_LOGGED_IN === true || BE_USER_LOGGED_IN === true || $objPage->protected || $this->hasAuthenticatedBackendUser())
+		{
+			return $response->setPrivate();
+		}
+
+		if ($objPage->clientCache > 0)
+		{
+			$response->setMaxAge($objPage->clientCache);
+		}
+
+		if ($objPage->cache > 0)
+		{
+			$response->setSharedMaxAge($objPage->cache);
+		}
+
+		return $response;
 	}
 }
