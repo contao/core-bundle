@@ -428,7 +428,9 @@ class PageRegular extends \Frontend
 			{
 				try
 				{
-					$version = PackageUtil::getVersion('contao-components/jquery');
+                    $version = PackageUtil::getVersion('contao-components/mootools');
+                    // Trim mootools version number to major.minor.patch
+                    $version = implode('.', array_slice(explode('.', $version), 0, 3));
 
 					if (version_compare($version, '1.5.1', '>'))
 					{
