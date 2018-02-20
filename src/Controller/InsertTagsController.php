@@ -58,7 +58,7 @@ class InsertTagsController extends Controller
         $it = $this->framework->createInstance(InsertTags::class);
 
         $response = Response::create($it->replace($insertTag, false));
-        $response->setPrivate(); // Always private
+        $response->setPrivate(); // always private
 
         if ($clientCache = $request->query->getInt('clientCache')) {
             $response->setMaxAge($clientCache);

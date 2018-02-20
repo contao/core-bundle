@@ -52,9 +52,7 @@ class InsertTagsControllerTest extends TestCase
         ;
 
         $controller = new InsertTagsController($this->mockFramework($insertTagAdapter));
-        $request = new Request();
-
-        $response = $controller->renderAction($request, '{{request_token}}');
+        $response = $controller->renderAction(new Request(), '{{request_token}}');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertTrue($response->headers->hasCacheControlDirective('private'));
@@ -64,6 +62,7 @@ class InsertTagsControllerTest extends TestCase
         $request = new Request();
         $request->query->set('clientCache', 300);
 
+        $controller = new InsertTagsController($this->mockFramework($insertTagAdapter));
         $response = $controller->renderAction($request, '{{request_token}}');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -84,7 +83,6 @@ class InsertTagsControllerTest extends TestCase
         $framework = $this->createMock(ContaoFramework::class);
 
         $framework
-            ->expects($this->exactly(2))
             ->method('initialize')
         ;
 
