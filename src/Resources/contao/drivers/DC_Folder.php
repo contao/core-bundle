@@ -528,16 +528,16 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 			$return .= '<script>'
 				.'Dropzone.autoDiscover = false;'
-				.'Backend.enableFileTreeUpload("tl_listing", '.json_encode([
+				.'Backend.enableFileTreeUpload("tl_listing", '.json_encode(array(
 					'url' => html_entity_decode($this->addToUrl('act=move&mode=2&pid='.urlencode($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root'][0] ?? \Config::get('uploadPath')))),
 					'paramName' => 'files',
 					'maxFilesize' => $intMaxSize,
 					'acceptedFiles' => $strAccepted,
-					'params' => [
+					'params' => array(
 						'FORM_SUBMIT' => 'tl_upload',
 						'action' => 'fileupload',
-					],
-				]).')</script>'
+					),
+				)).')</script>'
 			;
 		}
 
