@@ -130,7 +130,7 @@ class FormCaptcha extends \Widget
 	 */
 	public function validate()
 	{
-		if (!isset($_POST[$this->strCaptchaKey]) || !in_array(\Input::post($this->strCaptchaKey.'_hash'), $this->generateHashes((int) \Input::post($this->strCaptchaKey)), true) || (isset($_POST[$this->strCaptchaKey.'_name']) && \Input::post($this->strCaptchaKey.'_name')))
+		if (!isset($_POST[$this->strCaptchaKey]) || !\in_array(\Input::post($this->strCaptchaKey.'_hash'), $this->generateHashes((int) \Input::post($this->strCaptchaKey)), true) || (isset($_POST[$this->strCaptchaKey.'_name']) && \Input::post($this->strCaptchaKey.'_name')))
 		{
 			$this->class = 'error';
 			$this->addError($GLOBALS['TL_LANG']['ERR']['captcha']);
@@ -157,14 +157,15 @@ class FormCaptcha extends \Widget
 			'int2' => $int2,
 			'sum' => $int1 + $int2,
 			'key' => $this->strCaptchaKey,
-			'hashes' => $this->generateHashes($int1 + $int2),
+			'hashes' => $this->generateHashes($int1 + $int2)
 		);
 	}
+
 
 	/**
 	 * Generate hashes for the current time and the specified sum
 	 *
-	 * @param int $sum
+	 * @param integer $sum
 	 *
 	 * @return array
 	 */
@@ -173,10 +174,13 @@ class FormCaptcha extends \Widget
 		// Round the time to 30 minutes
 		$time = (int) round(time() / 60 / 30);
 
-		return array_map(function($hashTime) use($sum)
-		{
-			return hash_hmac('sha256', $sum."\0".$hashTime, \System::getContainer()->getParameter('kernel.secret'));
-		}, array($time, $time - 1));
+		return array_map(
+			function($hashTime) use($sum)
+			{
+				return hash_hmac('sha256', $sum . "\0" . $hashTime, \System::getContainer()->getParameter('kernel.secret'));
+			},
+			array($time, $time - 1)
+		);
 	}
 
 
