@@ -427,6 +427,24 @@ services:
             - "@contao.framework"
             - "@logger"
 
+    contao.security.two_factor.authenticator:
+        class: Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator
+        public: true
+
+    contao.security.two_factor.form_renderer:
+        class: Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorFormRenderer
+        arguments:
+            - "@router"
+        public: false
+
+    contao.security.two_factor.provider:
+        class: Contao\CoreBundle\Security\TwoFactor\ContaoAuthenticatorTwoFactorProvider
+        arguments:
+            - "@contao.security.two_factor.authenticator"
+            - "@contao.security.two_factor.form_renderer"
+        tags:
+            - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
+
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
         arguments:

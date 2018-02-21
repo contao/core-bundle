@@ -293,6 +293,12 @@
       <trans-unit id="tl_user.su.1">
         <source>Switch to user ID %s</source>
       </trans-unit>
+      <trans-unit id="tl_user.use2fa.0">
+        <source>Enable two-factor authentication</source>
+      </trans-unit>
+      <trans-unit id="tl_user.use2fa.1">
+        <source>Use the two-factor authentication (TOTP).</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

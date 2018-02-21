@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorUserInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -97,7 +98,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends System implements UserInterface, EquatableInterface, \Serializable
+abstract class User extends System implements UserInterface, EquatableInterface, ContaoTwoFactorUserInterface, \Serializable
 {
 
 	/**
@@ -514,7 +515,7 @@ abstract class User extends System implements UserInterface, EquatableInterface,
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getUsername()
+	public function getUsername(): string
 	{
 		return $this->arrData['username'];
 	}
@@ -652,6 +653,16 @@ abstract class User extends System implements UserInterface, EquatableInterface,
 		}
 
 		return false;
+	}
+
+	public function getSecret(): ?string
+	{
+		return $this->arrData['secret'];
+	}
+
+	public function setSecret(string $secret): void
+	{
+		$this->arrData['secret'] = $secret;
 	}
 }
 

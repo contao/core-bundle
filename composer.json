@@ -71,7 +71,10 @@
         "tecnickcom/tcpdf": "^6.0",
         "terminal42/header-replay-bundle": "^1.4",
         "true/punycode": "^2.1",
-        "twig/twig": "^1.26 || ^2.0"
+        "twig/twig": "^1.26 || ^2.0",
+        "scheb/two-factor-bundle": "^3.6",
+        "spomky-labs/otphp": "^9.1",
+        "bacon/bacon-qr-code": "^2.0"
     },
     "conflict": {
         "contao/core": "*",

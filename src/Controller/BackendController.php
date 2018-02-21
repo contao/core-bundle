@@ -23,13 +23,17 @@ use Contao\BackendPassword;
 use Contao\BackendPopup;
 use Contao\BackendPreview;
 use Contao\BackendSwitch;
+use Contao\BackendUser;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Scheb\TwoFactorBundle\Security\Authentication\Token\TwoFactorToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * @Route(defaults={"_scope" = "backend", "_token_check" = true})
@@ -237,5 +241,48 @@ class BackendController extends Controller
         }
 
         return new RedirectResponse($picker->getCurrentUrl());
+    }
+
+    /**
+     * @return Response
+     *
+     * @Route("/contao/2fa", name="contao_backend_2fa")
+     */
+    public function twoFactorAuthAction(): Response
+    {
+        /** @var RouterInterface $router */
+        $router = $this->get('router');
+
+        $this->get('contao.framework')->initialize();
+
+        $token = $this->get('security.token_storage')->getToken();
+
+        if (!$token instanceof TwoFactorToken) {
+            return new RedirectResponse($router->generate('contao_backend_login'));
+        }
+
+        $authenticatedToken = $token->getAuthenticatedToken();
+
+        if (!$authenticatedToken instanceof UsernamePasswordToken) {
+            return new RedirectResponse($router->generate('contao_backend_login'));
+        }
+
+        $user = $authenticatedToken->getUser();
+
+        if (!$user instanceof BackendUser) {
+            return new RedirectResponse($router->generate('contao_backend_login'));
+        }
+
+        return $this->loginAction();
+    }
+
+    /**
+     * Dummy action for symfony security
+     * See https://symfony.com/doc/current/reference/configuration/security.html#check-path.
+     *
+     * @Route("/contao/2fa_check", name="contao_backend_2fa_check")
+     */
+    public function twoFactorAuthCheckAction(): void
+    {
     }
 }
