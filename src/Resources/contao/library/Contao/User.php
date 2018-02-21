@@ -346,6 +346,30 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 	}
 
 	/**
+	 * Find a user in the database based on username or email
+	 *
+	 * @param string  $usernameOrEmail  The username or email
+	 *
+	 * @return boolean True if the user was found
+	 */
+	public function findByUsernameOrEmail($usernameOrEmail)
+	{
+		$objResult = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE username=? OR email=?")
+			->limit(1)
+			->execute($usernameOrEmail, $usernameOrEmail);
+
+		if ($objResult->numRows > 0)
+		{
+			$this->arrData = $objResult->row();
+
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Update the current record
 	 */
 	public function save()
@@ -466,6 +490,19 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 	 */
 	public static function loadUserByUsername($username)
 	{
+		return self::loadUserByUsernameOrEmail($username);
+	}
+
+
+	/**
+	 * Try to load User by username or email
+	 *
+	 * @param string $usernameOrEmail Username or email
+	 *
+	 * @return null|static
+	 */
+	public static function loadUserByUsernameOrEmail($usernameOrEmail)
+	{
 		/** @var Request $request */
 		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
 
@@ -478,7 +515,7 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 		$isLogin = $request->request->has('password') && $request->isMethod(Request::METHOD_POST);
 
 		// Load the user object
-		if ($user->findBy('username', $username) === false)
+		if ($user->findByUsernameOrEmail($usernameOrEmail) === false)
 		{
 			// Return if its not a real login attempt
 			if (!$isLogin)
@@ -488,12 +525,12 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 
 			$password = $request->request->get('password');
 
-			if (self::triggerImportUserHook($username, $password, $user->strTable) === false)
+			if (self::triggerImportUserHook($usernameOrEmail, $password, $user->strTable) === false)
 			{
 				return null;
 			}
 
-			if ($user->findBy('username', \Input::post('username')) === false)
+			if ($user->findByUsernameOrEmail(\Input::post('username')) === false)
 			{
 				return null;
 			}
