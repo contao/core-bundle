@@ -1387,12 +1387,12 @@ var Backend =
 	},
 
 	/**
-	 * Enable drag and drop for file tree
+	 * Enable drag and drop for the file tree
 	 *
-	 * @param {object} ul The DOM element
+	 * @param {object} ul      The DOM element
+	 * @param {object} options An optional options object
 	 */
 	enableFileTreeDragAndDrop: function(ul, options) {
-
 		var ds = new Scroller(document.getElement('body'), {
 			onChange: function(x, y) {
 				this.element.scrollTo(this.element.getScroll().x, y);
@@ -1400,10 +1400,7 @@ var Backend =
 		});
 
 		ul.addEvent('mousedown', function(event) {
-
-			var dragElement = (event.target.hasClass('tl_file') || event.target.hasClass('tl_folder')) ? event.target : event.target.getParent('.tl_file,.tl_folder'),
-				currentHover,
-				currentHoverTime;
+			var dragElement = (event.target.hasClass('tl_file') || event.target.hasClass('tl_folder')) ? event.target : event.target.getParent('.tl_file,.tl_folder');
 
 			if (!dragElement || event.target.match('a') || event.target.getParent('a')) {
 				return;
@@ -1415,23 +1412,20 @@ var Backend =
 				clone = cloneBase.clone(true)
 					.inject(ul)
 					.setPosition(cloneBase.getPosition(cloneBase.getOffsetParent()))
-					.setStyle('opacity', 0.7);
+					.setStyle('opacity', 0.7),
+				currentHover, currentHoverTime;
 
 			var move = new Drag.Move(clone, {
-
 				droppables: $$([ul]).append(ul.getElements('.tl_folder,li.parent,.tl_folder_top')),
 				modifiers: {
 					x: 'left',
 					y: 'top',
 				},
-
 				onEnter: function(element, droppable) {
-
 					droppable = fixDroppable(droppable);
 					droppable.addClass('tl_folder_dropping');
 
 					if (droppable.hasClass('tl_folder') && currentHover !== droppable) {
-
 						currentHover = droppable;
 						currentHoverTime = new Date().getTime();
 
@@ -1445,8 +1439,10 @@ var Backend =
 									var event = document.createEvent('HTMLEvents');
 									event.initEvent('click', true, true);
 									expandLink.dispatchEvent(event);
+
 									currentHover = undefined;
 									currentHoverTime = undefined;
+
 									window.addEvent('ajax_change', function onAjax() {
 										if (move && move.droppables && ul && ul.getElements) {
 											move.droppables = $$([ul]).append(ul.getElements('.tl_folder,li.parent'));
@@ -1456,13 +1452,9 @@ var Backend =
 								}
 							}, 1000);
 						}
-
 					}
-
 				},
-
 				onDrop: function(element, droppable) {
-
 					currentHover = undefined;
 					currentHoverTime = undefined;
 
@@ -1471,6 +1463,7 @@ var Backend =
 					ul.getElements('.tl_folder_dropping').removeClass('tl_folder_dropping');
 
 					droppable = fixDroppable(droppable);
+
 					if (!droppable) {
 						return;
 					}
@@ -1479,39 +1472,36 @@ var Backend =
 						pid = droppable.get('data-id');
 
 					// Ignore invalid move operations
-					if (id && pid && (
-						(pid+'/').indexOf(id+'/') === 0
-						|| pid+'/' === id.replace(/[^/]+$/, '')
-					)) {
+					if (id && pid && ((pid+'/').indexOf(id+'/') === 0 || pid+'/' === id.replace(/[^/]+$/, ''))) {
 						return;
 					}
 
 					Backend.getScrollOffset();
+
 					var url = options.url + '&id=' + encodeURIComponent(id);
+
 					if (pid) {
 						url += '&pid=' + encodeURIComponent(pid);
 					}
+
 					document.location.href = url;
-
 				},
-
 				onLeave: function(element, droppable) {
 					droppable = fixDroppable(droppable);
 					droppable.removeClass('tl_folder_dropping');
 					currentHover = undefined;
 					currentHoverTime = undefined;
 				}
-
 			});
 
 			move.start(event);
-
 		});
 
 		function fixDroppable(droppable) {
 			if (droppable && droppable.hasClass('parent') && droppable.getPrevious('.tl_folder')) {
 				return droppable.getPrevious('.tl_folder');
 			}
+
 			return droppable;
 		}
 	},
