@@ -216,6 +216,8 @@ class Combiner extends \System
 					$objFile->close();
 				}
 
+				$strPath .= '?' . substr(md5(filemtime(TL_ROOT . '/' . $strPath)), 0, 8);
+
 				$return[] = $strPath;
 			}
 			else
@@ -227,6 +229,8 @@ class Combiner extends \System
 				{
 					$name = substr($name, \strlen($this->strWebDir) + 1);
 				}
+
+				$name .= '?' . substr(md5($arrFile['version']), 0, 8);
 
 				// Add the media query (see #7070)
 				if ($this->strMode == self::CSS && $arrFile['media'] != '' && $arrFile['media'] != 'all' && !$this->hasMediaTag($arrFile['name']))
