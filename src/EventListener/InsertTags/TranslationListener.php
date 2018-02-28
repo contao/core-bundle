@@ -44,7 +44,7 @@ class TranslationListener
             return false;
         }
 
-        $parameters = explode(':', $chunks[2]);
+        $parameters = isset($chunks[2]) ? explode(':', $chunks[2]) : [];
 
         return $this->translator->trans($chunks[1], $parameters, $chunks[3] ?? null);
     }
