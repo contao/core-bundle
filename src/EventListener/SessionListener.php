@@ -21,6 +21,13 @@ use Symfony\Component\HttpKernel\EventListener\SessionListener as BaseSessionLis
 /**
  * Decorates the default session listener.
  *
+ * Symfony has recently changed their session listener to always make the
+ * response private if the session has been started. Although we agree with the
+ * change, it renders the HTTP cache unusable, because Contao always starts a
+ * session (e.g. to store the user's language). This listener circumvents
+ * Symfony's changes by not making the response private if the request is a
+ * Contao front end request.
+ *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
 class SessionListener implements EventSubscriberInterface
@@ -75,6 +82,7 @@ class SessionListener implements EventSubscriberInterface
 
         $session = $event->getRequest()->getSession();
 
+        // Save the session (forward compatibility with Symfony 4.1)
         if ($session && $session->isStarted()) {
             $session->save();
         }
