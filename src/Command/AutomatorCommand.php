@@ -35,6 +35,9 @@ class AutomatorCommand extends AbstractLockedCommand
      */
     private $framework;
 
+    /**
+     * @param ContaoFrameworkInterface $framework
+     */
     public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
