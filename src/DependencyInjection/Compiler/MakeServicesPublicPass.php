@@ -22,26 +22,28 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 class MakeServicesPublicPass implements CompilerPassInterface
 {
     /**
+     * @var array
+     */
+    private static $services = [
+        'assets.packages',
+        'database_connection',
+        'fragment.handler',
+        'lexik_maintenance.driver.factory',
+        'monolog.logger.contao',
+        'security.authentication.trust_resolver',
+        'security.firewall.map',
+        'security.logout_url_generator',
+        'swiftmailer.mailer',
+    ];
+
+    /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container): void
     {
-        $services = [
-            'assets.packages',
-            'database_connection',
-            'doctrine.dbal.default_connection',
-            'fragment.handler',
-            'lexik_maintenance.driver.factory',
-            'monolog.logger.contao',
-            'security.firewall.map',
-            'security.logout_url_generator',
-            'swiftmailer.mailer'
-        ];
-
-        foreach ($services as $service) {
-            // Uses findDefinition instead of hasDefinition/getDefinition
-            // as hasDefinition does not check aliased services
+        foreach (self::$services as $service) {
             try {
+                // Use findDefinition() to also check aliased services
                 $definition = $container->findDefinition($service);
                 $definition->setPublic(true);
             } catch (ServiceNotFoundException $exception) {
