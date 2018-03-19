@@ -413,7 +413,7 @@ $GLOBALS['TL_AUTO_ITEM'] = array('items', 'events');
 
 
 /**
- * Index only the following page types
+ * Register the pages to be indexed
  */
 $GLOBALS['TL_INDEX_PAGES'] = array('regular');
 
