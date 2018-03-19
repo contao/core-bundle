@@ -1,6 +1,6 @@
 # API changes
 
-## Version 4.* to 4.3
+## Version 4.* to 4.4
 
 ### Image upscaling
 
