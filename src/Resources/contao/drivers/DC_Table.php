@@ -5549,7 +5549,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$arrValues[] = $this->ptable;
 			}
 
-			$what = $field;
+			$what = \Database::quoteIdentifier($field);
 
 			// Optimize the SQL query (see #8485)
 			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['flag']))
