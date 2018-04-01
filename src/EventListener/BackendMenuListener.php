@@ -55,7 +55,7 @@ class BackendMenuListener
 
             if (!$categoryNode) {
                 $categoryNode = $this->createNode($factory, $categoryName, $categoryData);
-                $categoryNode->setDisplayChildren(false !== strpos($categoryData['class'], 'node-expanded'));
+                $categoryNode->setDisplayChildren(false !== strpos((string) $categoryData['class'], 'node-expanded'));
 
                 $tree->addChild($categoryNode);
             }
