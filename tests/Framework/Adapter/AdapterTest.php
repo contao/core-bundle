@@ -13,6 +13,7 @@ namespace Contao\CoreBundle\Tests\Framework\Adapter;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Tests\Fixtures\Adapter\LegacyClass;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Error;
 
 /**
  * Tests the Adapter class.
@@ -49,7 +50,7 @@ class AdapterTest extends TestCase
     {
         $adapter = new Adapter(LegacyClass::class);
 
-        $this->expectException('PHPUnit_Framework_Error');
+        $this->expectException(Error::class);
 
         /* @noinspection PhpUndefinedMethodInspection */
         $adapter->missingMethod();
