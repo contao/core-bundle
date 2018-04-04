@@ -3568,7 +3568,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <div id="paste_hint">
   <p>'.$GLOBALS['TL_LANG']['MSC']['selectNewPosition'].'</p>
 </div>' : '').'
-<div class="tl_listing_container tree_view" id="tl_listing">'.(isset($GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb']) ? $GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb'] : '').((\Input::get('act') == 'select' || ($this->strPickerFieldType == 'checkbox')) ? '
+<div class="tl_listing_container tl_listing_container--'.$table.' tree_view" id="tl_listing">'.(isset($GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb']) ? $GLOBALS['TL_DCA'][$table]['list']['sorting']['breadcrumb'] : '').((\Input::get('act') == 'select' || ($this->strPickerFieldType == 'checkbox')) ? '
 <div class="tl_select_trigger">
 <label for="tl_select_trigger" class="tl_select_label">'.$GLOBALS['TL_LANG']['MSC']['selectAll'].'</label> <input type="checkbox" id="tl_select_trigger" onclick="Backend.toggleCheckboxes(this)" class="tl_tree_checkbox">
 </div>' : '').'
@@ -3843,8 +3843,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$session[$node][$id] = (\is_int($session[$node][$id])) ? $session[$node][$id] : 0;
 		$mouseover = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $table == $this->strTable) ? ' toggle_select hover-div' : '';
+		$isParent = (!empty($childs)) ? ' is-parent' : '';
 
-		$return .= "\n  " . '<li class="'.((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objRow->type == 'root') || $table != $this->strTable) ? 'tl_folder' : 'tl_file').' click2edit'.$mouseover.' cf"><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing).'px">';
+		$return .= "\n  " . '<li data-id="'.$id.'" class="'.((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objRow->type == 'root') || $table != $this->strTable) ? 'tl_folder' : 'tl_file').' click2edit'.$mouseover.' cf'.$isParent.'"><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing).'px">';
 
 		// Calculate label and add a toggle button
 		$args = array();
@@ -3864,7 +3865,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$folderAttribute = '';
 			$img = $blnIsOpen ? 'folMinus.svg' : 'folPlus.svg';
 			$alt = $blnIsOpen ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
-			$return .= '<a href="'.$this->addToUrl('ptg='.$id).'" title="'.\StringUtil::specialchars($alt).'" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,\''.$node.'_'.$id.'\','.$level.','.$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'].')">'.\Image::getHtml($img, '', 'style="margin-right:2px"').'</a>';
+			$return .= '<a href="'.$this->addToUrl('ptg='.$id).'" class="expandable" title="'.\StringUtil::specialchars($alt).'" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,\''.$node.'_'.$id.'\','.$level.','.$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'].')">'.\Image::getHtml($img, '', 'style="margin-right:2px"').'</a>';
 		}
 
 		foreach ($showFields as $k=>$v)

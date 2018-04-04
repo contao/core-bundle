@@ -2729,7 +2729,256 @@ var Backend =
 			currentHover = undefined;
 			currentHoverTime = undefined;
 		});
-	}
+	},
+	dcTableDragAndDrop: (function () {
+		/** @type {(Function|Boolean)} buffer for timer setTimeout default to false  */
+		var expandTimer = false;
+
+		/**
+		 * show or hide an highlight row drop areas.
+		 *
+		 * @param {String} status
+		 * @param {HTMLElement} destinationItem
+		 */
+		function _highlightRow (status, destinationItem) {
+			var cssClassName = 'visualize-droparea';
+			var action = 'remove';
+
+			if (status === 'show') {
+				action = 'add';
+			}
+
+			return destinationItem[action + 'Class'](cssClassName);
+		}
+
+		/**
+		 * Checks if the user opens the context menu.
+		 *
+		 * @param {ClickEvent} event
+		 * @returns {Boolean}
+		 */
+		function _isRightClick (event) {
+			return event.rightClick || event.control;
+		}
+
+		/**
+		 * get an clone of the current item. Needed to create the drag and drop feeling.
+		 *
+		 * @param {HTMLElement} currentDragItem
+		 * @returns {HTMLElement} returns an clone of current drag items child tl_left
+		 */
+		function _cloneDragElement (currentDragItem) {
+			return currentDragItem
+				.getElement('.tl_left')
+				.clone(true)
+				.set('class', 'currrent-drag-clone')
+				.setStyles(currentDragItem.getCoordinates())
+				.setStyles({
+					opacity: 0.7,
+					position: 'absolute'
+				})
+				.inject(document.body)
+		}
+
+		/**
+		 * Check if an item is an parent
+		 *
+		 * @param {HTMLElement} item
+		 * @returns {Boolean}
+		 */
+		function _isParent (item) {
+			return item.hasClass('is-parent');
+		}
+
+		/**
+		 * Check via the visible icon if the parent item is expanded or not.
+		 * Very ugly but there is no better way without a lot of changes into dc_table and other js code.
+		 *
+		 * @param {HTMLElement} tlLeftFromParentItem
+		 * @returns {Boolean}
+		 */
+		function _childsVisible (tlLeftFromParentItem) {
+			return tlLeftFromParentItem.getElement('.expandable img[src$="/icons/folMinus.svg"]') !== null;
+		}
+
+		/**
+		 * trigger an auto expand when the user is on an closed one.
+		 *
+		 * @param {HTMLElement} listingContainer
+		 * @param {String} droppableItems
+		 * @param {Mootools.Drag.Move} listDragAndDropInstance
+		 * @param {HTMLElement} expandIconItem
+		 */
+		function _autoExpandChilds (listingContainer, droppableItems, listDragAndDropInstance, expandIconItem) {
+			var timer = 1000;
+
+			expandTimer = setTimeout(function() {
+					var event = document.createEvent('HTMLEvents');
+					event.initEvent('click', true, true);
+					expandIconItem.dispatchEvent(event);
+
+					expandTimer = false;
+
+					window.addEvent('ajax_change', function onAjax() {
+						if (listDragAndDropInstance && listDragAndDropInstance.droppables) {
+							listDragAndDropInstance.droppables = listingContainer.getElements(droppableItems);
+						}
+						window.removeEvent('ajax_change', onAjax);
+					});
+			}, timer);
+		}
+
+		/**
+		 * get the current tl_left child container by parent
+		 *
+		 * @param {HTMLElement} curRowItem
+		 * @returns {HTMLElement}
+		 */
+		function _getRowInfoData (curRowItem) {
+			return curRowItem.getElement('.tl_left');
+		}
+
+		/**
+		 * generate the location reload url
+		 *
+		 * @param {String} url
+		 * @param {Number} mode
+		 * @param {Number} id
+		 * @param {Number} pid
+		 */
+		function _generateSaveUrl (url, mode, id, pid) {
+			return url
+				.replace(/:mode/, mode)
+				.replace(/:id/, id)
+				.replace(/:pid/, pid)
+		}
+
+		/**
+		 * ensures to get always the right valid element
+		 *
+		 * @param {HTMLElement} item
+		 * @returns {HTMLElement}
+		 */
+		function _getCurrentValidDragItem (item) {
+			return (item.hasClass('tl_file') || item.hasClass('tl_folder')) ? item : item.getParent('.tl_file,.tl_folder')
+		}
+
+		/**
+		 *
+		 * @param {ClickEvent} event
+		 */
+		function _initDragAndDrop (event, options) {
+			/** always stop current other mousedown events */
+			event.stop();
+
+			var url = options.url;
+			var droppableItems = options.droppables;
+			var listingContainer = options.listingContainer;
+
+			/** grab the current drag Item */
+			var currentDragItem = _getCurrentValidDragItem(event.target);
+
+			/** exclude links as clonables and discard right clicked items */
+			if ((!currentDragItem || event.target.match('a') || event.target.getParent('a')) || _isRightClick(event)) {
+				return;
+			}
+
+			/** @type {HTMLElement} clones the inside tl_left element to stick always on the current mouse position.   */
+			var dragabbleClone = _cloneDragElement(currentDragItem);
+
+			/** @type {String} store the data-id of the original drag item to paste it later! */
+			var currentDragItemId = currentDragItem.get('data-id');
+
+			/** @type {Integer} declare and assign the pasteMode with value 1 as default value, cause this is the most used case */
+			var pasteMode = 1;
+
+			/** create an new drag move instance. */
+			var listDragAndDropInstance = new Drag.Move(dragabbleClone, {
+				/** declare allowed items as drop spots. */
+                droppables: listingContainer.getElements(droppableItems),
+
+                onDrop: function(draggedItem, destinationItem){
+                    /** remove always the cloned element, cause we are done yet. */
+                    draggedItem.destroy();
+
+					/** exit when the drop element item is not correct */
+					if (destinationItem === null) {
+						return;
+					}
+
+					/** always remove outline on drop. */
+					_highlightRow('hide', destinationItem);
+
+					/** get the id of the drop item. */
+					var pasteId = destinationItem.get('data-id');
+
+					/** check if the drop item is an parent / has childs  */
+					if (_isParent(destinationItem)) {
+						/** change pasre mode to 2 to insert as drag item as child */
+						pasteMode = 2;
+					}
+
+					/** let`s store the change to the database with an good old get request ;) */
+					window.location.href = _generateSaveUrl(url, pasteMode, currentDragItemId, pasteId);
+
+					/** Don`t forget to inform the user that we are on completion! */
+					AjaxRequest.displayBox(Contao.lang.saving);
+                },
+                onEnter: function(draggedItem, destinationItem){
+					/** Show the user that this would be the new place */
+					_highlightRow('show', destinationItem);
+
+					/** buffer tlLeft info data for further operations like check if there are child items */
+					var _tlLeft = _getRowInfoData(destinationItem);
+
+					/** is the item that we are entered an parent node? */
+					if (_isParent(destinationItem)) {
+						var isExpanded = _childsVisible(_tlLeft);
+
+						/** if child is not expanded let`s start the auto expand action */
+						if (!isExpanded) {
+							_autoExpandChilds(listingContainer, droppableItems, listDragAndDropInstance, _tlLeft.getElement('.expandable img[src$="/icons/folPlus.svg"]'));
+						}
+					}
+                },
+                onLeave: function(draggedItem, destinationItem){
+					/** always ensure that we remove the highlight. */
+					_highlightRow('hide', destinationItem);
+
+					/** check if an expandTimer is set */
+					if (expandTimer !== false) {
+						/** clear the interval to ensure that there are no bad side effects */
+						clearInterval(expandTimer);
+
+						/** reset the timer */
+						expandTimer = false;
+					}
+                },
+                onCancel: function(draggedItem, destinationItem){
+					draggedItem.destroy();
+				}
+			})
+
+			/** Invoke the drag and drop instance */
+			listDragAndDropInstance.start(event);
+		}
+
+		return {
+			/** @public */
+			init: function (dragabbleItems, options) {
+				if (!'listingContainer' in options || !'url' in options || !'droppables' in options) {
+					console.error(new Error('Argument two misses required options! Required are listingContainer, url and droppables.'));
+					return;
+				}
+
+				options.listingContainer.addClass('js-is-dragdrop-ready');
+
+				dragabbleItems.addEvent('mousedown', function (event) {
+					_initDragAndDrop(event, options);
+				});
+			}
+		}
+	})()
 };
 
 // Track the mousedown event

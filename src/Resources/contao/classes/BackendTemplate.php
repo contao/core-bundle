@@ -173,6 +173,7 @@ class BackendTemplate extends \Template
 					. 'collapse:"' . $GLOBALS['TL_LANG']['MSC']['collapseNode'] . '",'
 					. 'expand:"' . $GLOBALS['TL_LANG']['MSC']['expandNode'] . '",'
 					. 'loading:"' . $GLOBALS['TL_LANG']['MSC']['loadingData'] . '",'
+					. 'saving:"' . $GLOBALS['TL_LANG']['MSC']['savingData'] . '",'
 					. 'apply:"' . $GLOBALS['TL_LANG']['MSC']['apply'] . '"'
 				. '},'
 				. 'script_url:"' . $container->get('contao.assets.assets_context')->getStaticUrl() . '",'

@@ -33,7 +33,8 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 		(
 			array('tl_article', 'checkPermission'),
 			array('tl_article', 'addCustomLayoutSectionReferences'),
-			array('tl_page', 'addBreadcrumb')
+			array('tl_page', 'addBreadcrumb'),
+			array('tl_article', 'addListDragAndDrop')
 		),
 		'sql' => array
 		(
@@ -1082,5 +1083,19 @@ class tl_article extends Backend
 		}
 
 		$objVersions->create();
+	}
+
+	public function addListDragAndDrop () {
+		$url = $this->addToUrl('act=cut&mode=:mode&id=:id&pid=:pid');
+
+		$dragDropTemplate = new \BackendTemplate('be_moo_dragdrop');
+		$dragDropTemplate->setData([
+			'dragabbles' => '$$(".tl_listing_container--tl_page .tl_file")',
+			'url' => html_entity_decode($url),
+			'droppables' => '.level_0 .tl_file, .level_0 .tl_folder',
+			'listingContainer' => 'document.getElement(".tl_listing_container--tl_page")'
+		]);
+
+		$GLOBALS['TL_MOOTOOLS'][] = $dragDropTemplate->parse();
 	}
 }

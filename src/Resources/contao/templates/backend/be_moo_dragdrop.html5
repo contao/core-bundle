@@ -1,0 +1,7 @@
+<script>
+  Backend.dcTableDragAndDrop.init(<?= $this->dragabbles ?>, {
+			url: '<?= $this->url ?>',
+			droppables: '<?= $this->droppables ?>',
+			listingContainer: <?= $this->listingContainer ?>
+		})
+</script>";

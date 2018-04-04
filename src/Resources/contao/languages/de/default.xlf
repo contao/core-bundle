@@ -1819,6 +1819,10 @@ Diese E-Mail wurde von Contao generiert. Sie können nicht darauf antworten.
         <source>Loading data</source>
         <target>Die Daten werden geladen</target>
       </trans-unit>
+      <trans-unit id="MSC.savingData">
+        <source>Saving data</source>
+        <target>Die Daten werden gespeichert</target>
+      </trans-unit>
       <trans-unit id="MSC.deleteSelected">
         <source>Delete</source>
         <target>Löschen</target>

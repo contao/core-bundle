@@ -611,6 +611,36 @@ table.tl_listing {
 	padding:2px 0;
 	margin:20px 15px 16px;
 }
+
+/**
+ * Add curser to variation tl_page for drag and drop support
+ */
+.js-is-dragdrop-ready .tl_file .tl_left, .currrent-drag-clone {
+	cursor: move;
+}
+
+/**
+ * prepare drop area for overlay
+ */
+.js-is-dragdrop-ready .visualize-droparea {
+	position: relative;
+}
+
+/**
+ * overlay to singalize the droparea
+ */
+.js-is-dragdrop-ready .visualize-droparea:after {
+	content: '';
+	position: absolute;
+	display: block;
+	bottom: 0;
+	left: 0;
+	background: url("icons/down.svg") no-repeat center center rgba(88, 155, 14, 0.2);
+	width: 100%;
+	height: 100%;
+	outline: 2px dotted rgb(88, 155, 14);
+}
+
 .tl_listing_container.tree_view {
 	position:relative;
 }
