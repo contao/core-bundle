@@ -506,11 +506,18 @@ abstract class Template extends \Controller
 	 *
 	 * @param string $href  The script path
 	 * @param string $media The media type string
+	 * @param int    $mtime File mtime
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateStyleTag($href, $media=null)
+	public static function generateStyleTag($href, $media=null, $mtime=null)
 	{
+		if (file_exists(TL_ROOT . '/' . $href))
+		{
+			$mtime = $mtime ?? filemtime(TL_ROOT . '/' . $href);
+			$href .= '?' . substr(md5($mtime), 0, 8);
+		}
+
 		return '<link rel="stylesheet" href="' . $href . '"' . (($media && $media != 'all') ? ' media="' . $media . '"' : '') . '>';
 	}
 
@@ -533,11 +540,18 @@ abstract class Template extends \Controller
 	 *
 	 * @param string  $src   The script path
 	 * @param boolean $async True to add the async attribute
+	 * @param int     $mtime File mtime
 	 *
 	 * @return string The markup string
 	 */
-	public static function generateScriptTag($src, $async=false)
+	public static function generateScriptTag($src, $async=false, $mtime=null)
 	{
+		if (file_exists(TL_ROOT . '/' . $src))
+		{
+			$mtime = $mtime ?? filemtime(TL_ROOT . '/' . $src);
+			$src .= '?' . substr(md5($mtime), 0, 8);
+		}
+
 		return '<script src="' . $src . '"' . ($async ? ' async' : '') . '></script>';
 	}
 
