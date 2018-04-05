@@ -26,9 +26,14 @@ class TranslationListenerTest extends TestCase
     }
 
     /**
+     * @param string      $id
+     * @param string      $result
+     * @param string|null $domain
+     * @param array       $parameters
+     *
      * @dataProvider insertTagsProvider
      */
-    public function testReplacesInsertTagsWithTranslation(string $id, ?string $domain, array $parameters, string $result): void
+    public function testReplacesInsertTagsWithTranslation(string $id, string $result, string $domain = null, array $parameters = []): void
     {
         $translator = $this->createMock(TranslatorInterface::class);
 
@@ -52,12 +57,15 @@ class TranslationListenerTest extends TestCase
         $this->assertSame($result, $listener->onReplaceInsertTags($insertTag));
     }
 
-    public function insertTagsProvider()
+    /**
+     * @return array
+     */
+    public function insertTagsProvider(): array
     {
         return [
-            ['foo', null, [], 'bar'],
-            ['foo', 'bar', [], 'baz'],
-            ['foo', 'bar', ['baz', 'what'], 'else'],
+            ['foo', 'bar'],
+            ['foo', 'baz', 'bar'],
+            ['foo', 'else', 'bar', ['baz', 'what']],
         ];
     }
 
