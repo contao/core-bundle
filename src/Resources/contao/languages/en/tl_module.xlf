@@ -56,6 +56,12 @@
       <trans-unit id="tl_module.rootPage.1">
         <source>Please choose the reference page from the site structure.</source>
       </trans-unit>
+      <trans-unit id="tl_module.searchPages.0">
+        <source>Search pages</source>
+      </trans-unit>
+      <trans-unit id="tl_module.searchPages.1">
+        <source>Please choose the pages to be searched from the site structure.</source>
+      </trans-unit>
       <trans-unit id="tl_module.navigationTpl.0">
         <source>Navigation template</source>
       </trans-unit>
