@@ -2768,15 +2768,16 @@ var Backend =
 		 * @returns {HTMLElement} returns an clone of current drag items child tl_left
 		 */
 		function _cloneDragElement (currentDragItem) {
-			return currentDragItem
+			var wrapper = new Element('div.currrent-drag-clone', {
+				styles: currentDragItem.getCoordinates()
+			})
+
+			var clone = currentDragItem
 				.getElement('.tl_left')
-				.clone(true)
-				.set('class', 'currrent-drag-clone')
-				.setStyles(currentDragItem.getCoordinates())
-				.setStyles({
-					opacity: 0.7,
-					position: 'absolute'
-				})
+				.clone()
+
+			return wrapper
+				.adopt(clone)
 				.inject(document.body)
 		}
 
@@ -2813,18 +2814,18 @@ var Backend =
 			var timer = 1000;
 
 			expandTimer = setTimeout(function() {
-					var event = document.createEvent('HTMLEvents');
-					event.initEvent('click', true, true);
-					expandIconItem.dispatchEvent(event);
+				var event = document.createEvent('HTMLEvents');
+				event.initEvent('click', true, true);
+				expandIconItem.dispatchEvent(event);
 
-					expandTimer = false;
+				expandTimer = false;
 
-					window.addEvent('ajax_change', function onAjax() {
-						if (listDragAndDropInstance && listDragAndDropInstance.droppables) {
-							listDragAndDropInstance.droppables = listingContainer.getElements(droppableItems);
-						}
-						window.removeEvent('ajax_change', onAjax);
-					});
+				window.addEvent('ajax_change', function onAjax() {
+					if (listDragAndDropInstance && listDragAndDropInstance.droppables) {
+						listDragAndDropInstance.droppables = listingContainer.getElements(droppableItems);
+					}
+					window.removeEvent('ajax_change', onAjax);
+				});
 			}, timer);
 		}
 
