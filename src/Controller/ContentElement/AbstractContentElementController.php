@@ -10,25 +10,22 @@
 
 namespace App\Controller\ContentElement;
 
+use Contao\ContentModel;
 use Contao\CoreBundle\Controller\AbstractFragmentController;
-use Contao\ModuleModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractContentElementController extends AbstractFragmentController
 {
     /**
-     * @param Request     $request
-     * @param ModuleModel $module
-     * @param string      $section
+     * @param Request      $request
+     * @param ContentModel $module
+     * @param string       $section
      *
      * @return Response
      */
-    public function __invoke(Request $request, ModuleModel $module, string $section)
+    public function __invoke(Request $request, ContentModel $module, string $section)
     {
-        // TODO: define a permission name
-//        $this->denyAccessUnlessGranted('', $module);
-
         $template = $this->createTemplate($module, 'ce_');
 
         $template->inColumn = $section;

@@ -31,9 +31,6 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
             return $this->getBackendWildcard($module, $request);
         }
 
-        // TODO: define a permission name
-//        $this->denyAccessUnlessGranted('', $module);
-
         $template = $this->createTemplate($module, 'mod_');
 
         $template->inColumn = $section;
