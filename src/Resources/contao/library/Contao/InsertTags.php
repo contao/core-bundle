@@ -10,7 +10,12 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Event\ApplyInsertTagFlagsEvent;
+use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Fragment\Reference\InsertTagReference;
+use Contao\CoreBundle\Fragment\UnknownFragmentException;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
@@ -107,12 +112,32 @@ class InsertTags extends \Controller
 			$flags = explode('|', $strTag);
 			$tag = array_shift($flags);
 			$elements = explode('::', $tag);
+			$parameters = substr($strTag, \strlen($elements[0]) + 2);
 
 			// Load the value from cache
 			if (isset($arrCache[$strTag]) && !\in_array('refresh', $flags))
 			{
 				$strBuffer .= $arrCache[$strTag];
 				continue;
+			}
+
+			$reference = new InsertTagReference(
+				$elements[0],
+				$parameters,
+				$flags
+			);
+
+			if ('BE' === TL_MODE)
+			{
+				$reference->setBackendScope();
+			}
+
+			try {
+				$strBuffer .= \System::getContainer()->get('fragment.handler')->render($reference);
+				continue;
+			} catch (UnknownFragmentException $e)
+			{
+				// Continue normally for BC
 			}
 
 			// Skip certain elements if the output will be cached
@@ -1096,11 +1121,27 @@ class InsertTags extends \Controller
 								}
 							}
 
-							$container
-								->get('monolog.logger.contao')
-								->log(LogLevel::INFO, 'Unknown insert tag flag: ' . $flag)
-							;
-							break;
+							// Forward compatibility in case someone registered
+							// to the ContaoCoreEvents::APPLY_INSERT_TAG_FLAGS properly
+							// but the insert tag is still added using the old
+							// way instead of the fragment registry
+							$before = $arrCache[$strTag];
+
+							$eventDispatcher = System::getContainer()->get('event_dispatcher');
+							$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+							$event = new ApplyInsertTagFlagsEvent($flags, $request, new Response($arrCache[$strTag]));
+							$eventDispatcher->dispatch(ContaoCoreEvents::APPLY_INSERT_TAG_FLAGS, $event);
+							$arrCache[$strTag] = $event->getResponse()->getContent();
+
+							if ($before === $arrCache[$strTag])
+							{
+								$container
+									->get('monolog.logger.contao')
+									->log(LogLevel::INFO, 'Unknown insert tag flag: ' . $flag)
+								;
+								break;
+							}
+
 					}
 				}
 			}
