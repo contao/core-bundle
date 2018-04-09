@@ -105,7 +105,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
             FragmentConfig::class,
             [
                 $this->getControllerName($reference, $attributes),
-                $attributes['renderer'] ?? 'inline',
+                $attributes['renderer'] ?? 'forward',
             ]
         );
 
