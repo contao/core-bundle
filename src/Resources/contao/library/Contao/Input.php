@@ -791,7 +791,9 @@ class Input
 			return $_POST[$strKey];
 		}
 
-		if (isset($_SESSION['FORM_DATA'][$strKey]))
+		/** @var \Symfony\Component\HttpFoundation\Request $request */
+		$request = System::getContainer()->get('request_stack')->getMasterRequest();
+		if (null !== $request && $request->hasPreviousSession() && isset($_SESSION['FORM_DATA'][$strKey]))
 		{
 			return ($strKey == 'FORM_SUBMIT') ? preg_replace('/^auto_/i', '', $_SESSION['FORM_DATA'][$strKey]) : $_SESSION['FORM_DATA'][$strKey];
 		}
