@@ -6,7 +6,7 @@
     <?php $path_number = 0; foreach ($this->items as $item): ?>
       <?php if ( $path_number == 0 ): ?>
         <?php if ($item['isActive']): ?>
-          <li class="active'<?php if ($item['class']): ?> <?= $item['class'] ?><?php endif; ?> last"><strong><?= $item['link'] ?></strong></li>
+          <li class="active<?php if ($item['class']): ?> <?= $item['class'] ?><?php endif; ?> last"><strong><?= $item['link'] ?></strong></li>
         <?php else: ?>
           <li<?php if ($item['class']): ?> class="<?= $item['class'] ?>"<?php endif; ?>><a href="<?= $item['href'] ?>" title="<?= $item['title'] ?>"><?= $item['link'] ?></a></li>
         <?php endif; ?>
