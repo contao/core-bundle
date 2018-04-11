@@ -48,7 +48,7 @@ class ModuleSearch extends Module
 			return $objTemplate->parse();
 		}
 
-		$this->searchPages = \StringUtil::deserialize($this->searchPages, true);
+		$this->pages = \StringUtil::deserialize($this->pages, true);
 
 		return parent::generate();
 	}
@@ -103,12 +103,12 @@ class ModuleSearch extends Module
 		if ($strKeywords != '' && $strKeywords != '*' && !$this->jumpTo)
 		{
 			// Search pages
-			if (!empty($this->searchPages) && \is_array($this->searchPages))
+			if (!empty($this->pages) && \is_array($this->pages))
 			{
-				$varRootId = \implode('-', $this->searchPages);
+				$varRootId = \implode('-', $this->pages);
 				$arrPages = [];
 
-				foreach ($this->searchPages as $intPageId)
+				foreach ($this->pages as $intPageId)
 				{
 					$arrPages[] = $intPageId;
 					$arrPages = \array_merge($arrPages, $this->Database->getChildRecords($intPageId, 'tl_page'));
