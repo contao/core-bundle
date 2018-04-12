@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -401,6 +402,16 @@ class FrontendTemplate extends \Template
 		if ($objPage->cache > 0)
 		{
 			$response->setSharedMaxAge($objPage->cache);
+		}
+
+		// Tag response
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			/** @var ResponseTagger $responseTagger */
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array(
+				'contao.dca.page.' . $objPage->id,
+			));
 		}
 
 		return $response;

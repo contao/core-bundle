@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use FOS\HttpCache\ResponseTagger;
+
 
 /**
  * Provides methodes to handle articles.
@@ -63,6 +65,16 @@ class ModuleArticle extends \Module
 
 		$this->type = 'article';
 		$this->blnNoMarkup = $blnNoMarkup;
+
+		// Tag response
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			/** @var ResponseTagger $responseTagger */
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array(
+				'contao.dca.article.' . $this->id,
+			));
+		}
 
 		return parent::generate();
 	}

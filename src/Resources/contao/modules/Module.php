@@ -10,6 +10,8 @@
 
 namespace Contao;
 
+use FOS\HttpCache\ResponseTagger;
+
 
 /**
  * Parent class for front end modules.
@@ -246,6 +248,16 @@ abstract class Module extends \Frontend
 		if (!empty($this->objModel->classes) && \is_array($this->objModel->classes))
 		{
 			$this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
+		}
+
+		// Tag response
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			/** @var ResponseTagger $responseTagger */
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array(
+				'contao.dca.module.' . $this->id,
+			));
 		}
 
 		return $this->Template->parse();
