@@ -1435,6 +1435,16 @@ ul.sgallery li {
 .drag-handle {
 	cursor:move;
 }
+
+.drag-handle--listing {
+	display: none;
+	border: none;
+}
+
+.js-is-dragdrop-ready .drag-handle--listing {
+	display: inline;
+}
+
 ul.sortable li {
 	cursor:move;
 	position:relative;

@@ -805,8 +805,14 @@ class tl_article extends Backend
 	public function cutArticle($row, $href, $label, $title, $icon, $attributes)
 	{
 		$objPage = PageModel::findById($row['pid']);
+		$output = Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 
-		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		if ($this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row())) {
+			$output = '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+			$output .= '<button type="button" class="drag-handle drag-handle--listing" title="" aria-hidden="true">'.Image::getHtml('drag.svg', ' ').'</button>';
+		}
+
+		return $output;
 	}
 
 
