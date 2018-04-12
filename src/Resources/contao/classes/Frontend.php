@@ -616,7 +616,7 @@ abstract class Frontend extends \Controller
 		}
 
 		// Index page if searching is allowed and there is no back end user
-		if (\Config::get('enableSearch') && $objPage->type == 'regular' && !BE_USER_LOGGED_IN && !$objPage->noSearch)
+		if (\Config::get('enableSearch') && \in_array($objPage->type, $GLOBALS['TL_INDEX_PAGES']) && !BE_USER_LOGGED_IN && !$objPage->noSearch)
 		{
 			// Index protected pages if enabled
 			if (\Config::get('indexProtected') || (!FE_USER_LOGGED_IN && !$objPage->protected))

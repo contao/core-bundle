@@ -413,6 +413,12 @@ $GLOBALS['TL_AUTO_ITEM'] = array('items', 'events');
 
 
 /**
+ * Register the pages to be indexed
+ */
+$GLOBALS['TL_INDEX_PAGES'] = array('regular');
+
+
+/**
  * Do not index a page if one of the following parameters is set
  */
 $GLOBALS['TL_NOINDEX_KEYS'] = array('id', 'file', 'token', 'day', 'month', 'year', 'page', 'PHPSESSID');
