@@ -543,4 +543,23 @@ class BackendUser extends \User
 
 		return $arrModules;
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getRoles()
+	{
+		// User not loaded
+		if (!$this->intId) {
+			return [];
+		}
+
+		$roles = ['ROLE_USER'];
+
+		if ($this->isAdmin) {
+			$roles[] = 'ROLE_ADMIN';
+		}
+
+		return $roles;
+	}
 }

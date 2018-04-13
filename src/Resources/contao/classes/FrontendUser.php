@@ -305,4 +305,17 @@ class FrontendUser extends \User
 			}
 		}
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getRoles()
+	{
+		// User not loaded
+		if (!$this->intId) {
+			return [];
+		}
+
+		return ['ROLE_MEMBER'];
+	}
 }
