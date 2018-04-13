@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 
@@ -95,7 +96,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends \System
+abstract class User extends \System implements UserInterface
 {
 
 	/**
@@ -728,6 +729,38 @@ abstract class User extends \System
 		}
 
 		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getPassword()
+	{
+		return '';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getSalt()
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getUsername()
+	{
+		return $this->username;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function eraseCredentials()
+	{
+		// do nothing
 	}
 
 
