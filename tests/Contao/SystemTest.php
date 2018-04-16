@@ -30,19 +30,22 @@ class SystemTest extends TestCase
      */
     public function setUp()
     {
-        // Manually load the System class so it's not using the fixture
+        // Load the System class so it's not using the fixture
         require __DIR__.'/../../src/Resources/contao/library/Contao/System.php';
     }
 
-    public function testGetFormattedNumber()
+    /**
+     * Tests formatting a number.
+     */
+    public function testFormatsANumber()
     {
-        $strNumber = '12004.34564';
+        $number = '12004.34564';
 
-        // override settings
+        // Override the settings
         $GLOBALS['TL_LANG']['MSC']['decimalSeparator'] = '.';
         $GLOBALS['TL_LANG']['MSC']['thousandsSeparator'] = '';
 
-        $arrNumberWithDifferentDecimals = [
+        $numbers = [
             0 => '12004',
             1 => '12004.3',
             2 => '12004.35',
@@ -51,13 +54,14 @@ class SystemTest extends TestCase
             5 => '12004.34564',
         ];
 
-        foreach ($arrNumberWithDifferentDecimals as $intDecimals => $strFormattedNumber) {
-            $this->assertEquals(System::getFormattedNumber($strNumber, $intDecimals), $strFormattedNumber);
+        foreach ($numbers as $decimals => $formatted) {
+            $this->assertEquals(System::getFormattedNumber($number, $decimals), $formatted);
         }
 
-        // now test again with set thousandsSeparator
-        $GLOBALS['TL_LANG']['MSC']['thousandsSeparator'] = ','; // override
-        $arrNumberWithDifferentDecimalsWithSeperator = [
+        // Override the thousands separator
+        $GLOBALS['TL_LANG']['MSC']['thousandsSeparator'] = ',';
+
+        $numbers = [
             0 => '12,004',
             1 => '12,004.3',
             2 => '12,004.35',
@@ -66,21 +70,26 @@ class SystemTest extends TestCase
             5 => '12,004.34564',
         ];
 
-        foreach ($arrNumberWithDifferentDecimalsWithSeperator as $intDecimals => $strFormattedNumber) {
-            $this->assertEquals(System::getFormattedNumber($strNumber, $intDecimals), $strFormattedNumber);
+        foreach ($numbers as $decimals => $formatted) {
+            $this->assertEquals(System::getFormattedNumber($number, $decimals), $formatted);
         }
     }
 
-    public function testAnonymizeIp()
+    /**
+     * Tests the IP anonymization.
+     */
+    public function testAnonymizesIpAddresses()
     {
+        $ipv4 = '172.16.254.112';
+        $ipv6 = '2001:0db8:85a3:0042:0000:8a2e:0370:7334';
+
+        $this->assertEquals('172.16.254.112', System::anonymizeIp($ipv4));
+        $this->assertEquals('2001:0db8:85a3:0042:0000:8a2e:0370:7334', System::anonymizeIp($ipv6));
+
         // Enable IP anonymization
         $GLOBALS['TL_CONFIG']['privacyAnonymizeIp'] = true;
-        $this->assertEquals(System::anonymizeIp('172.16.254.112'), '172.16.254.0');
-        $this->assertEquals(System::anonymizeIp('2001:0db8:85a3:0042:0000:8a2e:0370:7334'), '2001:0db8:85a3:0042:0000:8a2e:0370:0000');
 
-        // Disable IP anonymization
-        $GLOBALS['TL_CONFIG']['privacyAnonymizeIp'] = false;
-        $this->assertEquals(System::anonymizeIp('172.16.254.112'), '172.16.254.112');
-        $this->assertEquals(System::anonymizeIp('2001:0db8:85a3:0042:0000:8a2e:0370:7334'), '2001:0db8:85a3:0042:0000:8a2e:0370:7334');
+        $this->assertEquals('172.16.254.0', System::anonymizeIp($ipv4));
+        $this->assertEquals('2001:0db8:85a3:0042:0000:8a2e:0370:0000', System::anonymizeIp($ipv6));
     }
 }
