@@ -62,9 +62,8 @@ class BypassMaintenanceListenerTest extends TestCase
      */
     public function testDoesNotAddTheRequestAttributeIfThereIsNoBackEndUser()
     {
-        $request = new Request();
         $requestStack = new RequestStack();
-        $requestStack->push($request);
+        $requestStack->push(new Request());
 
         $event = new GetResponseEvent(
             $this->mockKernel(),

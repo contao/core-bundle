@@ -10,7 +10,6 @@
 
 namespace Contao\CoreBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -24,14 +23,14 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class BypassMaintenanceListener
 {
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
      * @var SessionInterface
      */
     private $session;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
     /**
      * @var bool
@@ -77,8 +76,6 @@ class BypassMaintenanceListener
 
     /**
      * Checks if there is an authenticated back end user.
-     *
-     * @param Request $request
      *
      * @return bool
      */
