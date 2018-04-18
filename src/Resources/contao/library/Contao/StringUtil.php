@@ -1049,6 +1049,12 @@ class StringUtil
 			return $blnForceArray ? array() : '';
 		}
 
+		// Return if definitely not a serialized string
+		if (!preg_match('/^[CONRSabdiors]:[0-9]+:/', $varValue))
+		{
+			return $blnForceArray ? array($varValue) : $varValue;
+		}
+
 		// Potentially including an object (see #6724)
 		if (preg_match('/[OoC]:\+?[0-9]+:"/', $varValue))
 		{
