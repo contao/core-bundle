@@ -1050,6 +1050,7 @@ class StringUtil
 		}
 
 		// Return if definitely not a serialized string
+		// See https://github.com/php/php-src/blob/master/ext/standard/var_unserializer.c#L711-L722
 		if (!preg_match('/^[CONRSabdiors]:[0-9]+:/', $varValue))
 		{
 			return $blnForceArray ? array($varValue) : $varValue;
