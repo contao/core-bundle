@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * Copyright (c) 2005-2018 Leo Feyer
+ *
+ * @license LGPL-3.0+
+ */
+
 namespace Contao\CoreBundle\Fragment;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -10,16 +20,16 @@ class ForwardFragmentRenderer extends InlineFragmentRenderer
     /**
      * {@inheritdoc}
      */
-    protected function createSubRequest($uri, Request $request)
+    public function getName()
     {
-        return $request->duplicate();
+        return 'forward';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    protected function createSubRequest($uri, Request $request)
     {
-        return 'forward';
+        return $request->duplicate();
     }
 }

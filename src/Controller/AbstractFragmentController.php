@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -29,7 +31,7 @@ abstract class AbstractFragmentController extends Controller
     /**
      * @param array $options
      */
-    public function setFragmentOptions(array $options)
+    public function setFragmentOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -69,8 +71,8 @@ abstract class AbstractFragmentController extends Controller
         $template->hl = \is_array($headline) ? $headline['unit'] : 'h1';
 
         $cssID = StringUtil::deserialize($model->cssID, true);
-        $template->class = trim($class . ' ' . $cssID[1]);
-        $template->cssID = !empty($cssID[0]) ? ' id="' . $cssID[0] . '"' : '';
+        $template->class = trim($class.' '.$cssID[1]);
+        $template->cssID = !empty($cssID[0]) ? ' id="'.$cssID[0].'"' : '';
 
         $template->style = $this->getStyles();
     }

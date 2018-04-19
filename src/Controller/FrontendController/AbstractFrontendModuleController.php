@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,8 +12,8 @@
 
 namespace Contao\CoreBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\Controller\AbstractFragmentController;
 use Contao\BackendTemplate;
+use Contao\CoreBundle\Controller\AbstractFragmentController;
 use Contao\ModuleModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +38,7 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
         $template->inColumn = $section;
 
         if (is_array($classes = $request->attributes->get('classes'))) {
-            $template->class .= ' ' . implode(' ', $classes);
+            $template->class .= ' '.implode(' ', $classes);
         }
 
         return $this->getResponse($template, $module, $request);

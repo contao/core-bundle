@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -31,7 +33,7 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
         $template->inColumn = $section;
 
         if (is_array($classes = $request->attributes->get('classes'))) {
-            $template->class .= ' ' . implode(' ', $classes);
+            $template->class .= ' '.implode(' ', $classes);
         }
 
         return $this->getResponse($template, $module, $request);
