@@ -69,7 +69,7 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
 
         $template = new BackendTemplate('be_wildcard');
 
-        $template->wildcard = '### ' . strtoupper($GLOBALS['TL_LANG']['FMD'][$this->getType()][0]) . ' ###';
+        $template->wildcard = '### '.strtoupper($this->get('translator')->trans('FMD.'.$this->getType().'.0', [], 'contao_modules')).' ###';
         $template->id = $module->id;
         $template->link = $module->name;
         $template->href = $href;
