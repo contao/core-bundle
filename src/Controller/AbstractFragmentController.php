@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Controller;
 
+use Contao\CoreBundle\Fragment\FragmentOptionsAwareInterface;
 use Contao\FrontendTemplate;
 use Contao\Model;
 use Contao\StringUtil;
@@ -21,7 +22,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class AbstractFragmentController extends Controller
+abstract class AbstractFragmentController extends Controller implements FragmentOptionsAwareInterface
 {
     /**
      * @var array
