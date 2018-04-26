@@ -12,7 +12,6 @@ namespace Contao;
 
 use FOS\HttpCache\ResponseTagger;
 
-
 /**
  * Parent class for front end modules.
  *
@@ -90,7 +89,7 @@ use FOS\HttpCache\ResponseTagger;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Module extends \Frontend
+abstract class Module extends Frontend
 {
 
 	/**
@@ -122,7 +121,6 @@ abstract class Module extends \Frontend
 	 * @var array
 	 */
 	protected $arrStyle = array();
-
 
 	/**
 	 * Initialize the object
@@ -161,7 +159,6 @@ abstract class Module extends \Frontend
 		$this->strColumn = $strColumn;
 	}
 
-
 	/**
 	 * Set an object property
 	 *
@@ -172,7 +169,6 @@ abstract class Module extends \Frontend
 	{
 		$this->arrData[$strKey] = $varValue;
 	}
-
 
 	/**
 	 * Return an object property
@@ -191,7 +187,6 @@ abstract class Module extends \Frontend
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Check whether a property is set
 	 *
@@ -204,7 +199,6 @@ abstract class Module extends \Frontend
 		return isset($this->arrData[$strKey]);
 	}
 
-
 	/**
 	 * Return the model
 	 *
@@ -214,7 +208,6 @@ abstract class Module extends \Frontend
 	{
 		return $this->objModel;
 	}
-
 
 	/**
 	 * Parse the template
@@ -263,12 +256,10 @@ abstract class Module extends \Frontend
 		return $this->Template->parse();
 	}
 
-
 	/**
 	 * Compile the current element
 	 */
 	abstract protected function compile();
-
 
 	/**
 	 * Recursively compile the navigation menu and return it as HTML string
@@ -389,7 +380,7 @@ abstract class Module extends \Frontend
 				$trail = \in_array($objSubpage->id, $objPage->trail);
 
 				// Active page
-				if (($objPage->id == $objSubpage->id || $objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo) && !($this instanceof ModuleSitemap) && $href == \Environment::get('request'))
+				if (($objPage->id == $objSubpage->id || ($objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo)) && !($this instanceof ModuleSitemap) && $href == \Environment::get('request'))
 				{
 					// Mark active forward pages (see #4822)
 					$strClass = (($objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo) ? 'forward' . ($trail ? ' trail' : '') : 'active') . (($subitems != '') ? ' submenu' : '') . ($objSubpage->protected ? ' protected' : '') . (($objSubpage->cssClass != '') ? ' ' . $objSubpage->cssClass : '');
@@ -447,7 +438,6 @@ abstract class Module extends \Frontend
 		return !empty($items) ? $objTemplate->parse() : '';
 	}
 
-
 	/**
 	 * Find a front end module in the FE_MOD array and return the class name
 	 *
@@ -471,3 +461,5 @@ abstract class Module extends \Frontend
 		return '';
 	}
 }
+
+class_alias(Module::class, 'Module');

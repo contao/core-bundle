@@ -15,13 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-
 /**
  * Handle back end logins and logouts.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendIndex extends \Backend
+class BackendIndex extends Backend
 {
 
 	/**
@@ -41,7 +40,6 @@ class BackendIndex extends \Backend
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('tl_user');
 	}
-
 
 	/**
 	 * Run the controller and parse the login template
@@ -99,3 +97,5 @@ class BackendIndex extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendIndex::class, 'BackendIndex');

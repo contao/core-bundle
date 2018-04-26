@@ -15,13 +15,12 @@ use Patchwork\Utf8;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-
 /**
  * Front end module "login".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleLogin extends \Module
+class ModuleLogin extends Module
 {
 
 	/**
@@ -35,7 +34,6 @@ class ModuleLogin extends \Module
 	 * @var string
 	 */
 	protected $strFlashType = 'contao.FE.error';
-
 
 	/**
 	 * Display a login form
@@ -65,7 +63,6 @@ class ModuleLogin extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -154,3 +151,5 @@ class ModuleLogin extends \Module
 		$this->Template->failurePath = \StringUtil::specialchars(\Environment::get('base').\Environment::get('request'));
 	}
 }
+
+class_alias(ModuleLogin::class, 'ModuleLogin');

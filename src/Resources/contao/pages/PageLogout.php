@@ -14,13 +14,12 @@ use League\Uri\Components\Query;
 use League\Uri\Http;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-
 /**
  * Provide methods to handle a logout page.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class PageLogout extends \Frontend
+class PageLogout extends Frontend
 {
 
 	/**
@@ -63,3 +62,5 @@ class PageLogout extends \Frontend
 		return new RedirectResponse((string) $uri->withQuery((string) $query));
 	}
 }
+
+class_alias(PageLogout::class, 'PageLogout');

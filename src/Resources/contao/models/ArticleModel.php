@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes articles
  *
@@ -113,7 +112,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ArticleModel extends \Model
+class ArticleModel extends Model
 {
 
 	/**
@@ -121,7 +120,6 @@ class ArticleModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_article';
-
 
 	/**
 	 * Find an article by its ID or alias and its page
@@ -146,7 +144,6 @@ class ArticleModel extends \Model
 
 		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
 	}
-
 
 	/**
 	 * Find a published article by its ID or alias and its page
@@ -178,7 +175,6 @@ class ArticleModel extends \Model
 		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
 	}
 
-
 	/**
 	 * Find a published article by its ID
 	 *
@@ -200,7 +196,6 @@ class ArticleModel extends \Model
 
 		return static::findOneBy($arrColumns, $intId, $arrOptions);
 	}
-
 
 	/**
 	 * Find all published articles by their parent ID and column
@@ -231,7 +226,6 @@ class ArticleModel extends \Model
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
 
-
 	/**
 	 * Find all published articles with teaser by their parent ID
 	 *
@@ -258,7 +252,6 @@ class ArticleModel extends \Model
 
 		return static::findBy($arrColumns, $intPid, $arrOptions);
 	}
-
 
 	/**
 	 * Find all published articles with teaser by their parent ID and column
@@ -289,3 +282,5 @@ class ArticleModel extends \Model
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
 }
+
+class_alias(ArticleModel::class, 'ArticleModel');

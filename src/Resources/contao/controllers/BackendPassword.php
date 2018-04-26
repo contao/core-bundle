@@ -15,13 +15,12 @@ use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Back end help wizard.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendPassword extends \Backend
+class BackendPassword extends Backend
 {
 
 	/**
@@ -46,7 +45,6 @@ class BackendPassword extends \Backend
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('modules');
 	}
-
 
 	/**
 	 * Run the controller and parse the password template
@@ -139,3 +137,5 @@ class BackendPassword extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendPassword::class, 'BackendPassword');

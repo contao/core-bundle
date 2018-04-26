@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle text fields with unit drop down menu.
  *
@@ -19,7 +18,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class TrblField extends \Widget
+class TrblField extends Widget
 {
 
 	/**
@@ -39,7 +38,6 @@ class TrblField extends \Widget
 	 * @var array
 	 */
 	protected $arrUnits = array();
-
 
 	/**
 	 * Add specific attributes
@@ -68,7 +66,6 @@ class TrblField extends \Widget
 		}
 	}
 
-
 	/**
 	 * Do not validate unit fields
 	 *
@@ -88,7 +85,6 @@ class TrblField extends \Widget
 
 		return $varInput;
 	}
-
 
 	/**
 	 * Only check against the unit values (see #7246)
@@ -111,7 +107,6 @@ class TrblField extends \Widget
 
 		return parent::optionSelected($arrOption['value'], $this->varValue['unit']);
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -158,3 +153,5 @@ class TrblField extends \Widget
 						$this->wizard);
 	}
 }
+
+class_alias(TrblField::class, 'TrblField');

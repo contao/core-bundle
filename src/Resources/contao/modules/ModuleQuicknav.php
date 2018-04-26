@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "quick navigation".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleQuicknav extends \Module
+class ModuleQuicknav extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleQuicknav extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_quicknav';
-
 
 	/**
 	 * Redirect to the selected page
@@ -56,7 +54,6 @@ class ModuleQuicknav extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -94,7 +91,6 @@ class ModuleQuicknav extends \Module
 		$this->Template->request = ampersand(\Environment::get('request'), true);
 		$this->Template->items = $this->getQuicknavPages($this->rootPage, 1, $host);
 	}
-
 
 	/**
 	 * Recursively get all quicknav pages and return them as array
@@ -154,7 +150,7 @@ class ModuleQuicknav extends \Module
 						'title' => \StringUtil::specialchars(\StringUtil::stripInsertTags($objSubpage->pageTitle ?: $objSubpage->title)),
 						'href' => $objSubpage->getFrontendUrl(),
 						'link' => \StringUtil::stripInsertTags($objSubpage->title),
-						'active' => ($objPage->id == $objSubpage->id || $objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo)
+						'active' => ($objPage->id == $objSubpage->id || ($objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo))
 					);
 
 					// Subpages
@@ -174,3 +170,5 @@ class ModuleQuicknav extends \Module
 		return $arrPages;
 	}
 }
+
+class_alias(ModuleQuicknav::class, 'ModuleQuicknav');

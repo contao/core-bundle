@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Class FormHidden
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormHidden extends \Widget
+class FormHidden extends Widget
 {
 
 	/**
@@ -33,7 +32,6 @@ class FormHidden extends \Widget
 	 */
 	protected $strTemplate = 'form_hidden';
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
@@ -47,3 +45,5 @@ class FormHidden extends \Widget
 						$this->strTagEnding);
 	}
 }
+
+class_alias(FormHidden::class, 'FormHidden');

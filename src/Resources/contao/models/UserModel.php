@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes users
  *
@@ -164,7 +163,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class UserModel extends \Model
+class UserModel extends Model
 {
 
 	/**
@@ -174,3 +173,5 @@ class UserModel extends \Model
 	protected static $strTable = 'tl_user';
 
 }
+
+class_alias(UserModel::class, 'UserModel');

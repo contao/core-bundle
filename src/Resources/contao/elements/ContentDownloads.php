@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "downloads".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentDownloads extends \ContentElement
+class ContentDownloads extends ContentElement
 {
 
 	/**
@@ -30,7 +29,6 @@ class ContentDownloads extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_downloads';
-
 
 	/**
 	 * Return if there are no files
@@ -86,7 +84,6 @@ class ContentDownloads extends \ContentElement
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the content element
@@ -316,3 +313,5 @@ class ContentDownloads extends \ContentElement
 		$this->Template->files = array_values($files);
 	}
 }
+
+class_alias(ContentDownloads::class, 'ContentDownloads');

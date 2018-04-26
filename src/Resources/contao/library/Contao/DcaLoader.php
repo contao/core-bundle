@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Loads a set of DCA files
  *
@@ -24,7 +23,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class DcaLoader extends \Controller
+class DcaLoader extends Controller
 {
 
 	/**
@@ -32,7 +31,6 @@ class DcaLoader extends \Controller
 	 * @var string
 	 */
 	protected $strTable;
-
 
 	/**
 	 * Store the table name
@@ -57,7 +55,6 @@ class DcaLoader extends \Controller
 
 		$this->strTable = $strTable;
 	}
-
 
 	/**
 	 * Load a set of DCA files
@@ -116,3 +113,5 @@ class DcaLoader extends \Controller
 		}
 	}
 }
+
+class_alias(DcaLoader::class, 'DcaLoader');

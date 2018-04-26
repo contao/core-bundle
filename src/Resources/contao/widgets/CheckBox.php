@@ -12,7 +12,6 @@ namespace Contao;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
-
 /**
  * Provide methods to handle check boxes.
  *
@@ -21,7 +20,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class CheckBox extends \Widget
+class CheckBox extends Widget
 {
 
 	/**
@@ -35,7 +34,6 @@ class CheckBox extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget_chk';
-
 
 	/**
 	 * Add specific attributes
@@ -57,7 +55,6 @@ class CheckBox extends \Widget
 		}
 	}
 
-
 	/**
 	 * Check for a valid option (see #4383)
 	 */
@@ -72,7 +69,6 @@ class CheckBox extends \Widget
 
 		parent::validate();
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -175,7 +171,6 @@ class CheckBox extends \Widget
 		}
 	}
 
-
 	/**
 	 * Generate a checkbox and return it as string
 	 *
@@ -198,3 +193,5 @@ class CheckBox extends \Widget
 						($this->mandatory && !$this->multiple ? '<span class="mandatory">*</span>' : ''));
 	}
 }
+
+class_alias(CheckBox::class, 'CheckBox');

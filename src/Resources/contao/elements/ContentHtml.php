@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "HTML".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentHtml extends \ContentElement
+class ContentHtml extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentHtml extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_html';
-
 
 	/**
 	 * Generate the content element
@@ -41,3 +39,5 @@ class ContentHtml extends \ContentElement
 		}
 	}
 }
+
+class_alias(ContentHtml::class, 'ContentHtml');

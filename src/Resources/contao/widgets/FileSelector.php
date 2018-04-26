@@ -13,7 +13,6 @@ namespace Contao;
 use Contao\Image\ResizeConfiguration;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
-
 /**
  * Provide methods to handle input field "file tree".
  *
@@ -26,7 +25,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileSelector extends \Widget
+class FileSelector extends Widget
 {
 
 	/**
@@ -53,7 +52,6 @@ class FileSelector extends \Widget
 	 */
 	protected $arrValidFileTypes = array();
 
-
 	/**
 	 * Load the database object
 	 *
@@ -64,7 +62,6 @@ class FileSelector extends \Widget
 		$this->import('Database');
 		parent::__construct($arrAttributes);
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -293,7 +290,6 @@ class FileSelector extends \Widget
   </ul></li></ul>';
 	}
 
-
 	/**
 	 * Generate a particular subpart of the file tree and return it as HTML string
 	 *
@@ -352,7 +348,6 @@ class FileSelector extends \Widget
 
 		return $this->renderFiletree(TL_ROOT . '/' . $strFolder, ($level * 20), $mount, $this->isProtectedPath($strFolder));
 	}
-
 
 	/**
 	 * Recursively render the filetree
@@ -565,7 +560,7 @@ class FileSelector extends \Widget
 				$thumbnail .= ')</span>';
 
 				// Generate thumbnail
-				if ($objFile->isImage && $objFile->viewHeight > 0 && \Config::get('thumbnails') && ($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')))
+				if ($objFile->isImage && $objFile->viewHeight > 0 && \Config::get('thumbnails') && ($objFile->isSvgImage || ($objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))))
 				{
 					$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'style="margin:0 0 2px -18px"');
 					$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
@@ -597,7 +592,6 @@ class FileSelector extends \Widget
 
 		return $return;
 	}
-
 
 	/**
 	 * Translate the file IDs to file paths
@@ -649,7 +643,6 @@ class FileSelector extends \Widget
 		}
 	}
 
-
 	/**
 	 * Check if a path is protected (see #287)
 	 *
@@ -673,3 +666,5 @@ class FileSelector extends \Widget
 		return true;
 	}
 }
+
+class_alias(FileSelector::class, 'FileSelector');

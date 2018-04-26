@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Class FormFileUpload
  *
@@ -23,7 +22,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormFileUpload extends \Widget implements \uploadable
+class FormFileUpload extends Widget implements \uploadable
 {
 
 	/**
@@ -39,7 +38,6 @@ class FormFileUpload extends \Widget implements \uploadable
 	 * @var string
 	 */
 	protected $strPrefix = 'widget widget-upload';
-
 
 	/**
 	 * Add specific attributes
@@ -80,7 +78,6 @@ class FormFileUpload extends \Widget implements \uploadable
 				break;
 		}
 	}
-
 
 	/**
 	 * Validate the input and set the value
@@ -297,7 +294,6 @@ class FormFileUpload extends \Widget implements \uploadable
 		unset($_FILES[$this->strName]);
 	}
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
@@ -312,7 +308,6 @@ class FormFileUpload extends \Widget implements \uploadable
 						$this->getAttributes(),
 						$this->strTagEnding);
 	}
-
 
 	/**
 	 * Return the maximum upload file size in bytes
@@ -346,3 +341,5 @@ class FormFileUpload extends \Widget implements \uploadable
 		return min($upload_max_filesize, \Config::get('maxFileSize'));
 	}
 }
+
+class_alias(FormFileUpload::class, 'FormFileUpload');

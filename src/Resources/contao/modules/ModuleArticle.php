@@ -12,7 +12,6 @@ namespace Contao;
 
 use FOS\HttpCache\ResponseTagger;
 
-
 /**
  * Provides methodes to handle articles.
  *
@@ -33,7 +32,7 @@ use FOS\HttpCache\ResponseTagger;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleArticle extends \Module
+class ModuleArticle extends Module
 {
 
 	/**
@@ -47,7 +46,6 @@ class ModuleArticle extends \Module
 	 * @var boolean
 	 */
 	protected $blnNoMarkup = false;
-
 
 	/**
 	 * Check whether the article is published
@@ -78,7 +76,6 @@ class ModuleArticle extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -262,7 +259,6 @@ class ModuleArticle extends \Module
 		}
 	}
 
-
 	/**
 	 * Print an article as PDF and stream it to the browser
 	 */
@@ -383,3 +379,5 @@ class ModuleArticle extends \Module
 		exit;
 	}
 }
+
+class_alias(ModuleArticle::class, 'ModuleArticle');

@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Class FormRadioButton
  *
@@ -19,7 +18,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormRadioButton extends \Widget
+class FormRadioButton extends Widget
 {
 
 	/**
@@ -49,7 +48,6 @@ class FormRadioButton extends \Widget
 	 * @var string
 	 */
 	protected $strPrefix = 'widget widget-radio';
-
 
 	/**
 	 * Add specific attributes
@@ -89,7 +87,6 @@ class FormRadioButton extends \Widget
 		}
 	}
 
-
 	/**
 	 * Return a parameter
 	 *
@@ -107,7 +104,6 @@ class FormRadioButton extends \Widget
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Check for a valid option (see #4383)
 	 */
@@ -122,7 +118,6 @@ class FormRadioButton extends \Widget
 
 		parent::validate();
 	}
-
 
 	/**
 	 * Generate the options
@@ -184,7 +179,6 @@ class FormRadioButton extends \Widget
 		return $arrOptions;
 	}
 
-
 	/**
 	 * Override the parent method and inject the error message inside the fieldset (see #3392)
 	 *
@@ -198,7 +192,6 @@ class FormRadioButton extends \Widget
 
 		return $this->generate();
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -248,3 +241,5 @@ class FormRadioButton extends \Widget
 		}
 	}
 }
+
+class_alias(FormRadioButton::class, 'FormRadioButton');

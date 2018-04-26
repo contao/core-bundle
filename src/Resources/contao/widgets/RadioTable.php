@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle radio button tables.
  *
@@ -19,7 +18,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class RadioTable extends \Widget
+class RadioTable extends Widget
 {
 
 	/**
@@ -39,7 +38,6 @@ class RadioTable extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget';
-
 
 	/**
 	 * Add specific attributes
@@ -68,7 +66,6 @@ class RadioTable extends \Widget
 		}
 	}
 
-
 	/**
 	 * Check for a valid option (see #4383)
 	 */
@@ -83,7 +80,6 @@ class RadioTable extends \Widget
 
 		parent::validate();
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -132,3 +128,5 @@ class RadioTable extends \Widget
   </table>';
 	}
 }
+
+class_alias(RadioTable::class, 'RadioTable');

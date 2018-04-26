@@ -8,16 +8,8 @@
  * @license LGPL-3.0-or-later
  */
 
-
-/**
- * Load tl_user language file
- */
 System::loadLanguageFile('tl_user');
 
-
-/**
- * Table tl_user_group
- */
 $GLOBALS['TL_DCA']['tl_user_group'] = array
 (
 
@@ -260,7 +252,6 @@ $GLOBALS['TL_DCA']['tl_user_group'] = array
 	)
 );
 
-
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
@@ -291,7 +282,7 @@ class tl_user_group extends Backend
 		$image = 'group';
 		$time = \Date::floorToMinute();
 
-		$disabled = $row['start'] !== '' && $row['start'] > $time || $row['stop'] !== '' && $row['stop'] < $time;
+		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
 		if ($row['disable'] || $disabled)
 		{
@@ -300,7 +291,6 @@ class tl_user_group extends Backend
 
 		return sprintf('<div class="list_icon" style="background-image:url(\'%ssystem/themes/%s/icons/%s.svg\')" data-icon="%s.svg" data-icon-disabled="%s.svg">%s</div>', System::getContainer()->get('contao.assets.assets_context')->getStaticUrl(), Backend::getTheme(), $image, $disabled ? $image : rtrim($image, '_'), rtrim($image, '_') . '_', $label);
 	}
-
 
 	/**
 	 * Return all modules except profile modules
@@ -322,7 +312,6 @@ class tl_user_group extends Backend
 
 		return $arrModules;
 	}
-
 
 	/**
 	 * Return all excluded fields as HTML drop down menu
@@ -373,7 +362,6 @@ class tl_user_group extends Backend
 		return $arrReturn;
 	}
 
-
 	/**
 	 * Return the "toggle visibility" button
 	 *
@@ -409,7 +397,6 @@ class tl_user_group extends Backend
 
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['disable'] ? 0 : 1) . '"').'</a> ';
 	}
-
 
 	/**
 	 * Disable/enable a user group

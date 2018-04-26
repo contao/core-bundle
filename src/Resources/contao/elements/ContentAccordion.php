@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "accordion".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentAccordion extends \ContentElement
+class ContentAccordion extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentAccordion extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_accordionSingle';
-
 
 	/**
 	 * Generate the content element
@@ -57,3 +55,5 @@ class ContentAccordion extends \ContentElement
 		$this->Template->headline = $this->mooHeadline;
 	}
 }
+
+class_alias(ContentAccordion::class, 'ContentAccordion');

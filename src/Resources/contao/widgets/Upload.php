@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Class Upload
  *
@@ -20,7 +19,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Upload extends \Widget implements \uploadable
+class Upload extends Widget implements \uploadable
 {
 
 	/**
@@ -41,7 +40,6 @@ class Upload extends \Widget implements \uploadable
 	 */
 	protected $objUploader;
 
-
 	/**
 	 * Initialize the FileUpload object
 	 *
@@ -54,7 +52,6 @@ class Upload extends \Widget implements \uploadable
 		$this->objUploader = new \FileUpload();
 		$this->objUploader->setName($this->strName);
 	}
-
 
 	/**
 	 * Trim values
@@ -76,7 +73,6 @@ class Upload extends \Widget implements \uploadable
 		return $this->objUploader->uploadTo($strUploadTo);
 	}
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
@@ -87,3 +83,5 @@ class Upload extends \Widget implements \uploadable
 		return ltrim($this->objUploader->generateMarkup());
 	}
 }
+
+class_alias(Upload::class, 'Upload');

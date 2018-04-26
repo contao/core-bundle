@@ -17,13 +17,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-
 /**
  * Set up the front end preview frames.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendPreview extends \Backend
+class BackendPreview extends Backend
 {
 
 	/**
@@ -47,7 +46,6 @@ class BackendPreview extends \Backend
 
 		\System::loadLanguageFile('default');
 	}
-
 
 	/**
 	 * Run the controller and parse the template
@@ -121,3 +119,5 @@ class BackendPreview extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendPreview::class, 'BackendPreview');

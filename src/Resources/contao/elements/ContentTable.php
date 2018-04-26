@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "table".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentTable extends \ContentElement
+class ContentTable extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentTable extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_table';
-
 
 	/**
 	 * Generate the content element
@@ -132,3 +130,5 @@ class ContentTable extends \ContentElement
 		$this->Template->footer = $arrFooter;
 	}
 }
+
+class_alias(ContentTable::class, 'ContentTable');

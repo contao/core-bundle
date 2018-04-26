@@ -21,13 +21,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Security\Http\Firewall\SwitchUserListener;
 
-
 /**
  * Main back end controller.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendMain extends \Backend
+class BackendMain extends Backend
 {
 
 	/**
@@ -40,7 +39,6 @@ class BackendMain extends \Backend
 	 * @var BackendTemplate|object
 	 */
 	protected $Template;
-
 
 	/**
 	 * Initialize the controller
@@ -79,7 +77,6 @@ class BackendMain extends \Backend
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('modules');
 	}
-
 
 	/**
 	 * Run the controller and parse the login template
@@ -138,7 +135,6 @@ class BackendMain extends \Backend
 		return $this->output();
 	}
 
-
 	/**
 	 * Add the welcome screen
 	 *
@@ -179,7 +175,6 @@ class BackendMain extends \Backend
 		return $objTemplate->parse();
 	}
 
-
 	/**
 	 * Output the template file
 	 *
@@ -203,7 +198,7 @@ class BackendMain extends \Backend
 		$objSession = $container->get('session');
 
 		// File picker reference (backwards compatibility)
-		if (\Input::get('popup') && \Input::get('act') != 'show' && (\Input::get('do') == 'page' && $this->User->hasAccess('page', 'modules') || \Input::get('do') == 'files' && $this->User->hasAccess('files', 'modules')) && $objSession->get('filePickerRef'))
+		if (\Input::get('popup') && \Input::get('act') != 'show' && ((\Input::get('do') == 'page' && $this->User->hasAccess('page', 'modules')) || (\Input::get('do') == 'files' && $this->User->hasAccess('files', 'modules'))) && $objSession->get('filePickerRef'))
 		{
 			$this->Template->managerHref = ampersand($objSession->get('filePickerRef'));
 			$this->Template->manager = (strpos($objSession->get('filePickerRef'), 'contao/page?') !== false) ? $GLOBALS['TL_LANG']['MSC']['pagePickerHome'] : $GLOBALS['TL_LANG']['MSC']['filePickerHome'];
@@ -332,3 +327,5 @@ class BackendMain extends \Backend
 		$this->Template->logoutLink = \System::getContainer()->get('router')->generate('contao_backend', $arrParams);
 	}
 }
+
+class_alias(BackendMain::class, 'BackendMain');

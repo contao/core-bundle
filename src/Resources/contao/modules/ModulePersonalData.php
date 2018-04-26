@@ -12,7 +12,6 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "personal data".
  *
@@ -20,7 +19,7 @@ use Patchwork\Utf8;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModulePersonalData extends \Module
+class ModulePersonalData extends Module
 {
 
 	/**
@@ -28,7 +27,6 @@ class ModulePersonalData extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'member_default';
-
 
 	/**
 	 * Return a wildcard in the back end
@@ -66,7 +64,6 @@ class ModulePersonalData extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -400,3 +397,5 @@ class ModulePersonalData extends \Module
 		$this->Template->rowLast = 'row_' . $row . ((($row % 2) == 0) ? ' even' : ' odd');
 	}
 }
+
+class_alias(ModulePersonalData::class, 'ModulePersonalData');

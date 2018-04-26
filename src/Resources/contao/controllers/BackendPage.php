@@ -15,13 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
 /**
  * Back end page picker.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendPage extends \Backend
+class BackendPage extends Backend
 {
 
 	/**
@@ -29,7 +28,6 @@ class BackendPage extends \Backend
 	 * @var Ajax
 	 */
 	protected $objAjax;
-
 
 	/**
 	 * Initialize the controller
@@ -52,7 +50,6 @@ class BackendPage extends \Backend
 
 		\System::loadLanguageFile('default');
 	}
-
 
 	/**
 	 * Run the controller and parse the template
@@ -165,3 +162,5 @@ class BackendPage extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendPage::class, 'BackendPage');

@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Class FormHtml
  *
@@ -18,7 +17,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormHtml extends \Widget
+class FormHtml extends Widget
 {
 
 	/**
@@ -28,14 +27,12 @@ class FormHtml extends \Widget
 	 */
 	protected $strTemplate = 'form_html';
 
-
 	/**
 	 * Do not validate
 	 */
 	public function validate()
 	{
 	}
-
 
 	/**
 	 * Parse the template file and return it as string
@@ -54,7 +51,6 @@ class FormHtml extends \Widget
 		return parent::parse($arrAttributes);
 	}
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
@@ -65,3 +61,5 @@ class FormHtml extends \Widget
 		return (TL_MODE == 'FE') ? $this->html : htmlspecialchars($this->html);
 	}
 }
+
+class_alias(FormHtml::class, 'FormHtml');

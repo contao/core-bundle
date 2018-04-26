@@ -12,13 +12,12 @@ namespace Contao;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-
 /**
  * Share a page via a social network.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendShare extends \Frontend
+class FrontendShare extends Frontend
 {
 
 	/**
@@ -53,3 +52,5 @@ class FrontendShare extends \Frontend
 		return new RedirectResponse('../');
 	}
 }
+
+class_alias(FrontendShare::class, 'FrontendShare');

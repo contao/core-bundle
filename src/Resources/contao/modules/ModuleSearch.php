@@ -13,13 +13,12 @@ namespace Contao;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "search".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleSearch extends \Module
+class ModuleSearch extends Module
 {
 
 	/**
@@ -27,7 +26,6 @@ class ModuleSearch extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_search';
-
 
 	/**
 	 * Display a wildcard in the back end
@@ -52,7 +50,6 @@ class ModuleSearch extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -284,7 +281,7 @@ class ModuleSearch extends \Module
 				if (!empty($arrContext))
 				{
 					$objTemplate->context = trim(\StringUtil::substrHtml(implode('…', $arrContext), $this->totalLength));
-					$objTemplate->context = preg_replace('/(\PL)(' . implode('|', $arrMatches) . ')(\PL)/ui', '$1<mark class="highlight">$2</mark>$3', $objTemplate->context);
+					$objTemplate->context = preg_replace('/(?<=^|\PL)(' . implode('|', $arrMatches) . ')(?=\PL|$)/ui', '<mark class="highlight">$1</mark>', $objTemplate->context);
 
 					$objTemplate->hasContext = true;
 				}
@@ -297,3 +294,5 @@ class ModuleSearch extends \Module
 		}
 	}
 }
+
+class_alias(ModuleSearch::class, 'ModuleSearch');

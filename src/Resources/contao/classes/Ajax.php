@@ -17,13 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-
 /**
  * Provide methods to handle Ajax requests.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Ajax extends \Backend
+class Ajax extends Backend
 {
 
 	/**
@@ -50,7 +49,6 @@ class Ajax extends \Backend
 	 */
 	protected $strAjaxName;
 
-
 	/**
 	 * Get the current action
 	 *
@@ -68,7 +66,6 @@ class Ajax extends \Backend
 		$this->strAction = $strAction;
 		parent::__construct();
 	}
-
 
 	/**
 	 * Ajax actions that do not require a data container object
@@ -166,7 +163,6 @@ class Ajax extends \Backend
 				break;
 		}
 	}
-
 
 	/**
 	 * Ajax actions that do require a data container object
@@ -445,7 +441,6 @@ class Ajax extends \Backend
 		}
 	}
 
-
 	/**
 	 * Execute the post actions hook
 	 *
@@ -463,7 +458,6 @@ class Ajax extends \Backend
 		}
 	}
 
-
 	/**
 	 * Convert a string to a response object
 	 *
@@ -476,3 +470,5 @@ class Ajax extends \Backend
 		return new Response(\Controller::replaceOldBePaths($str));
 	}
 }
+
+class_alias(Ajax::class, 'Ajax');

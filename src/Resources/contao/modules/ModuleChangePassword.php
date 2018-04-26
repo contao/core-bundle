@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "change password".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleChangePassword extends \Module
+class ModuleChangePassword extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleChangePassword extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_changePassword';
-
 
 	/**
 	 * Display a wildcard in the back end
@@ -57,7 +55,6 @@ class ModuleChangePassword extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -227,3 +224,5 @@ class ModuleChangePassword extends \Module
 		$this->Template->rowLast = 'row_' . $row . ' row_last' . ((($row % 2) == 0) ? ' even' : ' odd');
 	}
 }
+
+class_alias(ModuleChangePassword::class, 'ModuleChangePassword');

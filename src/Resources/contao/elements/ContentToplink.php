@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "toplink".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentToplink extends \ContentElement
+class ContentToplink extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentToplink extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_toplink';
-
 
 	/**
 	 * Generate the content element
@@ -41,3 +39,5 @@ class ContentToplink extends \ContentElement
 		$this->Template->request = ampersand(\Environment::get('request'), true);
 	}
 }
+
+class_alias(ContentToplink::class, 'ContentToplink');

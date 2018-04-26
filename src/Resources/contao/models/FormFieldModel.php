@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes form fields
  *
@@ -164,7 +163,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormFieldModel extends \Model
+class FormFieldModel extends Model
 {
 
 	/**
@@ -172,7 +171,6 @@ class FormFieldModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_form_field';
-
 
 	/**
 	 * Find published form fields by their parent ID
@@ -200,3 +198,5 @@ class FormFieldModel extends \Model
 		return static::findBy($arrColumns, $intPid, $arrOptions);
 	}
 }
+
+class_alias(FormFieldModel::class, 'FormFieldModel');

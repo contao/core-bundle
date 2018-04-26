@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Content element "mediaelement".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentMedia extends \ContentElement
+class ContentMedia extends ContentElement
 {
 
 	/**
@@ -30,7 +29,6 @@ class ContentMedia extends \ContentElement
 	 * @var Model\Collection|FilesModel
 	 */
 	protected $objFiles;
-
 
 	/**
 	 * Return if there are no files
@@ -76,7 +74,6 @@ class ContentMedia extends \ContentElement
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -161,3 +158,5 @@ class ContentMedia extends \ContentElement
 		$this->Template->autoplay = $this->autoplay;
 	}
 }
+
+class_alias(ContentMedia::class, 'ContentMedia');

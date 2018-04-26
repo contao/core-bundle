@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end module "random image".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleRandomImage extends \Module
+class ModuleRandomImage extends Module
 {
 
 	/**
@@ -30,7 +29,6 @@ class ModuleRandomImage extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_randomImage';
-
 
 	/**
 	 * Check the source folder
@@ -55,7 +53,6 @@ class ModuleRandomImage extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -140,7 +137,7 @@ class ModuleRandomImage extends \Module
 			return;
 		}
 
-		$i = mt_rand(0, (\count($images)-1));
+		$i = random_int(0, \count($images)-1);
 
 		$arrImage = $images[$i];
 
@@ -159,3 +156,5 @@ class ModuleRandomImage extends \Module
 		$this->addImageToTemplate($this->Template, $arrImage, null, null, $arrImage['filesModel']);
 	}
 }
+
+class_alias(ModuleRandomImage::class, 'ModuleRandomImage');

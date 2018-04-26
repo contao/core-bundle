@@ -8,16 +8,8 @@
  * @license LGPL-3.0-or-later
  */
 
-
-/**
- * Load tl_image_size language file
- */
 System::loadLanguageFile('tl_image_size');
 
-
-/**
- * Table tl_image_size_item
- */
 $GLOBALS['TL_DCA']['tl_image_size_item'] = array
 (
 
@@ -111,7 +103,7 @@ $GLOBALS['TL_DCA']['tl_image_size_item'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},media,width,height,resizeMode,zoom;{expert_legend},sizes,densities;{visibility_legend},invisible',
+		'default'                     => '{title_legend},media,width,height,resizeMode,zoom;{expert_legend},densities,sizes;{visibility_legend},invisible',
 	),
 
 	// Fields
@@ -143,15 +135,6 @@ $GLOBALS['TL_DCA']['tl_image_size_item'] = array
 			'eval'                    => array('maxlength'=>255, 'tl_class'=>'long', 'decodeEntities'=>true),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
-		'sizes' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_image_size']['sizes'],
-			'inputType'               => 'text',
-			'explanation'             => 'imageSizeDensities',
-			'exclude'                 => true,
-			'eval'                    => array('helpwizard'=>true, 'maxlength'=>255, 'tl_class'=>'w50', 'decodeEntities'=>true),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
 		'densities' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_image_size']['densities'],
@@ -159,6 +142,15 @@ $GLOBALS['TL_DCA']['tl_image_size_item'] = array
 			'explanation'             => 'imageSizeDensities',
 			'exclude'                 => true,
 			'eval'                    => array('helpwizard'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
+		'sizes' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_image_size']['sizes'],
+			'inputType'               => 'text',
+			'explanation'             => 'imageSizeDensities',
+			'exclude'                 => true,
+			'eval'                    => array('helpwizard'=>true, 'maxlength'=>255, 'tl_class'=>'clr', 'decodeEntities'=>true),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'width' => array
@@ -206,7 +198,6 @@ $GLOBALS['TL_DCA']['tl_image_size_item'] = array
 	)
 );
 
-
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
@@ -223,7 +214,6 @@ class tl_image_size_item extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
-
 
 	/**
 	 * Check permissions to edit the table
@@ -242,7 +232,6 @@ class tl_image_size_item extends Backend
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access the image sizes module.');
 		}
 	}
-
 
 	/**
 	 * List an image size item
@@ -271,7 +260,6 @@ class tl_image_size_item extends Backend
 		return $html;
 	}
 
-
 	/**
 	 * Show a hint if a JavaScript library needs to be included in the page layout
 	 */
@@ -291,7 +279,6 @@ class tl_image_size_item extends Backend
 		System::loadLanguageFile('tl_layout');
 		Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_image_size']['picturefill'], $GLOBALS['TL_LANG']['tl_layout']['picturefill'][0]));
 	}
-
 
 	/**
 	 * Return the "toggle visibility" button
@@ -322,7 +309,6 @@ class tl_image_size_item extends Backend
 
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['invisible'] ? 0 : 1) . '"').'</a> ';
 	}
-
 
 	/**
 	 * Toggle the visibility of a format definition

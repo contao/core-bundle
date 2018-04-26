@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Back end module "edit account".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleUser extends \BackendModule
+class ModuleUser extends BackendModule
 {
 
 	/**
@@ -24,7 +23,6 @@ class ModuleUser extends \BackendModule
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_user';
-
 
 	/**
 	 * Change the palette of the current table and switch to edit mode
@@ -54,7 +52,6 @@ class ModuleUser extends \BackendModule
 		return $this->objDc->edit($this->User->id);
 	}
 
-
 	/**
 	 * Generate the module
 	 *
@@ -65,3 +62,5 @@ class ModuleUser extends \BackendModule
 		return '';
 	}
 }
+
+class_alias(ModuleUser::class, 'ModuleUser');

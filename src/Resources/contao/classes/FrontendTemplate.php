@@ -13,7 +13,6 @@ namespace Contao;
 use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Class FrontendTemplate
  *
@@ -27,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendTemplate extends \Template
+class FrontendTemplate extends Template
 {
 
 	/**
@@ -35,7 +34,6 @@ class FrontendTemplate extends \Template
 	 * @var boolean
 	 */
 	protected $blnCheckRequest = false;
-
 
 	/**
 	 * Add a hook to modify the template output
@@ -68,7 +66,6 @@ class FrontendTemplate extends \Template
 		return $strBuffer;
 	}
 
-
 	/**
 	 * Send the response to the client
 	 *
@@ -83,7 +80,6 @@ class FrontendTemplate extends \Template
 
 		parent::output();
 	}
-
 
 	/**
 	 * Return a response object
@@ -106,7 +102,6 @@ class FrontendTemplate extends \Template
 
 		return $this->setCacheHeaders($response);
 	}
-
 
 	/**
 	 * Compile the template
@@ -162,7 +157,6 @@ class FrontendTemplate extends \Template
 		parent::compile();
 	}
 
-
 	/**
 	 * Return a custom layout section
 	 *
@@ -194,7 +188,6 @@ class FrontendTemplate extends \Template
 
 		include $this->getTemplate($template, $this->strFormat);
 	}
-
 
 	/**
 	 * Return the custom layout sections
@@ -242,7 +235,6 @@ class FrontendTemplate extends \Template
 		include $this->getTemplate($template, $this->strFormat);
 	}
 
-
 	/**
 	 * Point to `Frontend::addToUrl()` in front end templates (see #6736)
 	 *
@@ -257,7 +249,6 @@ class FrontendTemplate extends \Template
 		return \Frontend::addToUrl($strRequest, $blnIgnoreParams, $arrUnset);
 	}
 
-
 	/**
 	 * Check whether there is an authenticated back end user
 	 *
@@ -267,7 +258,6 @@ class FrontendTemplate extends \Template
 	{
 		return \System::getContainer()->get('contao.security.token_checker')->hasBackendUser();
 	}
-
 
 	/**
 	 * Add the template output to the cache and add the cache headers
@@ -280,7 +270,6 @@ class FrontendTemplate extends \Template
 		@trigger_error('Using FrontendTemplate::addToCache() has been deprecated and will no longer work in Contao 5.0. Use proper response caching headers instead.', E_USER_DEPRECATED);
 	}
 
-
 	/**
 	 * Add the template output to the search index
 	 *
@@ -291,7 +280,6 @@ class FrontendTemplate extends \Template
 	{
 		@trigger_error('Using FrontendTemplate::addToSearchIndex() has been deprecated and will no longer work in Contao 5.0. Use the kernel.terminate event instead.', E_USER_DEPRECATED);
 	}
-
 
 	/**
 	 * Return a custom layout section
@@ -309,7 +297,6 @@ class FrontendTemplate extends \Template
 
 		return '<div id="' . $strKey . '">' . $this->sections[$strKey] . '</div>' . "\n";
 	}
-
 
 	/**
 	 * Return all custom layout sections
@@ -362,7 +349,6 @@ class FrontendTemplate extends \Template
 
 		return '<div class="custom">' . "\n" . $sections . "\n" . '</div>' . "\n";
 	}
-
 
 	/**
 	 * Set the cache headers according to the page settings.
@@ -417,3 +403,5 @@ class FrontendTemplate extends \Template
 		return $response;
 	}
 }
+
+class_alias(FrontendTemplate::class, 'FrontendTemplate');

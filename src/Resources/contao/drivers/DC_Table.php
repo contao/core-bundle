@@ -18,7 +18,6 @@ use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
 /**
  * Provide methods to modify the database.
  *
@@ -30,7 +29,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Andreas Schempp <https://github.com/aschempp>
  */
-class DC_Table extends \DataContainer implements \listable, \editable
+class DC_Table extends DataContainer implements \listable, \editable
 {
 
 	/**
@@ -98,7 +97,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 	 * @var int
 	 */
 	protected $intPreserveRecord;
-
 
 	/**
 	 * Initialize the object
@@ -256,7 +254,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Return an object property
 	 *
@@ -283,7 +280,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return parent::__get($strKey);
 	}
-
 
 	/**
 	 * List all records of a particular table
@@ -363,7 +359,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $return;
 	}
-
 
 	/**
 	 * Return all non-excluded fields of a record as HTML table
@@ -555,7 +550,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$return .= '
   <tr>
     <td'.$class.'><span class="tl_label">'.$label.': </span></td>
-    <td'.$class.'>'.$row[$i].'</td>
+    <td'.$class.'>'.\StringUtil::specialchars($row[$i]).'</td>
   </tr>';
 		}
 
@@ -617,7 +612,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <table class="tl_show">'.$return.'
 </table>';
 	}
-
 
 	/**
 	 * Insert a new row into a database table
@@ -720,7 +714,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$this->redirect($this->getReferer());
 	}
 
-
 	/**
 	 * Assign a new position to an existing record
 	 *
@@ -817,7 +810,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Move all selected records
 	 *
@@ -848,7 +840,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$this->redirect($this->getReferer());
 	}
-
 
 	/**
 	 * Duplicate a particular record of the current table
@@ -1046,7 +1037,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return false;
 	}
 
-
 	/**
 	 * Duplicate all child records of a duplicated record
 	 *
@@ -1174,7 +1164,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Move all selected records
 	 *
@@ -1205,7 +1194,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$this->redirect($this->getReferer());
 	}
-
 
 	/**
 	 * Calculate the new position of a moved or inserted record
@@ -1456,7 +1444,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Delete a record of the current table table and save it to tl_undo
 	 *
@@ -1589,7 +1576,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Delete all selected records
 	 *
@@ -1619,7 +1605,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$this->redirect($this->getReferer());
 	}
-
 
 	/**
 	 * Recursively get all related table names and records
@@ -1673,7 +1658,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			}
 		}
 	}
-
 
 	/**
 	 * Restore one or more deleted records
@@ -1760,7 +1744,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$this->redirect($this->getReferer());
 	}
 
-
 	/**
 	 * Change the order of two neighbour database records
 	 */
@@ -1790,7 +1773,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		$this->redirect($this->getReferer());
 	}
-
 
 	/**
 	 * Auto-generate a form to edit the current database record
@@ -2308,7 +2290,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $return;
 	}
 
-
 	/**
 	 * Auto-generate a form to edit all records that are currently shown
 	 *
@@ -2712,7 +2693,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>'.$return;
 	}
 
-
 	/**
 	 * Auto-generate a form to override all records that are currently shown
 	 *
@@ -3031,7 +3011,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>'.$return;
 	}
 
-
 	/**
 	 * Save the current value
 	 *
@@ -3181,7 +3160,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		}
 	}
 
-
 	/**
 	 * Return the name of the current palette
 	 *
@@ -3289,7 +3267,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $strPalette;
 	}
-
 
 	/**
 	 * Delete all incomplete and unrelated records
@@ -3423,7 +3400,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$this->reload();
 		}
 	}
-
 
 	/**
 	 * List all records of the current table as tree and return them as HTML string
@@ -3700,7 +3676,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $return;
 	}
 
-
 	/**
 	 * Generate a particular subpart of the tree and return it as HTML string
 	 *
@@ -3774,7 +3749,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $return;
 	}
 
-
 	/**
 	 * Recursively generate the tree and return it as HTML string
 	 *
@@ -3836,7 +3810,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		{
 			if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || $this->strTable != $table)
 			{
-				$objChilds = $this->Database->prepare("SELECT id FROM " . $table . " WHERE pid=?" . (!empty($arrFound) ? " AND id IN(" . implode(',', array_map('intval', $arrFound)) . ")" : '') . ($blnHasSorting ? " ORDER BY sorting" : ''))
+				$objChilds = $this->Database->prepare("SELECT id FROM " . $table . " WHERE pid=?" . (!empty($arrFound) ? " AND id IN(" . implode(',', array_map('\intval', $arrFound)) . ")" : '') . ($blnHasSorting ? " ORDER BY sorting" : ''))
 											->execute($id);
 
 				if ($objChilds->numRows)
@@ -3983,14 +3957,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				// Regular tree (on cut: disable buttons of the page all its childs to avoid circular references)
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5)
 				{
-					$_buttons .= ($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id'])) || (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']) && !$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['rootPaste'] && \in_array($id, $this->root))) ? \Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
-					$_buttons .= ($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id']))) ? \Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
+					$_buttons .= (($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id)) || ($arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id']))) || (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['root']) && !$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['rootPaste'] && \in_array($id, $this->root))) ? \Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+					$_buttons .= (($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id)) || ($arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id'])))) ? \Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
 				}
 
 				// Extended tree
 				else
 				{
-					$_buttons .= ($this->strTable == $table) ? (($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id) || $arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id']))) ? \Image::getHtml('pasteafter_.svg') : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ') : '';
+					$_buttons .= ($this->strTable == $table) ? ((($arrClipboard['mode'] == 'cut' && ($blnCircularReference || $arrClipboard['id'] == $id)) || ($arrClipboard['mode'] == 'cutAll' && ($blnCircularReference || \in_array($id, $arrClipboard['id'])))) ? \Image::getHtml('pasteafter_.svg') : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteafter'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ') : '';
 					$_buttons .= ($this->strTable != $table) ? '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!\is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ' : '';
 				}
 			}
@@ -4030,7 +4004,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Begin a new submenu
 		if (!$blnNoRecursion)
 		{
-			$blnAddParent = ($blnIsOpen || !empty($arrFound) || !empty($childs) && $session[$node][$id] == 1);
+			$blnAddParent = ($blnIsOpen || !empty($arrFound) || (!empty($childs) && $session[$node][$id] == 1));
 
 			if ($blnAddParent)
 			{
@@ -4057,7 +4031,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $return;
 	}
-
 
 	/**
 	 * Show header of the parent table and list all records of the current table
@@ -4338,7 +4311,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			}
 			if (!empty($this->root) && \is_array($this->root))
 			{
-				$query .= (!empty($arrProcedure) ? " AND " : " WHERE ") . "id IN(" . implode(',', array_map('intval', $this->root)) . ")";
+				$query .= (!empty($arrProcedure) ? " AND " : " WHERE ") . "id IN(" . implode(',', array_map('\intval', $this->root)) . ")";
 			}
 
 			// ORDER BY
@@ -4466,7 +4439,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							}
 
 							// Prevent circular references
-							if ($blnClipboard && $arrClipboard['mode'] == 'cut' && $row[$i]['id'] == $arrClipboard['id'] || $blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($row[$i]['id'], $arrClipboard['id']))
+							if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $row[$i]['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($row[$i]['id'], $arrClipboard['id'])))
 							{
 								$return .= ' ' . \Image::getHtml('pasteafter_.svg');
 							}
@@ -4615,7 +4588,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $return;
 	}
 
-
 	/**
 	 * List all records of the current table and return them as HTML string
 	 *
@@ -4642,7 +4614,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		if (!empty($this->root) && \is_array($this->root))
 		{
-			$query .= (!empty($this->procedure) ? " AND " : " WHERE ") . "id IN(" . implode(',', array_map('intval', $this->root)) . ")";
+			$query .= (!empty($this->procedure) ? " AND " : " WHERE ") . "id IN(" . implode(',', array_map('\intval', $this->root)) . ")";
 		}
 
 		if (\is_array($orderBy) && $orderBy[0] != '')
@@ -5052,7 +5024,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $return;
 	}
 
-
 	/**
 	 * Return a search form that allows to search results using regular expressions
 	 *
@@ -5164,7 +5135,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>';
 	}
 
-
 	/**
 	 * Return a select menu that allows to sort results by a particular field
 	 *
@@ -5244,7 +5214,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$options_label = $options_label[0];
 			}
 
-			$options_sorter[$options_label] = '  <option value="'.\StringUtil::specialchars($field).'"'.((!\strlen($session['sorting'][$this->strTable]) && $field == $firstOrderBy || $field == str_replace(' DESC', '', $session['sorting'][$this->strTable])) ? ' selected="selected"' : '').'>'.$options_label.'</option>';
+			$options_sorter[$options_label] = '  <option value="'.\StringUtil::specialchars($field).'"'.(((!\strlen($session['sorting'][$this->strTable]) && $field == $firstOrderBy) || $field == str_replace(' DESC', '', $session['sorting'][$this->strTable])) ? ' selected="selected"' : '').'>'.$options_label.'</option>';
 		}
 
 		// Sort by option values
@@ -5258,7 +5228,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </select>
 </div>';
 	}
-
 
 	/**
 	 * Return a select menu to limit results
@@ -5399,7 +5368,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 <strong>' . $GLOBALS['TL_LANG']['MSC']['showOnly'] . ':</strong> '.$fields.'
 </div>';
 	}
-
 
 	/**
 	 * Generate the filter panel and return it as HTML string
@@ -5546,7 +5514,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 			if (!$this->treeView && !empty($this->root) && \is_array($this->root))
 			{
-				$arrProcedure[] = "id IN(" . implode(',', array_map('intval', $this->root)) . ")";
+				$arrProcedure[] = "id IN(" . implode(',', array_map('\intval', $this->root)) . ")";
 			}
 
 			// Check for a static filter (see #4719)
@@ -5829,7 +5797,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 </div>';
 	}
 
-
 	/**
 	 * Return a pagination menu to browse results
 	 *
@@ -5868,7 +5835,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $objPagination->generate();
 	}
-
 
 	/**
 	 * Return the formatted group header as string
@@ -5963,7 +5929,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 		return $remoteNew;
 	}
-
 
 	/**
 	 * Return the formatted group header as string
@@ -6077,3 +6042,5 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		return $attributes;
 	}
 }
+
+class_alias(DC_Table::class, 'DC_Table');

@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "quick link".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleQuicklink extends \Module
+class ModuleQuicklink extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleQuicklink extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_quicklink';
-
 
 	/**
 	 * Redirect to the selected page
@@ -65,7 +63,6 @@ class ModuleQuicklink extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -138,7 +135,7 @@ class ModuleQuicklink extends \Module
 				'href' => $href,
 				'title' => \StringUtil::specialchars($objSubpage->pageTitle ?: $objSubpage->title),
 				'link' => $objSubpage->title,
-				'active' => ($objPage->id == $objSubpage->id || $objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo)
+				'active' => ($objPage->id == $objSubpage->id || ($objSubpage->type == 'forward' && $objPage->id == $objSubpage->jumpTo))
 			);
 		}
 
@@ -149,3 +146,5 @@ class ModuleQuicklink extends \Module
 		$this->Template->button = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['go']);
 	}
 }
+
+class_alias(ModuleQuicklink::class, 'ModuleQuicklink');

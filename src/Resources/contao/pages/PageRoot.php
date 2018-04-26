@@ -13,14 +13,13 @@ namespace Contao;
 use Contao\CoreBundle\Exception\NoActivePageFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-
 /**
  * Provide methods to handle a website root page.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Yanick Witschi <https://github.com/Toflar>
  */
-class PageRoot extends \Frontend
+class PageRoot extends Frontend
 {
 
 	/**
@@ -91,3 +90,5 @@ class PageRoot extends \Frontend
 		return $this->getNextPage($rootPageId)->getFrontendUrl();
 	}
 }
+
+class_alias(PageRoot::class, 'PageRoot');

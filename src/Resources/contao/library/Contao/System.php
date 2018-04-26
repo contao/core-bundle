@@ -13,13 +13,14 @@ namespace Contao;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Config\Loader\XliffFileLoader;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\Database\Installer;
+use Contao\Database\Updater;
 use League\Uri\Components\Query;
 use Patchwork\Utf8;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
 
 /**
  * Abstract library base class
@@ -30,7 +31,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  *
  * Usage:
  *
- *     class MyClass extends \System
+ *     class MyClass extends System
  *     {
  *         public function __construct()
  *         {
@@ -38,19 +39,19 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  *         }
  *     }
  *
- * @property \Automator                                $Automator   The automator object
- * @property \Config                                   $Config      The config object
- * @property \Database                                 $Database    The database object
- * @property \Environment                              $Environment The environment object
- * @property \Files                                    $Files       The files object
- * @property \Input                                    $Input       The input object
- * @property \Database\Installer                       $Installer   The database installer object
- * @property \Database\Updater                         $Updater     The database updater object
- * @property \Messages                                 $Messages    The messages object
- * @property \Session                                  $Session     The session object
- * @property \StyleSheets                              $StyleSheets The style sheets object
- * @property \BackendTemplate|\FrontendTemplate|object $Template    The template object
- * @property \BackendUser|\FrontendUser|object         $User        The user object
+ * @property Automator                               $Automator   The automator object
+ * @property Config                                  $Config      The config object
+ * @property Database                                $Database    The database object
+ * @property Environment                             $Environment The environment object
+ * @property Files                                   $Files       The files object
+ * @property Input                                   $Input       The input object
+ * @property Installer                               $Installer   The database installer object
+ * @property Updater                                 $Updater     The database updater object
+ * @property Messages                                $Messages    The messages object
+ * @property Session                                 $Session     The session object
+ * @property StyleSheets                             $StyleSheets The style sheets object
+ * @property BackendTemplate|FrontendTemplate|object $Template    The template object
+ * @property BackendUser|FrontendUser|object         $User        The user object
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -100,7 +101,6 @@ abstract class System
 	 */
 	protected static $arrImageSizes = array();
 
-
 	/**
 	 * Import the Config and Session instances
 	 */
@@ -108,7 +108,6 @@ abstract class System
 	{
 		$this->import('Config');
 	}
-
 
 	/**
 	 * Get an object property
@@ -136,7 +135,6 @@ abstract class System
 
 		return $this->arrObjects[$strKey];
 	}
-
 
 	/**
 	 * Import a library and make it accessible by its name or an optional key
@@ -176,7 +174,6 @@ abstract class System
 			}
 		}
 	}
-
 
 	/**
 	 * Import a library in non-object context
@@ -221,7 +218,6 @@ abstract class System
 		return static::$arrStaticObjects[$strKey];
 	}
 
-
 	/**
 	 * Return the container object
 	 *
@@ -232,7 +228,6 @@ abstract class System
 		return static::$objContainer;
 	}
 
-
 	/**
 	 * Set the container object
 	 *
@@ -242,7 +237,6 @@ abstract class System
 	{
 		static::$objContainer = $container;
 	}
-
 
 	/**
 	 * Add a log entry to the database
@@ -263,7 +257,6 @@ abstract class System
 
 		$logger->log($level, $strText, array('contao' => new ContaoContext($strFunction, $strCategory)));
 	}
-
 
 	/**
 	 * Return the referer URL and optionally encode ampersands
@@ -336,7 +329,6 @@ abstract class System
 		// Do not urldecode here!
 		return ampersand($return, $blnEncodeAmpersands);
 	}
-
 
 	/**
 	 * Load a set of language files
@@ -458,7 +450,6 @@ abstract class System
 		}
 	}
 
-
 	/**
 	 * Check whether a language is installed
 	 *
@@ -488,7 +479,6 @@ abstract class System
 
 		return static::$arrLanguages[$strLanguage];
 	}
-
 
 	/**
 	 * Return the countries as array
@@ -527,7 +517,6 @@ abstract class System
 
 		return $return;
 	}
-
 
 	/**
 	 * Return the available languages as array
@@ -582,7 +571,6 @@ abstract class System
 		return $return;
 	}
 
-
 	/**
 	 * Return the timezones as array
 	 *
@@ -606,7 +594,6 @@ abstract class System
 		return $arrReturn;
 	}
 
-
 	/**
 	 * Return all image sizes as array
 	 *
@@ -622,7 +609,6 @@ abstract class System
 		return static::getContainer()->get('contao.image.image_sizes')->getAllOptions();
 	}
 
-
 	/**
 	 * Urlencode a file path preserving slashes
 	 *
@@ -634,7 +620,6 @@ abstract class System
 	{
 		return str_replace('%2F', '/', rawurlencode($strPath));
 	}
-
 
 	/**
 	 * Set a cookie
@@ -676,7 +661,6 @@ abstract class System
 		setcookie($objCookie->strName, $objCookie->varValue, $objCookie->intExpires, $objCookie->strPath, $objCookie->strDomain, $objCookie->blnSecure, $objCookie->blnHttpOnly);
 	}
 
-
 	/**
 	 * Convert a byte value into a human readable format
 	 *
@@ -695,7 +679,6 @@ abstract class System
 		return static::getFormattedNumber($intSize, $intDecimals) . ' ' . $GLOBALS['TL_LANG']['UNITS'][$i];
 	}
 
-
 	/**
 	 * Format a number
 	 *
@@ -708,7 +691,6 @@ abstract class System
 	{
 		return number_format(round($varNumber, $intDecimals), $intDecimals, $GLOBALS['TL_LANG']['MSC']['decimalSeparator'], $GLOBALS['TL_LANG']['MSC']['thousandsSeparator']);
 	}
-
 
 	/**
 	 * Return the session hash
@@ -733,7 +715,6 @@ abstract class System
 
 		return sha1($session->getId().$strCookie);
 	}
-
 
 	/**
 	 * Anonymize an IP address by overriding the last chunk
@@ -768,7 +749,6 @@ abstract class System
 		}
 	}
 
-
 	/**
 	 * Read the contents of a PHP file, stripping the opening and closing PHP tags
 	 *
@@ -793,7 +773,6 @@ abstract class System
 
 		return $loader->load($strName);
 	}
-
 
 	/**
 	 * Convert an .xlf file into a PHP language file
@@ -822,7 +801,6 @@ abstract class System
 		return $loader->load($strName, $strLanguage);
 	}
 
-
 	/**
 	 * Parse a date format string and translate textual representations
 	 *
@@ -841,7 +819,6 @@ abstract class System
 		return \Date::parse($strFormat, $intTstamp);
 	}
 
-
 	/**
 	 * Add a request string to the current URL
 	 *
@@ -859,7 +836,6 @@ abstract class System
 		return \Controller::addToUrl($strRequest);
 	}
 
-
 	/**
 	 * Reload the current page
 	 *
@@ -872,7 +848,6 @@ abstract class System
 
 		\Controller::reload();
 	}
-
 
 	/**
 	 * Redirect to another page
@@ -890,7 +865,6 @@ abstract class System
 		\Controller::redirect($strLocation, $intStatus);
 	}
 
-
 	/**
 	 * Add an error message
 	 *
@@ -905,7 +879,6 @@ abstract class System
 
 		\Message::addError($strMessage);
 	}
-
 
 	/**
 	 * Add a confirmation message
@@ -922,7 +895,6 @@ abstract class System
 		\Message::addConfirmation($strMessage);
 	}
 
-
 	/**
 	 * Add a new message
 	 *
@@ -937,7 +909,6 @@ abstract class System
 
 		\Message::addNew($strMessage);
 	}
-
 
 	/**
 	 * Add an info message
@@ -954,7 +925,6 @@ abstract class System
 		\Message::addInfo($strMessage);
 	}
 
-
 	/**
 	 * Add an unformatted message
 	 *
@@ -969,7 +939,6 @@ abstract class System
 
 		\Message::addRaw($strMessage);
 	}
-
 
 	/**
 	 * Add a message
@@ -986,7 +955,6 @@ abstract class System
 
 		\Message::add($strMessage, $strType);
 	}
-
 
 	/**
 	 * Return all messages as HTML
@@ -1005,7 +973,6 @@ abstract class System
 		return \Message::generate($strScope);
 	}
 
-
 	/**
 	 * Reset the message system
 	 *
@@ -1018,7 +985,6 @@ abstract class System
 
 		\Message::reset();
 	}
-
 
 	/**
 	 * Return all available message types
@@ -1034,7 +1000,6 @@ abstract class System
 
 		return \Message::getTypes();
 	}
-
 
 	/**
 	 * Encode an internationalized domain name
@@ -1053,7 +1018,6 @@ abstract class System
 		return \Idna::encode($strDomain);
 	}
 
-
 	/**
 	 * Decode an internationalized domain name
 	 *
@@ -1070,7 +1034,6 @@ abstract class System
 
 		return \Idna::decode($strDomain);
 	}
-
 
 	/**
 	 * Encode the domain in an e-mail address
@@ -1089,7 +1052,6 @@ abstract class System
 		return \Idna::encodeEmail($strEmail);
 	}
 
-
 	/**
 	 * Encode the domain in an URL
 	 *
@@ -1106,7 +1068,6 @@ abstract class System
 
 		return \Idna::encodeUrl($strUrl);
 	}
-
 
 	/**
 	 * Validate an e-mail address
@@ -1125,7 +1086,6 @@ abstract class System
 		return \Validator::isEmail($strEmail);
 	}
 
-
 	/**
 	 * Split a friendly-name e-address and return name and e-mail as array
 	 *
@@ -1142,7 +1102,6 @@ abstract class System
 
 		return \StringUtil::splitFriendlyEmail($strEmail);
 	}
-
 
 	/**
 	 * Return the request string without the script name
@@ -1161,7 +1120,6 @@ abstract class System
 		return ampersand(\Environment::get('indexFreeRequest'), $blnAmpersand);
 	}
 
-
 	/**
 	 * Compile a Model class name from a table name (e.g. tl_form_field becomes FormFieldModel)
 	 *
@@ -1179,7 +1137,6 @@ abstract class System
 		return \Model::getClassFromTable($strTable);
 	}
 
-
 	/**
 	 * Enable a back end module
 	 *
@@ -1190,7 +1147,6 @@ abstract class System
 	{
 		@trigger_error('Using System::enableModule() has been deprecated and will no longer work in Contao 5.0. Use Composer to add or remove modules.', E_USER_DEPRECATED);
 	}
-
 
 	/**
 	 * Disable a back end module
@@ -1203,3 +1159,5 @@ abstract class System
 		@trigger_error('Using System::disableModule() has been deprecated and will no longer work in Contao 5.0. Use Composer to add or remove modules.', E_USER_DEPRECATED);
 	}
 }
+
+class_alias(System::class, 'System');

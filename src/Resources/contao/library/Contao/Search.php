@@ -10,8 +10,8 @@
 
 namespace Contao;
 
+use Contao\Database\Result;
 use Patchwork\Utf8;
-
 
 /**
  * Creates and queries the search index
@@ -40,7 +40,6 @@ class Search
 	 * @var Search
 	 */
 	protected static $objInstance;
-
 
 	/**
 	 * Index a page
@@ -195,7 +194,7 @@ class Search
 				$objDatabase->prepare("DELETE FROM tl_search_index WHERE pid=?")
 							->execute($objIndex->id);
 			}
-			elseif (substr_count($arrSet['url'], '/') > substr_count($objIndex->url, '/') || strpos($arrSet['url'], '?') !== false && strpos($objIndex->url, '?') === false || \strlen($arrSet['url']) > \strlen($objIndex->url))
+			elseif (substr_count($arrSet['url'], '/') > substr_count($objIndex->url, '/') || (strpos($arrSet['url'], '?') !== false && strpos($objIndex->url, '?') === false) || \strlen($arrSet['url']) > \strlen($objIndex->url))
 			{
 				// The current URL is more canonical (shorter and/or less fragments)
 				$arrSet['url'] = $objIndex->url;
@@ -299,7 +298,6 @@ class Search
 		return true;
 	}
 
-
 	/**
 	 * Search the index and return the result object
 	 *
@@ -310,7 +308,7 @@ class Search
 	 * @param integer $intOffset   An optional result offset
 	 * @param boolean $blnFuzzy    If true, the search will be fuzzy
 	 *
-	 * @return Database\Result The database result object
+	 * @return Result The database result object
 	 *
 	 * @throws \Exception If the cleaned keyword string is empty
 	 */
@@ -337,7 +335,7 @@ class Search
 		$arrIncluded = array();
 		$arrExcluded = array();
 
-		foreach ($arrChunks[0] as $strKeyword)
+		foreach (array_unique($arrChunks[0]) as $strKeyword)
 		{
 			if (substr($strKeyword, -1) == '*' && \strlen($strKeyword) > 1)
 			{
@@ -486,7 +484,7 @@ class Search
 		// Limit results to a particular set of pages
 		if (!empty($arrPid) && \is_array($arrPid))
 		{
-			$strQuery .= " AND tl_search_index.pid IN(SELECT id FROM tl_search WHERE pid IN(" . implode(',', array_map('intval', $arrPid)) . "))";
+			$strQuery .= " AND tl_search_index.pid IN(SELECT id FROM tl_search WHERE pid IN(" . implode(',', array_map('\intval', $arrPid)) . "))";
 		}
 
 		$strQuery .= " GROUP BY tl_search_index.pid";
@@ -518,7 +516,6 @@ class Search
 		return $objResultStmt->execute($arrValues);
 	}
 
-
 	/**
 	 * Remove an entry from the search index
 	 *
@@ -541,7 +538,6 @@ class Search
 		}
 	}
 
-
 	/**
 	 * Prevent cloning of the object (Singleton)
 	 *
@@ -549,7 +545,6 @@ class Search
 	 *             The Search class is now static.
 	 */
 	final public function __clone() {}
-
 
 	/**
 	 * Return the object instance (Singleton)
@@ -571,3 +566,5 @@ class Search
 		return static::$objInstance;
 	}
 }
+
+class_alias(Search::class, 'Search');

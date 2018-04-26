@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "download".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentDownload extends \ContentElement
+class ContentDownload extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentDownload extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_download';
-
 
 	/**
 	 * Return if the file does not exist
@@ -67,7 +65,6 @@ class ContentDownload extends \ContentElement
 		return parent::generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -100,3 +97,5 @@ class ContentDownload extends \ContentElement
 		$this->Template->path = $objFile->dirname;
 	}
 }
+
+class_alias(ContentDownload::class, 'ContentDownload');

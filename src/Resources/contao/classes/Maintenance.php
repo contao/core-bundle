@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Maintenance module "maintenance mode".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Maintenance extends \Backend implements \executable
+class Maintenance extends Backend implements \executable
 {
 
 	/**
@@ -28,7 +27,6 @@ class Maintenance extends \Backend implements \executable
 	{
 		return false;
 	}
-
 
 	/**
 	 * Generate the module
@@ -83,3 +81,5 @@ class Maintenance extends \Backend implements \executable
 		return $objTemplate->parse();
 	}
 }
+
+class_alias(Maintenance::class, 'Maintenance');

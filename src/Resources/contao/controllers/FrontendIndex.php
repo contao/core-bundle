@@ -15,13 +15,12 @@ use Contao\CoreBundle\Exception\InsufficientAuthenticationException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Main front end controller.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendIndex extends \Frontend
+class FrontendIndex extends Frontend
 {
 
 	/**
@@ -37,7 +36,6 @@ class FrontendIndex extends \Frontend
 		\define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
 		\define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
 	}
-
 
 	/**
 	 * Run the controller
@@ -363,7 +361,6 @@ class FrontendIndex extends \Frontend
 		}
 	}
 
-
 	/**
 	 * Try to load the page from the cache
 	 *
@@ -375,3 +372,5 @@ class FrontendIndex extends \Frontend
 		@trigger_error('Using FrontendIndex::outputFromCache() has been deprecated and will no longer work in Contao 5.0. Use the kernel.request event instead.', E_USER_DEPRECATED);
 	}
 }
+
+class_alias(FrontendIndex::class, 'FrontendIndex');

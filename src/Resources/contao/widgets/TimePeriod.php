@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle text fields with interval drop down menu.
  *
@@ -20,7 +19,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class TimePeriod extends \Widget
+class TimePeriod extends Widget
 {
 
 	/**
@@ -40,7 +39,6 @@ class TimePeriod extends \Widget
 	 * @var array
 	 */
 	protected $arrUnits = array();
-
 
 	/**
 	 * Add specific attributes
@@ -81,7 +79,6 @@ class TimePeriod extends \Widget
 		}
 	}
 
-
 	/**
 	 * Do not validate unit fields
 	 *
@@ -101,7 +98,6 @@ class TimePeriod extends \Widget
 
 		return $varInput;
 	}
-
 
 	/**
 	 * Only check against the unit values (see #7246)
@@ -124,7 +120,6 @@ class TimePeriod extends \Widget
 
 		return parent::optionSelected($arrOption['value'], $this->varValue['unit']);
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -166,3 +161,5 @@ class TimePeriod extends \Widget
 						$this->wizard);
 	}
 }
+
+class_alias(TimePeriod::class, 'TimePeriod');
