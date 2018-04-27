@@ -1026,18 +1026,14 @@ class tl_module extends Backend
 	 */
 	public function setMultiSrcFlags($varValue, DataContainer $dc)
 	{
-		if ($dc->activeRecord)
+		if ($dc->activeRecord && $dc->activeRecord->type == 'randomImage')
 		{
-			if ($dc->activeRecord->type == 'randomImage')
-			{
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
-			}
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
 		}
 
 		return $varValue;
 	}
-
 
 	/**
 	 * Dynamically change attributes of the "pages" field
@@ -1049,15 +1045,10 @@ class tl_module extends Backend
 	 */
 	public function setPagesFlags($varValue, DataContainer $dc)
 	{
-		if ($dc->activeRecord)
+		if ($dc->activeRecord && $dc->activeRecord->type == 'search')
 		{
-			switch ($dc->activeRecord->type)
-			{
-				case 'search':
-					$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['mandatory'] = false;
-					unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['orderField']);
-					break;
-			}
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['mandatory'] = false;
+			unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['orderField']);
 		}
 
 		return $varValue;

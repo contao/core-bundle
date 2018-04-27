@@ -48,7 +48,7 @@ class ModuleSearch extends Module
 			return $objTemplate->parse();
 		}
 
-		$this->pages = \StringUtil::deserialize($this->pages, true);
+		$this->pages = \StringUtil::deserialize($this->pages);
 
 		return parent::generate();
 	}
