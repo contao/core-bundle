@@ -170,6 +170,12 @@
       <trans-unit id="tl_settings.gdMaxImgHeight.1">
         <source>Here you can enter the maximum image height that the GD library shall try to handle.</source>
       </trans-unit>
+      <trans-unit id="tl_settings.disallowLargeImages.0">
+        <source>Disallow large images</source>
+      </trans-unit>
+      <trans-unit id="tl_settings.disallowLargeImages.1">
+        <source>Disallow the upload of images larger than the maximum GD image size in the back end.</source>
+      </trans-unit>
       <trans-unit id="tl_settings.uploadTypes.0">
         <source>Upload file types</source>
       </trans-unit>
