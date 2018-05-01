@@ -202,6 +202,7 @@ contao:
         imagine_options:
             jpeg_quality: 80
             interlace:    plane
+        reject_large_uploads: false
 ```
 
 You can also overwrite any parameter stored in the `localconfig.php` file:
