@@ -94,6 +94,7 @@ class FileUpload extends \Backend
 		$maxlength_kb_readable = $this->getReadableSize($maxlength_kb);
 		$arrUploaded = array();
 		$arrFiles = $this->getFilesFromGlobal();
+		$strErrorType = $this instanceof DropZone ? 'TL_RAW' : 'TL_ERROR';
 
 		foreach ($arrFiles as $file)
 		{
@@ -104,7 +105,7 @@ class FileUpload extends \Backend
 			}
 			catch (\InvalidArgumentException $e)
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['filename']);
+				\Message::add($GLOBALS['TL_LANG']['ERR']['filename'], $strErrorType);
 				$this->blnHasError = true;
 
 				continue;
@@ -113,7 +114,7 @@ class FileUpload extends \Backend
 			// Invalid file name
 			if (!\Validator::isValidFileName($file['name']))
 			{
-				\Message::addError($GLOBALS['TL_LANG']['ERR']['filename']);
+				\Message::add($GLOBALS['TL_LANG']['ERR']['filename'], $strErrorType);
 				$this->blnHasError = true;
 			}
 
@@ -122,17 +123,17 @@ class FileUpload extends \Backend
 			{
 				if ($file['error'] == 1 || $file['error'] == 2)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
+					\Message::add(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable), $strErrorType);
 					$this->blnHasError = true;
 				}
 				elseif ($file['error'] == 3)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']));
+					\Message::add(sprintf($GLOBALS['TL_LANG']['ERR']['filepartial'], $file['name']), $strErrorType);
 					$this->blnHasError = true;
 				}
 				elseif ($file['error'] > 0)
 				{
-					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['fileerror'], $file['error'], $file['name']));
+					\Message::add(sprintf($GLOBALS['TL_LANG']['ERR']['fileerror'], $file['error'], $file['name']), $strErrorType);
 					$this->blnHasError = true;
 				}
 			}
@@ -140,7 +141,7 @@ class FileUpload extends \Backend
 			// File is too big
 			elseif ($file['size'] > $maxlength_kb)
 			{
-				\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable));
+				\Message::add(sprintf($GLOBALS['TL_LANG']['ERR']['filesize'], $maxlength_kb_readable), $strErrorType);
 				$this->blnHasError = true;
 			}
 
