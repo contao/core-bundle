@@ -172,6 +172,14 @@ contao:
         dateFormat: Y-m-d
 ```
 
+If you want to see the default Symfony error pages in the dev mode, put the following into your `app/config/config_dev.yml`:
+
+ ```yml
+# Contao configuration
+contao:
+    pretty_error_screens: false
+ ```
+
 ## License
 
 Contao is licensed under the terms of the LGPLv3.
