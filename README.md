@@ -124,7 +124,18 @@ security:
                 authenticator: contao.security.authenticator
 ```
 
-Edit your `app/config/config.yml` file and add the following:
+Edit your `app/config/config.yml` file edit the following parameters:
+
+```yml
+parameters:
+    prepend_locale: false # Set to true if you like, just has to be set
+
+framework:
+    esi: { enabled: true }
+    translator: { fallbacks: ['%locale%'] }
+```
+
+Then add the following to end of the `app/config/config.yml`:
 
 ```yml
 # Contao configuration
@@ -134,7 +145,7 @@ contao:
 
     # Optional parameters
     web_dir:              "%kernel.project_dir%/web"
-    encryption_key:       "%kernel.secret%"
+    encryption_key:       "%secret%"
     url_suffix:           .html
     upload_path:          files
     csrf_token_name:      contao_csrf_token
