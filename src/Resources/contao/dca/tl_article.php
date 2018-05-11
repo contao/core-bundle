@@ -1024,7 +1024,7 @@ class tl_article extends Backend
 		$this->Database->prepare("UPDATE tl_article SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
 					   ->execute($intId);
 
-		if ($dc)
+		if ($dc && $dc->activeRecord)
 		{
 			$dc->activeRecord->tstamp = $time;
 			$dc->activeRecord->published = ($blnVisible ? '1' : '');
