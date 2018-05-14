@@ -21,14 +21,14 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
 {
     /**
      * @param Request      $request
-     * @param ContentModel $module
+     * @param ContentModel $model
      * @param string       $section
      *
      * @return Response
      */
-    public function __invoke(Request $request, ContentModel $module, string $section)
+    public function __invoke(Request $request, ContentModel $model, string $section)
     {
-        $template = $this->createTemplate($module, 'ce_');
+        $template = $this->createTemplate($model, 'ce_');
 
         $template->inColumn = $section;
 
@@ -36,6 +36,6 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
             $template->class .= ' '.implode(' ', $classes);
         }
 
-        return $this->getResponse($template, $module, $request);
+        return $this->getResponse($template, $model, $request);
     }
 }
