@@ -106,6 +106,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
             [
                 $this->getControllerName($reference, $attributes),
                 $attributes['renderer'] ?? 'forward',
+                array_merge(['ignore_errors' => false], $attributes['options'] ?? []),
             ]
         );
 
