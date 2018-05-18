@@ -1121,7 +1121,7 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 			}
 			elseif ($blnIsAjax)
 			{
-				throw new ResponseException(new Response(\Message::generateUnwrapped(), 500));
+				throw new ResponseException(new Response(strip_tags(\Message::generateUnwrapped()), 500));
 			}
 		}
 
