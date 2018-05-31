@@ -4606,6 +4606,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				list($key, $direction) = explode(' ', $v, 2);
 
+				if ($direction === null)
+                {
+                    if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 1 && ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['flag'] % 2) == 0)
+                    {
+                        $direction = "DESC";
+                    }
+                }
+
 				if ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$key]['eval']['findInSet'])
 				{
 					if (\is_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$key]['options_callback']))
@@ -4659,11 +4667,6 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				$query .= " ORDER BY " . implode(', ', $orderBy);
 			}
-		}
-
-		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 1 && ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['flag'] % 2) == 0)
-		{
-			$query .= " DESC";
 		}
 
 		$objRowStmt = $this->Database->prepare($query);
