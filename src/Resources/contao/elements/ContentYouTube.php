@@ -105,7 +105,7 @@ class ContentYouTube extends \ContentElement
 			$params[] = 'end=' . (int) $this->youtubeStop;
 		}
 
-		$url = 'https://www.youtube.com/embed/' . $this->youtube;
+		$url = 'https://www.youtube-nocookie.com/embed/' . $this->youtube;
 
 		if (!empty($params))
 		{
