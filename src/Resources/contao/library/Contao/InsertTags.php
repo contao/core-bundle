@@ -10,7 +10,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Event\ApplyInsertTagFlagsEvent;
+use Contao\CoreBundle\Event\InsertTagFlagEvent;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Fragment\Reference\InsertTagReference;
 use Contao\CoreBundle\Fragment\UnknownFragmentException;
@@ -132,8 +132,10 @@ class InsertTags extends \Controller
 				$reference->setBackendScope();
 			}
 
-			try {
-				$strBuffer .= \System::getContainer()->get('fragment.handler')->render($reference);
+			try
+			{
+				$renderer = !$blnCache ? 'forward' : '';
+				$strBuffer .= $arrCache[$strTag] = \System::getContainer()->get('fragment.handler')->render($reference, $renderer);
 				continue;
 			} catch (UnknownFragmentException $e)
 			{
@@ -143,6 +145,7 @@ class InsertTags extends \Controller
 			// Skip certain elements if the output will be cached
 			if ($blnCache)
 			{
+				// TODO: Replace by new insert tag fragments
 				if ($elements[0] == 'date' || $elements[0] == 'ua' || $elements[0] == 'post' || $elements[1] == 'back' || $elements[1] == 'referer' || $elements[0] == 'request_token' || $elements[0] == 'toggle_view' || strncmp($elements[0], 'cache_', 6) === 0 || \in_array('uncached', $flags))
 				{
 					/** @var FragmentHandler $fragmentHandler */
@@ -1041,49 +1044,13 @@ class InsertTags extends \Controller
 				{
 					switch ($flag)
 					{
-						case 'addslashes':
-						case 'standardize':
-						case 'ampersand':
-						case 'specialchars':
-						case 'nl2br':
-						case 'nl2br_pre':
-						case 'strtolower':
-						case 'utf8_strtolower':
-						case 'strtoupper':
-						case 'utf8_strtoupper':
-						case 'ucfirst':
-						case 'lcfirst':
-						case 'ucwords':
-						case 'trim':
-						case 'rtrim':
-						case 'ltrim':
-						case 'utf8_romanize':
-						case 'urlencode':
-						case 'rawurlencode':
-							$arrCache[$strTag] = $flag($arrCache[$strTag]);
-							break;
-
-						case 'encodeEmail':
-							$arrCache[$strTag] = \StringUtil::$flag($arrCache[$strTag]);
-							break;
-
-						case 'number_format':
-							$arrCache[$strTag] = \System::getFormattedNumber($arrCache[$strTag], 0);
-							break;
-
-						case 'currency_format':
-							$arrCache[$strTag] = \System::getFormattedNumber($arrCache[$strTag], 2);
-							break;
-
-						case 'readable_size':
-							$arrCache[$strTag] = \System::getReadableSize($arrCache[$strTag]);
-							break;
-
 						case 'flatten':
 							if (!\is_array($arrCache[$strTag]))
 							{
 								break;
 							}
+
+							@trigger_error('The insert tag flag "flatten" is deprecated and will be removed without any replacement in 5.0. Register your own insert tag rather than relying on an insert tag returning an array and flattening it later on.', E_USER_DEPRECATED);
 
 							$it = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($arrCache[$strTag]));
 							$result = array();
@@ -1105,32 +1072,12 @@ class InsertTags extends \Controller
 
 						// HOOK: pass unknown flags to callback functions
 						default:
-							if (isset($GLOBALS['TL_HOOKS']['insertTagFlags']) && \is_array($GLOBALS['TL_HOOKS']['insertTagFlags']))
-							{
-								foreach ($GLOBALS['TL_HOOKS']['insertTagFlags'] as $callback)
-								{
-									$this->import($callback[0]);
-									$varValue = $this->{$callback[0]}->{$callback[1]}($flag, $tag, $arrCache[$strTag], $flags, $blnCache, $tags, $arrCache, $_rit, $_cnt); // see #5806
-
-									// Replace the tag and stop the loop
-									if ($varValue !== false)
-									{
-										$arrCache[$strTag] = $varValue;
-										break;
-									}
-								}
-							}
-
-							// Forward compatibility in case someone registered
-							// to the ContaoCoreEvents::APPLY_INSERT_TAG_FLAGS properly
-							// but the insert tag is still added using the old
-							// way instead of the fragment registry
 							$before = $arrCache[$strTag];
 
 							$eventDispatcher = System::getContainer()->get('event_dispatcher');
 							$request = System::getContainer()->get('request_stack')->getCurrentRequest();
-							$event = new ApplyInsertTagFlagsEvent($flags, $request, new Response($arrCache[$strTag]));
-							$eventDispatcher->dispatch(ContaoCoreEvents::APPLY_INSERT_TAG_FLAGS, $event);
+							$event = new InsertTagFlagEvent($tag, $parameters, $flags, $request, new Response($arrCache[$strTag]));
+							$eventDispatcher->dispatch(ContaoCoreEvents::INSERT_TAG_FLAG, $event);
 							$arrCache[$strTag] = $event->getResponse()->getContent();
 
 							if ($before === $arrCache[$strTag])

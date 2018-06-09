@@ -68,9 +68,10 @@ class FragmentHandler extends BaseFragmentHandler
     /**
      * {@inheritdoc}
      */
-    public function render($uri, $renderer = 'inline', array $options = []): ?string
+    public function render($uri, $renderer = '', array $options = []): ?string
     {
-        if (!$uri instanceof FragmentReference) {
+        if (!$uri instanceof FragmentReference || '' !== $renderer) {
+            $renderer = $renderer ?: 'inline';
             return $this->fragmentHandler->render($uri, $renderer, $options);
         }
 

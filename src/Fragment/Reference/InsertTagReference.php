@@ -20,6 +20,7 @@ class InsertTagReference extends FragmentReference
      * @param string $insertTag
      * @param string $parameters
      * @param array  $flags
+     * @param bool   $forceInlineRendering
      */
     public function __construct(string $insertTag, string $parameters = '', array $flags = [])
     {

@@ -32,27 +32,19 @@ class TranslationController extends AbstractInsertTagController
     }
 
     /**
-     * Replaces the "trans" insert tag.
-     *
      * @param Request $request
      * @param string  $parameters
      * @param array   $flags
      *
      * @return Response
      */
-    public function __invoke(Request $request, string $parameters, array $flags): Response
+    protected function getResponse(Request $request, string $parameters, array $flags): Response
     {
         $chunks = explode('::', $parameters);
-
         $parameters = isset($chunks[2]) ? explode(':', $chunks[2]) : [];
-
-        $response = new Response($this->translator->trans($chunks[0], $parameters, $chunks[1] ?? null));
 
         // It makes no sense to cache translations in shared cache, this is set by default
         // so it requires no action by us here.
-
-        $this->applyInsertTagFlags($flags, $request, $response);
-
-        return $response;
+       return new Response($this->translator->trans($chunks[0], $parameters, $chunks[1] ?? null));
     }
 }
