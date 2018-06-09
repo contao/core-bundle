@@ -271,7 +271,7 @@ abstract class ContentElement extends Frontend
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
 			$responseTagger->addTags(array(
-				'contao.dca.content.' . $this->id,
+				'contao.db.tl_content.' . $this->id,
 			));
 		}
 

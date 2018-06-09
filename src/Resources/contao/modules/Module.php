@@ -249,7 +249,7 @@ abstract class Module extends Frontend
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
 			$responseTagger->addTags(array(
-				'contao.dca.module.' . $this->id,
+				'contao.db.tl_module.' . $this->id,
 			));
 		}
 

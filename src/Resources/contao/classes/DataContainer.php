@@ -1209,8 +1209,7 @@ abstract class DataContainer extends Backend
 	 */
 	protected function getCacheTags($table, array $ids = array())
 	{
-		$ns = 'contao.dca.';
-		$table = preg_replace('/^tl_/', '', $table, 1);
+		$ns = 'contao.db.';
 		$tags = array($ns . $table);
 
 		foreach ($ids as $id)

@@ -396,7 +396,7 @@ class FrontendTemplate extends Template
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
 			$responseTagger->addTags(array(
-				'contao.dca.page.' . $objPage->id,
+				'contao.db.tl_page.' . $objPage->id,
 			));
 		}
 

@@ -70,7 +70,7 @@ class ModuleArticle extends Module
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
 			$responseTagger->addTags(array(
-				'contao.dca.article.' . $this->id,
+				'contao.db.tl_article.' . $this->id,
 			));
 		}
 
