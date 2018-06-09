@@ -36,44 +36,67 @@ abstract class AbstractFragmentController extends Controller implements Fragment
     }
 
     /**
+     * Creates a template by name or from customTpl in model.
+     *
      * @param Model  $model
-     * @param string $prefix
+     * @param string $templateName
      *
      * @return Template
      */
-    protected function createTemplate(Model $model, string $prefix): Template
+    protected function createTemplate(Model $model, string $templateName): Template
     {
-        $type = $this->getType();
-
         if ($model->customTpl) {
-            $template = new FrontendTemplate($model->customTpl);
+            $template = $this->get('contao.framework')->createInstance(FrontendTemplate::class, [$model->customTpl]);
         } else {
-            $template = new FrontendTemplate($prefix.$type);
+            $template = $this->get('contao.framework')->createInstance(FrontendTemplate::class, [$templateName]);
         }
 
-        $this->initializeTemplate($template, $model, $prefix.$type);
+        $template->setData($model->row());
 
         return $template;
     }
 
     /**
-     * @param Template $template
-     * @param Model    $model
-     * @param string   $class
+     * Adds headline to the template.
+     *
+     * @param Template     $template
+     * @param string|array $headline
      */
-    protected function initializeTemplate(Template $template, Model $model, string $class): void
+    protected function addHeadlineToTemplate(Template $template, $headline): void
     {
-        $template->setData($model->row());
+        $data = StringUtil::deserialize($headline);
+        $template->headline = \is_array($data) ? $data['value'] : $data;
+        $template->hl = \is_array($data) ? $data['unit'] : 'h1';
+    }
 
-        $headline = StringUtil::deserialize($model->headline);
-        $template->headline = \is_array($headline) ? $headline['value'] : $headline;
-        $template->hl = \is_array($headline) ? $headline['unit'] : 'h1';
+    /**
+     * Adds CSS ID and class to the template.
+     *
+     * @param Template     $template
+     * @param string       $templateName
+     * @param string|array $cssID
+     * @param array|null   $classes
+     */
+    protected function addCssAttributesToTemplate(Template $template, string $templateName, $cssID, array $classes = null): void
+    {
+        $data = StringUtil::deserialize($cssID, true);
+        $template->class = trim($templateName.' '.($data[1] ?? ''));
+        $template->cssID = !empty($data[0]) ? ' id="'.$data[0].'"' : '';
 
-        $cssID = StringUtil::deserialize($model->cssID, true);
-        $template->class = trim($class.' '.$cssID[1]);
-        $template->cssID = !empty($cssID[0]) ? ' id="'.$cssID[0].'"' : '';
+        if (\is_array($classes)) {
+            $template->class .= ' '.implode(' ', $classes);
+        }
+    }
 
-        $template->style = $this->getStyles();
+    /**
+     * Adds the article section to the template.
+     *
+     * @param Template $template
+     * @param string   $section
+     */
+    protected function addSectionToTemplate(Template $template, string $section): void
+    {
+        $template->inColumn = $section;
     }
 
     /**
@@ -92,13 +115,5 @@ abstract class AbstractFragmentController extends Controller implements Fragment
         }
 
         return Container::underscore($className);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getStyles(): array
-    {
-        return [];
     }
 }

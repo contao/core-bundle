@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license LGPL-3.0+
  */
 
-namespace App\Controller\ContentElement;
+namespace Contao\CoreBundle\Controller\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\AbstractFragmentController;
@@ -24,18 +24,18 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
      * @param Request      $request
      * @param ContentModel $model
      * @param string       $section
+     * @param string|null  $classes
      *
      * @return Response
      */
-    public function __invoke(Request $request, ContentModel $model, string $section)
+    public function __invoke(Request $request, ContentModel $model, string $section, array $classes = null)
     {
-        $template = $this->createTemplate($model, 'ce_');
+        $type = $this->getType();
+        $template = $this->createTemplate($model, 'ce_'.$type);
 
-        $template->inColumn = $section;
-
-        if (is_array($classes = $request->attributes->get('classes'))) {
-            $template->class .= ' '.implode(' ', $classes);
-        }
+        $this->addHeadlineToTemplate($template, $model->headline);
+        $this->addCssAttributesToTemplate($template, 'ce_'.$type, $model->cssID, $classes);
+        $this->addSectionToTemplate($template, $section);
 
         return $this->getResponse($template, $model, $request);
     }

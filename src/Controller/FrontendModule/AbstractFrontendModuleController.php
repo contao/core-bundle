@@ -28,19 +28,18 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
      *
      * @return Response
      */
-    public function __invoke(Request $request, ModuleModel $model, string $section)
+    public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null)
     {
         if ($this->showBackendWildcard($request)) {
             return $this->getBackendWildcard($model, $request);
         }
 
-        $template = $this->createTemplate($model, 'mod_');
+        $type = $this->getType();
+        $template = $this->createTemplate($model, 'mod_'.$type);
 
-        $template->inColumn = $section;
-
-        if (is_array($classes = $request->attributes->get('classes'))) {
-            $template->class .= ' '.implode(' ', $classes);
-        }
+        $this->addHeadlineToTemplate($template, $model->headline);
+        $this->addCssAttributesToTemplate($template, 'mod_'.$type, $model->cssID, $classes);
+        $this->addSectionToTemplate($template, $section);
 
         return $this->getResponse($template, $model, $request);
     }
