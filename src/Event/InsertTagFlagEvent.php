@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Event;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class InsertTagFlagEvent extends Event
@@ -107,7 +107,7 @@ class InsertTagFlagEvent extends Event
         return $this->response;
     }
 
-    public function setResponse(Response $response): InsertTagFlagEvent
+    public function setResponse(Response $response): self
     {
         $this->response = $response;
 

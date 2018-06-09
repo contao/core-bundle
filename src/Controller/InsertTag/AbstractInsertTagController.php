@@ -12,15 +12,14 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Controller\InsertTag;
 
-use Contao\CoreBundle\Event\InsertTagFlagEvent;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\InsertTagFlagEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractInsertTagController extends Controller
 {
-
     /**
      * Default action for any insert tag.
      *

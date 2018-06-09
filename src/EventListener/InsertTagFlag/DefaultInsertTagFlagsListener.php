@@ -34,10 +34,10 @@ class DefaultInsertTagFlagsListener
     /**
      * @param InsertTagFlagEvent $event
      */
-    public function onInsertTagFlag(InsertTagFlagEvent $event)
+    public function onInsertTagFlag(InsertTagFlagEvent $event): void
     {
         $response = $event->getResponse();
-        $content  = $response->getContent();
+        $content = $response->getContent();
 
         foreach ($event->getFlags() as $flag) {
             switch ($flag) {
@@ -106,7 +106,7 @@ class DefaultInsertTagFlagsListener
                                 ); // see #5806
 
                             // Replace the tag and stop the loop
-                            if ($varValue !== false) {
+                            if (false !== $varValue) {
                                 $content = $varValue;
                                 break;
                             }

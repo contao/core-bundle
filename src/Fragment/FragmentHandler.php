@@ -72,6 +72,7 @@ class FragmentHandler extends BaseFragmentHandler
     {
         if (!$uri instanceof FragmentReference || '' !== $renderer) {
             $renderer = $renderer ?: 'inline';
+
             return $this->fragmentHandler->render($uri, $renderer, $options);
         }
 

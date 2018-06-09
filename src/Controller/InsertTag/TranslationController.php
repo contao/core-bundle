@@ -45,6 +45,6 @@ class TranslationController extends AbstractInsertTagController
 
         // It makes no sense to cache translations in shared cache, this is set by default
         // so it requires no action by us here.
-       return new Response($this->translator->trans($chunks[0], $parameters, $chunks[1] ?? null));
+        return new Response($this->translator->trans($chunks[0], $parameters, $chunks[1] ?? null));
     }
 }
