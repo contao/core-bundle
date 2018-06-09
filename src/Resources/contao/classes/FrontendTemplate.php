@@ -390,14 +390,12 @@ class FrontendTemplate extends Template
 			$response->setSharedMaxAge($objPage->cache);
 		}
 
-		// Tag response
+		// Tag the response
 		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
 		{
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-			$responseTagger->addTags(array(
-				'contao.db.tl_page.' . $objPage->id,
-			));
+			$responseTagger->addTags(array('contao.db.tl_page.' . $objPage->id));
 		}
 
 		return $response;

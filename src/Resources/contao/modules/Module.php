@@ -243,14 +243,12 @@ abstract class Module extends Frontend
 			$this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
 		}
 
-		// Tag response
+		// Tag the response
 		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
 		{
 			/** @var ResponseTagger $responseTagger */
 			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
-			$responseTagger->addTags(array(
-				'contao.db.tl_module.' . $this->id,
-			));
+			$responseTagger->addTags(array('contao.db.tl_module.' . $this->id));
 		}
 
 		return $this->Template->parse();

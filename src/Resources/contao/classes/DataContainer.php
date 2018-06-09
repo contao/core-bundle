@@ -1179,6 +1179,7 @@ abstract class DataContainer extends Backend
 
 	/**
 	 * Invalidates a list of cache tags.
+	 *
 	 * Call this whenever an entry is modified (added, updated, deleted).
 	 *
 	 * @param array $tags
@@ -1200,7 +1201,6 @@ abstract class DataContainer extends Backend
 
 	/**
 	 * Returns an array of cache tags with all parent tables included.
-	 * ids.
 	 *
 	 * @param string $table
 	 * @param array $ids

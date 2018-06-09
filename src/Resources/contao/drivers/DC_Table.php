@@ -3321,7 +3321,7 @@ class DC_Table extends DataContainer implements \listable, \editable
 			// Remove the entries from the database
 			if (!empty($new_records[$this->strTable]))
 			{
-				$ids = (array) array_map('intval', $new_records[$this->strTable]);
+				$ids = array_map('\intval', $new_records[$this->strTable]);
 				$objStmt = $this->Database->execute("DELETE FROM " . $this->strTable . " WHERE id IN(" . implode(',', $ids) . ") AND tstamp=0");
 
 				// Invalidate cache tags
