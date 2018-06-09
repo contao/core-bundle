@@ -117,6 +117,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 			'uploadButton' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['uploadFF'],
+				'href'                => 'act=move&amp;mode=2',
 				'icon'                => 'new.svg',
 				'button_callback'     => array('tl_files', 'uploadButton')
 			),
@@ -124,6 +125,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
 				'icon'                => 'drag.svg',
+				'attributes'          => 'class="drag-handle" aria-hidden="true"',
 				'button_callback'     => array('tl_files', 'dragHandle')
 			)
 		)
@@ -568,7 +570,7 @@ class tl_files extends Backend
 	 */
 	public function dragHandle($row, $href, $label, $title, $icon, $attributes)
 	{
-		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" class="drag-handle" title="'.StringUtil::specialchars($title).'" aria-hidden="true">' . \Image::getHtml('drag.svg') . '</button> ' : ' ';
+		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" title="'.StringUtil::specialchars($title).'" '.$attributes.'>' . \Image::getHtml($icon) . '</button> ' : ' ';
 	}
 
 
@@ -588,7 +590,7 @@ class tl_files extends Backend
 	{
 		if (!$GLOBALS['TL_DCA']['tl_files']['config']['closed'] && !$GLOBALS['TL_DCA']['tl_files']['config']['notCreatable'] && \Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
 		{
-			return '<a href="'.$this->addToUrl('&amp;act=move&amp;mode=2&amp;pid='.$row['id']).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $row['id'])).'">'.\Image::getHtml('new.svg', $GLOBALS['TL_LANG']['tl_files']['move'][0]).'</a> ';
+			return '<a href="'.$this->addToUrl($href.'&amp;pid='.$row['id']).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $row['id'])).'" '.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ';
 		}
 		return ' ';
 	}
