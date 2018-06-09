@@ -586,7 +586,7 @@ class tl_files extends Backend
 	 */
 	public function uploadButton($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (\Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
+		if (!$GLOBALS['TL_DCA']['tl_files']['config']['closed'] && !$GLOBALS['TL_DCA']['tl_files']['config']['notCreatable'] && \Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
 		{
 			return '<a href="'.$this->addToUrl('&amp;act=move&amp;mode=2&amp;pid='.$row['id']).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $row['id'])).'">'.\Image::getHtml('new.svg', $GLOBALS['TL_LANG']['tl_files']['move'][0]).'</a> ';
 		}
