@@ -39,6 +39,9 @@ class DefaultInsertTagFlagsListener
         $response = $event->getResponse();
         $content = $response->getContent();
 
+        /** @var System $system */
+        $system = $this->framework->getAdapter(System::class);
+
         switch ($flag = $event->getFlag()) {
             case 'addslashes':
             case 'standardize':
@@ -67,18 +70,15 @@ class DefaultInsertTagFlagsListener
                 break;
 
             case 'number_format':
-                $content = $this->framework->getAdapter(System::class)
-                    ->getFormattedNumber($content, 0);
+                $content = $system->getFormattedNumber($content, 0);
                 break;
 
             case 'currency_format':
-                $content = $this->framework->getAdapter(System::class)
-                    ->getFormattedNumber($content, 2);
+                $content = $system->getFormattedNumber($content, 2);
                 break;
 
             case 'readable_size':
-                $content = $this->framework->getAdapter(System::class)
-                    ->getReadableSize($content);
+                $content = $system->getReadableSize($content);
                 break;
 
             // HOOK: pass unknown flags to callback functions
@@ -91,18 +91,17 @@ class DefaultInsertTagFlagsListener
                             $callback[1]
                         ), E_USER_DEPRECATED);
 
-                        $varValue = $this->framework->getAdapter($callback[0])
-                            ->{$callback[1]}(
-                                $flag,
-                                $event->getInsertTag(),
-                                $content,
-                                // $flags, // TODO: Do we still need that?
-                                true
-                                // $tags, TODO: Do we still need that?
-                                // $arrCache, TODO: Do we still need that?
-                                // $_rit, TODO: Do we still need that?
-                                // $_cnt TODO: Do we still need that?
-                            ); // see #5806
+                        $varValue = $system->importStatic($callback[0])->{$callback[1]}(
+                            $flag,
+                            $event->getInsertTag(),
+                            $content,
+                            [$flag],
+                            false,
+                            ['', $event->getInsertTag() . '::' . $event->getParameters()],
+                            [],
+                            0,
+                            0
+                        );
 
                         // Replace the tag and stop the loop
                         if (false !== $varValue) {
