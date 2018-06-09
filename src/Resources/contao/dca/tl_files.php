@@ -113,6 +113,18 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 				'href'                => 'act=source',
 				'icon'                => 'editor.svg',
 				'button_callback'     => array('tl_files', 'editSource')
+			),
+			'uploadButton' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_files']['uploadFF'],
+				'icon'                => 'new.svg',
+				'button_callback'     => array('tl_files', 'uploadButton')
+			),
+			'dragHandle' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
+				'icon'                => 'drag.svg',
+				'button_callback'     => array('tl_files', 'dragHandle')
 			)
 		)
 	),
@@ -541,6 +553,46 @@ class tl_files extends Backend
 	{
 		return $this->User->hasAccess('f2', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
+
+	/**
+	 * Return the drag handle button
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	public function dragHandle($row, $href, $label, $title, $icon, $attributes)
+	{
+		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" class="drag-handle" title="'.StringUtil::specialchars($title).'" aria-hidden="true">' . \Image::getHtml('drag.svg') . '</button> ' : ' ';
+	}
+
+
+	/**
+	 * Return the upload button for folders
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	public function uploadButton($row, $href, $label, $title, $icon, $attributes)
+	{
+		if (\Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
+		{
+			return '<a href="'.$this->addToUrl('&amp;act=move&amp;mode=2&amp;pid='.$row['id']).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $row['id'])).'">'.\Image::getHtml('new.svg', $GLOBALS['TL_LANG']['tl_files']['move'][0]).'</a> ';
+		}
+		return ' ';
+	}
+
 
 	/**
 	 * Return the delete file button
