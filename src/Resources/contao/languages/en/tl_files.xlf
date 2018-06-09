@@ -164,6 +164,12 @@
       <trans-unit id="tl_files.source.1">
         <source>Edit file "%s"</source>
       </trans-unit>
+      <trans-unit id="tl_files.uploadButton.0">
+        <source>Upload files</source>
+      </trans-unit>
+      <trans-unit id="tl_files.uploadButton.1">
+        <source>Upload files to folder "%s"</source>
+      </trans-unit>
       <trans-unit id="tl_files.protect.0">
         <source>Protect folder</source>
       </trans-unit>
