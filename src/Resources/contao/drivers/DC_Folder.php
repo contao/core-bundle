@@ -2647,6 +2647,12 @@ class DC_Folder extends DataContainer implements \listable, \editable
 					$return .= (\Input::get('act') == 'select') ? '<input type="checkbox" name="IDS[]" id="ids_'.md5($currentEncoded).'" class="tl_tree_checkbox" value="'.$currentEncoded.'">' : $this->generateButtons(array('id'=>$currentEncoded, 'fileNameEncoded'=>$strFolderNameEncoded, 'type'=>'folder'), $this->strTable);
 				}
 
+				// Add upload button if it is missing for backwards compatibility
+				if (!isset($GLOBALS['TL_DCA'][$this->strTable]['list']['operations']['uploadButton']) && !$GLOBALS['TL_DCA'][$this->strTable]['config']['closed'] && !$GLOBALS['TL_DCA'][$this->strTable]['config']['notCreatable'] && \Input::get('act') != 'select')
+				{
+					$return .= ' <a href="'.$this->addToUrl('&amp;act=move&amp;mode=2&amp;pid='.$currentEncoded).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['tl_files']['uploadFF'], $currentEncoded)).'">'.\Image::getHtml('new.svg', $GLOBALS['TL_LANG'][$this->strTable]['move'][0]).'</a>';
+				}
+
 				if ($this->strPickerFieldType)
 				{
 					$return .= $this->getPickerInputField($currentEncoded, $this->blnFilesOnly ? ' disabled' : '');
