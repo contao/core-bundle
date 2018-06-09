@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "headline".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentHeadline extends \ContentElement
+class ContentHeadline extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentHeadline extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_headline';
-
 
 	/**
 	 * Generate the content element
@@ -34,3 +32,5 @@ class ContentHeadline extends \ContentElement
 		return;
 	}
 }
+
+class_alias(ContentHeadline::class, 'ContentHeadline');

@@ -13,13 +13,12 @@ namespace Contao;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Switch accounts in the front end preview.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendSwitch extends \Backend
+class BackendSwitch extends Backend
 {
 
 	/**
@@ -43,7 +42,6 @@ class BackendSwitch extends \Backend
 
 		\System::loadLanguageFile('default');
 	}
-
 
 	/**
 	 * Run the controller and parse the template
@@ -112,7 +110,6 @@ class BackendSwitch extends \Backend
 		return $objTemplate->getResponse();
 	}
 
-
 	/**
 	 * Find ten matching usernames and return them as JSON
 	 */
@@ -156,7 +153,6 @@ class BackendSwitch extends \Backend
 		die(json_encode($arrUsers));
 	}
 
-
 	/**
 	 * Disable the profile
 	 */
@@ -170,3 +166,5 @@ class BackendSwitch extends \Backend
 		}
 	}
 }
+
+class_alias(BackendSwitch::class, 'BackendSwitch');

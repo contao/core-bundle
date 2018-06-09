@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use FOS\HttpCache\ResponseTagger;
 
 /**
  * Parent class for content elements.
@@ -105,7 +106,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class ContentElement extends \Frontend
+abstract class ContentElement extends Frontend
 {
 
 	/**
@@ -137,7 +138,6 @@ abstract class ContentElement extends \Frontend
 	 * @var array
 	 */
 	protected $arrStyle = array();
-
 
 	/**
 	 * Initialize the object
@@ -176,7 +176,6 @@ abstract class ContentElement extends \Frontend
 		$this->strColumn = $strColumn;
 	}
 
-
 	/**
 	 * Set an object property
 	 *
@@ -187,7 +186,6 @@ abstract class ContentElement extends \Frontend
 	{
 		$this->arrData[$strKey] = $varValue;
 	}
-
 
 	/**
 	 * Return an object property
@@ -206,7 +204,6 @@ abstract class ContentElement extends \Frontend
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Check whether a property is set
 	 *
@@ -219,7 +216,6 @@ abstract class ContentElement extends \Frontend
 		return isset($this->arrData[$strKey]);
 	}
 
-
 	/**
 	 * Return the model
 	 *
@@ -229,7 +225,6 @@ abstract class ContentElement extends \Frontend
 	{
 		return $this->objModel;
 	}
-
 
 	/**
 	 * Parse the template
@@ -270,15 +265,21 @@ abstract class ContentElement extends \Frontend
 			$this->Template->class .= ' ' . implode(' ', $this->objModel->classes);
 		}
 
+		// Tag the response
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			/** @var ResponseTagger $responseTagger */
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array('contao.db.tl_content.' . $this->id));
+		}
+
 		return $this->Template->parse();
 	}
-
 
 	/**
 	 * Compile the content element
 	 */
 	abstract protected function compile();
-
 
 	/**
 	 * Find a content element in the TL_CTE array and return the class name
@@ -303,3 +304,5 @@ abstract class ContentElement extends \Frontend
 		return '';
 	}
 }
+
+class_alias(ContentElement::class, 'ContentElement');

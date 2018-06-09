@@ -8,10 +8,6 @@
  * @license LGPL-3.0-or-later
  */
 
-
-/**
- * Table tl_module
- */
 $GLOBALS['TL_DCA']['tl_module'] = array
 (
 
@@ -119,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		'lostPassword'                => '{title_legend},name,headline,type;{config_legend},reg_skipName,disableCaptcha;{redirect_legend},jumpTo;{email_legend:hide},reg_jumpTo,reg_password;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
 		'closeAccount'                => '{title_legend},name,headline,type;{config_legend},reg_close;{redirect_legend},jumpTo;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
 		'form'                        => '{title_legend},name,headline,type;{include_legend},form;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
-		'search'                      => '{title_legend},name,headline,type;{config_legend},queryType,fuzzy,contextLength,totalLength,perPage,searchType;{redirect_legend:hide},jumpTo;{reference_legend:hide},rootPage;{template_legend:hide},searchTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
+		'search'                      => '{title_legend},name,headline,type;{config_legend},queryType,fuzzy,contextLength,totalLength,perPage,searchType;{redirect_legend:hide},jumpTo;{reference_legend:hide},pages;{template_legend:hide},searchTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
 		'articlelist'                 => '{title_legend},name,headline,type;{config_legend},skipFirst,inColumn;{reference_legend:hide},defineRoot;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
 		'flash'                       => '{title_legend},name,headline,type;{config_legend},size,transparent,flashvars,altContent;{source_legend},source;{interact_legend:hide},interactive;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
 		'randomImage'                 => '{title_legend},name,headline,type;{source_legend},multiSRC,imgSize,fullsize,useCaption;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
@@ -266,7 +262,11 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 			'exclude'                 => true,
 			'inputType'               => 'pageTree',
 			'foreignKey'              => 'tl_page.title',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'files'=>true, 'orderField'=>'orderPages', 'mandatory'=>true),
+			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'orderField'=>'orderPages', 'mandatory'=>true),
+			'load_callback' => array
+			(
+				array('tl_module', 'setPagesFlags')
+			),
 			'sql'                     => "blob NULL",
 			'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
 		),
@@ -762,7 +762,6 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 	)
 );
 
-
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
@@ -779,7 +778,6 @@ class tl_module extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
-
 
 	/**
 	 * Check permissions to edit the table
@@ -798,7 +796,6 @@ class tl_module extends Backend
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access the front end modules module.');
 		}
 	}
-
 
 	/**
 	 * Return all front end modules as array
@@ -819,7 +816,6 @@ class tl_module extends Backend
 
 		return $groups;
 	}
-
 
 	/**
 	 * Return all editable fields of table tl_member
@@ -843,7 +839,6 @@ class tl_module extends Backend
 
 		return $return;
 	}
-
 
 	/**
 	 * Get all forms and return them as array
@@ -870,7 +865,6 @@ class tl_module extends Backend
 
 		return $arrForms;
 	}
-
 
 	/**
 	 * Return all layout sections as array
@@ -904,7 +898,6 @@ class tl_module extends Backend
 		return Backend::convertLayoutSectionIdsToAssociativeArray($arrSections);
 	}
 
-
 	/**
 	 * Return all navigation templates as array
 	 *
@@ -914,7 +907,6 @@ class tl_module extends Backend
 	{
 		return $this->getTemplateGroup('nav_');
 	}
-
 
 	/**
 	 * Return all module templates as array
@@ -928,7 +920,6 @@ class tl_module extends Backend
 		return $this->getTemplateGroup('mod_' . $dc->activeRecord->type);
 	}
 
-
 	/**
 	 * Return all member templates as array
 	 *
@@ -938,7 +929,6 @@ class tl_module extends Backend
 	{
 		return $this->getTemplateGroup('member_');
 	}
-
 
 	/**
 	 * Return all search templates as array
@@ -950,7 +940,6 @@ class tl_module extends Backend
 		return $this->getTemplateGroup('search_');
 	}
 
-
 	/**
 	 * Return all navigation templates as array
 	 *
@@ -960,7 +949,6 @@ class tl_module extends Backend
 	{
 		return $this->getTemplateGroup('rss_');
 	}
-
 
 	/**
 	 * Use the module type as group header if sorted by type (see #8402)
@@ -982,7 +970,6 @@ class tl_module extends Backend
 		return $group;
 	}
 
-
 	/**
 	 * Load the default activation text
 	 *
@@ -999,7 +986,6 @@ class tl_module extends Backend
 
 		return $varValue;
 	}
-
 
 	/**
 	 * Load the default password text
@@ -1018,7 +1004,6 @@ class tl_module extends Backend
 		return $varValue;
 	}
 
-
 	/**
 	 * List a front end module
 	 *
@@ -1031,7 +1016,6 @@ class tl_module extends Backend
 		return '<div class="tl_content_left">'. $row['name'] .' <span style="color:#999;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span></div>';
 	}
 
-
 	/**
 	 * Dynamically add flags to the "multiSRC" field
 	 *
@@ -1042,13 +1026,29 @@ class tl_module extends Backend
 	 */
 	public function setMultiSrcFlags($varValue, DataContainer $dc)
 	{
-		if ($dc->activeRecord)
+		if ($dc->activeRecord && $dc->activeRecord->type == 'randomImage')
 		{
-			if ($dc->activeRecord->type == 'randomImage')
-			{
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
-				$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
-			}
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['isGallery'] = true;
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['extensions'] = Config::get('validImageTypes');
+		}
+
+		return $varValue;
+	}
+
+	/**
+	 * Dynamically change attributes of the "pages" field
+	 *
+	 * @param mixed         $varValue
+	 * @param DataContainer $dc
+	 *
+	 * @return mixed
+	 */
+	public function setPagesFlags($varValue, DataContainer $dc)
+	{
+		if ($dc->activeRecord && $dc->activeRecord->type == 'search')
+		{
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['mandatory'] = false;
+			unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['orderField']);
 		}
 
 		return $varValue;

@@ -10,8 +10,8 @@
 
 namespace Contao\Database;
 
+use Contao\Controller;
 use Symfony\Component\Finder\SplFileInfo;
-
 
 /**
  * Compares the existing database structure with the DCA table settings and
@@ -19,7 +19,7 @@ use Symfony\Component\Finder\SplFileInfo;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Installer extends \Controller
+class Installer extends Controller
 {
 
 	/**
@@ -30,7 +30,6 @@ class Installer extends \Controller
 		parent::__construct();
 	}
 
-
 	/**
 	 * Generate a HTML form with queries and return it as string
 	 *
@@ -40,7 +39,7 @@ class Installer extends \Controller
 	 */
 	public function generateSqlForm()
 	{
-		@trigger_error('Using the Contao\Database\Installer::generateSqlForm() has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+		@trigger_error('Using the Installer::generateSqlForm() method has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
 
 		$count = 0;
 		$return = '';
@@ -100,7 +99,6 @@ class Installer extends \Controller
   </table>
 </div>';
 	}
-
 
 	/**
 	 * Compile a command array for each database modification
@@ -257,7 +255,6 @@ class Installer extends \Controller
 		return $return;
 	}
 
-
 	/**
 	 * Get the DCA table settings from the DCA cache
 	 *
@@ -304,7 +301,6 @@ class Installer extends \Controller
 		return $return;
 	}
 
-
 	/**
 	 * Get the DCA table settings from the database.sql files
 	 *
@@ -336,7 +332,6 @@ class Installer extends \Controller
 
 		return $return;
 	}
-
 
 	/**
 	 * Get the current database structure
@@ -467,3 +462,5 @@ class Installer extends \Controller
 		return $return;
 	}
 }
+
+class_alias(Installer::class, 'Database\Installer');

@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "navigation".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleNavigation extends \Module
+class ModuleNavigation extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleNavigation extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_navigation';
-
 
 	/**
 	 * Do not display the module if there are no menu items
@@ -53,7 +51,6 @@ class ModuleNavigation extends \Module
 
 		return ($this->Template->items != '') ? $strBuffer : '';
 	}
-
 
 	/**
 	 * Generate the module
@@ -102,3 +99,5 @@ class ModuleNavigation extends \Module
 		$this->Template->items = $this->renderNavigation($trail[$level], 1, $host, $lang);
 	}
 }
+
+class_alias(ModuleNavigation::class, 'ModuleNavigation');

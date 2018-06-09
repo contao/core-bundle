@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Parent class for back end modules that are not using the default engine.
  *
@@ -18,7 +17,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class BackendModule extends \Backend
+abstract class BackendModule extends Backend
 {
 
 	/**
@@ -39,7 +38,6 @@ abstract class BackendModule extends \Backend
 	 */
 	protected $arrData = array();
 
-
 	/**
 	 * Initialize the object
 	 *
@@ -51,7 +49,6 @@ abstract class BackendModule extends \Backend
 		$this->objDc = $dc;
 	}
 
-
 	/**
 	 * Set an object property
 	 *
@@ -62,7 +59,6 @@ abstract class BackendModule extends \Backend
 	{
 		$this->arrData[$strKey] = $varValue;
 	}
-
 
 	/**
 	 * Return an object property
@@ -86,7 +82,6 @@ abstract class BackendModule extends \Backend
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Parse the template
 	 *
@@ -100,9 +95,10 @@ abstract class BackendModule extends \Backend
 		return $this->Template->parse();
 	}
 
-
 	/**
 	 * Compile the current element
 	 */
 	abstract protected function compile();
 }
+
+class_alias(BackendModule::class, 'BackendModule');

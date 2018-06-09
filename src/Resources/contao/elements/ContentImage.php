@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "image".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentImage extends \ContentElement
+class ContentImage extends ContentElement
 {
 
 	/**
@@ -30,7 +29,6 @@ class ContentImage extends \ContentElement
 	 * @var FilesModel
 	 */
 	protected $objFilesModel;
-
 
 	/**
 	 * Return if the image does not exist
@@ -57,7 +55,6 @@ class ContentImage extends \ContentElement
 		return parent::generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -68,3 +65,5 @@ class ContentImage extends \ContentElement
 		$this->addImageToTemplate($this->Template, $this->arrData, null, null, $this->objFilesModel);
 	}
 }
+
+class_alias(ContentImage::class, 'ContentImage');

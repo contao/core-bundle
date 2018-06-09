@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Class FormTextArea
  *
@@ -24,7 +23,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormTextArea extends \Widget
+class FormTextArea extends Widget
 {
 
 	/**
@@ -68,7 +67,6 @@ class FormTextArea extends \Widget
 	 * @var string
 	 */
 	protected $strPrefix = 'widget widget-textarea';
-
 
 	/**
 	 * Add specific attributes
@@ -123,7 +121,6 @@ class FormTextArea extends \Widget
 		}
 	}
 
-
 	/**
 	 * Return a parameter
 	 *
@@ -153,7 +150,6 @@ class FormTextArea extends \Widget
 		}
 	}
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
@@ -171,3 +167,5 @@ class FormTextArea extends \Widget
 						$this->value);
 	}
 }
+
+class_alias(FormTextArea::class, 'FormTextArea');

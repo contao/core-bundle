@@ -25,7 +25,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileTree extends \Widget
+class FileTree extends Widget
 {
 
 	/**
@@ -52,7 +52,6 @@ class FileTree extends \Widget
 	 */
 	protected $strOrderName;
 
-
 	/**
 	 * Load the database object
 	 *
@@ -78,7 +77,6 @@ class FileTree extends \Widget
 			$this->{$this->orderField} = (!empty($tmp) && \is_array($tmp)) ? array_filter($tmp) : array();
 		}
 	}
-
 
 	/**
 	 * Return an array if the "multiple" attribute is set
@@ -139,7 +137,6 @@ class FileTree extends \Widget
 			return $this->multiple ? array_map('StringUtil::uuidToBin', $arrValue) : \StringUtil::uuidToBin($arrValue[0]);
 		}
 	}
-
 
 	/**
 	 * Check the selected value
@@ -206,7 +203,6 @@ class FileTree extends \Widget
 			}
 		}
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -428,7 +424,6 @@ class FileTree extends \Widget
 		return $return;
 	}
 
-
 	/**
 	 * Return the preview image
 	 *
@@ -440,7 +435,7 @@ class FileTree extends \Widget
 	 */
 	protected function getPreviewImage(File $objFile, $strInfo, $strClass='gimage')
 	{
-		if (($objFile->isSvgImage || $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth')) && $objFile->viewWidth && $objFile->viewHeight)
+		if (($objFile->isSvgImage || ($objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth'))) && $objFile->viewWidth && $objFile->viewHeight)
 		{
 			// Inline the image if no preview image will be generated (see #636)
 			if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 75)
@@ -465,3 +460,5 @@ class FileTree extends \Widget
 		return \Image::getHtml($image, '', 'class="' . $strClass . '" title="' . \StringUtil::specialchars($strInfo) . '"');
 	}
 }
+
+class_alias(FileTree::class, 'FileTree');

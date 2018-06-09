@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes image sizes
  *
@@ -69,7 +68,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ImageSizeModel extends \Model
+class ImageSizeModel extends Model
 {
 
 	/**
@@ -79,3 +78,5 @@ class ImageSizeModel extends \Model
 	protected static $strTable = 'tl_image_size';
 
 }
+
+class_alias(ImageSizeModel::class, 'ImageSizeModel');

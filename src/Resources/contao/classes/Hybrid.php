@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Parent class for objects that can be modules or content elements.
  *
@@ -23,7 +22,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Hybrid extends \Frontend
+abstract class Hybrid extends Frontend
 {
 
 	/**
@@ -73,7 +72,6 @@ abstract class Hybrid extends \Frontend
 	 * @var array
 	 */
 	protected $arrStyle = array();
-
 
 	/**
 	 * Initialize the object
@@ -160,7 +158,6 @@ abstract class Hybrid extends \Frontend
 		$this->strColumn = $strColumn;
 	}
 
-
 	/**
 	 * Set an object property
 	 *
@@ -171,7 +168,6 @@ abstract class Hybrid extends \Frontend
 	{
 		$this->arrData[$strKey] = $varValue;
 	}
-
 
 	/**
 	 * Return an object property
@@ -190,7 +186,6 @@ abstract class Hybrid extends \Frontend
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Check whether a property is set
 	 *
@@ -203,7 +198,6 @@ abstract class Hybrid extends \Frontend
 		return isset($this->arrData[$strKey]);
 	}
 
-
 	/**
 	 * Return the model
 	 *
@@ -214,7 +208,6 @@ abstract class Hybrid extends \Frontend
 		return $this->objModel;
 	}
 
-
 	/**
 	 * Return the parent object
 	 *
@@ -224,7 +217,6 @@ abstract class Hybrid extends \Frontend
 	{
 		return $this->objParent;
 	}
-
 
 	/**
 	 * Parse the template
@@ -267,9 +259,10 @@ abstract class Hybrid extends \Frontend
 		return $this->Template->parse();
 	}
 
-
 	/**
 	 * Compile the current element
 	 */
 	abstract protected function compile();
 }
+
+class_alias(Hybrid::class, 'Hybrid');

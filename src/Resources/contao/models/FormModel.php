@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes forms
  *
@@ -96,7 +95,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FormModel extends \Model
+class FormModel extends Model
 {
 
 	/**
@@ -104,7 +103,6 @@ class FormModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_form';
-
 
 	/**
 	 * Get the maximum file size that is allowed for file uploads
@@ -126,3 +124,5 @@ class FormModel extends \Model
 		}
 	}
 }
+
+class_alias(FormModel::class, 'FormModel');

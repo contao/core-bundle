@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
-
 /**
  * A static class to replace insert tags
  *
@@ -30,7 +29,7 @@ use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class InsertTags extends \Controller
+class InsertTags extends Controller
 {
 
 	/**
@@ -40,7 +39,6 @@ class InsertTags extends \Controller
 	{
 		parent::__construct();
 	}
-
 
 	/**
 	 * Recursively replace insert tags with their values
@@ -62,7 +60,6 @@ class InsertTags extends \Controller
 
 		return $strBuffer;
 	}
-
 
 	/**
 	 * Replace insert tags with their values
@@ -756,7 +753,7 @@ class InsertTags extends \Controller
 						$elements[1] = 'mainTitle';
 					}
 
-					// Do not use \StringUtil::specialchars() here (see #4687)
+					// Do not use StringUtil::specialchars() here (see #4687)
 					$arrCache[$strTag] = $objPage->{$elements[1]};
 					break;
 
@@ -1030,10 +1027,7 @@ class InsertTags extends \Controller
 						}
 					}
 
-					$container
-						->get('monolog.logger.contao')
-						->log(LogLevel::INFO, 'Unknown insert tag: ' . $strTag)
-					;
+					$this->log('Unknown insert tag {{' . $strTag . '}}', __METHOD__, TL_ERROR);
 					break;
 			}
 
@@ -1076,7 +1070,7 @@ class InsertTags extends \Controller
 
 							$eventDispatcher = System::getContainer()->get('event_dispatcher');
 							$request = System::getContainer()->get('request_stack')->getCurrentRequest();
-							$event = new InsertTagFlagEvent($tag, $parameters, $flags, $request, new Response($arrCache[$strTag]));
+							$event = new InsertTagFlagEvent($tag, $parameters, $flag, $request, new Response($arrCache[$strTag]));
 							$eventDispatcher->dispatch(ContaoCoreEvents::INSERT_TAG_FLAG, $event);
 							$arrCache[$strTag] = $event->getResponse()->getContent();
 
@@ -1088,7 +1082,6 @@ class InsertTags extends \Controller
 								;
 								break;
 							}
-
 					}
 				}
 			}
@@ -1099,3 +1092,5 @@ class InsertTags extends \Controller
 		return \StringUtil::restoreBasicEntities($strBuffer);
 	}
 }
+
+class_alias(InsertTags::class, 'InsertTags');

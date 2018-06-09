@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "teaser".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentTeaser extends \ContentElement
+class ContentTeaser extends ContentElement
 {
 
 	/**
@@ -36,7 +35,6 @@ class ContentTeaser extends \ContentElement
 	 * @var PageModel
 	 */
 	protected $objParent;
-
 
 	/**
 	 * Check whether the target page and the article are published
@@ -66,7 +64,6 @@ class ContentTeaser extends \ContentElement
 		return parent::generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -91,3 +88,5 @@ class ContentTeaser extends \ContentElement
 		$this->Template->more = $GLOBALS['TL_LANG']['MSC']['more'];
 	}
 }
+
+class_alias(ContentTeaser::class, 'ContentTeaser');

@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes content elements
  *
@@ -351,7 +350,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentModel extends \Model
+class ContentModel extends Model
 {
 
 	/**
@@ -359,7 +358,6 @@ class ContentModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_content';
-
 
 	/**
 	 * Find all published content elements by their parent ID and parent table
@@ -398,7 +396,6 @@ class ContentModel extends \Model
 		return static::findBy($arrColumns, array($intPid, $strParentTable), $arrOptions);
 	}
 
-
 	/**
 	 * Find all published content elements by their parent ID and parent table
 	 *
@@ -436,3 +433,5 @@ class ContentModel extends \Model
 		return static::countBy($arrColumns, array($intPid, $strParentTable), $arrOptions);
 	}
 }
+
+class_alias(ContentModel::class, 'ContentModel');

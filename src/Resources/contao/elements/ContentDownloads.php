@@ -10,13 +10,14 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Exception\PageNotFoundException;
 
 /**
  * Front end content element "downloads".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentDownloads extends \ContentElement
+class ContentDownloads extends ContentElement
 {
 
 	/**
@@ -30,7 +31,6 @@ class ContentDownloads extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_downloads';
-
 
 	/**
 	 * Return if there are no files
@@ -70,8 +70,8 @@ class ContentDownloads extends \ContentElement
 
 		$file = \Input::get('file', true);
 
-		// Send the file to the browser and do not send a 404 header (see #4632)
-		if ($file != '' && !preg_match('/^meta(_[a-z]{2})?\.txt$/', basename($file)))
+		// Send the file to the browser (see #4632 and #8375)
+		if ($file != '' && (!isset($_GET['cid']) || \Input::get('cid') == $this->id))
 		{
 			while ($this->objFiles->next())
 			{
@@ -81,12 +81,16 @@ class ContentDownloads extends \ContentElement
 				}
 			}
 
+			if (isset($_GET['cid']))
+			{
+				throw new PageNotFoundException('Invalid file name');
+			}
+
 			$this->objFiles->reset();
 		}
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the content element
@@ -144,12 +148,17 @@ class ContentDownloads extends \ContentElement
 				$strHref = \Environment::get('request');
 
 				// Remove an existing file parameter (see #5683)
-				if (preg_match('/(&(amp;)?|\?)file=/', $strHref))
+				if (isset($_GET['file']))
 				{
 					$strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
 				}
 
-				$strHref .= (strpos($strHref, '?') !== false ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFiles->path);
+				if (isset($_GET['cid']))
+				{
+					$strHref = preg_replace('/(&(amp;)?|\?)cid=\d+/', '', $strHref);
+				}
+
+				$strHref .= (strpos($strHref, '?') !== false ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFiles->path) . '&amp;cid=' . $this->id;
 
 				// Add the image
 				$files[$objFiles->path] = array
@@ -316,3 +325,5 @@ class ContentDownloads extends \ContentElement
 		$this->Template->files = array_values($files);
 	}
 }
+
+class_alias(ContentDownloads::class, 'ContentDownloads');

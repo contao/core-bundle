@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\Model\Registry;
 
 /**
  * Reads and writes file entries
@@ -84,7 +85,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FilesModel extends \Model
+class FilesModel extends Model
 {
 
 	/**
@@ -92,7 +93,6 @@ class FilesModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_files';
-
 
 	/**
 	 * Find a file by its primary key
@@ -112,7 +112,6 @@ class FilesModel extends \Model
 		return parent::findByPk($varValue, $arrOptions);
 	}
 
-
 	/**
 	 * Find a file by its ID or UUID
 	 *
@@ -130,7 +129,6 @@ class FilesModel extends \Model
 
 		return static::findOneBy('id', $intId, $arrOptions);
 	}
-
 
 	/**
 	 * Find a file by its parent ID
@@ -152,7 +150,6 @@ class FilesModel extends \Model
 
 		return static::findBy(array("$t.pid=UNHEX(?)"), bin2hex($intPid), $arrOptions);
 	}
-
 
 	/**
 	 * Find multiple files by their IDs or UUIDs
@@ -177,7 +174,6 @@ class FilesModel extends \Model
 		return parent::findMultipleByIds($arrIds, $arrOptions);
 	}
 
-
 	/**
 	 * Find a file by its UUID
 	 *
@@ -200,7 +196,7 @@ class FilesModel extends \Model
 		if (empty($arrOptions))
 		{
 			/** @var FilesModel $objModel */
-			$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $strUuid, 'uuid');
+			$objModel = Registry::getInstance()->fetch(static::$strTable, $strUuid, 'uuid');
 
 			if ($objModel !== null)
 			{
@@ -210,7 +206,6 @@ class FilesModel extends \Model
 
 		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);
 	}
-
 
 	/**
 	 * Find multiple files by their UUIDs
@@ -248,7 +243,6 @@ class FilesModel extends \Model
 		return static::findBy(array("$t.uuid IN(" . implode(",", $arrUuids) . ")"), null, $arrOptions);
 	}
 
-
 	/**
 	 * Find a file by its path
 	 *
@@ -266,7 +260,6 @@ class FilesModel extends \Model
 
 		return static::findOneBy('path', $path, $arrOptions);
 	}
-
 
 	/**
 	 * Find multiple files by their paths
@@ -293,7 +286,6 @@ class FilesModel extends \Model
 		return static::findBy(array("$t.path IN(" . implode(',', array_fill(0, \count($arrPaths), '?')) . ")"), $arrPaths, $arrOptions);
 	}
 
-
 	/**
 	 * Find multiple files with the same base path
 	 *
@@ -308,7 +300,6 @@ class FilesModel extends \Model
 
 		return static::findBy(array("$t.path LIKE ?"), $strPath . '%', $arrOptions);
 	}
-
 
 	/**
 	 * Find multiple files by UUID and a list of extensions
@@ -355,7 +346,6 @@ class FilesModel extends \Model
 		return static::findBy(array("$t.uuid IN(" . implode(",", $arrUuids) . ") AND $t.extension IN('" . implode("','", $arrExtensions) . "')"), null, $arrOptions);
 	}
 
-
 	/**
 	 * Find all files in a folder
 	 *
@@ -371,7 +361,6 @@ class FilesModel extends \Model
 
 		return static::findBy(array("$t.type='file' AND $t.path LIKE ? AND $t.path NOT LIKE ?"), array($strPath.'/%', $strPath.'/%/%'), $arrOptions);
 	}
-
 
 	/**
 	 * Find all folders in a folder
@@ -389,7 +378,6 @@ class FilesModel extends \Model
 		return static::findBy(array("$t.type='folder' AND $t.path LIKE ? AND $t.path NOT LIKE ?"), array($strPath.'/%', $strPath.'/%/%'), $arrOptions);
 	}
 
-
 	/**
 	 * Do not reload the data upon insert
 	 *
@@ -397,3 +385,5 @@ class FilesModel extends \Model
 	 */
 	protected function postSave($intType) {}
 }
+
+class_alias(FilesModel::class, 'FilesModel');

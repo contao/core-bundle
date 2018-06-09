@@ -14,13 +14,12 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
 /**
  * Confirm an invalid token URL.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendConfirm extends \Backend
+class BackendConfirm extends Backend
 {
 
 	/**
@@ -45,7 +44,6 @@ class BackendConfirm extends \Backend
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('modules');
 	}
-
 
 	/**
 	 * Run the controller
@@ -161,3 +159,5 @@ class BackendConfirm extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendConfirm::class, 'BackendConfirm');

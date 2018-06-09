@@ -12,13 +12,12 @@ namespace Contao;
 
 use Michelf\MarkdownExtra;
 
-
 /**
  * Front end content element "code".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentMarkdown extends \ContentElement
+class ContentMarkdown extends ContentElement
 {
 
 	/**
@@ -26,7 +25,6 @@ class ContentMarkdown extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_markdown';
-
 
 	/**
 	 * Show the raw markdown code in the back end
@@ -50,7 +48,6 @@ class ContentMarkdown extends \ContentElement
 		return parent::generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -60,3 +57,5 @@ class ContentMarkdown extends \ContentElement
 		$this->Template->content = strip_tags($this->code, \Config::get('allowedTags'));
 	}
 }
+
+class_alias(ContentMarkdown::class, 'ContentMarkdown');

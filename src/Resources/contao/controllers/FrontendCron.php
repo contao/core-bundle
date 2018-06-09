@@ -12,13 +12,12 @@ namespace Contao;
 
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Command scheduler controller.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FrontendCron extends \Frontend
+class FrontendCron extends Frontend
 {
 
 	/**
@@ -39,7 +38,6 @@ class FrontendCron extends \Frontend
 			\define('FE_USER_LOGGED_IN', false);
 		}
 	}
-
 
 	/**
 	 * Run the controller
@@ -126,7 +124,6 @@ class FrontendCron extends \Frontend
 		return $objResponse;
 	}
 
-
 	/**
 	 * Check whether the last script execution was less than a minute ago
 	 *
@@ -166,3 +163,5 @@ class FrontendCron extends \Frontend
 		return $return;
 	}
 }
+
+class_alias(FrontendCron::class, 'FrontendCron');

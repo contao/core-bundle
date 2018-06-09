@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes image size items
  *
@@ -73,7 +72,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ImageSizeItemModel extends \Model
+class ImageSizeItemModel extends Model
 {
 
 	/**
@@ -81,7 +80,6 @@ class ImageSizeItemModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_image_size_item';
-
 
 	/**
 	 * Find visible image size items by their parent ID
@@ -98,3 +96,5 @@ class ImageSizeItemModel extends \Model
 		return static::findBy(array("$t.pid=? AND $t.invisible=''"), (int) $intPid, $arrOptions);
 	}
 }
+
+class_alias(ImageSizeItemModel::class, 'ImageSizeItemModel');

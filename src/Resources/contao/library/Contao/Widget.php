@@ -10,10 +10,10 @@
 
 namespace Contao;
 
+use Contao\Database\Result;
 use Doctrine\DBAL\Types\Type;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Request;
-
 
 /**
  * Generates and validates form fields
@@ -38,73 +38,72 @@ use Symfony\Component\HttpFoundation\Request;
  *         }
  *     }
  *
- * @property string                  $id                The field ID
- * @property string                  $name              the field name
- * @property string                  $label             The field label
- * @property mixed                   $value             The field value
- * @property string                  $class             One or more CSS classes
- * @property string                  $prefix            The CSS class prefix
- * @property string                  $template          The template name
- * @property string                  $wizard            The field wizard markup
- * @property string                  $alt               The alternative text
- * @property string                  $style             The style attribute
- * @property string                  $accesskey         The key to focus the field
- * @property integer                 $tabindex          The tabindex of the field
- * @property boolean                 $disabled          Adds the disabled attribute
- * @property boolean                 $readonly          Adds the readonly attribute
- * @property boolean                 $autofocus         Adds the autofocus attribute
- * @property boolean                 $required          Adds the required attribute
- * @property string                  $onblur            The blur event
- * @property string                  $onchange          The change event
- * @property string                  $onclick           The click event
- * @property string                  $ondblclick        The double click event
- * @property string                  $onfocus           The focus event
- * @property string                  $onmousedown       The mouse down event
- * @property string                  $onmousemove       The mouse move event
- * @property string                  $onmouseout        The mouse out event
- * @property string                  $onmouseover       The mouse over event
- * @property string                  $onmouseup         The mouse up event
- * @property string                  $onkeydown         The key down event
- * @property string                  $onkeypress        The key press event
- * @property string                  $onkeyup           The key up event
- * @property string                  $onselect          The select event
- * @property boolean                 $mandatory         The field value must not be empty
- * @property boolean                 $nospace           Do not allow whitespace characters
- * @property boolean                 $allowHtml         Allow HTML tags in the field value
- * @property boolean                 $storeFile         Store uploaded files in a given folder
- * @property boolean                 $useHomeDir        Store uploaded files in the user's home directory
- * @property boolean                 $trailingSlash     Add or remove a trailing slash
- * @property boolean                 $spaceToUnderscore Convert spaces to underscores
- * @property boolean                 $doNotTrim         Do not trim the user input
- * @property string                  $forAttribute      The "for" attribute
- * @property \DataContainer          $dataContainer     The data container object
- * @property \Database\Result|object $activeRecord      The active record
- * @property string                  $mandatoryField    The "mandatory field" label
- * @property string                  $customTpl         A custom template name
- * @property string                  $slabel            The submit button label
- * @property boolean                 $preserveTags      Preserve HTML tags
- * @property boolean                 $decodeEntities    Decode HTML entities
- * @property boolean                 useRawRequestData  Use the raw request data from the Symfony request
- * @property integer                 $minlength         The minimum length
- * @property integer                 $maxlength         The maximum length
- * @property integer                 $minval            The minimum value
- * @property integer                 $maxval            The maximum value
- * @property integer                 $rgxp              The regular expression name
- * @property boolean                 $isHexColor        The field value is a hex color
- * @property string                  $strTable          The table name
- * @property string                  $strField          The field name
- * @property string                  $xlabel
- * @property integer                 $currentRecord
- * @property integer                 $rowClass
- * @property integer                 $rowClassConfirm
- * @property integer                 $storeValues
+ * @property string        $id                The field ID
+ * @property string        $name              the field name
+ * @property string        $label             The field label
+ * @property mixed         $value             The field value
+ * @property string        $class             One or more CSS classes
+ * @property string        $prefix            The CSS class prefix
+ * @property string        $template          The template name
+ * @property string        $wizard            The field wizard markup
+ * @property string        $alt               The alternative text
+ * @property string        $style             The style attribute
+ * @property string        $accesskey         The key to focus the field
+ * @property integer       $tabindex          The tabindex of the field
+ * @property boolean       $disabled          Adds the disabled attribute
+ * @property boolean       $readonly          Adds the readonly attribute
+ * @property boolean       $autofocus         Adds the autofocus attribute
+ * @property boolean       $required          Adds the required attribute
+ * @property string        $onblur            The blur event
+ * @property string        $onchange          The change event
+ * @property string        $onclick           The click event
+ * @property string        $ondblclick        The double click event
+ * @property string        $onfocus           The focus event
+ * @property string        $onmousedown       The mouse down event
+ * @property string        $onmousemove       The mouse move event
+ * @property string        $onmouseout        The mouse out event
+ * @property string        $onmouseover       The mouse over event
+ * @property string        $onmouseup         The mouse up event
+ * @property string        $onkeydown         The key down event
+ * @property string        $onkeypress        The key press event
+ * @property string        $onkeyup           The key up event
+ * @property string        $onselect          The select event
+ * @property boolean       $mandatory         The field value must not be empty
+ * @property boolean       $nospace           Do not allow whitespace characters
+ * @property boolean       $allowHtml         Allow HTML tags in the field value
+ * @property boolean       $storeFile         Store uploaded files in a given folder
+ * @property boolean       $useHomeDir        Store uploaded files in the user's home directory
+ * @property boolean       $trailingSlash     Add or remove a trailing slash
+ * @property boolean       $spaceToUnderscore Convert spaces to underscores
+ * @property boolean       $doNotTrim         Do not trim the user input
+ * @property string        $forAttribute      The "for" attribute
+ * @property DataContainer $dataContainer     The data container object
+ * @property Result|object $activeRecord      The active record
+ * @property string        $mandatoryField    The "mandatory field" label
+ * @property string        $customTpl         A custom template name
+ * @property string        $slabel            The submit button label
+ * @property boolean       $preserveTags      Preserve HTML tags
+ * @property boolean       $decodeEntities    Decode HTML entities
+ * @property boolean       useRawRequestData  Use the raw request data from the Symfony request
+ * @property integer       $minlength         The minimum length
+ * @property integer       $maxlength         The maximum length
+ * @property integer       $minval            The minimum value
+ * @property integer       $maxval            The maximum value
+ * @property integer       $rgxp              The regular expression name
+ * @property boolean       $isHexColor        The field value is a hex color
+ * @property string        $strTable          The table name
+ * @property string        $strField          The field name
+ * @property string        $xlabel
+ * @property integer       $currentRecord
+ * @property integer       $rowClass
+ * @property integer       $rowClassConfirm
+ * @property integer       $storeValues
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Widget extends \Controller
+abstract class Widget extends Controller
 {
-	use \TemplateInheritance;
-
+	use TemplateInheritance;
 
 	/**
 	 * Id
@@ -196,7 +195,6 @@ abstract class Widget extends \Controller
 	 */
 	protected $objDca;
 
-
 	/**
 	 * Initialize the object
 	 *
@@ -220,7 +218,6 @@ abstract class Widget extends \Controller
 
 		$this->addAttributes($arrAttributes);
 	}
-
 
 	/**
 	 * Set an object property
@@ -365,7 +362,6 @@ abstract class Widget extends \Controller
 		}
 	}
 
-
 	/**
 	 * Return an object property
 	 *
@@ -450,7 +446,6 @@ abstract class Widget extends \Controller
 		return parent::__get($strKey);
 	}
 
-
 	/**
 	 * Check whether an object property exists
 	 *
@@ -512,7 +507,6 @@ abstract class Widget extends \Controller
 		}
 	}
 
-
 	/**
 	 * Add an attribute
 	 *
@@ -523,7 +517,6 @@ abstract class Widget extends \Controller
 	{
 		$this->arrAttributes[$strName] = $varValue;
 	}
-
 
 	/**
 	 * Add an error message
@@ -536,7 +529,6 @@ abstract class Widget extends \Controller
 		$this->arrErrors[] = $strError;
 	}
 
-
 	/**
 	 * Return true if the widget has errors
 	 *
@@ -547,7 +539,6 @@ abstract class Widget extends \Controller
 		return !empty($this->arrErrors);
 	}
 
-
 	/**
 	 * Return the errors array
 	 *
@@ -557,7 +548,6 @@ abstract class Widget extends \Controller
 	{
 		return $this->arrErrors;
 	}
-
 
 	/**
 	 * Return a particular error as string
@@ -570,7 +560,6 @@ abstract class Widget extends \Controller
 	{
 		return $this->arrErrors[$intIndex];
 	}
-
 
 	/**
 	 * Return all errors as string separated by a given separator
@@ -589,7 +578,6 @@ abstract class Widget extends \Controller
 		return $this->hasErrors() ? implode($strSeparator, $this->arrErrors) : '';
 	}
 
-
 	/**
 	 * Return a particular error as HTML string
 	 *
@@ -602,7 +590,6 @@ abstract class Widget extends \Controller
 		return $this->hasErrors() ? sprintf('<p class="%s">%s</p>', ((TL_MODE == 'BE') ? 'tl_error tl_tip' : 'error'), $this->arrErrors[$intIndex]) : '';
 	}
 
-
 	/**
 	 * Return true if the widgets submits user input
 	 *
@@ -612,7 +599,6 @@ abstract class Widget extends \Controller
 	{
 		return $this->blnSubmitInput;
 	}
-
 
 	/**
 	 * Parse the template file and return it as string
@@ -652,7 +638,6 @@ abstract class Widget extends \Controller
 		return $strBuffer;
 	}
 
-
 	/**
 	 * Generate the label and return it as string
 	 *
@@ -673,14 +658,12 @@ abstract class Widget extends \Controller
 						($this->mandatory ? '<span class="mandatory">*</span>' : ''));
 	}
 
-
 	/**
 	 * Generate the widget and return it as string
 	 *
 	 * @return string The widget markup
 	 */
 	abstract public function generate();
-
 
 	/**
 	 * Generate the widget with error message and return it as string
@@ -696,7 +679,6 @@ abstract class Widget extends \Controller
 
 		return $blnSwitchOrder ? $strWidget . $strError : $strError . $strWidget;
 	}
-
 
 	/**
 	 * Return all attributes as string
@@ -719,7 +701,6 @@ abstract class Widget extends \Controller
 
 		return $strAttributes;
 	}
-
 
 	/**
 	 * Return a single attribute
@@ -755,7 +736,6 @@ abstract class Widget extends \Controller
 		return '';
 	}
 
-
 	/**
 	 * Set a callback to fetch the widget input instead of using getPost()
 	 *
@@ -769,7 +749,6 @@ abstract class Widget extends \Controller
 
 		return $this;
 	}
-
 
 	/**
 	 * Validate the user input and set the value
@@ -785,7 +764,6 @@ abstract class Widget extends \Controller
 
 		$this->varValue = $varValue;
 	}
-
 
 	/**
 	 * Find and return a $_POST variable
@@ -832,7 +810,6 @@ abstract class Widget extends \Controller
 
 		return $varValue;
 	}
-
 
 	/**
 	 * Recursively validate an input variable
@@ -1153,7 +1130,6 @@ abstract class Widget extends \Controller
 		return $varInput;
 	}
 
-
 	/**
 	 * Take an associative array and add it to the object's attributes
 	 *
@@ -1172,7 +1148,6 @@ abstract class Widget extends \Controller
 		}
 	}
 
-
 	/**
 	 * Check whether an option is checked
 	 *
@@ -1190,7 +1165,6 @@ abstract class Widget extends \Controller
 		return static::optionChecked($arrOption['value'], $this->varValue);
 	}
 
-
 	/**
 	 * Check whether an option is selected
 	 *
@@ -1207,7 +1181,6 @@ abstract class Widget extends \Controller
 
 		return static::optionSelected($arrOption['value'], $this->varValue);
 	}
-
 
 	/**
 	 * Return a "selected" attribute if the option is selected
@@ -1227,7 +1200,6 @@ abstract class Widget extends \Controller
 		return (\is_array($varValues) ? \in_array($strOption, $varValues) : $strOption == $varValues) ? ' selected' : '';
 	}
 
-
 	/**
 	 * Return a "checked" attribute if the option is checked
 	 *
@@ -1245,7 +1217,6 @@ abstract class Widget extends \Controller
 
 		return (\is_array($varValues) ? \in_array($strOption, $varValues) : $strOption == $varValues) ? ' checked' : '';
 	}
-
 
 	/**
 	 * Check whether an input is one of the given options
@@ -1297,7 +1268,6 @@ abstract class Widget extends \Controller
 
 		return true;
 	}
-
 
 	/**
 	 * Extract the Widget attributes from a Data Container array
@@ -1464,7 +1434,6 @@ abstract class Widget extends \Controller
 		return $arrAttributes;
 	}
 
-
 	/**
 	 * Return the empty value based on the SQL string
 	 *
@@ -1479,7 +1448,6 @@ abstract class Widget extends \Controller
 
 		return static::getEmptyValueByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['sql']);
 	}
-
 
 	/**
 	 * Return the empty value based on the SQL string
@@ -1537,7 +1505,6 @@ abstract class Widget extends \Controller
 		return '';
 	}
 
-
 	/**
 	 * Return either an empty string or null based on the SQL string
 	 *
@@ -1552,7 +1519,6 @@ abstract class Widget extends \Controller
 
 		return static::getEmptyStringOrNullByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['sql']);
 	}
-
 
 	/**
 	 * Return either an empty string or null based on the SQL string
@@ -1571,7 +1537,6 @@ abstract class Widget extends \Controller
 		return static::getEmptyValueByFieldType($sql) === null ? null : '';
 	}
 
-
 	/**
 	 * Generate a submit button
 	 *
@@ -1586,3 +1551,5 @@ abstract class Widget extends \Controller
 		return '';
 	}
 }
+
+class_alias(Widget::class, 'Widget');

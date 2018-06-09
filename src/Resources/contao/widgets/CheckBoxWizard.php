@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle sortable checkboxes.
  *
@@ -20,7 +19,7 @@ namespace Contao;
  * @author John Brand <http://www.thyon.com>
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class CheckBoxWizard extends \Widget
+class CheckBoxWizard extends Widget
 {
 
 	/**
@@ -34,7 +33,6 @@ class CheckBoxWizard extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget_chk';
-
 
 	/**
 	 * Add specific attributes
@@ -56,7 +54,6 @@ class CheckBoxWizard extends \Widget
 		}
 	}
 
-
 	/**
 	 * Check for a valid option (see #4383)
 	 */
@@ -71,7 +68,6 @@ class CheckBoxWizard extends \Widget
 
 		parent::validate();
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -135,7 +131,6 @@ class CheckBoxWizard extends \Widget
 						$this->strId);
 	}
 
-
 	/**
 	 * Generate a checkbox and return it as string
 	 *
@@ -151,10 +146,12 @@ class CheckBoxWizard extends \Widget
 						$this->strName . ($this->multiple ? '[]' : ''),
 						$this->strId.'_'.$i,
 						($this->multiple ? \StringUtil::specialchars($arrOption['value']) : 1),
-						((\is_array($this->varValue) && \in_array($arrOption['value'], $this->varValue) || $this->varValue == $arrOption['value']) ? ' checked="checked"' : ''),
+						(((\is_array($this->varValue) && \in_array($arrOption['value'], $this->varValue)) || $this->varValue == $arrOption['value']) ? ' checked="checked"' : ''),
 						$this->getAttributes(),
 						$strButtons,
 						$this->strId.'_'.$i,
 						$arrOption['label']);
 	}
 }
+
+class_alias(CheckBoxWizard::class, 'CheckBoxWizard');

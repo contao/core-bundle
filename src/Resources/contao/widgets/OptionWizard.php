@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle form field options.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class OptionWizard extends \Widget
+class OptionWizard extends Widget
 {
 
 	/**
@@ -30,7 +29,6 @@ class OptionWizard extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget';
-
 
 	/**
 	 * Validate the input and set the value
@@ -82,7 +80,6 @@ class OptionWizard extends \Widget
 			$this->mandatory = true;
 		}
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -148,3 +145,5 @@ class OptionWizard extends \Widget
   <script>Backend.optionsWizard("ctrl_'.$this->strId.'")</script>';
 	}
 }
+
+class_alias(OptionWizard::class, 'OptionWizard');

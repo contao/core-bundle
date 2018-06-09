@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "accordion" (wrapper stop).
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentAccordionStop extends \ContentElement
+class ContentAccordionStop extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentAccordionStop extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_accordionStop';
-
 
 	/**
 	 * Generate the content element
@@ -38,3 +36,5 @@ class ContentAccordionStop extends \ContentElement
 		}
 	}
 }
+
+class_alias(ContentAccordionStop::class, 'ContentAccordionStop');

@@ -14,13 +14,12 @@ use Contao\CoreBundle\Exception\ForwardPageNotFoundException;
 use Contao\CoreBundle\Exception\InsufficientAuthenticationException;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Provide methods to handle an error 401 page.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class PageError401 extends \Frontend
+class PageError401 extends Frontend
 {
 
 	/**
@@ -43,7 +42,6 @@ class PageError401 extends \Frontend
 		$objHandler->generate($objPage);
 	}
 
-
 	/**
 	 * Return a response object
 	 *
@@ -64,7 +62,6 @@ class PageError401 extends \Frontend
 
 		return $objHandler->getResponse($objPage)->setStatusCode(401);
 	}
-
 
 	/**
 	 * Prepare the output
@@ -115,3 +112,5 @@ class PageError401 extends \Frontend
 		return $obj401;
 	}
 }
+
+class_alias(PageError401::class, 'PageError401');

@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "code".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentCode extends \ContentElement
+class ContentCode extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentCode extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_code';
-
 
 	/**
 	 * Show the raw code in the back end
@@ -48,7 +46,6 @@ class ContentCode extends \ContentElement
 		return parent::generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -67,3 +64,5 @@ class ContentCode extends \ContentElement
 		$this->Template->cssClass = strtolower($this->highlight) ?: 'nohighlight';
 	}
 }
+
+class_alias(ContentCode::class, 'ContentCode');

@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "article list".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleArticlenav extends \Module
+class ModuleArticlenav extends Module
 {
 
 	/**
@@ -32,7 +31,6 @@ class ModuleArticlenav extends \Module
 	 * @var ArticleModel[]
 	 */
 	protected $objArticles;
-
 
 	/**
 	 * Do not display the module if there are no articles
@@ -83,7 +81,6 @@ class ModuleArticlenav extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -184,3 +181,5 @@ class ModuleArticlenav extends \Module
 		}
 	}
 }
+
+class_alias(ModuleArticlenav::class, 'ModuleArticlenav');

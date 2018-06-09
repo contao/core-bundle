@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "list".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentList extends \ContentElement
+class ContentList extends ContentElement
 {
 
 	/**
@@ -24,7 +23,6 @@ class ContentList extends \ContentElement
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_list';
-
 
 	/**
 	 * Generate the content element
@@ -48,3 +46,5 @@ class ContentList extends \ContentElement
 		$this->Template->tag = ($this->listtype == 'ordered') ? 'ol' : 'ul';
 	}
 }
+
+class_alias(ContentList::class, 'ContentList');

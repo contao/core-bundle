@@ -13,13 +13,12 @@ namespace Contao;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Provide methods to manage front end controllers.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class Frontend extends \Controller
+abstract class Frontend extends Controller
 {
 
 	/**
@@ -40,7 +39,6 @@ abstract class Frontend extends \Controller
 	 */
 	protected $arrProcessed = array();
 
-
 	/**
 	 * Load the database object
 	 *
@@ -51,7 +49,6 @@ abstract class Frontend extends \Controller
 		parent::__construct();
 		$this->import('Database');
 	}
-
 
 	/**
 	 * Split the current request into fragments, strip the URL suffix, recreate the $_GET array and return the page ID
@@ -267,7 +264,6 @@ abstract class Frontend extends \Controller
 		return $arrFragments[0] ?: null;
 	}
 
-
 	/**
 	 * Return the root page ID
 	 *
@@ -282,7 +278,6 @@ abstract class Frontend extends \Controller
 
 		return static::getRootPageFromUrl()->id;
 	}
-
 
 	/**
 	 * Try to find a root page based on language and URL
@@ -363,7 +358,6 @@ abstract class Frontend extends \Controller
 
 		return $objRootPage;
 	}
-
 
 	/**
 	 * Overwrite the parent method as front end URLs are handled differently
@@ -450,7 +444,6 @@ abstract class Frontend extends \Controller
 		return $strUrl;
 	}
 
-
 	/**
 	 * Redirect to a jumpTo page or reload the current page
 	 *
@@ -495,7 +488,6 @@ abstract class Frontend extends \Controller
 		$this->reload();
 	}
 
-
 	/**
 	 * Check whether a back end or front end user is logged in
 	 *
@@ -531,7 +523,6 @@ abstract class Frontend extends \Controller
 		return false;
 	}
 
-
 	/**
 	 * Get the meta data from a serialized string
 	 *
@@ -560,7 +551,6 @@ abstract class Frontend extends \Controller
 		return $arrData[$strLanguage];
 	}
 
-
 	/**
 	 * Prepare a text to be used in the meta description tag
 	 *
@@ -577,7 +567,6 @@ abstract class Frontend extends \Controller
 
 		return trim($strText);
 	}
-
 
 	/**
 	 * Return the cron timeout in seconds
@@ -600,7 +589,6 @@ abstract class Frontend extends \Controller
 		}
 	}
 
-
 	/**
 	 * Index a page if applicable
 	 *
@@ -616,7 +604,7 @@ abstract class Frontend extends \Controller
 		}
 
 		// Index page if searching is allowed and there is no back end user
-		if (\Config::get('enableSearch') && $objPage->type == 'regular' && !BE_USER_LOGGED_IN && !$objPage->noSearch)
+		if (\Config::get('enableSearch') && $objResponse->getStatusCode() == 200 && !BE_USER_LOGGED_IN && !$objPage->noSearch)
 		{
 			// Index protected pages if enabled
 			if (\Config::get('indexProtected') || (!FE_USER_LOGGED_IN && !$objPage->protected))
@@ -651,7 +639,6 @@ abstract class Frontend extends \Controller
 		}
 	}
 
-
 	/**
 	 * Check whether there is a cached version of the page and return a response object
 	 *
@@ -667,3 +654,5 @@ abstract class Frontend extends \Controller
 		return null;
 	}
 }
+
+class_alias(Frontend::class, 'Frontend');

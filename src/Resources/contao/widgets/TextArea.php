@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle textareas.
  *
@@ -22,7 +21,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class TextArea extends \Widget
+class TextArea extends Widget
 {
 
 	/**
@@ -55,7 +54,6 @@ class TextArea extends \Widget
 	 */
 	protected $strTemplate = 'be_widget';
 
-
 	/**
 	 * Add specific attributes
 	 *
@@ -85,6 +83,10 @@ class TextArea extends \Widget
 				parent::__set($strKey, $varValue);
 				break;
 
+			case 'placeholder':
+				$this->arrAttributes['placeholder'] = $varValue;
+				break;
+
 			case 'rows':
 				$this->intRows = $varValue;
 				break;
@@ -98,7 +100,6 @@ class TextArea extends \Widget
 				break;
 		}
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -123,3 +124,5 @@ class TextArea extends \Widget
 						$this->wizard);
 	}
 }
+
+class_alias(TextArea::class, 'TextArea');

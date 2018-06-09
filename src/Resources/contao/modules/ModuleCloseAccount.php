@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "close account".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleCloseAccount extends \Module
+class ModuleCloseAccount extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleCloseAccount extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_closeAccount';
-
 
 	/**
 	 * Display a wildcard in the back end
@@ -57,7 +55,6 @@ class ModuleCloseAccount extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -156,3 +153,5 @@ class ModuleCloseAccount extends \Module
 		$this->Template->rowLast = 'row_1 row_last odd';
 	}
 }
+
+class_alias(ModuleCloseAccount::class, 'ModuleCloseAccount');

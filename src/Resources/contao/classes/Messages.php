@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Add system messages to the welcome screen.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class Messages extends \Backend
+class Messages extends Backend
 {
 
 	/**
@@ -52,7 +51,6 @@ class Messages extends \Backend
 		return '';
 	}
 
-
 	/**
 	 * Check for maintenance mode
 	 *
@@ -81,7 +79,6 @@ class Messages extends \Backend
 
 		return '';
 	}
-
 
 	/**
 	 * Show a warning if there is no language fallback page
@@ -128,3 +125,5 @@ class Messages extends \Backend
 		return implode("\n", $arrReturn);
 	}
 }
+
+class_alias(Messages::class, 'Messages');

@@ -15,9 +15,9 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerInterface;
 use Contao\Image\ResizeConfiguration;
+use FOS\HttpCacheBundle\CacheManager;
 use Imagine\Gd\Imagine;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
-
 
 /**
  * Provide methods to handle data container arrays.
@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class DataContainer extends \Backend
+abstract class DataContainer extends Backend
 {
 
 	/**
@@ -144,7 +144,6 @@ abstract class DataContainer extends \Backend
 	 */
 	protected $blnCreateNewVersion = false;
 
-
 	/**
 	 * Set an object property
 	 *
@@ -168,7 +167,6 @@ abstract class DataContainer extends \Backend
 				break;
 		}
 	}
-
 
 	/**
 	 * Return an object property
@@ -216,7 +214,6 @@ abstract class DataContainer extends \Backend
 
 		return parent::__get($strKey);
 	}
-
 
 	/**
 	 * Render a row of a box and return it as HTML string
@@ -675,7 +672,6 @@ abstract class DataContainer extends \Backend
 </div>';
 	}
 
-
 	/**
 	 * Return the field explanation as HTML string
 	 *
@@ -695,7 +691,6 @@ abstract class DataContainer extends \Backend
 		return '
   <p class="tl_help tl_tip' . $strClass . '">'.$return.'</p>';
 	}
-
 
 	/**
 	 * Generate possible palette names from an array by taking the first value and either adding or not adding the following values
@@ -725,7 +720,6 @@ abstract class DataContainer extends \Backend
 		return array_filter($return);
 	}
 
-
 	/**
 	 * Return a query string that switches into edit mode
 	 *
@@ -750,7 +744,6 @@ abstract class DataContainer extends \Backend
 
 		return $strUrl . (!empty($arrKeys) ? '&' : '') . (\Input::get('table') ? 'table='.\Input::get('table').'&amp;' : '').'act=edit&amp;id='.rawurlencode($id);
 	}
-
 
 	/**
 	 * Compile buttons from the table configuration array and return them as HTML
@@ -846,7 +839,6 @@ abstract class DataContainer extends \Backend
 		return trim($return);
 	}
 
-
 	/**
 	 * Compile global buttons from the table configuration array and return them as HTML
 	 *
@@ -915,7 +907,6 @@ abstract class DataContainer extends \Backend
 		return $return;
 	}
 
-
 	/**
 	 * Compile header buttons from the table configuration array and return them as HTML
 	 *
@@ -935,7 +926,7 @@ abstract class DataContainer extends \Backend
 
 		foreach ($GLOBALS['TL_DCA'][$strPtable]['list']['operations'] as $k=> $v)
 		{
-			if (empty($v['showInHeader']) || \Input::get('act') == 'select' && !$v['showOnSelect'])
+			if (empty($v['showInHeader']) || (\Input::get('act') == 'select' && !$v['showOnSelect']))
 			{
 				continue;
 			}
@@ -993,7 +984,6 @@ abstract class DataContainer extends \Backend
 		return $return;
 	}
 
-
 	/**
 	 * Initialize the picker
 	 *
@@ -1033,7 +1023,6 @@ abstract class DataContainer extends \Backend
 		return $attributes;
 	}
 
-
 	/**
 	 * Return the picker input field markup
 	 *
@@ -1057,7 +1046,6 @@ abstract class DataContainer extends \Backend
 
 		return '';
 	}
-
 
 	/**
 	 * Build the sort panel and return it as string
@@ -1189,6 +1177,48 @@ abstract class DataContainer extends \Backend
 		return $return;
 	}
 
+	/**
+	 * Invalidates a list of cache tags.
+	 *
+	 * Call this whenever an entry is modified (added, updated, deleted).
+	 *
+	 * @param array $tags
+	 */
+	protected function invalidateCacheTags(array $tags)
+	{
+		if (!System::getContainer()->has('fos_http_cache.cache_manager'))
+		{
+			return;
+		}
+
+		// Filter empty tags
+		$tags = array_filter(array_unique($tags));
+
+		/** @var CacheManager $cacheManager */
+		$cacheManager = System::getContainer()->get('fos_http_cache.cache_manager');
+		$cacheManager->invalidateTags($tags);
+	}
+
+	/**
+	 * Returns an array of cache tags with all parent tables included.
+	 *
+	 * @param string $table
+	 * @param array $ids
+	 *
+	 * @return array
+	 */
+	protected function getCacheTags($table, array $ids = array())
+	{
+		$ns = 'contao.db.';
+		$tags = array($ns . $table);
+
+		foreach ($ids as $id)
+		{
+			$tags[] = $ns . $table . '.' . $id;
+		}
+
+		return array_unique($tags);
+	}
 
 	/**
 	 * Return the name of the current palette
@@ -1196,7 +1226,6 @@ abstract class DataContainer extends \Backend
 	 * @return string
 	 */
 	abstract public function getPalette();
-
 
 	/**
 	 * Save the current value
@@ -1207,3 +1236,5 @@ abstract class DataContainer extends \Backend
 	 */
 	abstract protected function save($varValue);
 }
+
+class_alias(DataContainer::class, 'DataContainer');

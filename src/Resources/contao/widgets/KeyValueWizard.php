@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle key value pairs.
  *
@@ -18,7 +17,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class KeyValueWizard extends \Widget
+class KeyValueWizard extends Widget
 {
 
 	/**
@@ -32,7 +31,6 @@ class KeyValueWizard extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget';
-
 
 	/**
 	 * Add specific attributes
@@ -56,7 +54,6 @@ class KeyValueWizard extends \Widget
 				break;
 		}
 	}
-
 
 	/**
 	 * Validate the input and set the value
@@ -102,7 +99,6 @@ class KeyValueWizard extends \Widget
 			$this->mandatory = true;
 		}
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -164,3 +160,5 @@ class KeyValueWizard extends \Widget
   <script>Backend.keyValueWizard("ctrl_'.$this->strId.'")</script>';
 	}
 }
+
+class_alias(KeyValueWizard::class, 'KeyValueWizard');

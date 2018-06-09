@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Loads modules based on their autoload.ini configuration
  *
@@ -45,7 +44,6 @@ class ModuleLoader
 		'ContaoNewsletterBundle' => 'newsletter'
 	);
 
-
 	/**
 	 * Return the active modules as array
 	 *
@@ -70,7 +68,6 @@ class ModuleLoader
 		return $bundles;
 	}
 
-
 	/**
 	 * Return the disabled modules as array
 	 *
@@ -85,3 +82,5 @@ class ModuleLoader
 		return array();
 	}
 }
+
+class_alias(ModuleLoader::class, 'ModuleLoader');

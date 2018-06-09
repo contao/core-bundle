@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle file uploads in the back end.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class FileUpload extends \Backend
+class FileUpload extends Backend
 {
 
 	/**
@@ -37,7 +36,6 @@ class FileUpload extends \Backend
 	 */
 	protected $strName = 'files';
 
-
 	/**
 	 * Make the constructor public
 	 */
@@ -45,7 +43,6 @@ class FileUpload extends \Backend
 	{
 		parent::__construct();
 	}
-
 
 	/**
 	 * Return true if there was an error
@@ -57,7 +54,6 @@ class FileUpload extends \Backend
 		return $this->blnHasError;
 	}
 
-
 	/**
 	 * Return true if there was a resized image
 	 *
@@ -68,7 +64,6 @@ class FileUpload extends \Backend
 		return $this->blnHasResized;
 	}
 
-
 	/**
 	 * Override the field name
 	 *
@@ -78,7 +73,6 @@ class FileUpload extends \Backend
 	{
 		$this->strName = $strName;
 	}
-
 
 	/**
 	 * Check the uploaded files and move them to the target directory
@@ -150,10 +144,23 @@ class FileUpload extends \Backend
 				$this->blnHasError = true;
 			}
 
-			// Move the file to its destination
 			else
 			{
 				$strExtension = strtolower(substr($file['name'], strrpos($file['name'], '.') + 1));
+
+				// Image is too big
+				if (\in_array($strExtension, array('gif', 'jpg', 'jpeg', 'png')) && \System::getContainer()->getParameter('contao.image.reject_large_uploads'))
+				{
+					$arrImageSize = getimagesize($file['tmp_name']);
+
+					if ($arrImageSize[0] > \Config::get('gdMaxImgWidth') || $arrImageSize[1] > \Config::get('gdMaxImgHeight'))
+					{
+						\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['largeImage'], \Config::get('gdMaxImgWidth'), \Config::get('gdMaxImgHeight')));
+						$this->blnHasError = true;
+
+						return $arrUploaded;
+					}
+				}
 
 				// File type not allowed
 				if (!\in_array($strExtension, \StringUtil::trimsplit(',', strtolower(\Config::get('uploadTypes')))))
@@ -161,6 +168,8 @@ class FileUpload extends \Backend
 					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['filetype'], $strExtension));
 					$this->blnHasError = true;
 				}
+
+				// Move the file to its destination
 				else
 				{
 					$this->import('Files');
@@ -187,7 +196,6 @@ class FileUpload extends \Backend
 		return $arrUploaded;
 	}
 
-
 	/**
 	 * Generate the markup for the default uploader
 	 *
@@ -208,7 +216,6 @@ class FileUpload extends \Backend
 
 		return $return;
 	}
-
 
 	/**
 	 * Get the files from the global $_FILES array
@@ -246,7 +253,6 @@ class FileUpload extends \Backend
 		return $arrFiles;
 	}
 
-
 	/**
 	 * Return the maximum upload file size in bytes
 	 *
@@ -273,7 +279,6 @@ class FileUpload extends \Backend
 
 		return min($upload_max_filesize, \Config::get('maxFileSize'));
 	}
-
 
 	/**
 	 * Resize an uploaded image if neccessary
@@ -347,3 +352,5 @@ class FileUpload extends \Backend
 		return false;
 	}
 }
+
+class_alias(FileUpload::class, 'FileUpload');

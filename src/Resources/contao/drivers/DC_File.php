@@ -12,13 +12,12 @@ namespace Contao;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
-
 /**
  * Provide methods to edit the local configuration file.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class DC_File extends \DataContainer implements \editable
+class DC_File extends DataContainer implements \editable
 {
 
 	/**
@@ -60,7 +59,6 @@ class DC_File extends \DataContainer implements \editable
 		}
 	}
 
-
 	/**
 	 * Automatically switch to edit mode
 	 *
@@ -70,7 +68,6 @@ class DC_File extends \DataContainer implements \editable
 	{
 		return $this->edit();
 	}
-
 
 	/**
 	 * Automatically switch to edit mode
@@ -82,7 +79,6 @@ class DC_File extends \DataContainer implements \editable
 		return $this->edit();
 	}
 
-
 	/**
 	 * Automatically switch to edit mode
 	 *
@@ -93,7 +89,6 @@ class DC_File extends \DataContainer implements \editable
 		return $this->edit();
 	}
 
-
 	/**
 	 * Automatically switch to edit mode
 	 *
@@ -103,7 +98,6 @@ class DC_File extends \DataContainer implements \editable
 	{
 		return $this->edit();
 	}
-
 
 	/**
 	 * Auto-generate a form to edit the local configuration file
@@ -361,7 +355,6 @@ class DC_File extends \DataContainer implements \editable
 		return $return;
 	}
 
-
 	/**
 	 * Save the current value
 	 *
@@ -478,7 +471,6 @@ class DC_File extends \DataContainer implements \editable
 		}
 	}
 
-
 	/**
 	 * Return the name of the current palette
 	 *
@@ -570,3 +562,5 @@ class DC_File extends \DataContainer implements \editable
 		return $strPalette;
 	}
 }
+
+class_alias(DC_File::class, 'DC_File');

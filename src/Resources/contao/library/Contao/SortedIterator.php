@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Sort iterator items ascending
  *
@@ -32,7 +31,6 @@ class SortedIterator extends \SplHeap
 		}
 	}
 
-
 	/**
 	 * Sort items ascending
 	 *
@@ -46,3 +44,5 @@ class SortedIterator extends \SplHeap
 		return strcmp($b->getRealpath(), $a->getRealpath());
 	}
 }
+
+class_alias(SortedIterator::class, 'SortedIterator');

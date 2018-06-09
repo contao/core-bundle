@@ -12,13 +12,12 @@ namespace Contao;
 
 use Patchwork\Utf8;
 
-
 /**
  * Front end module "sitemap".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleSitemap extends \Module
+class ModuleSitemap extends Module
 {
 
 	/**
@@ -26,7 +25,6 @@ class ModuleSitemap extends \Module
 	 * @var string
 	 */
 	protected $strTemplate = 'mod_sitemap';
-
 
 	/**
 	 * Display a wildcard in the back end
@@ -51,7 +49,6 @@ class ModuleSitemap extends \Module
 
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -95,3 +92,5 @@ class ModuleSitemap extends \Module
 		$this->Template->items = $this->renderNavigation($this->rootPage, 1, $host, $lang);
 	}
 }
+
+class_alias(ModuleSitemap::class, 'ModuleSitemap');

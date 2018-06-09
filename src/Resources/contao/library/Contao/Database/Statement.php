@@ -13,7 +13,6 @@ namespace Contao\Database;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement as DoctrineStatement;
 
-
 /**
  * Create and execute queries
  *
@@ -67,7 +66,6 @@ class Statement
 	 */
 	protected static $arrCache = array();
 
-
 	/**
 	 * Validate the connection resource and store the query string
 	 *
@@ -79,7 +77,6 @@ class Statement
 		$this->resConnection = $resConnection;
 		$this->blnDisableAutocommit = $blnDisableAutocommit;
 	}
-
 
 	/**
 	 * Return an object property
@@ -113,7 +110,6 @@ class Statement
 
 		return null;
 	}
-
 
 	/**
 	 * Prepare a query string so the following functions can handle it
@@ -156,7 +152,6 @@ class Statement
 
 		return $this;
 	}
-
 
 	/**
 	 * Autogenerate the SET/VALUES subpart of a query from an associative array
@@ -204,7 +199,6 @@ class Statement
 		return $this;
 	}
 
-
 	/**
 	 * Handle limit and offset
 	 *
@@ -237,7 +231,6 @@ class Statement
 		return $this;
 	}
 
-
 	/**
 	 * Execute the query and return the result object
 	 *
@@ -256,7 +249,6 @@ class Statement
 
 		return $this->query();
 	}
-
 
 	/**
 	 * Directly send a query string to the database
@@ -290,9 +282,8 @@ class Statement
 		}
 
 		// Instantiate a result object
-		return new \Database\Result($this->statement, $this->strQuery);
+		return new Result($this->statement, $this->strQuery);
 	}
-
 
 	/**
 	 * Replace the wildcards in the query string
@@ -312,7 +303,6 @@ class Statement
 			throw new \Exception('Too few arguments to build the query string');
 		}
 	}
-
 
 	/**
 	 * Escape the values and serialize objects and arrays
@@ -352,7 +342,6 @@ class Statement
 		return $arrValues;
 	}
 
-
 	/**
 	 * Explain the current query
 	 *
@@ -363,22 +352,20 @@ class Statement
 		return $this->resConnection->executeQuery('EXPLAIN ' . $this->strQuery)->fetch();
 	}
 
-
 	/**
 	 * Bypass the cache and always execute the query
 	 *
 	 * @return Result The result object
 	 *
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
-	 *             Use Database\Statement::execute() instead.
+	 *             Use Statement::execute() instead.
 	 */
 	public function executeUncached()
 	{
-		@trigger_error('Using Database\Statement::executeUncached() has been deprecated and will no longer work in Contao 5.0. Use Database\Statement::execute() instead.', E_USER_DEPRECATED);
+		@trigger_error('Using Statement::executeUncached() has been deprecated and will no longer work in Contao 5.0. Use Statement::execute() instead.', E_USER_DEPRECATED);
 
 		return \call_user_func_array(array($this, 'execute'), \func_get_args());
 	}
-
 
 	/**
 	 * Always execute the query and add or replace an existing cache entry
@@ -386,12 +373,14 @@ class Statement
 	 * @return Result The result object
 	 *
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
-	 *             Use Database\Statement::execute() instead.
+	 *             Use Statement::execute() instead.
 	 */
 	public function executeCached()
 	{
-		@trigger_error('Using Database\Statement::executeCached() has been deprecated and will no longer work in Contao 5.0. Use Database\Statement::execute() instead.', E_USER_DEPRECATED);
+		@trigger_error('Using Statement::executeCached() has been deprecated and will no longer work in Contao 5.0. Use Statement::execute() instead.', E_USER_DEPRECATED);
 
 		return \call_user_func_array(array($this, 'execute'), \func_get_args());
 	}
 }
+
+class_alias(Statement::class, 'Database\Statement');

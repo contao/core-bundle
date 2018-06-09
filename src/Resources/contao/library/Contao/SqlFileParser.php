@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Parses a database.sql file.
  *
@@ -99,3 +98,5 @@ class SqlFileParser
 		return $return;
 	}
 }
+
+class_alias(SqlFileParser::class, 'SqlFileParser');

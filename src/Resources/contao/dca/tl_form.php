@@ -8,10 +8,6 @@
  * @license LGPL-3.0-or-later
  */
 
-
-/**
- * Table tl_form
- */
 $GLOBALS['TL_DCA']['tl_form'] = array
 (
 
@@ -279,7 +275,6 @@ $GLOBALS['TL_DCA']['tl_form'] = array
 	)
 );
 
-
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
@@ -296,7 +291,6 @@ class tl_form extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
-
 
 	/**
 	 * Check permissions to edit table tl_form
@@ -353,7 +347,7 @@ class tl_form extends Backend
 						// Add the permissions on group level
 						if ($this->User->inherit != 'custom')
 						{
-							$objGroup = $this->Database->execute("SELECT id, forms, formp FROM tl_user_group WHERE id IN(" . implode(',', array_map('intval', $this->User->groups)) . ")");
+							$objGroup = $this->Database->execute("SELECT id, forms, formp FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
 
 							while ($objGroup->next())
 							{
@@ -429,7 +423,6 @@ class tl_form extends Backend
 		}
 	}
 
-
 	/**
 	 * Auto-generate a form alias if it has not been set yet
 	 *
@@ -453,15 +446,10 @@ class tl_form extends Backend
 			// Read the slug options from the associated page
 			if (($objPage = PageModel::findWithDetails($dc->activeRecord->jumpTo)) !== null)
 			{
-				$slugOptions['locale'] = $objPage->language;
-
-				if ($objPage->validAliasCharacters)
-				{
-					$slugOptions['validChars'] = $objPage->validAliasCharacters;
-				}
+				$slugOptions = $objPage->getSlugOptions();
 			}
 
-			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::stripInsertTags($dc->activeRecord->title), $slugOptions);
+			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::prepareSlug($dc->activeRecord->title), $slugOptions);
 		}
 
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_form WHERE id=? OR alias=?")
@@ -481,7 +469,6 @@ class tl_form extends Backend
 		return $varValue;
 	}
 
-
 	/**
 	 * Get all tables and return them as array
 	 *
@@ -492,7 +479,6 @@ class tl_form extends Backend
 		return $this->Database->listTables();
 	}
 
-
 	/**
 	 * Return all form wrapper templates as array
 	 *
@@ -502,7 +488,6 @@ class tl_form extends Backend
 	{
 		return $this->getTemplateGroup('form_wrapper_');
 	}
-
 
 	/**
 	 * Return the edit header button
@@ -521,7 +506,6 @@ class tl_form extends Backend
 		return $this->User->canEditFieldsOf('tl_form') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
-
 	/**
 	 * Return the copy form button
 	 *
@@ -538,7 +522,6 @@ class tl_form extends Backend
 	{
 		return $this->User->hasAccess('create', 'formp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
-
 
 	/**
 	 * Return the delete form button

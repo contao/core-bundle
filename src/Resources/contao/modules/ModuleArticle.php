@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use FOS\HttpCache\ResponseTagger;
 
 /**
  * Provides methodes to handle articles.
@@ -31,7 +32,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleArticle extends \Module
+class ModuleArticle extends Module
 {
 
 	/**
@@ -45,7 +46,6 @@ class ModuleArticle extends \Module
 	 * @var boolean
 	 */
 	protected $blnNoMarkup = false;
-
 
 	/**
 	 * Check whether the article is published
@@ -64,9 +64,16 @@ class ModuleArticle extends \Module
 		$this->type = 'article';
 		$this->blnNoMarkup = $blnNoMarkup;
 
+		// Tag response
+		if (System::getContainer()->has('fos_http_cache.http.symfony_response_tagger'))
+		{
+			/** @var ResponseTagger $responseTagger */
+			$responseTagger = System::getContainer()->get('fos_http_cache.http.symfony_response_tagger');
+			$responseTagger->addTags(array('contao.db.tl_article.' . $this->id));
+		}
+
 		return parent::generate();
 	}
-
 
 	/**
 	 * Generate the module
@@ -250,7 +257,6 @@ class ModuleArticle extends \Module
 		}
 	}
 
-
 	/**
 	 * Print an article as PDF and stream it to the browser
 	 */
@@ -371,3 +377,5 @@ class ModuleArticle extends \Module
 		exit;
 	}
 }
+
+class_alias(ModuleArticle::class, 'ModuleArticle');

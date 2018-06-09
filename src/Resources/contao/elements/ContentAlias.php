@@ -10,13 +10,12 @@
 
 namespace Contao;
 
-
 /**
  * Front end content element "alias".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ContentAlias extends \ContentElement
+class ContentAlias extends ContentElement
 {
 
 	/**
@@ -66,7 +65,6 @@ class ContentAlias extends \ContentElement
 		return $objElement->generate();
 	}
 
-
 	/**
 	 * Generate the content element
 	 */
@@ -75,3 +73,5 @@ class ContentAlias extends \ContentElement
 		return;
 	}
 }
+
+class_alias(ContentAlias::class, 'ContentAlias');

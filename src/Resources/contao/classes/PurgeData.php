@@ -12,13 +12,12 @@ namespace Contao;
 
 use Symfony\Component\Finder\Finder;
 
-
 /**
  * Maintenance module "purge data".
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class PurgeData extends \Backend implements \executable
+class PurgeData extends Backend implements \executable
 {
 
 	/**
@@ -30,7 +29,6 @@ class PurgeData extends \Backend implements \executable
 	{
 		return \Input::post('FORM_SUBMIT') == 'tl_purge';
 	}
-
 
 	/**
 	 * Generate the module
@@ -142,3 +140,5 @@ class PurgeData extends \Backend implements \executable
 		return $objTemplate->parse();
 	}
 }
+
+class_alias(PurgeData::class, 'PurgeData');

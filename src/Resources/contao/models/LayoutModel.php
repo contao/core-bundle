@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Reads and writes page layouts
  *
@@ -189,7 +188,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class LayoutModel extends \Model
+class LayoutModel extends Model
 {
 
 	/**
@@ -199,3 +198,5 @@ class LayoutModel extends \Model
 	protected static $strTable = 'tl_layout';
 
 }
+
+class_alias(LayoutModel::class, 'LayoutModel');

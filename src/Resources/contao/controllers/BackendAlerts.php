@@ -13,13 +13,12 @@ namespace Contao;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Back end alerts wizard.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendAlerts extends \Backend
+class BackendAlerts extends Backend
 {
 
 	/**
@@ -44,7 +43,6 @@ class BackendAlerts extends \Backend
 		\System::loadLanguageFile('default');
 	}
 
-
 	/**
 	 * Run the controller and parse the template
 	 *
@@ -65,3 +63,5 @@ class BackendAlerts extends \Backend
 		return $objTemplate->getResponse();
 	}
 }
+
+class_alias(BackendAlerts::class, 'BackendAlerts');

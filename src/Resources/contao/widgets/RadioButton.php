@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle radio buttons.
  *
@@ -19,7 +18,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class RadioButton extends \Widget
+class RadioButton extends Widget
 {
 
 	/**
@@ -33,7 +32,6 @@ class RadioButton extends \Widget
 	 * @var string
 	 */
 	protected $strTemplate = 'be_widget_rdo';
-
 
 	/**
 	 * Add specific attributes
@@ -67,7 +65,6 @@ class RadioButton extends \Widget
 		}
 	}
 
-
 	/**
 	 * Check for a valid option (see #4383)
 	 */
@@ -82,7 +79,6 @@ class RadioButton extends \Widget
 
 		parent::validate();
 	}
-
 
 	/**
 	 * Generate the widget and return it as string
@@ -122,3 +118,5 @@ class RadioButton extends \Widget
 						$this->wizard);
 	}
 }
+
+class_alias(RadioButton::class, 'RadioButton');

@@ -10,7 +10,6 @@
 
 namespace Contao;
 
-
 /**
  * Provide methods to handle back end templates.
  *
@@ -21,7 +20,7 @@ namespace Contao;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class BackendTemplate extends \Template
+class BackendTemplate extends Template
 {
 
 	/**
@@ -45,7 +44,6 @@ class BackendTemplate extends \Template
 
 		return $strBuffer;
 	}
-
 
 	/**
 	 * Compile the template
@@ -155,7 +153,6 @@ class BackendTemplate extends \Template
 		parent::compile();
 	}
 
-
 	/**
 	 * Return the locale string
 	 *
@@ -181,7 +178,6 @@ class BackendTemplate extends \Template
 				. 'referer_id:"' . $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id') . '"'
 			. '};';
 	}
-
 
 	/**
 	 * Return the datepicker string
@@ -210,3 +206,5 @@ class BackendTemplate extends \Template
 			. '});';
 	}
 }
+
+class_alias(BackendTemplate::class, 'BackendTemplate');
