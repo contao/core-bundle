@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Controller\FrontendModule;
 use Contao\BackendTemplate;
 use Contao\CoreBundle\Controller\AbstractFragmentController;
 use Contao\ModuleModel;
+use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -76,4 +77,13 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
 
         return $template->getResponse();
     }
+
+    /**
+     * @param Template|\stdClass $template
+     * @param ModuleModel        $model
+     * @param Request            $request
+     *
+     * @return Response
+     */
+    abstract protected function getResponse(Template $template, ModuleModel $model, Request $request): Response;
 }

@@ -19,8 +19,6 @@ use Contao\StringUtil;
 use Contao\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractFragmentController extends Controller implements FragmentOptionsAwareInterface
 {
@@ -103,13 +101,4 @@ abstract class AbstractFragmentController extends Controller implements Fragment
     {
         return [];
     }
-
-    /**
-     * @param Template|\stdClass $template
-     * @param Model              $model
-     * @param Request            $request
-     *
-     * @return Response
-     */
-    abstract protected function getResponse(Template $template, Model $model, Request $request): Response;
 }

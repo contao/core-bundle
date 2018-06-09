@@ -14,6 +14,7 @@ namespace App\Controller\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\AbstractFragmentController;
+use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,4 +39,13 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
 
         return $this->getResponse($template, $model, $request);
     }
+
+    /**
+     * @param Template|\stdClass $template
+     * @param ContentModel       $model
+     * @param Request            $request
+     *
+     * @return Response
+     */
+    abstract protected function getResponse(Template $template, ContentModel $model, Request $request): Response;
 }
