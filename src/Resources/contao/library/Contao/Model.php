@@ -34,7 +34,8 @@ namespace Contao;
  *         echo $user->name;
  *     }
  *
- * @property integer $id The ID
+ * @property integer $id        The ID
+ * @property string  $customTpl A custom template
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */

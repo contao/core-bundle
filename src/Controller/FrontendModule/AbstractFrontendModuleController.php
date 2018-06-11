@@ -22,16 +22,19 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractFrontendModuleController extends AbstractFragmentController
 {
     /**
+     * Invokes the controller.
+     *
      * @param Request     $request
      * @param ModuleModel $model
      * @param string      $section
+     * @param array|null  $classes
      *
      * @return Response
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null)
     {
-        if ($this->showBackendWildcard($request)) {
-            return $this->getBackendWildcard($model, $request);
+        if ($this->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+            return $this->getBackendWildcard($model);
         }
 
         $type = $this->getType();
@@ -45,31 +48,24 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
     }
 
     /**
-     * @param Request $request
+     * Returns the back end wildcard.
      *
-     * @return bool
-     */
-    protected function showBackendWildcard(Request $request)
-    {
-        return $this->get('contao.routing.scope_matcher')->isBackendRequest($request);
-    }
-
-    /**
      * @param ModuleModel $module
-     * @param Request     $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    protected function getBackendWildcard(ModuleModel $module, Request $request)
+    protected function getBackendWildcard(ModuleModel $module): Response
     {
         $href = $this->get('router')->generate(
             'contao_backend',
             ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $module->id]
         );
 
-        $template = new BackendTemplate('be_wildcard');
+        $name = $this->get('translator')->trans('FMD.'.$this->getType().'.0', [], 'contao_modules');
 
-        $template->wildcard = '### '.strtoupper($this->get('translator')->trans('FMD.'.$this->getType().'.0', [], 'contao_modules')).' ###';
+        /** @var BackendTemplate|object $template */
+        $template = new BackendTemplate('be_wildcard');
+        $template->wildcard = '### '.strtoupper($name).' ###';
         $template->id = $module->id;
         $template->link = $module->name;
         $template->href = $href;
@@ -78,6 +74,8 @@ abstract class AbstractFrontendModuleController extends AbstractFragmentControll
     }
 
     /**
+     * Returns the response.
+     *
      * @param Template|\stdClass $template
      * @param ModuleModel        $model
      * @param Request            $request

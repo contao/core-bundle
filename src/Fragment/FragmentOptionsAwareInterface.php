@@ -15,7 +15,7 @@ namespace Contao\CoreBundle\Fragment;
 interface FragmentOptionsAwareInterface
 {
     /**
-     * Sets the fragments options.
+     * Sets the fragment options.
      *
      * @param array $options
      */

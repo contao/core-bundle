@@ -29,7 +29,7 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertInstanceOf('Contao\CoreBundle\Controller\AbstractFragmentController', $controller);
     }
 
-    public function testCreatesTemplateFromClassname(): void
+    public function testCreatesTheTemplateFromTheClassName(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_test'));
@@ -37,7 +37,7 @@ class FrontendModuleControllerTest extends TestCase
         $controller(new Request([], [], ['_scope' => 'frontend']), new ModuleModel(), 'main');
     }
 
-    public function testCreatesTemplateFromFragmentOptionsType(): void
+    public function testCreatesTheTemplateFromTheFragmentOptions(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_foo'));
@@ -46,7 +46,7 @@ class FrontendModuleControllerTest extends TestCase
         $controller(new Request(), new ModuleModel(), 'main');
     }
 
-    public function testCreatesTemplateFromCustomTpl(): void
+    public function testCreatesTheTemplateFromCustomTpl(): void
     {
         $model = new ModuleModel();
         $model->customTpl = 'mod_bar';
@@ -57,7 +57,7 @@ class FrontendModuleControllerTest extends TestCase
         $controller(new Request(), $model, 'main');
     }
 
-    public function testSetsClassFromType(): void
+    public function testSetsTheClassFromTheType(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_test'));
@@ -69,7 +69,7 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('mod_test', $template->class);
     }
 
-    public function testSetsHeadlineFromModel(): void
+    public function testSetsTheHeadlineFromTheModel(): void
     {
         $model = new ModuleModel();
         $model->headline = serialize(['unit' => 'h6', 'value' => 'foobar']);
@@ -84,7 +84,7 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('h6', $template->hl);
     }
 
-    public function testSetsCssIDAndClassFromModel(): void
+    public function testSetsTheCssIdAndClassFromTheModel(): void
     {
         $model = new ModuleModel();
         $model->cssID = serialize(['foo', 'bar']);
@@ -99,7 +99,7 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('mod_test bar', $template->class);
     }
 
-    public function testSetsSection(): void
+    public function testSetsTheLayoutSection(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_test'));
@@ -110,9 +110,15 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('left', $template->inColumn);
     }
 
-    private function mockContainerWithFrameworkTemplate(string $templateName, $scope = 'backend')
+    /**
+     * @param string $templateName
+     *
+     * @return ContainerBuilder
+     */
+    private function mockContainerWithFrameworkTemplate(string $templateName): ContainerBuilder
     {
         $framework = $this->mockContaoFramework();
+
         $framework
             ->expects($this->once())
             ->method('createInstance')

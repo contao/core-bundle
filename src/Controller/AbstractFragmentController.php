@@ -46,18 +46,17 @@ abstract class AbstractFragmentController extends Controller implements Fragment
     protected function createTemplate(Model $model, string $templateName): Template
     {
         if ($model->customTpl) {
-            $template = $this->get('contao.framework')->createInstance(FrontendTemplate::class, [$model->customTpl]);
-        } else {
-            $template = $this->get('contao.framework')->createInstance(FrontendTemplate::class, [$templateName]);
+            $templateName = $model->customTpl;
         }
 
+        $template = $this->get('contao.framework')->createInstance(FrontendTemplate::class, [$templateName]);
         $template->setData($model->row());
 
         return $template;
     }
 
     /**
-     * Adds headline to the template.
+     * Adds the headline to the template.
      *
      * @param Template     $template
      * @param string|array $headline
@@ -70,7 +69,7 @@ abstract class AbstractFragmentController extends Controller implements Fragment
     }
 
     /**
-     * Adds CSS ID and class to the template.
+     * Adds the CSS ID and class to the template.
      *
      * @param Template     $template
      * @param string       $templateName
@@ -100,6 +99,8 @@ abstract class AbstractFragmentController extends Controller implements Fragment
     }
 
     /**
+     * Returns the type from the class name.
+     *
      * @return string
      */
     protected function getType(): string

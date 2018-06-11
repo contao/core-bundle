@@ -21,10 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractContentElementController extends AbstractFragmentController
 {
     /**
+     * Invokes the controller.
+     *
      * @param Request      $request
      * @param ContentModel $model
      * @param string       $section
-     * @param string|null  $classes
+     * @param array|null   $classes
      *
      * @return Response
      */
@@ -41,6 +43,8 @@ abstract class AbstractContentElementController extends AbstractFragmentControll
     }
 
     /**
+     * Returns the response.
+     *
      * @param Template|\stdClass $template
      * @param ContentModel       $model
      * @param Request            $request

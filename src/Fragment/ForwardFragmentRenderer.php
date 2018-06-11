@@ -16,16 +16,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Fragment\InlineFragmentRenderer;
 
 /**
- * The default "inline" renderer creates a new almost blank request object for each subrequest.
- * This means a Contao fragment controller won't get POST data or other main request configuration.
- * Contrary to regular Symfony inline fragments, the Contao fragments are supposed to handle POST data etc.
+ * Implements the forward rendering strategy.
+ *
+ * The default "inline" renderer creates a new, almost blank request object for
+ * each subrequest, which means a fragment controller will not get POST data or
+ * other main request configuration. Contrary to regular Symfony inline
+ * fragments, however, the Contao fragments are supposed to handle POST data.
  */
 class ForwardFragmentRenderer extends InlineFragmentRenderer
 {
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'forward';
     }
@@ -33,7 +36,7 @@ class ForwardFragmentRenderer extends InlineFragmentRenderer
     /**
      * {@inheritdoc}
      */
-    protected function createSubRequest($uri, Request $request)
+    protected function createSubRequest($uri, Request $request): Request
     {
         return $request->duplicate();
     }
