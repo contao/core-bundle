@@ -139,5 +139,8 @@
         "forum": "https://community.contao.org",
         "source": "https://github.com/contao/core-bundle",
         "docs": "https://docs.contao.org"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
