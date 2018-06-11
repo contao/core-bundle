@@ -44,7 +44,7 @@ services:
     contao.listener.clear_form_data:
         class: Contao\CoreBundle\EventListener\ClearFormDataListener
         tags:
-            # The priority must be lower than the one of the Symfony save session listener (defaults to -1000)
+            # The priority must be higher than the one of the Symfony save session listener (defaults to -1000)
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -768 }
 
     contao.listener.command_scheduler:
