@@ -11,7 +11,6 @@
 namespace Contao;
 
 use Contao\CoreBundle\Security\Exception\LockedException;
-use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,26 +87,21 @@ class BackendIndex extends Backend
 
 		if ($request->getRequestUri() === $router->generate('contao_backend_2fa'))
 		{
-			/** @var ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
-			$twoFactorAuthenticator = \System::getContainer()->get('contao.security.two_factor.authenticator');
-
 			$objTemplate = new \BackendTemplate('be_login_2fa');
 			$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['twoFactorAuthentication'];
 			$objTemplate->action = $router->generate('contao_backend_2fa_check');
 			$objTemplate->authCode = $GLOBALS['TL_LANG']['MSC']['authCode'];
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
-			$objTemplate->qrCode = base64_encode($twoFactorAuthenticator->getUrl($this->User, $request));
 		}
 
-		$objTemplate->title = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle')));
 		$objTemplate->theme = \Backend::getTheme();
 		$objTemplate->messages = \Message::generate();
 		$objTemplate->base = \Environment::get('base');
 		$objTemplate->language = $GLOBALS['TL_LANGUAGE'];
 		$objTemplate->languages = \System::getLanguages(true); // backwards compatibility
+		$objTemplate->title = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle')));
 		$objTemplate->charset = \Config::get('characterSet');
 		$objTemplate->userLanguage = $GLOBALS['TL_LANG']['tl_user']['language'][0];
-
 		$objTemplate->curLanguage = \Input::post('language') ?: str_replace('-', '_', $GLOBALS['TL_LANGUAGE']);
 		$objTemplate->curUsername = \Input::post('username') ?: '';
 		$objTemplate->loginButton = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['continue']);

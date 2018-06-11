@@ -402,7 +402,6 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'filter'                  => true,
 			'flag'                    => 2,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50'),
 			'save_callback' => array
 			(
 				array('tl_user', 'checkAdminDisable')
@@ -471,7 +470,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
-			'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+			'eval'                    => array('submitOnChange'=>true),
 			'save_callback' => array
 			(
 				array('tl_user', 'save2faSecret')
@@ -1079,7 +1078,7 @@ class tl_user extends Backend
 <div class="' . $class . ' widget">
   <div id="ctrl_' . $dc->field . '" class="">
     <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][0] . '</label></h3>
-    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getUrl($this->User, $request)) . '" />
+    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode($this->User, $request)) . '" />
   </div>' . (Config::get('showHelp') ? '
   <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1] . '</p>' : '') . '
 </div>';

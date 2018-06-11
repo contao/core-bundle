@@ -42,7 +42,7 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
      *
      * @return string
      */
-    public function getUrl(User $user, Request $request): string
+    public function getQrCode(User $user, Request $request): string
     {
         $renderer = new ImageRenderer(
             new RendererStyle(200),
@@ -51,7 +51,7 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
 
         $writer = new Writer($renderer);
 
-        return $writer->writeString($this->getQRContent($user, $request));
+        return $writer->writeString($this->getProvisionUri($user, $request));
     }
 
     /**
@@ -60,7 +60,7 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
      *
      * @return string
      */
-    public function getQRContent(User $user, Request $request): string
+    public function getProvisionUri(User $user, Request $request): string
     {
         $issuer = rawurlencode($request->getSchemeAndHttpHost());
         $username = rawurlencode($user->getUsername());
