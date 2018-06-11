@@ -43,9 +43,6 @@
           <input type="hidden" name="_failure_path" value="<?= $this->failurePath ?>">
           <input type="hidden" name="_always_use_target_path" value="1">
           <h1><?= $this->headline ?></h1>
-          <div class="qr_code" style="text-align: center; margin: 20px 0;">
-            <img src="data:image/svg+xml;base64,<?= $this->qrCode; ?>" />
-          </div>
           <div class="widget">
             <label for="_auth_code"><?= $this->authCode ?></label>
             <input type="password" name="_auth_code" id="_auth_code" class="tl_text" value="" autocapitalize="off" autocomplete="off" placeholder="<?= $this->authCode ?>" required>

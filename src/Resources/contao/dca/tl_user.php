@@ -19,7 +19,8 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'onload_callback' => array
 		(
 			array('tl_user', 'handleUserProfile'),
-			array('tl_user', 'checkPermission')
+			array('tl_user', 'checkPermission'),
+			array('tl_user', 'build2faPalette')
 		),
 		'onsubmit_callback' => array
 		(
@@ -114,11 +115,11 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 	(
 		'__selector__'                => array('inherit', 'admin'),
 		'login'                       => '{name_legend},name,email;{backend_legend},language,uploader,showHelp,thumbnails,useRTE,useCE;{session_legend},session;{theme_legend:hide},backendTheme,fullscreen;{password_legend},password',
-		'admin'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{account_legend},disable,use2fa,start,stop',
-		'default'                     => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,use2fa,start,stop',
-		'group'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,use2fa,start,stop',
-		'extend'                      => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{modules_legend},modules,themes;{pagemounts_legend},pagemounts,alpty;{filemounts_legend},filemounts,fop;{imageSizes_legend},imageSizes;{forms_legend},forms,formp;{amg_legend},amg;{account_legend},disable,use2fa,start,stop',
-		'custom'                      => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{modules_legend},modules,themes;{pagemounts_legend},pagemounts,alpty;{filemounts_legend},filemounts,fop;{imageSizes_legend},imageSizes;{forms_legend},forms,formp;{amg_legend},amg;{account_legend},disable,use2fa,start,stop'
+		'admin'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{account_legend},disable,start,stop',
+		'default'                     => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,start,stop',
+		'group'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,start,stop',
+		'extend'                      => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{modules_legend},modules,themes;{pagemounts_legend},pagemounts,alpty;{filemounts_legend},filemounts,fop;{imageSizes_legend},imageSizes;{forms_legend},forms,formp;{amg_legend},amg;{account_legend},disable,start,stop',
+		'custom'                      => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{modules_legend},modules,themes;{pagemounts_legend},pagemounts,alpty;{filemounts_legend},filemounts,fop;{imageSizes_legend},imageSizes;{forms_legend},forms,formp;{amg_legend},amg;{account_legend},disable,start,stop'
 	),
 
 	// Fields
@@ -470,12 +471,16 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
-				array('tl_user', 'store2faSecret')
+				array('tl_user', 'save2faSecret')
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
+		),
+		'2faQrCode' => array(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['2faQrCode'],
+			'input_field_callback'    => array('tl_user', 'get2faQrCode'),
 		),
 		'secret' => array
 		(
@@ -1003,24 +1008,80 @@ class tl_user extends Backend
 		$objVersions->create();
 	}
 
-	public function store2faSecret($varValue, DataContainer $dc)
+	public function build2faPalette(DataContainer $dc)
+	{
+		foreach ($GLOBALS['TL_DCA']['tl_user']['palettes'] as $palette => $v)
+		{
+			if ($palette == '__selector__')
+			{
+				continue;
+			}
+
+			$GLOBALS['TL_DCA']['tl_user']['palettes'][$palette] = str_replace
+			(
+				',password',
+				',password;{2fa_legend},use2fa',
+				$GLOBALS['TL_DCA']['tl_user']['palettes'][$palette]
+			);
+		}
+
+		if ($dc->id == $this->User->id) {
+			// extend selector
+			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
+			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode,2faUrl';
+		}
+	}
+
+	protected function generate2faSecret(DataContainer $dc)
 	{
 		$secret = $dc->activeRecord->secret;
 
-		if ($secret === null)
+		if ($secret == null)
 		{
 			// Generate 1024 bit secret
 			$secret = random_bytes(128);
+
+			$this->Database->prepare("UPDATE tl_user SET secret=? WHERE id=?")
+				->execute($secret, $dc->id);
+
+			// Reload user with new secret
+			$this->User = BackendUser::getInstance();
 		}
 
-		if ($varValue === '')
-		{
-			$secret = null;
-		}
+		return $secret;
+	}
 
-		$this->Database->prepare("UPDATE tl_user SET secret=? WHERE id=?")
-			->execute($secret, $dc->id);
+	public function save2faSecret($varValue, DataContainer $dc)
+	{
+		$this->generate2faSecret($dc);
 
 		return $varValue;
+	}
+
+	public function get2faQrCode(DataContainer $dc)
+	{
+		$secret = $this->generate2faSecret($dc);
+
+		if ($secret == '' || $secret == null)
+		{
+			return '';
+		}
+
+		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
+		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
+
+		/** @var \Symfony\Component\HttpFoundation\Request $request */
+		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+		$class = $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['tl_class'] . ' 2fa-qr-code';
+
+		return '
+<div class="' . $class . ' widget">
+  <div id="ctrl_' . $dc->field . '" class="">
+    <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][0] . '</label></h3>
+    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getUrl($this->User, $request)) . '" />
+  </div>' . (Config::get('showHelp') ? '
+  <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1] . '</p>' : '') . '
+</div>';
 	}
 }
