@@ -233,7 +233,7 @@ class BackendUser extends User
 	 */
 	public function hasAccess($field, $array)
 	{
-		if ($this->isAdmin)
+		if ($this->isAdmin || ($array == 'modules' && $field == 'login'))
 		{
 			return true;
 		}

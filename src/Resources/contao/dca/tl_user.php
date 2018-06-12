@@ -18,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
+			array('tl_user', 'handleUserProfile'),
 			array('tl_user', 'checkPermission')
 		),
 		'onsubmit_callback' => array
@@ -536,6 +537,35 @@ class tl_user extends Backend
 				$session['CURRENT']['IDS'] = array_diff($session['CURRENT']['IDS'], $objUser->fetchEach('id'));
 				$objSession->replace($session);
 				break;
+		}
+	}
+
+	/**
+	 * Handle the profile page.
+	 * 
+	 * @param DataContainer $dc
+	 */
+	public function handleUserProfile($dc)
+	{
+		if (\Input::get('do') != 'login')
+		{
+			return;
+		}
+
+		$GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
+		$GLOBALS['TL_DCA'][$dc->table]['config']['hideVersionMenu'] = true;
+
+		$GLOBALS['TL_DCA'][$dc->table]['palettes'] = array
+		(
+			'__selector__' => $GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'],
+			'default' => $GLOBALS['TL_DCA'][$dc->table]['palettes']['login']
+		);
+
+		$arrFields = \StringUtil::trimsplit('[,;]', $GLOBALS['TL_DCA'][$dc->table]['palettes']['default']);
+
+		foreach ($arrFields as $strField)
+		{
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$strField]['exclude'] = false;
 		}
 	}
 

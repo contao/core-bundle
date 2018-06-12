@@ -302,11 +302,11 @@ abstract class Backend extends Controller
 		// Dynamically add the "personal data" module (see #4193)
 		if (\Input::get('do') == 'login')
 		{
-			$arrModule = array('tables'=>array('tl_user'), 'callback'=>'ModuleUser');
+			$arrModule = array('tables'=>array('tl_user'));
 		}
 
 		// Check whether the current user has access to the current module
-		elseif ($module != 'undo' && !$this->User->hasAccess($module, 'modules'))
+		if ($module != 'undo' && !$this->User->hasAccess($module, 'modules'))
 		{
 			throw new AccessDeniedException('Back end module "' . $module . '" is not allowed for user "' . $this->User->username . '".');
 		}
