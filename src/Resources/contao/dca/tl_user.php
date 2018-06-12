@@ -552,6 +552,12 @@ class tl_user extends Backend
 			return;
 		}
 
+		// Should not happen because of the redirect but better safe than sorry
+		if (\BackendUser::getInstance()->id != \Input::get('id') || \Input::get('act') != 'edit')
+		{
+			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not allowed to edit this page.');
+		}
+
 		$GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
 		$GLOBALS['TL_DCA'][$dc->table]['config']['hideVersionMenu'] = true;
 
