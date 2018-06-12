@@ -405,4 +405,4 @@ $GLOBALS['TL_WRAPPERS'] = array
 
 // Other global arrays
 $GLOBALS['TL_MODELS'] = array();
-$GLOBALS['TL_PERMISSIONS'] = array();
+$GLOBALS['TL_PERMISSIONS'] = array('elements');
