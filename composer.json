@@ -103,6 +103,9 @@
     "suggest": {
         "lexik/maintenance-bundle": "To put the application into maintenance mode"
     },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
             "dev-4.6": "4.6.x-dev"
@@ -139,8 +142,5 @@
         "forum": "https://community.contao.org",
         "source": "https://github.com/contao/core-bundle",
         "docs": "https://docs.contao.org"
-    },
-    "config": {
-        "sort-packages": true
     }
 }
