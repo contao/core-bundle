@@ -257,6 +257,7 @@ $GLOBALS['TL_DCA']['tl_user_group'] = array
 			'options_callback'        => ['contao.datacontainer.user', 'onGetContentElements'],
 			'reference'               => &$GLOBALS['TL_LANG']['CTE'],
 			'eval'                    => array('multiple'=>true),
+            'sql'                     => 'blob NULL'
 		)
 	)
 );

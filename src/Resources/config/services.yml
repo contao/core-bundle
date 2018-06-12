@@ -459,3 +459,24 @@ services:
             - "@contao.routing.scope_matcher"
         tags:
             - { name: twig.extension }
+
+    contao.datacontainer.content.access:
+        class: Contao\CoreBundle\DataContainer\Content\Access
+        public: true
+        arguments:
+            - "@security.token_storage"
+            - "@database_connection"
+            - "@request_stack"
+            - "@logger"
+
+    contao.datacontainer.content.buttons:
+        class: Contao\CoreBundle\DataContainer\Content\Buttons
+        public: true
+        arguments:
+            - "@security.token_storage"
+            - "@database_connection"
+            - '@contao.datacontainer.content.access'
+
+    contao.datacontainer.user:
+        class: Contao\CoreBundle\DataContainer\User\User
+        public: true

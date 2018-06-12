@@ -21,7 +21,9 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		'onload_callback'             => array
 		(
 			array('tl_content', 'adjustDcaByType'),
-			array('tl_content', 'showJsLibraryHint')
+			array('tl_content', 'showJsLibraryHint'),
+            ['contao.datacontainer.content.buttons', 'onHandleToggleAction'],
+            ['contao.datacontainer.content.access', 'filterContentElements']
 		),
 		'sql' => array
 		(
@@ -60,21 +62,24 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['edit'],
 				'href'                => 'act=edit',
-				'icon'                => 'edit.svg'
+				'icon'                => 'edit.svg',
+                'button_callback'	  => ['contao.datacontainer.content.buttons', 'onGetButtonMarkup']
 			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.svg',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
+				'attributes'          => 'onclick="Backend.getScrollOffset()"',
+                'button_callback'	  => ['contao.datacontainer.content.buttons', 'onGetButtonMarkup']
 			),
 			'cut' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.svg',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
+				'attributes'          => 'onclick="Backend.getScrollOffset()"',
+                'button_callback'	  => ['contao.datacontainer.content.buttons', 'onGetButtonMarkup']
 			),
 			'delete' => array
 			(
@@ -82,14 +87,14 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_content', 'deleteElement')
+                'button_callback'	  => ['contao.datacontainer.content.buttons', 'onGetDeleteButtonMarkup']
 			),
 			'toggle' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_content']['toggle'],
 				'icon'                => 'visible.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_content', 'toggleIcon')
+                'button_callback'	  => ['contao.datacontainer.content.buttons', 'onGetToggleButtonMarkup']
 			),
 			'show' => array
 			(
@@ -1624,14 +1629,17 @@ class tl_content extends Backend
 	 * @param string $attributes
 	 *
 	 * @return string
+     *
+     * @deprecated Deprecated since Contao 4.6. Use the contao.datacontainer.content.buttons service instead.
 	 */
 	public function deleteElement($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objElement = $this->Database->prepare("SELECT id FROM tl_content WHERE cteAlias=? AND type='alias'")
-									 ->limit(1)
-									 ->execute($row['id']);
+        @trigger_error('Calling deleteElement() directly has been deprecated. Use the contao.datacontainer.content.buttons service instead.', E_USER_DEPRECATED);
 
-		return $objElement->numRows ? Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ' : '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+        return call_user_func_array(
+            [\Contao\System::getContainer()->get('contao.datacontainer.content.buttons'), 'onGetDeleteButtonMarkup'],
+            func_get_args()
+        );
 	}
 
 	/**
@@ -1750,29 +1758,17 @@ class tl_content extends Backend
 	 * @param string $attributes
 	 *
 	 * @return string
+     *
+     * @deprecated Deprecated since Contao 4.6. Use the contao.datacontainer.content.buttons service instead.
 	 */
 	public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (\strlen(Input::get('cid')))
-		{
-			$this->toggleVisibility(Input::get('cid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
-			$this->redirect($this->getReferer());
-		}
+        @trigger_error('Calling toggleIcon() directly has been deprecated. Use the contao.datacontainer.content.buttons service instead.', E_USER_DEPRECATED);
 
-		// Check permissions AFTER checking the cid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_content::invisible', 'alexf'))
-		{
-			return '';
-		}
-
-		$href .= '&amp;id='.Input::get('id').'&amp;cid='.$row['id'].'&amp;state='.$row['invisible'];
-
-		if ($row['invisible'])
-		{
-			$icon = 'invisible.svg';
-		}
-
-		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'" data-tid="cid"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['invisible'] ? 0 : 1) . '"').'</a> ';
+        return call_user_func_array(
+            [\Contao\System::getContainer()->get('contao.datacontainer.content.buttons'), 'onGetToggleButtonMarkup'],
+            func_get_args()
+        );
 	}
 
 	/**
@@ -1783,106 +1779,16 @@ class tl_content extends Backend
 	 * @param DataContainer $dc
 	 *
 	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+     *
+     * @deprecated Deprecated since Contao 4.6.
 	 */
 	public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
 	{
-		// Set the ID and action
-		Input::setGet('id', $intId);
-		Input::setGet('act', 'toggle');
+        @trigger_error('Calling toggleVisibility() has been deprecated.', E_USER_DEPRECATED);
 
-		if ($dc)
-		{
-			$dc->id = $intId; // see #8043
-		}
-
-		// Trigger the onload_callback
-		if (\is_array($GLOBALS['TL_DCA']['tl_content']['config']['onload_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'] as $callback)
-			{
-				if (\is_array($callback))
-				{
-					$this->import($callback[0]);
-					$this->{$callback[0]}->{$callback[1]}($dc);
-				}
-				elseif (\is_callable($callback))
-				{
-					$callback($dc);
-				}
-			}
-		}
-
-		// Check the field access
-		if (!$this->User->hasAccess('tl_content::invisible', 'alexf'))
-		{
-			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to show/hide content element ID ' . $intId . '.');
-		}
-
-		// Set the current record
-		if ($dc)
-		{
-			$objRow = $this->Database->prepare("SELECT * FROM tl_content WHERE id=?")
-									 ->limit(1)
-									 ->execute($intId);
-
-			if ($objRow->numRows)
-			{
-				$dc->activeRecord = $objRow;
-			}
-		}
-
-		$objVersions = new Versions('tl_content', $intId);
-		$objVersions->initialize();
-
-		// Reverse the logic (elements have invisible=1)
-		$blnVisible = !$blnVisible;
-
-		// Trigger the save_callback
-		if (\is_array($GLOBALS['TL_DCA']['tl_content']['fields']['invisible']['save_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA']['tl_content']['fields']['invisible']['save_callback'] as $callback)
-			{
-				if (\is_array($callback))
-				{
-					$this->import($callback[0]);
-					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
-				}
-				elseif (\is_callable($callback))
-				{
-					$blnVisible = $callback($blnVisible, $dc);
-				}
-			}
-		}
-
-		$time = time();
-
-		// Update the database
-		$this->Database->prepare("UPDATE tl_content SET tstamp=$time, invisible='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
-					   ->execute($intId);
-
-		if ($dc)
-		{
-			$dc->activeRecord->tstamp = $time;
-			$dc->activeRecord->invisible = ($blnVisible ? '1' : '');
-		}
-
-		// Trigger the onsubmit_callback
-		if (\is_array($GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA']['tl_content']['config']['onsubmit_callback'] as $callback)
-			{
-				if (\is_array($callback))
-				{
-					$this->import($callback[0]);
-					$this->{$callback[0]}->{$callback[1]}($dc);
-				}
-				elseif (\is_callable($callback))
-				{
-					$callback($dc);
-				}
-			}
-		}
-
-		$objVersions->create();
+        return call_user_func_array(
+            [\Contao\System::getContainer()->get('contao.datacontainer.content.buttons'), 'onToggleVisibility'],
+            func_get_args()
+        );
 	}
 }
