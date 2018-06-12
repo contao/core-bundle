@@ -78,13 +78,16 @@ class BackendMain extends Backend
 		if (\Input::get('do') == 'login' && (\Input::get('act') != 'edit' && \Input::get('id') != $this->User->id))
 		{
 			$container = \System::getContainer();
-			$strUrl = $container->get('router')->generate('contao_backend', [
+
+			$strUrl = $container->get('router')->generate('contao_backend', array
+			(
 				'do' => 'login',
 				'act' => 'edit',
 				'id' => $this->User->id,
 				'ref' => $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id'),
 				'rt' => REQUEST_TOKEN,
-			]);
+			));
+
 			$this->redirect($strUrl);
 		}
 
