@@ -1007,6 +1007,11 @@ class tl_user extends Backend
 		$objVersions->create();
 	}
 
+	/**
+	 * Builds the palette for 2FA dynamically.
+	 *
+	 * @param DataContainer $dc
+	 */
 	public function build2faPalette(DataContainer $dc)
 	{
 		foreach ($GLOBALS['TL_DCA']['tl_user']['palettes'] as $palette => $v)
@@ -1024,13 +1029,22 @@ class tl_user extends Backend
 			);
 		}
 
-		if ($dc->id == $this->User->id) {
+		// Only add subpalette if the logged in user is editing his own record
+		if ($dc->id == $this->User->id)
+		{
 			// extend selector
 			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
 			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode,2faUrl';
 		}
 	}
 
+	/**
+	 * Generates a 2FA secret if not present.
+	 *
+	 * @param DataContainer $dc
+	 *
+	 * @return string
+	 */
 	protected function generate2faSecret(DataContainer $dc)
 	{
 		$secret = $dc->activeRecord->secret;
@@ -1050,6 +1064,14 @@ class tl_user extends Backend
 		return $secret;
 	}
 
+	/**
+	 * Save callback for 2FA.
+	 *
+	 * @param $varValue
+	 * @param DataContainer $dc
+	 *
+	 * @return mixed
+	 */
 	public function save2faSecret($varValue, DataContainer $dc)
 	{
 		$this->generate2faSecret($dc);
@@ -1057,6 +1079,13 @@ class tl_user extends Backend
 		return $varValue;
 	}
 
+	/**
+	 * input_field_callback to display the QR code in the subpalette.
+	 *
+	 * @param DataContainer $dc
+	 * 
+	 * @return string
+	 */
 	public function get2faQrCode(DataContainer $dc)
 	{
 		$secret = $this->generate2faSecret($dc);
