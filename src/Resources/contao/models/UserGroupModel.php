@@ -29,6 +29,7 @@ namespace Contao;
  * @property boolean $disable
  * @property string  $start
  * @property string  $stop
+ * @property string  $elements
  *
  * @method static UserGroupModel|null findById($id, array $opt=array())
  * @method static UserGroupModel|null findByPk($id, array $opt=array())

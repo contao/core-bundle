@@ -48,6 +48,7 @@ namespace Contao;
  * @property integer $currentLogin
  * @property integer $loginCount
  * @property integer $locked
+ * @property string  $elements
  *
  * @method static UserModel|null findById($id, array $opt=array())
  * @method static UserModel|null findByPk($id, array $opt=array())
