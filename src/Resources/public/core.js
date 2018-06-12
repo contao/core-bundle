@@ -1418,7 +1418,7 @@ var Backend =
 
 			clone.setPosition({
 				x: event.page.x - cloneBase.getOffsetParent().getPosition().x - clone.getSize().x,
-				y: cloneBase.getPosition(cloneBase.getOffsetParent()).y,
+				y: cloneBase.getPosition(cloneBase.getOffsetParent()).y
 			});
 
 			var move = new Drag.Move(clone, {
@@ -1426,7 +1426,7 @@ var Backend =
 				unDraggableTags: [],
 				modifiers: {
 					x: 'left',
-					y: 'top',
+					y: 'top'
 				},
 				onEnter: function(element, droppable) {
 					droppable = fixDroppable(droppable);

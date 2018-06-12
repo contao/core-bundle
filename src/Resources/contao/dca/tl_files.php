@@ -114,19 +114,19 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 				'icon'                => 'editor.svg',
 				'button_callback'     => array('tl_files', 'editSource')
 			),
-			'uploadButton' => array
+			'upload' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_files']['uploadButton'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_files']['upload'],
 				'href'                => 'act=move&amp;mode=2',
 				'icon'                => 'new.svg',
-				'button_callback'     => array('tl_files', 'uploadButton')
+				'button_callback'     => array('tl_files', 'uploadFile')
 			),
-			'dragHandle' => array
+			'drag' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
 				'icon'                => 'drag.svg',
 				'attributes'          => 'class="drag-handle" aria-hidden="true"',
-				'button_callback'     => array('tl_files', 'dragHandle')
+				'button_callback'     => array('tl_files', 'dragFile')
 			)
 		)
 	),
@@ -557,7 +557,7 @@ class tl_files extends Backend
 	}
 
 	/**
-	 * Return the drag handle button
+	 * Return the drag file button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -568,14 +568,14 @@ class tl_files extends Backend
 	 *
 	 * @return string
 	 */
-	public function dragHandle($row, $href, $label, $title, $icon, $attributes)
+	public function dragFile($row, $href, $label, $title, $icon, $attributes)
 	{
-		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" title="'.StringUtil::specialchars($title).'" '.$attributes.'>' . \Image::getHtml($icon, $label) . '</button> ' : ' ';
+		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" title="'.StringUtil::specialchars($title).'" '.$attributes.'>'.Image::getHtml($icon, $label).'</button> ' : ' ';
 	}
 
 
 	/**
-	 * Return the upload button for folders
+	 * Return the upload file button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -586,12 +586,13 @@ class tl_files extends Backend
 	 *
 	 * @return string
 	 */
-	public function uploadButton($row, $href, $label, $title, $icon, $attributes)
+	public function uploadFile($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (!$GLOBALS['TL_DCA']['tl_files']['config']['closed'] && !$GLOBALS['TL_DCA']['tl_files']['config']['notCreatable'] && \Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
+		if (!$GLOBALS['TL_DCA']['tl_files']['config']['closed'] && !$GLOBALS['TL_DCA']['tl_files']['config']['notCreatable'] && Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
 		{
-			return '<a href="'.$this->addToUrl($href.'&amp;pid='.$row['id']).'" title="'.\StringUtil::specialchars($title).'" '.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ';
+			return '<a href="'.$this->addToUrl($href.'&amp;pid='.$row['id']).'" title="'.StringUtil::specialchars($title).'" '.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
 		}
+
 		return ' ';
 	}
 
