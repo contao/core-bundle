@@ -389,6 +389,14 @@
         <source>Switch to user ID %s</source>
         <target>Zu Benutzer ID %s wechseln</target>
       </trans-unit>
+      <trans-unit id="tl_user.elements.0">
+        <source>Enable Content Elements</source>
+        <target>Erlaubte Inhaltselemente</target>
+      </trans-unit>
+      <trans-unit id="tl_user.elements.1">
+        <source>Please select the content elements you want to ENABLE.</source>
+        <target>Wählen Sie die Inhaltselemente welche AKTIVIERT werden sollen.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

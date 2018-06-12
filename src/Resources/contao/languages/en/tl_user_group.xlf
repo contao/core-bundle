@@ -95,6 +95,12 @@
       <trans-unit id="tl_user_group.toggle.1">
         <source>Activate/deactivate group ID %s</source>
       </trans-unit>
+      <trans-unit id="tl_user_group.elements.0">
+        <source>Enable Content Elements</source>
+      </trans-unit>
+      <trans-unit id="tl_user_group.elements.1">
+        <source>Please select the content elements you want to ENABLE.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
