@@ -210,7 +210,7 @@ $GLOBALS['TL_DCA']['tl_layout'] = array
 			'default'                 => array('layout.css', 'responsive.css'),
 			'exclude'                 => true,
 			'inputType'               => 'checkboxWizard',
-			'options'                 => array('layout.css', 'responsive.css', 'grid.css', 'reset.css', 'form.css', 'icons.css', 'video.css'),
+			'options'                 => array('layout.css', 'responsive.css', 'grid.css', 'reset.css', 'form.css', 'icons.css'),
 			'eval'                    => array('multiple'=>true, 'helpwizard'=>true),
 			'reference'               => &$GLOBALS['TL_LANG']['tl_layout'],
 			'save_callback' => array

@@ -60,14 +60,9 @@ class ContentVimeo extends ContentElement
 			$this->Template->size = ' width="' . $size[0] . '" height="' . $size[1] . '"';
 		}
 
-		$url = 'https://player.vimeo.com/video/' . $this->vimeo;
-
 		$params = array();
-		if ($this->autoplay)
-		{
-			$params[] = 'autoplay=1';
-		}
 		$options = \StringUtil::deserialize($this->vimeoOptions);
+		$url = 'https://player.vimeo.com/video/' . $this->vimeo;
 
 		if (\is_array($options))
 		{
@@ -86,6 +81,7 @@ class ContentVimeo extends ContentElement
 				}
 			}
 		}
+
 		if ($this->playerColor)
 		{
 			$params[] = 'color=' . $this->playerColor;
@@ -101,12 +97,8 @@ class ContentVimeo extends ContentElement
 			$url .= '#t=' . (int) $this->playerStart . 's';
 		}
 
-		$this->Template->playerResponsive = $this->playerResponsive && $this->playerAspect;
-		if ($this->Template->playerResponsive) {
-			$this->cssID = [$this->cssID[0], trim($this->cssID[1] . ' responsive-video ratio-' . $this->playerAspect)];
-		}
-
 		$this->Template->src = $url;
+		$this->Template->aspect = str_replace(':', '', $this->playerAspect);
 		$this->Template->caption = $this->playerCaption;
 	}
 }
