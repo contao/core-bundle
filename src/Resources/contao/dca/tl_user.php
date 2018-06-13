@@ -1161,6 +1161,10 @@ class tl_user extends Backend
 
 		if (false === $twoFactorAuthenticator->validateCode($this->User, $varValue))
 		{
+			// Disable 2FA, otherwise 2FA stays enabled if the user leaves the window
+			$this->Database->prepare("UPDATE tl_user SET use2fa='' WHERE id=?")
+				->execute($dc->id);
+
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 
