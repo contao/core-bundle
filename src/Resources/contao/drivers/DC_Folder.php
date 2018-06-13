@@ -1119,6 +1119,10 @@ class DC_Folder extends \DataContainer implements \listable, \editable
 
 				$this->reload();
 			}
+			elseif ($blnIsAjax)
+			{
+				throw new ResponseException(new Response(strip_tags(\Message::generateUnwrapped()), 500));
+			}
 		}
 
 		// Submit buttons
