@@ -2,14 +2,15 @@
 
 <?php $this->block('content'); ?>
 
-  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
-    <?php foreach ($this->items as $item): ?>
+  <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">
+    <?php $path_number = 1; foreach ($this->items as $item): ?>
       <?php if ($item['isActive']): ?>
-        <li class="active<?php if ($item['class']): ?> <?= $item['class'] ?><?php endif; ?> last" itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement"><span itemprop="name"><?= $item['link'] ?></span></li>
+        <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem" class="active<?php if ($item['class']): ?> <?= $item['class'] ?><?php endif; ?> last"><span itemprop="item" itemscope="" itemtype="http://schema.org/Thing"><strong itemprop="name"><?= $item['link'] ?></strong><link itemprop="url" href="<?= $item['href'] ?>" /></span><meta itemprop="position" content="<?= $path_number ?>" /></li>
       <?php else: ?>
-        <li<?php if ($item['class']): ?> class="<?= $item['class'] ?>"<?php endif; ?> itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement"><a href="<?= $item['href'] ?>" title="<?= $item['title'] ?>" itemprop="url"><span itemprop="name"><?= $item['link'] ?></span></a></li>
+        <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem"<?php if ($item['class']): ?> class="<?= $item['class'] ?>"<?php endif; ?>><span itemprop="item" itemscope="" itemtype="http://schema.org/Thing"><a itemprop="url" href="<?= $item['href'] ?>" title="<?= $item['title'] ?>"><span itemprop="name"><?= $item['link'] ?></span></a></span><meta itemprop="position" content="<?= $path_number ?>" /></li>
       <?php endif; ?>
+      <?php $path_number++; ?>
     <?php endforeach; ?>
-  </ul>
+  </ol>
 
 <?php $this->endblock(); ?>
