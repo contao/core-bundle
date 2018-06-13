@@ -459,3 +459,6 @@ services:
             - "@contao.routing.scope_matcher"
         tags:
             - { name: twig.extension }
+
+    Contao\CoreBundle\DataContainer\EventHelper:
+        arguments: ['@contao.framework']
