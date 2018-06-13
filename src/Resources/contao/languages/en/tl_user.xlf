@@ -308,6 +308,12 @@
       <trans-unit id="tl_user.2faQrCode.1">
         <source>Scan this QR code with your 2FA/TOTP app of your choice (e.g. Google Authenticator)</source>
       </trans-unit>
+      <trans-unit id="tl_user.confirmed2fa.0">
+        <source>Confirm two-factor authentication</source>
+      </trans-unit>
+      <trans-unit id="tl_user.confirmed2fa.1">
+        <source>Please enter the code provided by your 2FA/TOTP app.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

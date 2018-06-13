@@ -477,9 +477,22 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
-		'2faQrCode' => array(
+		'2faQrCode' => array
+		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['2faQrCode'],
 			'input_field_callback'    => array('tl_user', 'get2faQrCode'),
+		),
+		'confirmed2fa' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmed2fa'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'tl_class'=>'w50'),
+			'save_callback' => array
+			(
+				array('tl_user', 'confirm2fa')
+			),
+			'sql'                     => "char(1) NOT NULL default ''"
 		),
 		'secret' => array
 		(
@@ -1014,9 +1027,22 @@ class tl_user extends Backend
 	 */
 	public function build2faPalette(DataContainer $dc)
 	{
+		$activeRecord = UserModel::findById((int) $dc->id);
+
+		if ($activeRecord == null)
+		{
+			return;
+		}
+
 		foreach ($GLOBALS['TL_DCA']['tl_user']['palettes'] as $palette => $v)
 		{
 			if ($palette == '__selector__')
+			{
+				continue;
+			}
+
+			// Don't show 2FA options, if it is not the logged in user itself and 2FA is disabled.
+			if ($dc->id != $this->User->id && $activeRecord->use2fa != '1')
 			{
 				continue;
 			}
@@ -1034,7 +1060,12 @@ class tl_user extends Backend
 		{
 			// extend selector
 			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
-			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode,2faUrl';
+			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode';
+
+			if ($this->User->confirmed2fa != '1')
+			{
+				$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] .= ',confirmed2fa';
+			}
 		}
 	}
 
@@ -1083,7 +1114,7 @@ class tl_user extends Backend
 	 * input_field_callback to display the QR code in the subpalette.
 	 *
 	 * @param DataContainer $dc
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get2faQrCode(DataContainer $dc)
@@ -1111,5 +1142,28 @@ class tl_user extends Backend
   </div>' . (Config::get('showHelp') ? '
   <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1] . '</p>' : '') . '
 </div>';
+	}
+
+	/**
+	 * Save callback for 2fa confirmation.
+	 *
+	 * @param $varValue
+	 * @param DataContainer $dc
+	 *
+	 * @return int
+	 *
+	 * @throws Exception
+	 */
+	public function confirm2fa($varValue, DataContainer $dc)
+	{
+		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
+		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
+
+		if (false === $twoFactorAuthenticator->validateCode($this->User, $varValue))
+		{
+			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
+		}
+
+		return 1;
 	}
 }
