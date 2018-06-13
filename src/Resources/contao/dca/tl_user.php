@@ -1029,20 +1029,20 @@ class tl_user extends Backend
 	{
 		$activeRecord = UserModel::findById((int) $dc->id);
 
-		if ($activeRecord == null)
+		if ($activeRecord === null)
 		{
 			return;
 		}
 
 		foreach ($GLOBALS['TL_DCA']['tl_user']['palettes'] as $palette => $v)
 		{
-			if ($palette == '__selector__')
+			if ($palette === '__selector__')
 			{
 				continue;
 			}
 
 			// Don't show 2FA options, if it is not the logged in user itself and 2FA is disabled.
-			if ($dc->id != $this->User->id && $activeRecord->use2fa != '1')
+			if ($dc->id !== $this->User->id && (int) $activeRecord->use2fa !== '1')
 			{
 				continue;
 			}
@@ -1056,13 +1056,13 @@ class tl_user extends Backend
 		}
 
 		// Only add subpalette if the logged in user is editing his own record
-		if ($dc->id == $this->User->id)
+		if ((int) $dc->id === (int) $this->User->id)
 		{
 			// extend selector
 			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
 			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode';
 
-			if ($this->User->confirmed2fa != '1')
+			if ($this->User->confirmed2fa !== '1')
 			{
 				$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] .= ',confirmed2fa';
 			}
@@ -1080,7 +1080,7 @@ class tl_user extends Backend
 	{
 		$secret = $dc->activeRecord->secret;
 
-		if ($secret == null)
+		if ($secret === null)
 		{
 			// Generate 1024 bit secret
 			$secret = random_bytes(128);
@@ -1121,7 +1121,7 @@ class tl_user extends Backend
 	{
 		$secret = $this->generate2faSecret($dc);
 
-		if ($secret == '' || $secret == null)
+		if ($secret === '' || $secret === null)
 		{
 			return '';
 		}
