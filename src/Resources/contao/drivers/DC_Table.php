@@ -4606,11 +4606,21 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				list($key, $direction) = explode(' ', $v, 2);
 
-				if ($direction === null)
+				if ($direction === null && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 1)
                 {
-                    if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 1 && ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['flag'] % 2) == 0)
+                    if (isset($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['flag']))
                     {
-                        $direction = "DESC";
+                        $direction = (($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['flag'] % 2) == 0) ? "DESC" : "ASC";
+                    }
+
+                    if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$key]['flag']))
+                    {
+                        $direction = (($GLOBALS['TL_DCA'][$this->strTable]['fields'][$key]['flag'] % 2) == 0) ? "DESC" : "ASC";
+                    }
+
+                    if ($direction)
+                    {
+                        $orderBy[$k] = "$key $direction";
                     }
                 }
 
