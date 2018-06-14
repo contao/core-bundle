@@ -67,10 +67,16 @@ function scan($strFolder, $blnUncached=false)
 		return $arrScanCache[$strFolder];
 	}
 
+	// Return an empty array if the directory can not be read
+	if (($arrScan = scandir($strFolder)) === false)
+	{
+		return array();
+	}
+
 	$arrReturn = array();
 
 	// Scan directory
-	foreach (scandir($strFolder) as $strFile)
+	foreach ($arrScan as $strFile)
 	{
 		if ($strFile == '.' || $strFile == '..')
 		{
