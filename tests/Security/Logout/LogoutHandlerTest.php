@@ -13,8 +13,11 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Test\Security\Logout;
 
 use Contao\BackendUser;
+use Contao\Controller;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Security\Logout\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\System;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,13 +86,30 @@ class LogoutHandlerTest extends TestCase
      */
     public function testTriggersThePostLogoutHook(): void
     {
-        $framework = $this->mockContaoFramework();
+        $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
+
+        $listener = $this->createPartialMock(Controller::class, ['onPostLogout']);
+
+        $listener
+            ->expects($this->once())
+            ->method('onPostLogout')
+            ->with($user)
+        ;
+
+        $systemAdapter = $this->mockAdapter(['importStatic']);
+
+        $systemAdapter
+            ->expects($this->once())
+            ->method('importStatic')
+            ->with('HookListener')
+            ->willReturn($listener)
+        ;
+
+        $framework = $this->mockContaoFramework([System::class => $systemAdapter]);
 
         $framework
             ->expects($this->once())
-            ->method('createInstance')
-            ->with(__CLASS__)
-            ->willReturn($this)
+            ->method('initialize')
         ;
 
         $logger = $this->createMock(LoggerInterface::class);
@@ -100,7 +120,6 @@ class LogoutHandlerTest extends TestCase
             ->with('User "foobar" has logged out')
         ;
 
-        $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
         $token = $this->createMock(TokenInterface::class);
 
         $token
@@ -109,19 +128,11 @@ class LogoutHandlerTest extends TestCase
             ->willReturn($user)
         ;
 
-        $GLOBALS['TL_HOOKS']['postLogout'] = [[__CLASS__, 'onPostLogout']];
+        $GLOBALS['TL_HOOKS']['postLogout'] = [['HookListener', 'onPostLogout']];
 
         $handler = new LogoutHandler($framework, $logger);
         $handler->logout(new Request(), new Response(), $token);
 
         unset($GLOBALS['TL_HOOKS']);
-    }
-
-    /**
-     * @param UserInterface $user
-     */
-    public function onPostLogout(UserInterface $user): void
-    {
-        $this->assertInstanceOf('Contao\BackendUser', $user);
     }
 }
