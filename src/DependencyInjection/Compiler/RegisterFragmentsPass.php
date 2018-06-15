@@ -17,6 +17,7 @@ use Contao\CoreBundle\Fragment\FragmentOptionsAwareInterface;
 use Contao\CoreBundle\Fragment\FragmentPreHandlerInterface;
 use Contao\CoreBundle\Fragment\Reference\ContentElementReference;
 use Contao\CoreBundle\Fragment\Reference\FrontendModuleReference;
+use Contao\CoreBundle\Fragment\Reference\InsertTagReference;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
@@ -48,6 +49,7 @@ class RegisterFragmentsPass implements CompilerPassInterface
 
         $this->registerFragments($container, ContentElementReference::TAG_NAME);
         $this->registerFragments($container, FrontendModuleReference::TAG_NAME);
+        $this->registerFragments($container, InsertTagReference::TAG_NAME);
     }
 
     /**

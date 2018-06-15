@@ -67,4 +67,13 @@ final class ContaoCoreEvents
      * @see SlugValidCharactersEvent
      */
     public const SLUG_VALID_CHARACTERS = 'contao.slug_valid_characters';
+
+    /**
+     * The contao.insert_tag_flag event is triggered when an insert tag fragment controller response is triggered.
+     *
+     * @var string
+     *
+     * @see InsertTagFlagEvent
+     */
+    public const INSERT_TAG_FLAG = 'contao.insert_tag_flag';
 }

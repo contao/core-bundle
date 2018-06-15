@@ -1,0 +1,12 @@
+services:
+    _instanceof:
+        Symfony\Component\DependencyInjection\ContainerAwareInterface:
+            calls:
+                - ["setContainer", ["@service_container"]]
+
+    contao.fragments.insert_tags.translation:
+        class: Contao\CoreBundle\Controller\InsertTag\TranslationController
+        arguments:
+            - "@translator"
+        tags:
+            - { name: 'contao.insert_tag', type: 'trans' }

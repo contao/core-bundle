@@ -25,6 +25,7 @@ class ContaoCoreExtension extends ConfigurableExtension
      */
     private static $files = [
         'commands.yml',
+        'fragments.yml',
         'listener.yml',
         'services.yml',
     ];
