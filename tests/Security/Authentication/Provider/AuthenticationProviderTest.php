@@ -287,8 +287,7 @@ class AuthenticationProviderTest extends TestCase
     }
 
     /**
-     * @param string $callback
-     * @param bool   $success
+     * @param bool $success
      *
      * @group legacy
      * @dataProvider getCheckCredentialsHookData

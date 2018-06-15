@@ -221,7 +221,6 @@ class ContaoUserProviderTest extends TestCase
     {
         /** @var UserInterface|\PHPUnit_Framework_MockObject_MockObject $user */
         $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
-
         $listener = $this->createPartialMock(Controller::class, ['onPostAuthenticate']);
 
         $listener
@@ -239,12 +238,10 @@ class ContaoUserProviderTest extends TestCase
             ->willReturn($listener)
         ;
 
-        $framework = $this->mockContaoFramework(
-            [
-                BackendUser::class => $this->mockConfiguredAdapter(['loadUserByUsername' => $user]),
-                System::class => $systemAdapter,
-            ]
-        );
+        $framework = $this->mockContaoFramework([
+            BackendUser::class => $this->mockConfiguredAdapter(['loadUserByUsername' => $user]),
+            System::class => $systemAdapter,
+        ]);
 
         $framework
             ->expects($this->once())

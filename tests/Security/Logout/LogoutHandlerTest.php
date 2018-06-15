@@ -14,7 +14,6 @@ namespace Contao\CoreBundle\Test\Security\Logout;
 
 use Contao\BackendUser;
 use Contao\Controller;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Security\Logout\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\System;
@@ -87,7 +86,6 @@ class LogoutHandlerTest extends TestCase
     public function testTriggersThePostLogoutHook(): void
     {
         $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
-
         $listener = $this->createPartialMock(Controller::class, ['onPostLogout']);
 
         $listener

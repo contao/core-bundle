@@ -219,9 +219,11 @@ class AuthenticationProvider extends DaoAuthenticationProvider
 
         /** @var System $system */
         $system = $this->framework->getAdapter(System::class);
+        $username = $token->getUsername();
+        $credentials = $token->getCredentials();
 
         foreach ($GLOBALS['TL_HOOKS']['checkCredentials'] as $callback) {
-            if ($system->importStatic($callback[0])->{$callback[1]}($token->getUsername(), $token->getCredentials(), $user)) {
+            if ($system->importStatic($callback[0])->{$callback[1]}($username, $credentials, $user)) {
                 return true;
             }
         }
