@@ -1403,7 +1403,7 @@ var Backend =
 			var dragHandle = event.target.hasClass('drag-handle') ? event.target : event.target.getParent('.drag-handle');
 			var dragElement = event.target.getParent('.tl_file,.tl_folder');
 
-			if (!dragHandle || !dragElement) {
+			if (!dragHandle || !dragElement || event.rightClick) {
 				return;
 			}
 
@@ -1424,6 +1424,7 @@ var Backend =
 			var move = new Drag.Move(clone, {
 				droppables: $$([ul]).append(ul.getElements('.tl_folder,li.parent,.tl_folder_top')),
 				unDraggableTags: [],
+				snap: -1,
 				modifiers: {
 					x: 'left',
 					y: 'top'
@@ -1499,6 +1500,7 @@ var Backend =
 			});
 
 			move.start(event);
+			move.check(event);
 		});
 
 		function fixDroppable(droppable) {
