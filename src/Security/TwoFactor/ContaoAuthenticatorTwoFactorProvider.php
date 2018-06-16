@@ -48,7 +48,15 @@ class ContaoAuthenticatorTwoFactorProvider implements TwoFactorProviderInterface
     {
         $user = $context->getUser();
 
-        return $user instanceof User && $user->getSecret();
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if (!$user->getSecret()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -59,7 +67,15 @@ class ContaoAuthenticatorTwoFactorProvider implements TwoFactorProviderInterface
      */
     public function validateAuthenticationCode($user, string $authenticationCode): bool
     {
-        return $user instanceof User && $this->authenticator->validateCode($user, $authenticationCode);
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if (!$this->authenticator->validateCode($user, $authenticationCode)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

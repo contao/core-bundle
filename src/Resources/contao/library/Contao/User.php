@@ -655,11 +655,17 @@ abstract class User extends System implements UserInterface, EquatableInterface,
 		return false;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getSecret(): ?string
 	{
 		return $this->arrData['secret'];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function setSecret(string $secret): void
 	{
 		$this->arrData['secret'] = $secret;
