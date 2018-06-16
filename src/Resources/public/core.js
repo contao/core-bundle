@@ -1477,7 +1477,7 @@ var Backend =
 					}
 
 					var id = dragElement.get('data-id'),
-						pid = droppable.get('data-id');
+						pid = droppable.get('data-id') || decodeURIComponent(options.url.split(/[?&]pid=/)[1].split('&')[0]);
 
 					// Ignore invalid move operations
 					if (id && pid && ((pid+'/').indexOf(id+'/') === 0 || pid+'/' === id.replace(/[^/]+$/, ''))) {
@@ -1486,11 +1486,7 @@ var Backend =
 
 					Backend.getScrollOffset();
 
-					var url = options.url + '&id=' + encodeURIComponent(id);
-
-					if (pid) {
-						url += '&pid=' + encodeURIComponent(pid);
-					}
+					var url = options.url + '&id=' + encodeURIComponent(id) + '&pid=' + encodeURIComponent(pid);
 
 					document.location.href = url;
 				},
