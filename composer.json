@@ -52,6 +52,7 @@
         "nelmio/cors-bundle": "^1.5.3",
         "ocramius/package-versions": "^1.2",
         "oyejorge/less.php": "^1.7",
+        "paragonie/constant_time_encoding": "^2.2",
         "patchwork/utf8": "^1.2",
         "phpspec/php-diff": "^1.0",
         "phpunit/php-token-stream": "^1.4 || ^2.0 || ^3.0",
