@@ -1486,10 +1486,7 @@ var Backend =
 					}
 
 					Backend.getScrollOffset();
-
-					var url = options.url + '&id=' + encodeURIComponent(id) + '&pid=' + encodeURIComponent(pid);
-
-					document.location.href = url;
+					document.location.href = options.url + '&id=' + encodeURIComponent(id) + '&pid=' + encodeURIComponent(pid);
 				},
 				onLeave: function(element, droppable) {
 					droppable = fixDroppable(droppable);
