@@ -31,6 +31,9 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
      */
     public function validateCode(User $user, string $code): bool
     {
+        // The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
+        // [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
+        // [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
         $totp = TOTP::create(Base32::encodeUpperUnpadded($user->getSecret()));
 
         return $totp->verify($code, time());
@@ -47,6 +50,9 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
         $issuer = rawurlencode($request->getSchemeAndHttpHost());
         $username = rawurlencode($user->getUsername());
 
+        // The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
+        // [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
+        // [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
         $qrContent = sprintf(
                 'otpauth://totp/%s:%s?secret=%s&issuer=%s',
                 $issuer,
