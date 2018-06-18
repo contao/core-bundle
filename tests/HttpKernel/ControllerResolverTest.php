@@ -75,7 +75,8 @@ class ControllerResolverTest extends TestCase
     public function testForwardsArgumentsToDecoratedClass(): void
     {
         if (Kernel::MAJOR_VERSION > 3) {
-            $this->markTestSkipped('Method has been removed in Symfony 4');
+            $this->markTestSkipped('The getArguments() method has been removed in Symfony 4');
+
             return;
         }
 
