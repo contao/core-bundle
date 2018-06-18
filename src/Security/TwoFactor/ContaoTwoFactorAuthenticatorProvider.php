@@ -17,7 +17,7 @@ use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorProviderInterface;
 
-class ContaoAuthenticatorTwoFactorProvider implements TwoFactorProviderInterface
+class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
 {
     /**
      * @var ContaoTwoFactorAuthenticatorInterface

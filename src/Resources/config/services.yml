@@ -438,7 +438,7 @@ services:
         public: false
 
     contao.security.two_factor.provider:
-        class: Contao\CoreBundle\Security\TwoFactor\ContaoAuthenticatorTwoFactorProvider
+        class: Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorProvider
         arguments:
             - "@contao.security.two_factor.authenticator"
             - "@contao.security.two_factor.form_renderer"

@@ -13,22 +13,22 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Security\TwoFactor;
 
 use Contao\User;
-use Contao\CoreBundle\Security\TwoFactor\ContaoAuthenticatorTwoFactorProvider;
+use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorProvider;
 use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator;
 use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorFormRenderer;
 use Contao\CoreBundle\Tests\TestCase;
 use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 
-class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
+class ContaoTwoFactorAuthenticatorProviderTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
         $authenticator = $this->createMock(ContaoTwoFactorAuthenticator::class);
         $renderer = $this->createMock(ContaoTwoFactorFormRenderer::class);
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\ContaoAuthenticatorTwoFactorProvider', $provider);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorProvider', $provider);
     }
 
     public function testReturnsFormRenderer(): void
@@ -36,7 +36,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
         $authenticator = $this->createMock(ContaoTwoFactorAuthenticator::class);
         $renderer = $this->createMock(ContaoTwoFactorFormRenderer::class);
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertInstanceOf('Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface', $provider->getFormRenderer());
     }
@@ -52,7 +52,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
             ->willReturn(null)
         ;
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertFalse($provider->beginAuthentication($context));
     }
@@ -75,7 +75,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertFalse($provider->beginAuthentication($context));
     }
@@ -98,7 +98,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertTrue($provider->beginAuthentication($context));
     }
@@ -108,7 +108,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
         $authenticator = $this->createMock(ContaoTwoFactorAuthenticator::class);
         $renderer = $this->createMock(ContaoTwoFactorFormRenderer::class);
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertFalse($provider->validateAuthenticationCode(null, ''));
     }
@@ -125,7 +125,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
             ->willReturn(false)
         ;
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertFalse($provider->validateAuthenticationCode($user, '123456'));
     }
@@ -142,7 +142,7 @@ class ContaoAuthenticatorTwoFactorProviderTest extends TestCase
             ->willReturn(true)
         ;
 
-        $provider = new ContaoAuthenticatorTwoFactorProvider($authenticator, $renderer);
+        $provider = new ContaoTwoFactorAuthenticatorProvider($authenticator, $renderer);
 
         $this->assertTrue($provider->validateAuthenticationCode($user, '123456'));
     }

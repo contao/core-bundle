@@ -28,16 +28,6 @@ interface ContaoTwoFactorAuthenticatorInterface
     public function validateCode(User $user, string $code): bool;
 
     /**
-     * Generates the QR code as SVG and return it as a string.
-     *
-     * @param User    $user
-     * @param Request $request
-     *
-     * @return string
-     */
-    public function getQrCode(User $user, Request $request): string;
-
-    /**
      * Generates the TOTP provision URI.
      *
      * @param User    $user
@@ -46,4 +36,14 @@ interface ContaoTwoFactorAuthenticatorInterface
      * @return string
      */
     public function getProvisionUri(User $user, Request $request): string;
+
+    /**
+     * Generates the QR code as SVG and return it as a string.
+     *
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function getQrCode(User $user, Request $request): string;
 }
