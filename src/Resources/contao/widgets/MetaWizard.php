@@ -50,7 +50,7 @@ class MetaWizard extends Widget
 
 				foreach($varValue as $strArrKey => $varArrValue)
 				{
-					if (is_string($varArrValue)) {
+					if (!is_array($varArrValue)) {
 						$varValue[$strArrKey] = array('attributes' => $varArrValue);
 					}
 				}
