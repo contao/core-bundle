@@ -467,7 +467,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		),
 		'use2fa' => array(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['use2fa'],
-			'exclude'                 => true,
+			'exclude'                 => false,
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
@@ -485,7 +485,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'confirmed2fa' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmed2fa'],
-			'exclude'                 => true,
+			'exclude'                 => false,
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'tl_class'=>'w50'),
 			'save_callback' => array
@@ -1160,7 +1160,7 @@ class tl_user extends Backend
 		if (false === $twoFactorAuthenticator->validateCode($user, $varValue))
 		{
 			// Disable 2FA, otherwise 2FA stays enabled if the user leaves the window
-			$user->use2fa = '';
+			$user->use2fa = false;
 			$user->save();
 
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);

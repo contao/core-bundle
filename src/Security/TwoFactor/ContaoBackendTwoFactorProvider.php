@@ -55,11 +55,11 @@ class ContaoBackendTwoFactorProvider implements TwoFactorProviderInterface
             return false;
         }
 
-        if (!$user->secret) {
+        if (!(bool) $user->secret) {
             return false;
         }
 
-        if (!$this->enforce2fa && !$user->use2fa) {
+        if (!$this->enforce2fa && !(bool) $user->use2fa) {
             return false;
         }
 
@@ -80,7 +80,7 @@ class ContaoBackendTwoFactorProvider implements TwoFactorProviderInterface
         }
 
         // 2FA is now confirmed, save flag on user
-        if ($this->enforce2fa && !$user->confirmed2fa) {
+        if ($this->enforce2fa && !(bool) $user->confirmed2fa) {
             $user->confirmed2fa = true;
             $user->save();
         }
