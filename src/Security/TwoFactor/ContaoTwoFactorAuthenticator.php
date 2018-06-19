@@ -24,26 +24,17 @@ use Symfony\Component\HttpFoundation\Request;
 class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterface
 {
     /**
-     * @param User   $user
-     * @param string $code
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function validateCode(User $user, string $code): bool
     {
-        // The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
-        // [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
-        // [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
-        $totp = TOTP::create(Base32::encodeUpperUnpadded($user->getSecret()));
+        $totp = TOTP::create($this->getUpperUnpaddedSecretForUser($user));
 
         return $totp->verify($code, time());
     }
 
     /**
-     * @param User    $user
-     * @param Request $request
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getProvisionUri(User $user, Request $request): string
     {
@@ -57,7 +48,7 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
                 'otpauth://totp/%s:%s?secret=%s&issuer=%s',
                 $issuer,
                 $username.'@'.$issuer,
-                Base32::encodeUpperUnpadded($user->getSecret()),
+                $this->getUpperUnpaddedSecretForUser($user),
                 $issuer
         );
 
@@ -65,10 +56,7 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
     }
 
     /**
-     * @param User    $user
-     * @param Request $request
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getQrCode(User $user, Request $request): string
     {
@@ -80,5 +68,21 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
         $writer = new Writer($renderer);
 
         return $writer->writeString($this->getProvisionUri($user, $request));
+    }
+
+    /**
+     * Encodes the user's binary secret into Base32 format (upper and unpadded).
+     *
+     * The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
+     * [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
+     * [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
+     *
+     * @param User $user
+     *
+     * @return string
+     */
+    private function getUpperUnpaddedSecretForUser(User $user)
+    {
+        return Base32::encodeUpperUnpadded($user->getSecret());
     }
 }

@@ -32,10 +32,7 @@ class ContaoTwoFactorFormRenderer implements TwoFactorFormRendererInterface
     }
 
     /**
-     * @param Request $request
-     * @param array   $templateVars
-     *
-     * @return Response
+     * {@inheritdoc}
      */
     public function renderForm(Request $request, array $templateVars): Response
     {

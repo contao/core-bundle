@@ -40,9 +40,7 @@ class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
     }
 
     /**
-     * @param AuthenticationContextInterface $context
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function beginAuthentication(AuthenticationContextInterface $context): bool
     {
@@ -60,10 +58,7 @@ class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
     }
 
     /**
-     * @param mixed  $user
-     * @param string $authenticationCode
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function validateAuthenticationCode($user, string $authenticationCode): bool
     {
@@ -79,7 +74,7 @@ class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
     }
 
     /**
-     * @return TwoFactorFormRendererInterface
+     * {@inheritdoc}
      */
     public function getFormRenderer(): TwoFactorFormRendererInterface
     {

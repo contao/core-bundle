@@ -480,7 +480,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'2faQrCode' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['2faQrCode'],
-			'input_field_callback'    => array('tl_user', 'get2faQrCode'),
+			'input_field_callback'    => array('tl_user', 'get2faQrCode')
 		),
 		'confirmed2fa' => array
 		(
@@ -1027,6 +1027,9 @@ class tl_user extends Backend
 	 */
 	public function build2faPalette(DataContainer $dc)
 	{
+		$user = BackendUser::getInstance();
+
+		/** @var BackendUser $activeRecord */
 		$activeRecord = UserModel::findById((int) $dc->id);
 
 		if ($activeRecord === null)
@@ -1042,29 +1045,31 @@ class tl_user extends Backend
 			}
 
 			// Don't show 2FA options, if it is not the logged in user itself and 2FA is disabled.
-			if ($dc->id !== $this->User->id && (int) $activeRecord->use2fa !== '1')
+			if ($dc->id !== $user->id && (int) $activeRecord->use2fa !== '1')
 			{
 				continue;
 			}
 
-			$GLOBALS['TL_DCA']['tl_user']['palettes'][$palette] = str_replace
-			(
-				',password',
-				',password;{2fa_legend},use2fa',
-				$GLOBALS['TL_DCA']['tl_user']['palettes'][$palette]
-			);
+			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+				->addLegend('2fa_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+				->addField('use2fa', '2fa_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+				->applyToPalette($palette, 'tl_user')
+			;
 		}
 
 		// Only add subpalette if the logged in user is editing his own record
-		if ((int) $dc->id === (int) $this->User->id)
+		if ((int) $dc->id === (int) $user->id)
 		{
 			// extend selector
 			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
 			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode';
 
-			if ($this->User->confirmed2fa !== '1')
+			if ($user->confirmed2fa !== '1')
 			{
-				$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] .= ',confirmed2fa';
+				Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+					->addField('confirmed2fa', '2faQrCode')
+					->applyToSubpalette('use2fa', 'tl_user')
+				;
 			}
 		}
 	}
@@ -1072,27 +1077,20 @@ class tl_user extends Backend
 	/**
 	 * Generates a 2FA secret if not present.
 	 *
-	 * @param DataContainer $dc
-	 *
 	 * @return string
 	 */
-	protected function generate2faSecret(DataContainer $dc)
+	protected function generate2faSecret()
 	{
-		$secret = $dc->activeRecord->secret;
+		$user = BackendUser::getInstance();
 
-		if ($secret === null)
+		if ($user->getSecret() === null)
 		{
 			// Generate 1024 bit secret
-			$secret = random_bytes(128);
-
-			$this->Database->prepare("UPDATE tl_user SET secret=? WHERE id=?")
-				->execute($secret, $dc->id);
-
-			// Reload user with new secret
-			$this->User = BackendUser::getInstance();
+			$user->setSecret(random_bytes(128));
+			$user->save();
 		}
 
-		return $secret;
+		return $user->getSecret();
 	}
 
 	/**
@@ -1105,7 +1103,7 @@ class tl_user extends Backend
 	 */
 	public function save2faSecret($varValue, DataContainer $dc)
 	{
-		$this->generate2faSecret($dc);
+		$this->generate2faSecret();
 
 		return $varValue;
 	}
@@ -1119,7 +1117,7 @@ class tl_user extends Backend
 	 */
 	public function get2faQrCode(DataContainer $dc)
 	{
-		$secret = $this->generate2faSecret($dc);
+		$secret = $this->generate2faSecret();
 
 		if ($secret === '' || $secret === null)
 		{
@@ -1132,13 +1130,11 @@ class tl_user extends Backend
 		/** @var \Symfony\Component\HttpFoundation\Request $request */
 		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
-		$class = $GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['tl_class'] . ' 2fa-qr-code';
-
 		return '
-<div class="' . $class . ' widget">
+<div class="2fa-qr-code widget">
   <div id="ctrl_' . $dc->field . '" class="">
     <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][0] . '</label></h3>
-    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode($this->User, $request)) . '" />
+    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode(BackendUser::getInstance(), $request)) . '" />
   </div>' . (Config::get('showHelp') ? '
   <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1] . '</p>' : '') . '
 </div>';
@@ -1150,24 +1146,26 @@ class tl_user extends Backend
 	 * @param $varValue
 	 * @param DataContainer $dc
 	 *
-	 * @return int
+	 * @return boolean
 	 *
 	 * @throws Exception
 	 */
 	public function confirm2fa($varValue, DataContainer $dc)
 	{
+		$user = BackendUser::getInstance();
+
 		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
-		if (false === $twoFactorAuthenticator->validateCode($this->User, $varValue))
+		if (false === $twoFactorAuthenticator->validateCode($user, $varValue))
 		{
 			// Disable 2FA, otherwise 2FA stays enabled if the user leaves the window
-			$this->Database->prepare("UPDATE tl_user SET use2fa='' WHERE id=?")
-				->execute($dc->id);
+			$user->use2fa = '';
+			$user->save();
 
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 
-		return 1;
+		return true;
 	}
 }
