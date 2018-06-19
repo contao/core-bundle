@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
-class ContaoTwoFactorFormRenderer implements TwoFactorFormRendererInterface
+class ContaoBackendTwoFactorFormRenderer implements TwoFactorFormRendererInterface
 {
     /** @var RouterInterface */
     protected $router;

@@ -81,6 +81,7 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.image.valid_extensions', $mergedConfig['image']['valid_extensions']);
         $container->setParameter('contao.image.imagine_options', $mergedConfig['image']['imagine_options']);
         $container->setParameter('contao.image.reject_large_uploads', $mergedConfig['image']['reject_large_uploads']);
+        $container->setParameter('contao.authentication.2fa.enforce_backend', $mergedConfig['authentication']['2fa']['enforce_backend']);
 
         if (isset($mergedConfig['localconfig'])) {
             $container->setParameter('contao.localconfig', $mergedConfig['localconfig']);

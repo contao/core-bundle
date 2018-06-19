@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Security\TwoFactor;
 
-use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorFormRenderer;
+use Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorFormRenderer;
 use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
-class ContaoTwoFactorFormRendererTest extends TestCase
+class ContaoBackendTwoFactorFormRendererTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $renderer = new ContaoTwoFactorFormRenderer($this->createMock(RouterInterface::class));
+        $renderer = new ContaoBackendTwoFactorFormRenderer($this->createMock(RouterInterface::class));
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorFormRenderer', $renderer);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorFormRenderer', $renderer);
     }
 
     public function testRedirectsOnRenderFormCall(): void
@@ -36,7 +36,7 @@ class ContaoTwoFactorFormRendererTest extends TestCase
             ->willReturn('/contao/2fa')
         ;
 
-        $renderer = new ContaoTwoFactorFormRenderer($router);
+        $renderer = new ContaoBackendTwoFactorFormRenderer($router);
         $response = $renderer->renderForm($this->createMock(Request::class), []);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);

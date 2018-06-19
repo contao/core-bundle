@@ -1083,14 +1083,14 @@ class tl_user extends Backend
 	{
 		$user = BackendUser::getInstance();
 
-		if ($user->getSecret() === null)
+		if ($user->secret === null)
 		{
 			// Generate 1024 bit secret
-			$user->setSecret(random_bytes(128));
+			$user->secret = random_bytes(128);
 			$user->save();
 		}
 
-		return $user->getSecret();
+		return $user->secret;
 	}
 
 	/**
@@ -1124,7 +1124,7 @@ class tl_user extends Backend
 			return '';
 		}
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
+		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
 		/** @var \Symfony\Component\HttpFoundation\Request $request */
@@ -1154,7 +1154,7 @@ class tl_user extends Backend
 	{
 		$user = BackendUser::getInstance();
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticatorInterface $twoFactorAuthenticator */
+		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
 		if (false === $twoFactorAuthenticator->validateCode($user, $varValue))

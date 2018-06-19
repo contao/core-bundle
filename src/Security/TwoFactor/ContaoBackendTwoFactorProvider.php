@@ -17,26 +17,31 @@ use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorProviderInterface;
 
-class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
+class ContaoBackendTwoFactorProvider implements TwoFactorProviderInterface
 {
     /**
-     * @var ContaoTwoFactorAuthenticatorInterface
+     * @var ContaoTwoFactorAuthenticator
      */
     private $authenticator;
 
     /**
-     * @var ContaoTwoFactorFormRenderer
+     * @var ContaoBackendTwoFactorFormRenderer
      */
     private $renderer;
 
+    /** @var bool */
+    private $enforce2fa;
+
     /**
-     * @param ContaoTwoFactorAuthenticatorInterface $authenticator
-     * @param ContaoTwoFactorFormRenderer           $renderer
+     * @param ContaoTwoFactorAuthenticator       $authenticator
+     * @param ContaoBackendTwoFactorFormRenderer $renderer
+     * @param bool                               $enforce2fa
      */
-    public function __construct(ContaoTwoFactorAuthenticatorInterface $authenticator, ContaoTwoFactorFormRenderer $renderer)
+    public function __construct(ContaoTwoFactorAuthenticator $authenticator, ContaoBackendTwoFactorFormRenderer $renderer, bool $enforce2fa)
     {
         $this->authenticator = $authenticator;
         $this->renderer = $renderer;
+        $this->enforce2fa = $enforce2fa;
     }
 
     /**
@@ -50,7 +55,11 @@ class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
             return false;
         }
 
-        if (!$user->getSecret()) {
+        if (!$user->secret) {
+            return false;
+        }
+
+        if (!$this->enforce2fa && !$user->use2fa) {
             return false;
         }
 
@@ -68,6 +77,12 @@ class ContaoTwoFactorAuthenticatorProvider implements TwoFactorProviderInterface
 
         if (!$this->authenticator->validateCode($user, $authenticationCode)) {
             return false;
+        }
+
+        // 2FA is now confirmed, save flag on user
+        if ($this->enforce2fa && !$user->confirmed2fa) {
+            $user->confirmed2fa = true;
+            $user->save();
         }
 
         return true;

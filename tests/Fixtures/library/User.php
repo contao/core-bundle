@@ -38,4 +38,9 @@ abstract class User
     {
         // ignore
     }
+
+    public function save()
+    {
+        // ignore
+    }
 }

@@ -34,11 +34,7 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
         $totp = TOTP::create(Base32::encodeUpperUnpadded($secret));
 
         $user = $this->createMock(BackendUser::class);
-        $user
-            ->expects($this->exactly(2))
-            ->method('getSecret')
-            ->willReturn($secret)
-        ;
+        $user->secret = $secret;
 
         $authenticator = new ContaoTwoFactorAuthenticator();
 
@@ -51,16 +47,11 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
         $secret = random_bytes(128);
 
         $user = $this->createMock(BackendUser::class);
+        $user->secret = $secret;
         $user
             ->expects($this->exactly(2))
             ->method('getUsername')
             ->willReturn('foobar')
-        ;
-
-        $user
-            ->expects($this->exactly(2))
-            ->method('getSecret')
-            ->willReturn($secret)
         ;
 
         $request = $this->createMock(Request::class);
@@ -92,16 +83,11 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
 SVG;
 
         $user = $this->createMock(BackendUser::class);
+        $user->secret = $secret;
         $user
             ->expects($this->once())
             ->method('getUsername')
             ->willReturn('foobar')
-        ;
-
-        $user
-            ->expects($this->once())
-            ->method('getSecret')
-            ->willReturn($secret)
         ;
 
         $request = $this->createMock(Request::class);

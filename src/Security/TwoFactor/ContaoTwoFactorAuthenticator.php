@@ -21,10 +21,15 @@ use OTPHP\TOTP;
 use ParagonIE\ConstantTime\Base32;
 use Symfony\Component\HttpFoundation\Request;
 
-class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterface
+class ContaoTwoFactorAuthenticator
 {
     /**
-     * {@inheritdoc}
+     * Validates the code, which was entered by the user.
+     *
+     * @param User   $user
+     * @param string $code
+     *
+     * @return bool
      */
     public function validateCode(User $user, string $code): bool
     {
@@ -34,16 +39,18 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
     }
 
     /**
-     * {@inheritdoc}
+     * Generates the TOTP provision URI.
+     *
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return string
      */
     public function getProvisionUri(User $user, Request $request): string
     {
         $issuer = rawurlencode($request->getSchemeAndHttpHost());
         $username = rawurlencode($user->getUsername());
 
-        // The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
-        // [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
-        // [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
         $qrContent = sprintf(
                 'otpauth://totp/%s:%s?secret=%s&issuer=%s',
                 $issuer,
@@ -56,7 +63,12 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
     }
 
     /**
-     * {@inheritdoc}
+     * Generates the QR code as SVG and return it as a string.
+     *
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return string
      */
     public function getQrCode(User $user, Request $request): string
     {
@@ -83,6 +95,6 @@ class ContaoTwoFactorAuthenticator implements ContaoTwoFactorAuthenticatorInterf
      */
     private function getUpperUnpaddedSecretForUser(User $user)
     {
-        return Base32::encodeUpperUnpadded($user->getSecret());
+        return Base32::encodeUpperUnpadded($user->secret);
     }
 }
