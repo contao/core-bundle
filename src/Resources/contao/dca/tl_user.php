@@ -18,9 +18,9 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
+			array('tl_user', 'build2faPalette'),
 			array('tl_user', 'handleUserProfile'),
-			array('tl_user', 'checkPermission'),
-			array('tl_user', 'build2faPalette')
+			array('tl_user', 'checkPermission')
 		),
 		'onsubmit_callback' => array
 		(
@@ -1037,7 +1037,7 @@ class tl_user extends Backend
 			return;
 		}
 
-		foreach ($GLOBALS['TL_DCA']['tl_user']['palettes'] as $palette => $v)
+		foreach ($GLOBALS['TL_DCA'][$dc->table]['palettes'] as $palette => $v)
 		{
 			if ($palette === '__selector__')
 			{
@@ -1045,7 +1045,7 @@ class tl_user extends Backend
 			}
 
 			// Don't show 2FA options, if it is not the logged in user itself and 2FA is disabled.
-			if ($dc->id !== $user->id && (int) $activeRecord->use2fa !== '1')
+			if ($dc->id !== $user->id && $activeRecord->use2fa !== '1')
 			{
 				continue;
 			}
@@ -1053,7 +1053,7 @@ class tl_user extends Backend
 			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 				->addLegend('2fa_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
 				->addField('use2fa', '2fa_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-				->applyToPalette($palette, 'tl_user')
+				->applyToPalette($palette, $dc->table)
 			;
 		}
 
@@ -1061,14 +1061,14 @@ class tl_user extends Backend
 		if ((int) $dc->id === (int) $user->id)
 		{
 			// extend selector
-			$GLOBALS['TL_DCA']['tl_user']['palettes']['__selector__'][] = 'use2fa';
-			$GLOBALS['TL_DCA']['tl_user']['subpalettes']['use2fa'] = '2faQrCode';
+			$GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'][] = 'use2fa';
+			$GLOBALS['TL_DCA'][$dc->table]['subpalettes']['use2fa'] = '2faQrCode';
 
 			if ($user->confirmed2fa !== '1')
 			{
 				Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 					->addField('confirmed2fa', '2faQrCode')
-					->applyToSubpalette('use2fa', 'tl_user')
+					->applyToSubpalette('use2fa', $dc->table)
 				;
 			}
 		}
