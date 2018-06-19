@@ -48,10 +48,11 @@ class MetaWizard extends Widget
 					$varValue = array_combine($varValue, array_fill(0, \count($varValue), ''));
 				}
 
-				foreach($varValue as $strArrKey => $varArrValue)
+				foreach($varValue as $strArrKey=>$varArrValue)
 				{
-					if (!is_array($varArrValue)) {
-						$varValue[$strArrKey] = array('attributes' => $varArrValue);
+					if (!\is_array($varArrValue))
+					{
+						$varValue[$strArrKey] = array('attributes'=>$varArrValue);
 					}
 				}
 

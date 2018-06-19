@@ -2217,12 +2217,12 @@ var Backend =
 		li.className = (li.className == 'even') ? 'odd' : 'even';
 		li.inject($(ul), 'bottom');
 
-		// Update picker
+		// Update the picker
 		li.getElements('a[id^=pp_]').each(function(link) {
 			var i = parseInt(link.get('id').replace(/pp_[^_]+_/, ''));
-			link.id = link.get('id').replace(i, i+1);
+			link.id = link.get('id').replace(i, i + 1);
 			var script = link.getNext('script');
-			script.set('html', script.get('html').replace(new RegExp('_'+i, 'g'), '_' + (i + 1)));
+			script.set('html', script.get('html').replace(new RegExp('_' + i, 'g'), '_' + (i + 1)));
 			eval(script.get('html'));
 		});
 
