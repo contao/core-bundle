@@ -83,7 +83,7 @@ class ContaoTwoFactorAuthenticator
     }
 
     /**
-     * Encodes the user's binary secret into Base32 format (upper and unpadded).
+     * Encodes the user's binary secret into Base32 format (uppercase and unpadded).
      *
      * The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
      * [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
