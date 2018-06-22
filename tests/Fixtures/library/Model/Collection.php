@@ -6,7 +6,7 @@ class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     private $models = [];
 
-    public function __construct(array $models)
+    public function __construct(array $models, $strTable)
     {
         $this->models = $models;
     }
