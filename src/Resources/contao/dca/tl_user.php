@@ -626,6 +626,11 @@ class tl_user extends Backend
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
+		if ($row['use2fa'] !==  '' || System::getContainer()->getParameter('contao.authentication.2fa.enforce_backend'))
+		{
+			$image .= '_2fa';
+		}
+
 		if ($row['disable'] || $disabled)
 		{
 			$image .= '_';
