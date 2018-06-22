@@ -1449,6 +1449,7 @@ abstract class Controller extends System
 			{
 				$size = array();
 			}
+
 			$size += array(0, 0, 'crop');
 		}
 
@@ -1496,10 +1497,12 @@ abstract class Controller extends System
 		// Disable responsive images in the back end (see #7875)
 		if (TL_MODE == 'BE')
 		{
-			if (\is_array($size)) {
+			if (\is_array($size))
+			{
 				unset($size[2]);
 			}
-			else {
+			else
+			{
 				$size = [$intMaxWidth, 0, 'crop'];
 			}
 		}
