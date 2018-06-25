@@ -1467,7 +1467,7 @@ abstract class Controller extends System
 		// Adjust the image size
 		if ($intMaxWidth > 0)
 		{
-			@trigger_error('Using Controller::addImageToTemplate() with $intMaxWidth has been deprecated and will no longer work in Contao 5.0.', E_USER_DEPRECATED);
+			@trigger_error('Using a maximum front end width has been deprecated and will no longer work in Contao 5.0. Remove the "maxImageWidth" configuration and use responsive images instead.', E_USER_DEPRECATED);
 
 			// Subtract the margins before deciding whether to resize (see #6018)
 			if (\is_array($arrMargin) && $arrMargin['unit'] == 'px')

@@ -781,8 +781,8 @@ table.tl_listing {
 	font-size:.875rem;
 }
 .tl_content img {
-	max-width: 320px;
-	height: auto;
+	max-width:320px;
+	height:auto;
 }
 .tl_content pre {
 	margin-top:3px;
