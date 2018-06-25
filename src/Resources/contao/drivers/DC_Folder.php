@@ -2569,6 +2569,7 @@ class DC_Folder extends DataContainer implements \listable, \editable
 			$md5 = substr(md5($folders[$f]), 0, 8);
 			$content = scan($folders[$f]);
 			$currentFolder = \StringUtil::stripRootDir($folders[$f]);
+			$objFolder = \FilesModel::findByPath($currentFolder);
 			$session['filetree'][$md5] = is_numeric($session['filetree'][$md5]) ? $session['filetree'][$md5] : 0;
 			$currentEncoded = $this->urlEncode($currentFolder);
 			$countFiles = \count($content);
@@ -2634,7 +2635,25 @@ class DC_Folder extends DataContainer implements \listable, \editable
 
 			// Add the current folder
 			$strFolderNameEncoded = \StringUtil::convertEncoding(\StringUtil::specialchars(basename($currentFolder)), \Config::get('characterSet'));
-			$return .= \Image::getHtml($folderImg, '').' <a href="' . $this->addToUrl('fn='.$currentEncoded) . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']).'"><strong>'.$strFolderNameEncoded.'</strong></a></div> <div class="tl_right">';
+			$strFolderLabel = "<strong>$strFolderNameEncoded</strong>";
+
+			if (\is_array($GLOBALS['TL_DCA']['tl_files']['list']['label']['create_folder_label_callback']))
+			{
+				foreach ($GLOBALS['TL_DCA']['tl_files']['list']['label']['create_folder_label_callback'] as $callback)
+				{
+					if (\is_array($callback))
+					{
+						$this->import($callback[0]);
+						$strFolderLabel = $this->{$callback[0]}->{$callback[1]}($objFolder, $strFolderLabel, $blnProtected);
+					}
+					elseif (\is_callable($callback))
+					{
+						$strFolderLabel = $callback($objFolder, $strFolderLabel, $blnProtected);
+					}
+				}
+			}
+
+			$return .= \Image::getHtml($folderImg, '').' <a href="' . $this->addToUrl('fn='.$currentEncoded) . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']).'">'.$strFolderLabel.'</a></div> <div class="tl_right">';
 
 			// Paste buttons
 			if ($arrClipboard !== false && \Input::get('act') != 'select')
@@ -2682,7 +2701,6 @@ class DC_Folder extends DataContainer implements \listable, \editable
 		// Process files
 		for ($h=0, $c=\count($files); $h<$c; $h++)
 		{
-			$thumbnail = '';
 			$currentFile = \StringUtil::stripRootDir($files[$h]);
 
 			$objFile = new \File($currentFile);
@@ -2699,56 +2717,8 @@ class DC_Folder extends DataContainer implements \listable, \editable
 			}
 
 			$currentEncoded = $this->urlEncode($currentFile);
-			$return .= "\n  " . '<li data-id="' . htmlspecialchars($currentFile, ENT_QUOTES) . '" class="tl_file click2edit toggle_select hover-div"><div class="tl_left" style="padding-left:'.($intMargin + $intSpacing).'px">';
-			$thumbnail .= ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize);
 
-			if ($objFile->width && $objFile->height)
-			{
-				$thumbnail .= ', '.$objFile->width.'x'.$objFile->height.' px';
-			}
-
-			$thumbnail .= ')</span>';
-
-			// Generate the thumbnail
-			if (\Config::get('thumbnails') && $objFile->isImage && (!$objFile->isSvgImage || $objFile->viewHeight > 0))
-			{
-				$blnCanResize = true;
-
-				// Check the maximum width and height if the GDlib is used to resize images
-				if (!$objFile->isSvgImage && \System::getContainer()->get('contao.image.imagine') instanceof Imagine)
-				{
-					$blnCanResize = $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth');
-				}
-
-				if ($blnCanResize)
-				{
-					try
-					{
-						// Inline the image if no preview image will be generated (see #636)
-						if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 400)
-						{
-							$thumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" class="preview-image">';
-						}
-						else
-						{
-							$thumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'class="preview-image"');
-						}
-
-						$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded))->getImportantPart();
-
-						if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
-						{
-							$thumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($currentEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'class="preview-important"');
-						}
-					}
-					catch (RuntimeException $e)
-					{
-						$thumbnail .= '<br><p class="preview-image broken-image">Broken image!</p>';
-					}
-				}
-			}
-
-			$strFileNameEncoded = \StringUtil::convertEncoding(\StringUtil::specialchars(basename($currentFile)), \Config::get('characterSet'));
+			list($strFileNameEncoded, $thumbnail) = $this->createFileLabelAndThumbnail($objFile, $currentFile, $currentEncoded);
 
 			// No popup links for templates and in the popup file manager
 			if ($this->strTable == 'tl_templates' || \Input::get('popup'))
@@ -3057,6 +3027,91 @@ class DC_Folder extends DataContainer implements \listable, \editable
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * Generate default file label and thumbnail then invoke referenced callbacks from $GLOBALS['TL_DCA']['tl_files']['list']['label']['create_file_label_thumbnail_callback']
+	 * @param string $strFilePath
+	 * @param string $strFilePathEncoded
+	 * @param File $objFile
+	 * @return string[] Array containing file label as a first and file thumbnail as a second string item
+	 * @throws \Exception
+	 */
+	protected function createFileLabelAndThumbnail($strFilePath, $strFilePathEncoded, $objFile)
+	{
+		$strFileLabel = \StringUtil::convertEncoding(\StringUtil::specialchars(basename($strFilePath)), \Config::get('characterSet'));
+
+		$strFileThumbnail = ' <span class="tl_gray">('.$this->getReadableSize($objFile->filesize);
+
+		if ($objFile->width && $objFile->height)
+		{
+			$strFileThumbnail .= ', '.$objFile->width.'x'.$objFile->height.' px';
+		}
+
+		$strFileThumbnail .= ')</span>';
+
+		// Generate the thumbnail
+		if (\Config::get('thumbnails') && $objFile->isImage && (!$objFile->isSvgImage || $objFile->viewHeight > 0))
+		{
+			$blnCanResize = true;
+
+			// Check the maximum width and height if the GDlib is used to resize images
+			if (!$objFile->isSvgImage && \System::getContainer()->get('contao.image.imagine') instanceof Imagine)
+			{
+				$blnCanResize = $objFile->height <= \Config::get('gdMaxImgHeight') && $objFile->width <= \Config::get('gdMaxImgWidth');
+			}
+
+			if ($blnCanResize)
+			{
+				try
+				{
+					// Inline the image if no preview image will be generated (see #636)
+					if ($objFile->height !== null && $objFile->height <= 50 && $objFile->width !== null && $objFile->width <= 400)
+					{
+						$strFileThumbnail .= '<br><img src="' . $objFile->dataUri . '" width="' . $objFile->width . '" height="' . $objFile->height . '" alt="" class="preview-image">';
+					}
+					else
+					{
+						$strFileThumbnail .= '<br>' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFilePathEncoded), array(400, 50, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT), '', 'class="preview-image"');
+					}
+
+					$importantPart = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFilePathEncoded))->getImportantPart();
+
+					if ($importantPart->getPosition()->getX() > 0 || $importantPart->getPosition()->getY() > 0 || $importantPart->getSize()->getWidth() < $objFile->width || $importantPart->getSize()->getHeight() < $objFile->height)
+					{
+						$strFileThumbnail .= ' ' . \Image::getHtml(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFilePathEncoded), (new ResizeConfiguration())->setWidth(320)->setHeight(40)->setMode(ResizeConfiguration::MODE_BOX)->setZoomLevel(100))->getUrl(TL_ROOT), '', 'class="preview-important"');
+					}
+				}
+				catch (RuntimeException $e)
+				{
+					$strFileThumbnail .= '<br><p class="preview-image broken-image">Broken image!</p>';
+				}
+			}
+		}
+
+		if (\is_array($GLOBALS['TL_DCA']['tl_files']['list']['label']['create_file_label_thumbnail_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_files']['list']['label']['create_file_label_thumbnail_callback'] as $callback)
+			{
+				if (\is_array($callback))
+				{
+					$this->import($callback[0]);
+					list($strFileLabel, $strFileThumbnail) = $this->{$callback[0]}->{$callback[1]}($objFile, $strFileLabel, $strFileThumbnail);
+				}
+				elseif (\is_callable($callback))
+				{
+					list($strFileLabel, $strFileThumbnail) = $callback($objFile, $strFileLabel, $strFileThumbnail);
+				}
+
+				if (!(is_string($strFileLabel) || (is_object($strFileLabel) && method_exists($strFileLabel, '__toString')))
+					|| !(is_string($strFileThumbnail) || (is_object($strFileThumbnail) && method_exists($strFileThumbnail, '__toString' ))))
+				{
+					throw new \Exception('Expected string values for both $strFileLabel and $strFileThumbnail');
+				}
+			}
+		}
+
+		return array($strFileLabel, $strFileThumbnail);
 	}
 }
 
