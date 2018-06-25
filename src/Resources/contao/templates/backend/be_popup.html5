@@ -88,6 +88,14 @@
             </td>
           </tr>
         <?php endif; ?>
+        <?php foreach ($this->arrAdditionalRows as $arrAdditionalRow): ?>
+          <?php if(!empty($arrAdditionalRow['label']) && !empty($arrAdditionalRow['value'])): ?>
+            <tr>
+              <td><span class="tl_label"><?= $this->labels->$arrAdditionalRow['label'] ?>:</span></td>
+              <td><?= $arrAdditionalRow['value'] ?></td>
+            </tr>
+          <?php endif; ?>
+        <?php endforeach; ?>
       </table>
       <?php if ($this->href): ?>
         <div id="download">

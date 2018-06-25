@@ -166,6 +166,42 @@ class BackendPopup extends Backend
 		$objTemplate->charset = \Config::get('characterSet');
 		$objTemplate->labels = (object) $GLOBALS['TL_LANG']['MSC'];
 		$objTemplate->download = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['fileDownload']);
+		$objTemplate->arrAdditionalRows = [];
+
+        /**
+         * Call user defined callbacks to insert additional rows
+         * Callback return array formats are: ['label' => 'strLabel', 'value' => 'strValue']
+         * or in case of adding multiple rows [['label' => 'strLabel', 'value' => 'strValue'], ...]
+         */
+        if (\is_array($GLOBALS['TL_HOOKS']['createBackendPopup']))
+        {
+            $arrAdditionalRows = [];
+
+            foreach ($GLOBALS['TL_HOOKS']['createBackendPopup'] as $callback)
+            {
+                $arrCurrentAdditionalRows = [];
+
+                if (\is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $arrCurrentAdditionalRows = $this->{$callback[0]}->{$callback[1]}($objFile);
+                }
+                elseif (\is_callable($callback))
+                {
+                    $arrCurrentAdditionalRows = $callback($objFile);
+                }
+
+                if (isset($arrCurrentAdditionalRows['label']) && isset($arrCurrentAdditionalRows['value']))
+                {
+                    $arrAdditionalRows[] = $arrCurrentAdditionalRows;
+                    continue;
+                }
+
+                $arrAdditionalRows = array_merge($arrAdditionalRows, $arrCurrentAdditionalRows);
+            }
+
+            $objTemplate->arrAdditionalRows = $arrAdditionalRows;
+        }
 
 		return $objTemplate->getResponse();
 	}
