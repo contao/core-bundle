@@ -698,6 +698,12 @@
       <trans-unit id="tl_content.table.1">
         <source>Import table items from a CSV file</source>
       </trans-unit>
+      <trans-unit id="tl_content.fileAccessibility">
+        <source>Warning: Your selected source file isn't public and therefore won't be accessible in the frontend.</source>
+      </trans-unit>
+      <trans-unit id="tl_content.filesAccessibility">
+        <source>Warning: You have selected %s source files/folders which aren't public and therefore won't be accessible in the frontend.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

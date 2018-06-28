@@ -224,7 +224,8 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'mandatory'=>true, 'tl_class'=>'clr'),
 			'load_callback' => array
 			(
-				array('tl_content', 'setSingleSrcFlags')
+				array('tl_content', 'setSingleSrcFlags'),
+                array('tl_content', 'checkSingleSrcAccessibility')
 			),
 			'sql'                     => "binary(16) NULL"
 		),
@@ -534,8 +535,9 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'sql'                     => "blob NULL",
 			'load_callback' => array
 			(
-				array('tl_content', 'setMultiSrcFlags')
-			)
+				array('tl_content', 'setMultiSrcFlags'),
+                array('tl_content', 'checkMultiSrcAccessibility')
+            )
 		),
 		'orderSRC' => array
 		(
@@ -618,7 +620,11 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'files'=>true, 'mandatory'=>true),
-			'sql'                     => "blob NULL"
+			'sql'                     => "blob NULL",
+            'load_callback' => array
+            (
+                array('tl_content', 'checkMultiSrcAccessibility')
+            )
 		),
 		'youtube' => array
 		(
@@ -1723,6 +1729,31 @@ class tl_content extends Backend
 		return $varValue;
 	}
 
+    /**
+     * @param mixed         $value
+     * @param DataContainer $dc
+     *
+     * @return mixed
+     */
+    public function checkSingleSrcAccessibility(?string $value, DataContainer $dc): ?string
+    {
+        // only apply check for content elements that allow adding media files
+        if (!\in_array($dc->activeRecord->type, ['text', 'accordionSingle', 'hyperlink', 'image'])) {
+            return $value;
+        }
+
+        if (null === $value || null === ($file = FilesModel::findByUuid($value))) {
+            return $value;
+        }
+
+        // check if file is from a protected path
+        if ($this->isProtectedPath(\dirname($file->path))) {
+            Message::addInfo($GLOBALS['TL_LANG']['tl_content']['fileAccessibility']);
+        }
+
+        return $value;
+    }
+
 	/**
 	 * Dynamically add flags to the "multiSRC" field
 	 *
@@ -1751,6 +1782,57 @@ class tl_content extends Backend
 
 		return $varValue;
 	}
+
+    /**
+     * @param               $value
+     * @param DataContainer $dc
+     *
+     * @return mixed
+     */
+    public function checkMultiSrcAccessibility(?string $value, DataContainer $dc): ?string
+    {
+        // only apply check for content elements that allow adding media files
+        if (!\in_array($dc->activeRecord->type, ['gallery', 'player'])) {
+            return $value;
+        }
+
+        if (null === $value
+            || null === ($uuids = StringUtil::deserialize($value))
+            || null === ($files = FilesModel::findMultipleByUuids($uuids))) {
+            return $value;
+        }
+
+        // check how many files are from protected paths
+        $privateFiles = 0;
+        foreach ($files as $file) {
+            if ($this->isProtectedPath($file->path)) {
+                $privateFiles++;
+            }
+        }
+        if ($privateFiles > 0) {
+            Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_content']['filesAccessibility'], $privateFiles));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
+    private function isProtectedPath(string $path): bool
+    {
+        do {
+            if (file_exists(TL_ROOT . '/' . $path . '/.public')) {
+                return false;
+            }
+
+            $path = \dirname($path);
+        } while ($path !== '.');
+
+        return true;
+    }
 
 	/**
 	 * Extract the YouTube ID from an URL
