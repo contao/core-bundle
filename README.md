@@ -124,7 +124,7 @@ security:
                 authenticator: contao.security.authenticator
 ```
 
-Edit your `app/config/config.yml` file edit the following parameters:
+Edit your `app/config/config.yml` file:
 
 ```yml
 parameters:
@@ -172,7 +172,7 @@ contao:
         dateFormat: Y-m-d
 ```
 
-If you want to see the default Symfony error pages in the dev mode, put the following into your `app/config/config_dev.yml`:
+If you want to see the default Symfony error pages in dev mode, put the following into your `app/config/config_dev.yml`:
 
  ```yml
 # Contao configuration
