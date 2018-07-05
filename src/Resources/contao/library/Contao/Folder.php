@@ -319,26 +319,92 @@ class Folder extends System
 
 	/**
 	 * Protect the folder by removing the .public file
+     *
+     * @deprecated Use removePublicAccess() instead.
 	 */
 	public function protect()
 	{
-		if (file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
+        @trigger_error(
+            'Using protect() has been deprecated and will no longer work in Contao 5.0. Use removePublicAccess() instead.',
+            E_USER_DEPRECATED
+        );
+
+		if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
 		{
-			$objFile = new \File($this->strFolder . '/.public');
-			$objFile->delete();
+			return;
 		}
+		$this->removePublicAccess();
 	}
 
 	/**
 	 * Unprotect the folder by adding a .public file
+     *
+     * @deprecated Use makePublic() instead.
 	 */
 	public function unprotect()
 	{
-		if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
-		{
-			\File::putContent($this->strFolder . '/.public', '');
-		}
+        @trigger_error(
+            'Using unprotect() has been deprecated and will no longer work in Contao 5.0. Use makePublic() instead.',
+            E_USER_DEPRECATED
+        );
+
+        $this->makePublic();
 	}
+
+    /**
+     * Check if the folder (or any parent) is public by checking if the .public file is set
+     *
+     * @param bool $includeParents
+     *
+     * @return bool
+     */
+    public function isPublic(bool $includeParents = true): bool
+    {
+        $path = $this->strFolder;
+
+        do {
+            if (file_exists(TL_ROOT . '/' . $path . '/.public')) {
+                return true;
+            }
+
+            $path = \dirname($path);
+        } while ($includeParents && $path !== '.');
+
+        return false;
+    }
+
+    /**
+     * Make the folder public by adding a .public file
+     */
+    public function makePublic(): void
+    {
+        if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
+        {
+            \File::putContent($this->strFolder . '/.public', '');
+        }
+    }
+
+    /**
+     * Remove public access by deleting the .public file
+     *
+     * @throws \Exception if folder is only implicitly public by a public parent
+     */
+    public function removePublicAccess() : void
+    {
+        if(!$this->isPublic()) {
+            return;
+        }
+
+        if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public')) {
+            throw new \RuntimeException(
+                sprintf('Can\'t remove public access for implicitly public folder "%s".', $this->strFolder)
+            );
+        }
+
+        $objFile = new \File($this->strFolder . '/.public');
+        $objFile->delete();
+
+    }
 
 	/**
 	 * Return the files model
