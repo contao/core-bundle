@@ -329,10 +329,6 @@ class Folder extends System
             E_USER_DEPRECATED
         );
 
-		if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
-		{
-			return;
-		}
 		$this->removePublicAccess();
 	}
 
