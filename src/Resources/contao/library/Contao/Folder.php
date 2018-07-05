@@ -320,31 +320,31 @@ class Folder extends System
 	/**
 	 * Protect the folder by removing the .public file
      *
-     * @deprecated Use removePublicAccess() instead.
+     * @deprecated Use denyPublicAccess() instead.
 	 */
 	public function protect()
 	{
         @trigger_error(
-            'Using protect() has been deprecated and will no longer work in Contao 5.0. Use removePublicAccess() instead.',
+            'Using protect() has been deprecated and will no longer work in Contao 5.0. Use denyPublicAccess() instead.',
             E_USER_DEPRECATED
         );
 
-		$this->removePublicAccess();
+		$this->denyPublicAccess();
 	}
 
 	/**
 	 * Unprotect the folder by adding a .public file
      *
-     * @deprecated Use makePublic() instead.
+     * @deprecated Use allowPublicAccess() instead.
 	 */
 	public function unprotect()
 	{
         @trigger_error(
-            'Using unprotect() has been deprecated and will no longer work in Contao 5.0. Use makePublic() instead.',
+            'Using unprotect() has been deprecated and will no longer work in Contao 5.0. Use allowPublicAccess() instead.',
             E_USER_DEPRECATED
         );
 
-        $this->makePublic();
+        $this->allowPublicAccess();
 	}
 
     /**
@@ -370,22 +370,22 @@ class Folder extends System
     }
 
     /**
-     * Make the folder public by adding a .public file
+     * Allow public access by adding a .public file
      */
-    public function makePublic(): void
+    public function allowPublicAccess(): void
     {
         if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
         {
-            \File::putContent($this->strFolder . '/.public', '');
+            File::putContent($this->strFolder . '/.public', '');
         }
     }
 
     /**
-     * Remove public access by deleting the .public file
+     * Deny public access by deleting the .public file
      *
      * @throws \Exception if folder is only implicitly public by a public parent
      */
-    public function removePublicAccess() : void
+    public function denyPublicAccess() : void
     {
         if(!$this->isPublic()) {
             return;
