@@ -397,9 +397,8 @@ class Folder extends System
             );
         }
 
-        $objFile = new \File($this->strFolder . '/.public');
+        $objFile = new File($this->strFolder . '/.public');
         $objFile->delete();
-
     }
 
 	/**
