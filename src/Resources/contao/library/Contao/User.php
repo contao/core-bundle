@@ -12,7 +12,6 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -98,7 +97,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends System implements UserInterface, EncoderAwareInterface, EquatableInterface, \Serializable
+abstract class User extends System implements UserInterface, EquatableInterface, \Serializable
 {
 
 	/**
@@ -564,14 +563,6 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 		$this->salt = $salt;
 
 		return $this;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getEncoderName()
-	{
-		return 'default';
 	}
 
 	/**
