@@ -109,9 +109,6 @@ security:
         default:
             algorithm: bcrypt
 
-        legacy:
-            id: contao.security.sha1_password_encoder
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
