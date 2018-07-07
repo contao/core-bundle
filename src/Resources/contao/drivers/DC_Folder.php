@@ -2997,18 +2997,7 @@ class DC_Folder extends DataContainer implements \listable, \editable
 	 */
 	protected function isProtectedPath($path)
 	{
-		do
-		{
-			if (file_exists(TL_ROOT . '/' . $path . '/.public'))
-			{
-				return false;
-			}
-
-			$path = \dirname($path);
-		}
-		while ($path != '.');
-
-		return true;
+        return !(new Folder($path))->isPublic();
 	}
 
 	/**
