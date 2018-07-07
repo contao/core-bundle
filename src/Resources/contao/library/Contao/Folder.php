@@ -374,10 +374,12 @@ class Folder extends System
      */
     public function allowPublicAccess(): void
     {
-        if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
+        if (file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
         {
-            File::putContent($this->strFolder . '/.public', '');
+            return;
         }
+
+        File::putContent($this->strFolder . '/.public', '');
     }
 
     /**
@@ -397,8 +399,7 @@ class Folder extends System
             );
         }
 
-        $objFile = new File($this->strFolder . '/.public');
-        $objFile->delete();
+        (new File($this->strFolder . '/.public'))->delete();
     }
 
 	/**
@@ -484,7 +485,7 @@ class Folder extends System
      *
      * @return Folder|null
      */
-    public function getParent()
+    public function getParent() : ?Folder
     {
         $path = \dirname($this->strFolder);
         if('.' === $path) {
