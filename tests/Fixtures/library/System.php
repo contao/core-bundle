@@ -69,8 +69,23 @@ class System
         static::$objContainer = $container;
     }
 
-    public static function loadLanguageFile()
+    public static function loadLanguageFile($file)
     {
         // ignore
+    }
+
+    public static function getTimeZones()
+    {
+        return array('Europe/Berlin');
+    }
+
+    public static function getFormattedNumber($intSize, $intDecimals)
+    {
+        return number_format($intSize, $intDecimals);
+    }
+
+    public static function anonymizeIp($strIp)
+    {
+        return $strIp;
     }
 }

@@ -35,6 +35,7 @@ use Contao\CoreBundle\EventListener\AddToSearchIndexListener;
 use Contao\CoreBundle\EventListener\BackendLocaleListener;
 use Contao\CoreBundle\EventListener\BackendMenuListener;
 use Contao\CoreBundle\EventListener\BypassMaintenanceListener;
+use Contao\CoreBundle\EventListener\ClearFormDataListener;
 use Contao\CoreBundle\EventListener\CommandSchedulerListener;
 use Contao\CoreBundle\EventListener\CsrfTokenCookieListener;
 use Contao\CoreBundle\EventListener\DoctrineSchemaListener;
@@ -53,6 +54,7 @@ use Contao\CoreBundle\EventListener\StoreRefererListener;
 use Contao\CoreBundle\EventListener\SwitchUserListener;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\EventListener\UserSessionListener as EventUserSessionListener;
+use Contao\CoreBundle\Fragment\ForwardFragmentRenderer;
 use Contao\CoreBundle\Fragment\FragmentHandler;
 use Contao\CoreBundle\Fragment\FragmentRegistry;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -265,6 +267,23 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertSame('kernel.request', $tags['kernel.event_listener'][0]['event']);
         $this->assertSame('onKernelRequest', $tags['kernel.event_listener'][0]['method']);
         $this->assertSame(6, $tags['kernel.event_listener'][0]['priority']);
+    }
+
+    public function testRegistersTheClearFormDataListener(): void
+    {
+        $this->assertTrue($this->container->has('contao.listener.clear_form_data'));
+
+        $definition = $this->container->getDefinition('contao.listener.clear_form_data');
+
+        $this->assertSame(ClearFormDataListener::class, $definition->getClass());
+        $this->assertTrue($definition->isPrivate());
+
+        $tags = $definition->getTags();
+
+        $this->assertArrayHasKey('kernel.event_listener', $tags);
+        $this->assertSame('kernel.response', $tags['kernel.event_listener'][0]['event']);
+        $this->assertSame('onKernelResponse', $tags['kernel.event_listener'][0]['method']);
+        $this->assertSame(-768, $tags['kernel.event_listener'][0]['priority']);
     }
 
     public function testRegistersTheCommandSchedulerListener(): void
@@ -823,6 +842,28 @@ class ContaoCoreExtensionTest extends TestCase
         $this->assertTrue($definition->isPrivate());
     }
 
+    public function testRegistersTheForwardFragmentRenderer(): void
+    {
+        $this->assertTrue($this->container->has('contao.fragment.renderer.forward'));
+
+        $definition = $this->container->getDefinition('contao.fragment.renderer.forward');
+
+        $this->assertSame(ForwardFragmentRenderer::class, $definition->getClass());
+        $this->assertTrue($definition->isPrivate());
+        $this->assertSame('http_kernel', (string) $definition->getArgument(0));
+        $this->assertSame('event_dispatcher', (string) $definition->getArgument(1));
+
+        $calls = $definition->getMethodCalls();
+
+        $this->assertSame('setFragmentPath', $calls[0][0]);
+        $this->assertSame('%fragment.path%', (string) $calls[0][1][0]);
+
+        $tags = $definition->getTags();
+
+        $this->assertArrayHasKey('kernel.fragment_renderer', $tags);
+        $this->assertSame('forward', $tags['kernel.fragment_renderer'][0]['alias']);
+    }
+
     public function testRegistersTheContaoFramework(): void
     {
         $this->assertTrue($this->container->has('contao.framework'));
@@ -1331,7 +1372,7 @@ class ContaoCoreExtensionTest extends TestCase
         $definition = $this->container->getDefinition('contao.security.frontend_preview_authenticator');
 
         $this->assertSame(FrontendPreviewAuthenticator::class, $definition->getClass());
-        $this->assertTrue($definition->isPrivate());
+        $this->assertFalse($definition->isPrivate());
         $this->assertSame('session', (string) $definition->getArgument(0));
         $this->assertSame('security.token_storage', (string) $definition->getArgument(1));
         $this->assertSame('contao.security.frontend_user_provider', (string) $definition->getArgument(2));
@@ -1448,7 +1489,7 @@ class ContaoCoreExtensionTest extends TestCase
         $definition = $this->container->getDefinition('contao.slug.generator');
 
         $this->assertSame(SlugGenerator::class, $definition->getClass());
-        $this->assertTrue($definition->isPrivate());
+        $this->assertTrue($definition->isPublic());
         $this->assertSame(['validChars' => '0-9a-z'], $definition->getArgument(0));
     }
 

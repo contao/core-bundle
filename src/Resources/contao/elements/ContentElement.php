@@ -24,6 +24,7 @@ use FOS\HttpCache\ResponseTagger;
  * @property string  $headline
  * @property string  $text
  * @property boolean $addImage
+ * @property boolean $overwriteMeta
  * @property string  $singleSRC
  * @property string  $alt
  * @property string  $title
@@ -48,10 +49,10 @@ use FOS\HttpCache\ResponseTagger;
  * @property string  $mooStyle
  * @property string  $mooClasses
  * @property string  $highlight
- * @property string  $shClass
  * @property string  $code
  * @property string  $url
  * @property boolean $target
+ * @property boolean $overwriteLink
  * @property string  $titleText
  * @property string  $linkTitle
  * @property string  $embed
@@ -72,10 +73,15 @@ use FOS\HttpCache\ResponseTagger;
  * @property string  $vimeo
  * @property string  $posterSRC
  * @property string  $playerSize
- * @property boolean $autoplay
+ * @property array   $playerOptions
+ * @property string  $playerPreload
+ * @property integer $playerStart
+ * @property integer $playerStop
+ * @property string  $playerCaption
+ * @property string  $playerAspect
+ * @property string  $playerColor
  * @property array   $youtubeOptions
- * @property integer $youtubeStart
- * @property integer $youtubeStop
+ * @property array   $vimeoOptions
  * @property integer $sliderDelay
  * @property integer $sliderSpeed
  * @property integer $sliderStartSlide

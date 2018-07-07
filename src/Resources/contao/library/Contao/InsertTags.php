@@ -857,6 +857,8 @@ class InsertTags extends Controller
 					// Check the maximum image width
 					if (\Config::get('maxImageWidth') > 0 && $width > \Config::get('maxImageWidth'))
 					{
+						@trigger_error('Using a maximum front end width has been deprecated and will no longer work in Contao 5.0. Remove the "maxImageWidth" configuration and use responsive images instead.', E_USER_DEPRECATED);
+
 						$width = \Config::get('maxImageWidth');
 						$height = null;
 					}
@@ -902,16 +904,7 @@ class InsertTags extends Controller
 						// Add a lightbox link
 						if ($rel != '')
 						{
-							if (strncmp($rel, 'lightbox', 8) !== 0)
-							{
-								$attribute = ' rel="' . \StringUtil::specialchars($rel) . '"';
-							}
-							else
-							{
-								$attribute = ' data-lightbox="' . \StringUtil::specialchars(substr($rel, 8)) . '"';
-							}
-
-							$arrCache[$strTag] = '<a href="' . \Controller::addFilesUrlTo($strFile) . '"' . (($alt != '') ? ' title="' . \StringUtil::specialchars($alt) . '"' : '') . $attribute . '>' . $arrCache[$strTag] . '</a>';
+							$arrCache[$strTag] = '<a href="' . \Controller::addFilesUrlTo($strFile) . '"' . (($alt != '') ? ' title="' . \StringUtil::specialchars($alt) . '"' : '') . ' data-lightbox="' . \StringUtil::specialchars($rel) . '">' . $arrCache[$strTag] . '</a>';
 						}
 					}
 					catch (\Exception $e)
@@ -1084,7 +1077,7 @@ class InsertTags extends Controller
 									if ($varValue !== false)
 									{
 										$arrCache[$strTag] = $varValue;
-										break;
+										break 2;
 									}
 								}
 							}

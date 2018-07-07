@@ -331,7 +331,6 @@ class StringUtilTest extends TestCase
 
     /**
      * @param string $string
-     * @param bool
      *
      * @dataProvider parseSimpleTokensDoesntExecutePhp
      */
@@ -356,26 +355,25 @@ class StringUtilTest extends TestCase
             ],
             '(<?)' => [
                 'This <? var_dump() ?> is a test.',
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
             '(<%)' => [
                 'This <% var_dump() ?> is a test.',
-                PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
+                \PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 'This <script language="php"> var_dump() </script> is a test.',
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
             '(<script language=\'php\'>)' => [
                 'This <script language=\'php\'> var_dump() </script> is a test.',
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
         ];
     }
 
     /**
      * @param array $tokens
-     * @param bool
      *
      * @dataProvider parseSimpleTokensDoesntExecutePhpInToken
      */
@@ -400,19 +398,19 @@ class StringUtilTest extends TestCase
             ],
             '(<?)' => [
                 ['foo' => 'This <? var_dump() ?> is a test.'],
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
             '(<%)' => [
                 ['foo' => 'This <% var_dump() ?> is a test.'],
-                PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
+                \PHP_VERSION_ID >= 70000 || !\in_array(strtolower(ini_get('asp_tags')), ['1', 'on', 'yes', 'true'], true),
             ],
             '(<script language="php">)' => [
                 ['foo' => 'This <script language="php"> var_dump() </script> is a test.'],
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
             '(<script language=\'php\'>)' => [
                 ['foo' => 'This <script language=\'php\'> var_dump() </script> is a test.'],
-                PHP_VERSION_ID >= 70000,
+                \PHP_VERSION_ID >= 70000,
             ],
         ];
     }
@@ -432,11 +430,11 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @dataProvider parseSimpleTokensInvalidComparison
      */
-    public function testFailsIfTheComparisonOperatorIsInvalid($string): void
+    public function testFailsIfTheComparisonOperatorIsInvalid(string $string): void
     {
         $this->expectException('InvalidArgumentException');
 

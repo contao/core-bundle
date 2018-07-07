@@ -74,6 +74,23 @@ class BackendMain extends Backend
 			$this->redirectToFrontendPage(\Input::get('page'), \Input::get('article'));
 		}
 
+		// Backend user profile redirect
+		if (\Input::get('do') == 'login' && (\Input::get('act') != 'edit' && \Input::get('id') != $this->User->id))
+		{
+			$container = \System::getContainer();
+
+			$strUrl = $container->get('router')->generate('contao_backend', array
+			(
+				'do' => 'login',
+				'act' => 'edit',
+				'id' => $this->User->id,
+				'ref' => $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id'),
+				'rt' => REQUEST_TOKEN,
+			));
+
+			$this->redirect($strUrl);
+		}
+
 		\System::loadLanguageFile('default');
 		\System::loadLanguageFile('modules');
 	}
@@ -238,7 +255,7 @@ class BackendMain extends Backend
 		$this->Template->isPopup = \Input::get('popup');
 		$this->Template->systemMessages = $GLOBALS['TL_LANG']['MSC']['systemMessages'];
 		$this->Template->burger = $GLOBALS['TL_LANG']['MSC']['burgerTitle'];
-		$this->Template->learnMore = sprintf($GLOBALS['TL_LANG']['MSC']['learnMore'], '<a href="https://contao.org" target="_blank" rel="noopener">contao.org</a>');
+		$this->Template->learnMore = sprintf($GLOBALS['TL_LANG']['MSC']['learnMore'], '<a href="https://contao.org" target="_blank" rel="noreferrer noopener">contao.org</a>');
 		$this->Template->ref = $container->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id');
 		$this->Template->menu = $container->get('contao.menu.backend_menu_renderer')->render($container->get('contao.menu.backend_menu_builder')->create());
 		$this->Template->headerNavigation = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['headerNavigation']);

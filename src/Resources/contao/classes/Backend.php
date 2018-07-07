@@ -298,15 +298,10 @@ abstract class Backend extends Controller
 		}
 
 		$this->import('BackendUser', 'User');
-
-		// Dynamically add the "personal data" module (see #4193)
-		if (\Input::get('do') == 'login')
-		{
-			$arrModule = array('tables'=>array('tl_user'), 'callback'=>'ModuleUser');
-		}
+		$blnAccess = (isset($arrModule['disablePermissionChecks']) && $arrModule['disablePermissionChecks'] === true) || $this->User->hasAccess($module, 'modules');
 
 		// Check whether the current user has access to the current module
-		elseif ($module != 'undo' && !$this->User->hasAccess($module, 'modules'))
+		if (!$blnAccess)
 		{
 			throw new AccessDeniedException('Back end module "' . $module . '" is not allowed for user "' . $this->User->username . '".');
 		}
@@ -1103,8 +1098,8 @@ abstract class Backend extends Controller
       e.preventDefault();
       Backend.openModalSelector({
         "id": "tl_listing",
-        "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
-        "url": this.href + "&value=" + document.getElementById("ctrl_'.$inputName.'").value,
+        "title": ' . json_encode($GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0]) . ',
+        "url": this.href + "&value=" + document.getElementById("ctrl_' . $inputName . '").value,
         "callback": function(picker, value) {
           $("ctrl_' . $inputName . '").value = value.join(",");
         }.bind(this)

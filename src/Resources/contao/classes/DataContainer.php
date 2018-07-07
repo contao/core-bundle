@@ -502,9 +502,12 @@ abstract class DataContainer extends Backend
   </script>';
 		}
 
+		$arrClasses = \StringUtil::trimsplit(' ', (string) $arrData['eval']['tl_class']);
+
 		// DCA picker
 		if (isset($arrData['eval']['dcaPicker']) && (\is_array($arrData['eval']['dcaPicker']) || $arrData['eval']['dcaPicker'] === true))
 		{
+			$arrClasses[] = 'dcapicker';
 			$wizard .= \Backend::getDcaPickerWizard($arrData['eval']['dcaPicker'], $this->strTable, $this->strField, $this->strInputName);
 		}
 
@@ -524,8 +527,6 @@ abstract class DataContainer extends Backend
 				}
 			}
 		}
-
-		$arrClasses = \StringUtil::trimsplit(' ', (string) $arrData['eval']['tl_class']);
 
 		if ($wizard != '')
 		{
@@ -1203,7 +1204,7 @@ abstract class DataContainer extends Backend
 	 * Returns an array of cache tags with all parent tables included.
 	 *
 	 * @param string $table
-	 * @param array $ids
+	 * @param array  $ids
 	 *
 	 * @return array
 	 */

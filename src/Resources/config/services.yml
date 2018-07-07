@@ -124,6 +124,16 @@ services:
     contao.fragment.registry:
         class: Contao\CoreBundle\Fragment\FragmentRegistry
 
+    contao.fragment.renderer.forward:
+        class: Contao\CoreBundle\Fragment\ForwardFragmentRenderer
+        arguments:
+            - "@http_kernel"
+            - "@event_dispatcher"
+        calls:
+            - ["setFragmentPath", ["%fragment.path%"]]
+        tags:
+            - { name: "kernel.fragment_renderer", alias: "forward" }
+
     contao.framework:
         class: Contao\CoreBundle\Framework\ContaoFramework
         arguments:
@@ -383,6 +393,7 @@ services:
             - "@security.token_storage"
             - "@contao.security.frontend_user_provider"
             - "@logger"
+        public: true
 
     contao.security.frontend_user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
@@ -437,6 +448,7 @@ services:
         class: Ausi\SlugGenerator\SlugGenerator
         arguments:
             - { validChars: "0-9a-z" }
+        public: true
 
     contao.slug.valid_characters:
         class: Contao\CoreBundle\Slug\ValidCharacters

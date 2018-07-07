@@ -1400,26 +1400,36 @@ var Backend =
 		});
 
 		ul.addEvent('mousedown', function(event) {
-			var dragElement = (event.target.hasClass('tl_file') || event.target.hasClass('tl_folder')) ? event.target : event.target.getParent('.tl_file,.tl_folder');
+			var dragHandle = event.target.hasClass('drag-handle') ? event.target : event.target.getParent('.drag-handle');
+			var dragElement = event.target.getParent('.tl_file,.tl_folder');
 
-			if (!dragElement || event.target.match('a') || event.target.getParent('a')) {
+			if (!dragHandle || !dragElement || event.rightClick) {
 				return;
 			}
 
 			ds.start();
+			ul.addClass('tl_listing_dragging');
 
 			var cloneBase = (dragElement.getElements('.tl_left')[0] || dragElement),
 				clone = cloneBase.clone(true)
 					.inject(ul)
-					.setPosition(cloneBase.getPosition(cloneBase.getOffsetParent()))
-					.setStyle('opacity', 0.7),
+					.addClass('tl_left_dragging'),
 				currentHover, currentHoverTime;
+
+			clone.setPosition({
+				x: event.page.x - cloneBase.getOffsetParent().getPosition().x - clone.getSize().x,
+				y: cloneBase.getPosition(cloneBase.getOffsetParent()).y
+			}).setStyle('display', 'none');
 
 			var move = new Drag.Move(clone, {
 				droppables: $$([ul]).append(ul.getElements('.tl_folder,li.parent,.tl_folder_top')),
+				unDraggableTags: [],
 				modifiers: {
 					x: 'left',
-					y: 'top',
+					y: 'top'
+				},
+				onStart: function() {
+					clone.setStyle('display', '');
 				},
 				onEnter: function(element, droppable) {
 					droppable = fixDroppable(droppable);
@@ -1454,6 +1464,15 @@ var Backend =
 						}
 					}
 				},
+				onCancel: function() {
+					currentHover = undefined;
+					currentHoverTime = undefined;
+
+					ds.stop();
+					clone.destroy();
+					ul.getElements('.tl_folder_dropping').removeClass('tl_folder_dropping');
+					ul.removeClass('tl_listing_dragging');
+				},
 				onDrop: function(element, droppable) {
 					currentHover = undefined;
 					currentHoverTime = undefined;
@@ -1461,6 +1480,7 @@ var Backend =
 					ds.stop();
 					clone.destroy();
 					ul.getElements('.tl_folder_dropping').removeClass('tl_folder_dropping');
+					ul.removeClass('tl_listing_dragging');
 
 					droppable = fixDroppable(droppable);
 
@@ -1469,7 +1489,7 @@ var Backend =
 					}
 
 					var id = dragElement.get('data-id'),
-						pid = droppable.get('data-id');
+						pid = droppable.get('data-id') || decodeURIComponent(options.url.split(/[?&]pid=/)[1].split('&')[0]);
 
 					// Ignore invalid move operations
 					if (id && pid && ((pid+'/').indexOf(id+'/') === 0 || pid+'/' === id.replace(/[^/]+$/, ''))) {
@@ -1477,14 +1497,7 @@ var Backend =
 					}
 
 					Backend.getScrollOffset();
-
-					var url = options.url + '&id=' + encodeURIComponent(id);
-
-					if (pid) {
-						url += '&pid=' + encodeURIComponent(pid);
-					}
-
-					document.location.href = url;
+					document.location.href = options.url + '&id=' + encodeURIComponent(id) + '&pid=' + encodeURIComponent(pid);
 				},
 				onLeave: function(element, droppable) {
 					droppable = fixDroppable(droppable);
@@ -2179,7 +2192,7 @@ var Backend =
 			return; // no language given
 		}
 
-		var li = $(ul).getLast('li').clone(),
+		var li = $(ul).getLast('li').clone(true, true),
 			span = li.getElement('span'),
 			img = span.getElement('img');
 
@@ -2203,6 +2216,15 @@ var Backend =
 		// Update the class name
 		li.className = (li.className == 'even') ? 'odd' : 'even';
 		li.inject($(ul), 'bottom');
+
+		// Update the picker
+		li.getElements('a[id^=pp_]').each(function(link) {
+			var i = parseInt(link.get('id').replace(/pp_[^_]+_/, ''));
+			link.id = link.get('id').replace(i, i + 1);
+			var script = link.getNext('script');
+			script.set('html', script.get('html').replace(new RegExp('_' + i, 'g'), '_' + (i + 1)));
+			eval(script.get('html'));
+		});
 
 		// Disable the "add language" button
 		el.getParent('div').getElement('input[type="button"]').setProperty('disabled', true);

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license LGPL-3.0-or-later
  */
 
-namespace Contao\CoreBundle\Tests\Doctrine\Schema;
+namespace Contao\CoreBundle\Tests\EventListener;
 
 use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\EventListener\DoctrineSchemaListener;
@@ -306,11 +306,11 @@ class DoctrineSchemaListenerTest extends DoctrineTestCase
     /**
      * Returns the index event argument.
      *
-     * @param $name
+     * @param string $name
      *
      * @return array
      */
-    private function getIndexEventArg($name): array
+    private function getIndexEventArg(string $name): array
     {
         return [
             'name' => $name,

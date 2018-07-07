@@ -113,6 +113,20 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 				'href'                => 'act=source',
 				'icon'                => 'editor.svg',
 				'button_callback'     => array('tl_files', 'editSource')
+			),
+			'upload' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_files']['upload'],
+				'href'                => 'act=move&amp;mode=2',
+				'icon'                => 'new.svg',
+				'button_callback'     => array('tl_files', 'uploadFile')
+			),
+			'drag' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_files']['cut'],
+				'icon'                => 'drag.svg',
+				'attributes'          => 'class="drag-handle" aria-hidden="true"',
+				'button_callback'     => array('tl_files', 'dragFile')
 			)
 		)
 	),
@@ -218,7 +232,17 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_files']['meta'],
 			'inputType'               => 'metaWizard',
-			'eval'                    => array('allowHtml'=>true, 'metaFields'=>array('title'=>'maxlength="255"', 'alt'=>'maxlength="255"', 'link'=>'maxlength="255"', 'caption'=>'maxlength="255"')),
+			'eval'                    => array
+			(
+				'allowHtml'           => true,
+				'metaFields'          => array
+				(
+					'title'           => 'maxlength="255"',
+					'alt'             => 'maxlength="255"',
+					'link'            => array('attributes'=>'maxlength="255"', 'dcaPicker'=>true),
+					'caption'         => 'maxlength="255"'
+				)
+			),
 			'sql'                     => "blob NULL"
 		)
 	)
@@ -540,6 +564,45 @@ class tl_files extends Backend
 	public function cutFile($row, $href, $label, $title, $icon, $attributes)
 	{
 		return $this->User->hasAccess('f2', 'fop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+	}
+
+	/**
+	 * Return the drag file button
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	public function dragFile($row, $href, $label, $title, $icon, $attributes)
+	{
+		return $this->User->hasAccess('f2', 'fop') ? '<button type="button" title="'.StringUtil::specialchars($title).'" '.$attributes.'>'.Image::getHtml($icon, $label).'</button> ' : ' ';
+	}
+
+	/**
+	 * Return the upload file button
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	public function uploadFile($row, $href, $label, $title, $icon, $attributes)
+	{
+		if (!$GLOBALS['TL_DCA']['tl_files']['config']['closed'] && !$GLOBALS['TL_DCA']['tl_files']['config']['notCreatable'] && Input::get('act') != 'select' && isset($row['type']) && $row['type'] == 'folder')
+		{
+			return '<a href="'.$this->addToUrl($href.'&amp;pid='.$row['id']).'" title="'.StringUtil::specialchars($title).'" '.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+		}
+
+		return ' ';
 	}
 
 	/**

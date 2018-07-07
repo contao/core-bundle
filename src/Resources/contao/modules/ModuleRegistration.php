@@ -159,7 +159,7 @@ class ModuleRegistration extends Module
 		$objMember = null;
 
 		// Check for a follow-up registration (see #7992)
-		if (\Input::post('email', true) != '' && ($objMember = \MemberModel::findUnactivatedByEmail(\Input::post('email', true))) !== null)
+		if ($this->reg_activate && \Input::post('email', true) != '' && ($objMember = \MemberModel::findUnactivatedByEmail(\Input::post('email', true))) !== null)
 		{
 			$this->resendActivationMail($objMember);
 
@@ -207,6 +207,8 @@ class ModuleRegistration extends Module
 
 			$objWidget = new $strClass($strClass::getAttributesFromDca($arrData, $field, $arrData['default'], '', '', $this));
 
+			// Append the module ID to prevent duplicate IDs (see #1493)
+			$objWidget->id .= '_' . $this->id;
 			$objWidget->storeValues = true;
 			$objWidget->rowClass = 'row_' . $i . (($i == 0) ? ' row_first' : '') . ((($i % 2) == 0) ? ' even' : ' odd');
 
