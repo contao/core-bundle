@@ -479,7 +479,22 @@ class Folder extends System
 		return $intSize;
 	}
 
-	/**
+    /**
+     * Return the parent folder or null if not existing.
+     *
+     * @return Folder|null
+     */
+    public function getParent()
+    {
+        $path = \dirname($this->strFolder);
+        if('.' === $path) {
+            return null;
+        }
+
+        return new Folder($path);
+    }
+
+    /**
 	 * Check if the folder should be synchronized with the database
 	 *
 	 * @return bool True if the folder needs to be synchronized with the database

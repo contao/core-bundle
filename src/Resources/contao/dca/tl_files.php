@@ -732,24 +732,13 @@ class tl_files extends Backend
 			return '';
 		}
 
-		$blnPublic = false;
-		$blnDisabled = false;
-		$strCheck = $strPath;
+        $objFolder = new Folder($strPath);
 
-		// Check if a parent folder is public
-		while ($strCheck != '.' && !$blnPublic)
-		{
-			if (!$blnPublic = file_exists(TL_ROOT . '/' . $strCheck . '/.public'))
-			{
-				$strCheck = \dirname($strCheck);
-			}
-		}
+		// Check if folder or a parent folder is public
+		$blnPublic = $objFolder->isPublic();
 
 		// Disable the checkbox if a parent folder is public (see #712)
-		if ($blnPublic && $strCheck != $strPath)
-		{
-			$blnDisabled = true;
-		}
+		$blnDisabled = null !== ($objParentFolder = $objFolder->getParent()) && $objParentFolder->isPublic();
 
 		// Protect or unprotect the folder
 		if (Input::post('FORM_SUBMIT') == 'tl_files')
@@ -759,9 +748,7 @@ class tl_files extends Backend
 				if (!$blnPublic)
 				{
 					$blnPublic = true;
-
-					$objFolder = new Folder($strPath);
-					$objFolder->unprotect();
+					$objFolder->allowPublicAccess();
 
 					$this->import('Automator');
 					$this->Automator->generateSymlinks();
@@ -772,9 +759,7 @@ class tl_files extends Backend
 				if ($blnPublic)
 				{
 					$blnPublic = false;
-
-					$objFolder = new Folder($strPath);
-					$objFolder->protect();
+                    $objFolder->denyPublicAccess();
 
 					$this->import('Automator');
 					$this->Automator->generateSymlinks();
