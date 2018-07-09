@@ -29,7 +29,7 @@ abstract class AbstractLockedCommand extends ContainerAwareCommand
     {
         $lock = new LockHandler(
             $this->getName(),
-            sys_get_temp_dir().'/'.md5($this->getContainer()->getParameter('kernel.project_dir'))
+            $this->getContainer()->getParameter('kernel.project_dir').'/var/locks'
         );
 
         if (!$lock->lock()) {
