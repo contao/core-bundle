@@ -435,7 +435,6 @@ services:
         class: Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorFormRenderer
         arguments:
             - "@router"
-        public: false
 
     contao.security.two_factor.backend.provider:
         class: Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorProvider
@@ -445,7 +444,6 @@ services:
             - "%contao.authentication.2fa.enforce_backend%"
         tags:
             - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
-        public: false
 
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag
