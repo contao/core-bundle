@@ -158,7 +158,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('authentication')
+                ->arrayNode('security')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('2fa')

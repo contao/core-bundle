@@ -95,7 +95,7 @@ class BackendIndex extends Backend
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
-			$enforce2fa = \System::getContainer()->getParameter('contao.authentication.2fa.enforce_backend');
+			$enforce2fa = \System::getContainer()->getParameter('contao.security.2fa.enforce_backend');
 
 			if (($enforce2fa || $this->User->use2fa) && $this->User->confirmed2fa !== '1') {
 				/** @var ContaoTwoFactorAuthenticator $twoFactorAuthenticator */

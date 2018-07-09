@@ -441,7 +441,7 @@ services:
         arguments:
             - "@contao.security.two_factor.authenticator"
             - "@contao.security.two_factor.backend.form_renderer"
-            - "%contao.authentication.2fa.enforce_backend%"
+            - "%contao.security.2fa.enforce_backend%"
         tags:
             - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
 
