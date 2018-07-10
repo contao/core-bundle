@@ -2085,15 +2085,15 @@ class DC_Folder extends DataContainer implements \listable, \editable
 	 * Protect a folder
 	 *
 	 * @throws InternalServerErrorException
-     *
-     * @deprecated Use Contao\Folder->denyPublicAccess() and Contao\Folder->allowPublicAccess() instead.
+	 *
+	 * @deprecated use Contao\Folder->denyPublicAccess() and Contao\Folder->allowPublicAccess() instead
 	 */
 	public function protect()
 	{
-        @trigger_error(
-            'Using protect() has been deprecated and will no longer work in Contao 5.0. Use Contao\Folder->denyPublicAccess() and Contao\Folder->allowPublicAccess() instead.',
-            E_USER_DEPRECATED
-        );
+		@trigger_error(
+			'Using protect() has been deprecated and will no longer work in Contao 5.0. Use Contao\Folder->denyPublicAccess() and Contao\Folder->allowPublicAccess() instead.',
+			E_USER_DEPRECATED
+		);
 
 		if (!is_dir(TL_ROOT . '/' . $this->intId))
 		{
@@ -2997,7 +2997,7 @@ class DC_Folder extends DataContainer implements \listable, \editable
 	 */
 	protected function isProtectedPath($path)
 	{
-        return !(new Folder($path))->isPublic();
+		return !(new Folder($path))->isPublic();
 	}
 
 	/**

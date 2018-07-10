@@ -732,7 +732,7 @@ class tl_files extends Backend
 			return '';
 		}
 
-        $objFolder = new Folder($strPath);
+		$objFolder = new Folder($strPath);
 
 		// Check if folder or a parent folder is public
 		$blnPublic = $objFolder->isPublic();
@@ -759,7 +759,7 @@ class tl_files extends Backend
 				if ($blnPublic)
 				{
 					$blnPublic = false;
-                    $objFolder->denyPublicAccess();
+					$objFolder->denyPublicAccess();
 
 					$this->import('Automator');
 					$this->Automator->generateSymlinks();

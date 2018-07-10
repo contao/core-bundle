@@ -906,15 +906,15 @@ class File extends System
 		return $return;
 	}
 
-    /**
-     * Check if the file is public by evaluating if any parent folder is public
-     *
-     * @return bool
-     */
-	public function isPublic() :bool
-    {
-        return (new Folder(\dirname($this->strFile)))->isPublic();
-    }
+	/**
+	 * Check if the file is public by evaluating if any parent folder is public.
+	 *
+	 * @return bool
+	 */
+	public function isPublic(): bool
+	{
+		return (new Folder(\dirname($this->strFile)))->isPublic();
+	}
 }
 
 class_alias(File::class, 'File');

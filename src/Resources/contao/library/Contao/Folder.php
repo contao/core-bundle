@@ -319,87 +319,86 @@ class Folder extends System
 
 	/**
 	 * Protect the folder by removing the .public file
-     *
-     * @deprecated Use denyPublicAccess() instead.
+	 *
+	 * @deprecated use denyPublicAccess() instead
 	 */
 	public function protect()
 	{
-        @trigger_error(
-            'Using protect() has been deprecated and will no longer work in Contao 5.0. Use denyPublicAccess() instead.',
-            E_USER_DEPRECATED
-        );
+		@trigger_error(
+			'Using protect() has been deprecated and will no longer work in Contao 5.0. Use denyPublicAccess() instead.',
+			E_USER_DEPRECATED
+		);
 
 		$this->denyPublicAccess();
 	}
 
 	/**
 	 * Unprotect the folder by adding a .public file
-     *
-     * @deprecated Use allowPublicAccess() instead.
+	 *
+	 * @deprecated use allowPublicAccess() instead
 	 */
 	public function unprotect()
 	{
-        @trigger_error(
-            'Using unprotect() has been deprecated and will no longer work in Contao 5.0. Use allowPublicAccess() instead.',
-            E_USER_DEPRECATED
-        );
+		@trigger_error(
+			'Using unprotect() has been deprecated and will no longer work in Contao 5.0. Use allowPublicAccess() instead.',
+			E_USER_DEPRECATED
+		);
 
-        $this->allowPublicAccess();
+		$this->allowPublicAccess();
 	}
 
-    /**
-     * Check if the folder (or any parent) is public by checking if the .public file is set
-     *
-     * @param bool $includeParents
-     *
-     * @return bool
-     */
+	/**
+	 * Check if the folder (or any parent) is public by checking if the .public file is set.
+	 *
+	 * @param bool $includeParents
+	 *
+	 * @return bool
+	 */
     public function isPublic(bool $includeParents = true): bool
     {
         $path = $this->strFolder;
 
         do {
-            if (file_exists(TL_ROOT . '/' . $path . '/.public')) {
+            if (file_exists(TL_ROOT.'/'.$path.'/.public')) {
                 return true;
             }
 
             $path = \dirname($path);
-        } while ($includeParents && $path !== '.');
+        } while ($includeParents && '.' !== $path);
 
         return false;
     }
 
-    /**
-     * Allow public access by adding a .public file
-     */
+	/**
+	 * Allow public access by adding a .public file.
+	 */
     public function allowPublicAccess(): void
     {
-        if (file_exists(TL_ROOT . '/' . $this->strFolder . '/.public'))
-        {
+        if (file_exists(TL_ROOT.'/'.$this->strFolder.'/.public')) {
             return;
         }
 
-        File::putContent($this->strFolder . '/.public', '');
+        File::putContent($this->strFolder.'/.public', '');
     }
 
-    /**
-     * Deny public access by deleting the .public file
+	/**
+     * Deny public access by deleting the .public file.
      *
      * @throws \Exception if folder is only implicitly public by a public parent
      */
-    public function denyPublicAccess() : void
+    public function denyPublicAccess(): void
     {
-        if(!$this->isPublic()) {
+        if (!$this->isPublic()) {
             return;
         }
 
-        if (!file_exists(TL_ROOT . '/' . $this->strFolder . '/.public')) {
+        if (!file_exists(TL_ROOT.'/'.$this->strFolder.'/.public')) {
             throw new \RuntimeException(
                 sprintf('Can\'t remove public access for implicitly public folder "%s".', $this->strFolder)
             );
         }
 
-        (new File($this->strFolder . '/.public'))->delete();
+        (new File($this->strFolder.'/.public'))->delete();
     }
 
 	/**
@@ -450,6 +449,21 @@ class Folder extends System
 	}
 
 	/**
+	 * Return the parent folder or null if not existing.
+	 *
+	 * @return Folder|null
+	 */
+	public function getParent(): ?self
+	{
+		$path = \dirname($this->strFolder);
+		if ('.' === $path) {
+			return null;
+		}
+
+		return new self($path);
+	}
+
+	/**
 	 * Return the size of the folder
 	 *
 	 * @return integer The folder size in bytes
@@ -480,22 +494,7 @@ class Folder extends System
 		return $intSize;
 	}
 
-    /**
-     * Return the parent folder or null if not existing.
-     *
-     * @return Folder|null
-     */
-    public function getParent() : ?Folder
-    {
-        $path = \dirname($this->strFolder);
-        if('.' === $path) {
-            return null;
-        }
-
-        return new Folder($path);
-    }
-
-    /**
+	/**
 	 * Check if the folder should be synchronized with the database
 	 *
 	 * @return bool True if the folder needs to be synchronized with the database
