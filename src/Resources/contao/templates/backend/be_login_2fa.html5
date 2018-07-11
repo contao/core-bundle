@@ -46,6 +46,7 @@
           <?php if ($this->qrCode): ?>
             <div class="qr_code" style="text-align: center; margin: 20px 0;">
               <img src="data:image/svg+xml;base64,<?= $this->qrCode; ?>" />
+              <p class="tl_help" title=""><?= $this->authCodeHelp; ?></p>
             </div>
           <?php endif; ?>
           <div class="widget">

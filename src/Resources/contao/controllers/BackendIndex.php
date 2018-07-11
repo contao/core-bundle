@@ -92,6 +92,7 @@ class BackendIndex extends Backend
 			$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['twoFactorAuthentication'];
 			$objTemplate->action = $router->generate('contao_backend_2fa_check');
 			$objTemplate->authCode = $GLOBALS['TL_LANG']['MSC']['authCode'];
+			$objTemplate->authCodeHelp = $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1];
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
