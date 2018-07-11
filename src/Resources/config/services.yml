@@ -145,7 +145,7 @@ services:
         public: true
 
     contao.image.imagine:
-        class: Imagine\Gd\Imagine
+        class: "%contao.image.imagine_options.class%"
         public: true
 
     contao.image.imagine_svg:

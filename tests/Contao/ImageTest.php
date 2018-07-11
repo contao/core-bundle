@@ -18,6 +18,7 @@ use Contao\File;
 use Contao\Image;
 use Contao\Image\ResizeCalculator;
 use Contao\System;
+use Imagine\Gd\Imagine;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -1575,6 +1576,7 @@ class ImageTest extends TestCase
         $container = $this->mockContainer($this->getTempDir());
         $container->setParameter('contao.image.target_dir', $this->getTempDir().'/assets/images');
         $container->setParameter('contao.web_dir', $this->getTempDir().'/web');
+        $container->setParameter('contao.image.imagine_options.class', Imagine::class);
 
         $resizer = new LegacyResizer($container->getParameter('contao.image.target_dir'), new ResizeCalculator());
         $resizer->setFramework($this->mockContaoFramework());

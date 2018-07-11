@@ -97,7 +97,6 @@ use Contao\Image\PictureGenerator;
 use Contao\Image\ResizeCalculator;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Doctrine\Common\Cache\FilesystemCache;
-use Imagine\Gd\Imagine;
 use Knp\Menu\Matcher\Matcher;
 use Knp\Menu\Renderer\ListRenderer;
 use Symfony\Component\Config\FileLocator;
@@ -893,7 +892,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $definition = $this->container->getDefinition('contao.image.imagine');
 
-        $this->assertSame(Imagine::class, $definition->getClass());
+        $this->assertSame('%contao.image.imagine_options.class%', $definition->getClass());
         $this->assertTrue($definition->isPublic());
     }
 

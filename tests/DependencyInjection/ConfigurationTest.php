@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\DependencyInjection;
 
 use Contao\CoreBundle\DependencyInjection\Configuration;
 use Contao\CoreBundle\Tests\TestCase;
+use Imagine\Imagick\Imagine;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
@@ -41,6 +42,35 @@ class ConfigurationTest extends TestCase
         $treeBuilder = $this->configuration->getConfigTreeBuilder();
 
         $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
+    }
+
+    public function testAppliesImagineOptions(): void
+    {
+        $params = [];
+
+        $configuration = (new Processor())->processConfiguration($this->configuration, $params);
+        $this->assertSame([
+            'class' => 'Imagine\Gd\Imagine',
+            'jpeg_quality' => 80,
+            'interlace' => 'plane',
+        ], $configuration['image']['imagine_options']);
+
+        $params = [
+            'contao' => [
+                'image' => [
+                    'imagine_options' => [
+                        'class' => Imagine::class,
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = (new Processor())->processConfiguration($this->configuration, $params);
+        $this->assertSame([
+            'class' => 'Imagine\Imagick\Imagine',
+            'jpeg_quality' => 80,
+            'interlace' => 'plane',
+        ], $configuration['image']['imagine_options']);
     }
 
     /**

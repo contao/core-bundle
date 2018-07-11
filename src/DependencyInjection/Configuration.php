@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\DependencyInjection;
 
+use Imagine\Exception\RuntimeException;
+use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -145,6 +147,9 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('imagine_options')
                             ->addDefaultsIfNotSet()
                             ->children()
+                                ->scalarNode('class')
+                                    ->defaultValue($this->getImagineImplementation())
+                                ->end()
                                 ->integerNode('jpeg_quality')
                                     ->defaultValue(80)
                                 ->end()
@@ -164,6 +169,31 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $treeBuilder;
+    }
+
+    /**
+     * Returns the available Imagine implementation.
+     *
+     * @return string
+     */
+    private function getImagineImplementation(): string
+    {
+        static $magicks = ['Gmagick', 'Imagick'];
+
+        foreach ($magicks as $name) {
+            $class = 'Imagine\\'.$name.'\Imagine';
+
+            // Will throw an exception if the PHP implementation is not available
+            try {
+                new $class();
+            } catch (RuntimeException $e) {
+                continue;
+            }
+
+            return $class;
+        }
+
+        return Imagine::class; // see #616
     }
 
     /**
