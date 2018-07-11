@@ -35,7 +35,7 @@ class Authenticator
     {
         $totp = TOTP::create($this->getUpperUnpaddedSecretForUser($user));
 
-        return $totp->verify($code, time());
+        return $totp->verify($code);
     }
 
     /**
