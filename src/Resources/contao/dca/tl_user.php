@@ -1062,20 +1062,17 @@ class tl_user extends Backend
 			;
 		}
 
-		// Only add subpalette if the logged in user is editing his own record
-		if ((int) $dc->id === (int) $user->id)
+		// Only add QR code subpalette if the logged in user is editing his own record and the code is not yet confirmed
+		if ((int) $dc->id === (int) $user->id && $user->confirmed2fa !== '1')
 		{
 			// extend selector
 			$GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'][] = 'use2fa';
 			$GLOBALS['TL_DCA'][$dc->table]['subpalettes']['use2fa'] = '2faQrCode';
 
-			if ($user->confirmed2fa !== '1')
-			{
-				Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-					->addField('confirmed2fa', '2faQrCode')
-					->applyToSubpalette('use2fa', $dc->table)
-				;
-			}
+			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+				->addField('confirmed2fa', '2faQrCode')
+				->applyToSubpalette('use2fa', $dc->table)
+			;
 		}
 	}
 
@@ -1109,6 +1106,14 @@ class tl_user extends Backend
 	public function save2faSecret($varValue, DataContainer $dc)
 	{
 		$this->generate2faSecret();
+
+		// Clear confirmation flag, if 2fa is disabled
+		if ($varValue !== '1')
+		{
+			$user = BackendUser::getInstance();
+			$user->confirmed2fa = false;
+			$user->save();
+		}
 
 		return $varValue;
 	}
