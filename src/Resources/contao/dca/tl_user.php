@@ -1171,6 +1171,6 @@ class tl_user extends Backend
 			throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 
-		return true;
+		return 1;
 	}
 }
