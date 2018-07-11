@@ -471,6 +471,10 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
+			'load_callback' => array
+			(
+				array('tl_user', 'loadUseTwoFactor')
+			),
 			'save_callback' => array
 			(
 				array('tl_user', 'saveTwoFactorSecret')
@@ -620,12 +624,13 @@ class tl_user extends Backend
 	 */
 	public function addIcon($row, $label, DataContainer $dc, $args)
 	{
+		$enforcedTwoFactor = System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
 		$image = $row['admin'] ? 'admin' : 'user';
 		$time = \Date::floorToMinute();
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if ($row['useTwoFactor'] && $row['confirmedTwoFactor'])
+		if ($enforcedTwoFactor || ($row['useTwoFactor'] && $row['confirmedTwoFactor']))
 		{
 			$image .= '_two_factor';
 		}
@@ -1172,5 +1177,25 @@ class tl_user extends Backend
 		}
 
 		return 1;
+	}
+
+	/**
+	 * Load callback for the useTwoFactor flag
+	 *
+	 * @param $varValue
+	 *
+	 * @param DataContainer $dc
+	 *
+	 * @return boolean
+	 */
+	public function loadUseTwoFactor($varValue, DataContainer $dc)
+	{
+		// Always show 2FA as enabled, if enforced by configuration
+		if (true === System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		{
+			return 1;
+		}
+
+		return $varValue;
 	}
 }
