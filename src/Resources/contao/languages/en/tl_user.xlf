@@ -306,7 +306,7 @@
         <source>QR code</source>
       </trans-unit>
       <trans-unit id="tl_user.2faQrCode.1">
-        <source>Please scan the QR code with a 2FA/TOTP app of your choice (e.g. 1password).</source>
+        <source>Please scan the QR code with a 2FA/TOTP app of your choice (e.g. 1Password).</source>
       </trans-unit>
       <trans-unit id="tl_user.confirmed2fa.0">
         <source>Verification code</source>
