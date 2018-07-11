@@ -1134,7 +1134,7 @@ class tl_user extends Backend
 			return '';
 		}
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator $twoFactorAuthenticator */
+		/** @var \Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
 		/** @var \Symfony\Component\HttpFoundation\Request $request */
@@ -1164,7 +1164,7 @@ class tl_user extends Backend
 	{
 		$user = BackendUser::getInstance();
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator $twoFactorAuthenticator */
+		/** @var \Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
 		if (false === $twoFactorAuthenticator->validateCode($user, $varValue))

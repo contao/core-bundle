@@ -421,29 +421,29 @@ services:
             - "@security.authentication.trust_resolver"
         public: true
 
+    contao.security.two_factor.authenticator:
+        class: Contao\CoreBundle\Security\TwoFactor\Authenticator
+        public: true
+
+    contao.security.two_factor.backend_form_renderer:
+        class: Contao\CoreBundle\Security\TwoFactor\BackendFormRenderer
+        arguments:
+            - "@router"
+
+    contao.security.two_factor.backend_provider:
+        class: Contao\CoreBundle\Security\TwoFactor\BackendProvider
+        arguments:
+            - "@contao.security.two_factor.authenticator"
+            - "@contao.security.two_factor.backend_form_renderer"
+            - "%contao.security.two_factor.enforce_backend%"
+        tags:
+            - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
+
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\User\UserChecker
         arguments:
             - "@contao.framework"
             - "@logger"
-
-    contao.security.two_factor.authenticator:
-        class: Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator
-        public: true
-
-    contao.security.two_factor.backend.form_renderer:
-        class: Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorFormRenderer
-        arguments:
-            - "@router"
-
-    contao.security.two_factor.backend.provider:
-        class: Contao\CoreBundle\Security\TwoFactor\ContaoBackendTwoFactorProvider
-        arguments:
-            - "@contao.security.two_factor.authenticator"
-            - "@contao.security.two_factor.backend.form_renderer"
-            - "%contao.security.2fa.enforce_backend%"
-        tags:
-            - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
 
     contao.session.contao_backend:
         class: Contao\CoreBundle\Session\Attribute\ArrayAttributeBag

@@ -17,15 +17,15 @@ use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorProviderInterface;
 
-class ContaoBackendTwoFactorProvider implements TwoFactorProviderInterface
+class BackendProvider implements TwoFactorProviderInterface
 {
     /**
-     * @var ContaoTwoFactorAuthenticator
+     * @var Authenticator
      */
     private $authenticator;
 
     /**
-     * @var ContaoBackendTwoFactorFormRenderer
+     * @var BackendFormRenderer
      */
     private $renderer;
 
@@ -33,11 +33,11 @@ class ContaoBackendTwoFactorProvider implements TwoFactorProviderInterface
     private $enforce2fa;
 
     /**
-     * @param ContaoTwoFactorAuthenticator       $authenticator
-     * @param ContaoBackendTwoFactorFormRenderer $renderer
+     * @param Authenticator       $authenticator
+     * @param BackendFormRenderer $renderer
      * @param bool                               $enforce2fa
      */
-    public function __construct(ContaoTwoFactorAuthenticator $authenticator, ContaoBackendTwoFactorFormRenderer $renderer, bool $enforce2fa)
+    public function __construct(Authenticator $authenticator, BackendFormRenderer $renderer, bool $enforce2fa)
     {
         $this->authenticator = $authenticator;
         $this->renderer = $renderer;

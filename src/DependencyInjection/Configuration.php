@@ -161,7 +161,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('security')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->arrayNode('2fa')
+                        ->arrayNode('two_factor')
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->booleanNode('enforce_backend')

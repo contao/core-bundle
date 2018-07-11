@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Security\TwoFactor;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator;
+use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Contao\CoreBundle\Tests\TestCase;
 use OTPHP\TOTP;
 use ParagonIE\ConstantTime\Base32;
@@ -23,9 +23,9 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
-        $authenticator = new ContaoTwoFactorAuthenticator();
+        $authenticator = new Authenticator();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator', $authenticator);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\Authenticator', $authenticator);
     }
 
     public function testCodeValidation(): void
@@ -36,7 +36,7 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
         $user = $this->createMock(BackendUser::class);
         $user->secret = $secret;
 
-        $authenticator = new ContaoTwoFactorAuthenticator();
+        $authenticator = new Authenticator();
 
         $this->assertTrue($authenticator->validateCode($user, $totp->now()));
         $this->assertFalse($authenticator->validateCode($user, 'foobar'));
@@ -61,7 +61,7 @@ class ContaoTwoFactorAuthenticatorTest extends TestCase
             ->willReturn('https://example.com')
         ;
 
-        $authenticator = new ContaoTwoFactorAuthenticator();
+        $authenticator = new Authenticator();
 
         $this->assertSame(
             sprintf('otpauth://totp/https%%3A%%2F%%2Fexample.com:foobar@https%%3A%%2F%%2Fexample.com?secret=%s&issuer=https%%3A%%2F%%2Fexample.com', Base32::encodeUpperUnpadded($secret)),
@@ -97,7 +97,7 @@ SVG;
             ->willReturn('https://example.com')
         ;
 
-        $authenticator = new ContaoTwoFactorAuthenticator();
+        $authenticator = new Authenticator();
         $svg = $authenticator->getQrCode($user, $request);
 
         $this->assertSame(7193, \strlen($svg));

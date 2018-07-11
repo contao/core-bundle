@@ -21,7 +21,7 @@ use OTPHP\TOTP;
 use ParagonIE\ConstantTime\Base32;
 use Symfony\Component\HttpFoundation\Request;
 
-class ContaoTwoFactorAuthenticator
+class Authenticator
 {
     /**
      * Validates the code, which was entered by the user.

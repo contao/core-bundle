@@ -11,7 +11,7 @@
 namespace Contao;
 
 use Contao\CoreBundle\Security\Exception\LockedException;
-use Contao\CoreBundle\Security\TwoFactor\ContaoTwoFactorAuthenticator;
+use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -95,10 +95,10 @@ class BackendIndex extends Backend
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
-			$enforce2fa = \System::getContainer()->getParameter('contao.security.2fa.enforce_backend');
+			$enforce2fa = \System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
 
 			if (($enforce2fa || $this->User->use2fa) && $this->User->confirmed2fa !== '1') {
-				/** @var ContaoTwoFactorAuthenticator $twoFactorAuthenticator */
+				/** @var Authenticator $twoFactorAuthenticator */
 				$twoFactorAuthenticator = \System::getContainer()->get('contao.security.two_factor.authenticator');
 				$objTemplate->qrCode = base64_encode($twoFactorAuthenticator->getQrCode($this->User, $request));
 			}
