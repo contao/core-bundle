@@ -215,6 +215,7 @@ class BackendControllerTest extends TestCase
     public function testRedirectsToTheBackendLoginIfTokenIsNotATwoFactorToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorage::class);
+
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -222,6 +223,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
+
         $router
             ->expects($this->once())
             ->method('generate')
@@ -247,6 +249,7 @@ class BackendControllerTest extends TestCase
     public function testRedirectsToTheBackendLoginIfTokenIsNotAUsernamePasswordToken(): void
     {
         $token = $this->createMock(TwoFactorToken::class);
+
         $token
             ->expects($this->once())
             ->method('getAuthenticatedToken')
@@ -254,6 +257,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $tokenStorage = $this->createMock(TokenStorage::class);
+
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -261,6 +265,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
+
         $router
             ->expects($this->once())
             ->method('generate')
@@ -286,6 +291,7 @@ class BackendControllerTest extends TestCase
     public function testRedirectsToTheBackendLoginIfUserIsNotABackendUser(): void
     {
         $authenticatedToken = $this->createMock(UsernamePasswordToken::class);
+
         $authenticatedToken
             ->expects($this->once())
             ->method('getUser')
@@ -293,6 +299,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $token = $this->createMock(TwoFactorToken::class);
+
         $token
             ->expects($this->once())
             ->method('getAuthenticatedToken')
@@ -300,6 +307,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $tokenStorage = $this->createMock(TokenStorage::class);
+
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -307,6 +315,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
+
         $router
             ->expects($this->once())
             ->method('generate')
@@ -329,11 +338,12 @@ class BackendControllerTest extends TestCase
         $this->assertSame('/contao', $response->getTargetUrl());
     }
 
-    public function testDoesCallTheLoginActionIfValidTwoFactorTokenIsProvided(): void
+    public function testCallsTheLoginActionIfAValidTwoFactorTokenIsProvided(): void
     {
         $user = $this->createMock(BackendUser::class);
 
         $authenticatedToken = $this->createMock(UsernamePasswordToken::class);
+
         $authenticatedToken
             ->expects($this->once())
             ->method('getUser')
@@ -341,6 +351,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $token = $this->createMock(TwoFactorToken::class);
+
         $token
             ->expects($this->once())
             ->method('getAuthenticatedToken')
@@ -348,6 +359,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $tokenStorage = $this->createMock(TokenStorage::class);
+
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -355,6 +367,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
+
         $router
             ->expects($this->once())
             ->method('generate')
@@ -363,6 +376,7 @@ class BackendControllerTest extends TestCase
         ;
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+
         $authorizationChecker
             ->expects($this->once())
             ->method('isGranted')
@@ -383,11 +397,5 @@ class BackendControllerTest extends TestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
-    }
-
-    public function testIsTwoFactorAuthCheckActionCallable(): void
-    {
-        $controller = new BackendController();
-        $this->assertNull($controller->twoFactorAuthCheckAction());
     }
 }

@@ -216,7 +216,7 @@
         <source>Image exceeds the maximum dimensions of %sx%s.</source>
       </trans-unit>
       <trans-unit id="ERR.invalidTwoFactor">
-        <source>Invalid two-factor authentication code!</source>
+        <source>Invalid two-factor verification code!</source>
       </trans-unit>
       <trans-unit id="SEC.question1">
         <source>Please add %d and %d.</source>
@@ -1800,7 +1800,7 @@
         <source>Two-factor authentication</source>
       </trans-unit>
       <trans-unit id="MSC.authCode">
-        <source>Authentication code</source>
+        <source>Verification code</source>
       </trans-unit>
       <trans-unit id="UNITS.0">
         <source>Byte</source>

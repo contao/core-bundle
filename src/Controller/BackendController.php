@@ -250,11 +250,10 @@ class BackendController extends Controller
      */
     public function twoFactorAuthAction(): Response
     {
-        /** @var RouterInterface $router */
-        $router = $this->get('router');
-
         $this->get('contao.framework')->initialize();
 
+        /** @var RouterInterface $router */
+        $router = $this->get('router');
         $token = $this->get('security.token_storage')->getToken();
 
         if (!$token instanceof TwoFactorToken) {
@@ -277,10 +276,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Dummy action for symfony security
-     * See https://symfony.com/doc/current/reference/configuration/security.html#check-path.
+     * Dummy action for Symfony security.
      *
      * @Route("/contao/2fa_check", name="contao_backend_2fa_check")
+     *
+     * @see https://symfony.com/doc/current/reference/configuration/security.html#check-path
      */
     public function twoFactorAuthCheckAction(): void
     {

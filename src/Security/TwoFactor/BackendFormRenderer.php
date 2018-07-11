@@ -20,7 +20,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class BackendFormRenderer implements TwoFactorFormRendererInterface
 {
-    /** @var RouterInterface */
+    /**
+     * @var RouterInterface
+     */
     protected $router;
 
     /**

@@ -17,7 +17,7 @@ use Contao\CoreBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
-class ContaoBackendTwoFactorFormRendererTest extends TestCase
+class BackendFormRendererTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
@@ -29,6 +29,7 @@ class ContaoBackendTwoFactorFormRendererTest extends TestCase
     public function testRedirectsOnRenderFormCall(): void
     {
         $router = $this->createMock(RouterInterface::class);
+
         $router
             ->expects($this->once())
             ->method('generate')

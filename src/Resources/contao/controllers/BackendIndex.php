@@ -51,7 +51,8 @@ class BackendIndex extends Backend
 	 */
 	public function run()
 	{
-		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+		$container = \System::getContainer();
+		$exception = $container->get('security.authentication_utils')->getLastAuthenticationError();
 
 		if ($exception instanceof LockedException)
 		{
@@ -75,8 +76,7 @@ class BackendIndex extends Backend
 			$arrParams['referer'] = $referer;
 		}
 
-		/** @var Router $router */
-		$router = \System::getContainer()->get('router');
+		$router = $container->get('router');
 
 		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_login');
@@ -84,7 +84,7 @@ class BackendIndex extends Backend
 		$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['loginBT'];
 
 		/** @var Request $request */
-		$request = \System::getContainer()->get('request_stack')->getCurrentRequest();
+		$request = $container->get('request_stack')->getCurrentRequest();
 
 		if ($request->getRequestUri() === $router->generate('contao_backend_2fa'))
 		{
@@ -96,12 +96,8 @@ class BackendIndex extends Backend
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
-			$enforce2fa = \System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
-
-			if (($enforce2fa || $this->User->use2fa) && $this->User->confirmed2fa !== '1') {
-				/** @var Authenticator $twoFactorAuthenticator */
-				$twoFactorAuthenticator = \System::getContainer()->get('contao.security.two_factor.authenticator');
-				$objTemplate->qrCode = base64_encode($twoFactorAuthenticator->getQrCode($this->User, $request));
+			if (!$this->User->confirmed2fa && ($this->User->use2fa || $container->getParameter('contao.security.two_factor.enforce_backend'))) {
+				$objTemplate->qrCode = base64_encode($container->get('contao.security.two_factor.authenticator')->getQrCode($this->User, $request));
 			}
 		}
 

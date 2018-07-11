@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Authenticator
 {
     /**
-     * Validates the code, which was entered by the user.
+     * Validates the code which was entered by the user.
      *
      * @param User   $user
      * @param string $code
@@ -49,12 +49,11 @@ class Authenticator
     public function getProvisionUri(User $user, Request $request): string
     {
         $issuer = rawurlencode($request->getSchemeAndHttpHost());
-        $username = rawurlencode($user->getUsername());
 
         $qrContent = sprintf(
                 'otpauth://totp/%s:%s?secret=%s&issuer=%s',
                 $issuer,
-                $username.'@'.$issuer,
+                rawurlencode($user->getUsername()).'@'.$issuer,
                 $this->getUpperUnpaddedSecretForUser($user),
                 $issuer
         );
@@ -63,7 +62,7 @@ class Authenticator
     }
 
     /**
-     * Generates the QR code as SVG and return it as a string.
+     * Generates the QR code as SVG and returns it as a string.
      *
      * @param User    $user
      * @param Request $request
@@ -83,9 +82,11 @@ class Authenticator
     }
 
     /**
-     * Encodes the user's binary secret into Base32 format (uppercase and unpadded).
+     * Encodes the binary secret into base32 format (uppercase and unpadded).
      *
-     * The 2FA app from Google (Google authenticator) does not strictly confirm to RFC 4648 [1] (they confirm to the old RFC 3548 [2]).
+     * The 2FA app from Google (Google authenticator) does not strictly confirm
+     * to RFC 4648 [1] but to the old RFC 3548 [2].
+     *
      * [1] https://github.com/paragonie/constant_time_encoding/issues/9#issuecomment-331469087
      * [2] https://github.com/google/google-authenticator/wiki/Key-Uri-Format#secret
      *
@@ -93,7 +94,7 @@ class Authenticator
      *
      * @return string
      */
-    private function getUpperUnpaddedSecretForUser(User $user)
+    private function getUpperUnpaddedSecretForUser(User $user): string
     {
         return Base32::encodeUpperUnpadded($user->secret);
     }

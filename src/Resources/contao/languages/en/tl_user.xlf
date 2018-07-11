@@ -297,22 +297,22 @@
         <source>Two-factor authentication (2FA)</source>
       </trans-unit>
       <trans-unit id="tl_user.use2fa.0">
-        <source>Enable two-factor authentication</source>
+        <source>Use two-factor authentication</source>
       </trans-unit>
       <trans-unit id="tl_user.use2fa.1">
-        <source>Use the two-factor authentication (TOTP).</source>
+        <source>Use two-factor authentication to log into the Contao back end.</source>
       </trans-unit>
       <trans-unit id="tl_user.2faQrCode.0">
-        <source>QR Code</source>
+        <source>QR code</source>
       </trans-unit>
       <trans-unit id="tl_user.2faQrCode.1">
-        <source>Scan this QR code with your 2FA/TOTP app of your choice (e.g. Google Authenticator)</source>
+        <source>Please scan the QR code with a 2FA/TOTP app of your choice (e.g. 1password).</source>
       </trans-unit>
       <trans-unit id="tl_user.confirmed2fa.0">
-        <source>Confirm two-factor authentication</source>
+        <source>Verification code</source>
       </trans-unit>
       <trans-unit id="tl_user.confirmed2fa.1">
-        <source>Please enter the code provided by your 2FA/TOTP app.</source>
+        <source>Please enter the verfication code provided by your 2FA/TOTP app.</source>
       </trans-unit>
     </body>
   </file>

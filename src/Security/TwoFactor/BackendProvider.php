@@ -29,13 +29,15 @@ class BackendProvider implements TwoFactorProviderInterface
      */
     private $renderer;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $enforce2fa;
 
     /**
      * @param Authenticator       $authenticator
      * @param BackendFormRenderer $renderer
-     * @param bool                               $enforce2fa
+     * @param bool                $enforce2fa
      */
     public function __construct(Authenticator $authenticator, BackendFormRenderer $renderer, bool $enforce2fa)
     {
@@ -79,7 +81,7 @@ class BackendProvider implements TwoFactorProviderInterface
             return false;
         }
 
-        // 2FA is now confirmed, save flag on user
+        // 2FA is now confirmed, save the user flag
         if ($this->enforce2fa && !(bool) $user->confirmed2fa) {
             $user->confirmed2fa = true;
             $user->save();

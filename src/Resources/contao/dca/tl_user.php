@@ -465,9 +465,9 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
-		'use2fa' => array(
+		'use2fa' => array
+		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['use2fa'],
-			'exclude'                 => false,
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
@@ -485,7 +485,6 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'confirmed2fa' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmed2fa'],
-			'exclude'                 => false,
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'tl_class'=>'w50'),
 			'save_callback' => array
@@ -497,7 +496,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'secret' => array
 		(
 			'sql'                     => "binary(128) NULL default NULL"
-		),
+		)
 	)
 );
 
@@ -626,7 +625,7 @@ class tl_user extends Backend
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if ($row['use2fa'] !==  '' || System::getContainer()->getParameter('contao.security.2fa.enforce_backend'))
+		if ($row['use2fa'] && $row['confirmed2fa'])
 		{
 			$image .= '_2fa';
 		}
@@ -1026,21 +1025,21 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Builds the palette for 2FA dynamically.
+	 * Build the palette for 2FA dynamically
 	 *
 	 * @param DataContainer $dc
 	 */
 	public function build2faPalette(DataContainer $dc)
 	{
-		$user = BackendUser::getInstance();
-
 		/** @var BackendUser $activeRecord */
-		$activeRecord = UserModel::findById((int) $dc->id);
+		$activeRecord = UserModel::findById($dc->id);
 
 		if ($activeRecord === null)
 		{
 			return;
 		}
+
+		$user = BackendUser::getInstance();
 
 		foreach ($GLOBALS['TL_DCA'][$dc->table]['palettes'] as $palette => $v)
 		{
@@ -1049,8 +1048,8 @@ class tl_user extends Backend
 				continue;
 			}
 
-			// Don't show 2FA options, if it is not the logged in user itself and 2FA is disabled.
-			if ($dc->id !== $user->id && $activeRecord->use2fa !== '1')
+			// Don't show the 2FA options to the logged in user
+			if ($dc->id != $user->id && !$activeRecord->use2fa)
 			{
 				continue;
 			}
@@ -1062,10 +1061,9 @@ class tl_user extends Backend
 			;
 		}
 
-		// Only add QR code subpalette if the logged in user is editing his own record and the code is not yet confirmed
-		if ((int) $dc->id === (int) $user->id && $user->confirmed2fa !== '1')
+		// Hide the QR code subpalette once the code has been confirmed
+		if ($dc->id == $user->id && !$user->confirmed2fa)
 		{
-			// extend selector
 			$GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'][] = 'use2fa';
 			$GLOBALS['TL_DCA'][$dc->table]['subpalettes']['use2fa'] = '2faQrCode';
 
@@ -1077,7 +1075,7 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Generates a 2FA secret if not present.
+	 * Generate a 1024 bit 2FA secret if not present
 	 *
 	 * @return string
 	 */
@@ -1087,7 +1085,6 @@ class tl_user extends Backend
 
 		if ($user->secret === null)
 		{
-			// Generate 1024 bit secret
 			$user->secret = random_bytes(128);
 			$user->save();
 		}
@@ -1096,22 +1093,21 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Save callback for 2FA.
+	 * Save callback for 2FA
 	 *
-	 * @param $varValue
-	 * @param DataContainer $dc
+	 * @param string $varValue
 	 *
 	 * @return mixed
 	 */
-	public function save2faSecret($varValue, DataContainer $dc)
+	public function save2faSecret($varValue)
 	{
 		$this->generate2faSecret();
 
-		// Clear confirmation flag, if 2fa is disabled
-		if ($varValue !== '1')
+		// Clear the confirmation flag if 2FA is disabled
+		if (!$varValue)
 		{
 			$user = BackendUser::getInstance();
-			$user->confirmed2fa = false;
+			$user->confirmed2fa = '';
 			$user->save();
 		}
 
@@ -1119,7 +1115,7 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * input_field_callback to display the QR code in the subpalette.
+	 * Input field callback to display the QR code in the subpalette
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -1129,15 +1125,15 @@ class tl_user extends Backend
 	{
 		$secret = $this->generate2faSecret();
 
-		if ($secret === '' || $secret === null)
+		if (!$secret)
 		{
 			return '';
 		}
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
+		/** @var Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
-		/** @var \Symfony\Component\HttpFoundation\Request $request */
+		/** @var Symfony\Component\HttpFoundation\Request $request */
 		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		return '
@@ -1151,29 +1147,28 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Save callback for 2fa confirmation.
+	 * Save callback for 2FA confirmation
 	 *
-	 * @param $varValue
-	 * @param DataContainer $dc
+	 * @param string $varValue
+	 *
+	 * @throws RuntimeException
 	 *
 	 * @return boolean
-	 *
-	 * @throws Exception
 	 */
-	public function confirm2fa($varValue, DataContainer $dc)
+	public function confirm2fa($varValue)
 	{
 		$user = BackendUser::getInstance();
 
-		/** @var \Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
+		/** @var Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
 		$twoFactorAuthenticator = System::getContainer()->get('contao.security.two_factor.authenticator');
 
-		if (false === $twoFactorAuthenticator->validateCode($user, $varValue))
+		if (!$twoFactorAuthenticator->validateCode($user, $varValue))
 		{
 			// Disable 2FA, otherwise 2FA stays enabled if the user leaves the window
 			$user->use2fa = false;
 			$user->save();
 
-			throw new Exception($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
+			throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 
 		return true;
