@@ -38,6 +38,6 @@ class BackendFormRenderer implements TwoFactorFormRendererInterface
      */
     public function renderForm(Request $request, array $templateVars): Response
     {
-        return new RedirectResponse($this->router->generate('contao_backend_2fa'));
+        return new RedirectResponse($this->router->generate('contao_backend_two_factor'));
     }
 }

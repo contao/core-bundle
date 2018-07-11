@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
-			array('tl_user', 'build2faPalette'),
+			array('tl_user', 'buildTwoFactorPalette'),
 			array('tl_user', 'handleUserProfile'),
 			array('tl_user', 'checkPermission')
 		),
@@ -465,31 +465,31 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
-		'use2fa' => array
+		'useTwoFactor' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['use2fa'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useTwoFactor'],
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
 			'save_callback' => array
 			(
-				array('tl_user', 'save2faSecret')
+				array('tl_user', 'saveTwoFactorSecret')
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
-		'2faQrCode' => array
+		'twoFactorQrCode' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['2faQrCode'],
-			'input_field_callback'    => array('tl_user', 'get2faQrCode')
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'],
+			'input_field_callback'    => array('tl_user', 'getTwoFactorQrCode')
 		),
-		'confirmed2fa' => array
+		'confirmedTwoFactor' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmed2fa'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmedTwoFactor'],
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
-				array('tl_user', 'confirm2fa')
+				array('tl_user', 'confirmTwoFactor')
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
@@ -625,9 +625,9 @@ class tl_user extends Backend
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if ($row['use2fa'] && $row['confirmed2fa'])
+		if ($row['useTwoFactor'] && $row['confirmedTwoFactor'])
 		{
-			$image .= '_2fa';
+			$image .= '_two_factor';
 		}
 
 		if ($row['disable'] || $disabled)
@@ -1029,7 +1029,7 @@ class tl_user extends Backend
 	 *
 	 * @param DataContainer $dc
 	 */
-	public function build2faPalette(DataContainer $dc)
+	public function buildTwoFactorPalette(DataContainer $dc)
 	{
 		/** @var BackendUser $activeRecord */
 		$activeRecord = UserModel::findById($dc->id);
@@ -1049,27 +1049,27 @@ class tl_user extends Backend
 			}
 
 			// Don't show the 2FA options to the logged in user
-			if ($dc->id != $user->id && !$activeRecord->use2fa)
+			if ($dc->id != $user->id && !$activeRecord->useTwoFactor)
 			{
 				continue;
 			}
 
 			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-				->addLegend('2fa_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-				->addField('use2fa', '2fa_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+				->addLegend('twoFactor_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+				->addField('useTwoFactor', 'twoFactor_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
 				->applyToPalette($palette, $dc->table)
 			;
 		}
 
 		// Hide the QR code subpalette once the code has been confirmed
-		if ($dc->id == $user->id && !$user->confirmed2fa)
+		if ($dc->id == $user->id && !$user->confirmedTwoFactor)
 		{
-			$GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'][] = 'use2fa';
-			$GLOBALS['TL_DCA'][$dc->table]['subpalettes']['use2fa'] = '2faQrCode';
+			$GLOBALS['TL_DCA'][$dc->table]['palettes']['__selector__'][] = 'useTwoFactor';
+			$GLOBALS['TL_DCA'][$dc->table]['subpalettes']['useTwoFactor'] = 'twoFactorQrCode';
 
 			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-				->addField('confirmed2fa', '2faQrCode')
-				->applyToSubpalette('use2fa', $dc->table)
+				->addField('confirmedTwoFactor', 'twoFactorQrCode')
+				->applyToSubpalette('useTwoFactor', $dc->table)
 			;
 		}
 	}
@@ -1079,7 +1079,7 @@ class tl_user extends Backend
 	 *
 	 * @return string
 	 */
-	protected function generate2faSecret()
+	protected function generateTwoFactorSecret()
 	{
 		$user = BackendUser::getInstance();
 
@@ -1099,15 +1099,15 @@ class tl_user extends Backend
 	 *
 	 * @return mixed
 	 */
-	public function save2faSecret($varValue)
+	public function saveTwoFactorSecret($varValue)
 	{
-		$this->generate2faSecret();
+		$this->generateTwoFactorSecret();
 
 		// Clear the confirmation flag if 2FA is disabled
 		if (!$varValue)
 		{
 			$user = BackendUser::getInstance();
-			$user->confirmed2fa = '';
+			$user->confirmedTwoFactor = '';
 			$user->save();
 		}
 
@@ -1121,9 +1121,9 @@ class tl_user extends Backend
 	 *
 	 * @return string
 	 */
-	public function get2faQrCode(DataContainer $dc)
+	public function getTwoFactorQrCode(DataContainer $dc)
 	{
-		$secret = $this->generate2faSecret();
+		$secret = $this->generateTwoFactorSecret();
 
 		if (!$secret)
 		{
@@ -1137,12 +1137,12 @@ class tl_user extends Backend
 		$request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
 		return '
-<div class="2fa-qr-code widget">
+<div class="twoFactor-qr-code widget">
   <div id="ctrl_' . $dc->field . '" class="">
-    <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][0] . '</label></h3>
+    <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'][0] . '</label></h3>
     <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode(BackendUser::getInstance(), $request)) . '" />
   </div>' . (Config::get('showHelp') ? '
-  <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1] . '</p>' : '') . '
+  <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'][1] . '</p>' : '') . '
 </div>';
 	}
 
@@ -1155,7 +1155,7 @@ class tl_user extends Backend
 	 *
 	 * @return boolean
 	 */
-	public function confirm2fa($varValue)
+	public function confirmTwoFactor($varValue)
 	{
 		$user = BackendUser::getInstance();
 
@@ -1165,7 +1165,7 @@ class tl_user extends Backend
 		if (!$twoFactorAuthenticator->validateCode($user, $varValue))
 		{
 			// Disable 2FA, otherwise 2FA stays enabled if the user leaves the window
-			$user->use2fa = false;
+			$user->useTwoFactor = false;
 			$user->save();
 
 			throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);

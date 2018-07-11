@@ -293,25 +293,25 @@
       <trans-unit id="tl_user.su.1">
         <source>Switch to user ID %s</source>
       </trans-unit>
-      <trans-unit id="tl_user.2fa_legend">
+      <trans-unit id="tl_user.twoFactor_legend">
         <source>Two-factor authentication (2FA)</source>
       </trans-unit>
-      <trans-unit id="tl_user.use2fa.0">
+      <trans-unit id="tl_user.useTwoFactor.0">
         <source>Use two-factor authentication</source>
       </trans-unit>
-      <trans-unit id="tl_user.use2fa.1">
+      <trans-unit id="tl_user.useTwoFactor.1">
         <source>Use two-factor authentication to log into the Contao back end.</source>
       </trans-unit>
-      <trans-unit id="tl_user.2faQrCode.0">
+      <trans-unit id="tl_user.twoFactorQrCode.0">
         <source>QR code</source>
       </trans-unit>
-      <trans-unit id="tl_user.2faQrCode.1">
+      <trans-unit id="tl_user.twoFactorQrCode.1">
         <source>Please scan the QR code with a 2FA/TOTP app of your choice (e.g. 1Password).</source>
       </trans-unit>
-      <trans-unit id="tl_user.confirmed2fa.0">
+      <trans-unit id="tl_user.confirmedTwoFactor.0">
         <source>Verification code</source>
       </trans-unit>
-      <trans-unit id="tl_user.confirmed2fa.1">
+      <trans-unit id="tl_user.confirmedTwoFactor.1">
         <source>Please enter the verfication code provided by your 2FA/TOTP app.</source>
       </trans-unit>
     </body>

@@ -66,7 +66,7 @@ class ProviderTest extends TestCase
 
         $user = $this->createMock(User::class);
         $user->secret = null;
-        $user->use2fa = true;
+        $user->useTwoFactor = true;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -81,14 +81,14 @@ class ProviderTest extends TestCase
         $this->assertFalse($provider->beginAuthentication($context));
     }
 
-    public function testDoesNotBeginAuthenticationIf2faIsDisabled(): void
+    public function testDoesNotBeginAuthenticationIfTwoFactorIsDisabled(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
         $user->secret = 'iAmASecret';
-        $user->use2fa = false;
+        $user->useTwoFactor = false;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -103,14 +103,14 @@ class ProviderTest extends TestCase
         $this->assertFalse($provider->beginAuthentication($context));
     }
 
-    public function testBeginsAuthenticationIf2faIsEnforced(): void
+    public function testBeginsAuthenticationIfTwoFactorIsEnforced(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
         $user->secret = 'iAmASecret';
-        $user->use2fa = false;
+        $user->useTwoFactor = false;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -125,14 +125,14 @@ class ProviderTest extends TestCase
         $this->assertTrue($provider->beginAuthentication($context));
     }
 
-    public function testBeginsAuthenticationIf2faIsEnabled(): void
+    public function testBeginsAuthenticationIfTwoFactorIsEnabled(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
         $user->secret = 'iAmASecret';
-        $user->use2fa = true;
+        $user->useTwoFactor = true;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -174,10 +174,10 @@ class ProviderTest extends TestCase
         $this->assertFalse($provider->validateAuthenticationCode($user, '123456'));
     }
 
-    public function testSetsThe2faFlagIfTheAuthenticationIsValid(): void
+    public function testSetsTheTwoFactorFlagIfTheAuthenticationIsValid(): void
     {
         $user = $this->createMock(User::class);
-        $user->confirmed2fa = false;
+        $user->confirmedTwoFactor = false;
 
         $user
             ->expects($this->once())
@@ -198,13 +198,13 @@ class ProviderTest extends TestCase
         $provider = new Provider($authenticator, $renderer, true);
         $provider->validateAuthenticationCode($user, '123456');
 
-        $this->assertTrue($user->confirmed2fa);
+        $this->assertTrue($user->confirmedTwoFactor);
     }
 
     public function testValidatesTheAuthenticationCode(): void
     {
         $user = $this->createMock(User::class);
-        $user->confirmed2fa = true;
+        $user->confirmedTwoFactor = true;
 
         $renderer = $this->createMock(BackendFormRenderer::class);
         $authenticator = $this->createMock(Authenticator::class);

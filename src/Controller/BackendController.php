@@ -246,7 +246,7 @@ class BackendController extends Controller
     /**
      * @return Response
      *
-     * @Route("/contao/2fa", name="contao_backend_2fa")
+     * @Route("/contao/two-factor", name="contao_backend_two_factor")
      */
     public function twoFactorAuthenticationAction(): Response
     {
@@ -276,7 +276,7 @@ class BackendController extends Controller
     /**
      * Dummy action for Symfony security.
      *
-     * @Route("/contao/2fa_check", name="contao_backend_2fa_check")
+     * @Route("/contao/two_factor_check", name="contao_backend_two_factor_check")
      *
      * @see https://symfony.com/doc/current/reference/configuration/security.html#check-path
      */

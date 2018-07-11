@@ -33,8 +33,8 @@ class BackendFormRendererTest extends TestCase
         $router
             ->expects($this->once())
             ->method('generate')
-            ->with('contao_backend_2fa')
-            ->willReturn('/contao/2fa')
+            ->with('contao_backend_two_factor')
+            ->willReturn('/contao/two-factor')
         ;
 
         $renderer = new BackendFormRenderer($router);

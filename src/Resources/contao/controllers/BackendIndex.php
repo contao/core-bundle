@@ -86,17 +86,17 @@ class BackendIndex extends Backend
 		/** @var Request $request */
 		$request = $container->get('request_stack')->getCurrentRequest();
 
-		if ($request->getRequestUri() === $router->generate('contao_backend_2fa'))
+		if ($request->getRequestUri() === $router->generate('contao_backend_two_factor'))
 		{
-			$objTemplate = new \BackendTemplate('be_login_2fa');
+			$objTemplate = new \BackendTemplate('be_login_two_factor');
 			$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['twoFactorAuthentication'];
-			$objTemplate->action = $router->generate('contao_backend_2fa_check');
+			$objTemplate->action = $router->generate('contao_backend_two_factor_check');
 			$objTemplate->authCode = $GLOBALS['TL_LANG']['MSC']['authCode'];
-			$objTemplate->authCodeHelp = $GLOBALS['TL_LANG']['tl_user']['2faQrCode'][1];
+			$objTemplate->authCodeHelp = $GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'][1];
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
-			if (!$this->User->confirmed2fa && ($this->User->use2fa || $container->getParameter('contao.security.two_factor.enforce_backend'))) {
+			if (!$this->User->confirmedTwoFactor && ($this->User->useTwoFactor || $container->getParameter('contao.security.two_factor.enforce_backend'))) {
 				$objTemplate->qrCode = base64_encode($container->get('contao.security.two_factor.authenticator')->getQrCode($this->User, $request));
 			}
 		}
