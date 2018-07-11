@@ -14,27 +14,27 @@ namespace Contao\CoreBundle\Tests\Security\TwoFactor;
 
 use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Contao\CoreBundle\Security\TwoFactor\BackendFormRenderer;
-use Contao\CoreBundle\Security\TwoFactor\BackendProvider;
+use Contao\CoreBundle\Security\TwoFactor\Provider;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\User;
 use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 
-class BackendProviderTest extends TestCase
+class ProviderTest extends TestCase
 {
     public function testCanBeInstantiated(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
-        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\BackendProvider', $provider);
+        $this->assertInstanceOf('Contao\CoreBundle\Security\TwoFactor\Provider', $provider);
     }
 
     public function testReturnsTheFormRenderer(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertInstanceOf(
             'Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface',
@@ -54,7 +54,7 @@ class BackendProviderTest extends TestCase
             ->willReturn(null)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertFalse($provider->beginAuthentication($context));
     }
@@ -76,7 +76,7 @@ class BackendProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertFalse($provider->beginAuthentication($context));
     }
@@ -98,7 +98,7 @@ class BackendProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertFalse($provider->beginAuthentication($context));
     }
@@ -120,7 +120,7 @@ class BackendProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, true);
+        $provider = new Provider($authenticator, $renderer, true);
 
         $this->assertTrue($provider->beginAuthentication($context));
     }
@@ -142,7 +142,7 @@ class BackendProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertTrue($provider->beginAuthentication($context));
     }
@@ -151,7 +151,7 @@ class BackendProviderTest extends TestCase
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertFalse($provider->validateAuthenticationCode(null, ''));
     }
@@ -169,7 +169,7 @@ class BackendProviderTest extends TestCase
             ->willReturn(false)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertFalse($provider->validateAuthenticationCode($user, '123456'));
     }
@@ -195,7 +195,7 @@ class BackendProviderTest extends TestCase
             ->willReturn(true)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, true);
+        $provider = new Provider($authenticator, $renderer, true);
         $provider->validateAuthenticationCode($user, '123456');
 
         $this->assertTrue($user->confirmed2fa);
@@ -216,7 +216,7 @@ class BackendProviderTest extends TestCase
             ->willReturn(true)
         ;
 
-        $provider = new BackendProvider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, false);
 
         $this->assertTrue($provider->validateAuthenticationCode($user, '123456'));
     }

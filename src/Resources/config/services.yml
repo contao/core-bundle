@@ -431,13 +431,13 @@ services:
             - "@router"
 
     contao.security.two_factor.backend_provider:
-        class: Contao\CoreBundle\Security\TwoFactor\BackendProvider
+        class: Contao\CoreBundle\Security\TwoFactor\Provider
         arguments:
             - "@contao.security.two_factor.authenticator"
             - "@contao.security.two_factor.backend_form_renderer"
             - "%contao.security.two_factor.enforce_backend%"
         tags:
-            - { name: "scheb_two_factor.provider", alias: "contao_two_factor" }
+            - { name: "scheb_two_factor.provider", alias: "contao_backend_two_factor" }
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\User\UserChecker

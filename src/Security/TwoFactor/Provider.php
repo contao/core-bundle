@@ -17,7 +17,7 @@ use Scheb\TwoFactorBundle\Security\TwoFactor\AuthenticationContextInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorFormRendererInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\TwoFactorProviderInterface;
 
-class BackendProvider implements TwoFactorProviderInterface
+class Provider implements TwoFactorProviderInterface
 {
     /**
      * @var Authenticator
@@ -25,9 +25,9 @@ class BackendProvider implements TwoFactorProviderInterface
     private $authenticator;
 
     /**
-     * @var BackendFormRenderer
+     * @var TwoFactorFormRendererInterface
      */
-    private $renderer;
+    private $formRenderer;
 
     /**
      * @var bool
@@ -36,13 +36,13 @@ class BackendProvider implements TwoFactorProviderInterface
 
     /**
      * @param Authenticator       $authenticator
-     * @param BackendFormRenderer $renderer
+     * @param TwoFactorFormRendererInterface $renderer
      * @param bool                $enforce2fa
      */
-    public function __construct(Authenticator $authenticator, BackendFormRenderer $renderer, bool $enforce2fa)
+    public function __construct(Authenticator $authenticator, TwoFactorFormRendererInterface $formRenderer, bool $enforce2fa)
     {
         $this->authenticator = $authenticator;
-        $this->renderer = $renderer;
+        $this->formRenderer = $formRenderer;
         $this->enforce2fa = $enforce2fa;
     }
 
@@ -95,6 +95,6 @@ class BackendProvider implements TwoFactorProviderInterface
      */
     public function getFormRenderer(): TwoFactorFormRendererInterface
     {
-        return $this->renderer;
+        return $this->formRenderer;
     }
 }

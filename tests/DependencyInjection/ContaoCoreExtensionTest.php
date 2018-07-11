@@ -87,7 +87,7 @@ use Contao\CoreBundle\Security\Logout\LogoutHandler;
 use Contao\CoreBundle\Security\Logout\LogoutSuccessHandler;
 use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Contao\CoreBundle\Security\TwoFactor\BackendFormRenderer;
-use Contao\CoreBundle\Security\TwoFactor\BackendProvider;
+use Contao\CoreBundle\Security\TwoFactor\Provider;
 use Contao\CoreBundle\Security\User\ContaoUserProvider;
 use Contao\CoreBundle\Security\User\UserChecker;
 use Contao\CoreBundle\Session\Attribute\ArrayAttributeBag;
@@ -1457,7 +1457,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $definition = $this->container->getDefinition('contao.security.two_factor.backend_provider');
 
-        $this->assertSame(BackendProvider::class, $definition->getClass());
+        $this->assertSame(Provider::class, $definition->getClass());
         $this->assertTrue($definition->isPrivate());
         $this->assertSame('contao.security.two_factor.authenticator', (string) $definition->getArgument(0));
         $this->assertSame('contao.security.two_factor.backend_form_renderer', (string) $definition->getArgument(1));
