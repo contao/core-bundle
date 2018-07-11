@@ -630,7 +630,7 @@ class tl_user extends Backend
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if ($enforcedTwoFactor || ($row['useTwoFactor'] && $row['confirmedTwoFactor']))
+		if (($enforcedTwoFactor || $row['useTwoFactor']) && $row['confirmedTwoFactor'])
 		{
 			$image .= '_two_factor';
 		}
@@ -1038,6 +1038,7 @@ class tl_user extends Backend
 	{
 		/** @var BackendUser $activeRecord */
 		$activeRecord = UserModel::findById($dc->id);
+		$enforceTwoFactor = System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
 
 		if ($activeRecord === null)
 		{
@@ -1054,7 +1055,7 @@ class tl_user extends Backend
 			}
 
 			// Don't show the 2FA options to the logged in user
-			if ($dc->id != $user->id && !$activeRecord->useTwoFactor)
+			if (!$enforceTwoFactor || ($dc->id != $user->id && !$activeRecord->useTwoFactor))
 			{
 				continue;
 			}
@@ -1109,7 +1110,7 @@ class tl_user extends Backend
 		$this->generateTwoFactorSecret();
 
 		// Clear the confirmation flag if 2FA is disabled
-		if (!$varValue)
+		if (!$varValue && !System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
 		{
 			$user = BackendUser::getInstance();
 			$user->confirmedTwoFactor = '';
@@ -1191,7 +1192,7 @@ class tl_user extends Backend
 	public function loadUseTwoFactor($varValue, DataContainer $dc)
 	{
 		// Always show 2FA as enabled, if enforced by configuration
-		if (true === System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
 		{
 			return 1;
 		}
