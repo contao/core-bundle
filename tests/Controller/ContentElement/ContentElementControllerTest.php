@@ -122,12 +122,13 @@ class ContentElementControllerTest extends TestCase
         $this->assertSame('ce_test first last', $template->class);
     }
 
-    public function testSetsCacheTags(): void
+    public function testAddsTheCacheTags(): void
     {
         $model = new ContentModel();
         $model->id = 42;
 
         $responseTagger = $this->createMock(ResponseTagger::class);
+
         $responseTagger
                 ->expects($this->once())
                 ->method('addTags')

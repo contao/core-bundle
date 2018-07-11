@@ -111,12 +111,13 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('left', $template->inColumn);
     }
 
-    public function testSetsCacheTags(): void
+    public function testAddsTheCacheTags(): void
     {
         $model = new ModuleModel();
         $model->id = 42;
 
         $responseTagger = $this->createMock(ResponseTagger::class);
+
         $responseTagger
             ->expects($this->once())
             ->method('addTags')
