@@ -13,9 +13,11 @@ namespace Contao;
 use Contao\CoreBundle\Security\Exception\LockedException;
 use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
+use Scheb\TwoFactorBundle\Security\Authentication\Token\TwoFactorToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
@@ -86,7 +88,10 @@ class BackendIndex extends Backend
 		/** @var Request $request */
 		$request = $container->get('request_stack')->getCurrentRequest();
 
-		if ($request->getRequestUri() === $router->generate('contao_backend_two_factor'))
+		/** @var TokenInterface $token */
+		$token = $container->get('security.token_storage')->getToken();
+
+		if ($token instanceof TwoFactorToken)
 		{
 			$objTemplate = new \BackendTemplate('be_login_two_factor');
 			$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['twoFactorAuthentication'];
