@@ -274,7 +274,7 @@ class BackendController extends Controller
     }
 
     /**
-     * Dummy action for Symfony security.
+     * Dummy action for Symfony security. Can be removed if https://github.com/scheb/two-factor-bundle/pull/145 gets merged.
      *
      * @Route("/contao/two_factor_check", name="contao_backend_two_factor_check")
      *
