@@ -56,8 +56,8 @@
               </div>
             <?php endif; ?>
             <div class="widget">
-              <label for="_auth_code"><?= $this->authCode ?></label>
-              <input type="text" name="_auth_code" id="_auth_code" class="tl_text" value="" autocapitalize="off" autocomplete="off" placeholder="<?= $this->authCode ?>" required>
+              <label for="verify"><?= $this->authCode ?></label>
+              <input type="text" name="verify" id="verify" class="tl_text" value="" autocapitalize="off" autocomplete="off" placeholder="<?= $this->authCode ?>" required>
             </div>
             <div class="submit_container cf">
               <button type="submit" name="login" id="login" class="tl_submit"><?= $this->loginButton ?></button>
@@ -72,10 +72,7 @@
 
   <script>
     window.addEvent('domready', function() {
-      if (parent.frames[0] && parent.frames[0].name == 'switch') {
-        parent.location.reload();
-      }
-      $('_auth_code').focus();
+      $('verify').focus();
     });
   </script>
 

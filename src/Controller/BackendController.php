@@ -248,7 +248,7 @@ class BackendController extends Controller
      *
      * @Route("/contao/2fa", name="contao_backend_2fa")
      */
-    public function twoFactorAuthAction(): Response
+    public function twoFactorAuthenticationAction(): Response
     {
         $this->get('contao.framework')->initialize();
 
@@ -282,7 +282,7 @@ class BackendController extends Controller
      *
      * @see https://symfony.com/doc/current/reference/configuration/security.html#check-path
      */
-    public function twoFactorAuthCheckAction(): void
+    public function twoFactorAuthenticationCheckAction(): void
     {
     }
 }

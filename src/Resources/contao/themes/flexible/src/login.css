@@ -71,7 +71,7 @@ label[for="username"] {
 	height:16px;
 	text-indent:-999em;
 }
-label[for="password"],label[for="confirm"],label[for="_auth_code"] {
+label[for="password"],label[for="confirm"],label[for="verify"] {
 	position:absolute;
 	top:10px;
 	right:7px;

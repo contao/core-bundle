@@ -240,7 +240,7 @@ class BackendControllerTest extends TestCase
         $controller->setContainer($container);
 
         /** @var RedirectResponse $response */
-        $response = $controller->twoFactorAuthAction();
+        $response = $controller->twoFactorAuthenticationAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
@@ -282,7 +282,7 @@ class BackendControllerTest extends TestCase
         $controller->setContainer($container);
 
         /** @var RedirectResponse $response */
-        $response = $controller->twoFactorAuthAction();
+        $response = $controller->twoFactorAuthenticationAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
@@ -332,7 +332,7 @@ class BackendControllerTest extends TestCase
         $controller->setContainer($container);
 
         /** @var RedirectResponse $response */
-        $response = $controller->twoFactorAuthAction();
+        $response = $controller->twoFactorAuthenticationAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
@@ -393,7 +393,7 @@ class BackendControllerTest extends TestCase
         $controller->setContainer($container);
 
         /** @var RedirectResponse $response */
-        $response = $controller->twoFactorAuthAction();
+        $response = $controller->twoFactorAuthenticationAction();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
