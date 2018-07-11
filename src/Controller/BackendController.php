@@ -252,24 +252,22 @@ class BackendController extends Controller
     {
         $this->get('contao.framework')->initialize();
 
-        /** @var RouterInterface $router */
-        $router = $this->get('router');
         $token = $this->get('security.token_storage')->getToken();
 
         if (!$token instanceof TwoFactorToken) {
-            return new RedirectResponse($router->generate('contao_backend_login'));
+            return $this->redirectToRoute('contao_backend_login');
         }
 
         $authenticatedToken = $token->getAuthenticatedToken();
 
         if (!$authenticatedToken instanceof UsernamePasswordToken) {
-            return new RedirectResponse($router->generate('contao_backend_login'));
+            return $this->redirectToRoute('contao_backend_login');
         }
 
         $user = $authenticatedToken->getUser();
 
         if (!$user instanceof BackendUser) {
-            return new RedirectResponse($router->generate('contao_backend_login'));
+            return $this->redirectToRoute('contao_backend_login');
         }
 
         return $this->loginAction();
