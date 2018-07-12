@@ -273,13 +273,16 @@ class BackendController extends Controller
     }
 
     /**
-     * Dummy action for Symfony security.
+     * Redirects the user to the Contao back end in case they manually call the
+     * /contao/two-factor-check route. Will be intercepted by the two factor bundle otherwise
+     * and can be removed if https://github.com/scheb/two-factor-bundle/pull/145 gets merged.
+     *
+     * @return Response
      *
      * @Route("/contao/two-factor-check", name="contao_backend_two_factor_check")
-     *
-     * @todo Remove if https://github.com/scheb/two-factor-bundle/pull/145 gets merged
      */
-    public function twoFactorAuthenticationCheckAction(): void
+    public function twoFactorAuthenticationCheckAction(): Response
     {
+        return $this->redirectToRoute('contao_backend');
     }
 }
