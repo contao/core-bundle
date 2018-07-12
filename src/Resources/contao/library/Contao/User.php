@@ -95,8 +95,8 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property object  $objLogin
  * @property object  $objLogout
  * @property boolean $useTwoFactor
- * @property string  $secret
  * @property boolean $confirmedTwoFactor
+ * @property string  $secret
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */

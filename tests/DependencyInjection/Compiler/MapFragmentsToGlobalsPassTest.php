@@ -47,7 +47,7 @@ class MapFragmentsToGlobalsPassTest extends TestCase
         $definition = null;
 
         foreach ($container->getDefinitions() as $def) {
-            if (GlobalsMapListener::class === $def->getClass()) {
+            if ($def->getClass() === GlobalsMapListener::class) {
                 $definition = $def;
                 break;
             }

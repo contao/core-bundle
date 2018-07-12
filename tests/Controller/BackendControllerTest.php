@@ -341,7 +341,6 @@ class BackendControllerTest extends TestCase
     public function testCallsTheLoginActionIfAValidTwoFactorTokenIsProvided(): void
     {
         $user = $this->createMock(BackendUser::class);
-
         $authenticatedToken = $this->createMock(UsernamePasswordToken::class);
 
         $authenticatedToken
@@ -397,5 +396,27 @@ class BackendControllerTest extends TestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertSame('/contao', $response->getTargetUrl());
+    }
+
+    public function testRedirectsToTheBackendIfTheTwoFactorCheckRouteIsCalledManually(): void
+    {
+        $router = $this->createMock(RouterInterface::class);
+
+        $router
+            ->expects($this->once())
+            ->method('generate')
+            ->with('contao_backend')
+            ->willReturn('/contao')
+        ;
+
+        $container = $this->mockContainer();
+        $container->set('router', $router);
+
+        $controller = new BackendController();
+        $controller->setContainer($container);
+
+        $response = $controller->twoFactorAuthenticationCheckAction();
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
     }
 }
