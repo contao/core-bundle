@@ -441,30 +441,6 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
-		'lastLogin' => array
-		(
-			'eval'                    => array('rgxp'=>'datim', 'doNotShow'=>true, 'doNotCopy'=>true),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'currentLogin' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['MSC']['lastLogin'],
-			'sorting'                 => true,
-			'flag'                    => 6,
-			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'loginCount' => array
-		(
-			'default'                 => 3,
-			'eval'                    => array('doNotCopy'=>true),
-			'sql'                     => "smallint(5) unsigned NOT NULL default '3'"
-		),
-		'locked' => array
-		(
-			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
 		'useTwoFactor' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useTwoFactor'],
@@ -500,6 +476,30 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		'secret' => array
 		(
 			'sql'                     => "binary(128) NULL default NULL"
+		),
+		'lastLogin' => array
+		(
+			'eval'                    => array('rgxp'=>'datim', 'doNotShow'=>true, 'doNotCopy'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'currentLogin' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['MSC']['lastLogin'],
+			'sorting'                 => true,
+			'flag'                    => 6,
+			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'loginCount' => array
+		(
+			'default'                 => 3,
+			'eval'                    => array('doNotCopy'=>true),
+			'sql'                     => "smallint(5) unsigned NOT NULL default '3'"
+		),
+		'locked' => array
+		(
+			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		)
 	)
 );
@@ -1124,11 +1124,12 @@ class tl_user extends Backend
 	/**
 	 * Save callback for 2FA
 	 *
-	 * @param string $varValue
+	 * @param string        $varValue
+	 * @param DataContainer $dc
 	 *
 	 * @return string
 	 */
-	public function saveTwoFactorSecret($varValue)
+	public function saveTwoFactorSecret($varValue, DataContainer $dc)
 	{
 		$this->generateTwoFactorSecret();
 
@@ -1138,12 +1139,11 @@ class tl_user extends Backend
 			return '1';
 		}
 
-		// Clear the confirmation flag if 2FA is disabled
+		// Clear the secret and confirmation flag if 2FA is disabled
 		if (!$varValue)
 		{
-			$user = BackendUser::getInstance();
-			$user->confirmedTwoFactor = '';
-			$user->save();
+			$this->Database->prepare("UPDATE tl_user SET secret=NULL, confirmedTwoFactor='' WHERE id=?")
+						   ->execute($dc->id);
 		}
 
 		return $varValue;
