@@ -471,6 +471,10 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
+			'load_callback' => array
+			(
+				array('tl_user', 'adjustDcaConfig')
+			),
 			'save_callback' => array
 			(
 				array('tl_user', 'saveTwoFactorSecret')
@@ -1093,18 +1097,49 @@ class tl_user extends Backend
 	}
 
 	/**
+	 * Adjust the DCA configuration
+	 *
+	 * @param string        $varValue
+	 * @param DataContainer $dc
+	 *
+	 * @return mixed
+	 */
+	public function adjustDcaConfig($varValue, DataContainer $dc)
+	{
+		// Disable auto-submit if 2FA is enabled
+		if ($varValue)
+		{
+			unset($GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['submitOnChange']);
+		}
+
+		// Disable the checkbox if 2FA is enforced
+		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		{
+			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['disabled'] = true;
+		}
+
+		return $varValue;
+	}
+
+	/**
 	 * Save callback for 2FA
 	 *
 	 * @param string $varValue
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function saveTwoFactorSecret($varValue)
 	{
 		$this->generateTwoFactorSecret();
 
+		// Always return 1 if 2FA is enforced
+		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		{
+			return '1';
+		}
+
 		// Clear the confirmation flag if 2FA is disabled
-		if (!$varValue && !System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		if (!$varValue)
 		{
 			$user = BackendUser::getInstance();
 			$user->confirmedTwoFactor = '';

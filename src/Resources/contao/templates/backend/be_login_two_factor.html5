@@ -51,8 +51,8 @@
             <h1><?= $this->headline ?></h1>
             <?php if ($this->qrCode): ?>
               <div class="qr_code">
-                <img src="data:image/svg+xml;base64,<?= $this->qrCode; ?>">
                 <p class="tl_help" title=""><?= $this->authCodeHelp; ?></p>
+                <img src="data:image/svg+xml;base64,<?= $this->qrCode; ?>">
               </div>
             <?php endif; ?>
             <div class="widget">

@@ -101,7 +101,10 @@ class BackendIndex extends Backend
 			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
 			$objTemplate->qrCode = null;
 
-			if (!$this->User->confirmedTwoFactor && ($this->User->useTwoFactor || $container->getParameter('contao.security.two_factor.enforce_backend'))) {
+			if (!$this->User->confirmedTwoFactor && $container->getParameter('contao.security.two_factor.enforce_backend')) {
+				$this->User->useTwoFactor = '1';
+				$this->User->save();
+
 				$objTemplate->qrCode = base64_encode($container->get('contao.security.two_factor.authenticator')->getQrCode($this->User, $request));
 			}
 		}
