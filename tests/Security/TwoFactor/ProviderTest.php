@@ -59,14 +59,16 @@ class ProviderTest extends TestCase
         $this->assertFalse($provider->beginAuthentication($context));
     }
 
-    public function testDoesNotBeginAuthenticationWithAnUserWithoutASecret(): void
+    public function testGeneratesASecretIfThereIsNoneYet(): void
     {
         $authenticator = $this->createMock(Authenticator::class);
         $renderer = $this->createMock(BackendFormRenderer::class);
-
         $user = $this->createMock(User::class);
-        $user->secret = null;
-        $user->useTwoFactor = true;
+
+        $user
+            ->expects($this->once())
+            ->method('save')
+        ;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -76,9 +78,9 @@ class ProviderTest extends TestCase
             ->willReturn($user)
         ;
 
-        $provider = new Provider($authenticator, $renderer, false);
+        $provider = new Provider($authenticator, $renderer, true);
 
-        $this->assertFalse($provider->beginAuthentication($context));
+        $this->assertTrue($provider->beginAuthentication($context));
     }
 
     public function testDoesNotBeginAuthenticationIfTwoFactorIsDisabled(): void
@@ -87,8 +89,7 @@ class ProviderTest extends TestCase
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
-        $user->secret = 'iAmASecret';
-        $user->useTwoFactor = false;
+        $user->confirmedTwoFactor = false;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -109,8 +110,7 @@ class ProviderTest extends TestCase
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
-        $user->secret = 'iAmASecret';
-        $user->useTwoFactor = false;
+        $user->confirmedTwoFactor = false;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
@@ -131,8 +131,7 @@ class ProviderTest extends TestCase
         $renderer = $this->createMock(BackendFormRenderer::class);
 
         $user = $this->createMock(User::class);
-        $user->secret = 'iAmASecret';
-        $user->useTwoFactor = true;
+        $user->confirmedTwoFactor = true;
 
         $context = $this->createMock(AuthenticationContextInterface::class);
 
