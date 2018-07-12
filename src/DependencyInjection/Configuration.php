@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\DependencyInjection;
 
-use Imagine\Exception\RuntimeException;
-use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -144,8 +142,9 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(['jpg', 'jpeg', 'gif', 'png', 'tif', 'tiff', 'bmp', 'svg', 'svgz'])
                         ->end()
-                        ->scalarNode('imagine_class')
-                            ->defaultValue($this->getImagineImplementation())
+                        ->scalarNode('imagine_service')
+                            ->info('By default Contao tries to take the best Imagine service out of Gmagick, Imagick and Gd (in this order). If you would like to use a different service, configure the service id here.')
+                            ->defaultNull()
                         ->end()
                         ->arrayNode('imagine_options')
                             ->addDefaultsIfNotSet()
@@ -169,31 +168,6 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $treeBuilder;
-    }
-
-    /**
-     * Returns the available Imagine implementation.
-     *
-     * @return string
-     */
-    private function getImagineImplementation(): string
-    {
-        static $magicks = ['Gmagick', 'Imagick'];
-
-        foreach ($magicks as $name) {
-            $class = 'Imagine\\'.$name.'\Imagine';
-
-            // Will throw an exception if the PHP implementation is not available
-            try {
-                new $class();
-            } catch (RuntimeException $e) {
-                continue;
-            }
-
-            return $class;
-        }
-
-        return Imagine::class; // see #616
     }
 
     /**
