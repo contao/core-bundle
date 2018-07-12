@@ -113,8 +113,7 @@ class ContaoCoreExtension extends ConfigurableExtension
             $class = $this->getImagineImplementation();
             $imagineServiceId = 'contao.image.imagine.'.ContainerBuilder::hash($class);
 
-            $definition = new Definition($class);
-            $container->setDefinition($imagineServiceId, $definition);
+            $container->setDefinition($imagineServiceId, new Definition($class));
         }
 
         $container->setAlias('contao.image.imagine', $imagineServiceId);
