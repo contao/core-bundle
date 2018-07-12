@@ -64,11 +64,7 @@ class Provider implements TwoFactorProviderInterface
         }
 
         // Check confirmedTwoFactor since useTwoFactor does not guarantee a successfull 2FA activation
-        if (!$this->enforceTwoFactor && !$user->confirmedTwoFactor) {
-            return false;
-        }
-
-        return true;
+        return $this->enforceTwoFactor || $user->confirmedTwoFactor;
     }
 
     /**
@@ -86,6 +82,7 @@ class Provider implements TwoFactorProviderInterface
 
         // 2FA is now confirmed, save the user flag
         if ($this->enforceTwoFactor && !$user->confirmedTwoFactor) {
+            $user->useTwoFactor = true;
             $user->confirmedTwoFactor = true;
             $user->save();
         }

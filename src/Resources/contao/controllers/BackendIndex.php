@@ -11,7 +11,6 @@
 namespace Contao;
 
 use Contao\CoreBundle\Security\Exception\LockedException;
-use Contao\CoreBundle\Security\TwoFactor\Authenticator;
 use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
 use Scheb\TwoFactorBundle\Security\Authentication\Token\TwoFactorToken;
 use Symfony\Component\HttpFoundation\Request;

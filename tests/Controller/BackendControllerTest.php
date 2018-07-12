@@ -212,7 +212,7 @@ class BackendControllerTest extends TestCase
         $controller->pickerAction($request);
     }
 
-    public function testRedirectsToTheBackendLoginIfTokenIsNotATwoFactorToken(): void
+    public function testRedirectsToTheBackendLoginIfTheTokenIsNotATwoFactorToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorage::class);
 
@@ -246,7 +246,7 @@ class BackendControllerTest extends TestCase
         $this->assertSame('/contao', $response->getTargetUrl());
     }
 
-    public function testRedirectsToTheBackendLoginIfTokenIsNotAUsernamePasswordToken(): void
+    public function testRedirectsToTheBackendLoginIfTheTokenIsNotAUsernamePasswordToken(): void
     {
         $token = $this->createMock(TwoFactorToken::class);
 
@@ -288,7 +288,7 @@ class BackendControllerTest extends TestCase
         $this->assertSame('/contao', $response->getTargetUrl());
     }
 
-    public function testRedirectsToTheBackendLoginIfUserIsNotABackendUser(): void
+    public function testRedirectsToTheBackendLoginIfTheUserIsNotABackendUser(): void
     {
         $authenticatedToken = $this->createMock(UsernamePasswordToken::class);
 

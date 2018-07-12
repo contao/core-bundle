@@ -446,14 +446,14 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useTwoFactor'],
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
-			'eval'                    => array('submitOnChange'=>true),
+			'eval'                    => array('submitOnChange'=>true, 'doNotCopy'=>true),
 			'load_callback' => array
 			(
 				array('tl_user', 'adjustDcaConfig')
 			),
 			'save_callback' => array
 			(
-				array('tl_user', 'saveTwoFactorSecret')
+				array('tl_user', 'resetTwoFactorSecret')
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
@@ -466,7 +466,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['confirmedTwoFactor'],
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'tl_class'=>'w50'),
+			'eval'                    => array('mandatory'=>true, 'preserveTags'=>true, 'doNotCopy'=>true, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
 				array('tl_user', 'confirmTwoFactor')
@@ -475,6 +475,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 		),
 		'secret' => array
 		(
+			'eval'                    => array('doNotShow'=>true, 'doNotCopy'=>true),
 			'sql'                     => "binary(128) NULL default NULL"
 		),
 		'lastLogin' => array
@@ -629,7 +630,7 @@ class tl_user extends Backend
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if ($row['useTwoFactor'] && $row['confirmedTwoFactor'])
+		if ($row['confirmedTwoFactor'])
 		{
 			$image .= '_two_factor';
 		}
@@ -1059,8 +1060,8 @@ class tl_user extends Backend
 			}
 
 			Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-				->addLegend('twoFactor_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-				->addField('useTwoFactor', 'twoFactor_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+				->addLegend('two_factor_legend', 'password_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+				->addField('useTwoFactor', 'two_factor_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
 				->applyToPalette($palette, $dc->table)
 			;
 		}
@@ -1095,9 +1096,8 @@ class tl_user extends Backend
 		}
 
 		// Disable the checkbox if 2FA is enforced
-		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
+		if ($varValue && Input::get('do') == 'login' && System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
 		{
-			$varValue = '1';
 			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['disabled'] = true;
 		}
 
@@ -1105,16 +1105,15 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Save callback for 2FA
+	 * Clear the secret and confirmation flag if 2FA is disabled
 	 *
 	 * @param string        $varValue
 	 * @param DataContainer $dc
 	 *
 	 * @return string
 	 */
-	public function saveTwoFactorSecret($varValue, DataContainer $dc)
+	public function resetTwoFactorSecret($varValue, DataContainer $dc)
 	{
-		// Clear the secret and confirmation flag if 2FA is disabled
 		if (!$varValue)
 		{
 			$this->Database->prepare("UPDATE tl_user SET secret=NULL, confirmedTwoFactor='' WHERE id=?")
@@ -1125,7 +1124,7 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Input field callback to display the QR code in the subpalette
+	 * Display the QR code in the subpalette
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -1158,7 +1157,7 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Save callback for 2FA confirmation
+	 * Confirm the 2FA activation
 	 *
 	 * @param string $varValue
 	 *
