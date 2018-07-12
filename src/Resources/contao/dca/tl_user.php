@@ -1079,24 +1079,6 @@ class tl_user extends Backend
 	}
 
 	/**
-	 * Generate a 1024 bit 2FA secret if not present
-	 *
-	 * @return string
-	 */
-	protected function generateTwoFactorSecret()
-	{
-		$user = BackendUser::getInstance();
-
-		if ($user->secret === null)
-		{
-			$user->secret = random_bytes(128);
-			$user->save();
-		}
-
-		return $user->secret;
-	}
-
-	/**
 	 * Adjust the DCA configuration
 	 *
 	 * @param string        $varValue
@@ -1115,6 +1097,7 @@ class tl_user extends Backend
 		// Disable the checkbox if 2FA is enforced
 		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
 		{
+			$varValue = '1';
 			$GLOBALS['TL_DCA'][$dc->table]['fields'][$dc->field]['eval']['disabled'] = true;
 		}
 
@@ -1131,14 +1114,6 @@ class tl_user extends Backend
 	 */
 	public function saveTwoFactorSecret($varValue, DataContainer $dc)
 	{
-		$this->generateTwoFactorSecret();
-
-		// Always return 1 if 2FA is enforced
-		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
-		{
-			return '1';
-		}
-
 		// Clear the secret and confirmation flag if 2FA is disabled
 		if (!$varValue)
 		{
@@ -1158,11 +1133,12 @@ class tl_user extends Backend
 	 */
 	public function getTwoFactorQrCode(DataContainer $dc)
 	{
-		$secret = $this->generateTwoFactorSecret();
+		$user = BackendUser::getInstance();
 
-		if (!$secret)
+		if (!$user->secret)
 		{
-			return '';
+			$user->secret = random_bytes(128);
+			$user->save();
 		}
 
 		/** @var Contao\CoreBundle\Security\TwoFactor\Authenticator $twoFactorAuthenticator */
@@ -1175,7 +1151,7 @@ class tl_user extends Backend
 <div class="twoFactor-qr-code widget">
   <div id="ctrl_' . $dc->field . '" class="">
     <h3><label for="ctrl_' . $dc->field . '">' . $GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'][0] . '</label></h3>
-    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode(BackendUser::getInstance(), $request)) . '" />
+    <img src="data:image/svg+xml;base64,' . base64_encode($twoFactorAuthenticator->getQrCode($user, $request)) . '" />
   </div>' . (Config::get('showHelp') ? '
   <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_user']['twoFactorQrCode'][1] . '</p>' : '') . '
 </div>';

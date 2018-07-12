@@ -57,11 +57,13 @@ class Provider implements TwoFactorProviderInterface
             return false;
         }
 
-        if (!$user->secret) {
-            return false;
+        // Generate a secret if 2FA is enforced and the user has not yet enabled it
+        if ($this->enforceTwoFactor && !$user->secret) {
+            $user->secret = random_bytes(128);
         }
 
-        if (!$this->enforceTwoFactor && !$user->useTwoFactor) {
+        // Check confirmedTwoFactor since useTwoFactor does not guarantee a successfull 2FA activation
+        if (!$this->enforceTwoFactor && !$user->confirmedTwoFactor) {
             return false;
         }
 
