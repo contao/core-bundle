@@ -32,7 +32,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
@@ -274,11 +273,11 @@ class BackendController extends Controller
     }
 
     /**
-     * Dummy action for Symfony security. Can be removed if https://github.com/scheb/two-factor-bundle/pull/145 gets merged.
+     * Dummy action for Symfony security.
      *
-     * @Route("/contao/two_factor_check", name="contao_backend_two_factor_check")
+     * @Route("/contao/two-factor-check", name="contao_backend_two_factor_check")
      *
-     * @see https://symfony.com/doc/current/reference/configuration/security.html#check-path
+     * @todo Remove if https://github.com/scheb/two-factor-bundle/pull/145 gets merged
      */
     public function twoFactorAuthenticationCheckAction(): void
     {

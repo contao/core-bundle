@@ -35,9 +35,9 @@ class Provider implements TwoFactorProviderInterface
     private $enforceTwoFactor;
 
     /**
-     * @param Authenticator       $authenticator
-     * @param TwoFactorFormRendererInterface $renderer
-     * @param bool                $enforceTwoFactor
+     * @param Authenticator                  $authenticator
+     * @param TwoFactorFormRendererInterface $formRenderer
+     * @param bool                           $enforceTwoFactor
      */
     public function __construct(Authenticator $authenticator, TwoFactorFormRendererInterface $formRenderer, bool $enforceTwoFactor)
     {
@@ -57,11 +57,11 @@ class Provider implements TwoFactorProviderInterface
             return false;
         }
 
-        if (!(bool) $user->secret) {
+        if (!$user->secret) {
             return false;
         }
 
-        if (!$this->enforceTwoFactor && !(bool) $user->useTwoFactor) {
+        if (!$this->enforceTwoFactor && !$user->useTwoFactor) {
             return false;
         }
 
@@ -82,7 +82,7 @@ class Provider implements TwoFactorProviderInterface
         }
 
         // 2FA is now confirmed, save the user flag
-        if ($this->enforceTwoFactor && !(bool) $user->confirmedTwoFactor) {
+        if ($this->enforceTwoFactor && !$user->confirmedTwoFactor) {
             $user->confirmedTwoFactor = true;
             $user->save();
         }

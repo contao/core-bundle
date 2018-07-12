@@ -471,10 +471,6 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'inputType'               => 'checkbox',
 			'filter'                  => true,
 			'eval'                    => array('submitOnChange'=>true),
-			'load_callback' => array
-			(
-				array('tl_user', 'loadUseTwoFactor')
-			),
 			'save_callback' => array
 			(
 				array('tl_user', 'saveTwoFactorSecret')
@@ -624,13 +620,12 @@ class tl_user extends Backend
 	 */
 	public function addIcon($row, $label, DataContainer $dc, $args)
 	{
-		$enforcedTwoFactor = System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
 		$image = $row['admin'] ? 'admin' : 'user';
 		$time = \Date::floorToMinute();
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
 
-		if (($enforcedTwoFactor || $row['useTwoFactor']) && $row['confirmedTwoFactor'])
+		if ($row['useTwoFactor'] && $row['confirmedTwoFactor'])
 		{
 			$image .= '_two_factor';
 		}
@@ -1038,7 +1033,6 @@ class tl_user extends Backend
 	{
 		/** @var BackendUser $activeRecord */
 		$activeRecord = UserModel::findById($dc->id);
-		$enforceTwoFactor = System::getContainer()->getParameter('contao.security.two_factor.enforce_backend');
 
 		if ($activeRecord === null)
 		{
@@ -1055,7 +1049,7 @@ class tl_user extends Backend
 			}
 
 			// Don't show the 2FA options to the logged in user
-			if (!$enforceTwoFactor || ($dc->id != $user->id && !$activeRecord->useTwoFactor))
+			if ($dc->id != $user->id && !$activeRecord->useTwoFactor)
 			{
 				continue;
 			}
@@ -1159,7 +1153,7 @@ class tl_user extends Backend
 	 *
 	 * @throws RuntimeException
 	 *
-	 * @return boolean
+	 * @return string
 	 */
 	public function confirmTwoFactor($varValue)
 	{
@@ -1177,26 +1171,6 @@ class tl_user extends Backend
 			throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 
-		return 1;
-	}
-
-	/**
-	 * Load callback for the useTwoFactor flag
-	 *
-	 * @param $varValue
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return boolean
-	 */
-	public function loadUseTwoFactor($varValue, DataContainer $dc)
-	{
-		// Always show 2FA as enabled, if enforced by configuration
-		if (System::getContainer()->getParameter('contao.security.two_factor.enforce_backend'))
-		{
-			return 1;
-		}
-
-		return $varValue;
+		return '1';
 	}
 }
