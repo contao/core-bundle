@@ -49,28 +49,18 @@ class ConfigurationTest extends TestCase
         $params = [];
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
-        $this->assertSame([
-            'class' => 'Imagine\Gd\Imagine',
-            'jpeg_quality' => 80,
-            'interlace' => 'plane',
-        ], $configuration['image']['imagine_options']);
+        $this->assertSame('Imagine\Gd\Imagine', $configuration['image']['imagine_class']);
 
         $params = [
             'contao' => [
                 'image' => [
-                    'imagine_options' => [
-                        'class' => Imagine::class,
-                    ],
+                    'imagine_class' => Imagine::class,
                 ],
             ],
         ];
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
-        $this->assertSame([
-            'class' => 'Imagine\Imagick\Imagine',
-            'jpeg_quality' => 80,
-            'interlace' => 'plane',
-        ], $configuration['image']['imagine_options']);
+        $this->assertSame('Imagine\Imagick\Imagine', $configuration['image']['imagine_class']);
     }
 
     /**

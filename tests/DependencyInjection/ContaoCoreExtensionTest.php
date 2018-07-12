@@ -892,7 +892,7 @@ class ContaoCoreExtensionTest extends TestCase
 
         $definition = $this->container->getDefinition('contao.image.imagine');
 
-        $this->assertSame('%contao.image.imagine_options.class%', $definition->getClass());
+        $this->assertSame('%contao.image.imagine_class%', $definition->getClass());
         $this->assertTrue($definition->isPublic());
     }
 
