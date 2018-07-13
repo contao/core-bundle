@@ -136,7 +136,7 @@ security:
                 remember_me: false
 
             two_factor:
-                auth_form_path: contao_backend_two_factor
+                auth_form_path: contao_backend_login
                 check_path: contao_backend_two_factor_check
                 auth_code_parameter_name: verify
 

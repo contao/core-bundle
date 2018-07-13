@@ -243,36 +243,6 @@ class BackendController extends Controller
     }
 
     /**
-     * @return Response
-     *
-     * @Route("/contao/two-factor", name="contao_backend_two_factor")
-     */
-    public function twoFactorAuthenticationAction(): Response
-    {
-        $this->get('contao.framework')->initialize();
-
-        $token = $this->get('security.token_storage')->getToken();
-
-        if (!$token instanceof TwoFactorToken) {
-            return $this->redirectToRoute('contao_backend_login');
-        }
-
-        $authenticatedToken = $token->getAuthenticatedToken();
-
-        if (!$authenticatedToken instanceof UsernamePasswordToken) {
-            return $this->redirectToRoute('contao_backend_login');
-        }
-
-        $user = $authenticatedToken->getUser();
-
-        if (!$user instanceof BackendUser) {
-            return $this->redirectToRoute('contao_backend_login');
-        }
-
-        return $this->loginAction();
-    }
-
-    /**
      * Redirects the user to the Contao back end in case they manually call the
      * /contao/two-factor-check route. Will be intercepted by the two factor bundle otherwise
      * and can be removed if https://github.com/scheb/two-factor-bundle/pull/145 gets merged.
