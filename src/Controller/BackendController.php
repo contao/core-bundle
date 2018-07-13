@@ -23,16 +23,13 @@ use Contao\BackendPassword;
 use Contao\BackendPopup;
 use Contao\BackendPreview;
 use Contao\BackendSwitch;
-use Contao\BackendUser;
 use Contao\CoreBundle\Picker\PickerConfig;
-use Scheb\TwoFactorBundle\Security\Authentication\Token\TwoFactorToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * @Route(defaults={"_scope" = "backend", "_token_check" = true})
@@ -244,14 +241,13 @@ class BackendController extends Controller
 
     /**
      * Redirects the user to the Contao back end in case they manually call the
-     * /contao/two-factor-check route. Will be intercepted by the two factor bundle otherwise
-     * and can be removed if https://github.com/scheb/two-factor-bundle/pull/145 gets merged.
+     * /contao/two-factor route. Will be intercepted by the two factor bundle otherwise.
      *
      * @return Response
      *
-     * @Route("/contao/two-factor-check", name="contao_backend_two_factor_check")
+     * @Route("/contao/two-factor", name="contao_backend_two_factor")
      */
-    public function twoFactorAuthenticationCheckAction(): Response
+    public function twoFactorAuthenticationAction(): Response
     {
         return $this->redirectToRoute('contao_backend');
     }
