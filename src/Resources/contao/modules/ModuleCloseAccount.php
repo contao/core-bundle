@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Patchwork\Utf8;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Front end module "close account".
@@ -51,6 +52,12 @@ class ModuleCloseAccount extends Module
 		if (!FE_USER_LOGGED_IN)
 		{
 			return '';
+		}
+
+		// Require the member to be fully authenticated (see #1273)
+		if (!\System::getContainer()->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+		{
+			throw new AccessDeniedException('Please authenticate');
 		}
 
 		return parent::generate();

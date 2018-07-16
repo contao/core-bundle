@@ -74,7 +74,7 @@ class ModuleLogin extends Module
 		/** @var RouterInterface $router */
 		$router = $container->get('router');
 
-		if ($container->get('contao.security.token_checker')->hasFrontendUser())
+		if ($container->get('contao.security.token_checker')->hasFrontendUser() && $container->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
 		{
 			/** @var PageModel $objPage */
 			global $objPage;
