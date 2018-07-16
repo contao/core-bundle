@@ -117,14 +117,11 @@ class ContaoCoreExtension extends ConfigurableExtension
         }
 
         $container->setAlias('contao.image.imagine', $imagineServiceId);
-
-        // Ensure service is public for BC
         $container->findDefinition('contao.image.imagine')->setPublic(true);
     }
 
     /**
      * Returns the best available Imagine implementation.
-     * Falls back to Gd.
      *
      * @return string
      */

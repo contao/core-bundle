@@ -43,11 +43,11 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
     }
 
-    public function testAppliesImagineService(): void
+    public function testAddsTheImagineService(): void
     {
         $params = [];
-
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
+
         $this->assertNull($configuration['image']['imagine_service']);
 
         $params = [
@@ -59,6 +59,7 @@ class ConfigurationTest extends TestCase
         ];
 
         $configuration = (new Processor())->processConfiguration($this->configuration, $params);
+
         $this->assertSame('my_super_service', $configuration['image']['imagine_service']);
     }
 
