@@ -27,14 +27,20 @@ Edit your `composer.json` file and add the following:
 "config": {
     "component-dir": "assets"
 },
-"post-install-cmd": [
-    "Contao\\CoreBundle\\Composer\\ScriptHandler::addDirectories",
-    "Contao\\CoreBundle\\Composer\\ScriptHandler::generateSymlinks"
-],
-"post-update-cmd": [
-    "Contao\\CoreBundle\\Composer\\ScriptHandler::addDirectories",
-    "Contao\\CoreBundle\\Composer\\ScriptHandler::generateSymlinks"
-]
+"scripts": {
+    "post-install-cmd": [
+        "Contao\\CoreBundle\\Composer\\ScriptHandler::addDirectories",
+        "Contao\\CoreBundle\\Composer\\ScriptHandler::generateSymlinks"
+    ],
+    "post-update-cmd": [
+        "Contao\\CoreBundle\\Composer\\ScriptHandler::addDirectories",
+        "Contao\\CoreBundle\\Composer\\ScriptHandler::generateSymlinks"
+    ],
+}
+"extra": {
+    "symfony-bin-dir": "bin",
+    "symfony-var-dir": "var",
+}
 ```
 
 Then run `php composer.phar update` to install the vendor files.
