@@ -233,9 +233,6 @@ class Search
 
 		unset($arrSet);
 
-		// Remove special characters
-		$strText = preg_replace(array('/- /', '/ -/', "/' /", "/ '/", '/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\w\'.:+-]/u'), ' ', $strText);
-
 		// Split words
 		$arrWords = self::splitIntoWords(Utf8::strtolower($strText), $arrData['language']);
 		$arrIndex = array();
@@ -275,6 +272,9 @@ class Search
 		return true;
 	}
 
+	/**
+	 * @return string[]
+	 */
 	private function splitIntoWords(string $strText, string $strLocale): array
 	{
 		$iterator = \IntlBreakIterator::createWordInstance($strLocale);
@@ -310,9 +310,8 @@ class Search
 	public static function searchFor($strKeywords, $blnOrSearch=false, $arrPid=array(), $intRows=0, $intOffset=0, $blnFuzzy=false)
 	{
 		// Clean the keywords
-		$strKeywords = Utf8::strtolower($strKeywords);
 		$strKeywords = \StringUtil::decodeEntities($strKeywords);
-		$strKeywords = preg_replace(array('/\. /', '/\.$/', '/: /', '/:$/', '/, /', '/,$/', '/[^\w\' *+".:,-]/u'), ' ', $strKeywords);
+		$strKeywords = Utf8::strtolower($strKeywords);
 
 		// Check keyword string
 		if (!\strlen($strKeywords))
