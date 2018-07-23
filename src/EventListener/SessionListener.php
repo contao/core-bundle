@@ -13,6 +13,8 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -91,6 +93,8 @@ class SessionListener implements EventSubscriberInterface
         if ($session && $session->isStarted()) {
             $session->save();
         }
+
+        $this->handleResponseCookies($event->getResponse());
     }
 
     /**
@@ -111,5 +115,32 @@ class SessionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return AbstractSessionListener::getSubscribedEvents();
+    }
+
+    /**
+     * Mark the response as uncachable if it has a non-session cookie.
+     *
+     * @param Response $response
+     */
+    private function handleResponseCookies(Response $response)
+    {
+        /** @var Cookie $cookie */
+        foreach ($response->headers->getCookies() as $cookie) {
+            // Move session cookie from Symfony response to PHP headers
+            if (session_name() === $cookie->getName()) {
+                $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+                \header((string) $cookie);
+                continue;
+            }
+
+            if ($response->isCacheable()) {
+                $response
+                    ->setPrivate()
+                    ->setMaxAge(0)
+                    ->headers->addCacheControlDirective('must-revalidate');
+            }
+
+            break;
+        }
     }
 }
