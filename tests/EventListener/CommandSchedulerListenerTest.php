@@ -217,8 +217,6 @@ class CommandSchedulerListenerTest extends TestCase
     }
 
     /**
-     * Mocks a database connection.
-     *
      * @return Connection|\PHPUnit_Framework_MockObject_MockObject
      */
     private function mockConnection()
@@ -243,14 +241,7 @@ class CommandSchedulerListenerTest extends TestCase
         return $connection;
     }
 
-    /**
-     * Mocks a post response event.
-     *
-     * @param string|null $route
-     *
-     * @return PostResponseEvent
-     */
-    private function mockPostResponseEvent($route = null): PostResponseEvent
+    private function mockPostResponseEvent(string $route = null): PostResponseEvent
     {
         $request = new Request();
 

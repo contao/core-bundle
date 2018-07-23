@@ -24,6 +24,7 @@ use Contao\CoreBundle\Exception\NoActivePageFoundException;
 use Contao\CoreBundle\Exception\NoLayoutSpecifiedException;
 use Contao\CoreBundle\Exception\NoRootPageFoundException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Exception\ServiceUnavailableException as ContaoServiceUnavailableException;
 use Lexik\Bundle\MaintenanceBundle\Exception\ServiceUnavailableException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -35,29 +36,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class ExceptionConverterListener
 {
     /**
-     * @var array
-     */
-    private static $mapper = [
-        AccessDeniedException::class => 'AccessDeniedHttpException',
-        ForwardPageNotFoundException::class => 'InternalServerErrorHttpException',
-        IncompleteInstallationException::class => 'InternalServerErrorHttpException',
-        InsecureInstallationException::class => 'InternalServerErrorHttpException',
-        InsufficientAuthenticationException::class => 'UnauthorizedHttpException',
-        InternalServerErrorException::class => 'InternalServerErrorHttpException',
-        InvalidRequestTokenException::class => 'InternalServerErrorHttpException',
-        NoActivePageFoundException::class => 'InternalServerErrorHttpException',
-        NoLayoutSpecifiedException::class => 'InternalServerErrorHttpException',
-        NoRootPageFoundException::class => 'InternalServerErrorHttpException',
-        PageNotFoundException::class => 'NotFoundHttpException',
-        ServiceUnavailableException::class => 'ServiceUnavailableHttpException',
-        // Deprecated since Contao 4.1, to be removed in Contao 5.0
-        'Contao\CoreBundle\Exception\ServiceUnavailableException' => 'ServiceUnavailableHttpException',
-    ];
-
-    /**
      * Maps known exceptions to HTTP exceptions.
-     *
-     * @param GetResponseForExceptionEvent $event
      */
     public function onKernelException(GetResponseForExceptionEvent $event): void
     {
@@ -73,16 +52,25 @@ class ExceptionConverterListener
         }
     }
 
-    /**
-     * Maps the extension to a target class.
-     *
-     * @param \Exception $exception
-     *
-     * @return string|null
-     */
     private function getTargetClass(\Exception $exception): ?string
     {
-        foreach (self::$mapper as $source => $target) {
+        static $mapper = [
+            AccessDeniedException::class => 'AccessDeniedHttpException',
+            ForwardPageNotFoundException::class => 'InternalServerErrorHttpException',
+            IncompleteInstallationException::class => 'InternalServerErrorHttpException',
+            InsecureInstallationException::class => 'InternalServerErrorHttpException',
+            InsufficientAuthenticationException::class => 'UnauthorizedHttpException',
+            InternalServerErrorException::class => 'InternalServerErrorHttpException',
+            InvalidRequestTokenException::class => 'InternalServerErrorHttpException',
+            NoActivePageFoundException::class => 'InternalServerErrorHttpException',
+            NoLayoutSpecifiedException::class => 'InternalServerErrorHttpException',
+            NoRootPageFoundException::class => 'InternalServerErrorHttpException',
+            PageNotFoundException::class => 'NotFoundHttpException',
+            ServiceUnavailableException::class => 'ServiceUnavailableHttpException',
+            ContaoServiceUnavailableException::class => 'ServiceUnavailableHttpException',
+        ];
+
+        foreach ($mapper as $source => $target) {
             if ($exception instanceof $source) {
                 return $target;
             }
@@ -91,15 +79,7 @@ class ExceptionConverterListener
         return null;
     }
 
-    /**
-     * Converts an exception to an HTTP exception.
-     *
-     * @param \Exception $exception
-     * @param string     $target
-     *
-     * @return HttpException|null
-     */
-    private function convertToHttpException(\Exception $exception, $target): ?HttpException
+    private function convertToHttpException(\Exception $exception, string $target): ?HttpException
     {
         switch ($target) {
             case 'AccessDeniedHttpException':

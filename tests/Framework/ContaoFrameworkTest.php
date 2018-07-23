@@ -479,14 +479,12 @@ class ContaoFrameworkTest extends TestCase
     }
 
     /**
-     * @param string $route
-     *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      *
      * @dataProvider getInstallRoutes
      */
-    public function testAllowsTheInstallationToBeIncompleteInTheInstallTool($route): void
+    public function testAllowsTheInstallationToBeIncompleteInTheInstallTool(string $route): void
     {
         $request = new Request();
         $request->attributes->set('_route', $route);
@@ -520,7 +518,7 @@ class ContaoFrameworkTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,string[]>
      */
     public function getInstallRoutes(): array
     {
@@ -736,10 +734,6 @@ class ContaoFrameworkTest extends TestCase
     }
 
     /**
-     * Mocks a router.
-     *
-     * @param string $url
-     *
      * @return RouterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function mockRouter(string $url): RouterInterface
@@ -755,11 +749,6 @@ class ContaoFrameworkTest extends TestCase
 
     /**
      * Mocks the Contao framework.
-     *
-     * @param RequestStack    $requestStack
-     * @param RouterInterface $router
-     *
-     * @return ContaoFramework
      */
     private function mockFramework(RequestStack $requestStack, RouterInterface $router): ContaoFramework
     {
@@ -784,13 +773,6 @@ class ContaoFrameworkTest extends TestCase
         return $framework;
     }
 
-    /**
-     * Mocks a config adapter.
-     *
-     * @param bool $complete
-     *
-     * @return Adapter
-     */
     private function mockConfigAdapter(bool $complete = true): Adapter
     {
         $config = $this->mockAdapter(['preload', 'isComplete', 'getInstance', 'get']);
@@ -813,13 +795,6 @@ class ContaoFrameworkTest extends TestCase
         return $config;
     }
 
-    /**
-     * Mocks a request token adapter.
-     *
-     * @param bool $valid
-     *
-     * @return Adapter
-     */
     private function mockRequestTokenAdapter(bool $valid = true): Adapter
     {
         $adapter = $this->mockAdapter(['get', 'validate']);
