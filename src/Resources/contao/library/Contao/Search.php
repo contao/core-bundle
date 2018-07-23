@@ -343,7 +343,7 @@ class Search
 				case '"':
 					if ($strKeyword = trim(substr($strKeyword, 1, -1)))
 					{
-						$arrPhrases[] = '[[:<:]]' . str_replace(array(' ', '*'), array('[^[:alnum:]]+', ''), $strKeyword) . '[[:>:]]';
+						$arrPhrases[] = str_replace(' ', '[^[:alnum:]]+', preg_quote($strKeyword));
 					}
 					break;
 
@@ -447,7 +447,7 @@ class Search
 		{
 			foreach ($arrPhrases as $strPhrase)
 			{
-				$arrWords = self::splitIntoWords(str_replace('[^[:alnum:]]+', ' ', Utf8::substr($strPhrase, 7, -7)), $GLOBALS['TL_LANGUAGE']);
+				$arrWords = self::splitIntoWords(str_replace('[^[:alnum:]]+', ' ', $strPhrase), $GLOBALS['TL_LANGUAGE']);
 				$arrAllKeywords[] = implode(' OR ', array_fill(0, \count($arrWords), 'word=?'));
 				$arrValues = array_merge($arrValues, $arrWords);
 				$intKeywords += \count($arrWords);
