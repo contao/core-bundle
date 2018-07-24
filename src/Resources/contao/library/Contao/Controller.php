@@ -755,17 +755,13 @@ abstract class Controller extends System
 		// FE preview support
 		if (\System::getContainer()->get('contao.security.token_checker')->hasBackendUser())
 		{
-			global $objPage;
-			$request = System::getContainer()->get('request_stack')->getCurrentRequest();
-			$uri = $request->getSchemeAndHttpHost() . $request->getRequestUri();
-
 			$strScripts .= "
 <script>
 (function(win) {
     if (win.parent && typeof(win.parent.postMessage) === 'function') {
         win.parent.postMessage({'contao.preview': {
-            'title': '$objPage->title',
-            'uri': '$uri'
+            'title': win.document.title,
+            'uri': win.location.href
         }}, win.location.origin);
     }
 })(window);
