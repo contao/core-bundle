@@ -1,5 +1,12 @@
-contao_controllers:
-    resource: "routing_controlers.yml"
+contao:
+    resource: "@ContaoCoreBundle/Controller"
+    type: annotation
 
-contao_legacy:
-    resource: "routing_legacy.yml"
+# Redirect /contao/ to /contao
+contao_backend_redirect:
+    path: /contao/
+    defaults:
+        _scope: backend
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+        route: contao_backend
+        permanent: true
