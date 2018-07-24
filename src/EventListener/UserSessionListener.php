@@ -126,8 +126,6 @@ class UserSessionListener
      * Returns the session bag.
      *
      * @throws \RuntimeException
-     *
-     * @return SessionBagInterface
      */
     private function getSessionBag(Request $request): SessionBagInterface
     {

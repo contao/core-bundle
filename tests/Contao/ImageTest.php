@@ -1411,8 +1411,6 @@ class ImageTest extends TestCase
     }
 
     /**
-     * @param Image $imageObj
-     *
      * @return string The image path
      */
     public static function executeResizeHookCallback(Image $imageObj): string
