@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 
 class SwitchUserListener
@@ -48,8 +49,16 @@ class SwitchUserListener
             throw new \RuntimeException('The token storage did not contain a token.');
         }
 
-        $sourceUser = $token->getUser()->getUsername();
-        $targetUser = $event->getTargetUser()->getUsername();
+        $sourceUser = $token->getUser();
+        $targetUser = $event->getTargetUser();
+
+        if ($sourceUser instanceof UserInterface) {
+            $sourceUser = $sourceUser->getUsername();
+        }
+
+        if ($targetUser instanceof UserInterface) {
+            $targetUser = $targetUser->getUsername();
+        }
 
         $this->logger->info(
             sprintf('User "%s" has switched to user "%s"', $sourceUser, $targetUser),
