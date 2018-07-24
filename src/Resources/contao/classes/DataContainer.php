@@ -1201,14 +1201,18 @@ abstract class DataContainer extends Backend
 	}
 
 	/**
-	 * Returns an array of cache tags with all parent tables included.
+	 * Returns an array of cache tags.
+	 * Optionally including the parent table (which is useful when creating new
+	 * elements or editing a certain element).
 	 *
 	 * @param string $table
 	 * @param array  $ids
+	 * @param string $parentTable
+	 * @param int    $parentId
 	 *
 	 * @return array
 	 */
-	protected function getCacheTags($table, array $ids = array())
+	protected function getCacheTags($table, array $ids = array(), $parentTable = '', $parentId = 0)
 	{
 		$ns = 'contao.db.';
 		$tags = array($ns . $table);
@@ -1216,6 +1220,11 @@ abstract class DataContainer extends Backend
 		foreach ($ids as $id)
 		{
 			$tags[] = $ns . $table . '.' . $id;
+		}
+
+		if ($parentTable != '' && $parentId > 0) {
+			$tags[] = $ns . $parentTable;
+			$tags[] = $ns . $parentTable . '.' . $parentId;
 		}
 
 		return array_unique($tags);
