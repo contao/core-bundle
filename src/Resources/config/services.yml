@@ -316,6 +316,24 @@ services:
             - "%contao.resources_paths%"
         public: true
 
+    contao.routing.legacy_router:
+        class: Symfony\Component\Routing\Router
+        arguments:
+            - "@routing.loader"
+            - "@@ContaoCoreBundle/Resources/config/routing_legacy.yml"
+            -
+                cache_dir: "%kernel.cache_dir%"
+                debug: "%kernel.debug%"
+                generator_cache_class: "ContaoLegacyUrlGenerator"
+                matcher_cache_class: "ContaoLegacyUrlMatcher"
+            - "@router.request_context"
+            - "@logger"
+        calls:
+            - [setConfigCacheFactory, ["@config_cache_factory"]]
+        tags:
+            - { name: monolog.logger, channel: router }
+            - { name: router, priority: -999 }
+
     contao.routing.frontend_loader:
         class: Contao\CoreBundle\Routing\FrontendLoader
         arguments:
