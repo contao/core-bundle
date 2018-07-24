@@ -25,7 +25,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class AddToSearchIndexListenerTest extends TestCase
 {
     /**
-     * @var ContaoFrameworkInterface|MockObject
+     * @var ContaoFrameworkInterface
      */
     private $framework;
 

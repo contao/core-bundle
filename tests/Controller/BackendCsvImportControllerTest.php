@@ -380,7 +380,7 @@ EOF;
     }
 
     /**
-     * @return DataContainer|MockObject
+     * @return DataContainer
      */
     private function mockDataContainer(): DataContainer
     {
@@ -389,6 +389,9 @@ EOF;
             'table' => 'tl_content',
         ];
 
-        return $this->mockClassWithProperties(DataContainer::class, $properties);
+        /** @var DataContainer $class */
+        $class = $this->mockClassWithProperties(DataContainer::class, $properties);
+
+        return $class;
     }
 }

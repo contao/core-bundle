@@ -38,8 +38,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(BackendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = '';
-        $user->login = '1';
+        $user->disable = false;
+        $user->login = true;
         $user->start = '';
         $user->stop = '';
 
@@ -81,7 +81,7 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(BackendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = '1';
+        $user->disable = true;
 
         $userChecker = new UserChecker($this->mockContaoFramework());
 
@@ -96,8 +96,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = '';
-        $user->login = '';
+        $user->disable = false;
+        $user->login = false;
 
         $userChecker = new UserChecker($this->mockContaoFramework());
 
@@ -114,9 +114,9 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = '';
-        $user->login = '1';
-        $user->start = $time;
+        $user->disable = false;
+        $user->login = true;
+        $user->start = (string) $time;
 
         $userChecker = new UserChecker($this->mockContaoFramework());
         $message = sprintf('The account is not active yet (activation date: %s)', date('Y-m-d', $time));
@@ -134,10 +134,10 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = '';
-        $user->login = '1';
+        $user->disable = false;
+        $user->login = true;
         $user->start = '';
-        $user->stop = $time;
+        $user->stop = (string) $time;
 
         $userChecker = new UserChecker($this->mockContaoFramework());
         $message = sprintf('The account is not active anymore (deactivation date: %s)', date('Y-m-d', $time));

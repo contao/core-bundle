@@ -100,7 +100,7 @@
         "friendsofsymfony/http-cache-bundle": "^2.3",
         "lexik/maintenance-bundle": "^2.0",
         "monolog/monolog": "^1.22",
-        "oneup/phpstan-contao": "^0.1.7",
+        "oneup/phpstan-contao": "^0.2",
         "php-coveralls/php-coveralls": "^2.1",
         "php-http/guzzle6-adapter": "^1.1",
         "php-http/message-factory": "^1.0.2",
