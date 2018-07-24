@@ -582,7 +582,7 @@ class ContaoFrameworkTest extends TestCase
     {
         $reflection = new \ReflectionClass(ContaoFramework::class);
 
-        /** @var ContaoFramework $framework */
+        /** @var ContaoFramework|object $framework */
         $framework = $reflection->newInstanceWithoutConstructor();
 
         $class = LegacyClass::class;
@@ -596,7 +596,7 @@ class ContaoFrameworkTest extends TestCase
     {
         $reflection = new \ReflectionClass(ContaoFramework::class);
 
-        /** @var ContaoFramework $framework */
+        /** @var ContaoFramework|object $framework */
         $framework = $reflection->newInstanceWithoutConstructor();
 
         $class = LegacySingletonClass::class;
@@ -612,7 +612,7 @@ class ContaoFrameworkTest extends TestCase
 
         $reflection = new \ReflectionClass(ContaoFramework::class);
 
-        /** @var ContaoFramework $framework */
+        /** @var ContaoFramework|object $framework */
         $framework = $reflection->newInstanceWithoutConstructor();
         $adapter = $framework->getAdapter($class);
 

@@ -80,7 +80,7 @@ abstract class AbstractPickerProvider implements PickerProviderInterface
         );
     }
 
-    public function setTokenStorage(TokenStorageInterface $tokenStorage): void
+    public function setTokenStorage(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }

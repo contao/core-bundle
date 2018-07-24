@@ -158,7 +158,7 @@ class UserPasswordCommandTest extends TestCase
 
     public function testFailsIfTheUsernameIsUnknown(): void
     {
-        /** @var MockObject $connection */
+        /** @var Connection|MockObject $connection */
         $connection = $this->container->get('database_connection');
         $connection
             ->expects($this->once())
@@ -182,7 +182,7 @@ class UserPasswordCommandTest extends TestCase
      */
     public function testUpdatesTheDatabaseOnSuccess(string $username, string $password): void
     {
-        /** @var MockObject $connection */
+        /** @var Connection|MockObject $connection */
         $connection = $this->container->get('database_connection');
         $connection
             ->expects($this->once())
