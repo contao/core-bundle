@@ -50,6 +50,7 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
             BundleConfig::create(KnpTimeBundle::class),
             BundleConfig::create(SchebTwoFactorBundle::class),
             BundleConfig::create(HeaderReplayBundle::class),
+            BundleConfig::create(CmfRoutingBundle::class),
             BundleConfig::create(ContaoCoreBundle::class)
                 ->setReplace(['core'])
                 ->setLoadAfter(
