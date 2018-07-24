@@ -1201,9 +1201,8 @@ abstract class DataContainer extends Backend
 	}
 
 	/**
-	 * Returns an array of cache tags.
-	 * Optionally including the parent table (which is useful when creating new
-	 * elements or editing a certain element).
+	 * Return an array of cache tags, optionally including the parent table
+	 * (which is useful when creating new elements or editing a certain element)
 	 *
 	 * @param string $table
 	 * @param array  $ids
