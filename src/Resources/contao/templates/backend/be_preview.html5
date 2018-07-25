@@ -17,7 +17,7 @@
     })(window);
   </script>
 </head>
-<frameset rows="41,*" frameborder="0" framespacing="0">
+<frameset rows="46,*" frameborder="0" framespacing="0">
   <frame src="<?= $this->switchHref; ?>" name="switch" frameborder="0" scrolling="no" noresize="noresize">
   <frame src="<?= $this->url ?>" name="website" frameborder="0" noresize="noresize">
 </frameset>
