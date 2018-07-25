@@ -132,7 +132,7 @@ class PictureFactoryTest extends TestCase
             'media' => '(max-width: 900px)',
         ];
 
-        /** @var MockObject $imageSizeItemModel */
+        /** @var ImageSizeItemModel|MockObject $imageSizeItemModel */
         $imageSizeItemModel = $this->mockClassWithProperties(ImageSizeItemModel::class, $properties);
         $imageSizeItemModel
             ->method('__isset')

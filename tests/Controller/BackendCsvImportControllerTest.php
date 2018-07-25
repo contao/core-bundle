@@ -389,9 +389,6 @@ EOF;
             'table' => 'tl_content',
         ];
 
-        /** @var DataContainer $class */
-        $class = $this->mockClassWithProperties(DataContainer::class, $properties);
-
-        return $class;
+        return $this->mockClassWithProperties(DataContainer::class, $properties);
     }
 }

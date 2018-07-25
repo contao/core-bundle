@@ -198,7 +198,7 @@ abstract class DoctrineTestCase extends TestCase
     /**
      * Mocks the Contao framework with the database installer.
      *
-     * @return ContaoFrameworkInterface
+     * @return ContaoFrameworkInterface|MockObject
      */
     protected function mockContaoFrameworkWithInstaller(array $dca = [], array $file = []): ContaoFrameworkInterface
     {
