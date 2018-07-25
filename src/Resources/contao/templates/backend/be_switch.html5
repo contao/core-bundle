@@ -77,6 +77,9 @@
       var pageInfo = document.getElementById('page-info');
       if (typeof(win.postMessage) === 'function' && pageInfo) {
         win.addEventListener('message', function(message) {
+          if (message.origin !== win.location.origin) {
+            return;
+          }
           var data = message.data['contao.preview'];
           if (data) {
             pageInfo.textContent = ' - ' + data.title + ' [' + data.uri + ']';

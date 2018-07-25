@@ -8,6 +8,9 @@
     (function(win) {
       if (typeof(win.postMessage) === 'function') {
         win.addEventListener('message', function(message) {
+          if (message.origin !== win.location.origin) {
+            return;
+          }
           win.frames[0].postMessage(message.data, win.location.origin);
         }, false);
       }
