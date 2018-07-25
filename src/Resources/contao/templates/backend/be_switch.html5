@@ -28,8 +28,8 @@
 
   <div id="container" class="cf">
     <div class="title">
-      <h1><?= $this->fePreview ?></h1>
-      <p id="page-info"></p>
+      <h1 id="page-title"><?= $this->fePreview ?></h1>
+      <p id="page-uri"></p>
     </div>
     <form action="<?= $this->action ?>" method="post">
       <div class="formbody">
@@ -77,16 +77,18 @@
   </script>
   <script>
     (function(win) {
-      var pageInfo = document.getElementById('page-info');
-      if (typeof(win.postMessage) === 'function' && pageInfo) {
+      var pageTitle = document.getElementById('page-title');
+      var pageUri = document.getElementById('page-uri');
+      if (typeof(win.postMessage) === 'function') {
         win.addEventListener('message', function(message) {
           if (message.origin !== win.location.origin) {
             return;
           }
           var data = message.data['contao.preview'];
           if (data) {
-            pageInfo.title = data.uri;
-            pageInfo.textContent = data.title + ' [' + data.uri + ']';
+            pageTitle.textContent = data.title;
+            pageUri.title = data.uri;
+            pageUri.textContent = data.uri;
           }
         }, false);
       }

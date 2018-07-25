@@ -16,8 +16,8 @@ html,body {
 	padding:3px 6px;
 	overflow:hidden;
 	text-align:right;
-	display: flex;
-	align-items: flex-start;
+	display:flex;
+	align-items:flex-start;
 }
 
 #container:after {
@@ -39,23 +39,26 @@ html,body {
 
 /* Headline */
 h1 {
-	margin: 3px 0 3px 0;
+	padding:3px 0 3px 0;
 	font-size:.875rem;
 	font-weight:normal;
+	overflow:hidden;
+	text-overflow:ellipsis;
 }
 
 .title {
-	flex: 1 0 0;
-	text-align: left;
-	margin-left: 3px;
-	overflow: hidden;
-	white-space: nowrap;
+	flex:1 0 0;
+	text-align:left;
+	margin-left:3px;
+	overflow:hidden;
+	white-space:nowrap;
 }
 
 .title p {
-	font-size: 0.7rem;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	font-size:0.7rem;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	padding-bottom:2px;
 }
 
 /* Close */
