@@ -380,7 +380,7 @@ EOF;
     }
 
     /**
-     * @return DataContainer
+     * @return DataContainer|MockObject
      */
     private function mockDataContainer(): DataContainer
     {
