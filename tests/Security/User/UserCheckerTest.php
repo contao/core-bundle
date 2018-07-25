@@ -38,8 +38,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(BackendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = false;
-        $user->login = true;
+        $user->disable = '';
+        $user->login = '1';
         $user->start = '';
         $user->stop = '';
 
@@ -81,7 +81,7 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(BackendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = true;
+        $user->disable = '1';
 
         $userChecker = new UserChecker($this->mockContaoFramework());
 
@@ -96,8 +96,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = false;
-        $user->login = false;
+        $user->disable = '';
+        $user->login = '';
 
         $userChecker = new UserChecker($this->mockContaoFramework());
 
@@ -114,8 +114,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = false;
-        $user->login = true;
+        $user->disable = '';
+        $user->login = '1';
         $user->start = (string) $time;
 
         $userChecker = new UserChecker($this->mockContaoFramework());
@@ -134,8 +134,8 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(FrontendUser::class);
         $user->username = 'foo';
         $user->locked = 0;
-        $user->disable = false;
-        $user->login = true;
+        $user->disable = '';
+        $user->login = '1';
         $user->start = '';
         $user->stop = (string) $time;
 

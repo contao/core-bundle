@@ -72,8 +72,6 @@ class ContaoUserProvider implements UserProviderInterface
 
         /** @var User $adapter */
         $adapter = $this->framework->getAdapter($this->userClass);
-
-        /** @var User $user */
         $user = $adapter->loadUserByUsername($username);
 
         if (is_a($user, $this->userClass)) {

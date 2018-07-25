@@ -66,7 +66,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, array<string, float|int|string>|string>>
+     * @return array<string,array<int,array<string,float|int|string>|string>>
      */
     public function parseSimpleTokensProvider(): array
     {
