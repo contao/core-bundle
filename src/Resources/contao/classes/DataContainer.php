@@ -1221,7 +1221,8 @@ abstract class DataContainer extends Backend
 			$tags[] = $ns . $table . '.' . $id;
 		}
 
-		if ($parentTable != '' && $parentId > 0) {
+		if ($parentTable && $parentId > 0)
+		{
 			$tags[] = $ns . $parentTable;
 			$tags[] = $ns . $parentTable . '.' . $parentId;
 		}

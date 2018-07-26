@@ -1753,7 +1753,7 @@ class DC_Table extends DataContainer implements \listable, \editable
 							   ->execute($row[1]['sorting'], $row[0]['id']);
 
 				// Invalidate cache tags
-				$this->invalidateCacheTags($this->getCacheTags($this->strTable, array($row[1]['id'], $row[0]['id']), (string) $this->ptable, (int) $this->activeRecord->pid));
+				$this->invalidateCacheTags($this->getCacheTags($this->strTable, array($row[1]['id'], $row[0]['id']), $this->ptable, $this->activeRecord->pid));
 			}
 		}
 
@@ -2158,7 +2158,7 @@ class DC_Table extends DataContainer implements \listable, \editable
 			}
 
 			// Invalidate cache tags
-			$this->invalidateCacheTags($this->getCacheTags($this->table, array($this->id), (string) $this->ptable, (int) $this->activeRecord->pid));
+			$this->invalidateCacheTags($this->getCacheTags($this->table, array($this->id), $this->ptable, $this->activeRecord->pid));
 
 			// Redirect
 			if (isset($_POST['saveNclose']))
