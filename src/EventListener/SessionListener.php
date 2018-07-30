@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\HttpKernel\Header\HeaderStorageInterface;
+use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -52,17 +54,24 @@ class SessionListener implements EventSubscriberInterface
     private $scopeMatcher;
 
     /**
+     * @var HeaderStorageInterface
+     */
+    private $headerStorage;
+
+    /**
      * Constructor.
      *
-     * @param BaseSessionListener      $inner
-     * @param ContaoFrameworkInterface $framework
-     * @param ScopeMatcher             $scopeMatcher
+     * @param BaseSessionListener         $inner
+     * @param ContaoFrameworkInterface    $framework
+     * @param ScopeMatcher                $scopeMatcher
+     * @param HeaderStorageInterface|null $headerStorage
      */
-    public function __construct(BaseSessionListener $inner, ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher)
+    public function __construct(BaseSessionListener $inner, ContaoFrameworkInterface $framework, ScopeMatcher $scopeMatcher, HeaderStorageInterface $headerStorage = null)
     {
         $this->inner = $inner;
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
+        $this->headerStorage = $headerStorage ?: new NativeHeaderStorage();
     }
 
     /**
@@ -130,7 +139,7 @@ class SessionListener implements EventSubscriberInterface
             // Move session cookie from Symfony response to PHP headers
             if (session_name() === $cookie->getName()) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-                \header((string) $cookie);
+                $this->headerStorage->add('Set-Cookie: '.$cookie);
                 break;
             }
         }
@@ -139,7 +148,8 @@ class SessionListener implements EventSubscriberInterface
             $response
                 ->setPrivate()
                 ->setMaxAge(0)
-                ->headers->addCacheControlDirective('must-revalidate');
+                ->headers->addCacheControlDirective('must-revalidate')
+            ;
         }
     }
 }
