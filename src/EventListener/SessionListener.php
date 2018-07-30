@@ -15,6 +15,7 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -130,17 +131,15 @@ class SessionListener implements EventSubscriberInterface
             if (session_name() === $cookie->getName()) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 \header((string) $cookie);
-                continue;
+                break;
             }
+        }
 
-            if ($response->isCacheable()) {
-                $response
-                    ->setPrivate()
-                    ->setMaxAge(0)
-                    ->headers->addCacheControlDirective('must-revalidate');
-            }
-
-            break;
+        if ($response->isCacheable() && !empty($response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY))) {
+            $response
+                ->setPrivate()
+                ->setMaxAge(0)
+                ->headers->addCacheControlDirective('must-revalidate');
         }
     }
 }
