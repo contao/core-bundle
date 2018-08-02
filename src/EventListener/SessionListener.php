@@ -34,7 +34,11 @@ use Symfony\Component\HttpKernel\EventListener\SessionListener as BaseSessionLis
  * Symfony's changes by not making the response private if the request is a
  * Contao front end request.
  *
+ * To prevent session cookies from being stored in the HTTP cache, we remove them from
+ * the response and send them directly. Any other cookie makes the response uncacheable.
+ *
  * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Andreas Schempp <https://github.com/aschempp>
  */
 class SessionListener implements EventSubscriberInterface
 {
