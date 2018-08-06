@@ -18,4 +18,3 @@ contao_catch_all:
         _controller: Contao\CoreBundle\Controller\FrontendController::indexAction
     requirements:
         _url_fragment: .*
-

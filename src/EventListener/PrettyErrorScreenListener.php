@@ -194,7 +194,7 @@ class PrettyErrorScreenListener
         $this->renderTemplate($template ?: 'error', $statusCode, $event);
     }
 
-    private function getTemplateForException(\Exception $exception): ?string
+    private function getTemplateForException($exception): ?string
     {
         foreach (self::$mapper as $class => $template) {
             if ($exception instanceof $class) {
