@@ -338,7 +338,7 @@ services:
         class: Symfony\Cmf\Component\Routing\DynamicRouter
         arguments:
             - "@router.request_context"
-            - "@contao.routing.hook_matcher"
+            - "@contao.routing.nested_matcher"
             - "@contao.routing.route_generator"
             - ""
             - "@event_dispatcher"
@@ -348,16 +348,6 @@ services:
         tags:
             - { name: router, priority: 20 }
 
-    contao.routing.hook_matcher:
-        class: Contao\CoreBundle\Routing\HookMatcher
-        arguments:
-            - "@contao.framework"
-            - "@contao.routing.nested_matcher"
-            - "%contao.url_suffix%"
-            - "%contao.prepend_locale%"
-            - true # folderUrls
-            - true # useAutoItem
-
     contao.routing.nested_matcher:
         class: Symfony\Cmf\Component\Routing\NestedMatcher\NestedMatcher
         arguments:
@@ -366,8 +356,19 @@ services:
         calls:
             - [addRouteFilter, ["@contao.routing.publishing_filter"]]
 
+    contao.routing.legacy_matcher:
+        class: Contao\CoreBundle\Routing\Matcher\LegacyMatcher
+        decorates: contao.routing.nested_matcher
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.legacy_matcher.inner"
+            - "%contao.url_suffix%"
+            - "%contao.prepend_locale%"
+            - true # folderUrls
+            - true # useAutoItem
+
     contao.routing.route_generator:
-        class: Symfony\Cmf\Component\Routing\ContentAwareGenerator
+        class: Symfony\Cmf\Component\Routing\ProviderBasedGenerator
         arguments:
             - "@contao.routing.route_provider"
             - "@logger"

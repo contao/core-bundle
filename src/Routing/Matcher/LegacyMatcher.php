@@ -1,6 +1,6 @@
 <?php
 
-namespace Contao\CoreBundle\Routing;
+namespace Contao\CoreBundle\Routing\Matcher;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Input;
@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 
-class HookMatcher implements RequestMatcherInterface
+class LegacyMatcher implements RequestMatcherInterface
 {
     /**
      * @var ContaoFrameworkInterface
