@@ -19,6 +19,7 @@ use League\Uri\Components\Query;
 use Patchwork\Utf8;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -166,7 +167,7 @@ abstract class System
 			}
 			elseif (strpos($strClass, '.') !== false)
 			{
-				throw new \RuntimeException(sprintf('Service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
+				throw new ServiceNotFoundException($strClass, null, null, [], sprintf('The service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
 			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
@@ -211,7 +212,7 @@ abstract class System
 			}
 			elseif (strpos($strClass, '.') !== false)
 			{
-				throw new \RuntimeException(sprintf('Service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
+				throw new ServiceNotFoundException($strClass, null, null, [], sprintf('The service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
 			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
