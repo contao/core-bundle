@@ -2,6 +2,7 @@
 
 namespace Contao\CoreBundle\Routing\Matcher;
 
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Input;
 use Contao\PageModel;
@@ -23,26 +24,6 @@ class LegacyMatcher implements RequestMatcherInterface
     private $requestMatcher;
 
     /**
-     * @var string
-     */
-    private $urlSuffix;
-
-    /**
-     * @var bool
-     */
-    private $prependLocale;
-
-    /**
-     * @var bool
-     */
-    private $folderUrls;
-
-    /**
-     * @var bool
-     */
-    private $useAutoItem;
-
-    /**
      * @var System
      */
     private $systemAdapter;
@@ -53,26 +34,18 @@ class LegacyMatcher implements RequestMatcherInterface
     private $inputAdapter;
 
     /**
-     * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     * @param RequestMatcherInterface  $requestMatcher
-     * @param string                   $urlSuffix
-     * @param bool                     $prependLocale
-     * @param bool                     $folderUrls
-     * @param bool                     $useAutoItem
+     * @var Config
      */
-    public function __construct(ContaoFrameworkInterface $framework, RequestMatcherInterface $requestMatcher, string $urlSuffix, bool $prependLocale, bool $folderUrls, bool $useAutoItem)
+    private $configAdapter;
+
+    public function __construct(ContaoFrameworkInterface $framework, RequestMatcherInterface $requestMatcher)
     {
         $this->framework = $framework;
         $this->requestMatcher = $requestMatcher;
-        $this->urlSuffix = $urlSuffix;
-        $this->prependLocale = $prependLocale;
-        $this->folderUrls = $folderUrls;
-        $this->useAutoItem = $useAutoItem;
 
         $this->systemAdapter = $this->framework->getAdapter(System::class);
         $this->inputAdapter = $this->framework->getAdapter(Input::class);
+        $this->configAdapter = $this->framework->getAdapter(Config::class);
     }
 
     /**
@@ -88,7 +61,7 @@ class LegacyMatcher implements RequestMatcherInterface
 
         $fragments = null;
 
-        if ($this->folderUrls) {
+        if ($this->configAdapter->get('folderUrl')) {
             try {
                 $match = $this->requestMatcher->matchRequest($request);
                 $fragments = $this->createFragmentsFromMatch($match);
@@ -103,7 +76,7 @@ class LegacyMatcher implements RequestMatcherInterface
             $fragments = $this->createFragmentsFromPath($pathInfo);
         }
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $this->inputAdapter->setGet('language', $locale);
         }
 
@@ -129,7 +102,7 @@ class LegacyMatcher implements RequestMatcherInterface
         $fragments = array_merge([$page->alias], explode('/', substr($parameters, 1)));
 
         // Add the second fragment as auto_item if the number of fragments is even
-        if ($this->useAutoItem && 0 === \count($fragments) % 2) {
+        if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
             array_insert($fragments, 1, array('auto_item'));
         }
 
@@ -141,7 +114,7 @@ class LegacyMatcher implements RequestMatcherInterface
         $fragments = explode('/', substr($pathInfo, 1));
 
         // Add the second fragment as auto_item if the number of fragments is even
-        if ($this->useAutoItem && 0 === \count($fragments) % 2) {
+        if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
             array_insert($fragments, 1, array('auto_item'));
         }
 
@@ -165,13 +138,13 @@ class LegacyMatcher implements RequestMatcherInterface
 
     private function createPathFromFragments(array $fragments, string $locale)
     {
-        if ($this->useAutoItem && $fragments[1] === 'auto_item') {
+        if ($this->configAdapter->get('useAutoItem') && $fragments[1] === 'auto_item') {
             unset($fragments[1]);
         }
 
-        $pathInfo = implode('/', $fragments).$this->urlSuffix;
+        $pathInfo = implode('/', $fragments).$this->configAdapter->get('urlSuffix');
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $pathInfo = $locale.'/'.$pathInfo;
         }
 
@@ -180,10 +153,11 @@ class LegacyMatcher implements RequestMatcherInterface
 
     private function parseSuffixAndLanguage(string $pathInfo, ?string &$locale)
     {
-        $suffixLength = \strlen($this->urlSuffix);
+        $urlSuffix = $this->configAdapter->get('urlSuffix');
+        $suffixLength = \strlen($urlSuffix);
 
         if ($suffixLength !== 0) {
-            if (substr($pathInfo, -$suffixLength) !== $this->urlSuffix) {
+            if (substr($pathInfo, -$suffixLength) !== $urlSuffix) {
                 throw new ResourceNotFoundException('URL suffix does not match');
             }
 
@@ -194,7 +168,7 @@ class LegacyMatcher implements RequestMatcherInterface
             $pathInfo = substr($pathInfo, 1);
         }
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $matches = array();
 
             if (preg_match('@^([a-z]{2}(-[A-Z]{2})?)/(.+)$@', $pathInfo, $matches)) {

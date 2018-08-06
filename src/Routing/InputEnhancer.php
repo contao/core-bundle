@@ -2,6 +2,7 @@
 
 namespace Contao\CoreBundle\Routing;
 
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Input;
 use Contao\PageModel;
@@ -17,34 +18,21 @@ class InputEnhancer implements RouteEnhancerInterface
     private $framework;
 
     /**
-     * @var bool
-     */
-    private $prependLocale;
-
-    /**
-     * @var bool
-     */
-    private $useAutoItem;
-
-    /**
      * @var Input
      */
     private $inputAdapter;
 
     /**
-     * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     * @param bool                     $prependLocale
-     * @param bool                     $useAutoItem
+     * @var Config
      */
-    public function __construct(ContaoFrameworkInterface $framework, bool $prependLocale, bool $useAutoItem)
+    private $configAdapter;
+
+    public function __construct(ContaoFrameworkInterface $framework)
     {
         $this->framework = $framework;
-        $this->prependLocale = $prependLocale;
-        $this->useAutoItem = $useAutoItem;
 
         $this->inputAdapter = $this->framework->getAdapter(Input::class);
+        $this->configAdapter = $this->framework->getAdapter(Config::class);
     }
 
     /**
@@ -58,7 +46,7 @@ class InputEnhancer implements RouteEnhancerInterface
 
         $this->framework->initialize();
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $this->inputAdapter->setGet('language', $defaults['_locale']);
         }
 
@@ -69,7 +57,7 @@ class InputEnhancer implements RouteEnhancerInterface
         $fragments = explode('/', substr($defaults['parameters'], 1));
 
         // Add the second fragment as auto_item if the number of fragments is even
-        if ($this->useAutoItem && 0 === \count($fragments) % 2) {
+        if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
             array_insert($fragments, 1, array('auto_item'));
         }
 
@@ -85,7 +73,7 @@ class InputEnhancer implements RouteEnhancerInterface
             }
 
             // Abort if the request contains an auto_item keyword (duplicate content) (see #4012)
-            if ($this->useAutoItem && \in_array($fragments[$i], $GLOBALS['TL_AUTO_ITEM'], true)) {
+            if ($this->configAdapter->get('useAutoItem') && \in_array($fragments[$i], $GLOBALS['TL_AUTO_ITEM'], true)) {
                 throw new ResourceNotFoundException('"'.$fragments[$i].'" is an auto_item keyword (duplicate content)');
             }
 

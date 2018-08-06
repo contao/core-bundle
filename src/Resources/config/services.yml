@@ -362,10 +362,6 @@ services:
         arguments:
             - "@contao.framework"
             - "@contao.routing.legacy_matcher.inner"
-            - "%contao.url_suffix%"
-            - "%contao.prepend_locale%"
-            - true # folderUrls
-            - true # useAutoItem
 
     contao.routing.route_generator:
         class: Symfony\Cmf\Component\Routing\ProviderBasedGenerator
@@ -379,18 +375,11 @@ services:
             - "@contao.framework"
             - "@database_connection"
             - ~
-            - "%contao.url_suffix%"
-            - "%contao.prepend_locale%"
-            - true #"%contao.folder_url%"
-            - true #"%contao.use_auto_item%"
-            - true #"%contao.do_not_redirect_empty%"
 
     contao.routing.input_enhancer:
         class: Contao\CoreBundle\Routing\InputEnhancer
         arguments:
             - "@contao.framework"
-            - true # prependLocale
-            - true # useAutoItem
 
     contao.routing.publishing_filter:
         class: Contao\CoreBundle\Routing\PublishingFilter

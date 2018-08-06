@@ -2,6 +2,7 @@
 
 namespace Contao\CoreBundle\Routing;
 
+use Contao\Config;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Input;
@@ -28,34 +29,14 @@ class RouteProvider implements RouteProviderInterface
     private $database;
 
     /**
-     * @var string
-     */
-    private $urlSuffix;
-
-    /**
-     * @var bool
-     */
-    private $prependLocale;
-
-    /**
-     * @var bool
-     */
-    private $folderUrl;
-
-    /**
-     * @var bool
-     */
-    private $useAutoItem;
-
-    /**
-     * @var bool
-     */
-    private $redirectEmpty;
-
-    /**
      * @var PageModel
      */
     private $pageAdapter;
+
+    /**
+     * @var Config
+     */
+    private $configAdapter;
 
     /**
      * @var Input
@@ -63,18 +44,13 @@ class RouteProvider implements RouteProviderInterface
     private $input;
 
 
-    public function __construct(ContaoFrameworkInterface $framework, Connection $database, $input, string $urlSuffix, bool $prependLocale, bool $folderUrl, bool $useAutoItem, bool $doNotRedirectEmpty)
+    public function __construct(ContaoFrameworkInterface $framework, Connection $database, $input)
     {
         $this->framework = $framework;
         $this->database = $database;
 
-        $this->urlSuffix = $urlSuffix;
-        $this->prependLocale = $prependLocale;
-        $this->folderUrl = $folderUrl;
-        $this->useAutoItem = $useAutoItem;
-        $this->redirectEmpty = !$doNotRedirectEmpty;
-
         $this->pageAdapter = $framework->getAdapter(PageModel::class);
+        $this->configAdapter = $this->framework->getAdapter(Config::class);
         $this->input = $input;
         // TODO drop $input
     }
@@ -109,7 +85,7 @@ class RouteProvider implements RouteProviderInterface
         }
 
         if ('/' === $pathInfo
-            || ($this->prependLocale && preg_match('@^/([a-z]{2}(-[A-Z]{2})?)/$@', $pathInfo))
+            || ($this->configAdapter->get('addLanguageToUrl') && preg_match('@^/([a-z]{2}(-[A-Z]{2})?)/$@', $pathInfo))
         ) {
             $routes = [];
 
@@ -236,12 +212,15 @@ class RouteProvider implements RouteProviderInterface
         }
 
         // Remove the URL suffix if not just a language root (e.g. en/) is requested
-        if ($strRequest != '' && (!$this->prependLocale || !preg_match('@^[a-z]{2}(-[A-Z]{2})?/$@', $strRequest))) {
-            $intSuffixLength = \strlen($this->urlSuffix);
+        if ($strRequest != ''
+            && (!$this->configAdapter->get('addLanguageToUrl') || !preg_match('@^[a-z]{2}(-[A-Z]{2})?/$@', $strRequest))
+        ) {
+            $urlSuffix = $this->configAdapter->get('urlSuffix');
+            $intSuffixLength = \strlen($urlSuffix);
 
             // Return if the URL suffix does not match (see #2864)
             if ($intSuffixLength > 0) {
-                if (substr($strRequest, -$intSuffixLength) != $this->urlSuffix) {
+                if (substr($strRequest, -$intSuffixLength) != $urlSuffix) {
                     throw new \RuntimeException('The URL suffix does not match');
                 }
 
@@ -250,7 +229,7 @@ class RouteProvider implements RouteProviderInterface
         }
 
         // Extract the language
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $arrMatches = array();
 
             // Use the matches instead of substr() (thanks to Mario Müller)
@@ -271,7 +250,7 @@ class RouteProvider implements RouteProviderInterface
         $arrFragments = null;
 
         // Use folder-style URLs
-        if ($this->folderUrl && strpos($strRequest, '/') !== false) {
+        if ($this->configAdapter->get('folderUrl') && strpos($strRequest, '/') !== false) {
             $strAlias = $strRequest;
             $arrOptions = array($strAlias);
 
@@ -314,7 +293,7 @@ class RouteProvider implements RouteProviderInterface
 
                 $arrAliases = array();
 
-                if (!$this->prependLocale) {
+                if (!$this->configAdapter->get('addLanguageToUrl')) {
                     // Use the first result (see #4872)
                     $arrAliases = current($arrLangs);
                 } elseif (($lang = $this->input->get('language')) && isset($arrLangs[$lang])) {
@@ -350,7 +329,7 @@ class RouteProvider implements RouteProviderInterface
         }
 
         // Add the second fragment as auto_item if the number of fragments is even
-        if ($this->useAutoItem && \count($arrFragments) % 2 == 0) {
+        if ($this->configAdapter->get('useAutoItem') && \count($arrFragments) % 2 == 0) {
             array_insert($arrFragments, 1, array('auto_item'));
         }
 
@@ -381,7 +360,7 @@ class RouteProvider implements RouteProviderInterface
             }
 
             // Return false if the request contains an auto_item keyword (duplicate content) (see #4012)
-            if ($this->useAutoItem && \in_array($arrFragments[$i], $GLOBALS['TL_AUTO_ITEM'])) {
+            if ($this->configAdapter->get('useAutoItem') && \in_array($arrFragments[$i], $GLOBALS['TL_AUTO_ITEM'])) {
                 throw new \RuntimeException('Request contains an auto_item keyword');
             }
 
@@ -393,10 +372,11 @@ class RouteProvider implements RouteProviderInterface
 
     private function removeSuffixAndLanguage(string $pathInfo)
     {
-        $suffixLength = \strlen($this->urlSuffix);
+        $urlSuffix = $this->configAdapter->get('urlSuffix');
+        $suffixLength = \strlen($urlSuffix);
 
         if ($suffixLength !== 0) {
-            if (substr($pathInfo, -$suffixLength) !== $this->urlSuffix) {
+            if (substr($pathInfo, -$suffixLength) !== $urlSuffix) {
                 return null;
             }
 
@@ -407,7 +387,7 @@ class RouteProvider implements RouteProviderInterface
             $pathInfo = substr($pathInfo, 1);
         }
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $matches = array();
 
             if (preg_match('@^([a-z]{2}(-[A-Z]{2})?)/(.+)$@', $pathInfo, $matches)) {
@@ -435,7 +415,7 @@ class RouteProvider implements RouteProviderInterface
             return [$pathInfo];
         }
 
-        if (!$this->folderUrl) {
+        if (!$this->configAdapter->get('folderUrl')) {
             return [substr($pathInfo, 0, $pos)];
         }
 
@@ -492,11 +472,11 @@ class RouteProvider implements RouteProviderInterface
 
         $defaults = $this->getRouteDefaults($page);
         $defaults['parameters'] = '';
-        $requirements = ['parameters' => '.*'];
+        $requirements = ['parameters' => '(/.+)?'];
 
-        $path = sprintf('/%s{parameters}%s', $page->alias ?: $page->id, $this->urlSuffix);
+        $path = sprintf('/%s{parameters}%s', $page->alias ?: $page->id, $this->configAdapter->get('urlSuffix'));
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $path = '/{_locale}'.$path;
 //            $requirements['_locale'] = '[a-z]{2}(\-[A-Z]{2})?';
             $requirements['_locale'] = $page->rootLanguage;
@@ -522,7 +502,7 @@ class RouteProvider implements RouteProviderInterface
 
         $page->loadDetails();
 
-        if (!$this->prependLocale && 'index' !== $page->alias && !$page->rootIsFallback) {
+        if (!$this->configAdapter->get('addLanguageToUrl') && 'index' !== $page->alias && !$page->rootIsFallback) {
             return;
         }
 
@@ -530,7 +510,7 @@ class RouteProvider implements RouteProviderInterface
         $requirements = [];
         $defaults = $this->getRouteDefaults($page);
 
-        if ($this->prependLocale) {
+        if ($this->configAdapter->get('addLanguageToUrl')) {
             $path = '/{_locale}'.$path;
             $requirements['_locale'] = $page->rootLanguage;
         }
@@ -544,8 +524,8 @@ class RouteProvider implements RouteProviderInterface
             $page->rootUseSSL ? 'https' : null // TODO should we match SSL only if enabled in root?
         );
 
-        if ($this->prependLocale && $page->rootIsFallback) {
-            if ($this->redirectEmpty) {
+        if ($this->configAdapter->get('addLanguageToUrl') && $page->rootIsFallback) {
+            if (!$this->configAdapter->get('doNotRedirectEmpty')) {
                 $defaults['_controller'] = 'Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction';
                 $defaults['path'] = '/'.$page->language.'/';
                 $defaults['permanent'] = true;
