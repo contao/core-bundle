@@ -334,10 +334,85 @@ services:
             - { name: monolog.logger, channel: router }
             - { name: router, priority: -999 }
 
+    contao.routing.page_router:
+        class: Symfony\Cmf\Component\Routing\DynamicRouter
+        arguments:
+            - "@router.request_context"
+            - "@contao.routing.hook_matcher"
+            - "@contao.routing.route_generator"
+            - ""
+            - "@event_dispatcher"
+            - "@contao.routing.route_provider"
+        calls:
+            - [addRouteEnhancer, ["@contao.routing.input_enhancer"]]
+        tags:
+            - { name: router, priority: 20 }
+
+    contao.routing.hook_matcher:
+        class: Contao\CoreBundle\Routing\HookMatcher
+        arguments:
+            - "@contao.framework"
+            - "@contao.routing.nested_matcher"
+            - "%contao.url_suffix%"
+            - "%contao.prepend_locale%"
+            - true # folderUrls
+            - true # useAutoItem
+
+    contao.routing.nested_matcher:
+        class: Symfony\Cmf\Component\Routing\NestedMatcher\NestedMatcher
+        arguments:
+            - "@contao.routing.route_provider"
+            - "@contao.routing.final_matcher"
+        calls:
+            - [addRouteFilter, ["@contao.routing.publishing_filter"]]
+
+    contao.routing.route_generator:
+        class: Symfony\Cmf\Component\Routing\ContentAwareGenerator
+        arguments:
+            - "@contao.routing.route_provider"
+            - "@logger"
+
+    contao.routing.route_provider:
+        class: Contao\CoreBundle\Routing\RouteProvider
+        arguments:
+            - "@contao.framework"
+            - "@database_connection"
+            - ~
+            - "%contao.url_suffix%"
+            - "%contao.prepend_locale%"
+            - true #"%contao.folder_url%"
+            - true #"%contao.use_auto_item%"
+            - true #"%contao.do_not_redirect_empty%"
+
+    contao.routing.input_enhancer:
+        class: Contao\CoreBundle\Routing\InputEnhancer
+        arguments:
+            - "@contao.framework"
+            - true # prependLocale
+            - true # useAutoItem
+
+    contao.routing.publishing_filter:
+        class: Contao\CoreBundle\Routing\PublishingFilter
+        arguments:
+            - "@contao.security.token_checker"
+
+    contao.routing.final_matcher:
+        class: Symfony\Cmf\Component\Routing\NestedMatcher\UrlMatcher
+        arguments:
+            - "@contao.routing.dummy_collection"
+            - "@contao.routing.dummy_context"
+
+    contao.routing.dummy_collection:
+        class: Symfony\Component\Routing\RouteCollection
+
+    contao.routing.dummy_context:
+        class: Symfony\Component\Routing\RequestContext
+
     contao.routing.frontend_loader:
         class: Contao\CoreBundle\Routing\FrontendLoader
         arguments:
             - "%contao.prepend_locale%"
+            - "%contao.url_suffix%"
         tags:
             - { name: routing.loader }
 

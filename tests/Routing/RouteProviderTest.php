@@ -8,6 +8,7 @@ use Contao\CoreBundle\Routing\RouteProvider;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\Model\Collection;
 use Contao\PageModel;
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,10 +20,14 @@ class RouteProviderTest extends TestCase
     private $framework;
 
     /**
+     * @var Connection
+     */
+    private $database;
+
+    /**
      * @var MockObject|Request
      */
     private $request;
-
     /**
      * @var MockObject
      */
@@ -33,6 +38,7 @@ class RouteProviderTest extends TestCase
         parent::setUp();
 
         $this->framework = $this->mockContaoFramework();
+        $this->database = $this->createMock(Connection::class);
         $this->request = $this->createMock(Request::class);
         $this->input = $this->createPartialMock(Adapter::class, ['get', 'setGet']);
 
@@ -45,7 +51,7 @@ class RouteProviderTest extends TestCase
 
     public function testReturnsNullOnEmptyUrl()
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', false, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -56,7 +62,7 @@ class RouteProviderTest extends TestCase
 
     public function testThrowsExceptionWithAutoItemInUrl()
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', false, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -70,7 +76,7 @@ class RouteProviderTest extends TestCase
 
     public function testThrowsExceptionIfUrlSuffixDoesNotMatch()
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', false, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -87,7 +93,7 @@ class RouteProviderTest extends TestCase
      */
     public function testReturnsNullIfOnlyLanguageIsInUrl($pathInfo, $language)
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', true, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
 
         $this->input
             ->expects($this->once())
@@ -114,7 +120,7 @@ class RouteProviderTest extends TestCase
      */
     public function testThrowsExceptionIfLanguageIsMissing($pathInfo)
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', true, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -140,7 +146,7 @@ class RouteProviderTest extends TestCase
      */
     public function testThrowsExceptionIfUrlIsSlashOnly($pathInfo, $language)
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', (bool) $language, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, false, true, false);
 
         $this->input
             ->expects($language ? $this->once() : $this->never())
@@ -166,7 +172,7 @@ class RouteProviderTest extends TestCase
 
     public function testThrowsExceptionIfAliasIsEmpty()
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', false, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -180,7 +186,7 @@ class RouteProviderTest extends TestCase
 
     public function testTestSkipsEmptyParameters()
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', true, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
 
         $this
             ->input
@@ -198,7 +204,7 @@ class RouteProviderTest extends TestCase
      */
     public function testThrowsExceptionIfGetParameterExists($pathInfo, $language, $getKey)
     {
-        $provider = new RouteProvider($this->framework, $this->input, '.html', (bool) $language, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, false, true, false);
 
         $this->input
             ->expects($language ? $this->once() : $this->never())
@@ -228,7 +234,7 @@ class RouteProviderTest extends TestCase
     {
         $GLOBALS['TL_AUTO_ITEM'] = ['bar'];
 
-        $provider = new RouteProvider($this->framework, $this->input, '.html', false, false, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
 
         $this->input->expects($this->never())->method('setGet');
 
@@ -255,7 +261,7 @@ class RouteProviderTest extends TestCase
 
         $this->framework = $this->mockContaoFramework([PageModel::class => $pageAdapter]);
 
-        $provider = new RouteProvider($this->framework, $this->input, '.html', $prependLocale, true, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', $prependLocale, true, true, false);
 
         $this->request->method('getPathInfo')->willReturn($pathInfo);
 
@@ -279,11 +285,13 @@ class RouteProviderTest extends TestCase
     {
         $provider = new RouteProvider(
             $this->framework,
+            $this->database,
             $this->input,
             $urlSuffix,
             isset($expectedParameters['language']),
             false,
-            isset($expectedParameters['auto_item'])
+            isset($expectedParameters['auto_item']),
+            false
         );
 
         $inputValidators = [];
@@ -339,7 +347,7 @@ class RouteProviderTest extends TestCase
         $this->framework = $this->mockContaoFramework([PageModel::class => $pageAdapter]);
         $this->input->method('get')->with('language')->willReturn($language);
 
-        $provider = new RouteProvider($this->framework, $this->input, '.html', (bool) $language, true, true);
+        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, true, true, false);
 
         $this->request->method('getPathInfo')->willReturn($pathInfo);
         $this->request->method('getHost')->willReturn('localhost');
