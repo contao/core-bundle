@@ -54,6 +54,8 @@ class RegisterHookListenersPass implements CompilerPassInterface
             foreach ($tags as $attributes) {
                 $this->addHookCallback($hooks, $serviceId, $attributes);
             }
+
+            $container->findDefinition($serviceId)->setPublic(true);
         }
 
         return $hooks;
