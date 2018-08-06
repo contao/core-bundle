@@ -164,6 +164,10 @@ abstract class System
 			{
 				$this->arrObjects[$strKey] = $container->get($strClass);
 			}
+			elseif (strpos($strClass, '.') !== false)
+			{
+				throw new \RuntimeException(sprintf('Service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
+			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				$this->arrObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
@@ -204,6 +208,10 @@ abstract class System
 			elseif ($container->has($strClass) && (strpos($strClass, '\\') !== false || !class_exists($strClass)))
 			{
 				static::$arrStaticObjects[$strKey] = $container->get($strClass);
+			}
+			elseif (strpos($strClass, '.') !== false)
+			{
+				throw new \RuntimeException(sprintf('Service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
 			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
