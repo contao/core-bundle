@@ -143,6 +143,8 @@ abstract class System
 	 * @param string  $strClass The class name
 	 * @param string  $strKey   An optional key to store the object under
 	 * @param boolean $blnForce If true, existing objects will be overridden
+	 *
+	 * @throws ServiceNotFoundException
 	 */
 	protected function import($strClass, $strKey=null, $blnForce=false)
 	{
@@ -186,6 +188,8 @@ abstract class System
 	 * @param string  $strClass The class name
 	 * @param string  $strKey   An optional key to store the object under
 	 * @param boolean $blnForce If true, existing objects will be overridden
+	 *
+	 * @throws ServiceNotFoundException
 	 *
 	 * @return object The imported object
 	 */
