@@ -1,46 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Tests\Routing;
 
 use Contao\CoreBundle\Framework\Adapter;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\CoreBundle\Routing\RouteProvider;
+use Contao\CoreBundle\Routing\Frontend;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\Model\Collection;
 use Contao\PageModel;
-use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
 
-class RouteProviderTest extends TestCase
+class FrontendTest extends TestCase
 {
-    /**
-     * @var MockObject|ContaoFrameworkInterface
-     */
-    private $framework;
-
-    /**
-     * @var Connection
-     */
-    private $database;
-
     /**
      * @var MockObject|Request
      */
     private $request;
+
     /**
      * @var MockObject
      */
-    private $input;
+    private $pageAdapter;
 
-    protected function setUp()/* The :void return type declaration that should be here would cause a BC issue */
+    /**
+     * @var MockObject
+     */
+    private $inputAdapter;
+
+    protected function setUp(): void/* The :void return type declaration that should be here would cause a BC issue */
     {
         parent::setUp();
 
-        $this->framework = $this->mockContaoFramework();
-        $this->database = $this->createMock(Connection::class);
         $this->request = $this->createMock(Request::class);
-        $this->input = $this->createPartialMock(Adapter::class, ['get', 'setGet']);
+        $this->pageAdapter = $this->createPartialMock(Adapter::class, ['findByAliases']);
+        $this->inputAdapter = $this->createPartialMock(Adapter::class, ['get', 'setGet']);
 
         require_once __DIR__.'/../../src/Resources/contao/helper/functions.php';
 
@@ -49,22 +52,22 @@ class RouteProviderTest extends TestCase
         $GLOBALS['TL_HOOKS']['getPageIdFromUrl'] = [];
     }
 
-    public function testReturnsNullOnEmptyUrl()
+    public function testReturnsNullOnEmptyUrl(): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', false, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn('/');
 
         $this->assertNull($provider->getPageIdFromUrl($this->request));
     }
 
-    public function testThrowsExceptionWithAutoItemInUrl()
+    public function testThrowsExceptionWithAutoItemInUrl(): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', false, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn('/test/auto_item/foobar.html');
 
@@ -74,11 +77,11 @@ class RouteProviderTest extends TestCase
         $provider->getPageIdFromUrl($this->request);
     }
 
-    public function testThrowsExceptionIfUrlSuffixDoesNotMatch()
+    public function testThrowsExceptionIfUrlSuffixDoesNotMatch(): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', false, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn('/foobar.html5');
 
@@ -91,11 +94,11 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider languageInUrlProvider
      */
-    public function testReturnsNullIfOnlyLanguageIsInUrl($pathInfo, $language)
+    public function testReturnsNullIfOnlyLanguageIsInUrl($pathInfo, $language): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', true, false, true);
 
-        $this->input
+        $this->inputAdapter
             ->expects($this->once())
             ->method('setGet')
             ->with('language', $language);
@@ -118,11 +121,11 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider missingLanguageProvider
      */
-    public function testThrowsExceptionIfLanguageIsMissing($pathInfo)
+    public function testThrowsExceptionIfLanguageIsMissing($pathInfo): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', true, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn($pathInfo);
 
@@ -144,11 +147,11 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider urlWithSlashOnlyProvider
      */
-    public function testThrowsExceptionIfUrlIsSlashOnly($pathInfo, $language)
+    public function testThrowsExceptionIfUrlIsSlashOnly($pathInfo, $language): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', (bool) $language, false, true);
 
-        $this->input
+        $this->inputAdapter
             ->expects($language ? $this->once() : $this->never())
             ->method('setGet')
             ->with('language', $language);
@@ -170,11 +173,11 @@ class RouteProviderTest extends TestCase
         ];
     }
 
-    public function testThrowsExceptionIfAliasIsEmpty()
+    public function testThrowsExceptionIfAliasIsEmpty(): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', false, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn('//foobar.html');
 
@@ -184,12 +187,12 @@ class RouteProviderTest extends TestCase
         $provider->getPageIdFromUrl($this->request);
     }
 
-    public function testTestSkipsEmptyParameters()
+    public function testTestSkipsEmptyParameters(): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', true, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', true, false, true);
 
         $this
-            ->input
+            ->inputAdapter
             ->expects($this->exactly(2))
             ->method('setGet')
             ->withConsecutive(['language', 'de'], ['bar', 'baz', true]);
@@ -202,11 +205,11 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider getParameterExistsProvider
      */
-    public function testThrowsExceptionIfGetParameterExists($pathInfo, $language, $getKey)
+    public function testThrowsExceptionIfGetParameterExists($pathInfo, $language, $getKey): void
     {
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', (bool) $language, false, true);
 
-        $this->input
+        $this->inputAdapter
             ->expects($language ? $this->once() : $this->never())
             ->method('setGet')
             ->with('language', $language);
@@ -230,13 +233,13 @@ class RouteProviderTest extends TestCase
         ];
     }
 
-    public function testThrowsExceptionIfAutoItemKeyIsInParameters()
+    public function testThrowsExceptionIfAutoItemKeyIsInParameters(): void
     {
         $GLOBALS['TL_AUTO_ITEM'] = ['bar'];
 
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', false, false, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', false, false, true);
 
-        $this->input->expects($this->never())->method('setGet');
+        $this->inputAdapter->expects($this->never())->method('setGet');
 
         $this->request->method('getPathInfo')->willReturn('/foo/bar/baz.html');
 
@@ -249,19 +252,16 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider folderUrlsLookupProvider
      */
-    public function testLooksUpFolderUrlsInPageModel($pathInfo, array $aliases, bool $prependLocale)
+    public function testLooksUpFolderUrlsInPageModel($pathInfo, array $aliases, bool $prependLocale): void
     {
-        $pageAdapter = $this->createPartialMock(Adapter::class, ['findByAliases']);
-        $pageAdapter
+        $this->pageAdapter
             ->expects($this->once())
             ->method('findByAliases')
             ->with($aliases)
             ->willReturn(null)
         ;
 
-        $this->framework = $this->mockContaoFramework([PageModel::class => $pageAdapter]);
-
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', $prependLocale, true, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', $prependLocale, true, true);
 
         $this->request->method('getPathInfo')->willReturn($pathInfo);
 
@@ -281,17 +281,15 @@ class RouteProviderTest extends TestCase
     /**
      * @dataProvider pageIdFromUrlProvider
      */
-    public function testGetPageIdFromUrl($pathInfo, $urlSuffix, $expectedPageId, array $expectedParameters)
+    public function testGetPageIdFromUrl($pathInfo, $urlSuffix, $expectedPageId, array $expectedParameters): void
     {
-        $provider = new RouteProvider(
-            $this->framework,
-            $this->database,
-            $this->input,
+        $provider = new Frontend(
+            $this->pageAdapter,
+            $this->inputAdapter,
             $urlSuffix,
             isset($expectedParameters['language']),
             false,
-            isset($expectedParameters['auto_item']),
-            false
+            isset($expectedParameters['auto_item'])
         );
 
         $inputValidators = [];
@@ -299,14 +297,14 @@ class RouteProviderTest extends TestCase
         foreach ($expectedParameters as $k => $v) {
             $args = [$this->equalTo($k), $this->equalTo($v)];
 
-            if ($k !== 'language') {
+            if ('language' !== $k) {
                 $args[] = $this->equalTo(true);
             }
 
             $inputValidators[] = $args;
         }
 
-        $this->input
+        $this->inputAdapter
             ->expects($this->exactly(\count($expectedParameters)))
             ->method('setGet')
             ->withConsecutive(...$inputValidators);
@@ -331,23 +329,20 @@ class RouteProviderTest extends TestCase
         ];
     }
 
-
     /**
      * @dataProvider folderUrlsProvider
      */
-    public function testFolderUrls($pathInfo, string $language, array $pages, $expected)
+    public function testFolderUrls($pathInfo, string $language, array $pages, $expected): void
     {
-        $pageAdapter = $this->createPartialMock(Adapter::class, ['findByAliases']);
-        $pageAdapter
+        $this->pageAdapter
             ->expects($this->once())
             ->method('findByAliases')
             ->willReturn(new Collection($pages, 'tl_page'))
         ;
 
-        $this->framework = $this->mockContaoFramework([PageModel::class => $pageAdapter]);
-        $this->input->method('get')->with('language')->willReturn($language);
+        $this->inputAdapter->method('get')->with('language')->willReturn($language);
 
-        $provider = new RouteProvider($this->framework, $this->database, $this->input, '.html', (bool) $language, true, true, false);
+        $provider = new Frontend($this->pageAdapter, $this->inputAdapter, '.html', (bool) $language, true, true);
 
         $this->request->method('getPathInfo')->willReturn($pathInfo);
         $this->request->method('getHost')->willReturn('localhost');
