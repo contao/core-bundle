@@ -51,6 +51,10 @@ class RegisterHookListenersPass implements CompilerPassInterface
         $serviceIds = $container->findTaggedServiceIds('contao.hook');
 
         foreach ($serviceIds as $serviceId => $tags) {
+            if ($container->hasAlias($serviceId)) {
+                $serviceId = (string) $container->getAlias($serviceId);
+            }
+
             foreach ($tags as $attributes) {
                 $this->addHookCallback($hooks, $serviceId, $attributes);
             }
