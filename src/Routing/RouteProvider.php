@@ -546,7 +546,7 @@ class RouteProvider implements RouteProviderInterface
     {
         return [
             '_token_check' => true,
-            '_controller' => 'Contao\FrontendIndex::renderPage', //'Contao\CoreBundle\Controller\FrontendController::indexAction',
+            '_controller' => 'Contao\FrontendIndex::renderPage',
             '_scope' => ContaoCoreBundle::SCOPE_FRONTEND,
             '_locale' => $page->rootLanguage,
             'pageModel' => $page,
