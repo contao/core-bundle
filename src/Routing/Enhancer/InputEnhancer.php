@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Routing\Enhancer;
 
 use Contao\Config;
@@ -50,7 +60,7 @@ class InputEnhancer implements RouteEnhancerInterface
             $this->inputAdapter->setGet('language', $defaults['_locale']);
         }
 
-        if (!isset($defaults['parameters'])) {
+        if (empty($defaults['parameters'])) {
             return $defaults;
         }
 
@@ -58,12 +68,12 @@ class InputEnhancer implements RouteEnhancerInterface
 
         // Add the second fragment as auto_item if the number of fragments is even
         if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
-            array_insert($fragments, 1, array('auto_item'));
+            array_insert($fragments, 1, ['auto_item']);
         }
 
         for ($i = 1, $c = \count($fragments); $i < $c; $i += 2) {
             // Skip key value pairs if the key is empty (see #4702)
-            if ($fragments[$i] == '') {
+            if ('' === $fragments[$i]) {
                 continue;
             }
 

@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Routing\Matcher;
 
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
@@ -16,11 +26,6 @@ class PublishingFilter implements RouteFilterInterface
      */
     private $tokenChecker;
 
-    /**
-     * Constructor.
-     *
-     * @param TokenChecker $tokenChecker
-     */
     public function __construct(TokenChecker $tokenChecker)
     {
         $this->tokenChecker = $tokenChecker;
@@ -46,8 +51,8 @@ class PublishingFilter implements RouteFilterInterface
             $time = time();
 
             if (!$page->published
-                || ($page->start !== '' && $page->start > $time)
-                || ($page->stop !== '' && $page->stop < $time)
+                || ('' !== $page->start && $page->start > $time)
+                || ('' !== $page->stop && $page->stop < $time)
             ) {
                 $collection->remove($name);
             }

@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Routing;
 
 use Contao\Config;
@@ -43,7 +53,6 @@ class RouteProvider implements RouteProviderInterface
      */
     private $input;
 
-
     public function __construct(ContaoFrameworkInterface $framework, Connection $database, $input)
     {
         $this->framework = $framework;
@@ -56,23 +65,7 @@ class RouteProvider implements RouteProviderInterface
     }
 
     /**
-     * Finds routes that may potentially match the request.
-     * This may return a mixed list of class instances, but all routes returned
-     * must extend the core symfony route. The classes may also implement
-     * RouteObjectInterface to link to a content document.
-     * This method may not throw an exception based on implementation specific
-     * restrictions on the url. That case is considered a not found - returning
-     * an empty array. Exceptions are only used to abort the whole request in
-     * case something is seriously broken, like the storage backend being down.
-     * Note that implementations may not implement an optimal matching
-     * algorithm, simply a reasonable first pass.  That allows for potentially
-     * very large route sets to be filtered down to likely candidates, which
-     * may then be filtered in memory more completely.
-     *
-     * @param Request $request A request against which to match
-     *
-     * @return RouteCollection with all Routes that could potentially match
-     *                         $request. Empty collection if nothing can match
+     * {@inheritdoc}
      */
     public function getRouteCollectionForRequest(Request $request)
     {
@@ -110,13 +103,7 @@ class RouteProvider implements RouteProviderInterface
     }
 
     /**
-     * Find the route using the provided route name.
-     *
-     * @param string $name The route name to fetch
-     *
-     * @return Route
-     * @throws RouteNotFoundException If there is no route with that name in
-     *                                this repository
+     * {@inheritdoc}
      */
     public function getRouteByName($name)
     {
@@ -141,25 +128,7 @@ class RouteProvider implements RouteProviderInterface
     }
 
     /**
-     * Find many routes by their names using the provided list of names.
-     * Note that this method may not throw an exception if some of the routes
-     * are not found or are not actually Route instances. It will just return the
-     * list of those Route instances it found.
-     * This method exists in order to allow performance optimizations. The
-     * simple implementation could be to just repeatedly call
-     * $this->getRouteByName() while catching and ignoring eventual exceptions.
-     * If $names is null, this method SHOULD return a collection of all routes
-     * known to this provider. If there are many routes to be expected, usage of
-     * a lazy loading collection is recommended. A provider MAY only return a
-     * subset of routes to e.g. support paging or other concepts, but be aware
-     * that the DynamicRouter will only call this method once per
-     * DynamicRouter::getRouteCollection() call.
-     *
-     * @param array|null $names The list of names to retrieve, In case of null,
-     *                          the provider will determine what routes to return
-     *
-     * @return Route[] Iterable list with the keys being the names from the
-     *                 $names array
+     * {@inheritdoc}
      */
     public function getRoutesByNames($names)
     {
@@ -375,7 +344,7 @@ class RouteProvider implements RouteProviderInterface
         $urlSuffix = $this->configAdapter->get('urlSuffix');
         $suffixLength = \strlen($urlSuffix);
 
-        if ($suffixLength !== 0) {
+        if (0 !== $suffixLength) {
             if (substr($pathInfo, -$suffixLength) !== $urlSuffix) {
                 return null;
             }
@@ -388,7 +357,7 @@ class RouteProvider implements RouteProviderInterface
         }
 
         if ($this->configAdapter->get('addLanguageToUrl')) {
-            $matches = array();
+            $matches = [];
 
             if (preg_match('@^([a-z]{2}(-[A-Z]{2})?)/(.+)$@', $pathInfo, $matches)) {
                 $pathInfo = $matches[3];
@@ -403,7 +372,6 @@ class RouteProvider implements RouteProviderInterface
     /**
      * Compile all possible aliases by applying dirname() to the request (e.g. news/archive/item, news/archive, news).
      *
-     * @param string $pathInfo
      *
      * @return array
      */
@@ -466,7 +434,7 @@ class RouteProvider implements RouteProviderInterface
         return $collection;
     }
 
-    private function addRoutesForPage(PageModel $page, array &$routes)
+    private function addRoutesForPage(PageModel $page, array &$routes): void
     {
         $page->loadDetails();
 
@@ -494,7 +462,7 @@ class RouteProvider implements RouteProviderInterface
         $this->addRoutesForRootPage($page, $routes);
     }
 
-    private function addRoutesForRootPage(PageModel $page, array &$routes)
+    private function addRoutesForRootPage(PageModel $page, array &$routes): void
     {
         if ('root' !== $page->type && 'index' !== $page->alias) {
             return;
@@ -562,7 +530,7 @@ class RouteProvider implements RouteProviderInterface
                 continue;
             }
 
-            list(, $id) = explode('.', $name);
+            [, $id] = explode('.', $name);
 
             $ids[] = $id;
         }
@@ -574,11 +542,9 @@ class RouteProvider implements RouteProviderInterface
      * Sorts routes so that the FinalMatcher will correctly resolve them.
      * 1. The ones with hostname should come first so the empty ones are only taken if no hostname matches
      * 2. Root pages come last so non-root page with index alias (= identical path) matches first
-     * 3. Pages with longer alias (folder page) must come first to match if applicable
-     *
-     * @param array $routes
+     * 3. Pages with longer alias (folder page) must come first to match if applicable.
      */
-    private function sortRoutes(array &$routes)
+    private function sortRoutes(array &$routes): void
     {
         uasort($routes, function (Route $a, Route $b) {
             if ('' !== $a->getHost() && '' === $b->getHost()) {

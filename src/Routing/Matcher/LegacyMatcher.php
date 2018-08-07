@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Routing\Matcher;
 
 use Contao\Config;
@@ -95,7 +105,7 @@ class LegacyMatcher implements RequestMatcherInterface
             throw new ResourceNotFoundException();
         }
 
-        if ($parameters === '') {
+        if ('' === $parameters) {
             return [$page->alias];
         }
 
@@ -103,7 +113,7 @@ class LegacyMatcher implements RequestMatcherInterface
 
         // Add the second fragment as auto_item if the number of fragments is even
         if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
-            array_insert($fragments, 1, array('auto_item'));
+            array_insert($fragments, 1, ['auto_item']);
         }
 
         return $fragments;
@@ -115,7 +125,7 @@ class LegacyMatcher implements RequestMatcherInterface
 
         // Add the second fragment as auto_item if the number of fragments is even
         if ($this->configAdapter->get('useAutoItem') && 0 === \count($fragments) % 2) {
-            array_insert($fragments, 1, array('auto_item'));
+            array_insert($fragments, 1, ['auto_item']);
         }
 
         return $fragments;
@@ -138,7 +148,7 @@ class LegacyMatcher implements RequestMatcherInterface
 
     private function createPathFromFragments(array $fragments, string $locale)
     {
-        if ($this->configAdapter->get('useAutoItem') && $fragments[1] === 'auto_item') {
+        if ($this->configAdapter->get('useAutoItem') && 'auto_item' === $fragments[1]) {
             unset($fragments[1]);
         }
 
@@ -156,7 +166,7 @@ class LegacyMatcher implements RequestMatcherInterface
         $urlSuffix = $this->configAdapter->get('urlSuffix');
         $suffixLength = \strlen($urlSuffix);
 
-        if ($suffixLength !== 0) {
+        if (0 !== $suffixLength) {
             if (substr($pathInfo, -$suffixLength) !== $urlSuffix) {
                 throw new ResourceNotFoundException('URL suffix does not match');
             }
@@ -169,7 +179,7 @@ class LegacyMatcher implements RequestMatcherInterface
         }
 
         if ($this->configAdapter->get('addLanguageToUrl')) {
-            $matches = array();
+            $matches = [];
 
             if (preg_match('@^([a-z]{2}(-[A-Z]{2})?)/(.+)$@', $pathInfo, $matches)) {
                 $locale = $matches[1];

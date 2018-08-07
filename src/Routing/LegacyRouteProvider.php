@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao.
+ *
+ * (c) Leo Feyer
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Contao\CoreBundle\Routing;
 
 use Symfony\Cmf\Component\Routing\RouteProviderInterface;
@@ -18,10 +28,6 @@ class LegacyRouteProvider implements RouteProviderInterface
      */
     private $routeProvider;
 
-    /**
-     * @param FrontendLoader         $frontendLoader
-     * @param RouteProviderInterface $routeProvider
-     */
     public function __construct(FrontendLoader $frontendLoader, RouteProviderInterface $routeProvider)
     {
         $this->frontendLoader = $frontendLoader;
