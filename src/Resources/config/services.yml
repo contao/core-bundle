@@ -366,12 +366,12 @@ services:
             - "@contao.routing.legacy_route_provider.inner"
 
     contao.routing.input_enhancer:
-        class: Contao\CoreBundle\Routing\InputEnhancer
+        class: Contao\CoreBundle\Routing\Enhancer\InputEnhancer
         arguments:
             - "@contao.framework"
 
     contao.routing.publishing_filter:
-        class: Contao\CoreBundle\Routing\PublishingFilter
+        class: Contao\CoreBundle\Routing\Matcher\PublishingFilter
         arguments:
             - "@contao.security.token_checker"
 

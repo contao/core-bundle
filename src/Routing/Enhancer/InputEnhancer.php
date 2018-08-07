@@ -1,6 +1,6 @@
 <?php
 
-namespace Contao\CoreBundle\Routing;
+namespace Contao\CoreBundle\Routing\Enhancer;
 
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;

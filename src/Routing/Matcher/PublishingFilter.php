@@ -1,6 +1,6 @@
 <?php
 
-namespace Contao\CoreBundle\Routing;
+namespace Contao\CoreBundle\Routing\Matcher;
 
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\PageModel;
