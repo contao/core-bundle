@@ -16,26 +16,25 @@ basis for your application.
 
 ## Prerequisites
 
-The Contao core bundle has a recipe in [symfony/recipes-contrib][6] repository.
-Be sure to either enable contrib recipes for this project by running the following command…
+The Contao core bundle has a recipe in the [symfony/recipes-contrib][6]
+repository. Be sure to either enable contrib recipes for your project by
+running the following command or follow the instructions to use the contrib
+recipe during the installation process.
 
 ```
 composer config extra.symfony.allow-contrib true
 ```
 
-… or follow the instructions to use the contrib recipe in the installation process.
+Add the `contao-component-dir` to the `extra` section of your `composer.json`
+file.
 
-Add the `contao-component-dir` to the `extra` section of your `composer.json` file.
-
-```json
-"extra": {
-  "contao-component-dir": "assets"
-}
+```
+composer config extra.contao-component-dir true
 ```
 
 ## Installation
 
-Install Contao and all its dependencies by executing the following command
+Install Contao and all its dependencies by executing the following command:
 
 ```
 composer require \
@@ -44,15 +43,18 @@ composer require \
     php-http/guzzle6-adapter:^1.1
 ```
 
-Note that you can exchange the `php-http/guzzle6-adapter` package with any other [HTTP client implementation][4]. If you already have an HTTP client implementation, you can omit the package entirely.
+Note that you can exchange the `php-http/guzzle6-adapter` package with any
+other [HTTP client implementation][4]. If you already have an HTTP client
+implementation, you can omit the package entirely.
 
 ## Configuration
 
-Be sure to configure the `DATABASE_URL` in your environment, either using environment
+Configure the `DATABASE_URL` in your environment, either using environment
 variables or by using the [Dotenv component][7].
 
-Add the Contao routes to your `config/routing.yaml` file, and be sure to load the
-`ContaoCoreBundle` at the very end, so the catch all route does not catch your application routes:
+Add the Contao routes to your `config/routing.yaml` file, and be sure to load
+the `ContaoCoreBundle` at the very end, so the catch all route does not catch
+your application routes.
 
 ```yml
 ContaoInstallationBundle:
@@ -62,8 +64,8 @@ ContaoCoreBundle:
     resource: "@ContaoCoreBundle/Resources/config/routing.yml"
 ```
 
-Edit your `app/config/security.yml` file and merge all the `providers`, `encoders`, `firewalls`
-and `access_control` sections:
+Edit your `app/config/security.yml` file and merge all the `providers`,
+`encoders`, `firewalls` and `access_control` sections:
 
 ```yml
 security:
@@ -146,20 +148,20 @@ security:
                 success_handler: contao.security.logout_success_handler
 
     access_control:
-        - { path: ^/contao/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/contao, roles: ROLE_USER }
+        - { path: ^/contao/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/contao(/|$), roles: ROLE_USER }
 ```
 
-Enable `esi` by editing the `config/packages/framework.yaml` file and add the following:
+Enable ESI in the `config/packages/framework.yaml` file.
 
 ```yaml
 framework:
-   esi: true
+    esi: true
 ```
 
-The Contao core-bundle as well as the installation-bundle are now installed and activated.
-In order to complete the installation open the Contao Installer and complete the setup by
-visiting the `/contao/install` url.
+The Contao core-bundle as well as the installation-bundle are now installed and
+activated. Use the Contao install tool to complete the installation by opening
+the `/contao/install` route in your browser.
 
 ## License
 
