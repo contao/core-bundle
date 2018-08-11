@@ -58,6 +58,10 @@ class DcaSchemaProvider
         $config = $this->getSqlDefinitions();
 
         foreach ($config as $tableName => $definitions) {
+            // Skip DCAs that are defined via a doctrine entity
+            if($schema->hasTable($tableName)) {
+                continue;
+            }
             $table = $schema->createTable($tableName);
 
             // Parse the table options first
