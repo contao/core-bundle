@@ -33,6 +33,11 @@ class PaletteManipulator
      */
     private $fields = [];
 
+    /**
+     * @var array
+     */
+    private $removes = [];
+
     public static function create(): self
     {
         return new static();
@@ -88,6 +93,22 @@ class PaletteManipulator
     }
 
     /**
+     * If $parent is empty the field is removed everythere.
+     *
+     * @param string|array               $name
+     * @param string|array               $parent
+     */
+    public function removeField($name, $parent = []): self
+    {
+        $this->removes[] = [
+            'fields' => (array) $name,
+            'parents' => (array) $parent
+        ];
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      */
     public function applyToPalette($name, string $table): self
@@ -133,6 +154,10 @@ class PaletteManipulator
 
         foreach ($this->fields as $field) {
             $this->applyField($config, $field, $skipLegends);
+        }
+
+        foreach ($this->removes as $remove) {
+            $this->applyRemove($config, $remove);
         }
 
         return $this->implode($config);
@@ -338,6 +363,15 @@ class PaletteManipulator
         // If everything fails, add to the last legend
         $offset = self::POSITION_PREPEND === $action['fallbackPosition'] ? 0 : \count($config[$fallback]['fields']);
         array_splice($config[$fallback]['fields'], $offset, 0, $action['fields']);
+    }
+
+    private function applyRemove(array &$config, array $remove)
+    {
+        foreach ($config as $legend => $group) {
+            if (empty($remove['parents']) || \in_array($legend, $remove['parents'])) {
+                $config[$legend]['fields'] = \array_diff($group['fields'], $remove['fields']);
+            }
+        }
     }
 
     /**

@@ -370,4 +370,113 @@ class PaletteManipulatorTest extends TestCase
             ->applyToString('foo')
         ;
     }
+
+    public function testRemoveExistingFieldFromPalette(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField('foo')
+        ;
+
+        $this->assertSame(
+            '{foo_legend},baz;{config_legend},test',
+            $pm->applyToString('{foo_legend},baz;{config_legend},foo,test')
+        );
+
+        $this->assertSame(
+            '{foo_legend},baz',
+            $pm->applyToString('{foo_legend},baz;{config_legend},foo')
+        );
+
+
+        $this->assertSame(
+            '{foo_legend},baz',
+            $pm->applyToString('{foo_legend},foo,baz;{config_legend},foo')
+        );
+    }
+
+    public function testRemoveMultipleFields(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField(['foo', 'baz'])
+        ;
+
+        $this->assertSame(
+            '',
+            $pm->applyToString('{foo_legend},baz;{config_legend},foo')
+        );
+
+        $this->assertSame(
+            '{foo_legend},bar',
+            $pm->applyToString('{foo_legend},bar,baz;{config_legend},foo')
+        );
+    }
+
+    public function testRemoveExistingField(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField('foo', 'config_legend')
+        ;
+
+        $this->assertSame(
+            '{foo_legend},foo,baz',
+            $pm->applyToString('{foo_legend},foo,baz;{config_legend},foo')
+        );
+    }
+
+    public function testRemoveExistingFieldsFromMultipleParents(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField('foo', ['config_legend', 'test_legend'])
+        ;
+
+        $this->assertSame(
+            '{foo_legend},foo,baz',
+            $pm->applyToString('{foo_legend},foo,baz;{config_legend},foo;{test_legend},foo')
+        );
+    }
+
+    public function testApplyRemoveToADcaPalette(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField(['firstname'])
+        ;
+
+        $GLOBALS['TL_DCA']['tl_test']['palettes']['name'] = '{foo_legend},firstname,lastname';
+
+        $pm->applyToPalette('name', 'tl_test');
+
+        $this->assertSame(
+            '{foo_legend},lastname',
+            $GLOBALS['TL_DCA']['tl_test']['palettes']['name']
+        );
+    }
+
+    public function testApplyRemoveToADcaSubpalette(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->removeField(['firstname'])
+        ;
+
+        $GLOBALS['TL_DCA']['tl_test']['subpalettes']['name'] = 'firstname,lastname';
+
+        $pm->applyToSubpalette('name', 'tl_test');
+
+        $this->assertSame(
+            'lastname',
+            $GLOBALS['TL_DCA']['tl_test']['subpalettes']['name']
+        );
+    }
+
+    public function testAddFieldAppliedBeforeRemove(): void
+    {
+        $pm = PaletteManipulator::create()
+            ->addField('title', 'firstname', PaletteManipulator::POSITION_BEFORE)
+            ->removeField('firstname')
+        ;
+
+        $this->assertSame(
+            '{contact_legend},title,lastname',
+            $pm->applyToString('{contact_legend},firstname,lastname')
+        );
+    }
 }
