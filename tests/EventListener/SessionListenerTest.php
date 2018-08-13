@@ -25,7 +25,6 @@ use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Symfony\Component\HttpKernel\EventListener\SessionListener as BaseSessionListener;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Tests the SessionListener class.
@@ -130,7 +129,6 @@ class SessionListenerTest extends TestCase
         }
 
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->once())
             ->method('isStarted')
@@ -146,7 +144,6 @@ class SessionListenerTest extends TestCase
         $request->setSession($session);
 
         $event = $this->createMock(FilterResponseEvent::class);
-
         $event
             ->expects($this->once())
             ->method('getRequest')
@@ -188,7 +185,6 @@ class SessionListenerTest extends TestCase
         }
 
         $event = $this->createMock(FilterResponseEvent::class);
-
         $event
             ->expects($this->never())
             ->method('getRequest')
@@ -228,7 +224,6 @@ class SessionListenerTest extends TestCase
         }
 
         $event = $this->createMock(FilterResponseEvent::class);
-
         $event
             ->expects($this->never())
             ->method('getRequest')
@@ -276,7 +271,6 @@ class SessionListenerTest extends TestCase
         $response->headers->setCookie(new Cookie(session_name(), 'foobar'));
 
         $event = $this->createMock(FilterResponseEvent::class);
-
         $event
             ->expects($this->any())
             ->method('getRequest')
@@ -307,6 +301,7 @@ class SessionListenerTest extends TestCase
         $this->assertEmpty($response->headers->getCookies());
 
         $headers = $this->headerStorage->all();
+
         $this->assertCount(1, $headers);
         $this->assertStringStartsWith('Set-Cookie: PHPSESSID=foobar', $headers[0]);
     }
@@ -325,7 +320,6 @@ class SessionListenerTest extends TestCase
         $response->headers->setCookie(new Cookie('foo', 'bar'));
 
         $event = $this->createMock(FilterResponseEvent::class);
-
         $event
             ->expects($this->any())
             ->method('getRequest')

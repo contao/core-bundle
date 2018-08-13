@@ -15,7 +15,6 @@ use Contao\CoreBundle\HttpKernel\Header\HeaderStorageInterface;
 use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -34,8 +33,9 @@ use Symfony\Component\HttpKernel\EventListener\SessionListener as BaseSessionLis
  * Symfony's changes by not making the response private if the request is a
  * Contao front end request.
  *
- * To prevent session cookies from being stored in the HTTP cache, we remove them from
- * the response and send them directly. Any other cookie makes the response uncacheable.
+ * To prevent session cookies from being stored in the HTTP cache, we remove
+ * them from the response and send them directly. Any other cookie makes the
+ * response uncacheable.
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  * @author Andreas Schempp <https://github.com/aschempp>
@@ -138,9 +138,8 @@ class SessionListener implements EventSubscriberInterface
      */
     private function handleResponseCookies(Response $response)
     {
-        /** @var Cookie $cookie */
+        // Move the session cookie from the Symfony response to PHP headers
         foreach ($response->headers->getCookies() as $cookie) {
-            // Move session cookie from Symfony response to PHP headers
             if (session_name() === $cookie->getName()) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $this->headerStorage->add('Set-Cookie: '.$cookie);
