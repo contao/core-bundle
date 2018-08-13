@@ -365,7 +365,7 @@ class PaletteManipulator
         array_splice($config[$fallback]['fields'], $offset, 0, $action['fields']);
     }
 
-    private function applyRemove(array &$config, array $remove)
+    private function applyRemove(array &$config, array $remove): void
     {
         foreach ($config as $legend => $group) {
             if (empty($remove['parents']) || \in_array($legend, $remove['parents'])) {
