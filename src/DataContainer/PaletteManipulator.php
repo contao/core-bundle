@@ -93,7 +93,7 @@ class PaletteManipulator
     }
 
     /**
-     * If $parent is empty the field is removed everythere.
+     * Parent refers to the legend. If $parent is empty the field is removed everywhere.
      *
      * @param string|array               $name
      * @param string|array               $parent
