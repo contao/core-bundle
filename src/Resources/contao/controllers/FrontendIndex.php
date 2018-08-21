@@ -156,6 +156,12 @@ class FrontendIndex extends \Frontend
 			{
 				$objPage = $objNewPage;
 			}
+
+			// Throw an exception if language was provided but no page was matched
+			elseif (!empty($_GET['language']))
+			{
+				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
+			}
 		}
 
 		// Throw a 500 error if the result is still ambiguous
