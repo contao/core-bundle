@@ -32,6 +32,7 @@ use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Cmf\Bundle\RoutingBundle\CmfRoutingBundle;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
@@ -49,11 +50,13 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
             BundleConfig::create(KnpTimeBundle::class),
             BundleConfig::create(SchebTwoFactorBundle::class),
             BundleConfig::create(HeaderReplayBundle::class),
+            BundleConfig::create(CmfRoutingBundle::class),
             BundleConfig::create(ContaoCoreBundle::class)
                 ->setReplace(['core'])
                 ->setLoadAfter(
                     [
                         FrameworkBundle::class,
+                        CmfRoutingBundle::class,
                         SecurityBundle::class,
                         TwigBundle::class,
                         MonologBundle::class,
