@@ -39,7 +39,9 @@ Edit your `composer.json` file and add the following:
 
 Then run `php composer.phar update` to install the vendor files.
 
-Note that you can exchange the `php-http/guzzle6-adapter` package with any other [HTTP client implementation][4]. If you already have an HTTP client implementation, you can omit the package entirely.
+Note that you can exchange the `php-http/guzzle6-adapter` package with any
+other [HTTP client implementation][4]. If you already have an HTTP client
+implementation, you can omit the package entirely.
 
 ## Activation
 
@@ -130,14 +132,11 @@ Edit your `app/config/config.yml` file:
 parameters:
     prepend_locale: false # Set to true if you like, just has to be set
 
+# Framework configuration
 framework:
     esi: { enabled: true }
     translator: { fallbacks: ['%locale%'] }
-```
 
-Then add the following to end of the `app/config/config.yml`:
-
-```yml
 # Contao configuration
 contao:
     # Required parameters
@@ -171,14 +170,6 @@ contao:
         adminEmail: foo@bar.com
         dateFormat: Y-m-d
 ```
-
-If you want to see the default Symfony error pages in dev mode, put the following into your `app/config/config_dev.yml`:
-
- ```yml
-# Contao configuration
-contao:
-    pretty_error_screens: false
- ```
 
 ## License
 
