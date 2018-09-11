@@ -27,7 +27,10 @@
 <body class="<?= $this->ua ?>">
 
   <div id="container" class="cf">
-    <h1><?= $this->fePreview ?></h1>
+    <div class="title">
+      <h1 id="page-title"><?= $this->fePreview ?></h1>
+      <p id="page-uri"></p>
+    </div>
     <form action="<?= $this->action ?>" method="post">
       <div class="formbody">
         <input type="hidden" name="FORM_SUBMIT" value="tl_switch">
@@ -72,6 +75,24 @@
       }
     });
   </script>
-
+  <script>
+    (function(win) {
+      var pageTitle = document.getElementById('page-title');
+      var pageUri = document.getElementById('page-uri');
+      if (typeof(win.postMessage) === 'function') {
+        win.addEventListener('message', function(message) {
+          if (message.origin !== win.location.origin) {
+            return;
+          }
+          var data = message.data['contao.preview'];
+          if (data) {
+            pageTitle.textContent = data.title;
+            pageUri.title = data.uri;
+            pageUri.textContent = data.uri;
+          }
+        }, false);
+      }
+    })(window);
+  </script>
 </body>
 </html>
