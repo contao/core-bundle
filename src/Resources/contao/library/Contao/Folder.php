@@ -349,7 +349,7 @@ class Folder extends System
 	 */
 	public function unprotect()
 	{
-		if (file_exists($this->strRootDir . '/'.$this->strFolder . '/.public')) {
+		if (file_exists($this->strRootDir . '/' . $this->strFolder . '/.public')) {
 			return;
 		}
 
@@ -363,20 +363,20 @@ class Folder extends System
 	 *
 	 * @return bool
 	 */
-    public function isUnprotected(bool $includeParents = true): bool
-    {
-        $path = $this->strFolder;
+	public function isUnprotected(bool $includeParents = true): bool
+	{
+		$path = $this->strFolder;
 
-        do {
-            if (file_exists($this->strRootDir . '/' . $path . '/.public')) {
-                return true;
-            }
+		do {
+			if (file_exists($this->strRootDir . '/' . $path . '/.public')) {
+				return true;
+			}
 
-            $path = \dirname($path);
-        } while ($includeParents && '.' !== $path);
+			$path = \dirname($path);
+		} while ($includeParents && '.' !== $path);
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Return the files model
