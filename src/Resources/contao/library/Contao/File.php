@@ -907,13 +907,13 @@ class File extends System
 	}
 
 	/**
-	 * Check if the file is public by evaluating if any parent folder is public.
+	 * Check if the file is unprotected by evaluating if any parent folder is unprotected.
 	 *
 	 * @return bool
 	 */
-	public function isPublic(): bool
+	public function isUnprotected(): bool
 	{
-		return (new Folder(\dirname($this->strFile)))->isPublic();
+		return (new Folder(\dirname($this->strFile)))->isUnprotected();
 	}
 }
 
