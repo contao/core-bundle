@@ -23,17 +23,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class LocaleListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new LocaleListener($this->mockScopeMatcher(), ['en']);
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\LocaleListener', $listener);
-    }
-
     /**
-     * @param string|null $locale
-     * @param string      $expected
-     *
      * @dataProvider getLocaleRequestData
      */
     public function testReadsTheLocaleFromTheRequest(?string $locale, string $expected): void
@@ -52,7 +42,7 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return (string|null)[][]
      */
     public function getLocaleRequestData(): array
     {
@@ -67,10 +57,6 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * @param string|null $locale
-     * @param string      $expected
-     * @param array       $available
-     *
      * @dataProvider acceptLanguageTestData
      */
     public function testReadsTheLocaleFromTheAcceptLanguageHeader(?string $locale, string $expected, array $available): void
@@ -88,7 +74,7 @@ class LocaleListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return (string[]|string|null)[][]
      */
     public function acceptLanguageTestData(): array
     {
@@ -106,7 +92,6 @@ class LocaleListenerTest extends TestCase
     public function testDoesNothingIfThereIsNoRequestScope(): void
     {
         $attributes = $this->createMock(ParameterBag::class);
-
         $attributes
             ->expects($this->never())
             ->method('set')

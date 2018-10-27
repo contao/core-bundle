@@ -18,25 +18,12 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslationListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new TranslationListener($this->createMock(TranslatorInterface::class));
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\InsertTags\TranslationListener', $listener);
-    }
-
     /**
-     * @param string      $id
-     * @param string      $result
-     * @param string|null $domain
-     * @param array       $parameters
-     *
      * @dataProvider insertTagsProvider
      */
     public function testReplacesInsertTagsWithTranslation(string $id, string $result, string $domain = null, array $parameters = []): void
     {
         $translator = $this->createMock(TranslatorInterface::class);
-
         $translator
             ->expects($this->once())
             ->method('trans')
@@ -58,7 +45,7 @@ class TranslationListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return (string[]|string)[][]
      */
     public function insertTagsProvider(): array
     {
@@ -72,7 +59,6 @@ class TranslationListenerTest extends TestCase
     public function testIgnoresOtherInsertTags(): void
     {
         $translator = $this->createMock(TranslatorInterface::class);
-
         $translator
             ->expects($this->never())
             ->method('trans')

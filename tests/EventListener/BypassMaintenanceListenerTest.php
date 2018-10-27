@@ -22,19 +22,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class BypassMaintenanceListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new BypassMaintenanceListener($this->createMock(TokenChecker::class));
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\BypassMaintenanceListener', $listener);
-    }
-
     public function testAddsTheRequestAttribute(): void
     {
         $kernel = $this->createMock(KernelInterface::class);
         $event = new GetResponseEvent($kernel, new Request(), HttpKernelInterface::MASTER_REQUEST);
-        $tokenChecker = $this->createMock(TokenChecker::class);
 
+        $tokenChecker = $this->createMock(TokenChecker::class);
         $tokenChecker
             ->expects($this->once())
             ->method('hasBackendUser')
@@ -51,8 +44,8 @@ class BypassMaintenanceListenerTest extends TestCase
     {
         $kernel = $this->createMock(KernelInterface::class);
         $event = new GetResponseEvent($kernel, new Request(), HttpKernelInterface::MASTER_REQUEST);
-        $tokenChecker = $this->createMock(TokenChecker::class);
 
+        $tokenChecker = $this->createMock(TokenChecker::class);
         $tokenChecker
             ->expects($this->once())
             ->method('hasBackendUser')

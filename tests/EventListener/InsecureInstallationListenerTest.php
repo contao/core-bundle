@@ -22,13 +22,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class InsecureInstallationListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new InsecureInstallationListener();
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\InsecureInstallationListener', $listener);
-    }
-
     public function testThrowsAnExceptionIfTheDocumentRootIsInsecure(): void
     {
         $listener = new InsecureInstallationListener();
@@ -61,15 +54,9 @@ class InsecureInstallationListenerTest extends TestCase
         $this->addToAssertionCount(1);  // does not throw an exception
     }
 
-    /**
-     * Returns a request.
-     *
-     * @return Request
-     */
     private function getRequest(): Request
     {
         $request = new Request();
-
         $request->server->set('SCRIPT_NAME', 'app_dev.php');
         $request->server->set('SCRIPT_FILENAME', $this->getTempDir().'/web/app_dev.php');
         $request->server->set('REMOTE_ADDR', '123.456.789.0');
@@ -78,13 +65,6 @@ class InsecureInstallationListenerTest extends TestCase
         return $request;
     }
 
-    /**
-     * Mocks a response event.
-     *
-     * @param Request|null $request
-     *
-     * @return GetResponseEvent
-     */
     private function mockResponseEvent(Request $request = null): GetResponseEvent
     {
         $kernel = $this->createMock(KernelInterface::class);

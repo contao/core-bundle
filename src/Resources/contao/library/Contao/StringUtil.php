@@ -511,8 +511,8 @@ class StringUtil
 			' target="_blank"' => ' onclick="return !window.open(this.href)"'
 		);
 
-		$strString = preg_replace(array_keys($arrPregReplace), array_values($arrPregReplace), $strString);
-		$strString = str_ireplace(array_keys($arrStrReplace), array_values($arrStrReplace), $strString);
+		$strString = preg_replace(array_keys($arrPregReplace), $arrPregReplace, $strString);
+		$strString = str_ireplace(array_keys($arrStrReplace), $arrStrReplace, $strString);
 
 		return $strString;
 	}
@@ -543,8 +543,8 @@ class StringUtil
 			' onclick="window.open(this.href); return false;"' => ' target="_blank"'
 		);
 
-		$strString = preg_replace(array_keys($arrPregReplace), array_values($arrPregReplace), $strString);
-		$strString = str_ireplace(array_keys($arrStrReplace), array_values($arrStrReplace), $strString);
+		$strString = preg_replace(array_keys($arrPregReplace), $arrPregReplace, $strString);
+		$strString = str_ireplace(array_keys($arrStrReplace), $arrStrReplace, $strString);
 
 		return $strString;
 	}
@@ -962,7 +962,7 @@ class StringUtil
 		}
 
 		// Use ENT_COMPAT here (see #4889)
-		return htmlspecialchars($strString, ENT_COMPAT, \Config::get('characterSet'), $blnDoubleEncode);
+		return htmlspecialchars($strString, ENT_COMPAT, Config::get('characterSet'), $blnDoubleEncode);
 	}
 
 	/**
@@ -1127,16 +1127,12 @@ class StringUtil
 	 */
 	public static function stripRootDir($path)
 	{
-		static $length = null;
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+		$length = \strlen($rootDir);
 
-		if ($length === null)
+		if (strncmp($path, $rootDir, $length) !== 0 || \strlen($path) <= $length || ($path[$length] !== '/' && $path[$length] !== '\\'))
 		{
-			$length = \strlen(TL_ROOT);
-		}
-
-		if (strncmp($path, TL_ROOT, $length) !== 0 || \strlen($path) <= $length || ($path[$length] !== '/' && $path[$length] !== '\\'))
-		{
-			throw new \InvalidArgumentException(sprintf('Path "%s" is not inside the Contao root dir', $path));
+			throw new \InvalidArgumentException(sprintf('Path "%s" is not inside the Contao root dir "%s"', $path, $rootDir));
 		}
 
 		return (string) substr($path, $length + 1);

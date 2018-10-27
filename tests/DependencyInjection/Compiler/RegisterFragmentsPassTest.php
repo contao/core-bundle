@@ -20,13 +20,6 @@ use Symfony\Component\DependencyInjection\Definition;
 
 class RegisterFragmentsPassTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $pass = new RegisterFragmentsPass();
-
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\RegisterFragmentsPass', $pass);
-    }
-
     public function testRegistersTheFragments(): void
     {
         $contentController = new Definition('App\Fragments\Text');
@@ -92,6 +85,23 @@ class RegisterFragmentsPassTest extends TestCase
         $this->assertSame('esi', $arguments[1]);
     }
 
+    public function testMakesFragmentServicesPublic(): void
+    {
+        $contentController = new Definition('App\Fragments\Text');
+        $contentController->setPublic(false);
+        $contentController->addTag('contao.content_element');
+
+        $container = $this->mockContainer();
+        $container->setDefinition('app.fragments.content_controller', $contentController);
+
+        $this->assertFalse($container->findDefinition('app.fragments.content_controller')->isPublic());
+
+        $pass = new RegisterFragmentsPass();
+        $pass->process($container);
+
+        $this->assertTrue($container->findDefinition('app.fragments.content_controller')->isPublic());
+    }
+
     public function testRegistersThePreHandlers(): void
     {
         $contentController = new Definition(FragmentPreHandlerInterface::class);
@@ -133,7 +143,6 @@ class RegisterFragmentsPassTest extends TestCase
     public function testDoesNothingIfThereIsNoFragmentRegistry(): void
     {
         $container = $this->createMock(ContainerBuilder::class);
-
         $container
             ->expects($this->never())
             ->method('findDefinition')

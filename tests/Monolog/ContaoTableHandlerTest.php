@@ -22,13 +22,6 @@ use Monolog\Logger;
 
 class ContaoTableHandlerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $handler = new ContaoTableHandler();
-
-        $this->assertInstanceOf('Contao\CoreBundle\Monolog\ContaoTableHandler', $handler);
-    }
-
     public function testSupportsReadingAndWritingTheDbalServiceName(): void
     {
         $handler = new ContaoTableHandler();
@@ -56,14 +49,12 @@ class ContaoTableHandlerTest extends TestCase
         ];
 
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->expects($this->once())
             ->method('execute')
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('prepare')
             ->willReturn($statement)

@@ -19,6 +19,7 @@ use League\Uri\Components\Query;
 use Patchwork\Utf8;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -39,19 +40,19 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  *         }
  *     }
  *
- * @property Automator                               $Automator   The automator object
- * @property Config                                  $Config      The config object
- * @property Database                                $Database    The database object
- * @property Environment                             $Environment The environment object
- * @property Files                                   $Files       The files object
- * @property Input                                   $Input       The input object
- * @property Installer                               $Installer   The database installer object
- * @property Updater                                 $Updater     The database updater object
- * @property Messages                                $Messages    The messages object
- * @property Session                                 $Session     The session object
- * @property StyleSheets                             $StyleSheets The style sheets object
- * @property BackendTemplate|FrontendTemplate|object $Template    The template object
- * @property BackendUser|FrontendUser|object         $User        The user object
+ * @property Automator                        $Automator   The automator object
+ * @property Config                           $Config      The config object
+ * @property Database                         $Database    The database object
+ * @property Environment                      $Environment The environment object
+ * @property Files                            $Files       The files object
+ * @property Input                            $Input       The input object
+ * @property Installer                        $Installer   The database installer object
+ * @property Updater                          $Updater     The database updater object
+ * @property Messages                         $Messages    The messages object
+ * @property Session                          $Session     The session object
+ * @property StyleSheets                      $StyleSheets The style sheets object
+ * @property BackendTemplate|FrontendTemplate $Template    The template object
+ * @property BackendUser|FrontendUser         $User        The user object
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -102,7 +103,7 @@ abstract class System
 	protected static $arrImageSizes = array();
 
 	/**
-	 * Import the Config and Session instances
+	 * Import the Config instance
 	 */
 	protected function __construct()
 	{
@@ -142,6 +143,8 @@ abstract class System
 	 * @param string  $strClass The class name
 	 * @param string  $strKey   An optional key to store the object under
 	 * @param boolean $blnForce If true, existing objects will be overridden
+	 *
+	 * @throws ServiceNotFoundException
 	 */
 	protected function import($strClass, $strKey=null, $blnForce=false)
 	{
@@ -164,13 +167,24 @@ abstract class System
 			{
 				$this->arrObjects[$strKey] = $container->get($strClass);
 			}
+			elseif (strpos($strClass, '.') !== false)
+			{
+				throw new ServiceNotFoundException($strClass, null, null, array(), sprintf('The service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
+			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				$this->arrObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
 			}
 			else
 			{
-				$this->arrObjects[$strKey] = new $strClass();
+				try
+				{
+					$this->arrObjects[$strKey] = new $strClass();
+				}
+				catch (\ArgumentCountError $e)
+				{
+					throw new \ArgumentCountError(sprintf('Cannot create instance of class %s, did you forget to make the service public?', $strClass), $e->getCode(), $e);
+				}
 			}
 		}
 	}
@@ -181,6 +195,8 @@ abstract class System
 	 * @param string  $strClass The class name
 	 * @param string  $strKey   An optional key to store the object under
 	 * @param boolean $blnForce If true, existing objects will be overridden
+	 *
+	 * @throws ServiceNotFoundException
 	 *
 	 * @return object The imported object
 	 */
@@ -205,13 +221,24 @@ abstract class System
 			{
 				static::$arrStaticObjects[$strKey] = $container->get($strClass);
 			}
+			elseif (strpos($strClass, '.') !== false)
+			{
+				throw new ServiceNotFoundException($strClass, null, null, array(), sprintf('The service "%s" was not found or is not public. See https://symfony.com/doc/current/service_container.html#public-versus-private-services', $strClass));
+			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				static::$arrStaticObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
 			}
 			else
 			{
-				static::$arrStaticObjects[$strKey] = new $strClass();
+				try
+				{
+					static::$arrStaticObjects[$strKey] = new $strClass();
+				}
+				catch (\ArgumentCountError $e)
+				{
+					throw new \ArgumentCountError(sprintf('Cannot create instance of class %s, did you forget to make the service public?', $strClass), $e->getCode(), $e);
+				}
 			}
 		}
 
@@ -250,9 +277,9 @@ abstract class System
 	 */
 	public static function log($strText, $strFunction, $strCategory)
 	{
-		@trigger_error('Using System::log() has been deprecated and will no longer work in Contao 5.0. Use the logger service instead', E_USER_DEPRECATED);
+		@trigger_error('Using System::log() has been deprecated and will no longer work in Contao 5.0. Use the logger service instead.', E_USER_DEPRECATED);
 
-		$level = TL_ERROR === $strCategory ? LogLevel::ERROR : LogLevel::INFO;
+		$level = 'ERROR' === $strCategory ? LogLevel::ERROR : LogLevel::INFO;
 		$logger = static::getContainer()->get('monolog.logger.contao');
 
 		$logger->log($level, $strText, array('contao' => new ContaoContext($strFunction, $strCategory)));
@@ -280,7 +307,7 @@ abstract class System
 		{
 			$session = $session[$ref];
 		}
-		elseif (TL_MODE == 'BE' && \is_array($session))
+		elseif (\defined('TL_MODE') && TL_MODE == 'BE' && \is_array($session))
 		{
 			$session = end($session);
 		}
@@ -315,7 +342,7 @@ abstract class System
 		$return = $cleanUrl($strUrl, array('tg', 'ptg'));
 
 		// Fallback to the generic referer in the front end
-		if ($return == '' && TL_MODE == 'FE')
+		if ($return == '' && \defined('TL_MODE') && TL_MODE == 'FE')
 		{
 			$return = \Environment::get('httpReferer');
 		}
@@ -323,11 +350,11 @@ abstract class System
 		// Fallback to the current URL if there is no referer
 		if ($return == '')
 		{
-			$return = (TL_MODE == 'BE') ? 'contao/main.php' : \Environment::get('url');
+			$return = (\defined('TL_MODE') && TL_MODE == 'BE') ? 'contao/main.php' : \Environment::get('url');
 		}
 
 		// Do not urldecode here!
-		return ampersand($return, $blnEncodeAmpersands);
+		return preg_replace('/&(amp;)?/i', ($blnEncodeAmpersands ? '&amp;' : '&'), $return);
 	}
 
 	/**
@@ -341,7 +368,7 @@ abstract class System
 	{
 		if ($strLanguage === null)
 		{
-			$strLanguage = str_replace('-', '_', $GLOBALS['TL_LANGUAGE']);
+			$strLanguage = str_replace('-', '_', $GLOBALS['TL_LANGUAGE'] ?? 'en');
 		}
 
 		// Fall back to English
@@ -359,7 +386,7 @@ abstract class System
 		$strCacheKey = $strLanguage;
 
 		// Make sure the language exists
-		if (!static::isInstalledLanguage($strLanguage))
+		if ($strLanguage != 'en' && !static::isInstalledLanguage($strLanguage))
 		{
 			$strShortLang = substr($strLanguage, 0, 2);
 
@@ -437,16 +464,18 @@ abstract class System
 		}
 
 		// Handle single quotes in the deleteConfirm message
-		if ($strName == 'default')
+		if ($strName == 'default' && isset($GLOBALS['TL_LANG']['MSC']['deleteConfirm']))
 		{
 			$GLOBALS['TL_LANG']['MSC']['deleteConfirm'] = str_replace("'", "\\'", $GLOBALS['TL_LANG']['MSC']['deleteConfirm']);
 		}
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
 		// Local configuration file
-		if (file_exists(TL_ROOT . '/system/config/langconfig.php'))
+		if (file_exists($rootDir . '/system/config/langconfig.php'))
 		{
 			@trigger_error('Using the langconfig.php file has been deprecated and will no longer work in Contao 5.0. Create one or more language files in app/Resources/contao/languages instead.', E_USER_DEPRECATED);
-			include TL_ROOT . '/system/config/langconfig.php';
+			include $rootDir . '/system/config/langconfig.php';
 		}
 	}
 
@@ -461,7 +490,9 @@ abstract class System
 	{
 		if (!isset(static::$arrLanguages[$strLanguage]))
 		{
-			if (is_dir(TL_ROOT . '/vendor/contao/core-bundle/src/Resources/contao/languages/' . $strLanguage))
+			$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
+			if (is_dir($rootDir . '/vendor/contao/core-bundle/src/Resources/contao/languages/' . $strLanguage))
 			{
 				static::$arrLanguages[$strLanguage] = true;
 			}
@@ -503,7 +534,7 @@ abstract class System
 
 		foreach (array_keys($arrAux) as $strKey)
 		{
-			$return[$strKey] = isset($GLOBALS['TL_LANG']['CNT'][$strKey]) ? $GLOBALS['TL_LANG']['CNT'][$strKey] : $countries[$strKey];
+			$return[$strKey] = $GLOBALS['TL_LANG']['CNT'][$strKey] ?? $countries[$strKey];
 		}
 
 		// HOOK: add custom logic
@@ -551,7 +582,7 @@ abstract class System
 				continue;
 			}
 
-			$return[$strKey] = isset($GLOBALS['TL_LANG']['LNG'][$strKey]) ? $GLOBALS['TL_LANG']['LNG'][$strKey] : $languages[$strKey];
+			$return[$strKey] = $GLOBALS['TL_LANG']['LNG'][$strKey] ?? $languages[$strKey];
 
 			if (isset($langsNative[$strKey]) && $langsNative[$strKey] != $return[$strKey])
 			{
@@ -757,10 +788,12 @@ abstract class System
 	{
 		@trigger_error('Using System::readPhpFileWithoutTags() has been deprecated and will no longer work in Contao 5.0. Use the Contao\CoreBundle\Config\Loader\PhpFileLoader instead.', E_USER_DEPRECATED);
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
 		// Convert to absolute path
-		if (strpos($strName, TL_ROOT . '/') === false)
+		if (strpos($strName, $rootDir . '/') === false)
 		{
-			$strName = TL_ROOT . '/' . $strName;
+			$strName = $rootDir . '/' . $strName;
 		}
 
 		$loader = new PhpFileLoader();
@@ -784,10 +817,12 @@ abstract class System
 	{
 		@trigger_error('Using System::convertXlfToPhp() has been deprecated and will no longer work in Contao 5.0. Use the Contao\CoreBundle\Config\Loader\XliffFileLoader instead.', E_USER_DEPRECATED);
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
 		// Convert to absolute path
-		if (strpos($strName, TL_ROOT . '/') === false)
+		if (strpos($strName, $rootDir . '/') === false)
 		{
-			$strName = TL_ROOT . '/' . $strName;
+			$strName = $rootDir . '/' . $strName;
 		}
 
 		$loader = new XliffFileLoader(static::getContainer()->getParameter('kernel.project_dir'), $blnLoad);

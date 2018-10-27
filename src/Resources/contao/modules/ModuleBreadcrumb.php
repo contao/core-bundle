@@ -35,9 +35,7 @@ class ModuleBreadcrumb extends Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
-
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['breadcrumb'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -88,7 +86,7 @@ class ModuleBreadcrumb extends Module
 				'href'     => (($objFirstPage !== null) ? $objFirstPage->getFrontendUrl() : \Environment::get('base')),
 				'title'    => \StringUtil::specialchars($objPages->pageTitle ?: $objPages->title, true),
 				'link'     => $objPages->title,
-				'data'     => $objFirstPage->row(),
+				'data'     => (($objFirstPage !== null) ? $objFirstPage->row() : array()),
 				'class'    => ''
 			);
 

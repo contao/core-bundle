@@ -35,9 +35,7 @@ class ModuleCloseAccount extends Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
-
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['closeAccount'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -83,24 +81,10 @@ class ModuleCloseAccount extends Module
 			$objWidget->validate();
 
 			// Validate the password
-			if (!$objWidget->hasErrors())
+			if (!$objWidget->hasErrors() && !password_verify($objWidget->value, $this->User->password))
 			{
-				// Handle old sha1() passwords with an optional salt
-				if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $this->User->password))
-				{
-					list($strPassword, $strSalt) = explode(':', $this->User->password);
-					$blnAuthenticated = ($strPassword === sha1($strSalt . $objWidget->value));
-				}
-				else
-				{
-					$blnAuthenticated = password_verify($objWidget->value, $this->User->password);
-				}
-
-				if (!$blnAuthenticated)
-				{
-					$objWidget->value = '';
-					$objWidget->addError($GLOBALS['TL_LANG']['ERR']['invalidPass']);
-				}
+				$objWidget->value = '';
+				$objWidget->addError($GLOBALS['TL_LANG']['ERR']['invalidPass']);
 			}
 
 			// Close account

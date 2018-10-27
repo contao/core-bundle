@@ -27,35 +27,30 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
+use PHPUnit\Framework\MockObject\MockObject;
 
 abstract class DoctrineTestCase extends TestCase
 {
     /**
      * Mocks a Doctrine registry with database connection.
      *
-     * @param Statement|null $statement
-     * @param string|null    $filter
-     *
-     * @return Registry|\PHPUnit_Framework_MockObject_MockObject
+     * @return Registry|MockObject
      */
     protected function mockDoctrineRegistry(Statement $statement = null, string $filter = null): Registry
     {
         $schemaManager = $this->createMock(AbstractSchemaManager::class);
-
         $schemaManager
             ->method('tablesExist')
             ->willReturn(true)
         ;
 
         $config = $this->createMock(Configuration::class);
-
         $config
             ->method('getFilterSchemaAssetsExpression')
             ->willReturn($filter)
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('getDatabasePlatform')
             ->willReturn(new MySqlPlatform())
@@ -89,7 +84,6 @@ abstract class DoctrineTestCase extends TestCase
         ;
 
         $registry = $this->createMock(Registry::class);
-
         $registry
             ->method('getConnection')
             ->willReturn($connection)
@@ -111,22 +105,17 @@ abstract class DoctrineTestCase extends TestCase
     /**
      * Mocks a Doctrine registry with database connection and ORM.
      *
-     * @param array  $metadata
-     * @param string $filter
-     *
-     * @return Registry|\PHPUnit_Framework_MockObject_MockObject
+     * @return Registry|MockObject
      */
     protected function mockDoctrineRegistryWithOrm(array $metadata = [], string $filter = null): Registry
     {
         $config = $this->createMock(Configuration::class);
-
         $config
             ->method('getFilterSchemaAssetsExpression')
             ->willReturn($filter)
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('getDatabasePlatform')
             ->willReturn(new MySqlPlatform())
@@ -144,28 +133,24 @@ abstract class DoctrineTestCase extends TestCase
         ;
 
         $factory = $this->createMock(ClassMetadataFactory::class);
-
         $factory
             ->method('getAllMetadata')
             ->willReturn($metadata)
         ;
 
         $configuration = $this->createMock(Configuration::class);
-
         $configuration
             ->method('getQuoteStrategy')
             ->willReturn(new DefaultQuoteStrategy())
         ;
 
         $eventManager = $this->createMock(EventManager::class);
-
         $eventManager
             ->method('hasListeners')
             ->willReturn(false)
         ;
 
         $em = $this->createMock(EntityManagerInterface::class);
-
         $em
             ->method('getMetadataFactory')
             ->willReturn($factory)
@@ -187,7 +172,6 @@ abstract class DoctrineTestCase extends TestCase
         ;
 
         $registry = $this->createMock(Registry::class);
-
         $registry
             ->method('getConnection')
             ->willReturn($connection)
@@ -214,15 +198,11 @@ abstract class DoctrineTestCase extends TestCase
     /**
      * Mocks the Contao framework with the database installer.
      *
-     * @param array $dca
-     * @param array $file
-     *
-     * @return ContaoFrameworkInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ContaoFrameworkInterface|MockObject
      */
     protected function mockContaoFrameworkWithInstaller(array $dca = [], array $file = []): ContaoFrameworkInterface
     {
         $installer = $this->createMock(Installer::class);
-
         $installer
             ->method('getFromDca')
             ->willReturn($dca)
@@ -234,7 +214,6 @@ abstract class DoctrineTestCase extends TestCase
         ;
 
         $framework = $this->mockContaoFramework();
-
         $framework
             ->method('createInstance')
             ->willReturn($installer)
@@ -243,14 +222,6 @@ abstract class DoctrineTestCase extends TestCase
         return $framework;
     }
 
-    /**
-     * @param array          $dca
-     * @param array          $file
-     * @param Statement|null $statement
-     * @param string|null    $filter
-     *
-     * @return DcaSchemaProvider
-     */
     protected function getProvider(array $dca = [], array $file = [], Statement $statement = null, string $filter = null): DcaSchemaProvider
     {
         return new DcaSchemaProvider(

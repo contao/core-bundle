@@ -32,11 +32,6 @@ class PhpFileLoaderTest extends TestCase
         $this->loader = new PhpFileLoader();
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Config\Loader\PhpFileLoader', $this->loader);
-    }
-
     public function testSupportsPhpFiles(): void
     {
         $this->assertTrue(
@@ -69,7 +64,7 @@ EOF;
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
-        'dataContainer' => 'DC_Table',
+        'dataContainer' => 'Table',
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -96,7 +91,7 @@ EOF;
         $expects = <<<'EOF'
 
 namespace Foo\Bar {
-$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+$GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'Table';
 }
 
 EOF;
@@ -112,7 +107,7 @@ EOF;
         $expects = <<<'EOF'
 
 namespace {
-    $GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'DC_Table';
+    $GLOBALS['TL_DCA']['tl_test']['config']['dataContainer'] = 'Table';
 }
 
 EOF;
@@ -143,8 +138,6 @@ EOF;
     }
 
     /**
-     * @param string $file
-     *
      * @dataProvider loadWithDeclareStatementsStrictType
      */
     public function testStripsDeclareStrictTypes(string $file): void
@@ -153,7 +146,7 @@ EOF;
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
-        'dataContainer' => 'DC_Table',
+        'dataContainer' => 'Table',
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -192,7 +185,7 @@ EOF;
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
-        'dataContainer' => 'DC_Table',
+        'dataContainer' => 'Table',
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -217,7 +210,7 @@ EOF;
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function loadWithDeclareStatementsStrictType(): array
     {
@@ -228,8 +221,6 @@ EOF;
     }
 
     /**
-     * @param string $file
-     *
      * @dataProvider loadWithDeclareStatementsMultipleDefined
      */
     public function testPreservesOtherDeclareDefinitions(string $file): void
@@ -240,7 +231,7 @@ declare(ticks=1);
 
 $GLOBALS['TL_DCA']['tl_test'] = [
     'config' => [
-        'dataContainer' => 'DC_Table',
+        'dataContainer' => 'Table',
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -265,7 +256,7 @@ EOF;
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function loadWithDeclareStatementsMultipleDefined(): array
     {

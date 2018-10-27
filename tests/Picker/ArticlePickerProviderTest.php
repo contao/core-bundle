@@ -58,7 +58,6 @@ class ArticlePickerProviderTest extends ContaoTestCase
         parent::setUp();
 
         $menuFactory = $this->createMock(FactoryInterface::class);
-
         $menuFactory
             ->method('createItem')
             ->willReturnCallback(
@@ -75,7 +74,6 @@ class ArticlePickerProviderTest extends ContaoTestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
-
         $router
             ->method('generate')
             ->willReturnCallback(
@@ -86,11 +84,6 @@ class ArticlePickerProviderTest extends ContaoTestCase
         ;
 
         $this->provider = new ArticlePickerProvider($menuFactory, $router);
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Picker\ArticlePickerProvider', $this->provider);
     }
 
     /**
@@ -150,7 +143,6 @@ class ArticlePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn(null)
@@ -167,14 +159,12 @@ class ArticlePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->method('getUser')
             ->willReturn(null)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -201,17 +191,23 @@ class ArticlePickerProviderTest extends ContaoTestCase
 
     public function testReturnsTheDcaAttributes(): void
     {
+        $extra = ['source' => 'tl_article.2'];
+
         $this->assertSame(
             [
                 'fieldType' => 'radio',
+                'preserveRecord' => 'tl_article.2',
                 'value' => '5',
             ],
-            $this->provider->getDcaAttributes(new PickerConfig('link', [], '{{article_url::5}}'))
+            $this->provider->getDcaAttributes(new PickerConfig('link', $extra, '{{article_url::5}}'))
         );
 
         $this->assertSame(
-            ['fieldType' => 'radio'],
-            $this->provider->getDcaAttributes(new PickerConfig('link', [], '{{link_url::5}}'))
+            [
+                'fieldType' => 'radio',
+                'preserveRecord' => 'tl_article.2',
+            ],
+            $this->provider->getDcaAttributes(new PickerConfig('link', $extra, '{{link_url::5}}'))
         );
     }
 

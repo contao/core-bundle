@@ -18,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		'enableVersioning'            => true,
 		'ptable'                      => '',
 		'dynamicPtable'               => true,
+		'markAsCopy'                  => 'headline',
 		'onload_callback'             => array
 		(
 			array('tl_content', 'adjustDcaByType'),
@@ -311,7 +312,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
-			'eval'                    => array('mandatory'=>true, 'allowHtml'=>true, 'class'=>'monospace', 'rte'=>'ace|html', 'helpwizard'=>true),
+			'eval'                    => array('allowHtml'=>true, 'class'=>'monospace', 'rte'=>'ace|html', 'helpwizard'=>true),
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
 		),
@@ -476,7 +477,7 @@ $GLOBALS['TL_DCA']['tl_content'] = array
 		),
 		'overwriteLink' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['overwriteLink'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['overwriteMeta'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50 clr'),

@@ -25,13 +25,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class DoctrineMigrationsPassTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $pass = new DoctrineMigrationsPass();
-
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass', $pass);
-    }
-
     public function testAddsTheDefinitionIfTheMigrationsBundleIsInstalled(): void
     {
         $container = $this->getContainerBuilder([DoctrineMigrationsBundle::class]);
@@ -40,6 +33,7 @@ class DoctrineMigrationsPassTest extends TestCase
         $pass->process($container);
 
         $this->assertTrue($container->hasDefinition(DoctrineMigrationsDiffCommand::COMMAND_ID));
+        $this->assertTrue($container->getDefinition(DoctrineMigrationsDiffCommand::COMMAND_ID)->isPublic());
     }
 
     public function testDoesNotAddTheDefinitionIfTheMigrationsBundleIsNotInstalled(): void
@@ -75,10 +69,6 @@ class DoctrineMigrationsPassTest extends TestCase
 
     /**
      * Returns a container builder that loads the commands.yml file.
-     *
-     * @param array $bundles
-     *
-     * @return ContainerBuilder
      */
     private function getContainerBuilder(array $bundles = []): ContainerBuilder
     {

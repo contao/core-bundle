@@ -41,7 +41,6 @@ class FilePickerProviderTest extends ContaoTestCase
         parent::setUp();
 
         $menuFactory = $this->createMock(FactoryInterface::class);
-
         $menuFactory
             ->method('createItem')
             ->willReturnCallback(
@@ -58,7 +57,6 @@ class FilePickerProviderTest extends ContaoTestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
-
         $router
             ->method('generate')
             ->willReturnCallback(
@@ -74,8 +72,8 @@ class FilePickerProviderTest extends ContaoTestCase
         ];
 
         $filesModel = $this->mockClassWithProperties(FilesModel::class, $properties);
-        $adapter = $this->mockAdapter(['findByUuid', 'findByPath']);
 
+        $adapter = $this->mockAdapter(['findByUuid', 'findByPath']);
         $adapter
             ->method('findByUuid')
             ->willReturn($filesModel)
@@ -87,8 +85,8 @@ class FilePickerProviderTest extends ContaoTestCase
         ;
 
         $framwork = $this->mockContaoFramework([FilesModel::class => $adapter]);
-        $translator = $this->createMock(TranslatorInterface::class);
 
+        $translator = $this->createMock(TranslatorInterface::class);
         $translator
             ->method('trans')
             ->willReturn('File picker')
@@ -96,11 +94,6 @@ class FilePickerProviderTest extends ContaoTestCase
 
         $this->provider = new FilePickerProvider($menuFactory, $router, $translator, __DIR__);
         $this->provider->setFramework($framwork);
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Picker\FilePickerProvider', $this->provider);
     }
 
     public function testCreatesTheMenuItem(): void
@@ -158,7 +151,6 @@ class FilePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn(null)
@@ -175,14 +167,12 @@ class FilePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->method('getUser')
             ->willReturn(null)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)

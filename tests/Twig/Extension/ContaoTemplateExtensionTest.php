@@ -22,18 +22,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ContaoTemplateExtensionTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $extension = $this->mockExtension();
-
-        $this->assertInstanceOf('Contao\CoreBundle\Twig\Extension\ContaoTemplateExtension', $extension);
-    }
-
     public function testRendersTheContaoBackendTemplate(): void
     {
         $template = new \stdClass();
-        $backendRoute = $this->createMock(BackendCustom::class);
 
+        $backendRoute = $this->createMock(BackendCustom::class);
         $backendRoute
             ->expects($this->once())
             ->method('getTemplateObject')
@@ -47,7 +40,6 @@ class ContaoTemplateExtensionTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework();
-
         $framework
             ->method('createInstance')
             ->with(BackendCustom::class)
@@ -81,14 +73,6 @@ class ContaoTemplateExtensionTest extends TestCase
         $this->assertEmpty($this->mockExtension(null, 'frontend')->renderContaoBackendTemplate());
     }
 
-    /**
-     * Mocks a Contao template extension with an optional scope.
-     *
-     * @param ContaoFrameworkInterface|null $framework
-     * @param string                        $scope
-     *
-     * @return ContaoTemplateExtension
-     */
     private function mockExtension(ContaoFrameworkInterface $framework = null, string $scope = 'backend'): ContaoTemplateExtension
     {
         $request = new Request();

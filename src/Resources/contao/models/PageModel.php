@@ -599,8 +599,8 @@ class PageModel extends Model
 	/**
 	 * Find all published regular pages by their IDs and exclude pages only visible for guests
 	 *
-	 * @param integer $arrIds     An array of page IDs
-	 * @param array   $arrOptions An optional options array
+	 * @param array $arrIds     An array of page IDs
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model\Collection|PageModel[]|PageModel|null A collection of models or null if there are no pages
 	 */
@@ -612,7 +612,12 @@ class PageModel extends Model
 		}
 
 		$t = static::$strTable;
-		$arrColumns = array("$t.id IN(" . implode(',', array_map('\intval', $arrIds)) . ") AND $t.type!='root' AND $t.type!='error_401' AND $t.type!='error_403' AND $t.type!='error_404'");
+		$arrColumns = array("$t.id IN(" . implode(',', array_map('\intval', $arrIds)) . ") AND $t.type!='error_401' AND $t.type!='error_403' AND $t.type!='error_404'");
+
+		if (empty($arrOptions['includeRoot']))
+		{
+			$arrColumns[] = "$t.type!='root'";
+		}
 
 		if (FE_USER_LOGGED_IN)
 		{

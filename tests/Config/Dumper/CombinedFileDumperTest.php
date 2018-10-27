@@ -15,19 +15,11 @@ namespace Contao\CoreBundle\Tests\Config\Dumper;
 use Contao\CoreBundle\Config\Dumper\CombinedFileDumper;
 use Contao\CoreBundle\Config\Loader\PhpFileLoader;
 use Contao\CoreBundle\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CombinedFileDumperTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $filesystem = $this->createMock(Filesystem::class);
-        $loader = $this->createMock(PhpFileLoader::class);
-        $dumper = new CombinedFileDumper($filesystem, $loader, $this->getTempDir());
-
-        $this->assertInstanceOf('Contao\CoreBundle\Config\Dumper\CombinedFileDumper', $dumper);
-    }
-
     public function testDumpsTheDataIntoAFile(): void
     {
         $filesystem = $this->mockFilesystem("<?php\n\necho 'test';\n");
@@ -57,16 +49,11 @@ class CombinedFileDumperTest extends TestCase
     }
 
     /**
-     * Mocks the filesystem.
-     *
-     * @param mixed $expects
-     *
-     * @return Filesystem|\PHPUnit_Framework_MockObject_MockObject
+     * @return Filesystem|MockObject
      */
     private function mockFilesystem($expects): Filesystem
     {
         $filesystem = $this->createMock(Filesystem::class);
-
         $filesystem
             ->expects($this->once())
             ->method('dumpFile')
@@ -77,14 +64,11 @@ class CombinedFileDumperTest extends TestCase
     }
 
     /**
-     * Mocks a file loader.
-     *
-     * @return PhpFileLoader|\PHPUnit_Framework_MockObject_MockObject
+     * @return PhpFileLoader|MockObject
      */
     private function mockLoader(): PhpFileLoader
     {
         $loader = $this->createMock(PhpFileLoader::class);
-
         $loader
             ->expects($this->once())
             ->method('load')

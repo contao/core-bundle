@@ -29,7 +29,6 @@ class InstallCommandTest extends TestCase
         parent::tearDown();
 
         $fs = new Filesystem();
-
         $fs->remove($this->getTempDir().'/assets/css');
         $fs->remove($this->getTempDir().'/assets/images');
         $fs->remove($this->getTempDir().'/assets/images_test');
@@ -42,14 +41,6 @@ class InstallCommandTest extends TestCase
         $fs->remove($this->getTempDir().'/templates');
         $fs->remove($this->getTempDir().'/web/share');
         $fs->remove($this->getTempDir().'/web/system');
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $command = new InstallCommand('contao:install');
-
-        $this->assertInstanceOf('Contao\CoreBundle\Command\InstallCommand', $command);
-        $this->assertSame('contao:install', $command->getName());
     }
 
     public function testCreatesTheContaoFolders(): void
@@ -96,7 +87,13 @@ class InstallCommandTest extends TestCase
 
     public function testIsLockedWhileRunning(): void
     {
-        $factory = new Factory(new FlockStore(sys_get_temp_dir().'/'.md5($this->getTempDir())));
+        $tmpDir = sys_get_temp_dir().'/'.md5($this->getTempDir());
+
+        if (!is_dir($tmpDir)) {
+            (new Filesystem())->mkdir($tmpDir);
+        }
+
+        $factory = new Factory(new FlockStore($tmpDir));
 
         $lock = $factory->createLock('contao:install');
         $lock->acquire();

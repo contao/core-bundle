@@ -34,19 +34,27 @@ class ConfigurationTest extends TestCase
         $this->configuration = new Configuration(false, $this->getTempDir(), $this->getTempDir().'/app', 'en');
     }
 
-    public function testCanBeInstantiated(): void
+    public function testAddsTheImagineService(): void
     {
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Configuration', $this->configuration);
+        $params = [];
+        $configuration = (new Processor())->processConfiguration($this->configuration, $params);
 
-        $treeBuilder = $this->configuration->getConfigTreeBuilder();
+        $this->assertNull($configuration['image']['imagine_service']);
 
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\Builder\TreeBuilder', $treeBuilder);
+        $params = [
+            'contao' => [
+                'image' => [
+                    'imagine_service' => 'my_super_service',
+                ],
+            ],
+        ];
+
+        $configuration = (new Processor())->processConfiguration($this->configuration, $params);
+
+        $this->assertSame('my_super_service', $configuration['image']['imagine_service']);
     }
 
     /**
-     * @param string $unix
-     * @param string $windows
-     *
      * @dataProvider getPaths
      */
     public function testResolvesThePaths(string $unix, string $windows): void
@@ -67,7 +75,7 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function getPaths(): array
     {
@@ -84,8 +92,6 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * @param string $uploadPath
-     *
      * @dataProvider getInvalidUploadPaths
      */
     public function testFailsIfTheUploadPathIsInvalid(string $uploadPath): void
@@ -103,7 +109,7 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function getInvalidUploadPaths(): array
     {

@@ -23,13 +23,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ResponseExceptionListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new ResponseExceptionListener();
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\ResponseExceptionListener', $listener);
-    }
-
     public function testAddsAResponseToTheEvent(): void
     {
         $event = $this->mockResponseEvent(new ResponseException(new Response('Foo')));
@@ -57,13 +50,6 @@ class ResponseExceptionListenerTest extends TestCase
         $this->assertFalse($event->isAllowingCustomResponseCode());
     }
 
-    /**
-     * Mocks a response event.
-     *
-     * @param \Exception $exception
-     *
-     * @return GetResponseForExceptionEvent
-     */
     private function mockResponseEvent(\Exception $exception): GetResponseForExceptionEvent
     {
         $kernel = $this->createMock(KernelInterface::class);

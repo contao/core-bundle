@@ -58,13 +58,6 @@ class PictureFactory implements PictureFactoryInterface
      */
     private $defaultDensities = '';
 
-    /**
-     * @param PictureGeneratorInterface $pictureGenerator
-     * @param ImageFactoryInterface     $imageFactory
-     * @param ContaoFrameworkInterface  $framework
-     * @param bool                      $bypassCache
-     * @param array                     $imagineOptions
-     */
     public function __construct(PictureGeneratorInterface $pictureGenerator, ImageFactoryInterface $imageFactory, ContaoFrameworkInterface $framework, bool $bypassCache, array $imagineOptions)
     {
         $this->pictureGenerator = $pictureGenerator;
@@ -114,9 +107,7 @@ class PictureFactory implements PictureFactoryInterface
             (new ResizeOptions())->setImagineOptions($this->imagineOptions)->setBypassCache($this->bypassCache)
         );
 
-        $picture = $this->addImageAttributes($picture, $attributes);
-
-        return $picture;
+        return $this->addImageAttributes($picture, $attributes);
     }
 
     /**
@@ -124,7 +115,7 @@ class PictureFactory implements PictureFactoryInterface
      *
      * @param int|array|null $size
      *
-     * @return array<PictureConfiguration,array>
+     * @return (PictureConfiguration|array<string,string>)[]
      */
     private function createConfig($size): array
     {
@@ -193,8 +184,6 @@ class PictureFactory implements PictureFactoryInterface
      * Creates a picture configuration item.
      *
      * @param ImageSizeModel|ImageSizeItemModel|null $imageSize
-     *
-     * @return PictureConfigurationItem
      */
     private function createConfigItem($imageSize): PictureConfigurationItem
     {
@@ -223,14 +212,6 @@ class PictureFactory implements PictureFactoryInterface
         return $configItem;
     }
 
-    /**
-     * Adds the image attributes.
-     *
-     * @param PictureInterface $picture
-     * @param array            $attributes
-     *
-     * @return PictureInterface
-     */
     private function addImageAttributes(PictureInterface $picture, array $attributes): PictureInterface
     {
         if (empty($attributes)) {
@@ -243,8 +224,6 @@ class PictureFactory implements PictureFactoryInterface
             $img[$attribute] = $value;
         }
 
-        $picture = new Picture($img, $picture->getSources());
-
-        return $picture;
+        return new Picture($img, $picture->getSources());
     }
 }

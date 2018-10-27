@@ -17,6 +17,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_theme',
 		'enableVersioning'            => true,
+		'markAsCopy'                  => 'name',
 		'onload_callback' => array
 		(
 			array('tl_module', 'checkPermission'),
@@ -302,7 +303,7 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 			'foreignKey'              => 'tl_page.title',
 			'eval'                    => array('fieldType'=>'radio'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 		),
 		'redirectBack' => array
 		(
@@ -930,7 +931,7 @@ class tl_module extends Backend
 	 */
 	public function listModule($row)
 	{
-		return '<div class="tl_content_left">'. $row['name'] .' <span style="color:#999;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span></div>';
+		return '<div class="tl_content_left">'. $row['name'] .' <span style="color:#999;padding-left:3px">['. ($GLOBALS['TL_LANG']['FMD'][$row['type']][0] ?? $row['type']) .']</span></div>';
 	}
 
 	/**

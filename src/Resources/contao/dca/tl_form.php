@@ -18,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_form'] = array
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
 		'ctable'                      => array('tl_form_field'),
+		'markAsCopy'                  => 'title',
 		'onload_callback' => array
 		(
 			array('tl_form', 'checkPermission')
@@ -158,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_form'] = array
 			'foreignKey'              => 'tl_page.title',
 			'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'clr'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 		),
 		'sendViaEmail' => array
 		(
@@ -398,7 +399,7 @@ class tl_form extends Backend
 	public function adjustPermissions($insertId)
 	{
 		// The oncreate_callback passes $insertId as second argument
-		if (func_num_args() == 4)
+		if (\func_num_args() == 4)
 		{
 			$insertId = func_get_arg(1);
 		}
@@ -503,6 +504,12 @@ class tl_form extends Backend
 			}
 
 			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::prepareSlug($dc->activeRecord->title), $slugOptions);
+
+			// Prefix numeric aliases (see #1598)
+			if (is_numeric($varValue))
+			{
+				$varValue = 'id-' . $varValue;
+			}
 		}
 
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_form WHERE id=? OR alias=?")

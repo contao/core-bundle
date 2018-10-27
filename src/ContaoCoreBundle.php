@@ -13,10 +13,10 @@ declare(strict_types=1);
 namespace Contao\CoreBundle;
 
 use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
-use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\DataContainerCallbackPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\MakeServicesPublicPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\MapFragmentsToGlobalsPass;
@@ -69,12 +69,12 @@ class ContaoCoreBundle extends Bundle
         $container->addCompilerPass(new AddAssetsPackagesPass());
         $container->addCompilerPass(new AddSessionBagsPass());
         $container->addCompilerPass(new AddResourcesPathsPass());
-        $container->addCompilerPass(new AddImagineClassPass());
-        $container->addCompilerPass(new DoctrineMigrationsPass());
+        $container->addCompilerPass(new DoctrineMigrationsPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new PickerProviderPass());
         $container->addCompilerPass(new RegisterFragmentsPass());
         $container->addCompilerPass(new FragmentRendererPass('contao.fragment.handler'));
         $container->addCompilerPass(new MapFragmentsToGlobalsPass());
+        $container->addCompilerPass(new DataContainerCallbackPass());
         $container->addCompilerPass(new RegisterHookListenersPass(), PassConfig::TYPE_OPTIMIZE);
     }
 }

@@ -17,18 +17,9 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayAttributeBagTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $adapter = new ArrayAttributeBag('foobar_storageKey');
-
-        $this->assertInstanceOf('Contao\CoreBundle\Session\Attribute\ArrayAttributeBag', $adapter);
-        $this->assertInstanceOf('ArrayAccess', $adapter);
-    }
-
     public function testCanWriteTheOffset(): void
     {
         $bag = new ArrayAttributeBag('foobar_storageKey');
-
         $bag['foo'] = 'bar';
         $bag['bar']['baz'] = 'foo';
         $bag['baz'] = [];
@@ -42,7 +33,6 @@ class ArrayAttributeBagTest extends TestCase
     public function testChecksIfTheOffsetExists(): void
     {
         $bag = new ArrayAttributeBag('foobar_storageKey');
-
         $bag['foo'] = 'bar';
         $bag['bar']['baz'] = 'foo';
 
@@ -54,7 +44,6 @@ class ArrayAttributeBagTest extends TestCase
     public function testCanReadTheOffset(): void
     {
         $bag = new ArrayAttributeBag('foobar_storageKey');
-
         $bag['foo'] = 'bar';
         $bag['bar']['baz'] = 'foo';
 
@@ -66,7 +55,6 @@ class ArrayAttributeBagTest extends TestCase
     public function testCanModifyTheOffset(): void
     {
         $bag = new ArrayAttributeBag('foobar_storageKey');
-
         $bag['foo'] = 1;
         $bag['bar']['baz'] = 'foo';
 

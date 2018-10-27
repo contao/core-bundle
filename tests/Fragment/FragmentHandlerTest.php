@@ -19,8 +19,10 @@ use Contao\CoreBundle\Fragment\FragmentPreHandlerInterface;
 use Contao\CoreBundle\Fragment\FragmentRegistry;
 use Contao\CoreBundle\Fragment\Reference\FragmentReference;
 use Contao\CoreBundle\Fragment\UnknownFragmentException;
+use Contao\CoreBundle\Tests\TestCase;
 use Contao\PageModel;
-use PHPUnit\Framework\TestCase;
+use Contao\System;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,12 +32,14 @@ use Symfony\Component\HttpKernel\Fragment\FragmentRendererInterface;
 
 class FragmentHandlerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
     {
-        $fragmentHandler = $this->mockFragmentHandler();
+        parent::setUp();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Fragment\FragmentHandler', $fragmentHandler);
-        $this->assertInstanceOf('Symfony\Component\HttpKernel\Fragment\FragmentHandler', $fragmentHandler);
+        System::setContainer($this->mockContainer());
     }
 
     public function testThrowsAnExceptionIfTheFragmentNameIsInvalid(): void
@@ -48,8 +52,6 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * @param string $renderingStrategy
-     *
      * @dataProvider getRenderingStrategies
      */
     public function testPassesTheRenderingStrategyToTheRenderer(string $renderingStrategy): void
@@ -71,7 +73,7 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function getRenderingStrategies(): array
     {
@@ -79,8 +81,6 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * @param array $options
-     *
      * @dataProvider getOptions
      */
     public function testPassesTheOptionsToTheRenderer(array $options): void
@@ -102,7 +102,7 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<int,array<int,array<string,string>>>
      */
     public function getOptions(): array
     {
@@ -112,10 +112,6 @@ class FragmentHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testAddsThePageIdFromTheGlobalPageObject(): void
     {
         $uri = new FragmentReference('foo.bar');
@@ -138,10 +134,6 @@ class FragmentHandlerTest extends TestCase
         $fragmentHandler->render($uri);
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testDoesNotOverrideAGivenPageId(): void
     {
         $uri = new FragmentReference('foo.bar', ['pageModel' => 99]);
@@ -173,7 +165,6 @@ class FragmentHandlerTest extends TestCase
         $fragmentRegistry->add('foo.bar', $config);
 
         $preHandlers = $this->createMock(FragmentPreHandlerInterface::class);
-
         $preHandlers
             ->expects($this->once())
             ->method('preHandleFragment')
@@ -190,14 +181,12 @@ class FragmentHandlerTest extends TestCase
     public function testPassesUnknownUrisToTheBaseFragmentHandler(): void
     {
         $baseHandler = $this->createMock(BaseFragmentHandler::class);
-
         $baseHandler
             ->expects($this->once())
             ->method('render')
         ;
 
         $fragmentRegistry = $this->createMock(FragmentRegistry::class);
-
         $fragmentRegistry
             ->expects($this->never())
             ->method('get')
@@ -227,17 +216,6 @@ class FragmentHandlerTest extends TestCase
         $fragmentHandler->render($uri);
     }
 
-    /**
-     * Mocks a fragment handler.
-     *
-     * @param FragmentRegistry|null    $registry
-     * @param ServiceLocator|null      $renderers
-     * @param ServiceLocator|null      $preHandlers
-     * @param Request|null             $request
-     * @param BaseFragmentHandler|null $fragmentHandler
-     *
-     * @return FragmentHandler
-     */
     private function mockFragmentHandler(FragmentRegistry $registry = null, ServiceLocator $renderers = null, ServiceLocator $preHandlers = null, Request $request = null, BaseFragmentHandler $fragmentHandler = null): FragmentHandler
     {
         if (null === $registry) {
@@ -267,18 +245,11 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * Mocks a service container with a fragment renderer.
-     *
-     * @param string        $name
-     * @param array|null    $with
-     * @param Response|null $response
-     *
-     * @return ServiceLocator|\PHPUnit_Framework_MockObject_MockObject
+     * @return ServiceLocator|MockObject
      */
     private function mockServiceLocatorWithRenderer(string $name, array $with = null, Response $response = null): ServiceLocator
     {
         $renderer = $this->createMock(FragmentRendererInterface::class);
-
         $renderer
             ->method('getName')
             ->willReturn($name)
@@ -303,17 +274,13 @@ class FragmentHandlerTest extends TestCase
     }
 
     /**
-     * Mocks a service locator.
-     *
-     * @param string $name
      * @param object $service
      *
-     * @return ServiceLocator|\PHPUnit_Framework_MockObject_MockObject
+     * @return ServiceLocator|MockObject
      */
     private function mockServiceLocator(string $name, $service): ServiceLocator
     {
         $serviceLocator = $this->createMock(ServiceLocator::class);
-
         $serviceLocator
             ->expects($this->once())
             ->method('has')

@@ -15,12 +15,13 @@ namespace Contao\CoreBundle\Tests\Doctrine\DBAL\Types;
 use Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class BinaryStringTypeTest extends TestCase
 {
     /**
-     * @var BinaryStringType
+     * @var BinaryStringType|Type
      */
     private $type;
 
@@ -44,16 +45,11 @@ class BinaryStringTypeTest extends TestCase
         $this->type = Type::getType(BinaryStringType::NAME);
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType', $this->type);
-    }
-
     public function testReturnsABinaryDefinitionForAFixedLengthField(): void
     {
         $fieldDefinition = ['fixed' => true];
 
-        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        /** @var AbstractPlatform|MockObject $platform */
         $platform = $this
             ->getMockBuilder(AbstractPlatform::class)
             ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])
@@ -78,7 +74,7 @@ class BinaryStringTypeTest extends TestCase
     {
         $fieldDefinition = ['fixed' => false];
 
-        /** @var AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject $platform */
+        /** @var AbstractPlatform|MockObject $platform */
         $platform = $this
             ->getMockBuilder(AbstractPlatform::class)
             ->setMethods(['getBinaryTypeDeclarationSQL', 'getBlobTypeDeclarationSQL'])

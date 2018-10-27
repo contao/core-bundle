@@ -16,26 +16,19 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\HttpKernel\ModelArgumentResolver;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\PageModel;
+use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 class ModelArgumentResolverTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $resolver = new ModelArgumentResolver($this->mockContaoFramework(), $this->mockScopeMatcher());
-
-        $this->assertInstanceOf('Contao\CoreBundle\HttpKernel\ModelArgumentResolver', $resolver);
-    }
-
     /**
-     * @param string $name
-     * @param string $class
-     *
      * @dataProvider getArguments
      */
     public function testResolvesTheModel(string $name, string $class): void
     {
+        System::setContainer($this->mockContainer());
+
         $pageModel = new PageModel();
         $pageModel->setRow(['id' => 42]);
 
@@ -51,15 +44,13 @@ class ModelArgumentResolverTest extends TestCase
         $resolver = new ModelArgumentResolver($framework, $this->mockScopeMatcher());
         $generator = $resolver->resolve($request, $metadata);
 
-        $this->assertInstanceOf('Generator', $generator);
-
         foreach ($generator as $resolved) {
             $this->assertSame($pageModel, $resolved);
         }
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function getArguments(): array
     {
@@ -73,7 +64,6 @@ class ModelArgumentResolverTest extends TestCase
     public function testDoesNothingIfOutsideTheContaoScope(): void
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->never())
             ->method('initialize')
@@ -89,7 +79,6 @@ class ModelArgumentResolverTest extends TestCase
     public function testDoesNothingIfTheArgumentTypeDoesNotMatch(): void
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -108,7 +97,6 @@ class ModelArgumentResolverTest extends TestCase
     public function testDoesNothingIfTheArgumentNameIsNotFound(): void
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -127,7 +115,6 @@ class ModelArgumentResolverTest extends TestCase
     public function testSupportsNullableArguments(): void
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->once())
             ->method('initialize')

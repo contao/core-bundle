@@ -21,24 +21,12 @@ use Terminal42\HeaderReplay\Event\HeaderReplayEvent;
 
 class PageLayoutListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new PageLayoutListener($this->mockScopeMatcher(), $this->mockContaoFramework());
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\HeaderReplay\PageLayoutListener', $listener);
-    }
-
     /**
-     * @param bool        $agentIsMobile
-     * @param string|null $tlViewCookie
-     * @param string      $expectedHeaderValue
-     *
      * @dataProvider onReplayProvider
      */
-    public function testAddsThePageLayoutHeader(bool $agentIsMobile, string $tlViewCookie = null, string $expectedHeaderValue): void
+    public function testAddsThePageLayoutHeader(bool $agentIsMobile, ?string $tlViewCookie, string $expectedHeaderValue): void
     {
         $adapter = $this->mockAdapter(['get']);
-
         $adapter
             ->method('get')
             ->willReturnCallback(
@@ -70,7 +58,7 @@ class PageLayoutListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,(string|bool|null)[]>
      */
     public function onReplayProvider(): array
     {

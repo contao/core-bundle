@@ -29,24 +29,12 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class StoreRefererListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = $this->mockListener();
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\StoreRefererListener', $listener);
-    }
-
     /**
-     * @param Request    $request
-     * @param array|null $currentReferer
-     * @param array|null $expectedReferer
-     *
      * @dataProvider refererStoredOnKernelResponseProvider
      */
     public function testStoresTheReferer(Request $request, ?array $currentReferer, ?array $expectedReferer): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($this->createMock(UsernamePasswordToken::class))
@@ -65,7 +53,7 @@ class StoreRefererListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,(array<string,array<string,string>|string>|Request|null)[]>
      */
     public function refererStoredOnKernelResponseProvider(): array
     {
@@ -172,7 +160,6 @@ class StoreRefererListenerTest extends TestCase
         );
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->never())
             ->method('getToken')
@@ -195,7 +182,6 @@ class StoreRefererListenerTest extends TestCase
         );
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->never())
             ->method('getToken')
@@ -206,21 +192,17 @@ class StoreRefererListenerTest extends TestCase
     }
 
     /**
-     * @param AnonymousToken $noUserReturn
-     *
      * @dataProvider noUserProvider
      */
     public function testDoesNotStoreTheRefererIfThereIsNoUser(AnonymousToken $noUserReturn = null): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('set')
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -236,7 +218,7 @@ class StoreRefererListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return (AnonymousToken|null)[][]
      */
     public function noUserProvider(): array
     {
@@ -251,7 +233,6 @@ class StoreRefererListenerTest extends TestCase
     public function testDoesNotStoreTheRefererIfNotAContaoRequest(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('set')
@@ -267,7 +248,6 @@ class StoreRefererListenerTest extends TestCase
     public function testDoesNotStoreTheRefererUponSubrequests(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('set')
@@ -287,14 +267,12 @@ class StoreRefererListenerTest extends TestCase
     public function testDoesNotStoreTheRefererIfTheBackEndSessionCannotBeModified(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('set')
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($this->createMock(UsernamePasswordToken::class))
@@ -309,14 +287,11 @@ class StoreRefererListenerTest extends TestCase
     }
 
     /**
-     * @param string $scope
-     *
      * @dataProvider noSessionProvider
      */
     public function testFailsToStoreTheRefererIfThereIsNoSession(string $scope): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -336,7 +311,7 @@ class StoreRefererListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function noSessionProvider(): array
     {
@@ -346,13 +321,6 @@ class StoreRefererListenerTest extends TestCase
         ];
     }
 
-    /**
-     * Mocks a session listener.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     *
-     * @return StoreRefererListener
-     */
     private function mockListener(TokenStorageInterface $tokenStorage = null): StoreRefererListener
     {
         if (null === $tokenStorage) {
@@ -364,13 +332,6 @@ class StoreRefererListenerTest extends TestCase
         return new StoreRefererListener($tokenStorage, $trustResolver, $this->mockScopeMatcher());
     }
 
-    /**
-     * Mocks a response event.
-     *
-     * @param Request|null $request
-     *
-     * @return FilterResponseEvent
-     */
     private function mockResponseEvent(Request $request = null): FilterResponseEvent
     {
         $kernel = $this->createMock(KernelInterface::class);

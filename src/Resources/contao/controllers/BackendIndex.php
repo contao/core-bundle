@@ -11,8 +11,11 @@
 namespace Contao;
 
 use Contao\CoreBundle\Security\Exception\LockedException;
+use Scheb\TwoFactorBundle\Security\Authentication\Exception\InvalidTwoFactorCodeException;
+use Scheb\TwoFactorBundle\Security\Authentication\Token\TwoFactorToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
@@ -48,11 +51,16 @@ class BackendIndex extends Backend
 	 */
 	public function run()
 	{
-		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+		$container = \System::getContainer();
+		$exception = $container->get('security.authentication_utils')->getLastAuthenticationError();
 
 		if ($exception instanceof LockedException)
 		{
 			\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], $exception->getLockedMinutes()));
+		}
+		elseif ($exception instanceof InvalidTwoFactorCodeException)
+		{
+			\Message::addError($GLOBALS['TL_LANG']['ERR']['invalidTwoFactor']);
 		}
 		elseif ($exception instanceof AuthenticationException)
 		{
@@ -68,10 +76,23 @@ class BackendIndex extends Backend
 			$arrParams['referer'] = $referer;
 		}
 
-		$router = \System::getContainer()->get('router');
+		$router = $container->get('router');
 
-		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_login');
+		$objTemplate->action = ampersand(\Environment::get('request'));
+		$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['loginBT'];
+
+		/** @var TokenInterface $token */
+		$token = $container->get('security.token_storage')->getToken();
+
+		if ($token instanceof TwoFactorToken)
+		{
+			$objTemplate = new \BackendTemplate('be_login_two_factor');
+			$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['twoFactorAuthentication'];
+			$objTemplate->action = $router->generate('contao_backend_two_factor');
+			$objTemplate->authCode = $GLOBALS['TL_LANG']['MSC']['twoFactorVerification'];
+			$objTemplate->cancel = $GLOBALS['TL_LANG']['MSC']['cancelBT'];
+		}
 
 		$objTemplate->theme = \Backend::getTheme();
 		$objTemplate->messages = \Message::generate();
@@ -80,9 +101,7 @@ class BackendIndex extends Backend
 		$objTemplate->languages = \System::getLanguages(true); // backwards compatibility
 		$objTemplate->title = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['loginTo'], \Config::get('websiteTitle')));
 		$objTemplate->charset = \Config::get('characterSet');
-		$objTemplate->action = ampersand(\Environment::get('request'));
 		$objTemplate->userLanguage = $GLOBALS['TL_LANG']['tl_user']['language'][0];
-		$objTemplate->headline = $GLOBALS['TL_LANG']['MSC']['loginBT'];
 		$objTemplate->curLanguage = \Input::post('language') ?: str_replace('-', '_', $GLOBALS['TL_LANGUAGE']);
 		$objTemplate->curUsername = \Input::post('username') ?: '';
 		$objTemplate->loginButton = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['continue']);

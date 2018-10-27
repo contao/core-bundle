@@ -15,24 +15,18 @@ namespace Contao\CoreBundle\Tests\EventListener;
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\MenuEvent;
 use Contao\CoreBundle\EventListener\BackendMenuListener;
+use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class BackendMenuListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new BackendMenuListener($this->createMock(TokenStorageInterface::class));
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\BackendMenuListener', $listener);
-    }
-
     public function testCreatesANodeListFromTheBackendUserMenuArray(): void
     {
         $user = $this->createPartialMock(BackendUser::class, ['hasAccess', 'navigation']);
-
         $user
             ->method('hasAccess')
             ->willReturn(true)
@@ -74,14 +68,12 @@ class BackendMenuListenerTest extends TestCase
         ;
 
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->method('getUser')
             ->willReturn($user)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -96,20 +88,19 @@ class BackendMenuListenerTest extends TestCase
         $tree = $event->getTree();
 
         // Test root node
-        $this->assertInstanceOf('Knp\Menu\ItemInterface', $tree);
         $this->assertCount(2, $tree->getChildren());
 
         // Test category node
         $categoryNode = $tree->getChild('category1');
         $this->assertNotNull($categoryNode);
-        $this->assertInstanceOf('Knp\Menu\ItemInterface', $categoryNode);
+        $this->assertInstanceOf(ItemInterface::class, $categoryNode);
         $this->assertCount(2, $categoryNode->getChildren());
         $this->assertSame('custom-class', $categoryNode->getAttribute('class'));
 
         // Test module node
         $moduleNode = $categoryNode->getChild('node1');
         $this->assertNotNull($moduleNode);
-        $this->assertInstanceOf('Knp\Menu\ItemInterface', $moduleNode);
+        $this->assertInstanceOf(ItemInterface::class, $moduleNode);
         $this->assertCount(0, $moduleNode->getChildren());
 
         // Test expanded/collapsed
@@ -133,13 +124,39 @@ class BackendMenuListenerTest extends TestCase
         $this->assertSame('node2', $childNode->getAttribute('class'));
     }
 
-    public function testDoesNotModifyTheTreeIfNoUserOrTokenIsGiven(): void
+    public function testDoesNotModifyTheTreeIfNoTokenIsGiven(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn(null)
+        ;
+
+        $nodeFactory = new MenuFactory();
+        $event = new MenuEvent($nodeFactory, $nodeFactory->createItem('root'));
+
+        $listener = new BackendMenuListener($tokenStorage);
+        $listener->onBuild($event);
+
+        $tree = $event->getTree();
+
+        $this->assertCount(0, $tree->getChildren());
+    }
+
+    public function testDoesNotModifyTheTreeIfNoBackendUserIsGiven(): void
+    {
+        $user = $this->createMock(UserInterface::class);
+
+        $token = $this->createMock(TokenInterface::class);
+        $token
+            ->method('getUser')
+            ->willReturn($user)
+        ;
+
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $tokenStorage
+            ->method('getToken')
+            ->willReturn($token)
         ;
 
         $nodeFactory = new MenuFactory();

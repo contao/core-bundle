@@ -28,12 +28,6 @@ use Imagine\Gd\Imagine as ImagineGd;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class PictureTest extends TestCase
 {
     /**
@@ -69,33 +63,7 @@ class PictureTest extends TestCase
         $GLOBALS['TL_CONFIG']['gdMaxImgHeight'] = 3000;
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpeg,jpg,svg,svgz';
 
-        \define('TL_ERROR', 'ERROR');
-        \define('TL_ROOT', $this->getTempDir());
-
         System::setContainer($this->mockContainerWithImageServices());
-    }
-
-    /**
-     * @group legacy
-     *
-     * @expectedDeprecation Using new Contao\Image() has been deprecated %s.
-     */
-    public function testCanBeInstantiated(): void
-    {
-        $properties = [
-            'extension' => 'jpg',
-            'path' => 'dummy.jpg',
-        ];
-
-        /** @var File|\PHPUnit_Framework_MockObject_MockObject $fileMock */
-        $fileMock = $this->mockClassWithProperties(File::class, $properties);
-
-        $fileMock
-            ->method('exists')
-            ->willReturn(true)
-        ;
-
-        $this->assertInstanceOf('Contao\Picture', new Picture($fileMock));
     }
 
     /**
@@ -335,11 +303,6 @@ class PictureTest extends TestCase
         $this->assertSame([], $pictureData['sources']);
     }
 
-    /**
-     * Mocks a container with image services.
-     *
-     * @return ContainerBuilder
-     */
     private function mockContainerWithImageServices(): ContainerBuilder
     {
         $filesystem = new Filesystem();
@@ -350,7 +313,6 @@ class PictureTest extends TestCase
         ];
 
         $context = $this->createMock(ContaoContext::class);
-
         $context
             ->method('getStaticUrl')
             ->willReturn('http://example.com/')

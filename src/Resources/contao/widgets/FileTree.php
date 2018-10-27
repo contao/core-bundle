@@ -132,7 +132,7 @@ class FileTree extends Widget
 		}
 		else
 		{
-			$arrValue = array_filter(explode(',', $varInput));
+			$arrValue = array_values(array_filter(explode(',', $varInput)));
 
 			return $this->multiple ? array_map('StringUtil::uuidToBin', $arrValue) : \StringUtil::uuidToBin($arrValue[0]);
 		}
@@ -166,17 +166,19 @@ class FileTree extends Widget
 			return;
 		}
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
 		foreach ($objFiles as $objFile)
 		{
 			// Only files can be selected
-			if ($this->filesOnly && is_dir(TL_ROOT . '/' . $objFile->path))
+			if ($this->filesOnly && is_dir($rootDir . '/' . $objFile->path))
 			{
 				$this->addError($GLOBALS['TL_LANG']['ERR']['filesOnly']);
 				break;
 			}
 
 			// Only folders can be selected
-			if ($this->files === false && !is_dir(TL_ROOT . '/' . $objFile->path))
+			if ($this->files === false && !is_dir($rootDir . '/' . $objFile->path))
 			{
 				$this->addError($GLOBALS['TL_LANG']['ERR']['foldersOnly']);
 				break;
@@ -190,7 +192,7 @@ class FileTree extends Widget
 			}
 
 			// Only certain file types can be selected
-			if ($this->extensions && !is_dir(TL_ROOT . '/' . $objFile->path))
+			if ($this->extensions && !is_dir($rootDir . '/' . $objFile->path))
 			{
 				$objFile = new \File($objFile->path);
 				$extensions = \StringUtil::trimsplit(',', $this->extensions);
@@ -219,13 +221,14 @@ class FileTree extends Widget
 		{
 			$objFiles = \FilesModel::findMultipleByUuids((array) $this->varValue);
 			$allowedDownload = \StringUtil::trimsplit(',', strtolower(\Config::get('allowedDownload')));
+			$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
 
 			if ($objFiles !== null)
 			{
 				while ($objFiles->next())
 				{
 					// File system and database seem not in sync
-					if (!file_exists(TL_ROOT . '/' . $objFiles->path))
+					if (!file_exists($rootDir . '/' . $objFiles->path))
 					{
 						continue;
 					}
@@ -402,8 +405,8 @@ class FileTree extends Widget
         e.preventDefault();
         Backend.openModalSelector({
           "id": "tl_listing",
-          "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
-          "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
+          "title": ' . json_encode($GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0]) . ',
+          "url": this.href + document.getElementById("ctrl_' . $this->strId . '").value,
           "callback": function(table, value) {
             new Request.Contao({
               evalScripts: false,
@@ -444,7 +447,8 @@ class FileTree extends Widget
 			}
 			else
 			{
-				$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(75, 50, 'center_center'))->getUrl(TL_ROOT);
+				$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+				$image = \System::getContainer()->get('contao.image.image_factory')->create($rootDir . '/' . $objFile->path, array(75, 50, 'center_center'))->getUrl($rootDir);
 			}
 		}
 		else

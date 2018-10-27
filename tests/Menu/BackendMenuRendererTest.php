@@ -14,13 +14,14 @@ namespace Contao\CoreBundle\Tests\Menu;
 
 use Contao\CoreBundle\Menu\BackendMenuRenderer;
 use Knp\Menu\ItemInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 
 class BackendMenuRendererTest extends TestCase
 {
     /**
-     * @var Environment|\PHPUnit_Framework_MockObject_MockObject
+     * @var Environment|MockObject
      */
     private $templating;
 
@@ -38,11 +39,6 @@ class BackendMenuRendererTest extends TestCase
 
         $this->templating = $this->createMock(Environment::class);
         $this->renderer = new BackendMenuRenderer($this->templating);
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Menu\BackendMenuRenderer', $this->renderer);
     }
 
     public function testRendersTheBackendMenuTemplate(): void

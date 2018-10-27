@@ -22,13 +22,6 @@ use Symfony\Component\Routing\RouteCollection;
 
 class FrontendLoaderTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $loader = new FrontendLoader(false);
-
-        $this->assertInstanceOf('Contao\CoreBundle\Routing\FrontendLoader', $loader);
-    }
-
     public function testSupportsTheContaoFrontEndRoute(): void
     {
         $loader = new FrontendLoader(false);
@@ -155,18 +148,9 @@ class FrontendLoaderTest extends TestCase
         $router->generate('contao_index');
     }
 
-    /**
-     * Mocks a router using the given route collection.
-     *
-     * @param RouteCollection $collection
-     * @param string          $urlSuffix
-     *
-     * @return Router
-     */
     private function mockRouter(RouteCollection $collection, string $urlSuffix = '.html'): Router
     {
         $loader = $this->createMock(LoaderInterface::class);
-
         $loader
             ->method('load')
             ->willReturn($collection)

@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\EventListener;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\HttpKernel\Header\HeaderStorageInterface;
 use Contao\CoreBundle\HttpKernel\Header\NativeHeaderStorage;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -46,10 +47,6 @@ class MergeHttpHeadersListener
         'cache-control',
     ];
 
-    /**
-     * @param ContaoFrameworkInterface    $framework
-     * @param HeaderStorageInterface|null $headerStorage
-     */
     public function __construct(ContaoFrameworkInterface $framework, HeaderStorageInterface $headerStorage = null)
     {
         $this->framework = $framework;
@@ -57,30 +54,18 @@ class MergeHttpHeadersListener
     }
 
     /**
-     * Returns the multi-value headers.
-     *
-     * @return array
+     * @return string[]
      */
     public function getMultiHeaders(): array
     {
         return array_values($this->multiHeaders);
     }
 
-    /**
-     * Sets the multi-value headers.
-     *
-     * @param array $headers
-     */
     public function setMultiHeader(array $headers): void
     {
         $this->multiHeaders = $headers;
     }
 
-    /**
-     * Adds a multi-value header.
-     *
-     * @param string $name
-     */
     public function addMultiHeader(string $name): void
     {
         $uniqueKey = $this->getUniqueKey($name);
@@ -90,11 +75,6 @@ class MergeHttpHeadersListener
         }
     }
 
-    /**
-     * Removes a multi-value header.
-     *
-     * @param string $name
-     */
     public function removeMultiHeader(string $name): void
     {
         if (false !== ($i = array_search($this->getUniqueKey($name), $this->multiHeaders, true))) {
@@ -104,8 +84,6 @@ class MergeHttpHeadersListener
 
     /**
      * Adds the Contao headers to the Symfony response.
-     *
-     * @param FilterResponseEvent $event
      */
     public function onKernelResponse(FilterResponseEvent $event): void
     {
@@ -127,11 +105,6 @@ class MergeHttpHeadersListener
         $this->headerStorage->clear();
     }
 
-    /**
-     * Sets the response headers.
-     *
-     * @param Response $response
-     */
     private function setResponseHeaders(Response $response): void
     {
         $allowOverrides = [];
@@ -146,6 +119,15 @@ class MergeHttpHeadersListener
                 continue;
             }
 
+            if ('set-cookie' === $uniqueKey) {
+                $cookie = Cookie::fromString($content);
+
+                if (session_name() === $cookie->getName()) {
+                    $this->headerStorage->add('Set-Cookie: '.$cookie);
+                    continue;
+                }
+            }
+
             if (\in_array($uniqueKey, $this->multiHeaders, true)) {
                 $response->headers->set($uniqueKey, trim($content), false);
             } elseif (isset($allowOverrides[$uniqueKey]) || !$response->headers->has($uniqueKey)) {
@@ -155,13 +137,6 @@ class MergeHttpHeadersListener
         }
     }
 
-    /**
-     * Returns the unique header key.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
     private function getUniqueKey(string $name): string
     {
         return str_replace('_', '-', strtolower($name));

@@ -16,6 +16,7 @@ use Contao\CoreBundle\Cache\ContaoCacheWarmer;
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\Config\FileLocator;
@@ -49,13 +50,13 @@ class ContaoCacheWarmerTest extends TestCase
         $fs->remove($this->getFixturesDir().'/var/cache/contao');
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Cache\ContaoCacheWarmer', $this->warmer);
-    }
-
     public function testCreatesTheCacheFolder(): void
     {
+        $container = $this->mockContainer($this->getFixturesDir());
+        $container->set('database_connection', $this->createMock(Connection::class));
+
+        System::setContainer($container);
+
         $class1 = new \stdClass();
         $class1->language = 'en-US';
 
@@ -63,7 +64,6 @@ class ContaoCacheWarmerTest extends TestCase
         $class2->language = 'en';
 
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->expects($this->exactly(3))
             ->method('fetch')
@@ -71,7 +71,6 @@ class ContaoCacheWarmerTest extends TestCase
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('prepare')
             ->willReturn($statement)
@@ -133,7 +132,6 @@ class ContaoCacheWarmerTest extends TestCase
         $class2->language = 'en';
 
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->expects($this->exactly(3))
             ->method('fetch')
@@ -141,7 +139,6 @@ class ContaoCacheWarmerTest extends TestCase
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('prepare')
             ->willReturn($statement)
@@ -156,14 +153,12 @@ class ContaoCacheWarmerTest extends TestCase
     public function testDoesNotCreateTheCacheFolderIfTheInstallationIsIncomplete(): void
     {
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->method('query')
             ->willThrowException(new \Exception())
         ;
 
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->never())
             ->method('initialize')
@@ -175,15 +170,6 @@ class ContaoCacheWarmerTest extends TestCase
         $this->assertFileNotExists($this->getFixturesDir().'/var/cache/contao');
     }
 
-    /**
-     * Mocks a cache warmer.
-     *
-     * @param Connection|null               $connection
-     * @param ContaoFrameworkInterface|null $framework
-     * @param string                        $bundle
-     *
-     * @return ContaoCacheWarmer
-     */
     private function mockCacheWarmer(Connection $connection = null, ContaoFrameworkInterface $framework = null, string $bundle = 'test-bundle'): ContaoCacheWarmer
     {
         if (null === $connection) {

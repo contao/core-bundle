@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Tests\Command;
 use Contao\CoreBundle\Command\UserPasswordCommand;
 use Contao\CoreBundle\Tests\TestCase;
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -51,12 +52,6 @@ class UserPasswordCommandTest extends TestCase
         $this->command->setApplication(new Application());
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Command\UserPasswordCommand', $this->command);
-        $this->assertSame('contao:user:password', $this->command->getName());
-    }
-
     public function testDefinesUsernameAndPassword(): void
     {
         $this->assertNotEmpty($this->command->getDescription());
@@ -82,7 +77,6 @@ class UserPasswordCommandTest extends TestCase
     public function testAsksForThePasswordIfNotGiven(): void
     {
         $question = $this->createMock(QuestionHelper::class);
-
         $question
             ->method('ask')
             ->willReturn('12345678')
@@ -98,7 +92,6 @@ class UserPasswordCommandTest extends TestCase
     public function testFailsIfThePasswordsDoNotMatch(): void
     {
         $question = $this->createMock(QuestionHelper::class);
-
         $question
             ->method('ask')
             ->willReturnOnConsecutiveCalls('12345678', '87654321')
@@ -159,8 +152,8 @@ class UserPasswordCommandTest extends TestCase
 
     public function testFailsIfTheUsernameIsUnknown(): void
     {
+        /** @var Connection|MockObject $connection */
         $connection = $this->container->get('database_connection');
-
         $connection
             ->expects($this->once())
             ->method('update')
@@ -179,15 +172,12 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * @param string $username
-     * @param string $password
-     *
      * @dataProvider usernamePasswordProvider
      */
     public function testUpdatesTheDatabaseOnSuccess(string $username, string $password): void
     {
+        /** @var Connection|MockObject $connection */
         $connection = $this->container->get('database_connection');
-
         $connection
             ->expects($this->once())
             ->method('update')
@@ -215,7 +205,7 @@ class UserPasswordCommandTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function usernamePasswordProvider(): array
     {

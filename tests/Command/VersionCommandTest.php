@@ -19,14 +19,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class VersionCommandTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $command = new VersionCommand('contao:version');
-
-        $this->assertInstanceOf('Contao\CoreBundle\Command\VersionCommand', $command);
-        $this->assertSame('contao:version', $command->getName());
-    }
-
     public function testOutputsTheVersionNumber(): void
     {
         $command = new VersionCommand('contao:version');
@@ -34,7 +26,13 @@ class VersionCommandTest extends TestCase
         $tester = new CommandTester($command);
         $code = $tester->execute([]);
 
+        try {
+            $version = PackageUtil::getVersion('contao/core-bundle');
+        } catch (\OutOfBoundsException $e) {
+            $version = PackageUtil::getVersion('contao/contao');
+        }
+
         $this->assertSame(0, $code);
-        $this->assertContains(PackageUtil::getVersion('contao/core-bundle'), $tester->getDisplay());
+        $this->assertContains($version, $tester->getDisplay());
     }
 }

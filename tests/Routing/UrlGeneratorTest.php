@@ -14,6 +14,7 @@ namespace Contao\CoreBundle\Tests\Routing;
 
 use Contao\CoreBundle\Routing\UrlGenerator;
 use Contao\CoreBundle\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Generator\UrlGenerator as ParentUrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,14 +24,6 @@ use Symfony\Component\Routing\RouteCollection;
 
 class UrlGeneratorTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $router = $this->createMock(UrlGeneratorInterface::class);
-        $generator = new UrlGenerator($router, $this->mockContaoFramework(), false);
-
-        $this->assertInstanceOf('Contao\CoreBundle\Routing\UrlGenerator', $generator);
-    }
-
     public function testCanWriteTheContext(): void
     {
         $router = new ParentUrlGenerator(new RouteCollection(), new RequestContext());
@@ -124,7 +117,7 @@ class UrlGeneratorTest extends TestCase
         ;
 
         $this
-            ->mockGenerator($this->mockRouterWithContext(['alias' => 'foo/items/bar/article/test']))
+            ->mockGenerator($this->mockRouterWithContext(['alias' => 'foo/items/bar/article/test']), false, false)
             ->generate('foo/{items}/{article}', $params)
         ;
     }
@@ -186,7 +179,6 @@ class UrlGeneratorTest extends TestCase
     public function testFailsIfAParameterIsMissing(): void
     {
         $router = $this->createMock(UrlGeneratorInterface::class);
-
         $router
             ->method('getContext')
             ->willReturn(new RequestContext())
@@ -256,15 +248,6 @@ class UrlGeneratorTest extends TestCase
         ;
     }
 
-    /**
-     * Mocks an URL generator.
-     *
-     * @param UrlGeneratorInterface $router
-     * @param bool                  $prependLocale
-     * @param bool                  $useAutoItem
-     *
-     * @return UrlGenerator
-     */
     private function mockGenerator(UrlGeneratorInterface $router, bool $prependLocale = false, bool $useAutoItem = true): UrlGenerator
     {
         $framework = $this->mockContaoFramework();
@@ -275,18 +258,11 @@ class UrlGeneratorTest extends TestCase
     }
 
     /**
-     * Mocks a router with context.
-     *
-     * @param array  $expectedParameters
-     * @param string $expectedRoute
-     * @param int    $referenceType
-     *
-     * @return UrlGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return UrlGeneratorInterface|MockObject
      */
-    private function mockRouterWithContext(array $expectedParameters = [], $expectedRoute = 'contao_frontend', $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): UrlGeneratorInterface
+    private function mockRouterWithContext(array $expectedParameters = [], string $expectedRoute = 'contao_frontend', int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH): UrlGeneratorInterface
     {
         $router = $this->createMock(UrlGeneratorInterface::class);
-
         $router
             ->expects($this->once())
             ->method('generate')

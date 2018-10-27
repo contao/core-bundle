@@ -37,18 +37,7 @@ use Symfony\Component\Security\Core\User\User;
 
 class UserSessionListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = $this->mockListener();
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\UserSessionListener', $listener);
-    }
-
     /**
-     * @param string $scope
-     * @param string $userClass
-     * @param string $sessionBagName
-     *
      * @dataProvider scopeBagProvider
      */
     public function testReplacesTheSessionUponKernelRequest(string $scope, string $userClass, string $sessionBagName): void
@@ -59,22 +48,20 @@ class UserSessionListenerTest extends TestCase
         ];
 
         $user = $this->mockClassWithProperties($userClass, ['session' => $sessionValues]);
-        $token = $this->createMock(UsernamePasswordToken::class);
 
+        $token = $this->createMock(UsernamePasswordToken::class);
         $token
             ->method('getUser')
             ->willReturn($user)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
         ;
 
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
         $eventDispatcher
             ->expects($this->once())
             ->method('addListener')
@@ -97,7 +84,7 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function scopeBagProvider(): array
     {
@@ -108,37 +95,29 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @param string $scope
-     * @param string $userClass
-     * @param string $userTable
-     *
      * @dataProvider scopeTableProvider
      */
-    public function testStoresTheSessionUponKernelResponse($scope, $userClass, $userTable): void
+    public function testStoresTheSessionUponKernelResponse(string $scope, string $userClass, string $userTable): void
     {
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->expects($this->once())
             ->method('update')
         ;
 
         $user = $this->createPartialMock($userClass, ['getTable']);
-
         $user
             ->method('getTable')
             ->willReturn($userTable)
         ;
 
         $token = $this->createMock(UsernamePasswordToken::class);
-
         $token
             ->method('getUser')
             ->willReturn($user)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -153,7 +132,7 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function scopeTableProvider(): array
     {
@@ -164,21 +143,17 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @param AnonymousToken $token
-     *
      * @dataProvider noUserProvider
      */
     public function testDoesNotReplaceTheSessionIfThereIsNoUser(AnonymousToken $token = null): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -194,21 +169,17 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @param AnonymousToken $token
-     *
      * @dataProvider noUserProvider
      */
     public function testDoesNotStoreTheSessionIfThereIsNoUser(AnonymousToken $token = null): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -216,7 +187,6 @@ class UserSessionListenerTest extends TestCase
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->expects($this->never())
             ->method('update')
@@ -231,7 +201,7 @@ class UserSessionListenerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return (AnonymousToken|null)[][]
      */
     public function noUserProvider(): array
     {
@@ -244,7 +214,6 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotReplaceTheSessionUponSubrequests(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
@@ -264,14 +233,12 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotStoreTheSessionUponSubrequests(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->expects($this->never())
             ->method('update')
@@ -291,7 +258,6 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotReplaceTheSessionIfNotAContaoRequest(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
@@ -307,14 +273,12 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotStoreTheSessionIfNotAContaoRequest(): void
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->never())
             ->method('getBag')
         ;
 
         $connection = $this->createMock(Connection::class);
-
         $connection
             ->expects($this->never())
             ->method('update')
@@ -330,14 +294,12 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotReplaceTheSessionIfTheUserIsNotAContaoUser(): void
     {
         $token = $this->createMock(UsernamePasswordToken::class);
-
         $token
             ->method('getUser')
             ->willReturn(new User('foo', 'bar'))
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -356,14 +318,12 @@ class UserSessionListenerTest extends TestCase
     public function testDoesNotStoreTheSessionIfTheUserIsNotAContaoUser(): void
     {
         $token = $this->createMock(UsernamePasswordToken::class);
-
         $token
             ->method('getUser')
             ->willReturn(new User('foo', 'bar'))
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -385,14 +345,12 @@ class UserSessionListenerTest extends TestCase
     {
         $user = $this->mockClassWithProperties(BackendUser::class, ['session' => []]);
         $token = $this->createMock(UsernamePasswordToken::class);
-
         $token
             ->method('getUser')
             ->willReturn($user)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -412,21 +370,18 @@ class UserSessionListenerTest extends TestCase
     public function testFailsToStoreTheSessionIfThereIsNoSession(): void
     {
         $user = $this->createPartialMock(BackendUser::class, ['getTable']);
-
         $user
             ->method('getTable')
             ->willReturn('tl_user')
         ;
 
         $token = $this->createMock(UsernamePasswordToken::class);
-
         $token
             ->method('getUser')
             ->willReturn($user)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)
@@ -445,12 +400,6 @@ class UserSessionListenerTest extends TestCase
 
     /**
      * Mocks a session listener.
-     *
-     * @param Connection|null               $connection
-     * @param TokenStorageInterface|null    $tokenStorage
-     * @param EventDispatcherInterface|null $eventDispatcher
-     *
-     * @return UserSessionListener
      */
     private function mockListener(Connection $connection = null, TokenStorageInterface $tokenStorage = null, EventDispatcherInterface $eventDispatcher = null): UserSessionListener
     {
@@ -472,13 +421,6 @@ class UserSessionListenerTest extends TestCase
         return new UserSessionListener($connection, $tokenStorage, $trustResolver, $scopeMatcher, $eventDispatcher);
     }
 
-    /**
-     * Mocks a get response event.
-     *
-     * @param Request|null $request
-     *
-     * @return GetResponseEvent
-     */
     private function mockGetResponseEvent(Request $request = null): GetResponseEvent
     {
         $kernel = $this->createMock(KernelInterface::class);
@@ -490,13 +432,6 @@ class UserSessionListenerTest extends TestCase
         return new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
     }
 
-    /**
-     * Mocks a filter response event.
-     *
-     * @param Request|null $request
-     *
-     * @return FilterResponseEvent
-     */
     private function mockFilterResponseEvent(Request $request = null): FilterResponseEvent
     {
         $kernel = $this->createMock(KernelInterface::class);

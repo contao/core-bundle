@@ -22,22 +22,11 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class ControllerResolverTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $resolver = new ControllerResolver(
-            $this->createMock(ControllerResolverInterface::class),
-            new FragmentRegistry()
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\HttpKernel\ControllerResolver', $resolver);
-        $this->assertInstanceOf('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface', $resolver);
-    }
-
     public function testSetsTheControllerAttributeFromTheFragmentRegistry(): void
     {
         $config = new FragmentConfig('Foo\Bar\FooBarController');
-        $registry = $this->createMock(FragmentRegistry::class);
 
+        $registry = $this->createMock(FragmentRegistry::class);
         $registry
             ->expects($this->once())
             ->method('get')
@@ -57,7 +46,6 @@ class ControllerResolverTest extends TestCase
     public function testForwardsTheControllerToTheDecoratedClass(): void
     {
         $decorated = $this->createMock(ControllerResolverInterface::class);
-
         $decorated
             ->expects($this->once())
             ->method('getController')
@@ -81,7 +69,6 @@ class ControllerResolverTest extends TestCase
         }
 
         $decorated = $this->createMock(ControllerResolverInterface::class);
-
         $decorated
             ->expects($this->once())
             ->method('getArguments')

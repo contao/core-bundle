@@ -19,12 +19,18 @@ class StyleSheets extends Backend
 {
 
 	/**
+	 * @var string
+	 */
+	protected $strRootDir;
+
+	/**
 	 * Import the Files library
 	 */
 	public function __construct()
 	{
 		parent::__construct();
 		$this->import('Files');
+		$this->strRootDir = \System::getContainer()->getParameter('kernel.project_dir');
 	}
 
 	/**
@@ -67,17 +73,17 @@ class StyleSheets extends Backend
 		$arrStyleSheets = $objStyleSheets->fetchEach('name');
 
 		// Make sure the dcaconfig.php file is loaded
-		if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
+		if (file_exists($this->strRootDir . '/system/config/dcaconfig.php'))
 		{
 			@trigger_error('Using the dcaconfig.php file has been deprecated and will no longer work in Contao 5.0. Create one or more DCA files in app/Resources/contao/dca instead.', E_USER_DEPRECATED);
-			include TL_ROOT . '/system/config/dcaconfig.php';
+			include $this->strRootDir . '/system/config/dcaconfig.php';
 		}
 
 		// Delete old style sheets
-		foreach (scan(TL_ROOT . '/assets/css', true) as $file)
+		foreach (scan($this->strRootDir . '/assets/css', true) as $file)
 		{
 			// Skip directories
-			if (is_dir(TL_ROOT . '/assets/css/' . $file))
+			if (is_dir($this->strRootDir . '/assets/css/' . $file))
 			{
 				continue;
 			}
@@ -128,7 +134,7 @@ class StyleSheets extends Backend
 		$row['name'] = basename($row['name']);
 
 		// Check whether the target file is writeable
-		if (file_exists(TL_ROOT . '/assets/css/' . $row['name'] . '.css') && !$this->Files->is_writeable('assets/css/' . $row['name'] . '.css'))
+		if (file_exists($this->strRootDir . '/assets/css/' . $row['name'] . '.css') && !$this->Files->is_writeable('assets/css/' . $row['name'] . '.css'))
 		{
 			\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['notWriteable'], 'assets/css/' . $row['name'] . '.css'));
 
@@ -959,7 +965,7 @@ class StyleSheets extends Backend
 		// Replace global variables
 		if (strpos($return, '$') !== false && !empty($vars))
 		{
-			$return = str_replace(array_keys($vars), array_values($vars), $return);
+			$return = str_replace(array_keys($vars), $vars, $return);
 		}
 
 		// Replace insert tags (see #5512)
@@ -1030,7 +1036,7 @@ class StyleSheets extends Backend
 			}
 			else
 			{
-				$color = str_replace(array_keys($vars), array_values($vars), $color);
+				$color = str_replace(array_keys($vars), $vars, $color);
 			}
 		}
 
@@ -1087,7 +1093,7 @@ class StyleSheets extends Backend
 			foreach ($arrUploaded as $strCssFile)
 			{
 				// Folders cannot be imported
-				if (is_dir(TL_ROOT . '/' . $strCssFile))
+				if (is_dir($this->strRootDir . '/' . $strCssFile))
 				{
 					\Message::addError(sprintf($GLOBALS['TL_LANG']['ERR']['importFolder'], basename($strCssFile)));
 					continue;
@@ -2237,7 +2243,7 @@ class StyleSheets extends Backend
 	 */
 	protected function generateBase64Image($strImage, $arrParent)
 	{
-		if ($arrParent['embedImages'] > 0 && file_exists(TL_ROOT . '/' . $strImage))
+		if ($arrParent['embedImages'] > 0 && file_exists($this->strRootDir . '/' . $strImage))
 		{
 			$objImage = new \File($strImage);
 			$strMime = $objImage->extension;

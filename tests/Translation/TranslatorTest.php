@@ -19,21 +19,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslatorTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $translator = new Translator(
-            $this->createMock(TranslatorInterface::class),
-            $this->mockContaoFramework()
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\Translation\Translator', $translator);
-        $this->assertInstanceOf('Symfony\Component\Translation\TranslatorInterface', $translator);
-    }
-
     public function testForwardsTheMethodCallsToTheDecoratedTranslator(): void
     {
         $originalTranslator = $this->createMock(TranslatorInterface::class);
-
         $originalTranslator
             ->expects($this->once())
             ->method('trans')
@@ -61,7 +49,6 @@ class TranslatorTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->never())
             ->method('initialize')
@@ -80,7 +67,6 @@ class TranslatorTest extends TestCase
     public function testReadsFromTheGlobalLanguageArray(): void
     {
         $adapter = $this->mockAdapter(['loadLanguageFile']);
-
         $adapter
             ->expects($this->atLeastOnce())
             ->method('loadLanguageFile')
@@ -88,7 +74,6 @@ class TranslatorTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework([System::class => $adapter]);
-
         $framework
             ->expects($this->atLeastOnce())
             ->method('initialize')

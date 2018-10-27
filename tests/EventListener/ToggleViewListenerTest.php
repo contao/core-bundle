@@ -15,8 +15,10 @@ namespace Contao\CoreBundle\Tests\EventListener;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\EventListener\ToggleViewListener;
 use Contao\CoreBundle\Tests\TestCase;
+use Contao\System;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -24,21 +26,17 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ToggleViewListenerTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
+
+        $container = $this->mockContainer();
+        $container->set('session', $this->mockSession());
+        $container->set('request_stack', new RequestStack());
+
+        System::setContainer($container);
 
         $_SERVER['HTTP_HOST'] = 'localhost';
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new ToggleViewListener($this->mockContaoFramework(), $this->mockScopeMatcher());
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\ToggleViewListener', $listener);
     }
 
     public function testRedirectsToDesktopView(): void
@@ -166,11 +164,7 @@ class ToggleViewListenerTest extends TestCase
         $this->assertSame('/foo/bar', $cookie->getPath());
     }
 
-    /**
-     * @param Response $response
-     * @param string   $expectedValue
-     */
-    private function assertCookieValue(Response $response, $expectedValue): void
+    private function assertCookieValue(Response $response, string $expectedValue): void
     {
         $cookie = $this->getCookie($response);
 
@@ -180,14 +174,9 @@ class ToggleViewListenerTest extends TestCase
 
     /**
      * Finds the TL_VIEW cookie in a response.
-     *
-     * @param Response $response
-     *
-     * @return Cookie|null
      */
     private function getCookie(Response $response): ?Cookie
     {
-        /** @var Cookie[] $cookies */
         $cookies = $response->headers->getCookies();
 
         foreach ($cookies as $cookie) {

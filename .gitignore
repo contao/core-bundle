@@ -2,8 +2,8 @@
 /composer.lock
 /vendor/
 
-# Node
-/node_modules/
+# Dotenv
+/.env
 
 # PhpUnit
 /phpunit.xml

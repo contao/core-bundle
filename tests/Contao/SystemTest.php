@@ -15,23 +15,8 @@ namespace Contao\CoreBundle\Tests\Contao;
 use Contao\System;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class SystemTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp(): void
-    {
-        // Load the System class so it's not using the fixture
-        require __DIR__.'/../../src/Resources/contao/library/Contao/System.php';
-    }
-
     public function testFormatsANumber(): void
     {
         $number = '12004.34564';

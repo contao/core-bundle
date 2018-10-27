@@ -11,7 +11,6 @@
 namespace Contao;
 
 use Contao\CoreBundle\Exception\ResponseException;
-use Contao\Database\Result;
 
 /**
  * Provide methods to handle versioning.
@@ -388,7 +387,6 @@ class Versions extends Controller
 		$intTo = 0;
 		$intFrom = 0;
 
-		/** @var Result|object $objVersions */
 		$objVersions = $this->Database->prepare("SELECT * FROM tl_version WHERE pid=? AND fromTable=? ORDER BY version DESC")
 									  ->execute($this->intPid, $this->strTable);
 
@@ -547,10 +545,7 @@ class Versions extends Controller
 			return $strBuffer;
 		}
 
-		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_diff');
-
-		// Template variables
 		$objTemplate->content = $strBuffer;
 		$objTemplate->versions = $arrVersions;
 		$objTemplate->to = $intTo;
@@ -610,7 +605,7 @@ class Versions extends Controller
 	/**
 	 * Add a list of versions to a template
 	 *
-	 * @param BackendTemplate|object $objTemplate
+	 * @param BackendTemplate $objTemplate
 	 */
 	public static function addToTemplate(BackendTemplate $objTemplate)
 	{
@@ -624,7 +619,7 @@ class Versions extends Controller
 								->execute($objUser->id);
 
 		$intLast   = ceil($objTotal->count / 30);
-		$intPage   = (\Input::get('vp') !== null) ? \Input::get('vp') : 1;
+		$intPage   = \Input::get('vp') ?? 1;
 		$intOffset = ($intPage - 1) * 30;
 
 		// Validate the page number

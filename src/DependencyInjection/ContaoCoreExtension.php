@@ -13,22 +13,16 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\DependencyInjection;
 
 use Contao\CoreBundle\Picker\PickerProviderInterface;
+use Imagine\Exception\RuntimeException;
+use Imagine\Gd\Imagine;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class ContaoCoreExtension extends ConfigurableExtension
 {
-    /**
-     * @var array
-     */
-    private static $files = [
-        'commands.yml',
-        'listener.yml',
-        'services.yml',
-    ];
-
     /**
      * {@inheritdoc}
      */
@@ -63,7 +57,13 @@ class ContaoCoreExtension extends ConfigurableExtension
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        foreach (self::$files as $file) {
+        static $files = [
+            'commands.yml',
+            'listener.yml',
+            'services.yml',
+        ];
+
+        foreach ($files as $file) {
             $loader->load($file);
         }
 
@@ -81,11 +81,13 @@ class ContaoCoreExtension extends ConfigurableExtension
         $container->setParameter('contao.image.valid_extensions', $mergedConfig['image']['valid_extensions']);
         $container->setParameter('contao.image.imagine_options', $mergedConfig['image']['imagine_options']);
         $container->setParameter('contao.image.reject_large_uploads', $mergedConfig['image']['reject_large_uploads']);
+        $container->setParameter('contao.security.two_factor.enforce_backend', $mergedConfig['security']['two_factor']['enforce_backend']);
 
         if (isset($mergedConfig['localconfig'])) {
             $container->setParameter('contao.localconfig', $mergedConfig['localconfig']);
         }
 
+        $this->setImagineService($mergedConfig, $container);
         $this->overwriteImageTargetDir($mergedConfig, $container);
 
         $container
@@ -95,10 +97,45 @@ class ContaoCoreExtension extends ConfigurableExtension
     }
 
     /**
+     * Configures the "contao.image.imagine" service.
+     */
+    private function setImagineService(array $mergedConfig, ContainerBuilder $container): void
+    {
+        $imagineServiceId = $mergedConfig['image']['imagine_service'];
+
+        // Generate if not present
+        if (null === $imagineServiceId) {
+            $class = $this->getImagineImplementation();
+            $imagineServiceId = 'contao.image.imagine.'.ContainerBuilder::hash($class);
+
+            $container->setDefinition($imagineServiceId, new Definition($class));
+        }
+
+        $container->setAlias('contao.image.imagine', $imagineServiceId)->setPublic(true);
+    }
+
+    private function getImagineImplementation(): string
+    {
+        static $magicks = ['Gmagick', 'Imagick'];
+
+        foreach ($magicks as $name) {
+            $class = 'Imagine\\'.$name.'\Imagine';
+
+            // Will throw an exception if the PHP implementation is not available
+            try {
+                new $class();
+            } catch (RuntimeException $e) {
+                continue;
+            }
+
+            return $class;
+        }
+
+        return Imagine::class; // see #616
+    }
+
+    /**
      * Reads the old contao.image.target_path parameter.
-     *
-     * @param array            $mergedConfig
-     * @param ContainerBuilder $container
      */
     private function overwriteImageTargetDir(array $mergedConfig, ContainerBuilder $container): void
     {

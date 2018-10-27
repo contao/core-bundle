@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Back end custom controller.
  *
- * @property BackendTemplate|object $Template
+ * @property BackendTemplate $Template
  *
  * @author Jim Schmid <https://github.com/sheeep>
  */
@@ -37,7 +37,7 @@ class BackendCustom extends BackendMain
 	/**
 	 * Return the template object
 	 *
-	 * @return BackendTemplate|object
+	 * @return BackendTemplate
 	 */
 	public function getTemplateObject()
 	{
@@ -51,7 +51,13 @@ class BackendCustom extends BackendMain
 	 */
 	public function run()
 	{
-		$this->Template->version = PackageUtil::getVersion('contao/core-bundle');
+		try {
+			$version = PackageUtil::getVersion('contao/core-bundle');
+		} catch (\OutOfBoundsException $e) {
+			$version = PackageUtil::getVersion('contao/contao');
+		}
+
+		$this->Template->version = $GLOBALS['TL_LANG']['MSC']['version'] . ' ' . $version;
 
 		// Ajax request
 		if ($_POST && \Environment::get('isAjaxRequest'))

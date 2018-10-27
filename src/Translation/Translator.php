@@ -14,12 +14,14 @@ namespace Contao\CoreBundle\Translation;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
+use Symfony\Component\Translation\MessageCatalogueInterface;
+use Symfony\Component\Translation\TranslatorBagInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class Translator implements TranslatorInterface
+class Translator implements TranslatorInterface, TranslatorBagInterface
 {
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|TranslatorBagInterface
      */
     private $translator;
 
@@ -28,10 +30,6 @@ class Translator implements TranslatorInterface
      */
     private $framework;
 
-    /**
-     * @param TranslatorInterface      $translator The translator to decorate
-     * @param ContaoFrameworkInterface $framework
-     */
     public function __construct(TranslatorInterface $translator, ContaoFrameworkInterface $framework)
     {
         $this->translator = $translator;
@@ -92,17 +90,21 @@ class Translator implements TranslatorInterface
     }
 
     /**
-     * Returns the labels from the $GLOBALS['TL_LANG'] array.
-     *
-     * @param string $id Message id, e.g. "MSC.view"
-     *
-     * @return string|null
+     * {@inheritdoc}
+     */
+    public function getCatalogue($locale = null): MessageCatalogueInterface
+    {
+        return $this->translator->getCatalogue($locale);
+    }
+
+    /**
+     * Returns the labels from $GLOBALS['TL_LANG'] based on a message ID like "MSC.view".
      */
     private function getFromGlobals(string $id): ?string
     {
         // Split the ID into chunks allowing escaped dots (\.) and backslashes (\\)
-        preg_match_all('/(?:\\\\[.\\\\]|[^.])++/s', $id, $matches);
-        $parts = preg_replace('/\\\\([.\\\\])/s', '$1', $matches[0]);
+        preg_match_all('/(?:\\\\[\.\\\\]|[^\.])++/', $id, $matches);
+        $parts = preg_replace('/\\\\([\.\\\\])/', '$1', $matches[0]);
 
         $item = &$GLOBALS['TL_LANG'];
 
@@ -119,8 +121,6 @@ class Translator implements TranslatorInterface
 
     /**
      * Loads a Contao framework language file.
-     *
-     * @param string $name
      */
     private function loadLanguageFile(string $name): void
     {

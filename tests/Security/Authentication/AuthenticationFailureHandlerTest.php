@@ -26,28 +26,17 @@ use Symfony\Component\Security\Http\HttpUtils;
 
 class AuthenticationFailureHandlerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $handler = new AuthenticationFailureHandler(
-            $this->createMock(HttpKernel::class),
-            $this->createMock(HttpUtils::class)
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler', $handler);
-    }
-
     public function testDoesNotLogAnythingIfNoLogger(): void
     {
         $exception = $this->createMock(AccountStatusException::class);
-
         $exception
             ->expects($this->never())
             ->method('getUser')
         ;
 
         $kernel = $this->createMock(HttpKernel::class);
-        $utils = $this->createMock(HttpUtils::class);
 
+        $utils = $this->createMock(HttpUtils::class);
         $utils
             ->expects($this->once())
             ->method('createRedirectResponse')
@@ -61,7 +50,6 @@ class AuthenticationFailureHandlerTest extends TestCase
     public function testReadsTheUsernameFromTheException(): void
     {
         $user = $this->createMock(UserInterface::class);
-
         $user
             ->expects($this->once())
             ->method('getUsername')
@@ -69,7 +57,6 @@ class AuthenticationFailureHandlerTest extends TestCase
         ;
 
         $exception = $this->createMock(AccountStatusException::class);
-
         $exception
             ->expects($this->once())
             ->method('getUser')
@@ -77,8 +64,8 @@ class AuthenticationFailureHandlerTest extends TestCase
         ;
 
         $kernel = $this->createMock(HttpKernel::class);
-        $utils = $this->createMock(HttpUtils::class);
 
+        $utils = $this->createMock(HttpUtils::class);
         $utils
             ->expects($this->once())
             ->method('createRedirectResponse')
@@ -92,7 +79,6 @@ class AuthenticationFailureHandlerTest extends TestCase
         );
 
         $logger = $this->createMock(LoggerInterface::class);
-
         $logger
             ->expects($this->once())
             ->method('info')
@@ -106,7 +92,6 @@ class AuthenticationFailureHandlerTest extends TestCase
     public function testReadsTheUsernameFromTheRequest(): void
     {
         $exception = $this->createMock(AccountStatusException::class);
-
         $exception
             ->expects($this->once())
             ->method('getUser')
@@ -114,8 +99,8 @@ class AuthenticationFailureHandlerTest extends TestCase
         ;
 
         $kernel = $this->createMock(HttpKernel::class);
-        $utils = $this->createMock(HttpUtils::class);
 
+        $utils = $this->createMock(HttpUtils::class);
         $utils
             ->expects($this->once())
             ->method('createRedirectResponse')
@@ -129,7 +114,6 @@ class AuthenticationFailureHandlerTest extends TestCase
         );
 
         $logger = $this->createMock(LoggerInterface::class);
-
         $logger
             ->expects($this->once())
             ->method('info')
@@ -142,13 +126,10 @@ class AuthenticationFailureHandlerTest extends TestCase
 
     /**
      * Returns a request object with session.
-     *
-     * @return Request
      */
     private function getRequest(): Request
     {
         $session = $this->createMock(SessionInterface::class);
-
         $session
             ->expects($this->once())
             ->method('set')

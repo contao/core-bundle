@@ -141,7 +141,7 @@ class Input
 				$varValue = static::encodeSpecialChars($varValue);
 			}
 
-			if (TL_MODE != 'BE')
+			if (!\defined('TL_MODE') || TL_MODE != 'BE')
 			{
 				$varValue = static::encodeInsertTags($varValue);
 			}
@@ -182,7 +182,7 @@ class Input
 				$varValue = static::encodeSpecialChars($varValue);
 			}
 
-			if (TL_MODE != 'BE')
+			if (!\defined('TL_MODE') || TL_MODE != 'BE')
 			{
 				$varValue = static::encodeInsertTags($varValue);
 			}
@@ -216,7 +216,7 @@ class Input
 			$varValue = static::preserveBasicEntities($varValue);
 			$varValue = static::xssClean($varValue);
 
-			if (TL_MODE != 'BE')
+			if (!\defined('TL_MODE') || TL_MODE != 'BE')
 			{
 				$varValue = static::encodeInsertTags($varValue);
 			}
@@ -410,6 +410,14 @@ class Input
 	public static function setUnusedGet($strKey, $varValue)
 	{
 		static::$arrUnusedGet[$strKey] = $varValue;
+	}
+
+	/**
+	 * Reset the unused GET parameters
+	 */
+	public static function resetUnusedGet()
+	{
+		static::$arrUnusedGet = array();
 	}
 
 	/**

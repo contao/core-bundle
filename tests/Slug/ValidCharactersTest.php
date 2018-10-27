@@ -21,20 +21,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ValidCharactersTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $validCharacters = new ValidCharacters(
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(TranslatorInterface::class)
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\Slug\ValidCharacters', $validCharacters);
-    }
-
     public function testReadsTheOptionsFromTheDispatchedEvent(): void
     {
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-
         $eventDispatcher
             ->expects($this->once())
             ->method('dispatch')
@@ -42,7 +31,6 @@ class ValidCharactersTest extends TestCase
                 ContaoCoreEvents::SLUG_VALID_CHARACTERS,
                 $this->callback(
                     function (SlugValidCharactersEvent $event): bool {
-                        $this->assertInternalType('array', $event->getOptions());
                         $this->assertArrayHasKey('\pN\p{Ll}', $event->getOptions());
                         $this->assertArrayHasKey('\pN\pL', $event->getOptions());
                         $this->assertArrayHasKey('0-9a-z', $event->getOptions());
@@ -55,7 +43,6 @@ class ValidCharactersTest extends TestCase
         ;
 
         $translator = $this->createMock(TranslatorInterface::class);
-
         $translator
             ->expects($this->atLeastOnce())
             ->method('trans')
@@ -64,7 +51,6 @@ class ValidCharactersTest extends TestCase
         $validCharacters = new ValidCharacters($eventDispatcher, $translator);
         $options = $validCharacters->getOptions();
 
-        $this->assertInternalType('array', $options);
         $this->assertArrayHasKey('\pN\p{Ll}', $options);
         $this->assertArrayHasKey('\pN\pL', $options);
         $this->assertArrayHasKey('0-9a-z', $options);

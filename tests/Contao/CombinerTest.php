@@ -17,16 +17,9 @@ use Contao\Config;
 use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class CombinerTest extends ContaoTestCase
 {
     /**
@@ -54,26 +47,18 @@ class CombinerTest extends ContaoTestCase
     {
         parent::setUp();
 
-        \define('TL_ERROR', 'ERROR');
-        \define('TL_ROOT', $this->getTempDir());
-
         $context = $this->createMock(ContaoContext::class);
-
         $context
             ->method('getStaticUrl')
             ->willReturn('')
         ;
 
-        $this->container = new ContainerBuilder();
+        $this->container = $this->mockContainer($this->getTempDir());
         $this->container->setParameter('contao.web_dir', $this->getTempDir().'/web');
         $this->container->set('contao.assets.assets_context', $context);
 
+        Config::set('debugMode', false);
         System::setContainer($this->container);
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\Combiner', new Combiner());
     }
 
     public function testCombinesCssFiles(): void

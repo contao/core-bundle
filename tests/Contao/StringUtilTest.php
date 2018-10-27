@@ -18,12 +18,6 @@ use Contao\System;
 use Psr\Log\NullLogger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class StringUtilTest extends TestCase
 {
     /**
@@ -33,10 +27,8 @@ class StringUtilTest extends TestCase
     {
         parent::setUp();
 
-        \define('TL_ERROR', 'ERROR');
-        \define('TL_ROOT', $this->getFixturesDir());
-
         $container = new ContainerBuilder();
+        $container->setParameter('kernel.project_dir', $this->getFixturesDir());
         $container->set('monolog.logger.contao', new NullLogger());
 
         System::setContainer($container);
@@ -58,10 +50,6 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param string $string
-     * @param array  $tokens
-     * @param string $expected
-     *
      * @dataProvider parseSimpleTokensProvider
      */
     public function testParsesSimpleTokens(string $string, array $tokens, string $expected): void
@@ -70,7 +58,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,array<int,array<string,float|int|string>|string>>
      */
     public function parseSimpleTokensProvider(): array
     {
@@ -279,10 +267,6 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param string $string
-     * @param array  $tokens
-     * @param string $expected
-     *
      * @dataProvider parseSimpleTokensCorrectNewlines
      */
     public function testHandlesLineBreaksWhenParsingSimpleTokens(string $string, array $tokens, string $expected): void
@@ -291,7 +275,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,array<int,array<string,string>|string>>
      */
     public function parseSimpleTokensCorrectNewlines(): array
     {
@@ -330,8 +314,6 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param string $string
-     *
      * @dataProvider parseSimpleTokensDoesntExecutePhp
      */
     public function testDoesNotExecutePhpCode(string $string): void
@@ -340,7 +322,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,(bool|string)[]>
      */
     public function parseSimpleTokensDoesntExecutePhp(): array
     {
@@ -373,8 +355,6 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param array $tokens
-     *
      * @dataProvider parseSimpleTokensDoesntExecutePhpInToken
      */
     public function testDoesNotExecutePhpCodeInTokens(array $tokens): void
@@ -383,7 +363,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,(bool|array<string,string>)[]>
      */
     public function parseSimpleTokensDoesntExecutePhpInToken(): array
     {
@@ -430,8 +410,6 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @param string $string
-     *
      * @dataProvider parseSimpleTokensInvalidComparison
      */
     public function testFailsIfTheComparisonOperatorIsInvalid(string $string): void
@@ -442,7 +420,7 @@ class StringUtilTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,string[]>
      */
     public function parseSimpleTokensInvalidComparison(): array
     {

@@ -44,9 +44,7 @@ class ModuleLogin extends Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
-
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['login'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -69,10 +67,12 @@ class ModuleLogin extends Module
 	 */
 	protected function compile()
 	{
-		/** @var RouterInterface $router */
-		$router = \System::getContainer()->get('router');
+		$container = \System::getContainer();
 
-		if (\System::getContainer()->get('contao.security.token_checker')->hasFrontendUser())
+		/** @var RouterInterface $router */
+		$router = $container->get('router');
+
+		if ($container->get('contao.security.token_checker')->hasFrontendUser())
 		{
 			/** @var PageModel $objPage */
 			global $objPage;
@@ -97,7 +97,7 @@ class ModuleLogin extends Module
 			$this->Template->formId = 'tl_logout_' . $this->id;
 			$this->Template->slabel = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['logout']);
 			$this->Template->loggedInAs = sprintf($GLOBALS['TL_LANG']['MSC']['loggedInAs'], $this->User->username);
-			$this->Template->action = \System::getContainer()->get('security.logout_url_generator')->getLogoutPath();
+			$this->Template->action = $container->get('security.logout_url_generator')->getLogoutPath();
 			$this->Template->targetPath = \StringUtil::specialchars($strRedirect);
 
 			if ($this->User->lastLogin > 0)
@@ -108,7 +108,7 @@ class ModuleLogin extends Module
 			return;
 		}
 
-		$exception = \System::getContainer()->get('security.authentication_utils')->getLastAuthenticationError();
+		$exception = $container->get('security.authentication_utils')->getLastAuthenticationError();
 
 		if ($exception instanceof LockedException)
 		{
@@ -142,7 +142,7 @@ class ModuleLogin extends Module
 		$this->Template->password = $GLOBALS['TL_LANG']['MSC']['password'][0];
 		$this->Template->action = $router->generate('contao_frontend_login');
 		$this->Template->slabel = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['login']);
-		$this->Template->value = \StringUtil::specialchars(\System::getContainer()->get('security.authentication_utils')->getLastUsername());
+		$this->Template->value = \StringUtil::specialchars($container->get('security.authentication_utils')->getLastUsername());
 		$this->Template->formId = 'tl_login_' . $this->id;
 		$this->Template->autologin = $this->autologin;
 		$this->Template->autoLabel = $GLOBALS['TL_LANG']['MSC']['autologin'];

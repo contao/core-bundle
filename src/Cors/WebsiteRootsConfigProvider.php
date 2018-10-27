@@ -24,9 +24,6 @@ class WebsiteRootsConfigProvider implements ProviderInterface
      */
     private $connection;
 
-    /**
-     * @param Connection $connection
-     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -68,10 +65,6 @@ class WebsiteRootsConfigProvider implements ProviderInterface
 
     /**
      * Checks if the request has an Origin header.
-     *
-     * @param Request $request
-     *
-     * @return bool
      */
     private function isCorsRequest(Request $request): bool
     {
@@ -81,14 +74,12 @@ class WebsiteRootsConfigProvider implements ProviderInterface
     }
 
     /**
-     * Checks if a database connection can be established and the table exist.
-     *
-     * @return bool
+     * Checks if the tl_page table exists.
      */
     private function canRunDbQuery(): bool
     {
         try {
-            return $this->connection->isConnected() && $this->connection->getSchemaManager()->tablesExist(['tl_page']);
+            return $this->connection->getSchemaManager()->tablesExist(['tl_page']);
         } catch (DriverException $e) {
             return false;
         }

@@ -42,9 +42,7 @@ class ModuleRssReader extends Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
-
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['rssReader'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -67,7 +65,7 @@ class ModuleRssReader extends Module
 		}
 
 		$this->objFeed->set_output_encoding(\Config::get('characterSet'));
-		$this->objFeed->set_cache_location(TL_ROOT . '/system/tmp');
+		$this->objFeed->set_cache_location(\System::getContainer()->getParameter('kernel.project_dir') . '/system/tmp');
 		$this->objFeed->enable_cache(false);
 
 		if ($this->rss_cache > 0)
@@ -100,10 +98,7 @@ class ModuleRssReader extends Module
 		{
 			$this->strTemplate = $this->rss_template;
 
-			/** @var FrontendTemplate|object $objTemplate */
-			$objTemplate = new \FrontendTemplate($this->strTemplate);
-
-			$this->Template = $objTemplate;
+			$this->Template = new \FrontendTemplate($this->strTemplate);
 			$this->Template->setData($this->arrData);
 		}
 
@@ -135,7 +130,7 @@ class ModuleRssReader extends Module
 		{
 			// Get the current page
 			$id = 'page_r' . $this->id;
-			$page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
+			$page = \Input::get($id) ?? 1;
 
 			// Do not index or cache the page if the page number is outside the range
 			if ($page < 1 || $page > max(ceil(\count($arrItems)/$this->perPage), 1))

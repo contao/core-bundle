@@ -21,19 +21,13 @@ use Symfony\Component\DependencyInjection\Definition;
 
 class RegisterHookListenersPassTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $pass = new RegisterHookListenersPass();
-
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\RegisterHookListenersPass', $pass);
-    }
-
     public function testRegistersTheHookListeners(): void
     {
         $attributes = [
             'hook' => 'initializeSystem',
             'method' => 'onInitializeSystem',
             'priority' => 10,
+            'private' => false,
         ];
 
         $definition = new Definition('Test\HookListener');
@@ -55,6 +49,28 @@ class RegisterHookListenersPassTest extends TestCase
             ],
             $this->getHookListenersFromDefinition($container)[0]
         );
+    }
+
+    public function testMakesHookListenersPublic(): void
+    {
+        $attributes = [
+            'hook' => 'initializeSystem',
+            'method' => 'onInitializeSystem',
+        ];
+
+        $definition = new Definition('Test\HookListener');
+        $definition->addTag('contao.hook', $attributes);
+        $definition->setPublic(false);
+
+        $container = $this->getContainerBuilder();
+        $container->setDefinition('test.hook_listener', $definition);
+
+        $this->assertFalse($container->findDefinition('test.hook_listener')->isPublic());
+
+        $pass = new RegisterHookListenersPass();
+        $pass->process($container);
+
+        $this->assertTrue($container->findDefinition('test.hook_listener')->isPublic());
     }
 
     public function testGeneratesMethodNameIfNoneGiven(): void
@@ -236,7 +252,6 @@ class RegisterHookListenersPassTest extends TestCase
     public function testDoesNothingIfThereIsNoFramework(): void
     {
         $container = $this->createMock(ContainerBuilder::class);
-
         $container
             ->method('hasDefinition')
             ->with('contao.framework')
@@ -280,11 +295,7 @@ class RegisterHookListenersPassTest extends TestCase
     }
 
     /**
-     * Returns the hook listeners from the container definition.
-     *
-     * @param ContainerBuilder $container
-     *
-     * @return array
+     * @return array<int,array<int,string[]>>
      */
     private function getHookListenersFromDefinition(ContainerBuilder $container): array
     {
@@ -302,8 +313,6 @@ class RegisterHookListenersPassTest extends TestCase
 
     /**
      * Returns the container builder with a dummy contao.framework definition.
-     *
-     * @return ContainerBuilder
      */
     private function getContainerBuilder(): ContainerBuilder
     {

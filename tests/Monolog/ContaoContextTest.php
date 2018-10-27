@@ -17,13 +17,6 @@ use Contao\CoreBundle\Tests\TestCase;
 
 class ContaoContextTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $context = new ContaoContext('foo');
-
-        $this->assertInstanceOf('Contao\CoreBundle\Monolog\ContaoContext', $context);
-    }
-
     public function testSupportsReadingAndWritingValues(): void
     {
         $context = new ContaoContext('foo');
@@ -45,7 +38,6 @@ class ContaoContextTest extends TestCase
             'func' => 'foo',
             'action' => 'action',
             'username' => 'username',
-            'ip' => '1.2.3.4',
             'browser' => 'Mozilla',
         ]);
 

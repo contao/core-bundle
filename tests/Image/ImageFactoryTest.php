@@ -53,20 +53,12 @@ class ImageFactoryTest extends TestCase
         }
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $imageFactory = $this->mockImageFactory();
-
-        $this->assertInstanceOf('Contao\CoreBundle\Image\ImageFactory', $imageFactory);
-        $this->assertInstanceOf('Contao\CoreBundle\Image\ImageFactoryInterface', $imageFactory);
-    }
-
     public function testCreatesAnImageObjectFromAnImagePath(): void
     {
         $path = $this->getFixturesDir().'/images/dummy.jpg';
         $imageMock = $this->createMock(ImageInterface::class);
-        $resizer = $this->createMock(ResizerInterface::class);
 
+        $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->expects($this->exactly(2))
             ->method('resize')
@@ -130,8 +122,8 @@ class ImageFactoryTest extends TestCase
     {
         $path = $this->getFixturesDir().'/images/dummy.jpg';
         $imageMock = $this->createMock(ImageInterface::class);
-        $resizer = $this->createMock(ResizerInterface::class);
 
+        $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->expects($this->once())
             ->method('resize')
@@ -234,8 +226,8 @@ class ImageFactoryTest extends TestCase
         ;
 
         $imageMock = $this->createMock(ImageInterface::class);
-        $resizer = $this->createMock(ResizerInterface::class);
 
+        $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->expects($this->once())
             ->method('resize')
@@ -290,17 +282,14 @@ class ImageFactoryTest extends TestCase
     }
 
     /**
-     * @param string $mode
-     * @param array  $expected
-     *
      * @dataProvider getCreateWithLegacyMode
      */
-    public function testCreatesAnImageObjectFromAnImagePathInLegacyMode($mode, array $expected): void
+    public function testCreatesAnImageObjectFromAnImagePathInLegacyMode(string $mode, array $expected): void
     {
         $path = $this->getFixturesDir().'/images/none.jpg';
         $imageMock = $this->createMock(ImageInterface::class);
-        $filesystem = $this->createMock(Filesystem::class);
 
+        $filesystem = $this->createMock(Filesystem::class);
         $filesystem
             ->expects($this->once())
             ->method('exists')
@@ -308,7 +297,6 @@ class ImageFactoryTest extends TestCase
         ;
 
         $resizer = $this->createMock(ResizerInterface::class);
-
         $resizer
             ->expects($this->once())
             ->method('resize')
@@ -343,7 +331,6 @@ class ImageFactoryTest extends TestCase
         ;
 
         $imagineImageMock = $this->createMock(ImagineImageInterface::class);
-
         $imagineImageMock
             ->expects($this->once())
             ->method('getSize')
@@ -351,7 +338,6 @@ class ImageFactoryTest extends TestCase
         ;
 
         $imagine = $this->createMock(ImagineInterface::class);
-
         $imagine
             ->expects($this->once())
             ->method('open')
@@ -375,22 +361,17 @@ class ImageFactoryTest extends TestCase
     }
 
     /**
-     * @param string $mode
-     * @param string $expected
-     *
      * @dataProvider getCreateWithLegacyMode
      */
-    public function testReturnsTheImportantPartFromALegacyMode($mode, $expected): void
+    public function testReturnsTheImportantPartFromALegacyMode(string $mode, array $expected): void
     {
         $dimensionsMock = $this->createMock(ImageDimensionsInterface::class);
-
         $dimensionsMock
             ->method('getSize')
             ->willReturn(new Box(100, 100))
         ;
 
         $imageMock = $this->createMock(ImageInterface::class);
-
         $imageMock
             ->method('getDimensions')
             ->willReturn($dimensionsMock)
@@ -405,7 +386,7 @@ class ImageFactoryTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string,(string|int[])[]>
      */
     public function getCreateWithLegacyMode(): array
     {
@@ -472,15 +453,13 @@ class ImageFactoryTest extends TestCase
     /**
      * @group legacy
      *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @expectedDeprecation Using new Contao\Image() has been deprecated %s.
      */
     public function testExecutesTheExecuteResizeHook(): void
     {
-        \define('TL_ROOT', $this->getFixturesDir());
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpg';
+
+        System::setContainer($this->mockContainer($this->getFixturesDir()));
 
         $path = $this->getFixturesDir().'/images/dummy.jpg';
         $adapter = $this->mockConfiguredAdapter(['findByPath' => null]);
@@ -521,11 +500,6 @@ class ImageFactoryTest extends TestCase
         unset($GLOBALS['TL_HOOKS']);
     }
 
-    /**
-     * @param ContaoImage $imageObj
-     *
-     * @return string
-     */
     public static function executeResizeHookCallback(ContaoImage $imageObj): string
     {
         // Do not include $cacheName as it is dynamic (mtime)
@@ -540,11 +514,13 @@ class ImageFactoryTest extends TestCase
             .'.jpg'
         ;
 
-        if (!file_exists(\dirname(TL_ROOT.'/'.$path))) {
-            mkdir(\dirname(TL_ROOT.'/'.$path), 0777, true);
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
+        if (!file_exists(\dirname($rootDir.'/'.$path))) {
+            mkdir(\dirname($rootDir.'/'.$path), 0777, true);
         }
 
-        file_put_contents(TL_ROOT.'/'.$path, '');
+        file_put_contents($rootDir.'/'.$path, '');
 
         return $path;
     }
@@ -552,14 +528,10 @@ class ImageFactoryTest extends TestCase
     /**
      * @group legacy
      *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @expectedDeprecation Using new Contao\Image() has been deprecated %s.
      */
     public function testExecutesTheGetImageHook(): void
     {
-        \define('TL_ROOT', $this->getFixturesDir());
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpg';
 
         System::setContainer($this->mockContainer($this->getFixturesDir()));
@@ -608,18 +580,6 @@ class ImageFactoryTest extends TestCase
         unset($GLOBALS['TL_HOOKS']);
     }
 
-    /**
-     * @param string      $originalPath
-     * @param int         $targetWidth
-     * @param int         $targetHeight
-     * @param string      $resizeMode
-     * @param string      $cacheName
-     * @param File        $fileObj
-     * @param string      $targetPath
-     * @param ContaoImage $imageObj
-     *
-     * @return string
-     */
     public static function getImageHookCallback(string $originalPath, int $targetWidth, int $targetHeight, string $resizeMode, string $cacheName, File $fileObj, string $targetPath, ContaoImage $imageObj): string
     {
         // Do not include $cacheName as it is dynamic (mtime)
@@ -635,11 +595,13 @@ class ImageFactoryTest extends TestCase
             .'.jpg'
         ;
 
-        if (!file_exists(\dirname(TL_ROOT.'/'.$path))) {
-            mkdir(\dirname(TL_ROOT.'/'.$path), 0777, true);
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
+        if (!file_exists(\dirname($rootDir.'/'.$path))) {
+            mkdir(\dirname($rootDir.'/'.$path), 0777, true);
         }
 
-        file_put_contents(TL_ROOT.'/'.$path, '');
+        file_put_contents($rootDir.'/'.$path, '');
 
         return $path;
     }
@@ -647,14 +609,10 @@ class ImageFactoryTest extends TestCase
     /**
      * @group legacy
      *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @expectedDeprecation Using new Contao\Image() has been deprecated %s.
      */
     public function testIgnoresAnEmptyHookReturnValue(): void
     {
-        \define('TL_ROOT', $this->getFixturesDir());
         $GLOBALS['TL_CONFIG']['validImageTypes'] = 'jpg';
 
         System::setContainer($this->mockContainer($this->getFixturesDir()));
@@ -693,17 +651,6 @@ class ImageFactoryTest extends TestCase
 
     /**
      * Mocks an image factory.
-     *
-     * @param ResizerInterface|null         $resizer
-     * @param ImagineInterface|null         $imagine
-     * @param ImagineInterface|null         $imagineSvg
-     * @param Filesystem|null               $filesystem
-     * @param ContaoFrameworkInterface|null $framework
-     * @param bool                          $bypassCache
-     * @param array                         $imagineOptions
-     * @param array|null                    $validExtensions
-     *
-     * @return ImageFactory
      */
     private function mockImageFactory(ResizerInterface $resizer = null, ImagineInterface $imagine = null, ImagineInterface $imagineSvg = null, Filesystem $filesystem = null, ContaoFrameworkInterface $framework = null, bool $bypassCache = null, array $imagineOptions = null, array $validExtensions = null): ImageFactory
     {
@@ -754,10 +701,6 @@ class ImageFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @param ImageInterface $imageA
-     * @param ImageInterface $imageB
-     */
     private function assertSameImage(ImageInterface $imageA, ImageInterface $imageB): void
     {
         $this->assertSame($imageA->getDimensions(), $imageB->getDimensions());
@@ -767,10 +710,6 @@ class ImageFactoryTest extends TestCase
         $this->assertSame($imageA->getUrl($this->getFixturesDir()), $imageB->getUrl($this->getFixturesDir()));
     }
 
-    /**
-     * @param ImportantPartInterface $partA
-     * @param ImportantPartInterface $partB
-     */
     private function assertSameImportantPart(ImportantPartInterface $partA, ImportantPartInterface $partB): void
     {
         $this->assertSame($partA->getPosition()->getX(), $partB->getPosition()->getX());

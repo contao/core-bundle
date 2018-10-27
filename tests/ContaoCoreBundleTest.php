@@ -14,10 +14,10 @@ namespace Contao\CoreBundle\Tests;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddAssetsPackagesPass;
-use Contao\CoreBundle\DependencyInjection\Compiler\AddImagineClassPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddPackagesPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\AddSessionBagsPass;
+use Contao\CoreBundle\DependencyInjection\Compiler\DataContainerCallbackPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\DoctrineMigrationsPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\MakeServicesPublicPass;
 use Contao\CoreBundle\DependencyInjection\Compiler\MapFragmentsToGlobalsPass;
@@ -32,20 +32,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\FragmentRendererPass;
 
 class ContaoCoreBundleTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $bundle = new ContaoCoreBundle();
-
-        $this->assertInstanceOf('Contao\CoreBundle\ContaoCoreBundle', $bundle);
-    }
-
-    public function testReturnsTheContainerExtension(): void
-    {
-        $extension = (new ContaoCoreBundle())->getContainerExtension();
-
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\ContaoCoreExtension', $extension);
-    }
-
     public function testDoesNotRegisterAnyCommands(): void
     {
         $application = new Application();
@@ -65,35 +51,33 @@ class ContaoCoreBundleTest extends TestCase
             AddAssetsPackagesPass::class,
             AddSessionBagsPass::class,
             AddResourcesPathsPass::class,
-            AddImagineClassPass::class,
             DoctrineMigrationsPass::class,
             PickerProviderPass::class,
             RegisterFragmentsPass::class,
             FragmentRendererPass::class,
             MapFragmentsToGlobalsPass::class,
+            DataContainerCallbackPass::class,
             RegisterHookListenersPass::class,
         ];
 
-        $container = $this->createMock(ContainerBuilder::class);
-
-        $container
-            ->expects($this->exactly(\count($passes)))
-            ->method('addCompilerPass')
-            ->with(
-                $this->callback(function ($param) use ($passes) {
-                    return \in_array(\get_class($param), $passes, true);
-                })
-            )
-        ;
-
         $security = $this->createMock(SecurityExtension::class);
-
         $security
             ->expects($this->once())
             ->method('addSecurityListenerFactory')
             ->with(
                 $this->callback(function ($param) {
                     return $param instanceof ContaoLoginFactory;
+                })
+            )
+        ;
+
+        $container = $this->createMock(ContainerBuilder::class);
+        $container
+            ->expects($this->exactly(\count($passes)))
+            ->method('addCompilerPass')
+            ->with(
+                $this->callback(function ($param) use ($passes) {
+                    return \in_array(\get_class($param), $passes, true);
                 })
             )
         ;

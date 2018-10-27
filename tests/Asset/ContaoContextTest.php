@@ -16,20 +16,13 @@ use Contao\Config;
 use Contao\CoreBundle\Asset\ContaoContext;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Tests\TestCase;
-use Contao\Model\Registry;
 use Contao\PageModel;
+use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContaoContextTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $context = $this->mockContaoContext('staticPlugins');
-
-        $this->assertInstanceOf('Contao\CoreBundle\Asset\ContaoContext', $context);
-    }
-
     public function testReturnsAnEmptyBasePathInDebugMode(): void
     {
         $context = new ContaoContext($this->mockContaoFramework(), new RequestStack(), 'staticPlugins', true);
@@ -58,17 +51,11 @@ class ContaoContextTest extends TestCase
     }
 
     /**
-     * @param string $domain
-     * @param bool   $useSSL
-     * @param string $basePath
-     * @param string $expected
-     *
      * @dataProvider getBasePaths
      */
     public function testReadsTheBasePathFromThePageModel(string $domain, bool $useSSL, string $basePath, string $expected): void
     {
         $request = $this->createMock(Request::class);
-
         $request
             ->expects($this->once())
             ->method('getBasePath')
@@ -92,17 +79,11 @@ class ContaoContextTest extends TestCase
     }
 
     /**
-     * @param string $domain
-     * @param bool   $useSSL
-     * @param string $basePath
-     * @param string $expected
-     *
      * @dataProvider getBasePaths
      */
     public function testReadsTheBasePathFromTheGlobalConfigurationIfThePageDoesNotDefineIt(string $domain, bool $useSSL, string $basePath, string $expected): void
     {
         $request = $this->createMock(Request::class);
-
         $request
             ->expects($this->once())
             ->method('getBasePath')
@@ -125,6 +106,9 @@ class ContaoContextTest extends TestCase
         $this->assertSame($expected, $context->getBasePath());
     }
 
+    /**
+     * @return (string|bool)[][]
+     */
     public function getBasePaths(): array
     {
         return [
@@ -139,7 +123,6 @@ class ContaoContextTest extends TestCase
     public function testReturnsTheStaticUrl(): void
     {
         $request = $this->createMock(Request::class);
-
         $request
             ->expects($this->once())
             ->method('getBasePath')
@@ -211,15 +194,9 @@ class ContaoContextTest extends TestCase
         $this->assertFalse($context->isSecure());
     }
 
-    /**
-     * Mocks a page model with details.
-     *
-     * @return PageModel
-     */
     private function mockPageWithDetails(): PageModel
     {
-        // Ensure to use the fixtures class
-        Registry::getInstance();
+        System::setContainer($this->mockContainer());
 
         $page = new PageModel();
         $page->type = 'root';
@@ -229,15 +206,6 @@ class ContaoContextTest extends TestCase
         return $page->loadDetails();
     }
 
-    /**
-     * Mocks a Contao context.
-     *
-     * @param string                        $field
-     * @param RequestStack|null             $requestStack
-     * @param ContaoFrameworkInterface|null $framework
-     *
-     * @return ContaoContext
-     */
     private function mockContaoContext(string $field, RequestStack $requestStack = null, ContaoFrameworkInterface $framework = null): ContaoContext
     {
         if (null === $requestStack) {

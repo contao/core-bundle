@@ -13,20 +13,24 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Controller\ContentElement;
 
 use Contao\ContentModel;
-use Contao\CoreBundle\Tests\Fixtures\Controller\ContentElement\TestController;
+use Contao\CoreBundle\Fixtures\Controller\ContentElement\TestController;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendTemplate;
+use Contao\System;
+use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class ContentElementControllerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
     {
-        $controller = new TestController();
+        parent::setUp();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController', $controller);
-        $this->assertInstanceOf('Contao\CoreBundle\Controller\AbstractFragmentController', $controller);
+        System::setContainer($this->mockContainer());
     }
 
     public function testCreatesTheTemplateFromTheClassName(): void
@@ -37,11 +41,20 @@ class ContentElementControllerTest extends TestCase
         $controller(new Request(), new ContentModel(), 'main');
     }
 
-    public function testCreatesTheTemplateFromTheFragmentOptions(): void
+    public function testCreatesTheTemplateFromTheTypeFragmentOptions(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('ce_foo'));
         $controller->setFragmentOptions(['type' => 'foo']);
+
+        $controller(new Request(), new ContentModel(), 'main');
+    }
+
+    public function testCreatesTheTemplateFromTheTemplateFragmentOption(): void
+    {
+        $controller = new TestController();
+        $controller->setContainer($this->mockContainerWithFrameworkTemplate('ce_bar'));
+        $controller->setFragmentOptions(['template' => 'ce_bar']);
 
         $controller(new Request(), new ContentModel(), 'main');
     }
@@ -121,15 +134,30 @@ class ContentElementControllerTest extends TestCase
         $this->assertSame('ce_test first last', $template->class);
     }
 
-    /**
-     * @param string $templateName
-     *
-     * @return ContainerBuilder
-     */
+    public function testAddsTheCacheTags(): void
+    {
+        $model = new ContentModel();
+        $model->id = 42;
+
+        $responseTagger = $this->createMock(ResponseTagger::class);
+        $responseTagger
+            ->expects($this->once())
+            ->method('addTags')
+            ->with(['contao.db.tl_content.42'])
+        ;
+
+        $container = $this->mockContainerWithFrameworkTemplate('ce_test');
+        $container->set('fos_http_cache.http.symfony_response_tagger', $responseTagger);
+
+        $controller = new TestController();
+        $controller->setContainer($container);
+
+        $controller(new Request(), $model, 'main');
+    }
+
     private function mockContainerWithFrameworkTemplate(string $templateName): ContainerBuilder
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->once())
             ->method('createInstance')

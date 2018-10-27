@@ -79,8 +79,10 @@ class BackendPopup extends Backend
 			die('Invalid path');
 		}
 
+		$rootDir = System::getContainer()->getParameter('kernel.project_dir');
+
 		// Check whether the file exists
-		if (!file_exists(TL_ROOT . '/' . $this->strFile))
+		if (!file_exists($rootDir . '/' . $this->strFile))
 		{
 			die('File not found');
 		}
@@ -98,7 +100,6 @@ class BackendPopup extends Backend
 			$objFile->sendToBrowser();
 		}
 
-		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_popup');
 
 		// Add the resource (see #6880)
@@ -116,7 +117,7 @@ class BackendPopup extends Backend
 		}
 
 		// Add the file info
-		if (is_dir(TL_ROOT . '/' . $this->strFile))
+		if (is_dir($rootDir . '/' . $this->strFile))
 		{
 			$objFile = new \Folder($this->strFile);
 			$objTemplate->filesize = $this->getReadableSize($objFile->size) . ' (' . number_format($objFile->size, 0, $GLOBALS['TL_LANG']['MSC']['decimalSeparator'], $GLOBALS['TL_LANG']['MSC']['thousandsSeparator']) . ' Byte)';

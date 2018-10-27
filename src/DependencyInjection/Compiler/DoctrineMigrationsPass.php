@@ -38,6 +38,7 @@ class DoctrineMigrationsPass implements CompilerPassInterface
         $command = new Definition(DoctrineMigrationsDiffCommand::class);
         $command->setArguments([$provider]);
         $command->addTag('console.command');
+        $command->setPublic(true);
 
         $container->setDefinition(DoctrineMigrationsDiffCommand::COMMAND_ID, $command);
 
@@ -50,13 +51,6 @@ class DoctrineMigrationsPass implements CompilerPassInterface
         }
     }
 
-    /**
-     * Checks if the Doctrine migrations bundle is enabled.
-     *
-     * @param ContainerBuilder $container
-     *
-     * @return bool
-     */
     private function hasMigrationsBundle(ContainerBuilder $container): bool
     {
         return \in_array(DoctrineMigrationsBundle::class, $container->getParameter('kernel.bundles'), true);

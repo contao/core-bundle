@@ -92,6 +92,12 @@
       <trans-unit id="MOD.maintenance.1">
         <source>Maintain or update Contao</source>
       </trans-unit>
+      <trans-unit id="MOD.security.0">
+        <source>Security</source>
+      </trans-unit>
+      <trans-unit id="MOD.security.1">
+        <source>Secure your account</source>
+      </trans-unit>
       <trans-unit id="MOD.undo.0">
         <source>Restore</source>
       </trans-unit>

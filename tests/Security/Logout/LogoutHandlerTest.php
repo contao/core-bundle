@@ -17,6 +17,7 @@ use Contao\Controller;
 use Contao\CoreBundle\Security\Logout\LogoutHandler;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\System;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,27 +26,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class LogoutHandlerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $handler = new LogoutHandler($this->mockContaoFramework());
-
-        $this->assertInstanceOf('Contao\CoreBundle\Security\Logout\LogoutHandler', $handler);
-    }
-
     public function testAddsTheLogEntry(): void
     {
         $framework = $this->mockContaoFramework();
-        $logger = $this->createMock(LoggerInterface::class);
 
+        $logger = $this->createMock(LoggerInterface::class);
         $logger
             ->expects($this->once())
             ->method('info')
             ->with('User "foobar" has logged out')
         ;
 
+        /** @var BackendUser|MockObject $user */
         $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
-        $token = $this->createMock(TokenInterface::class);
 
+        $token = $this->createMock(TokenInterface::class);
         $token
             ->expects($this->once())
             ->method('getUser')
@@ -59,15 +54,14 @@ class LogoutHandlerTest extends TestCase
     public function testDoesNotAddALogEntryIfTheUserIsNotSupported(): void
     {
         $framework = $this->mockContaoFramework();
-        $logger = $this->createMock(LoggerInterface::class);
 
+        $logger = $this->createMock(LoggerInterface::class);
         $logger
             ->expects($this->never())
             ->method('info')
         ;
 
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->expects($this->once())
             ->method('getUser')
@@ -85,9 +79,10 @@ class LogoutHandlerTest extends TestCase
      */
     public function testTriggersThePostLogoutHook(): void
     {
+        /** @var BackendUser|MockObject $user */
         $user = $this->mockClassWithProperties(BackendUser::class, ['username' => 'foobar']);
-        $listener = $this->createPartialMock(Controller::class, ['onPostLogout']);
 
+        $listener = $this->createPartialMock(Controller::class, ['onPostLogout']);
         $listener
             ->expects($this->once())
             ->method('onPostLogout')
@@ -95,7 +90,6 @@ class LogoutHandlerTest extends TestCase
         ;
 
         $systemAdapter = $this->mockAdapter(['importStatic']);
-
         $systemAdapter
             ->expects($this->once())
             ->method('importStatic')
@@ -104,14 +98,12 @@ class LogoutHandlerTest extends TestCase
         ;
 
         $framework = $this->mockContaoFramework([System::class => $systemAdapter]);
-
         $framework
             ->expects($this->once())
             ->method('initialize')
         ;
 
         $logger = $this->createMock(LoggerInterface::class);
-
         $logger
             ->expects($this->once())
             ->method('info')
@@ -119,7 +111,6 @@ class LogoutHandlerTest extends TestCase
         ;
 
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->expects($this->once())
             ->method('getUser')

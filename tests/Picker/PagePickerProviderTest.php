@@ -39,7 +39,6 @@ class PagePickerProviderTest extends ContaoTestCase
         parent::setUp();
 
         $menuFactory = $this->createMock(FactoryInterface::class);
-
         $menuFactory
             ->method('createItem')
             ->willReturnCallback(
@@ -56,7 +55,6 @@ class PagePickerProviderTest extends ContaoTestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
-
         $router
             ->method('generate')
             ->willReturnCallback(
@@ -67,18 +65,12 @@ class PagePickerProviderTest extends ContaoTestCase
         ;
 
         $translator = $this->createMock(TranslatorInterface::class);
-
         $translator
             ->method('trans')
             ->willReturn('Page picker')
         ;
 
         $this->provider = new PagePickerProvider($menuFactory, $router, $translator);
-    }
-
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Picker\PagePickerProvider', $this->provider);
     }
 
     public function testCreatesTheMenuItem(): void
@@ -136,7 +128,6 @@ class PagePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn(null)
@@ -153,14 +144,12 @@ class PagePickerProviderTest extends ContaoTestCase
     public function testFailsToCheckTheContextIfThereIsNoUser(): void
     {
         $token = $this->createMock(TokenInterface::class);
-
         $token
             ->method('getUser')
             ->willReturn(null)
         ;
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->method('getToken')
             ->willReturn($token)

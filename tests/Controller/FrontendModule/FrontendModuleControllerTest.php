@@ -12,21 +12,25 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Tests\Controller\FrontendModule;
 
-use Contao\CoreBundle\Tests\Fixtures\Controller\FrontendModule\TestController;
+use Contao\CoreBundle\Fixtures\Controller\FrontendModule\TestController;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
+use Contao\System;
+use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 class FrontendModuleControllerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
     {
-        $controller = new TestController();
+        parent::setUp();
 
-        $this->assertInstanceOf('Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController', $controller);
-        $this->assertInstanceOf('Contao\CoreBundle\Controller\AbstractFragmentController', $controller);
+        System::setContainer($this->mockContainer());
     }
 
     public function testCreatesTheTemplateFromTheClassName(): void
@@ -37,11 +41,20 @@ class FrontendModuleControllerTest extends TestCase
         $controller(new Request([], [], ['_scope' => 'frontend']), new ModuleModel(), 'main');
     }
 
-    public function testCreatesTheTemplateFromTheFragmentOptions(): void
+    public function testCreatesTheTemplateFromTheTypeFragmentOption(): void
     {
         $controller = new TestController();
         $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_foo'));
         $controller->setFragmentOptions(['type' => 'foo']);
+
+        $controller(new Request(), new ModuleModel(), 'main');
+    }
+
+    public function testCreatesTheTemplateFromTheTemplateFragmentOption(): void
+    {
+        $controller = new TestController();
+        $controller->setContainer($this->mockContainerWithFrameworkTemplate('mod_bar'));
+        $controller->setFragmentOptions(['template' => 'mod_bar']);
 
         $controller(new Request(), new ModuleModel(), 'main');
     }
@@ -110,15 +123,30 @@ class FrontendModuleControllerTest extends TestCase
         $this->assertSame('left', $template->inColumn);
     }
 
-    /**
-     * @param string $templateName
-     *
-     * @return ContainerBuilder
-     */
+    public function testAddsTheCacheTags(): void
+    {
+        $model = new ModuleModel();
+        $model->id = 42;
+
+        $responseTagger = $this->createMock(ResponseTagger::class);
+        $responseTagger
+            ->expects($this->once())
+            ->method('addTags')
+            ->with(['contao.db.tl_module.42'])
+        ;
+
+        $container = $this->mockContainerWithFrameworkTemplate('mod_test');
+        $container->set('fos_http_cache.http.symfony_response_tagger', $responseTagger);
+
+        $controller = new TestController();
+        $controller->setContainer($container);
+
+        $controller(new Request(), $model, 'main');
+    }
+
     private function mockContainerWithFrameworkTemplate(string $templateName): ContainerBuilder
     {
         $framework = $this->mockContaoFramework();
-
         $framework
             ->expects($this->once())
             ->method('createInstance')

@@ -40,12 +40,6 @@ class Configuration implements ConfigurationInterface
      */
     private $defaultLocale;
 
-    /**
-     * @param bool   $debug
-     * @param string $projectDir
-     * @param string $rootDir
-     * @param string $defaultLocale
-     */
     public function __construct(bool $debug, string $projectDir, string $rootDir, string $defaultLocale)
     {
         $this->debug = $debug;
@@ -54,16 +48,11 @@ class Configuration implements ConfigurationInterface
         $this->defaultLocale = $defaultLocale;
     }
 
-    /**
-     * Generates the configuration tree builder.
-     *
-     * @return TreeBuilder
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('contao');
 
+        $rootNode = $treeBuilder->root('contao');
         $rootNode
             ->children()
                 ->scalarNode('web_dir')
@@ -142,6 +131,10 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(['jpg', 'jpeg', 'gif', 'png', 'tif', 'tiff', 'bmp', 'svg', 'svgz'])
                         ->end()
+                        ->scalarNode('imagine_service')
+                            ->defaultNull()
+                            ->info('Contao automatically detects the best Imagine service out of Gmagick, Imagick and Gd (in this order). To use a specific service, set its service ID here.')
+                        ->end()
                         ->arrayNode('imagine_options')
                             ->addDefaultsIfNotSet()
                             ->children()
@@ -158,6 +151,19 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('security')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('two_factor')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->booleanNode('enforce_backend')
+                                    ->defaultValue(false)
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->variableNode('localconfig')
                 ->end()
             ->end()
@@ -168,10 +174,6 @@ class Configuration implements ConfigurationInterface
 
     /**
      * Canonicalizes a path preserving the directory separators.
-     *
-     * @param string $value
-     *
-     * @return string
      */
     private function canonicalize(string $value): string
     {
@@ -206,13 +208,11 @@ class Configuration implements ConfigurationInterface
             $resolved[] = $chunks[$i];
         }
 
-        return rtrim(implode($resolved), '\/');
+        return rtrim(implode('', $resolved), '\/');
     }
 
     /**
-     * Returns the Contao locales.
-     *
-     * @return array
+     * @return string[]
      */
     private function getLocales(): array
     {

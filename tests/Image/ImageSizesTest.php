@@ -14,20 +14,22 @@ namespace Contao\CoreBundle\Tests\Image;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Event\ContaoCoreEvents;
+use Contao\CoreBundle\Event\ImageSizesEvent;
 use Contao\CoreBundle\Image\ImageSizes;
 use Contao\CoreBundle\Tests\TestCase;
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImageSizesTest extends TestCase
 {
     /**
-     * @var Connection|\PHPUnit_Framework_MockObject_MockObject
+     * @var Connection|MockObject
      */
     private $connection;
 
     /**
-     * @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var EventDispatcherInterface|MockObject
      */
     private $eventDispatcher;
 
@@ -60,11 +62,6 @@ class ImageSizesTest extends TestCase
         $this->imageSizes = new ImageSizes($this->connection, $this->eventDispatcher, $this->mockContaoFramework());
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Image\ImageSizes', $this->imageSizes);
-    }
-
     public function testReturnsAllOptionsWithImageSizes(): void
     {
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_ALL);
@@ -93,11 +90,13 @@ class ImageSizesTest extends TestCase
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_USER);
         $this->expectExampleImageSizes();
 
-        /** @var BackendUser|object $user */
-        $user = $this->createMock(BackendUser::class);
-        $user->imageSizes = serialize(['image_sizes' => '42']);
-        $user->isAdmin = true;
+        $properties = [
+            'imageSizes' => ['image_sizes' => '42'],
+            'isAdmin' => true,
+        ];
 
+        /** @var BackendUser|MockObject $user */
+        $user = $this->mockClassWithProperties(BackendUser::class, $properties);
         $options = $this->imageSizes->getOptionsForUser($user);
 
         // TL_CROP would not be returned if the admin check was not done (because it's not in the allowed imageSizes)
@@ -109,12 +108,14 @@ class ImageSizesTest extends TestCase
         $this->expectEvent(ContaoCoreEvents::IMAGE_SIZES_USER);
         $this->expectExampleImageSizes();
 
-        /** @var BackendUser|object $user */
-        $user = $this->createMock(BackendUser::class);
-        $user->isAdmin = false;
-
         // Allow only one image size
-        $user->imageSizes = serialize([42]);
+        $properties = [
+            'imageSizes' => [42],
+            'isAdmin' => false,
+        ];
+
+        /** @var BackendUser|MockObject $user */
+        $user = $this->mockClassWithProperties(BackendUser::class, $properties);
         $options = $this->imageSizes->getOptionsForUser($user);
 
         $this->assertArrayNotHasKey('relative', $options);
@@ -123,7 +124,13 @@ class ImageSizesTest extends TestCase
         $this->assertArrayHasKey('42', $options['image_sizes']);
 
         // Allow only some TL_CROP options
-        $user->imageSizes = serialize(['proportional', 'box']);
+        $properties = [
+            'imageSizes' => ['proportional', 'box'],
+            'isAdmin' => false,
+        ];
+
+        /** @var BackendUser|MockObject $user */
+        $user = $this->mockClassWithProperties(BackendUser::class, $properties);
         $options = $this->imageSizes->getOptionsForUser($user);
 
         $this->assertArrayHasKey('relative', $options);
@@ -131,7 +138,13 @@ class ImageSizesTest extends TestCase
         $this->assertArrayNotHasKey('image_sizes', $options);
 
         // Allow nothing
-        $user->imageSizes = serialize([]);
+        $properties = [
+            'imageSizes' => [],
+            'isAdmin' => false,
+        ];
+
+        /** @var BackendUser|MockObject $user */
+        $user = $this->mockClassWithProperties(BackendUser::class, $properties);
         $options = $this->imageSizes->getOptionsForUser($user);
 
         $this->assertSame([], $options);
@@ -139,22 +152,18 @@ class ImageSizesTest extends TestCase
 
     /**
      * Adds an expected method call to the event dispatcher mock object.
-     *
-     * @param string $event
      */
-    private function expectEvent($event): void
+    private function expectEvent(string $event): void
     {
         $this->eventDispatcher
             ->expects($this->atLeastOnce())
             ->method('dispatch')
-            ->with($event, $this->isInstanceOf('Contao\CoreBundle\Event\ImageSizesEvent'))
+            ->with($event, $this->isInstanceOf(ImageSizesEvent::class))
         ;
     }
 
     /**
      * Adds an expected method call to the database connection mock object.
-     *
-     * @param array $imageSizes
      */
     private function expectImageSizes(array $imageSizes): void
     {

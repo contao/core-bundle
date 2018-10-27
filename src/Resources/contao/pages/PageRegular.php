@@ -63,8 +63,10 @@ class PageRegular extends Frontend
 		$GLOBALS['TL_LANGUAGE'] = $objPage->language;
 
 		$locale = str_replace('-', '_', $objPage->language);
-		\System::getContainer()->get('request_stack')->getCurrentRequest()->setLocale($locale);
-		\System::getContainer()->get('translator')->setLocale($locale);
+
+		$container = \System::getContainer();
+		$container->get('request_stack')->getCurrentRequest()->setLocale($locale);
+		$container->get('translator')->setLocale($locale);
 
 		\System::loadLanguageFile('default');
 
@@ -88,7 +90,7 @@ class PageRegular extends Frontend
 		$objTheme = $objLayout->getRelated('pid');
 
 		// Set the default image densities
-		\System::getContainer()->get('contao.image.picture_factory')->setDefaultDensities($objTheme->defaultImageDensities);
+		$container->get('contao.image.picture_factory')->setDefaultDensities($objTheme->defaultImageDensities);
 
 		// Store the layout ID
 		$objPage->layoutId = $objLayout->id;
@@ -140,7 +142,7 @@ class PageRegular extends Frontend
 			foreach ($arrModules as $arrModule)
 			{
 				// Disabled module
-				if (!$arrModule['enable'])
+				if (!$arrModule['enable'] && !BE_USER_LOGGED_IN)
 				{
 					continue;
 				}
@@ -275,11 +277,7 @@ class PageRegular extends Frontend
 	 */
 	protected function createTemplate($objPage, $objLayout)
 	{
-		/** @var FrontendTemplate|object $objTemplate */
-		$objTemplate = new \FrontendTemplate($objPage->template);
-
-		$this->Template = $objTemplate;
-
+		$this->Template = new \FrontendTemplate($objPage->template);
 		$this->Template->viewport = '';
 		$this->Template->framework = '';
 
@@ -642,6 +640,7 @@ class PageRegular extends Frontend
 
 			// Get the file entries from the database
 			$objFiles = \FilesModel::findMultipleByUuids($arrExternal);
+			$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
 
 			if ($objFiles !== null)
 			{
@@ -649,7 +648,7 @@ class PageRegular extends Frontend
 
 				while ($objFiles->next())
 				{
-					if (file_exists(TL_ROOT . '/' . $objFiles->path))
+					if (file_exists($rootDir . '/' . $objFiles->path))
 					{
 						$arrFiles[] = $objFiles->path . '|static';
 					}
@@ -805,12 +804,13 @@ class PageRegular extends Frontend
 
 		// Get the file entries from the database
 		$objFiles = \FilesModel::findMultipleByUuids($arrExternalJs);
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
 
 		if ($objFiles !== null)
 		{
 			while ($objFiles->next())
 			{
-				if (file_exists(TL_ROOT . '/' . $objFiles->path))
+				if (file_exists($rootDir . '/' . $objFiles->path))
 				{
 					$strScripts .= \Template::generateScriptTag($objFiles->path, false, $objFiles->tstamp);
 				}

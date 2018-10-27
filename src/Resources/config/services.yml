@@ -8,6 +8,8 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
+    Contao\CoreBundle\Framework\ContaoFrameworkInterface: "@contao.framework"
+
     contao.assets.assets_context:
         class: Contao\CoreBundle\Asset\ContaoContext
         arguments:
@@ -61,6 +63,7 @@ services:
             - "@request_stack"
             - "@translator"
             - "%kernel.project_dir%"
+        public: true
 
     contao.controller.insert_tags:
         class: Contao\CoreBundle\Controller\InsertTagsController
@@ -144,9 +147,14 @@ services:
             - "%contao.error_level%"
         public: true
 
-    contao.image.imagine:
+    contao.image.imagine.gd:
         class: Imagine\Gd\Imagine
-        public: true
+
+    contao.image.imagine.gmagick:
+        class: Imagine\Gmagick\Imagine
+
+    contao.image.imagine.imagick:
+        class: Imagine\Imagick\Imagine
 
     contao.image.imagine_svg:
         class: Contao\ImagineSvg\Imagine
@@ -331,6 +339,7 @@ services:
         arguments:
             - "@contao.routing.backend_matcher"
             - "@contao.routing.frontend_matcher"
+        public: true
 
     contao.routing.backend_matcher:
         class: Symfony\Component\HttpFoundation\RequestMatcher
@@ -371,6 +380,7 @@ services:
         class: Contao\CoreBundle\Security\Authentication\RememberMe\DatabaseTokenProvider
         arguments:
             - "@database_connection"
+            - "%kernel.secret%"
 
     contao.security.backend_user_provider:
         class: Contao\CoreBundle\Security\User\ContaoUserProvider
@@ -414,15 +424,29 @@ services:
             - "@contao.framework"
             - "@logger"
 
-    contao.security.sha1_password_encoder:
-        class: Contao\CoreBundle\Security\Encoder\Sha1PasswordEncoder
-
     contao.security.token_checker:
         class: Contao\CoreBundle\Security\Authentication\Token\TokenChecker
         arguments:
             - "@session"
             - "@security.authentication.trust_resolver"
         public: true
+
+    contao.security.two_factor.authenticator:
+        class: Contao\CoreBundle\Security\TwoFactor\Authenticator
+        public: true
+
+    contao.security.two_factor.backend_form_renderer:
+        class: Contao\CoreBundle\Security\TwoFactor\BackendFormRenderer
+        arguments:
+            - "@router"
+
+    contao.security.two_factor.backend_provider:
+        class: Contao\CoreBundle\Security\TwoFactor\Provider
+        arguments:
+            - "@contao.security.two_factor.authenticator"
+            - "@contao.security.two_factor.backend_form_renderer"
+        tags:
+            - { name: "scheb_two_factor.provider", alias: "contao_backend_two_factor" }
 
     contao.security.user_checker:
         class: Contao\CoreBundle\Security\User\UserChecker
@@ -455,6 +479,7 @@ services:
         arguments:
             - "@event_dispatcher"
             - "@translator"
+        public: true
 
     contao.translation.translator:
         class: Contao\CoreBundle\Translation\Translator

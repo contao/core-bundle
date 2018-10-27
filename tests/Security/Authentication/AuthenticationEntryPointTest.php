@@ -21,16 +21,6 @@ use Symfony\Component\Security\Http\HttpUtils;
 
 class AuthenticationEntryPointTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $entryPoint = new AuthenticationEntryPoint(
-            $this->createMock(HttpUtils::class),
-            $this->createMock(RouterInterface::class)
-        );
-
-        $this->assertInstanceOf('Contao\CoreBundle\Security\Authentication\AuthenticationEntryPoint', $entryPoint);
-    }
-
     public function testAddsTheRefererToTheRedirectUrl(): void
     {
         $request = new Request();
@@ -38,7 +28,6 @@ class AuthenticationEntryPointTest extends TestCase
         $request->query->add(['do' => 'page']);
 
         $httpUtils = $this->createMock(HttpUtils::class);
-
         $httpUtils
             ->expects($this->once())
             ->method('createRedirectResponse')
@@ -52,7 +41,6 @@ class AuthenticationEntryPointTest extends TestCase
         $url = 'http://localhost/contao/login?referer='.base64_encode('do=page');
 
         $router = $this->createMock(RouterInterface::class);
-
         $router
             ->expects($this->once())
             ->method('generate')
@@ -63,15 +51,15 @@ class AuthenticationEntryPointTest extends TestCase
         $entryPoint = new AuthenticationEntryPoint($httpUtils, $router);
         $response = $entryPoint->start($request);
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($url, $response->getTargetUrl());
     }
 
     public function testDoesNotAddARefererToTheRedirectUrlIfTheQueryIsEmpty(): void
     {
         $request = new Request();
-        $httpUtils = $this->createMock(HttpUtils::class);
 
+        $httpUtils = $this->createMock(HttpUtils::class);
         $httpUtils
             ->expects($this->once())
             ->method('createRedirectResponse')
@@ -80,7 +68,6 @@ class AuthenticationEntryPointTest extends TestCase
         ;
 
         $router = $this->createMock(RouterInterface::class);
-
         $router
             ->expects($this->never())
             ->method('generate')
@@ -89,7 +76,7 @@ class AuthenticationEntryPointTest extends TestCase
         $entryPoint = new AuthenticationEntryPoint($httpUtils, $router);
         $response = $entryPoint->start($request);
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('http://localhost/contao/login', $response->getTargetUrl());
     }
 }

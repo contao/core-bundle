@@ -48,7 +48,6 @@ class RebuildIndex extends Backend implements \executable
 		$arrUser = array(''=>'-');
 		$objUser = null;
 
-		/** @var BackendTemplate|object $objTemplate */
 		$objTemplate = new \BackendTemplate('be_rebuild_index');
 		$objTemplate->action = ampersand(\Environment::get('request'));
 		$objTemplate->indexHeadline = $GLOBALS['TL_LANG']['tl_maintenance']['searchIndex'];
@@ -66,7 +65,7 @@ class RebuildIndex extends Backend implements \executable
 
 			if (!empty($amg) && \is_array($amg))
 			{
-				$objUser = $this->Database->execute("SELECT id, username FROM tl_member WHERE (GROUPS LIKE '%\"" . implode('"%\' OR', array_map('\intval', $amg)) . "\"%') AND disable!='1' AND (start='' OR start<='$time') AND (stop='' OR stop>'" . ($time + 60) . "') ORDER BY username");
+				$objUser = $this->Database->execute("SELECT id, username FROM tl_member WHERE (groups LIKE '%\"" . implode('"%\' OR \'%"', array_map('\intval', $amg)) . "\"%') AND disable!='1' AND (start='' OR start<='$time') AND (stop='' OR stop>'" . ($time + 60) . "') ORDER BY username");
 			}
 		}
 

@@ -13,17 +13,13 @@ declare(strict_types=1);
 namespace Contao\CoreBundle\Tests\Contao;
 
 use Contao\BackendTemplate;
+use Contao\Config;
 use Contao\CoreBundle\Tests\TestCase;
 use Contao\FrontendTemplate;
+use Contao\System;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class TemplateTest extends TestCase
 {
     /**
@@ -36,8 +32,7 @@ class TemplateTest extends TestCase
         $fs = new Filesystem();
         $fs->mkdir($this->getFixturesDir().'/templates');
 
-        \define('TL_ROOT', $this->getFixturesDir());
-        \define('TL_MODE', 'BE');
+        System::setContainer($this->mockContainer($this->getFixturesDir()));
     }
 
     /**
@@ -53,6 +48,8 @@ class TemplateTest extends TestCase
 
     public function testReplacesTheVariables(): void
     {
+        Config::set('debugMode', false);
+
         file_put_contents(
             $this->getFixturesDir().'/templates/test_template.html5',
             '<?= $this->value ?>'
@@ -214,7 +211,6 @@ EOF
     public function testLoadsTheAssetsPackages(): void
     {
         $packages = $this->createMock(Packages::class);
-
         $packages
             ->expects($this->once())
             ->method('getUrl')

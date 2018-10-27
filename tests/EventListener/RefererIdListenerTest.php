@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Tests\EventListener;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\CoreBundle\EventListener\RefererIdListener;
 use Contao\CoreBundle\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -24,13 +25,6 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class RefererIdListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new RefererIdListener($this->mockTokenManager(), $this->mockScopeMatcher());
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\RefererIdListener', $listener);
-    }
-
     public function testAddsTheTokenToTheRequest(): void
     {
         $request = new Request();
@@ -95,14 +89,11 @@ class RefererIdListenerTest extends TestCase
     }
 
     /**
-     * Mocks a token manager.
-     *
-     * @return CsrfTokenManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return CsrfTokenManagerInterface|MockObject
      */
     private function mockTokenManager(): CsrfTokenManagerInterface
     {
         $tokenManager = $this->createMock(CsrfTokenManagerInterface::class);
-
         $tokenManager
             ->method('getToken')
             ->willReturn(new CsrfToken('_csrf', 'testValue'))

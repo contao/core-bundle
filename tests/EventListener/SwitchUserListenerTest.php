@@ -15,6 +15,7 @@ namespace Contao\CoreBundle\Tests\EventListener;
 use Contao\BackendUser;
 use Contao\CoreBundle\EventListener\SwitchUserListener;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,13 +26,6 @@ use Symfony\Component\Security\Http\Event\SwitchUserEvent;
 
 class SwitchUserListenerTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $listener = new SwitchUserListener($this->mockTokenStorage(), $this->mockLogger());
-
-        $this->assertInstanceOf('Contao\CoreBundle\EventListener\SwitchUserListener', $listener);
-    }
-
     public function testAddsALogEntryIfAUserSwitchesToAnotherUser(): void
     {
         $logger = $this->mockLogger('User "user1" has switched to user "user2"');
@@ -45,7 +39,6 @@ class SwitchUserListenerTest extends TestCase
     public function testFailsIfTheTokenStorageDoesNotContainAToken(): void
     {
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-
         $tokenStorage
             ->expects($this->once())
             ->method('getToken')
@@ -62,11 +55,7 @@ class SwitchUserListenerTest extends TestCase
     }
 
     /**
-     * Mocks the logger service with an optional message.
-     *
-     * @param string|null $message
-     *
-     * @return LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return LoggerInterface|MockObject
      */
     private function mockLogger(string $message = null): LoggerInterface
     {
@@ -94,11 +83,7 @@ class SwitchUserListenerTest extends TestCase
     }
 
     /**
-     * Mocks a token storage with an optional username.
-     *
-     * @param string|null $username
-     *
-     * @return TokenStorageInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return TokenStorageInterface|MockObject
      */
     private function mockTokenStorage(string $username = null): TokenStorageInterface
     {
@@ -106,7 +91,6 @@ class SwitchUserListenerTest extends TestCase
 
         if (null !== $username) {
             $token = $this->createMock(TokenInterface::class);
-
             $token
                 ->expects($this->once())
                 ->method('getUser')
@@ -124,11 +108,7 @@ class SwitchUserListenerTest extends TestCase
     }
 
     /**
-     * Mocks a back end user with an optional username.
-     *
-     * @param string|null $username
-     *
-     * @return BackendUser|\PHPUnit_Framework_MockObject_MockObject
+     * @return BackendUser|MockObject
      */
     private function mockBackendUser(string $username = null): BackendUser
     {
@@ -145,16 +125,9 @@ class SwitchUserListenerTest extends TestCase
         return $user;
     }
 
-    /**
-     * Mocks the SwitchUserEvent with an optional target username.
-     *
-     * @param string|null $username
-     *
-     * @return SwitchUserEvent
-     */
     private function mockSwitchUserEvent(string $username = null): SwitchUserEvent
     {
-        /** @var UserInterface|\PHPUnit_Framework_MockObject_MockObject $user */
+        /** @var UserInterface|MockObject $user */
         $user = $this->createPartialMock(BackendUser::class, ['getUsername']);
 
         if (null !== $username) {

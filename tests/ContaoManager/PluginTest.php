@@ -25,7 +25,7 @@ use Lexik\Bundle\MaintenanceBundle\LexikMaintenanceBundle;
 use Nelmio\CorsBundle\NelmioCorsBundle;
 use Nelmio\SecurityBundle\NelmioSecurityBundle;
 use PHPUnit\Framework\TestCase;
-use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
+use Scheb\TwoFactorBundle\SchebTwoFactorBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -38,21 +38,14 @@ use Terminal42\HeaderReplay\HeaderReplayBundle;
 
 class PluginTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $plugin = new Plugin();
-
-        $this->assertInstanceOf('Contao\CoreBundle\ContaoManager\Plugin', $plugin);
-    }
-
     public function testReturnsTheBundles(): void
     {
         $plugin = new Plugin();
 
-        /** @var BundleConfig[] $bundles */
+        /** @var BundleConfig[]|array $bundles */
         $bundles = $plugin->getBundles(new DelegatingParser());
 
-        $this->assertCount(4, $bundles);
+        $this->assertCount(5, $bundles);
 
         $this->assertSame(KnpMenuBundle::class, $bundles[0]->getName());
         $this->assertSame([], $bundles[0]->getReplace());
@@ -62,12 +55,16 @@ class PluginTest extends TestCase
         $this->assertSame([], $bundles[1]->getReplace());
         $this->assertSame([], $bundles[1]->getLoadAfter());
 
-        $this->assertSame(HeaderReplayBundle::class, $bundles[2]->getName());
+        $this->assertSame(SchebTwoFactorBundle::class, $bundles[2]->getName());
         $this->assertSame([], $bundles[2]->getReplace());
         $this->assertSame([], $bundles[2]->getLoadAfter());
 
-        $this->assertSame(ContaoCoreBundle::class, $bundles[3]->getName());
-        $this->assertSame(['core'], $bundles[3]->getReplace());
+        $this->assertSame(HeaderReplayBundle::class, $bundles[3]->getName());
+        $this->assertSame([], $bundles[3]->getReplace());
+        $this->assertSame([], $bundles[3]->getLoadAfter());
+
+        $this->assertSame(ContaoCoreBundle::class, $bundles[4]->getName());
+        $this->assertSame(['core'], $bundles[4]->getReplace());
 
         $this->assertSame(
             [
@@ -83,25 +80,23 @@ class PluginTest extends TestCase
                 LexikMaintenanceBundle::class,
                 NelmioCorsBundle::class,
                 NelmioSecurityBundle::class,
-                SensioFrameworkExtraBundle::class,
+                SchebTwoFactorBundle::class,
                 HeaderReplayBundle::class,
                 ContaoManagerBundle::class,
             ],
-            $bundles[3]->getLoadAfter()
+            $bundles[4]->getLoadAfter()
         );
     }
 
     public function testReturnsTheRouteCollection(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
-
         $loader
             ->expects($this->once())
             ->method('load')
         ;
 
         $resolver = $this->createMock(LoaderResolverInterface::class);
-
         $resolver
             ->method('resolve')
             ->willReturn($loader)

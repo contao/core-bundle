@@ -20,13 +20,6 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
 class AddResourcesPathsPassTest extends TestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $pass = new AddResourcesPathsPass();
-
-        $this->assertInstanceOf('Contao\CoreBundle\DependencyInjection\Compiler\AddResourcesPathsPass', $pass);
-    }
-
     public function testAddsTheResourcesPaths(): void
     {
         $bundles = [
@@ -54,6 +47,7 @@ class AddResourcesPathsPassTest extends TestCase
                 $path.'/Resources/contao',
                 $this->getFixturesDir().'/system/modules/foobar',
                 $this->getFixturesDir().'/app/Resources/contao',
+                $this->getFixturesDir().'/src/Resources/contao',
             ],
             $container->getParameter('contao.resources_paths')
         );

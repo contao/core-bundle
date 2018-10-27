@@ -16,23 +16,8 @@ use Contao\Controller;
 use Contao\System;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group contao3
- *
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class ControllerTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp(): void
-    {
-        // Load the System class so it's not using the fixture
-        require __DIR__.'/../../src/Resources/contao/library/Contao/System.php';
-    }
-
     public function testReturnsTheTimeZones(): void
     {
         $timeZones = System::getTimeZones();

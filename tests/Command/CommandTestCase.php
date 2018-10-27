@@ -20,11 +20,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class CommandTestCase extends TestCase
 {
-    /**
-     * Mocks an application.
-     *
-     * @return Application
-     */
     protected function mockApplication(): Application
     {
         $container = new ContainerBuilder();
@@ -32,7 +27,6 @@ abstract class CommandTestCase extends TestCase
         $container->set('filesystem', new Filesystem());
 
         $kernel = $this->createMock(KernelInterface::class);
-
         $kernel
             ->method('getContainer')
             ->willReturn($container)

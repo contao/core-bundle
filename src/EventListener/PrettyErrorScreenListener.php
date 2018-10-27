@@ -34,6 +34,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PrettyErrorScreenListener
@@ -81,15 +82,7 @@ class PrettyErrorScreenListener
         NoRootPageFoundException::class => 'no_root_page_found',
     ];
 
-    /**
-     * @param bool                     $prettyErrorScreens
-     * @param \Twig_Environment        $twig
-     * @param ContaoFrameworkInterface $framework
-     * @param TokenStorageInterface    $tokenStorage
-     * @param ScopeMatcher             $scopeMatcher
-     * @param LoggerInterface|null     $logger
-     */
-    public function __construct($prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, LoggerInterface $logger = null)
+    public function __construct(bool $prettyErrorScreens, \Twig_Environment $twig, ContaoFrameworkInterface $framework, TokenStorageInterface $tokenStorage, ScopeMatcher $scopeMatcher, LoggerInterface $logger = null)
     {
         $this->prettyErrorScreens = $prettyErrorScreens;
         $this->twig = $twig;
@@ -101,8 +94,6 @@ class PrettyErrorScreenListener
 
     /**
      * Map an exception to an error screen.
-     *
-     * @param GetResponseForExceptionEvent $event
      */
     public function onKernelException(GetResponseForExceptionEvent $event): void
     {
@@ -119,11 +110,6 @@ class PrettyErrorScreenListener
         $this->handleException($event);
     }
 
-    /**
-     * Handles the exception.
-     *
-     * @param GetResponseForExceptionEvent $event
-     */
     private function handleException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
@@ -154,11 +140,6 @@ class PrettyErrorScreenListener
         }
     }
 
-    /**
-     * Renders a back end exception.
-     *
-     * @param GetResponseForExceptionEvent $event
-     */
     private function renderBackendException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
@@ -167,13 +148,7 @@ class PrettyErrorScreenListener
         $this->renderTemplate('backend', $this->getStatusCodeForException($exception), $event);
     }
 
-    /**
-     * Renders the error screen.
-     *
-     * @param int                          $type
-     * @param GetResponseForExceptionEvent $event
-     */
-    private function renderErrorScreenByType($type, GetResponseForExceptionEvent $event): void
+    private function renderErrorScreenByType(int $type, GetResponseForExceptionEvent $event): void
     {
         static $processing;
 
@@ -190,14 +165,7 @@ class PrettyErrorScreenListener
         $processing = false;
     }
 
-    /**
-     * Returns the response of a Contao page handler.
-     *
-     * @param string $type
-     *
-     * @return Response|null
-     */
-    private function getResponseFromPageHandler($type): ?Response
+    private function getResponseFromPageHandler(int $type): ?Response
     {
         $this->framework->initialize();
 
@@ -221,31 +189,25 @@ class PrettyErrorScreenListener
 
     /**
      * Checks the exception chain for a known exception.
-     *
-     * @param GetResponseForExceptionEvent $event
      */
     private function renderErrorScreenByException(GetResponseForExceptionEvent $event): void
     {
         $exception = $event->getException();
         $statusCode = $this->getStatusCodeForException($exception);
+        $template = null;
 
         $this->logException($exception);
 
         // Look for a template
         do {
-            $template = $this->getTemplateForException($exception);
+            if ($exception instanceof \Exception) {
+                $template = $this->getTemplateForException($exception);
+            }
         } while (null === $template && null !== ($exception = $exception->getPrevious()));
 
         $this->renderTemplate($template ?: 'error', $statusCode, $event);
     }
 
-    /**
-     * Maps an exception to a template.
-     *
-     * @param \Exception $exception
-     *
-     * @return string|null
-     */
     private function getTemplateForException(\Exception $exception): ?string
     {
         foreach (self::$mapper as $class => $template) {
@@ -257,14 +219,7 @@ class PrettyErrorScreenListener
         return null;
     }
 
-    /**
-     * Renders a template and returns the response object.
-     *
-     * @param string                       $template
-     * @param int                          $statusCode
-     * @param GetResponseForExceptionEvent $event
-     */
-    private function renderTemplate($template, $statusCode, GetResponseForExceptionEvent $event): void
+    private function renderTemplate(string $template, int $statusCode, GetResponseForExceptionEvent $event): void
     {
         if (!$this->prettyErrorScreens) {
             return;
@@ -281,15 +236,9 @@ class PrettyErrorScreenListener
     }
 
     /**
-     * Returns the template parameters.
-     *
-     * @param string                       $view
-     * @param int                          $statusCode
-     * @param GetResponseForExceptionEvent $event
-     *
-     * @return array
+     * @return array<string,string|int>
      */
-    private function getTemplateParameters($view, $statusCode, GetResponseForExceptionEvent $event): ?array
+    private function getTemplateParameters(string $view, int $statusCode, GetResponseForExceptionEvent $event): array
     {
         /** @var Config $config */
         $config = $this->framework->getAdapter(Config::class);
@@ -305,27 +254,15 @@ class PrettyErrorScreenListener
         ];
     }
 
-    /**
-     * Logs the exception.
-     *
-     * @param \Exception $exception
-     */
     private function logException(\Exception $exception): void
     {
-        if (null === $this->logger || !$this->isLoggable($exception)) {
+        if (Kernel::VERSION_ID >= 40100 || null === $this->logger || !$this->isLoggable($exception)) {
             return;
         }
 
         $this->logger->critical('An exception occurred.', ['exception' => $exception]);
     }
 
-    /**
-     * Checks if an extension is loggable.
-     *
-     * @param \Exception $exception
-     *
-     * @return bool
-     */
     private function isLoggable(\Exception $exception): bool
     {
         do {
@@ -341,11 +278,6 @@ class PrettyErrorScreenListener
         return true;
     }
 
-    /**
-     * Checks if the user is a back end user.
-     *
-     * @return bool
-     */
     private function isBackendUser(): bool
     {
         $token = $this->tokenStorage->getToken();
@@ -363,13 +295,6 @@ class PrettyErrorScreenListener
         return $user instanceof BackendUser;
     }
 
-    /**
-     * Returns the status code for an exception.
-     *
-     * @param \Exception $exception
-     *
-     * @return int
-     */
     private function getStatusCodeForException(\Exception $exception): int
     {
         if ($exception instanceof HttpException) {

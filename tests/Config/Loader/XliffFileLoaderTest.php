@@ -32,11 +32,6 @@ class XliffFileLoaderTest extends TestCase
         $this->loader = new XliffFileLoader($this->getFixturesDir());
     }
 
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Config\Loader\XliffFileLoader', $this->loader);
-    }
-
     public function testSupportsXlfFiles(): void
     {
         $this->assertTrue(
@@ -101,14 +96,9 @@ TXT;
         );
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testLoadsXlfFilesIntoTheGlobalVariables(): void
     {
         $loader = new XliffFileLoader($this->getFixturesDir().'/app', true);
-
         $loader->load(
             $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/default.xlf',
             'en'
@@ -138,15 +128,11 @@ TXT;
         );
     }
 
-    /**
-     * Test that the loader overwrites the language array correctly.
-     */
-    public function testOverridesKeysInLangArray(): void
+    public function testOverridesKeysInLanguageArray(): void
     {
         $GLOBALS['TL_LANG']['MSC']['third'] = 'is-a-string';
 
         $loader = new XliffFileLoader($this->getFixturesDir().'/app', true);
-
         $loader->load(
             $this->getFixturesDir().'/vendor/contao/test-bundle/Resources/contao/languages/en/default.xlf',
             'en'

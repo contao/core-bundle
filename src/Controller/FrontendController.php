@@ -18,11 +18,11 @@ use Contao\FrontendCron;
 use Contao\FrontendIndex;
 use Contao\FrontendShare;
 use Contao\PageError401;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
 /**
@@ -30,9 +30,6 @@ use Symfony\Component\Security\Core\Exception\LogoutException;
  */
 class FrontendController extends Controller
 {
-    /**
-     * @return Response
-     */
     public function indexAction(): Response
     {
         $this->get('contao.framework')->initialize();
@@ -43,8 +40,6 @@ class FrontendController extends Controller
     }
 
     /**
-     * @return Response
-     *
      * @Route("/_contao/cron", name="contao_frontend_cron")
      */
     public function cronAction(): Response
@@ -57,8 +52,6 @@ class FrontendController extends Controller
     }
 
     /**
-     * @return RedirectResponse
-     *
      * @Route("/_contao/share", name="contao_frontend_share")
      */
     public function shareAction(): RedirectResponse

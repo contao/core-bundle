@@ -18,22 +18,29 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 		'dataContainer'               => 'Table',
 		'ctable'                      => array('tl_article'),
 		'enableVersioning'            => true,
+		'markAsCopy'                  => 'title',
 		'onload_callback' => array
 		(
 			array('tl_page', 'checkPermission'),
 			array('tl_page', 'addBreadcrumb'),
 			array('tl_page', 'setRootType'),
 			array('tl_page', 'showFallbackWarning'),
-			array('tl_page', 'makeRedirectPageMandatory')
+			array('tl_page', 'makeRedirectPageMandatory'),
+			array('tl_page', 'generateSitemap')
 		),
-		'onsubmit_callback' => array
+		'oncut_callback' => array
 		(
-			array('tl_page', 'updateSitemap'),
-			array('tl_page', 'generateArticle')
+			array('tl_page', 'scheduleUpdate')
 		),
 		'ondelete_callback' => array
 		(
-			array('tl_page', 'purgeSearchIndex')
+			array('tl_page', 'purgeSearchIndex'),
+			array('tl_page', 'scheduleUpdate')
+		),
+		'onsubmit_callback' => array
+		(
+			array('tl_page', 'scheduleUpdate'),
+			array('tl_page', 'generateArticle')
 		),
 		'sql' => array
 		(
@@ -527,7 +534,7 @@ $GLOBALS['TL_DCA']['tl_page'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'select',
-			'options'                 => array(0, 5, 15, 30, 60, 300, 900, 1800, 3600, 10800, 21600, 43200, 86400, 259200, 604800, 2592000),
+			'options'                 => array(0, 5, 15, 30, 60, 300, 900, 1800, 3600, 10800, 21600, 43200, 86400, 259200, 604800, 2592000, 7776000, 15552000, 31536000),
 			'reference'               => &$GLOBALS['TL_LANG']['CACHE'],
 			'eval'                    => array('tl_class'=>'w50'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
@@ -1017,6 +1024,58 @@ class tl_page extends Backend
 	}
 
 	/**
+	 * Check for modified pages and update the XML files if necessary
+	 */
+	public function generateSitemap()
+	{
+		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		$objSession = System::getContainer()->get('session');
+
+		$session = $objSession->get('sitemap_updater');
+
+		if (empty($session) || !\is_array($session))
+		{
+			return;
+		}
+
+		$this->import('Automator');
+
+		foreach ($session as $id)
+		{
+			$this->Automator->generateSitemap($id);
+		}
+
+		$objSession->set('sitemap_updater', null);
+	}
+
+	/**
+	 * Schedule a sitemap update
+	 *
+	 * This method is triggered when a single page or multiple pages are
+	 * modified (edit/editAll), moved (cut/cutAll) or deleted
+	 * (delete/deleteAll). Since duplicated pages are unpublished by default,
+	 * it is not necessary to schedule updates on copyAll as well.
+	 *
+	 * @param DataContainer $dc
+	 */
+	public function scheduleUpdate(DataContainer $dc)
+	{
+		// Return if there is no ID
+		if (!$dc->activeRecord || !$dc->activeRecord->id || Input::get('act') == 'copy')
+		{
+			return;
+		}
+
+		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		$objSession = System::getContainer()->get('session');
+
+		// Store the ID in the session
+		$session = $objSession->get('sitemap_updater');
+		$session[] = PageModel::findWithDetails($dc->activeRecord->id)->rootId;
+		$objSession->set('sitemap_updater', array_unique($session));
+	}
+
+	/**
 	 * Auto-generate a page alias if it has not been set yet
 	 *
 	 * @param mixed         $varValue
@@ -1043,6 +1102,12 @@ class tl_page extends Backend
 			}
 
 			$varValue = System::getContainer()->get('contao.slug.generator')->generate(StringUtil::prepareSlug($dc->activeRecord->title), $slugOptions);
+
+			// Prefix numeric aliases (see #1598)
+			if (is_numeric($varValue))
+			{
+				$varValue = 'id-' . $varValue;
+			}
 
 			// Generate folder URL aliases (see #4933)
 			if (Config::get('folderUrl') && $objPage->folderUrl != '')
@@ -1505,9 +1570,12 @@ class tl_page extends Backend
 			}
 
 			// Disable "paste after" button if there is no permission 2 (move) or 1 (create) for the parent page
-			if (!$disablePA && ($objPage = Model::getClassFromTable($table)::findById($row['pid'])) !== null)
+			if (!$disablePA)
 			{
-				if (!$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $objPage->row()) || (Input::get('mode') == 'create' && !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row())))
+				/** @var PageModel $objModel */
+				$objModel = Model::getClassFromTable($table);
+
+				if (($objPage = $objModel::findById($row['pid'])) !== null && (!$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $objPage->row()) || (Input::get('mode') == 'create' && !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row()))))
 				{
 					$disablePA = true;
 				}
@@ -1646,17 +1714,6 @@ class tl_page extends Backend
 		$arrButtons['alias'] = '<button type="submit" name="alias" id="alias" class="tl_submit" accesskey="a">'.$GLOBALS['TL_LANG']['MSC']['aliasSelected'].'</button> ';
 
 		return $arrButtons;
-	}
-
-	/**
-	 * Recursively add pages to a sitemap
-	 *
-	 * @param DataContainer $dc
-	 */
-	public function updateSitemap(DataContainer $dc)
-	{
-		$this->import('Automator');
-		$this->Automator->generateSitemap($dc->id);
 	}
 
 	/**
@@ -1806,5 +1863,8 @@ class tl_page extends Backend
 		}
 
 		$objVersions->create();
+
+		// The onsubmit_callback has triggered scheduleUpdate(), so run generateSitemap() now
+		$this->generateSitemap();
 	}
 }

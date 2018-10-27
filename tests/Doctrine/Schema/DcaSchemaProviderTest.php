@@ -20,20 +20,12 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 class DcaSchemaProviderTest extends DoctrineTestCase
 {
-    public function testCanBeInstantiated(): void
-    {
-        $this->assertInstanceOf('Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider', $this->getProvider());
-    }
-
     public function testHasAnEmptySchema(): void
     {
         $this->assertCount(0, $this->getProvider()->createSchema()->getTableNames());
     }
 
     /**
-     * @param array $dca
-     * @param array $sql
-     *
      * @dataProvider createSchemaProvider
      */
     public function testCreatesASchema(array $dca = [], array $sql = []): void
@@ -132,7 +124,7 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     }
 
     /**
-     * @return array
+     * @return array<int,array<int,array<string,array<string,array<int|string,array<string,array<string,true>|bool|int|string>|string>>>>>
      */
     public function createSchemaProvider(): array
     {
@@ -275,7 +267,6 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     public function testCreatesTheTableDefinitions(): void
     {
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->method('fetch')
             ->willReturn((object) ['Collation' => null])
@@ -328,21 +319,16 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     }
 
     /**
-     * @param int|null    $expected
-     * @param string      $tableOptions
-     * @param string|null $largePrefixes
-     * @param string      $fileSystem
-     *
      * @dataProvider getIndexes
      */
-    public function testAddsTheIndexLength(?int $expected, string $tableOptions, string $largePrefixes = '', string $fileSystem = 'antelope'): void
+    public function testAddsTheIndexLength(?int $expected, string $tableOptions, string $largePrefixes = '', string $filePerTable = '', string $fileSystem = 'antelope'): void
     {
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->method('fetch')
             ->willReturnOnConsecutiveCalls(
                 (object) ['Value' => $largePrefixes],
+                (object) ['Value' => $filePerTable],
                 (object) ['Value' => $fileSystem]
             )
         ;
@@ -385,26 +371,44 @@ class DcaSchemaProviderTest extends DoctrineTestCase
     }
 
     /**
-     * @return array
+     * @return (string|int|null)[][]
      */
     public function getIndexes(): array
     {
         return [
+            // Default
             [null, 'ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci'],
             [250, 'ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci'],
+
+            // Large prefixes DISABLED
             [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'Off'],
             [191, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', '0'],
+
+            // Large prefixes ENABLED
             [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On'],
             [191, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', '1'],
-            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On', 'barracuda'],
-            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', '1', 'barracuda'],
+
+            // Large prefixes ENABLED, file per table DISABLED
+            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On', 'Off'],
+            [191, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', 'On', '0'],
+
+            // Large prefixes ENABLED, file per table DISABLED, file system PROVIDED
+            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On', 'Off', 'barracuda'],
+            [191, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', 'On', '0', 'barracuda'],
+
+            // Large prefixes ENABLED, file per table ENABLED
+            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On', 'On'],
+            [191, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', 'On', '1'],
+
+            // Large prefixes ENABLED, file per table ENABLED, file system PROVIDED
+            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci', 'On', 'On', 'barracuda'],
+            [null, 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci', 'On', '1', 'barracuda'],
         ];
     }
 
     public function testHandlesFulltextIndexes(): void
     {
         $statement = $this->createMock(Statement::class);
-
         $statement
             ->method('fetch')
             ->willReturn((object) ['Value' => 'On'])
@@ -506,7 +510,6 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $schema = $provider->createSchema();
 
-        $this->assertInstanceOf('Doctrine\DBAL\Schema\Schema', $schema);
         $this->assertCount(1, $schema->getTables());
         $this->assertTrue($schema->hasTable('tl_member'));
     }
@@ -526,7 +529,6 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $schema = $provider->createSchema();
 
-        $this->assertInstanceOf('Doctrine\DBAL\Schema\Schema', $schema);
         $this->assertCount(1, $schema->getTables());
         $this->assertTrue($schema->hasTable('tl_member'));
         $this->assertFalse($schema->hasTable('member'));
@@ -541,6 +543,6 @@ class DcaSchemaProviderTest extends DoctrineTestCase
 
         $schema = $provider->createSchema();
 
-        $this->assertInstanceOf('Doctrine\DBAL\Schema\Schema', $schema);
+        $this->assertCount(0, $schema->getTables());
     }
 }

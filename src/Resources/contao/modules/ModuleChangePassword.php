@@ -35,9 +35,7 @@ class ModuleChangePassword extends Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_wildcard');
-
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['changePassword'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
 			$objTemplate->id = $this->id;
@@ -145,25 +143,11 @@ class ModuleChangePassword extends Module
 				$objWidget->validate();
 
 				// Validate the old password
-				if ($strKey == 'oldPassword')
+				if ($strKey == 'oldPassword' && !password_verify($objWidget->value, $objMember->password))
 				{
-					// Handle old sha1() passwords with an optional salt
-					if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $objMember->password))
-					{
-						list($strPassword, $strSalt) = explode(':', $objMember->password);
-						$blnAuthenticated = ($strPassword === sha1($strSalt . $objWidget->value));
-					}
-					else
-					{
-						$blnAuthenticated = password_verify($objWidget->value, $objMember->password);
-					}
-
-					if (!$blnAuthenticated)
-					{
-						$objWidget->value = '';
-						$objWidget->addError($GLOBALS['TL_LANG']['MSC']['oldPasswordWrong']);
-						sleep(2); // Wait 2 seconds while brute forcing :)
-					}
+					$objWidget->value = '';
+					$objWidget->addError($GLOBALS['TL_LANG']['MSC']['oldPasswordWrong']);
+					sleep(2); // Wait 2 seconds while brute forcing :)
 				}
 
 				if ($objWidget->hasErrors())
@@ -180,7 +164,7 @@ class ModuleChangePassword extends Module
 
 		// Store the new password
 		if (\Input::post('FORM_SUBMIT') == $strFormId && !$doNotSubmit)
-        {
+		{
 			$objMember->tstamp = time();
 			$objMember->password = $objNewPassword->value;
 			$objMember->save();

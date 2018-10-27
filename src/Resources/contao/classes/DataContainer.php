@@ -586,11 +586,11 @@ abstract class DataContainer extends Backend
 				}
 			}
 
-			/** @var BackendTemplate|object $objTemplate */
 			$objTemplate = new \BackendTemplate('be_' . $file);
 			$objTemplate->selector = 'ctrl_' . $this->strInputName;
 			$objTemplate->type = $type;
 			$objTemplate->fileBrowserTypes = $fileBrowserTypes;
+			$objTemplate->source = $this->strTable . '.' . $this->intId;
 
 			// Deprecated since Contao 4.0, to be removed in Contao 5.0
 			$objTemplate->language = \Backend::getTinyMceLanguage();
@@ -637,7 +637,9 @@ abstract class DataContainer extends Backend
 				{
 					if ($objFile->width > 699 || $objFile->height > 524 || !$objFile->width || !$objFile->height)
 					{
-						$image = rawurldecode(\System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(699, 524, ResizeConfiguration::MODE_BOX))->getUrl(TL_ROOT));
+						$container = \System::getContainer();
+						$rootDir = $container->getParameter('kernel.project_dir');
+						$image = rawurldecode($container->get('contao.image.image_factory')->create($rootDir . '/' . $objFile->path, array(699, 524, ResizeConfiguration::MODE_BOX))->getUrl($rootDir));
 					}
 					else
 					{
@@ -805,11 +807,29 @@ abstract class DataContainer extends Backend
 			{
 				if ($k == 'show')
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					if (!empty($v['route']))
+					{
+						$href = \System::getContainer()->get('router')->generate($v['route'], ['id' => $arrRow['id'], 'popup' => '1']);
+					}
+					else
+					{
+						$href = $this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1');
+					}
+
+					$return .= '<a href="'.$href.'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strTable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 				}
 				else
 				{
-					$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].(\Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+					if (!empty($v['route']))
+					{
+						$href = \System::getContainer()->get('router')->generate($v['route'], ['id' => $arrRow['id']]);
+					}
+					else
+					{
+						$href = $this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].(\Input::get('nb') ? '&amp;nc=1' : ''));
+					}
+
+					$return .= '<a href="'.$href.'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 				}
 
 				continue;
@@ -902,7 +922,16 @@ abstract class DataContainer extends Backend
 				continue;
 			}
 
-			$return .= '<a href="'.$this->addToUrl($v['href']).'" class="'.$v['class'].'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ';
+			if (!empty($v['route']))
+			{
+				$href = \System::getContainer()->get('router')->generate($v['route']);
+			}
+			else
+			{
+				$href = $this->addToUrl($v['href']);
+			}
+
+			$return .= '<a href="'.$href.'" class="'.$v['class'].'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ';
 		}
 
 		return $return;
@@ -974,11 +1003,29 @@ abstract class DataContainer extends Backend
 
 			if ($k == 'show')
 			{
-				$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1').'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strPtable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+				if (!empty($v['route']))
+				{
+					$href = \System::getContainer()->get('router')->generate($v['route'], ['id' => $arrRow['id'], 'popup' => '1']);
+				}
+				else
+				{
+					$href = $this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].'&amp;popup=1');
+				}
+
+				$return .= '<a href="'.$href.'" title="'.\StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.\StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG'][$strPtable]['show'][1], $arrRow['id']))).'\',\'url\':this.href});return false"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 			}
 			else
 			{
-				$return .= '<a href="'.$this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].(\Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
+				if (!empty($v['route']))
+				{
+					$href = \System::getContainer()->get('router')->generate($v['route'], ['id' => $arrRow['id']]);
+				}
+				else
+				{
+					$href = $this->addToUrl($v['href'].'&amp;id='.$arrRow['id'].(\Input::get('nb') ? '&amp;nc=1' : ''));
+				}
+
+				$return .= '<a href="'.$href.'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($v['icon'], $label).'</a> ';
 			}
 		}
 
@@ -1201,14 +1248,17 @@ abstract class DataContainer extends Backend
 	}
 
 	/**
-	 * Returns an array of cache tags with all parent tables included.
+	 * Return an array of cache tags, optionally including the parent table
+	 * (which is useful when creating new elements or editing a certain element)
 	 *
 	 * @param string $table
 	 * @param array  $ids
+	 * @param string $parentTable
+	 * @param int    $parentId
 	 *
 	 * @return array
 	 */
-	protected function getCacheTags($table, array $ids = array())
+	protected function getCacheTags($table, array $ids = array(), $parentTable = '', $parentId = 0)
 	{
 		$ns = 'contao.db.';
 		$tags = array($ns . $table);
@@ -1216,6 +1266,12 @@ abstract class DataContainer extends Backend
 		foreach ($ids as $id)
 		{
 			$tags[] = $ns . $table . '.' . $id;
+		}
+
+		if ($parentTable && $parentId > 0)
+		{
+			$tags[] = $ns . $parentTable;
+			$tags[] = $ns . $parentTable . '.' . $parentId;
 		}
 
 		return array_unique($tags);

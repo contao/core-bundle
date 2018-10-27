@@ -67,7 +67,7 @@ abstract class Controller extends System
 		$strTemplate = basename($strTemplate);
 
 		// Check for a theme folder
-		if (TL_MODE == 'FE')
+		if (\defined('TL_MODE') && TL_MODE == 'FE')
 		{
 			/** @var PageModel $objPage */
 			global $objPage;
@@ -103,8 +103,9 @@ abstract class Controller extends System
 			$arrTemplates[$strTemplate][] = 'root';
 		}
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
 		$strBrace = '{' . implode(',', \StringUtil::trimsplit(',', strtolower(\Config::get('templateFiles')))) . '}';
-		$arrCustomized = self::braceGlob(TL_ROOT . '/templates/' . $strPrefix . '*.' . $strBrace);
+		$arrCustomized = self::braceGlob($rootDir . '/templates/' . $strPrefix . '*.' . $strBrace);
 
 		// Add the customized templates
 		if (\is_array($arrCustomized))
@@ -136,7 +137,7 @@ abstract class Controller extends System
 				{
 					if ($objTheme->templates != '')
 					{
-						$arrThemeTemplates = self::braceGlob(TL_ROOT . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace);
+						$arrThemeTemplates = self::braceGlob($rootDir . '/' . $objTheme->templates . '/' . $strPrefix . '*.' . $strBrace);
 
 						if (\is_array($arrThemeTemplates))
 						{
@@ -587,7 +588,7 @@ abstract class Controller extends System
 	/**
 	 * Calculate the page status icon name based on the page parameters
 	 *
-	 * @param PageModel|Result|object $objPage The page object
+	 * @param PageModel|Result $objPage The page object
 	 *
 	 * @return string The status icon name
 	 */
@@ -752,6 +753,24 @@ abstract class Controller extends System
 			}
 		}
 
+		// FE preview support
+		if (\System::getContainer()->get('contao.security.token_checker')->hasBackendUser())
+		{
+			$strScripts .= "
+<script>
+  (function(win) {
+    if (!win.parent || typeof(win.parent.postMessage) !== 'function') {
+      return;
+    }
+    win.parent.postMessage({
+      'contao.preview': {
+        'title': win.document.title,
+        'uri': win.location.href
+      }}, win.location.origin);
+  })(window);
+</script>";
+		}
+
 		global $objPage;
 
 		$objLayout = \LayoutModel::findByPk($objPage->layoutId);
@@ -896,7 +915,7 @@ abstract class Controller extends System
 
 		$arrReplace['[[TL_HEAD]]'] = $strScripts;
 
-		return str_replace(array_keys($arrReplace), array_values($arrReplace), $strBuffer);
+		return str_replace(array_keys($arrReplace), $arrReplace, $strBuffer);
 	}
 
 	/**
@@ -1008,11 +1027,6 @@ abstract class Controller extends System
 	 */
 	public static function redirect($strLocation, $intStatus=303)
 	{
-		if (headers_sent())
-		{
-			exit;
-		}
-
 		$strLocation = str_replace('&amp;', '&', $strLocation);
 		$strLocation = static::replaceOldBePaths($strLocation);
 
@@ -1061,7 +1075,7 @@ abstract class Controller extends System
 			'contao/switch.php'    => $generate('contao_backend_switch')
 		);
 
-		return str_replace(array_keys($arrMapper), array_values($arrMapper), $strContext);
+		return str_replace(array_keys($arrMapper), $arrMapper, $strContext);
 	}
 
 	/**
@@ -1223,8 +1237,10 @@ abstract class Controller extends System
 			throw new PageNotFoundException('Invalid path');
 		}
 
+		$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
 		// Check whether the file exists
-		if (!file_exists(TL_ROOT . '/' . $strFile))
+		if (!file_exists($rootDir . '/' . $strFile))
 		{
 			throw new PageNotFoundException('File not found');
 		}
@@ -1432,11 +1448,10 @@ abstract class Controller extends System
 		}
 		catch (\Exception $e)
 		{
-			$objFile = new \stdClass();
-			$objFile->imageSize = false;
+			$objFile = null;
 		}
 
-		$imgSize = $objFile->imageSize;
+		$imgSize = $objFile ? $objFile->imageSize : false;
 		$size = \StringUtil::deserialize($arrItem['size']);
 
 		if (is_numeric($size))
@@ -1499,13 +1514,14 @@ abstract class Controller extends System
 		try
 		{
 			$container = \System::getContainer();
+			$rootDir = $container->getParameter('kernel.project_dir');
 			$staticUrl = $container->get('contao.assets.files_context')->getStaticUrl();
-			$picture = $container->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $arrItem['singleSRC'], $size);
+			$picture = $container->get('contao.image.picture_factory')->create($rootDir . '/' . $arrItem['singleSRC'], $size);
 
 			$picture = array
 			(
-				'img' => $picture->getImg(TL_ROOT, $staticUrl),
-				'sources' => $picture->getSources(TL_ROOT, $staticUrl)
+				'img' => $picture->getImg($rootDir, $staticUrl),
+				'sources' => $picture->getSources($rootDir, $staticUrl)
 			);
 
 			$src = $picture['img']['src'];
@@ -1524,7 +1540,7 @@ abstract class Controller extends System
 		}
 
 		// Image dimensions
-		if ($objFile->exists() && ($imgSize = $objFile->imageSize) !== false)
+		if ($objFile && $objFile->exists() && ($imgSize = $objFile->imageSize) !== false)
 		{
 			$objTemplate->arrSize = $imgSize;
 			$objTemplate->imgSize = ' width="' . $imgSize[0] . '" height="' . $imgSize[1] . '"';
@@ -1716,7 +1732,9 @@ abstract class Controller extends System
 		{
 			if ($objFiles->type == 'file')
 			{
-				if (!\in_array($objFiles->extension, $allowedDownload) || !is_file(TL_ROOT . '/' . $objFiles->path))
+				$rootDir = \System::getContainer()->getParameter('kernel.project_dir');
+
+				if (!\in_array($objFiles->extension, $allowedDownload) || !is_file($rootDir . '/' . $objFiles->path))
 				{
 					continue;
 				}

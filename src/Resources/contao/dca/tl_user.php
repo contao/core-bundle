@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('inherit', 'admin'),
-		'login'                       => '{name_legend},name,email;{backend_legend},language,uploader,showHelp,thumbnails,useRTE,useCE;{session_legend},session;{theme_legend:hide},backendTheme,fullscreen;{password_legend},password',
+		'login'                       => '{name_legend},name,email;{backend_legend},language,uploader,showHelp,thumbnails,useRTE,useCE;{session_legend},session;{password_legend},password;{theme_legend:hide},backendTheme,fullscreen',
 		'admin'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{account_legend},disable,start,stop',
 		'default'                     => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,start,stop',
 		'group'                       => '{name_legend},username,name,email;{backend_legend:hide},language,uploader,showHelp,thumbnails,useRTE,useCE;{theme_legend:hide},backendTheme,fullscreen;{password_legend:hide},pwChange,password;{admin_legend},admin;{groups_legend},groups,inherit;{account_legend},disable,start,stop',
@@ -440,6 +440,17 @@ $GLOBALS['TL_DCA']['tl_user'] = array
 			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
+		'secret' => array
+		(
+			'eval'                    => array('doNotShow'=>true, 'doNotCopy'=>true),
+			'sql'                     => "binary(128) NULL default NULL"
+		),
+		'useTwoFactor' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_user']['useTwoFactor'],
+			'eval'                    => array('isBoolean'=>true),
+			'sql'                     => "char(1) NOT NULL default ''"
+		),
 		'lastLogin' => array
 		(
 			'eval'                    => array('rgxp'=>'datim', 'doNotShow'=>true, 'doNotCopy'=>true),
@@ -516,7 +527,7 @@ class tl_user extends Backend
 			case 'copy':
 			case 'toggle':
 			default:
-				$objUser = $this->Database->prepare("SELECT admin FROM tl_user WHERE id=?")
+				$objUser = $this->Database->prepare("SELECT `admin` FROM tl_user WHERE id=?")
 										  ->limit(1)
 										  ->execute(Input::get('id'));
 
@@ -533,7 +544,7 @@ class tl_user extends Backend
 				$objSession = System::getContainer()->get('session');
 
 				$session = $objSession->all();
-				$objUser = $this->Database->execute("SELECT id FROM tl_user WHERE admin=1");
+				$objUser = $this->Database->execute("SELECT id FROM tl_user WHERE `admin`=1");
 				$session['CURRENT']['IDS'] = array_diff($session['CURRENT']['IDS'], $objUser->fetchEach('id'));
 				$objSession->replace($session);
 				break;
@@ -591,6 +602,11 @@ class tl_user extends Backend
 		$time = \Date::floorToMinute();
 
 		$disabled = ($row['start'] !== '' && $row['start'] > $time) || ($row['stop'] !== '' && $row['stop'] < $time);
+
+		if ($row['useTwoFactor'])
+		{
+			$image .= '_two_factor';
+		}
 
 		if ($row['disable'] || $disabled)
 		{

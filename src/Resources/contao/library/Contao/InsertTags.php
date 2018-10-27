@@ -27,6 +27,11 @@ class InsertTags extends Controller
 {
 
 	/**
+	 * @var array
+	 */
+	protected static $arrItCache = array();
+
+	/**
 	 * Make the constructor public
 	 */
 	public function __construct()
@@ -53,6 +58,14 @@ class InsertTags extends Controller
 		}
 
 		return $strBuffer;
+	}
+
+	/**
+	 * Reset the insert tag cache
+	 */
+	public static function reset()
+	{
+		static::$arrItCache = array();
 	}
 
 	/**
@@ -86,8 +99,7 @@ class InsertTags extends Controller
 		$container = \System::getContainer();
 
 		// Create one cache per cache setting (see #7700)
-		static $arrItCache;
-		$arrCache = &$arrItCache[$blnCache];
+		$arrCache = &static::$arrItCache[$blnCache];
 
 		for ($_rit=0, $_cnt=\count($tags); $_rit<$_cnt; $_rit+=2)
 		{
@@ -311,7 +323,7 @@ class InsertTags extends Controller
 						}
 						elseif (\is_array($opts) && array_is_assoc($opts))
 						{
-							$arrCache[$strTag] = isset($opts[$value]) ? $opts[$value] : $value;
+							$arrCache[$strTag] = $opts[$value] ?? $value;
 						}
 						elseif (\is_array($rfrc))
 						{
@@ -870,7 +882,7 @@ class InsertTags extends Controller
 						if (strtolower($elements[0]) == 'image')
 						{
 							$dimensions = '';
-							$src = $container->get('contao.image.image_factory')->create(TL_ROOT . '/' . rawurldecode($strFile), array($width, $height, $mode))->getUrl(TL_ROOT);
+							$src = $container->get('contao.image.image_factory')->create($container->getParameter('kernel.project_dir') . '/' . rawurldecode($strFile), array($width, $height, $mode))->getUrl($container->getParameter('kernel.project_dir'));
 							$objFile = new \File(rawurldecode($src));
 
 							// Add the image dimensions
@@ -886,12 +898,12 @@ class InsertTags extends Controller
 						else
 						{
 							$staticUrl = $container->get('contao.assets.files_context')->getStaticUrl();
-							$picture = $container->get('contao.image.picture_factory')->create(TL_ROOT . '/' . $strFile, $size);
+							$picture = $container->get('contao.image.picture_factory')->create($container->getParameter('kernel.project_dir') . '/' . $strFile, $size);
 
 							$picture = array
 							(
-								'img' => $picture->getImg(TL_ROOT, $staticUrl),
-								'sources' => $picture->getSources(TL_ROOT, $staticUrl)
+								'img' => $picture->getImg($container->getParameter('kernel.project_dir'), $staticUrl),
+								'sources' => $picture->getSources($container->getParameter('kernel.project_dir'), $staticUrl)
 							);
 
 							$picture['alt'] = $alt;
@@ -954,13 +966,13 @@ class InsertTags extends Controller
 					}
 
 					// Include .php, .tpl, .xhtml and .html5 files
-					if (preg_match('/\.(php|tpl|xhtml|html5)$/', $strFile) && file_exists(TL_ROOT . '/templates/' . $strFile))
+					if (preg_match('/\.(php|tpl|xhtml|html5)$/', $strFile) && file_exists($container->getParameter('kernel.project_dir') . '/templates/' . $strFile))
 					{
 						ob_start();
 
 						try
 						{
-							include TL_ROOT . '/templates/' . $strFile;
+							include $container->getParameter('kernel.project_dir') . '/templates/' . $strFile;
 							$arrCache[$strTag] = ob_get_contents();
 						}
 						finally
@@ -1062,6 +1074,11 @@ class InsertTags extends Controller
 							}
 
 							$arrCache[$strTag] = implode(', ', $result);
+							break;
+
+						case 'refresh':
+						case 'uncached':
+							// ignore
 							break;
 
 						// HOOK: pass unknown flags to callback functions

@@ -12,7 +12,6 @@ namespace Contao;
 
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -42,15 +41,15 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property string  $email
  * @property string  $language
  * @property string  $backendTheme
- * @property boolean $fullscreen
+ * @property string  $fullscreen
  * @property string  $uploader
- * @property boolean $showHelp
- * @property boolean $thumbnails
- * @property boolean $useRTE
- * @property boolean $useCE
+ * @property string  $showHelp
+ * @property string  $thumbnails
+ * @property string  $useRTE
+ * @property string  $useCE
  * @property string  $password
- * @property boolean $pwChange
- * @property boolean $admin
+ * @property string  $pwChange
+ * @property string  $admin
  * @property array   $groups
  * @property string  $inherit
  * @property string  $modules
@@ -62,7 +61,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property string  $forms
  * @property string  $formp
  * @property array   $amg
- * @property boolean $disable
+ * @property string  $disable
  * @property string  $start
  * @property string  $stop
  * @property array   $session
@@ -85,8 +84,8 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property string  $mobile
  * @property string  $fax
  * @property string  $website
- * @property boolean $login
- * @property boolean $assignDir
+ * @property string  $login
+ * @property string  $assignDir
  * @property string  $homeDir
  * @property integer $createdOn
  * @property string  $activation
@@ -95,10 +94,12 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @property object  $objAuth
  * @property object  $objLogin
  * @property object  $objLogout
+ * @property string  $useTwoFactor
+ * @property string  $secret
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-abstract class User extends System implements UserInterface, EncoderAwareInterface, EquatableInterface, \Serializable
+abstract class User extends System implements UserInterface, EquatableInterface, \Serializable
 {
 
 	/**
@@ -154,12 +155,6 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 	 * @var string
 	 */
 	protected $salt;
-
-	/**
-	 * Encoder name
-	 * @var string
-	 */
-	protected $encoder = false;
 
 	/**
 	 * Import the database object
@@ -463,6 +458,8 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @return User
 	 */
 	public static function loadUserByUsername($username)
 	{
@@ -502,19 +499,8 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 		// Check if a passwords needs rehashing (see contao/core#8820)
 		if ($isLogin)
 		{
-			$blnNeedsRehash = true;
-
-			// Handle old sha1() passwords with an optional salt
-			if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $user->password))
-			{
-				list($strPassword, $strSalt) = explode(':', $user->password);
-				$blnAuthenticated = ($strPassword === sha1($strSalt . $request->request->get('password')));
-			}
-			else
-			{
-				$blnAuthenticated = password_verify($request->request->get('password'), $user->password);
-				$blnNeedsRehash = password_needs_rehash($user->password, PASSWORD_DEFAULT);
-			}
+			$blnAuthenticated = password_verify($request->request->get('password'), $user->password);
+			$blnNeedsRehash = password_needs_rehash($user->password, PASSWORD_DEFAULT);
 
 			// Re-hash the password if the algorithm has changed
 			if ($blnAuthenticated && $blnNeedsRehash)
@@ -586,29 +572,6 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getEncoderName()
-	{
-		if (false === $this->encoder)
-		{
-			$this->selectEncoder();
-		}
-
-		return $this->encoder;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setEncoder($encoder)
-	{
-		$this->encoder = $encoder;
-
-		return $this;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	public function serialize()
 	{
 		return serialize(array($this->id, $this->username, $this->disable, $this->admin, $this->groups));
@@ -658,30 +621,6 @@ abstract class User extends System implements UserInterface, EncoderAwareInterfa
 		}
 
 		return true;
-	}
-
-	/**
-	 * Select a matching encoder based on the password
-	 */
-	protected function selectEncoder()
-	{
-		if ($this->encoder !== false)
-		{
-			return;
-		}
-
-		if (preg_match('/^[a-f0-9]{40}(:[a-f0-9]{23})?$/', $this->arrData['password']))
-		{
-			list($password, $salt) = explode(':', $this->getPassword());
-
-			$this->setEncoder('legacy');
-			$this->setPassword($password);
-			$this->setSalt($salt);
-		}
-		else
-		{
-			$this->setEncoder('default');
-		}
 	}
 
 	/**
