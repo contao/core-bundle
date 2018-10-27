@@ -334,7 +334,8 @@ class Folder extends System
 			return;
 		}
 
-		if (!file_exists($this->strRootDir . '/' . $this->strFolder . '/.public')) {
+		// make sure this folder contains the .public file and not a parent
+		if (!$this->isUnprotected(false)) {
 			throw new \RuntimeException(
 				sprintf('Can\'t protect folder "%s" inside an unprotected folder".', $this->strFolder)
 			);
