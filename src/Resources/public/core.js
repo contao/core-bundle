@@ -2606,6 +2606,97 @@ var Backend =
 	},
 
 	/**
+	 * Try to focus the input field that was last focused, before a page reload occurred
+	 *
+	 * @return boolean true if there is a field that will be focused, otherwise false
+	 *
+	 * @author Patrick Josupeit
+	 */
+	initInputFocus: function() {
+		var lastInputFocus = window.sessionStorage.getItem('contao_be.lastInputFocus');
+		if (lastInputFocus) {
+			var el = $(lastInputFocus);
+			if (el) {
+				window.addEvent('load', function() {
+					el.focus();
+				});
+				return true;
+			} else {
+				// chosen-enhanced select
+				var matches = lastInputFocus.match(/(.*?)_chzn$/);
+				if (matches && matches.length > 1) {
+					el = $(matches[1]);
+					if (el) {
+						var interval = setInterval(function() {
+							var chzn_el = el.getSiblings('.chzn-container');
+							if (chzn_el.length) {
+								clearInterval(interval);
+								window.addEvent('load', function() {
+									chzn_el[0].getElement('.chzn-single').focus();
+								});
+							}
+						}, 32);
+						return true;
+					}
+				} else {
+					// ace source code editor
+					if (lastInputFocus == 'ctrl_html_div') {
+						el = $('ctrl_html');
+						if (el) {
+							var interval = setInterval(function() {
+								var ace_el = $(lastInputFocus);
+								if (ace_el) {
+									clearInterval(interval);
+									window.addEvent('load', function() {
+										var editor = ace.edit(ace_el);
+										// var acePosition = window.sessionStorage.getItem('contao_be.lastInputFocus.acePosition');
+										// if (acePosition) {
+										// 	acePosition = JSON.parse(acePosition)
+										// 	editor.selection.anchor.setPosition(acePosition.row, acePosition.col);
+										// }
+										editor.focus();
+									});
+								}
+							}, 32);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	},
+
+	/**
+	 * Set event handlers to store the id of the last focused input field in sessionStorage
+	 *
+	 * @author Patrick Josupeit
+	 */
+	registerSaveLastFocusedInputHandlers: function() {
+		$$('.tl_formbody_edit').addEvents({
+			'focus:relay(input)': Backend.saveLastFocusedInputHandler,
+			'focus:relay(select)': Backend.saveLastFocusedInputHandler,
+			'focus:relay(textarea)': Backend.saveLastFocusedInputHandler,
+			'focus:relay(.chzn-container)': Backend.saveLastFocusedInputHandler,
+			'focus:relay(.ace_editor)': Backend.saveLastFocusedInputHandler
+		});
+	},
+
+	/**
+	 * Event handler that stores the id of the last focused input field in sessionStorage
+	 *
+	 * @author Patrick Josupeit
+	 */
+	saveLastFocusedInputHandler: function(e, item) {
+		if (!item.get('disabled') && item.isVisible() && item.get('type') !== 'submit' && item.get('type') !== 'image') {
+			window.sessionStorage.setItem('contao_be.lastInputFocus', this.id);
+			// if (window.ace && item.hasClass('ace_editor')) {
+			// window.sessionStorage.setItem('contao_be.lastInputFocus.acePosition', JSON.stringify(ace.edit(this).selection.anchor.getPosition()));
+			// }
+		}
+	},
+
+	/**
 	 * Allow to mark the important part of an image
 	 *
 	 * @param {object} el The DOM element
@@ -2848,7 +2939,10 @@ window.addEvent('domready', function() {
 	Backend.tableWizardSetWidth();
 	Backend.enableImageSizeWidgets();
 	Backend.enableToggleSelect();
-	Backend.autoFocusFirstInputField();
+	Backend.registerSaveLastFocusedInputHandlers();
+	if (!Backend.initInputFocus()) {
+		Backend.autoFocusFirstInputField();
+	}
 
 	// Chosen
 	if (Elements.chosen != undefined) {
