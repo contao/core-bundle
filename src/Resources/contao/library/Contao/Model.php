@@ -379,7 +379,7 @@ abstract class Model
 	{
 		if (!isset($this->arrModified[$strKey]))
 		{
-			$this->arrModified[$strKey] = $this->arrData[$strKey];
+			$this->arrModified[$strKey] = (isset($this->arrData[$strKey])) ? $this->arrData[$strKey] : null;
 		}
 	}
 
