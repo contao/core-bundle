@@ -1,605 +1,594 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="src/Resources/contao/languages/en/tl_page.php" source-language="en" target-language="nl">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_page.php" source-language="en" target-language="lv">
     <body>
       <trans-unit id="tl_page.title.0">
         <source>Page name</source>
-        <target>Pagina naam</target>
+        <target>Lapas vārds</target>
       </trans-unit>
       <trans-unit id="tl_page.title.1">
         <source>Please enter the page name.</source>
-        <target>Geef een pagina naam op.</target>
+        <target>Lapas vārds tiek rādīts mājas lapas navigācijā.</target>
       </trans-unit>
       <trans-unit id="tl_page.alias.0">
         <source>Page alias</source>
-        <target>Pagina alias</target>
+        <target>Lapas aizstājvārds</target>
       </trans-unit>
       <trans-unit id="tl_page.alias.1">
         <source>The page alias is a unique reference to the page which can be called instead of its numeric ID.</source>
-        <target>De pagina alias is een unieke referentie naar de pagina die kan opgeroepen worden i.p.v. de pagina ID.</target>
+        <target>Lapas aizstājvārds ir unikāla reference uz lapu, kas var tikt izsaukta lapas ID vietā. Tas ir sevišķi noderīgi, ja TYPOlight lieto statiskos URL.</target>
       </trans-unit>
       <trans-unit id="tl_page.type.0">
         <source>Page type</source>
-        <target>Pagina type</target>
+        <target>Lapas tips</target>
       </trans-unit>
       <trans-unit id="tl_page.type.1">
         <source>Please choose the page type.</source>
-        <target>Selecteer het type afhankelijk van het doel van de pagina.</target>
+        <target>Lūdzu izvēlieties lapas tipu pēc tās mērķa.</target>
       </trans-unit>
       <trans-unit id="tl_page.pageTitle.0">
         <source>Page title</source>
-        <target>Paginatitel</target>
+        <target>Lapas virsraksts</target>
       </trans-unit>
       <trans-unit id="tl_page.pageTitle.1">
         <source>Please enter the page title.</source>
-        <target>Geef een pagina titel op.</target>
+        <target>Lūdzu ievadiet lapas virsrakstu</target>
       </trans-unit>
       <trans-unit id="tl_page.language.0">
         <source>Language</source>
-        <target>Taal</target>
+        <target>Valoda</target>
       </trans-unit>
       <trans-unit id="tl_page.language.1">
         <source>Please enter the page language according to the ISO-639-1 standard (e.g. &quot;en&quot; for English or &quot;en-US&quot; for American English).</source>
-        <target>Geef de pagina taal op volgens de ISO-639-1 norm (b.v. &quot;en&quot; voor Engels of &quot;en-US&quot; voor Amerikaans Engels).</target>
+        <target>Lūdzu ievadiet lapas valodu atbilstoši ISO-639-1 standartam (piem. &quot;en&quot; angļu valodai vai &quot;en-US&quot; ASV angļu valodai).</target>
       </trans-unit>
       <trans-unit id="tl_page.robots.0">
         <source>Robots tag</source>
-        <target>Robots tag</target>
+        <target>Robotu birkas</target>
       </trans-unit>
       <trans-unit id="tl_page.robots.1">
         <source>Here you can define how search engines handle the page.</source>
-        <target>Hier kunt u bepalen hoe zoekmachines de pagina afhandelen.</target>
+        <target>Šeit jūs varat definēt, kā meklētājprogrammas rīkojas ar lapu.</target>
       </trans-unit>
       <trans-unit id="tl_page.description.0">
         <source>Page description</source>
-        <target>Pagina omschrijving</target>
+        <target>Lapas apraksts</target>
       </trans-unit>
       <trans-unit id="tl_page.description.1">
         <source>Here you can enter a short description of the page which will be evaluated by search engines like Google or Yahoo. Search engines usually indicate between 150 and 300 characters.</source>
-        <target>U kunt hier een korte omschrijving geven van de pagina die getoond zal worden door zoekmachines. Een zoekmachine geeft gewoonlijk tussen 150 en 300 karakters weer.</target>
+        <target>Šeit varat ievadīt īsu lapas aprakstu, ko vērtēs meklētājprogrammas, piemēram, Google vai Yahoo. Meklētājprogrammas parasti rāda no 150 līdz 300 rakstzīmēm.</target>
       </trans-unit>
       <trans-unit id="tl_page.redirect.0">
         <source>Redirect type</source>
-        <target>Redirect type</target>
+        <target>Virzienmaiņas veids</target>
       </trans-unit>
       <trans-unit id="tl_page.redirect.1">
         <source>Please choose the redirect type.</source>
-        <target>Tijdelijke redirects sturen een HTTP 302 header, permanente sturen een HTTP 301 header.</target>
+        <target>Lūdzu izvēlieties virzienmaiņas veidu</target>
       </trans-unit>
       <trans-unit id="tl_page.jumpTo.0">
         <source>Redirect page</source>
-        <target>Ga naar pagina</target>
+        <target>Pārsūtīšanas lapa</target>
       </trans-unit>
       <trans-unit id="tl_page.jumpTo.1">
         <source>Please choose the page to which visitors will be redirected. Leave blank to redirect to the first regular subpage.</source>
-        <target>Kies de pagina naar waar bezoekers worden omgeleid. Laat open om te worden omgeleid naar de eerste subpagina.</target>
+        <target>Lūdzu, izvēlieties lapu, uz kuru tiks novirzīti apmeklētāji. Atstājiet tukšu, lai novirzītu uz pirmo regulāro apakšlapu.</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.0">
         <source>Redirect to last page visited</source>
-        <target>Doorsturen naar de laatst bezochte pagina</target>
+        <target>Pārsūtīt uz lapu, kas beidzamo reizi apmeklēta</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
         <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>Stuur de gebruiker door naar de laatst bezochte pagina na login/logout.</target>
+        <target>Novirzīt lietotāju atpakaļ uz pēdējo apmeklēto lapu, pāradresācijas lapas vietā.</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
-        <target>Taal reservepagina</target>
+        <target>Valodas atpazīšana</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.1">
         <source>Show this page if there is none that matches the visitor's language.</source>
-        <target>Toon deze pagina als er geen pagina is in de taal van de bezoeker.</target>
+        <target>Parādīt šo lapu, ja nav tādas, kas atbilst apmeklētāja valodai.</target>
       </trans-unit>
       <trans-unit id="tl_page.dns.0">
         <source>Domain name</source>
-        <target>Domeinnaam</target>
+        <target>Domēna nosaukums</target>
       </trans-unit>
       <trans-unit id="tl_page.dns.1">
         <source>Here you can restrict the access to the website to a certain domain name.</source>
-        <target>Hier kunt u de toegang naar de website beperken tot een bepaalde domeinnaam.</target>
+        <target>Šeit Jūs varat ierobežot piekļuvi mājas lapā ar noteiktu domēna vārdu.</target>
       </trans-unit>
       <trans-unit id="tl_page.staticFiles.0">
         <source>Files URL</source>
-        <target>Bestanden URL</target>
+        <target>Faila URL</target>
       </trans-unit>
       <trans-unit id="tl_page.staticFiles.1">
         <source>The files URL applies to the &lt;em&gt;files&lt;/em&gt; directory (page speed optimization).</source>
-        <target>De bestanden URL is van toepassing op de &lt;em&gt;tl_files&lt;/em&gt; directory en alle afbeelding thumbnails (paginasnelheid optimalisatie).</target>
+        <target>Faila URL attiecas uz &lt;em&gt;tl_files&lt;/em&gt; direktoriju un visiem sīktēliem (lapas ātruma optimizācija).</target>
       </trans-unit>
       <trans-unit id="tl_page.staticPlugins.0">
         <source>Assets URL</source>
-        <target>Plugins URL</target>
+        <target>Papildinājuma URL</target>
       </trans-unit>
       <trans-unit id="tl_page.staticPlugins.1">
         <source>The assets URL applies to the &lt;em&gt;assets&lt;/em&gt; directory (page speed optimization).</source>
-        <target>De plugin URL is van toepassing op alle bronnen in de &lt;em&gt;plugins&lt;/em&gt; directory (paginasnelheid optimalisatie).</target>
+        <target>Papildinājuma URL attiecas uz visiem resursiem &lt;em&gt;plugins&lt;/em&gt; direktorijā (lapas ātruma optimizācija).</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.0">
         <source>E-mail address of the website administrator</source>
-        <target>E-mail adres van de websitebeheerder</target>
+        <target>Mājas lapas administratora e-pasts</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
         <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>Automatisch aangemaakte berichten zoals aanmeldingen of bevestigingen worden naar dit adres verstuurd.</target>
+        <target>Lūdzu ievadiet sistēmas administratora e-pastu.</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
-        <target>Datumnotatie</target>
+        <target>Datuma formāts</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.1">
         <source>The date format string will be parsed with the PHP date() function.</source>
-        <target>Geef een datumnotatie op zoals gebruikt door PHP functie date().</target>
+        <target>Lūdzu ievadiet datuma formātu kādu lieto PHP funkcija date().</target>
       </trans-unit>
       <trans-unit id="tl_page.timeFormat.0">
         <source>Time format</source>
-        <target>Tijdnotatie</target>
+        <target>Laika formāts</target>
       </trans-unit>
       <trans-unit id="tl_page.timeFormat.1">
         <source>The time format string will be parsed with the PHP date() function.</source>
-        <target>Geef een tijdnotatie op zoals gebruikt door PHP functie date().</target>
+        <target>Lūdzu ievadiet laika formātu, kādu lieto PHP funkcija date().</target>
       </trans-unit>
       <trans-unit id="tl_page.datimFormat.0">
         <source>Date and time format</source>
-        <target>Datum- en tijdnotatie</target>
+        <target>Datuma un laika formāts</target>
       </trans-unit>
       <trans-unit id="tl_page.datimFormat.1">
         <source>The date and time format string will be parsed with the PHP date() function.</source>
-        <target>Geef een datum- en tijdnotatie op zoals gebruikt door PHP functie date() .</target>
+        <target>Lūdzu ievadiet datuma un laika formātu, kādu lieto PHP funkcija date().</target>
       </trans-unit>
       <trans-unit id="tl_page.validAliasCharacters.0">
         <source>Valid alias characters</source>
-        <target>Geldige alias-tekens</target>
       </trans-unit>
       <trans-unit id="tl_page.validAliasCharacters.1">
         <source>Here you can select a custom character set for auto-generated aliases.</source>
-        <target>Aangepaste tekenset voor automatisch gegenereerde aliassen selecteren.</target>
       </trans-unit>
       <trans-unit id="tl_page.createSitemap.0">
         <source>Create an XML sitemap</source>
-        <target>Maak een XML sitemap aan</target>
+        <target>Izveidot XML lapas karti</target>
       </trans-unit>
       <trans-unit id="tl_page.createSitemap.1">
         <source>Create a Google XML sitemap in the &lt;em&gt;share/&lt;/em&gt; directory.</source>
-        <target>Maak een Google XML sitemap in de &lt;em&gt;share/&lt;/em&gt; directory.</target>
+        <target>Izveidot Google XML vietnes karti mapē &lt;em&gt;share/&lt;/em&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemapName.0">
         <source>Sitemap file name</source>
-        <target>Bestandsnaam sitemap</target>
+        <target>Lapas kartes datnes vārds</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemapName.1">
         <source>Please enter the name of the sitemap file without extension.</source>
-        <target>Geef naam op voor het sitemap bestand zonder extensie.</target>
+        <target>Lūdzu ievadiet lapas kartes vārdu bez paplašinājuma.</target>
       </trans-unit>
       <trans-unit id="tl_page.useSSL.0">
         <source>Use HTTPS</source>
-        <target>Gebruik HTTPS</target>
+        <target>Lietot HTTPS</target>
       </trans-unit>
       <trans-unit id="tl_page.useSSL.1">
         <source>This website is available via HTTPS.</source>
-        <target>Deze website is beschikbaar via HTTPS.</target>
+        <target>Šī mājas lapa ir pieejama izmantojot HTTPS.</target>
       </trans-unit>
       <trans-unit id="tl_page.autoforward.0">
         <source>Forward to another page</source>
-        <target>Doorverwijzen naar andere pagina</target>
+        <target>Pārsūtīt uz citu lapu</target>
       </trans-unit>
       <trans-unit id="tl_page.autoforward.1">
         <source>Redirect visitors to another page (e.g. a login page).</source>
-        <target>Als u deze optie kiest zullen bezoekers doorverwezen worden naar een andere pagina (bv. een login pagina of welkom pagina).</target>
+        <target>Novirzīt apmeklētāju uz citu lapu (piem, pieteikšanās lapu).</target>
       </trans-unit>
       <trans-unit id="tl_page.protected.0">
         <source>Protect page</source>
-        <target>Pagina afschermen</target>
+        <target>Aizsargāt lapu</target>
       </trans-unit>
       <trans-unit id="tl_page.protected.1">
         <source>Restrict page access to certain member groups.</source>
-        <target>Als u deze optie kiest kunt u de toegang tot de pagina beperken tot bepaalde ledengroepen.</target>
+        <target>Liegt noteiktām biedru grupām piekļuvi lapai.</target>
       </trans-unit>
       <trans-unit id="tl_page.groups.0">
         <source>Allowed member groups</source>
-        <target>Ledengroepen die zijn toegestaan</target>
+        <target>Atļautās biedru grupas</target>
       </trans-unit>
       <trans-unit id="tl_page.groups.1">
         <source>These groups will be able to access the page.</source>
-        <target>Hier kunt u toegang geven aan een of meerdere ledengroepen. Als u geen groep kiest, heeft elke frontend gebruiker toegang tot de pagina.</target>
+        <target>Šīs grupas varēs piekļūt lapai.</target>
       </trans-unit>
       <trans-unit id="tl_page.includeLayout.0">
         <source>Assign a layout</source>
-        <target>Lay-out toewijzen</target>
+        <target>Piešķirt salikumu</target>
       </trans-unit>
       <trans-unit id="tl_page.includeLayout.1">
         <source>Assign a page layout to the page and its subpages.</source>
-        <target>Wijs een lay-out toe aan een pagina en onderliggende subpagina's.</target>
+        <target>Piešķirt lapas salikumu lapai un tās apakšlapām.</target>
       </trans-unit>
       <trans-unit id="tl_page.layout.0">
         <source>Page layout</source>
-        <target>Pagina-lay-out</target>
+        <target>Lapas salikums</target>
       </trans-unit>
       <trans-unit id="tl_page.layout.1">
         <source>You can manage page layouts with the &quot;themes&quot; module.</source>
-        <target>Pagina opmaken kunt u beheren met de &quot;thema's&quot; module.</target>
+        <target>Jūs varat pārvaldīt lapas salikumus ar &quot;lapu salikumi&quot; moduli.</target>
       </trans-unit>
       <trans-unit id="tl_page.includeCache.0">
         <source>Set cache timeouts</source>
-        <target>Cache time-out waarde toewijzen</target>
+        <target>Uzstādīt kešošanas noildzes</target>
       </trans-unit>
       <trans-unit id="tl_page.includeCache.1">
         <source>Set cache timeout values for the page and its subpages.</source>
-        <target>Stel cache time-out waardes in voor de pagina en subpagina's.</target>
+        <target>Uzstādīt kešošanas noildzes vērtibas lapai un tās apakšlapām.</target>
       </trans-unit>
       <trans-unit id="tl_page.cache.0">
         <source>Shared cache timeout</source>
-        <target>Gedeelde cache time-out</target>
       </trans-unit>
       <trans-unit id="tl_page.cache.1">
         <source>The period after which the page should no longer be considered fresh by a shared cache.</source>
-        <target>De periode waarna de pagina niet meer als vers wordt beschouwd door een gedeelde cache.</target>
       </trans-unit>
       <trans-unit id="tl_page.alwaysLoadFromCache.0">
         <source>Always load from shared cache</source>
-        <target>Altijd laden van gedeelde cache</target>
+        <target>Vienmēr ielādēt no koplietotās kešatmiņas</target>
       </trans-unit>
       <trans-unit id="tl_page.alwaysLoadFromCache.1">
         <source>Always load this page from the shared cache, even if a member is logged in. Note that you can no longer personalize the page for logged in members in this case!</source>
-        <target>Laad deze pagina altijd vanuit de gedeelde cache, zelfs als een lid is aangemeld. Houd er wel rekening mee dat u in dit geval de pagina voor ingelogde leden niet meer kunt personaliseren!</target>
       </trans-unit>
       <trans-unit id="tl_page.clientCache.0">
         <source>Private cache timeout</source>
-        <target>Time-out persoonlijke cache</target>
       </trans-unit>
       <trans-unit id="tl_page.clientCache.1">
         <source>The period after which the page should no longer be considered fresh by a private cache.</source>
-        <target>De periode waarna de pagina niet meer als vers wordt beschouwd door een besloten cache.</target>
       </trans-unit>
       <trans-unit id="tl_page.includeChmod.0">
         <source>Assign access rights</source>
-        <target>Permissies toewijzen</target>
+        <target>Piešķirt piekļūšanas tiesības</target>
       </trans-unit>
       <trans-unit id="tl_page.includeChmod.1">
         <source>Access rights determine what back end users can do with the page.</source>
-        <target>Toegangsrechten bepalen wat back-end gebruikers kunnen doen met de pagina.</target>
+        <target>Piekļūšanas tiesības nosaka ko aizmugures lietotāji var darīt ar lapu.</target>
       </trans-unit>
       <trans-unit id="tl_page.cuser.0">
         <source>Owner</source>
-        <target>Eigenaar</target>
+        <target>Lietotājs</target>
       </trans-unit>
       <trans-unit id="tl_page.cuser.1">
         <source>Please select a user as the owner of the page.</source>
-        <target>Selecteer de eigenaar van de huidige pagina.</target>
+        <target>Lūdzu izvēlieties lietotāju par aktuālās lapas īpašnieku.</target>
       </trans-unit>
       <trans-unit id="tl_page.cgroup.0">
         <source>Group</source>
-        <target>Groep</target>
+        <target>Grupa</target>
       </trans-unit>
       <trans-unit id="tl_page.cgroup.1">
         <source>Please select a group as the owner of the page.</source>
-        <target>Selecteer een groep als eigenaar van de huidige pagina.</target>
+        <target>Lūdzu izvēlieties grupu par aktuālās lapas īpašnieku.</target>
       </trans-unit>
       <trans-unit id="tl_page.chmod.0">
         <source>Access rights</source>
-        <target>Toegangsrechten</target>
+        <target>Piekļuves tiesības</target>
       </trans-unit>
       <trans-unit id="tl_page.chmod.1">
         <source>Please assign the access rights for the page and its subpages.</source>
-        <target>Toewijzen van toegangsrechten voor de pagina en zijn subpagina's.</target>
+        <target>Lūdzu piešķiriet piekļuves tiesības lapai un tās apakšlapām.</target>
       </trans-unit>
       <trans-unit id="tl_page.noSearch.0">
         <source>Do not search</source>
-        <target>Deze pagina niet doorzoeken</target>
+        <target>Nemeklāt šajā lapā</target>
       </trans-unit>
       <trans-unit id="tl_page.noSearch.1">
         <source>Exclude the page from the search index.</source>
-        <target>Indexeer deze pagina niet voor de zoekmachine.</target>
+        <target>Neindeksēt šo lapu.</target>
       </trans-unit>
       <trans-unit id="tl_page.requireItem.0">
         <source>Require an item</source>
-        <target>Vereist een artikel</target>
+        <target>Pieprasīt vienumu</target>
       </trans-unit>
       <trans-unit id="tl_page.requireItem.1">
         <source>Trigger a 404 error if the page URL does not contain an item alias.</source>
-        <target>Voer een 404-fout uit als de pagina-URL geen artikel alias bevat.</target>
       </trans-unit>
       <trans-unit id="tl_page.cssClass.0">
         <source>CSS class</source>
-        <target>CSS class</target>
+        <target>CSS klase</target>
       </trans-unit>
       <trans-unit id="tl_page.cssClass.1">
         <source>The class(es) will be used in the navigation menu and the &amp;lt;body&amp;gt; tag.</source>
-        <target>De class(es) worden toegepast in het navigatie menu en de &amp;lt;body&amp;gt; tag.</target>
+        <target>Klase(s) tiks izmantota(s) navigācijas izvēlnē un &amp;lt;body&amp;gt; birkā.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
         <source>Show in HTML sitemap</source>
-        <target>Toon in HTML sitemap</target>
+        <target>Rādīt HTML lapas kartē</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
         <source>Here you can define whether the page is shown in the HTML sitemap.</source>
-        <target>Hier kunt u bepalen of de pagina moet worden getoond in de HTML sitemap.</target>
+        <target>Šeit jūs varat noteikt, vai lapa tiks rādīta HTML lapas kartē.</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
-        <target>Verberg pagina in navigatiemenu</target>
+        <target>Slēpt lapu no navigācijas</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.1">
         <source>Hide the page from the navigation menu.</source>
-        <target>Indien u deze optie kiest zal de huidige pagina niet getoond worden in de website navigatie.</target>
+        <target>Slēpt lapu no navigācijas izvēlnes.</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.0">
         <source>Show to guests only</source>
-        <target>Alleen zichtbaar voor gasten</target>
+        <target>Rādīt tikai viesiem</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
         <source>Hide the page if there is an authenticated user.</source>
-        <target>Verberg pagina in het navigatiemenu als een lid is ingelogd.</target>
+        <target>Slēpt lapu no navigācijas izvēlnes, ja biedrs ir pieteicies.</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>
-        <target>Tab navigatie</target>
+        <target>Tab index</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.1">
         <source>The position of the navigation item in the tabbing order.</source>
-        <target>Dit nummer specificeert de positie van het huidige navigatie element in de TAB-volgorde. U kunt een nummer tussen 1 en 32767 opgeven.</target>
+        <target>Navigācijas vienuma pozīcija.</target>
       </trans-unit>
       <trans-unit id="tl_page.accesskey.0">
         <source>Access key</source>
-        <target>Toegangscombinatie</target>
+        <target>Piekļuves taustiņš</target>
       </trans-unit>
       <trans-unit id="tl_page.accesskey.1">
         <source>A navigation item can be focused by pressing the [ALT] or [CTRL] key and the access key simultaneously.</source>
-        <target>Een toegangscombinatie is een karakter dat kan toegekend worden aan een navigatie element. Als een bezoeker tegelijkertijd [ALT] of [CTRL] en de sneltoets drukt, zal het navigatie element de focus krijgen.</target>
+        <target>Spiežot [ALT] vai [CTRL] taustiņu un vienlaicīgi piekļuves taustiņu var fokusēties uz navigācijas vienumu.</target>
       </trans-unit>
       <trans-unit id="tl_page.published.0">
         <source>Publish page</source>
-        <target>Publiceer pagina</target>
+        <target>Publicēts</target>
       </trans-unit>
       <trans-unit id="tl_page.published.1">
         <source>Make the page publicly visible on the website.</source>
-        <target>Maak de pagina publiekelijk zichtbaar op de website.</target>
+        <target>Lapa būs neredzama jūsu lapas apmeklētājiem, ja vien neizvēlēsieties šo opciju.</target>
       </trans-unit>
       <trans-unit id="tl_page.start.0">
         <source>Show from</source>
-        <target>Weergeven vanaf</target>
+        <target>Wrapper sākums</target>
       </trans-unit>
       <trans-unit id="tl_page.start.1">
         <source>Do not show the page on the website before this day.</source>
-        <target>Als u hier een datum opgeeft zal de huidige pagina niet weergegeven worden voor deze dag.</target>
+        <target>Ja ievadīsiet šeit datumu, lapa nebūs redzama mājas lapā pirms šī datuma.</target>
       </trans-unit>
       <trans-unit id="tl_page.stop.0">
         <source>Show until</source>
-        <target>Weergeven tot</target>
+        <target>Wrapper beigas</target>
       </trans-unit>
       <trans-unit id="tl_page.stop.1">
         <source>Do not show the page on the website on and after this day.</source>
-        <target>Pagina niet tonen op de website op en na deze dag.</target>
+        <target>Nerādīt lapu mājas lapā šajā un pēc šī datuma.</target>
       </trans-unit>
       <trans-unit id="tl_page.enforceTwoFactor.0">
         <source>Enforce two-factor authentication</source>
-        <target>Twee-traps authenticatie afdwingen.</target>
       </trans-unit>
       <trans-unit id="tl_page.enforceTwoFactor.1">
         <source>Enforce two-factor authentication for all members.</source>
-        <target>Twee-traps authenticatie voor alle leden afdwingen.</target>
       </trans-unit>
       <trans-unit id="tl_page.twoFactorJumpTo.0">
         <source>Two-factor redirect page</source>
-        <target>Twee-traps omleidingspagina</target>
+        <target>Divu faktoru novirzīšanas lapa</target>
       </trans-unit>
       <trans-unit id="tl_page.twoFactorJumpTo.1">
         <source>Please choose the page to which visitors will be redirected when setting up two-factor authentication.</source>
-        <target>Kies de pagina waarnaar bezoekers worden doorgestuurd wanneer u twee-traps authenticatie instelt.</target>
       </trans-unit>
       <trans-unit id="tl_page.title_legend">
         <source>Name and type</source>
-        <target>Naam en type</target>
+        <target>Vārds un veids</target>
       </trans-unit>
       <trans-unit id="tl_page.meta_legend">
         <source>Meta data</source>
-        <target>Meta data</target>
+        <target>Meta dati</target>
       </trans-unit>
       <trans-unit id="tl_page.system_legend">
         <source>System settings</source>
-        <target>Systeem instellingen</target>
+        <target>Sistēmas iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.redirect_legend">
         <source>Redirect settings</source>
-        <target>Instellingen omsturen</target>
+        <target>Virzienmaiņas iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.dns_legend">
         <source>DNS settings</source>
-        <target>DNS settings</target>
+        <target>DNS iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.global_legend">
         <source>Global settings</source>
-        <target>Globale instellingen</target>
+        <target>Vispārējie iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.alias_legend">
         <source>Alias settings</source>
-        <target>Alias instellingen</target>
+        <target>Aizstājvārda iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap_legend">
         <source>XML sitemap</source>
-        <target>XML sitemap</target>
+        <target>XML lapas karte</target>
       </trans-unit>
       <trans-unit id="tl_page.forward_legend">
         <source>Auto-forward</source>
-        <target>Auto-doorsturen</target>
+        <target>Auto pārsūtīšana</target>
       </trans-unit>
       <trans-unit id="tl_page.protected_legend">
         <source>Access protection</source>
-        <target>Toegangsbescherming</target>
+        <target>Piekļuves aizsardzība</target>
       </trans-unit>
       <trans-unit id="tl_page.layout_legend">
         <source>Layout settings</source>
-        <target>Lay-out-instellingen</target>
+        <target>Salikuma iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.cache_legend">
         <source>Cache settings</source>
-        <target>Cache instellingen</target>
+        <target>Kešatmiņas iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.chmod_legend">
         <source>Access rights</source>
-        <target>Toegangsrechten</target>
+        <target>Piekļuves tiesības</target>
       </trans-unit>
       <trans-unit id="tl_page.expert_legend">
         <source>Expert settings</source>
-        <target>Expert-instellingen</target>
+        <target>Eksperta iestatījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.tabnav_legend">
         <source>Keyboard navigation</source>
-        <target>Toetsenbord navigatie</target>
+        <target>Tastatūras navigācija</target>
       </trans-unit>
       <trans-unit id="tl_page.publish_legend">
         <source>Publish settings</source>
-        <target>Publicatie-instellingen</target>
+        <target>Publicēšanas uzstādījumi</target>
       </trans-unit>
       <trans-unit id="tl_page.twoFactor_legend">
         <source>Two-factor authentication</source>
-        <target>Twee-traps authenticatie</target>
+        <target>Divfaktoru autentifikācija</target>
       </trans-unit>
       <trans-unit id="tl_page.permanent">
         <source>301 Permanent redirect</source>
-        <target>301 Permanente redirect</target>
+        <target>301 Pastāvīga novirzīšana</target>
       </trans-unit>
       <trans-unit id="tl_page.temporary">
         <source>302 Temporary redirect</source>
-        <target>302 Tijdelijke redirect</target>
+        <target>302 Pagaidu novirzīšana</target>
       </trans-unit>
       <trans-unit id="tl_page.map_default">
         <source>Default</source>
-        <target>Standaard</target>
+        <target>Noklusējuma</target>
       </trans-unit>
       <trans-unit id="tl_page.map_always">
         <source>Show always</source>
-        <target>Altijd tonen</target>
+        <target>Vienmēr rādīt</target>
       </trans-unit>
       <trans-unit id="tl_page.map_never">
         <source>Show never</source>
-        <target>Nooit tonen</target>
+        <target>Nekad nerādīt</target>
       </trans-unit>
       <trans-unit id="tl_page.new.0">
         <source>New</source>
-        <target>Nieuw</target>
+        <target>Jauns</target>
       </trans-unit>
       <trans-unit id="tl_page.new.1">
         <source>Create a new page</source>
-        <target>Maak een nieuwe pagina</target>
+        <target>Izveidot jaunu lapu</target>
       </trans-unit>
       <trans-unit id="tl_page.show">
         <source>Show the details of page ID %s</source>
-        <target>Toon details van pagina ID %s</target>
+        <target>Rādīt lapas ID %s detaļas</target>
       </trans-unit>
       <trans-unit id="tl_page.edit">
         <source>Edit page ID %s</source>
-        <target>Bewerk pagina ID %s</target>
+        <target>Rediģēt lapu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.cut">
         <source>Move page ID %s</source>
-        <target>Verplaats pagina ID %s</target>
+        <target>Parvietot lapu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.copy">
         <source>Duplicate page ID %s</source>
-        <target>Kopieer pagina ID %s</target>
+        <target>Dublicēt lapu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.copyChilds">
         <source>Duplicate page ID %s with its subpages</source>
-        <target>Kopieer pagina ID %s met subpagina's</target>
+        <target>Dublicēt lapu ID %s ar apakšlapām</target>
       </trans-unit>
       <trans-unit id="tl_page.delete">
         <source>Delete page ID %s</source>
-        <target>Verwijder pagina ID %s</target>
+        <target>Dzēst lapu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.toggle">
         <source>Publish/unpublish page ID %s</source>
-        <target>Publiceer/verberg pagina ID %s</target>
+        <target>Publicēt/nepublicēt lapu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.pasteinto.0">
         <source>Paste at the top</source>
-        <target>Bovenaan plakken</target>
+        <target>Ielīmēt sākumā</target>
       </trans-unit>
       <trans-unit id="tl_page.pasteinto.1">
         <source>Paste into page ID %s</source>
-        <target>Plak in pagina ID %s</target>
+        <target>Ielīmēt lapā ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.pasteafter.1">
         <source>Paste after page ID %s</source>
-        <target>Plak achter pagina ID %s</target>
+        <target>Ielīmēt pēc lapas ID %s</target>
       </trans-unit>
       <trans-unit id="tl_page.articles">
         <source>Edit the articles of page ID %s</source>
-        <target>Bewerk artikelen van pagina ID %s</target>
+        <target>Rediģēt lapas ID %s rakstus</target>
       </trans-unit>
       <trans-unit id="CACHE.0">
         <source>0 (do not cache)</source>
-        <target>0 (geen caching)</target>
+        <target>Nekešot</target>
       </trans-unit>
       <trans-unit id="CACHE.5">
         <source>5 seconds</source>
-        <target>5 seconden</target>
+        <target>5 sekundes</target>
       </trans-unit>
       <trans-unit id="CACHE.15">
         <source>15 seconds</source>
-        <target>15 seconden</target>
+        <target>15 sekundes</target>
       </trans-unit>
       <trans-unit id="CACHE.30">
         <source>30 seconds</source>
-        <target>30 seconden</target>
+        <target>30 sekundes</target>
       </trans-unit>
       <trans-unit id="CACHE.60">
         <source>60 seconds</source>
-        <target>60 seconden</target>
+        <target>1 minūte</target>
       </trans-unit>
       <trans-unit id="CACHE.300">
         <source>5 minutes</source>
-        <target>5 minuten</target>
+        <target>5 minūtes</target>
       </trans-unit>
       <trans-unit id="CACHE.900">
         <source>15 minutes</source>
-        <target>15 minuten</target>
+        <target>15 minūtes</target>
       </trans-unit>
       <trans-unit id="CACHE.1800">
         <source>30 minutes</source>
-        <target>30 minuten</target>
+        <target>30 minūtes</target>
       </trans-unit>
       <trans-unit id="CACHE.3600">
         <source>60 minutes</source>
-        <target>60 minuten</target>
+        <target>1 stunda</target>
       </trans-unit>
       <trans-unit id="CACHE.10800">
         <source>3 hours</source>
-        <target>3 uur</target>
+        <target>3 stundas</target>
       </trans-unit>
       <trans-unit id="CACHE.21600">
         <source>6 hours</source>
-        <target>6 uur</target>
+        <target>6 stundas</target>
       </trans-unit>
       <trans-unit id="CACHE.43200">
         <source>12 hours</source>
-        <target>12 uur</target>
+        <target>12 stundas</target>
       </trans-unit>
       <trans-unit id="CACHE.86400">
         <source>24 hours</source>
-        <target>24 uur</target>
+        <target>1 diena</target>
       </trans-unit>
       <trans-unit id="CACHE.259200">
         <source>3 days</source>
-        <target>3 dagen</target>
+        <target>3 dienas</target>
       </trans-unit>
       <trans-unit id="CACHE.604800">
         <source>7 days</source>
-        <target>7 dagen</target>
+        <target>7 dienas</target>
       </trans-unit>
       <trans-unit id="CACHE.2592000">
         <source>30 days</source>
-        <target>30 dagen</target>
+        <target>30 dienas</target>
       </trans-unit>
       <trans-unit id="CACHE.7776000">
         <source>3 months</source>
-        <target>3 maanden</target>
+        <target>3 mēneši</target>
       </trans-unit>
       <trans-unit id="CACHE.15552000">
         <source>6 months</source>
-        <target>6 maanden</target>
+        <target>6 mēneši</target>
       </trans-unit>
       <trans-unit id="CACHE.31536000">
         <source>1 year</source>
-        <target>1 jaar</target>
+        <target>1 gads</target>
       </trans-unit>
     </body>
   </file>
