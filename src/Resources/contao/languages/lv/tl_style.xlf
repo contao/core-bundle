@@ -1,641 +1,641 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="src/Resources/contao/languages/en/tl_style.php" source-language="en" target-language="fa">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_style.php" source-language="en" target-language="lv">
     <body>
       <trans-unit id="tl_style.invisible.0">
         <source>Invisible</source>
-        <target>پنهان</target>
+        <target>Neredzams</target>
       </trans-unit>
       <trans-unit id="tl_style.invisible.1">
         <source>Do not export the format definition.</source>
-        <target>تعریف فرمت را صادر نمی‌کند.</target>
+        <target>Neeksportē formāta definīciju.</target>
       </trans-unit>
       <trans-unit id="tl_style.selector.0">
         <source>Selector</source>
-        <target>گزینش‌گر</target>
+        <target>Atlasītājs (Selector)</target>
       </trans-unit>
       <trans-unit id="tl_style.selector.1">
         <source>The selector defines to which element(s) the format definition applies.</source>
-        <target>گزینش‌گر عنصر‌هایی را که تعریف ساختار باید به آن ها اعمال شود را مشخص می‌کند.</target>
+        <target>Ar selektoru definē, kuram elementam (-iem) tiks piemērots konkrētais formāts.</target>
       </trans-unit>
       <trans-unit id="tl_style.category.0">
         <source>Category</source>
-        <target>دسته‌بندی</target>
+        <target>Kategorija</target>
       </trans-unit>
       <trans-unit id="tl_style.category.1">
         <source>Categories can be used to group format definitions in the back end.</source>
-        <target>دسته‌ها می توانند برای گروه بندی تعاریف ساختارها در بخش مدیریت استفاده شوند.</target>
+        <target>Kategorijas var izmantot, lai grupētu formātu definīcijas backend-a modulī.</target>
       </trans-unit>
       <trans-unit id="tl_style.comment.0">
         <source>Comment</source>
-        <target>دیدگاه</target>
+        <target>Komentāri</target>
       </trans-unit>
       <trans-unit id="tl_style.comment.1">
         <source>Here you can add a comment.</source>
-        <target>اینجا می‌توانید یک دیدگاه اضافه کنید.</target>
+        <target>Šeit varat pievienot savus komentārus.</target>
       </trans-unit>
       <trans-unit id="tl_style.size.0">
         <source>Size</source>
-        <target>اندازه</target>
+        <target>Izmērs</target>
       </trans-unit>
       <trans-unit id="tl_style.size.1">
         <source>Width, height, min-width, min-height, max-width and max-height.</source>
-        <target>عرض، ارتفاع، عرض کمینه، ارتفاع کمینه، عرض بیشینه، ارتفاع بیشینه.</target>
+        <target>Platums, augstums, min-platums, min-augstums, max platums un max augstums.</target>
       </trans-unit>
       <trans-unit id="tl_style.width.0">
         <source>Width</source>
-        <target>عرض</target>
+        <target>Platums</target>
       </trans-unit>
       <trans-unit id="tl_style.width.1">
         <source>Here you can enter the element's width.</source>
-        <target>اینجا می‌توانید عرض عنصر را وارد کنید.</target>
+        <target>Varat norādīt elementa platumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.height.0">
         <source>Height</source>
-        <target>ارتفاع</target>
+        <target>Augstums</target>
       </trans-unit>
       <trans-unit id="tl_style.height.1">
         <source>Here you can enter the element's height.</source>
-        <target>اینجا می‌توانید ارتفاع عنصر را مشخص کنید.</target>
+        <target>Varat norādīt elementa augstumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.minwidth.0">
         <source>Minimum width</source>
-        <target>عرض کمینه</target>
+        <target>Minimālais platums</target>
       </trans-unit>
       <trans-unit id="tl_style.minwidth.1">
         <source>Here you can enter the element's minimum width.</source>
-        <target>اینجا می‌توانید عرض کمینه عنصر را وارد نمایید.</target>
+        <target>Varat norādīt elementa minimālo platumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.minheight.0">
         <source>Minimum height</source>
-        <target>ارتفاع کمینه</target>
+        <target>Minimālais augstums</target>
       </trans-unit>
       <trans-unit id="tl_style.minheight.1">
         <source>Here you can enter the element's minimum height.</source>
-        <target>اینجا می‌توانید ارتفاع کمینه عنصر را وارد نمایید.</target>
+        <target>Varat norādīt elementa minimālo augstumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.maxwidth.0">
         <source>Maximum width</source>
-        <target>عرض بیشینه</target>
+        <target>Maksimālais platums</target>
       </trans-unit>
       <trans-unit id="tl_style.maxwidth.1">
         <source>Here you can enter the element's maximum width.</source>
-        <target>اینجا می‌توانید عرض بیشینه عنصر را وارد نمایید.</target>
+        <target>Varat norādīt elementa maksimālo platumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.maxheight.0">
         <source>Maximum height</source>
-        <target>ارتفاع بیشینه</target>
+        <target>Maksimālais augstums</target>
       </trans-unit>
       <trans-unit id="tl_style.maxheight.1">
         <source>Here you can enter the element's maximum height.</source>
-        <target>اینجا می‌توانید ارتفاع بیشینه عنصر را وارد نمایید.</target>
+        <target>Varat norādīt elementa maksimālo augstumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.positioning.0">
         <source>Position</source>
-        <target>جایگاه</target>
+        <target>Pozīcija</target>
       </trans-unit>
       <trans-unit id="tl_style.positioning.1">
         <source>Position, float, clear, overflow and display.</source>
-        <target>جایگاه، شناوری، پاک کردن، هم‌پوشانی و نمایش.</target>
+        <target>Position, float, clear, overflow un display.</target>
       </trans-unit>
       <trans-unit id="tl_style.trbl.0">
         <source>Position</source>
-        <target>جایگاه</target>
+        <target>Pozīcija</target>
       </trans-unit>
       <trans-unit id="tl_style.trbl.1">
         <source>Here you can enter the top, right, bottom and left position.</source>
-        <target>اینجا می‌توانید جایگاه بالا، راست، پایین و چپ را وارد کنید.</target>
+        <target>Šeit varat ievadīt augšējo, labo, apakšējo un kreiso pozīciju.</target>
       </trans-unit>
       <trans-unit id="tl_style.position.0">
         <source>Position type</source>
-        <target>گونه‌ی جایگاه</target>
+        <target>Pozīcijas tips</target>
       </trans-unit>
       <trans-unit id="tl_style.position.1">
         <source>Here you can choose the position type.</source>
-        <target>اینجا می‌توانید گونه‌ی جایگاه را وارد نمایید.</target>
+        <target>Šeit jūs varat izvēlēties pozīcijas veidu.</target>
       </trans-unit>
       <trans-unit id="tl_style.floating.0">
         <source>Float</source>
-        <target>شناوری</target>
+        <target>Float</target>
       </trans-unit>
       <trans-unit id="tl_style.floating.1">
         <source>Here you can choose the float type.</source>
-        <target>اینجا می‌توانید گونه‌ی شناوری را تعیین نمایید.</target>
+        <target>Šeit jūs varat izvēlēties float tipu.</target>
       </trans-unit>
       <trans-unit id="tl_style.clear.0">
         <source>Clear</source>
-        <target>پاک کردن</target>
+        <target>Notīrīt (Clear)</target>
       </trans-unit>
       <trans-unit id="tl_style.clear.1">
         <source>Here you can choose the clear type.</source>
-        <target>اینجا می‌توانید گونه‌ی پاک کردن را انتخاب نمایید.</target>
+        <target>Šeit jūs varat izvēlēties notīrīšanas tipu.</target>
       </trans-unit>
       <trans-unit id="tl_style.overflow.0">
         <source>Overflow</source>
-        <target>سرریز</target>
+        <target>Pārpilde</target>
       </trans-unit>
       <trans-unit id="tl_style.overflow.1">
         <source>Here you can choose the overflow behaviour.</source>
-        <target>اینجا می‌توانید خصوصیت سرریز را انتخاب نمایید.</target>
+        <target>Šeit jūs varat izvēlēties pārpildes uzvedību.</target>
       </trans-unit>
       <trans-unit id="tl_style.display.0">
         <source>Display</source>
-        <target>نمایش</target>
+        <target>Attēlošana</target>
       </trans-unit>
       <trans-unit id="tl_style.display.1">
         <source>Here you can choose the display type.</source>
-        <target>اینجا می‌توانید گونه‌ی نمایش را انتخاب نمایید.</target>
+        <target>Šeit jūs varat izvēlēties attēlošanas tipu.</target>
       </trans-unit>
       <trans-unit id="tl_style.alignment.0">
         <source>Margin, padding and alignment</source>
-        <target>حاشیه، فاصله دورنی و ترازبندی</target>
+        <target>Apmales, iekšmale un izlīdzinājums</target>
       </trans-unit>
       <trans-unit id="tl_style.alignment.1">
         <source>Margin, padding, align, vertical-align, text-align and white-space.</source>
-        <target>حاشیه، فاصله داخلی، ترازبندی، ترازبندی عمودی، ترازبندی متن و فضای خالی.</target>
+        <target>Apmales, iekšmalas, izlīdzinājums, vertikālais izlīdzinājums, teksta izlīdzinājums un baltstarpas rakstzīmes.</target>
       </trans-unit>
       <trans-unit id="tl_style.margin.0">
         <source>Margin</source>
-        <target>حاشیه</target>
+        <target>Apmale</target>
       </trans-unit>
       <trans-unit id="tl_style.margin.1">
         <source>Here you can enter the top, right, bottom and left margin.</source>
-        <target>اینجا می‌توانید حاشیه بالا، راست، پایین و چپ را وارد نمایید.</target>
+        <target>Šeit varat ievadīt augšējās, labās, apakšējās un kreisās apmales vērtības.</target>
       </trans-unit>
       <trans-unit id="tl_style.padding.0">
         <source>Padding</source>
-        <target>فاصله درونی</target>
+        <target>Iekšmale</target>
       </trans-unit>
       <trans-unit id="tl_style.padding.1">
         <source>Here you can enter the top, right, bottom and left padding.</source>
-        <target>اینجا فاصله دورنی بالا، راست، پایین و چپ را وارد نمایید.</target>
+        <target>Šeit varat ievadīt augšējās, labās, apakšējās un kreisās iekšmales vērtības.</target>
       </trans-unit>
       <trans-unit id="tl_style.align.0">
         <source>Element alignment</source>
-        <target>ترازبندی عنصر</target>
+        <target>Elementa izlīdzinājums</target>
       </trans-unit>
       <trans-unit id="tl_style.align.1">
         <source>To align an element, its left and right margin will be overwritten.</source>
-        <target>برای ترازبندی یک عنصر، حاشیه راست و چپ تغییر خواهند کرد.</target>
+        <target>Lai izlīdzinātu elementu, tā kreisā un labā apmele tiks izmainīta.</target>
       </trans-unit>
       <trans-unit id="tl_style.verticalalign.0">
         <source>Vertical alignment</source>
-        <target>ترازبندی عمودی</target>
+        <target>Vertikālais izlīdzinājums</target>
       </trans-unit>
       <trans-unit id="tl_style.verticalalign.1">
         <source>Here you can choose the vertical alignment.</source>
-        <target>اینجا می‌توانید ترازبندی عمودی را انتخاب نمایید.</target>
+        <target>Šeit varat norādīt vertikālo izlīdzinājumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.textalign.0">
         <source>Text alignment</source>
-        <target>ترازبندی متن</target>
+        <target>Teksta izlīdzinājums</target>
       </trans-unit>
       <trans-unit id="tl_style.textalign.1">
         <source>Here you can choose the horizontal text alignment.</source>
-        <target>اینجا می‌توانید ترازبندی افقی متن را انتخاب نمایید.</target>
+        <target>Šeit varat norādīt teksta izlīdzinājumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.whitespace.0">
         <source>White-space</source>
-        <target>فضای خالی</target>
+        <target>Baltstarpas rakstzīme</target>
       </trans-unit>
       <trans-unit id="tl_style.whitespace.1">
         <source>Here you can define how white-space inside an element is handled.</source>
-        <target>در اینجا می‌توانید نحوه برخورد با فضای خالی را مشخص نمایید.</target>
+        <target>Šeit jūs varat noteikt, kā rīkoties ar baltsarpas rakstzīmi elementā.</target>
       </trans-unit>
       <trans-unit id="tl_style.background.0">
         <source>Background</source>
-        <target>زمینه</target>
+        <target>Fons</target>
       </trans-unit>
       <trans-unit id="tl_style.background.1">
         <source>Background-color, background-image, background-position, background-repeat, box-shadow and linear-gradient.</source>
-        <target>رنگ زمینه، تصویر زمینه، موقعیت زمینه و تکرار زمینه، گرادیان خطی و سایه جعبه.</target>
+        <target>Fona krāsa, fona attēls, fona stāvoklis, fona atkārtojums, kastes ēna un lineārais gradients.</target>
       </trans-unit>
       <trans-unit id="tl_style.bgcolor.0">
         <source>Background color and opacity</source>
-        <target>رنگ و شفافیت زمینه</target>
+        <target>Fons un necaurspīdība</target>
       </trans-unit>
       <trans-unit id="tl_style.bgcolor.1">
         <source>Here you can enter a hexadecimal background color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).</source>
-        <target>اینجا می‌توانید رنگ سایه در مبنای ۱۶ (برای نمونه ff0000 برای قرمز) و درصد شفافیت (برای نمونه 75) اختیاری را وارد نمایید.</target>
+        <target>Šeit varat norādīt heksadecimālo fona krāsu (piemēram: FF0000 vai red), un papildus - redzamību procentos (piemēram: 75).</target>
       </trans-unit>
       <trans-unit id="tl_style.bgimage.0">
         <source>Background image</source>
-        <target>تصویر زمینه</target>
+        <target>Fona attēls</target>
       </trans-unit>
       <trans-unit id="tl_style.bgimage.1">
         <source>Here you can enter the path to a background image.</source>
-        <target>‌اینجا می‌توانید مسیر تصویر زمینه را وارد نمایید.</target>
+        <target>Varat norādīt fona attēlu.</target>
       </trans-unit>
       <trans-unit id="tl_style.bgposition.0">
         <source>Background position</source>
-        <target>جایگاه زمینه</target>
+        <target>Fona pozīcija</target>
       </trans-unit>
       <trans-unit id="tl_style.bgposition.1">
         <source>Here you can select the position of the background image.</source>
-        <target>اینجا می‌توانید جایگاه تصویر زمینه را انتخاب کنید.</target>
+        <target>Varat izvēlēties fona attēla pozīciju.</target>
       </trans-unit>
       <trans-unit id="tl_style.bgrepeat.0">
         <source>Background repeat</source>
-        <target>تکرار زمینه</target>
+        <target>Fona atkārtošana</target>
       </trans-unit>
       <trans-unit id="tl_style.bgrepeat.1">
         <source>Here you can select the repeating mode.</source>
-        <target>اینجا می‌توانید حالت تکرار زمینه را انتخاب نمایید.</target>
+        <target>Varat izvēlēties atkārtošanas režīmu.</target>
       </trans-unit>
       <trans-unit id="tl_style.shadowsize.0">
         <source>Shadow size</source>
-        <target>اندازه سایه</target>
+        <target>Ēnas izmērs</target>
       </trans-unit>
       <trans-unit id="tl_style.shadowsize.1">
         <source>Here you can enter the X and Y offset, an optional blur size and an optional spread radius.</source>
-        <target>اینجا می‌توانید افست X و Y، اندازه محو بودن اختیاری و شعاع پخش‌شدگی اختیاری را وارد نمایید.</target>
+        <target>Šeit varat norādīt nobīdi pa X un Y asīm, kā arī neasuma pakāpi.</target>
       </trans-unit>
       <trans-unit id="tl_style.shadowcolor.0">
         <source>Shadow color and opacity</source>
-        <target>رنگ و شفافیت سایه</target>
+        <target>Ēnas krāsa</target>
       </trans-unit>
       <trans-unit id="tl_style.shadowcolor.1">
         <source>Here you can enter a hexadecimal shadow color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).</source>
-        <target>اینجا می‌توانید رنگ سایه در مبنای ۱۶ (برای نمونه ff0000 برای قرمز) و درصد شفافیت (برای نمونه 75) اختیاری را وارد نمایید.</target>
+        <target>Šeit varat norādīt heksadecimālo ēnas krāsu (piemēram: FF0000 vai red), un papildus - redzamību procentos (piemēram: 75).</target>
       </trans-unit>
       <trans-unit id="tl_style.gradientAngle.0">
         <source>Gradient angle</source>
-        <target>زاویه شیب</target>
+        <target>Nobīdes (Gradient) leņķis</target>
       </trans-unit>
       <trans-unit id="tl_style.gradientAngle.1">
         <source>Here you can enter the gradient angle (e.g. &lt;em&gt;0deg&lt;/em&gt;) or the direction (e.g. &lt;em&gt;to bottom&lt;/em&gt; or &lt;em&gt;to top right&lt;/em&gt;).</source>
-        <target>اینجا می‌توانید زاویه شیب (برای نمونه &lt;em&gt;0deg&lt;/em&gt;) یا جهت (برای نمونه &lt;em&gt;to bottom&lt;/em&gt; و &lt;em&gt;to top right&lt;/em&gt;)  را وارد نمایید.</target>
+        <target>Šeit varat ievadīt slīpuma leņķi (piem., &lt;em&gt;-45deg&lt;/em&gt;) vai sākuma punktu (piem., &lt;em&gt;top&lt;/em&gt; vai &lt;em&gt;left bottom&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_style.gradientColors.0">
         <source>Gradient colors</source>
-        <target>رنگ‌های شیب</target>
+        <target>Nobīdes (Gradient) krāsa</target>
       </trans-unit>
       <trans-unit id="tl_style.gradientColors.1">
         <source>Here you can enter up to four colors with an optional percentage (e.g. &lt;em&gt;ffc 10% | f90 | f00&lt;/em&gt;).</source>
-        <target>اینجا می‌توانید تا چهار رنگ با درصد اختیاری را وارد نمایید (برای نمونه &lt;em&gt;ffc 10% | f90 | f00&lt;/em&gt;).</target>
+        <target>Šeit jūs varat ievadīt līdz pat četrām krāsām un, papildus arī procentus (piemēram, &lt;em&gt;ffc 10% | f90 | f00&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_style.border.0">
         <source>Border</source>
-        <target>خط مرز</target>
+        <target>Mala</target>
       </trans-unit>
       <trans-unit id="tl_style.border.1">
         <source>Border-width, border-style, border-color, border-radius, border-collapse and border-spacing.</source>
-        <target>Border-width، border-style، border-color، border-radius، border-collapse و border-spacing.</target>
+        <target>Malas platums, stils, krāsa, noapaļojuma radius u.c. lietas.</target>
       </trans-unit>
       <trans-unit id="tl_style.borderwidth.0">
         <source>Border width</source>
-        <target>عرض مرز</target>
+        <target>Malas platums</target>
       </trans-unit>
       <trans-unit id="tl_style.borderwidth.1">
         <source>Here you can enter the top, right, bottom and left border width.</source>
-        <target>اینجا می‌توانید عرض مرز بالا، راست، پایین و چپ را وارد نمایید.</target>
+        <target>Varat norādīt malas platuma augšējo, labo, apakšējo un kreiso vērtību.</target>
       </trans-unit>
       <trans-unit id="tl_style.borderstyle.0">
         <source>Border style</source>
-        <target>سبک مرز</target>
+        <target>Malas stils</target>
       </trans-unit>
       <trans-unit id="tl_style.borderstyle.1">
         <source>Here you can choose the border style.</source>
-        <target>اینجا می‌توانید سبک مرز را انتخاب نمایید.</target>
+        <target>Šeit varat izvēlēties malas stilu.</target>
       </trans-unit>
       <trans-unit id="tl_style.bordercolor.0">
         <source>Border color and opacity</source>
-        <target>رنگ و شفافیت مرز</target>
+        <target>Malas krāsa un necaurspīdība</target>
       </trans-unit>
       <trans-unit id="tl_style.bordercolor.1">
         <source>Here you can enter a hexadecimal border color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).</source>
-        <target>اینجا می‌توانید رنگ مرز در مبنای ۱۶ (برای نمونه ff0000 برای قرمز) و درصد شفافیت (برای نمونه ۷۵) اختیاری را وارد نمایید.</target>
+        <target>Šeit varat norādīt heksadecimālo malas krāsu (piemēram: FF0000 vai red), un papildus - necaurspīdību procentos (piemēram: 75).</target>
       </trans-unit>
       <trans-unit id="tl_style.borderradius.0">
         <source>Border radius</source>
-        <target>شعاع مرز</target>
+        <target>Malas radius</target>
       </trans-unit>
       <trans-unit id="tl_style.borderradius.1">
         <source>Here you can enter the top, right, bottom and left border radius.</source>
-        <target>اینجا می‌توانید شعاع مرز بالا، راست، پایین و چپ را وارد نمایید.</target>
+        <target>Varat norādīt malas radiusa augšējo, labo, apakšējo un kreiso vērtību.</target>
       </trans-unit>
       <trans-unit id="tl_style.bordercollapse.0">
         <source>Border handling</source>
-        <target>هندلینگ مرز</target>
+        <target>Malas apstrāde</target>
       </trans-unit>
       <trans-unit id="tl_style.bordercollapse.1">
         <source>Here you can choose the border handling.</source>
-        <target>هندلینگ مرز را انتخاب نمایید.</target>
+        <target>Varat izvēlēties malas apstrādi (handling).</target>
       </trans-unit>
       <trans-unit id="tl_style.borderspacing.0">
         <source>Border spacing</source>
-        <target>فاصله مرز</target>
+        <target>Malas atstarpes</target>
       </trans-unit>
       <trans-unit id="tl_style.borderspacing.1">
         <source>Here you can enter the border spacing.</source>
-        <target>اینجا می‌توانید فاصله مرز را وارد نمایید.</target>
+        <target>Varat norādīt malas atstarpju vērtības.</target>
       </trans-unit>
       <trans-unit id="tl_style.font.0">
         <source>Font</source>
-        <target>قلم</target>
+        <target>Fonts</target>
       </trans-unit>
       <trans-unit id="tl_style.font.1">
         <source>Font-family, font-size, font-color, line-height, font-style, text-transform, text-indent, letter-spacing and word-spacing.</source>
-        <target>Font-family, font-size, font-color, line-height, font-style, text-transform, text-indent, letter-spacing and word-spacing.</target>
+        <target>Fontu ģimene, fonta izmērs, fonta krāsa, līnijas augstums, fonta stils, teksta pārveidojums, teksta ievilkums, burtu atstarpes un vārdu atstarpes.</target>
       </trans-unit>
       <trans-unit id="tl_style.fontfamily.0">
         <source>Font family</source>
-        <target>خانواده قلم</target>
+        <target>Fontu saime</target>
       </trans-unit>
       <trans-unit id="tl_style.fontfamily.1">
         <source>Here you can enter a comma separated list of font types.</source>
-        <target>اینجا می‌توانید فهرست جدا شده با ویرگول از گونه‌های قلم را وارد نمایید</target>
+        <target>Varat norādīt fontu saimi (e-s, atdalītas ar komatu).</target>
       </trans-unit>
       <trans-unit id="tl_style.fontsize.0">
         <source>Font size</source>
-        <target>اندازه قلم</target>
+        <target>Fonta izmērs</target>
       </trans-unit>
       <trans-unit id="tl_style.fontsize.1">
         <source>Here you can enter the font size.</source>
-        <target>اینجا می‌توانید اندازه قلم را وارد نمایید</target>
+        <target>Varat norādīt fonta izmēru.</target>
       </trans-unit>
       <trans-unit id="tl_style.fontcolor.0">
         <source>Font color and opacity</source>
-        <target>رنگ و شفافیت قلم</target>
+        <target>Fonta krāsa</target>
       </trans-unit>
       <trans-unit id="tl_style.fontcolor.1">
         <source>Here you can enter a hexadecimal font color (e.g. ff0000 for red) and an optional opacity in percent (e.g. 75).</source>
-        <target>اینجا می‌توانید رنگ قلم در مبنای ۱۶ (برای نمونه ff0000 برای قرمز) و درصد شفافیت (برای نمونه 75) اختیاری را وارد نمایید.</target>
+        <target>Šeit varat norādīt heksadecimālo fonta krāsu (piemēram: FF0000 vai red), un papildus - redzamību procentos (piemēram: 75).</target>
       </trans-unit>
       <trans-unit id="tl_style.lineheight.0">
         <source>Line height</source>
-        <target>اندازه خط</target>
+        <target>Līnijas augstums</target>
       </trans-unit>
       <trans-unit id="tl_style.lineheight.1">
         <source>Here you can define the line height.</source>
-        <target>اینجا می‌توانید ارتفاع خط را وارد نمایید.</target>
+        <target>Varat definēt līnijas augstumu.</target>
       </trans-unit>
       <trans-unit id="tl_style.fontstyle.0">
         <source>Font style</source>
-        <target>سبک قلم</target>
+        <target>Fonta stils</target>
       </trans-unit>
       <trans-unit id="tl_style.fontstyle.1">
         <source>Here you can choose one or more font styles.</source>
-        <target>اینجا می‌توانید یک یا چند سبک قلم را انتخاب نمایید.</target>
+        <target>Varat izvēlēties vienu vai vairākus fontu stilus.</target>
       </trans-unit>
       <trans-unit id="tl_style.texttransform.0">
         <source>Text transform</source>
-        <target>تغییر شکل متن</target>
+        <target>Teksta transformācija</target>
       </trans-unit>
       <trans-unit id="tl_style.texttransform.1">
         <source>Here you can choose a text transformation mode.</source>
-        <target>اینجا می‌توانید حالت دگرگونی متن را انتخاب نمایید.</target>
+        <target>Varat izvēlēties teksta transformēšnas režīmu.</target>
       </trans-unit>
       <trans-unit id="tl_style.textindent.0">
         <source>Text indent</source>
-        <target>تو رفتگی متن</target>
+        <target>Teksta ievilkums</target>
       </trans-unit>
       <trans-unit id="tl_style.textindent.1">
         <source>Here you can enter a text indentation.</source>
-        <target>اینجا می‌توانید تورفتگی متن را انتخاب نمایید.</target>
+        <target>Varat norādīt teksta ievilkuma vērtības.</target>
       </trans-unit>
       <trans-unit id="tl_style.letterspacing.0">
         <source>Letter spacing</source>
-        <target>فاصله حروف</target>
+        <target>Burtu atstarpes</target>
       </trans-unit>
       <trans-unit id="tl_style.letterspacing.1">
         <source>Here you can modify the letter spacing (default: 0px).</source>
-        <target>اینجا می‌توانید فاصله حروف را تغییر دهید (پیش‌فرض: 0px).</target>
+        <target>Varat norādīt burtu atstarpes.</target>
       </trans-unit>
       <trans-unit id="tl_style.wordspacing.0">
         <source>Word spacing</source>
-        <target>فاصله کلمات</target>
+        <target>Vārdu atstarpes</target>
       </trans-unit>
       <trans-unit id="tl_style.wordspacing.1">
         <source>Here you can modify the word spacing (default: 0px).</source>
-        <target>اینجا می‌توانید فاصله کلمات را تغییر دهید (پیش‌فرض: 0px).</target>
+        <target>Varat modificēt vārdu atstarpes (pēc noklusējuma: 0px).</target>
       </trans-unit>
       <trans-unit id="tl_style.list.0">
         <source>List</source>
-        <target>فهرست</target>
+        <target>Saraksts</target>
       </trans-unit>
       <trans-unit id="tl_style.list.1">
         <source>List-style-type and list-style-image.</source>
-        <target>List-style-type و list-style-image.</target>
+        <target>Saraksta stila tips un saraksta stila attēls.</target>
       </trans-unit>
       <trans-unit id="tl_style.liststyletype.0">
         <source>List symbol</source>
-        <target>نشانه فهرست</target>
+        <target>Saraksta simbols</target>
       </trans-unit>
       <trans-unit id="tl_style.liststyletype.1">
         <source>Here you can choose a list symbol.</source>
-        <target>اینجا می‌توانید نشانه فهرست را انتخاب نمایید.</target>
+        <target>Varat izvēlēties saraksta simbolu.</target>
       </trans-unit>
       <trans-unit id="tl_style.liststyleimage.0">
         <source>Custom symbol</source>
-        <target>نشانه‌ی سفارشی</target>
+        <target>Specifisks simbols</target>
       </trans-unit>
       <trans-unit id="tl_style.liststyleimage.1">
         <source>Here you can enter the path to an individual symbol.</source>
-        <target>اینجا می‌توانید مسیر نشانه اختصاصی را وارد نمایید.</target>
+        <target>Varat norādīt individuālu simbolu.</target>
       </trans-unit>
       <trans-unit id="tl_style.own.0">
         <source>Custom code</source>
-        <target>کد سفارشی</target>
+        <target>Spceifisks kods</target>
       </trans-unit>
       <trans-unit id="tl_style.own.1">
         <source>Here you can enter custom CSS code.</source>
-        <target>اینجا می‌توانید کد CSS سفارشی را وارد نمایید.</target>
+        <target>Varat norādīt specifisku CSS kodu.</target>
       </trans-unit>
       <trans-unit id="tl_style.selector_legend">
         <source>Selector and category</source>
-        <target>گزینش‌گر و دسته‌بندی</target>
+        <target>Atlasītājs un kategorija</target>
       </trans-unit>
       <trans-unit id="tl_style.size_legend">
         <source>Size</source>
-        <target>اندازه</target>
+        <target>Izmērs</target>
       </trans-unit>
       <trans-unit id="tl_style.position_legend">
         <source>Position</source>
-        <target>جایگاه</target>
+        <target>Pozīcija</target>
       </trans-unit>
       <trans-unit id="tl_style.align_legend">
         <source>Margin and alignment</source>
-        <target>حاشیه و ترازبندی</target>
+        <target>Apmale un izlīdzinājums</target>
       </trans-unit>
       <trans-unit id="tl_style.background_legend">
         <source>Background settings</source>
-        <target>تنظیمات زمینه</target>
+        <target>Fona uzstādījumi</target>
       </trans-unit>
       <trans-unit id="tl_style.border_legend">
         <source>Border settings</source>
-        <target>تنظیمات خط مرزی</target>
+        <target>Malas uzstādījumi</target>
       </trans-unit>
       <trans-unit id="tl_style.font_legend">
         <source>Font settings</source>
-        <target>تنظیمات قلم</target>
+        <target>Fonta uzstādījumi</target>
       </trans-unit>
       <trans-unit id="tl_style.list_legend">
         <source>List settings</source>
-        <target>تنظیمات فهرست</target>
+        <target>Sraksta uzstādījumi</target>
       </trans-unit>
       <trans-unit id="tl_style.custom_legend">
         <source>Custom code</source>
-        <target>کد سفارشی</target>
+        <target>Spceifisks kods</target>
       </trans-unit>
       <trans-unit id="tl_style.normal">
         <source>normal</source>
-        <target>عادی</target>
+        <target>normāls</target>
       </trans-unit>
       <trans-unit id="tl_style.bold">
         <source>bold</source>
-        <target>کلفت</target>
+        <target>izcelts</target>
       </trans-unit>
       <trans-unit id="tl_style.italic">
         <source>italic</source>
-        <target>کج</target>
+        <target>slīps</target>
       </trans-unit>
       <trans-unit id="tl_style.underline">
         <source>underlined</source>
-        <target>خط زیر</target>
+        <target>pasvītrots</target>
       </trans-unit>
       <trans-unit id="tl_style.notUnderlined">
         <source>not underlined</source>
-        <target>بدون خط زیر</target>
+        <target>Nepasvītrots</target>
       </trans-unit>
       <trans-unit id="tl_style.line-through">
         <source>line-through</source>
-        <target>خط داخلی</target>
+        <target>pārstrīpots</target>
       </trans-unit>
       <trans-unit id="tl_style.overline">
         <source>overlined</source>
-        <target>خط بالا</target>
+        <target>zemsvītrots</target>
       </trans-unit>
       <trans-unit id="tl_style.small-caps">
         <source>small-caps</source>
-        <target>حروف کوچک</target>
+        <target>small-caps</target>
       </trans-unit>
       <trans-unit id="tl_style.disc">
         <source>dot</source>
-        <target>نقطه</target>
+        <target>punkts</target>
       </trans-unit>
       <trans-unit id="tl_style.circle">
         <source>circle</source>
-        <target>دایره</target>
+        <target>aplis</target>
       </trans-unit>
       <trans-unit id="tl_style.square">
         <source>square</source>
-        <target>مربع</target>
+        <target>taisnstūris</target>
       </trans-unit>
       <trans-unit id="tl_style.decimal">
         <source>figures</source>
-        <target>ارقام</target>
+        <target>decimālskaitlis</target>
       </trans-unit>
       <trans-unit id="tl_style.upper-roman">
         <source>upper latin figures</source>
-        <target>ارقام لاتین بالا</target>
+        <target>lielie romiešu skatiļi</target>
       </trans-unit>
       <trans-unit id="tl_style.lower-roman">
         <source>lower latin figures</source>
-        <target>ارقام لاتین پایین</target>
+        <target>mazie romiešu skatiļi</target>
       </trans-unit>
       <trans-unit id="tl_style.upper-alpha">
         <source>upper characters</source>
-        <target>نویسه‌های بالا</target>
+        <target>lielie burti</target>
       </trans-unit>
       <trans-unit id="tl_style.lower-alpha">
         <source>lower characters</source>
-        <target>نویسه‌های پایین</target>
+        <target>mazie burti</target>
       </trans-unit>
       <trans-unit id="tl_style.uppercase">
         <source>uppercase</source>
-        <target>حروف بزرگ</target>
+        <target>lielie burti</target>
       </trans-unit>
       <trans-unit id="tl_style.lowercase">
         <source>lowercase</source>
-        <target>حروف کوچک</target>
+        <target>mazie burti</target>
       </trans-unit>
       <trans-unit id="tl_style.capitalize">
         <source>capitalize</source>
-        <target>حروف درشت</target>
+        <target>lieliem burtiem</target>
       </trans-unit>
       <trans-unit id="tl_style.none">
         <source>none</source>
-        <target>هیچ‌کدام</target>
+        <target>neviens</target>
       </trans-unit>
       <trans-unit id="tl_style.new.0">
         <source>New format definition</source>
-        <target>تعریف ساختار جدید</target>
+        <target>Jauna formāta definēšana</target>
       </trans-unit>
       <trans-unit id="tl_style.new.1">
         <source>Create a new format definition</source>
-        <target>ایجاد تعریف ساختار جدید</target>
+        <target>Izveidot jaunu formāta defiīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.show.0">
         <source>Format definition details</source>
-        <target>جزئیات تعریف ساختار</target>
+        <target>Formāta definīcijas detaļas</target>
       </trans-unit>
       <trans-unit id="tl_style.show.1">
         <source>Show the details of format definition ID %s</source>
-        <target>نمایش جزئیات تعریف ساختار شناسه‌ی %s</target>
+        <target>Parāda ID %s formāta definīcijas detaļas</target>
       </trans-unit>
       <trans-unit id="tl_style.edit.0">
         <source>Edit format definition</source>
-        <target>ویرایش تعریف ساختار</target>
+        <target>Rediģēt formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.edit.1">
         <source>Edit format definition ID %s</source>
-        <target>نمایش جزئیات تعریف ساختار شناسه‌ی %s</target>
+        <target>Rediģēt ID %s formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.cut.0">
         <source>Move format definition</source>
-        <target>جابجایی تعریف ساختار</target>
+        <target>Pārvietot formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.cut.1">
         <source>Move format definition ID %s</source>
-        <target>جابجایی تعریف ساختار شناسه‌ی %s</target>
+        <target>Pārvietot ID %s formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.copy.0">
         <source>Duplicate format definition</source>
-        <target>تکثیر تعریف ساختار</target>
+        <target>Duplicēt formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.copy.1">
         <source>Duplicate format definition ID %s</source>
-        <target>تکثیر تعریف ساختار شناسه‌ی %s</target>
+        <target>Duplicēt ID %s formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.delete.0">
         <source>Delete format definition</source>
-        <target>حذف تعریف ساختار</target>
+        <target>Dzēst formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.delete.1">
         <source>Delete format definition ID %s</source>
-        <target>حذف تعریف ساختار شناسه‌ی %s</target>
+        <target>Dzēst ID %s formāta definīciju</target>
       </trans-unit>
       <trans-unit id="tl_style.editheader.0">
         <source>Edit style sheet</source>
-        <target>ویرایش شیوه‌نامه</target>
+        <target>Rediģēt stila lapu</target>
       </trans-unit>
       <trans-unit id="tl_style.editheader.1">
         <source>Edit the style sheet settings</source>
-        <target>ویرایش تنظیمات شیوه‌نامه</target>
+        <target>Rediģēt stila lapas uzstādījumus</target>
       </trans-unit>
       <trans-unit id="tl_style.pasteafter.0">
         <source>Paste at the top</source>
-        <target>جاگذاری در بالا</target>
+        <target>Ielīmēt sākumā</target>
       </trans-unit>
       <trans-unit id="tl_style.pasteafter.1">
         <source>Paste after format definition ID %s</source>
-        <target>جاگذاری بعد از تعریف ساختار شناسه‌ی %s</target>
+        <target>Ielīmēt pēc ID %s formāta definīcijas</target>
       </trans-unit>
       <trans-unit id="tl_style.pastenew.0">
         <source>Add new at the top</source>
-        <target>افزودن در بالا</target>
+        <target>Pievienot sākumā</target>
       </trans-unit>
       <trans-unit id="tl_style.pastenew.1">
         <source>Add new after format definition ID %s</source>
-        <target>افزودن بعد از تعریف ساختار شناسه‌ی %s</target>
+        <target>Pievienot pēc ID %s formāta definīcijas</target>
       </trans-unit>
       <trans-unit id="tl_style.toggle.0">
         <source>Toggle visibility</source>
-        <target>تغییر وضعیت دید</target>
+        <target>Pārslēgt redzamību</target>
       </trans-unit>
       <trans-unit id="tl_style.toggle.1">
         <source>Toggle the visibility of format definition ID %s</source>
-        <target>تغییر وضعیت دید تعریف ساختار شناسه‌ی %s</target>
+        <target>Pārslēgt formāta ID %s redzamību</target>
       </trans-unit>
     </body>
   </file>
