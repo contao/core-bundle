@@ -1355,14 +1355,15 @@ abstract class Widget extends \Controller
 			}
 
 			$isKnownOption = false;
-
+			$varValue = StringUtil::deserialize($varValue, true);
+			
 			foreach ($arrData['options'] as $k=>$v)
 			{
 				if (!\is_array($v))
 				{
 					$value = $blnIsAssociative ? $k : $v;
 
-					if ($varValue && $varValue == $value)
+					if (\in_array($value, $varValue))
 					{
 						$isKnownOption = true;
 					}
@@ -1378,7 +1379,7 @@ abstract class Widget extends \Controller
 				{
 					$value = $blnIsAssoc ? $kk : $vv;
 
-					if ($varValue && $varValue == $value)
+					if (\in_array($value, $varValue))
 					{
 						$isKnownOption = true;
 					}
