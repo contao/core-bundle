@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PageError404 extends \Frontend
 {
-
 	/**
 	 * Generate an error 404 page
 	 */
@@ -135,10 +134,11 @@ class PageError404 extends \Frontend
 			if (null === $objNextPage)
 			{
 				$this->log('Forward page ID "' . $obj404->jumpTo . '" does not exist', __METHOD__, TL_ERROR);
+
 				throw new ForwardPageNotFoundException('Forward page not found');
 			}
 
-			$this->redirect($objNextPage->getFrontendUrl(), (($obj404->redirect == 'temporary') ? 302 : 301));
+			$this->redirect($objNextPage->getFrontendUrl());
 		}
 
 		return $obj404;

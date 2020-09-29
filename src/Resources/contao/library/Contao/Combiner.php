@@ -10,9 +10,9 @@
 
 namespace Contao;
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Formatter\Compressed;
-use Leafo\ScssPhp\Formatter\Expanded;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Formatter\Compressed;
+use ScssPhp\ScssPhp\Formatter\Expanded;
 
 /**
  * Combines .css or .js files into one single file
@@ -31,7 +31,6 @@ use Leafo\ScssPhp\Formatter\Expanded;
  */
 class Combiner extends \System
 {
-
 	/**
 	 * The .css file extension
 	 * @var string
@@ -189,10 +188,17 @@ class Combiner extends \System
 	/**
 	 * Generates the files and returns the URLs.
 	 *
+	 * @param string $strUrl An optional URL to prepend
+	 *
 	 * @return array The file URLs
 	 */
-	public function getFileUrls()
+	public function getFileUrls($strUrl=null)
 	{
+		if ($strUrl === null)
+		{
+			$strUrl = TL_ASSETS_URL;
+		}
+
 		$return = array();
 		$strTarget = substr($this->strMode, 1);
 
@@ -210,7 +216,7 @@ class Combiner extends \System
 					$objFile->close();
 				}
 
-				$return[] = $strPath;
+				$return[] = $strUrl . $strPath;
 			}
 			else
 			{
@@ -228,7 +234,7 @@ class Combiner extends \System
 					$name .= '|' . $arrFile['media'];
 				}
 
-				$return[] = $name;
+				$return[] = $strUrl . $name;
 			}
 		}
 
@@ -246,7 +252,7 @@ class Combiner extends \System
 	{
 		if (\Config::get('debugMode'))
 		{
-			return $this->getDebugMarkup();
+			return $this->getDebugMarkup($strUrl);
 		}
 
 		return $this->getCombinedFileUrl($strUrl);
@@ -255,11 +261,13 @@ class Combiner extends \System
 	/**
 	 * Generates the debug markup.
 	 *
+	 * @param string $strUrl An optional URL to prepend
+	 *
 	 * @return string The debug markup
 	 */
-	protected function getDebugMarkup()
+	protected function getDebugMarkup($strUrl)
 	{
-		$return = $this->getFileUrls();
+		$return = $this->getFileUrls($strUrl);
 
 		if ($this->strMode == self::JS)
 		{
@@ -390,23 +398,21 @@ class Combiner extends \System
 
 			return $this->fixPaths($objCompiler->compile($content), $arrFile);
 		}
-		else
-		{
-			$strPath = \dirname($arrFile['name']);
 
-			$arrOptions = array
-			(
-				'strictMath' => true,
-				'compress' => !\Config::get('debugMode'),
-				'import_dirs' => array(TL_ROOT . '/' . $strPath => $strPath)
-			);
+		$strPath = \dirname($arrFile['name']);
 
-			$objParser = new \Less_Parser();
-			$objParser->SetOptions($arrOptions);
-			$objParser->parse($content);
+		$arrOptions = array
+		(
+			'strictMath' => true,
+			'compress' => !\Config::get('debugMode'),
+			'import_dirs' => array(TL_ROOT . '/' . $strPath => $strPath)
+		);
 
-			return $this->fixPaths($objParser->getCss(), $arrFile);
-		}
+		$objParser = new \Less_Parser();
+		$objParser->SetOptions($arrOptions);
+		$objParser->parse($content);
+
+		return $this->fixPaths($objParser->getCss(), $arrFile);
 	}
 
 	/**
@@ -422,7 +428,7 @@ class Combiner extends \System
 		$strName = $arrFile['name'];
 
 		// Strip the web/ prefix
-		if (strpos($strName, $this->strWebDir .'/') === 0)
+		if (strpos($strName, $this->strWebDir . '/') === 0)
 		{
 			$strName = substr($strName, \strlen($this->strWebDir) + 1);
 		}
@@ -503,7 +509,7 @@ class Combiner extends \System
 	protected function hasMediaTag($strFile)
 	{
 		$return = false;
-		$fh = fopen(TL_ROOT . '/' . $strFile, 'rb');
+		$fh = fopen(TL_ROOT . '/' . $strFile, 'r');
 
 		while (($line = fgets($fh)) !== false)
 		{

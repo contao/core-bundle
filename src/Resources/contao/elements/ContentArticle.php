@@ -17,7 +17,6 @@ namespace Contao;
  */
 class ContentArticle extends \ContentElement
 {
-
 	/**
 	 * Parse the template
 	 *
@@ -25,11 +24,13 @@ class ContentArticle extends \ContentElement
 	 */
 	public function generate()
 	{
-		return $this->getArticle($this->articleAlias, false, true);
+		return $this->getArticle($this->articleAlias, false, true, $this->strColumn);
 	}
 
 	/**
 	 * Generate the content element
 	 */
-	protected function compile() {}
+	protected function compile()
+	{
+	}
 }

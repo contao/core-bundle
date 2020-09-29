@@ -25,7 +25,6 @@ use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
  */
 class InsertTags extends \Controller
 {
-
 	/**
 	 * Make the constructor public
 	 */
@@ -335,6 +334,7 @@ class InsertTags extends \Controller
 				case 'link_target':
 				case 'link_name':
 					$strTarget = null;
+					$strClass = '';
 
 					// Back link
 					if ($elements[1] == 'back')
@@ -415,7 +415,7 @@ class InsertTags extends \Controller
 									$strUrl = $objNext->getFrontendUrl();
 									break;
 								}
-								// DO NOT ADD A break; STATEMENT
+								// no break
 
 							default:
 								$strUrl = $objNextPage->getFrontendUrl();
@@ -423,7 +423,8 @@ class InsertTags extends \Controller
 						}
 
 						$strName = $objNextPage->title;
-						$strTarget = $objNextPage->target ? ' target="_blank"' : '';
+						$strTarget = $objNextPage->target ? ' target="_blank" rel="noreferrer noopener"' : '';
+						$strClass = $objNextPage->cssClass ? sprintf(' class="%s"', $objNextPage->cssClass) : '';
 						$strTitle = $objNextPage->pageTitle ?: $objNextPage->title;
 					}
 
@@ -431,11 +432,11 @@ class InsertTags extends \Controller
 					switch (strtolower($elements[0]))
 					{
 						case 'link':
-							$arrCache[$strTag] = sprintf('<a href="%s" title="%s"%s>%s</a>', $strUrl, \StringUtil::specialchars($strTitle), $strTarget, $strName);
+							$arrCache[$strTag] = sprintf('<a href="%s" title="%s"%s%s>%s</a>', $strUrl, \StringUtil::specialchars($strTitle), $strClass, $strTarget, $strName);
 							break;
 
 						case 'link_open':
-							$arrCache[$strTag] = sprintf('<a href="%s" title="%s"%s>', $strUrl, \StringUtil::specialchars($strTitle), $strTarget);
+							$arrCache[$strTag] = sprintf('<a href="%s" title="%s"%s%s>', $strUrl, \StringUtil::specialchars($strTitle), $strClass, $strTarget);
 							break;
 
 						case 'link_url':
@@ -720,7 +721,7 @@ class InsertTags extends \Controller
 				case 'acronym':
 					if ($elements[1] != '')
 					{
-						$arrCache[$strTag] = '<abbr title="'. \StringUtil::specialchars($elements[1]) .'">';
+						$arrCache[$strTag] = '<abbr title="' . \StringUtil::specialchars($elements[1]) . '">';
 					}
 					else
 					{
@@ -900,7 +901,7 @@ class InsertTags extends \Controller
 
 						if ($objFile !== null)
 						{
-							$arrCache[$strTag] = $objFile->path;
+							$arrCache[$strTag] = System::urlEncode($objFile->path);
 							break;
 						}
 					}

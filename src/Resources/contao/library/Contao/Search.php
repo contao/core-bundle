@@ -33,7 +33,6 @@ use Patchwork\Utf8;
  */
 class Search
 {
-
 	/**
 	 * Object instance (Singleton)
 	 * @var Search
@@ -181,28 +180,20 @@ class Search
 								->limit(1)
 								->execute($arrSet['checksum'], $arrSet['pid']);
 
-		// Update the URL if the new URL is shorter or the current URL is not canonical
-		if ($objIndex->numRows && $objIndex->url != $arrSet['url'])
+		if ($objIndex->numRows)
 		{
-			if (strpos($arrSet['url'], '?') === false && strpos($objIndex->url, '?') !== false)
+			// The new URL is more canonical (shorter and/or less fragments)
+			if (self::compareUrls($arrSet['url'], $objIndex->url) < 0)
 			{
-				// The new URL is more canonical (no query string)
-				$objDatabase->prepare("DELETE FROM tl_search WHERE id=?")
-							->execute($objIndex->id);
+				self::removeEntry($arrSet['url']);
 
-				$objDatabase->prepare("DELETE FROM tl_search_index WHERE pid=?")
+				$objDatabase->prepare("UPDATE tl_search %s WHERE id=?")
+							->set($arrSet)
 							->execute($objIndex->id);
 			}
-			elseif (substr_count($arrSet['url'], '/') > substr_count($objIndex->url, '/') || (strpos($arrSet['url'], '?') !== false && strpos($objIndex->url, '?') === false) || \strlen($arrSet['url']) > \strlen($objIndex->url))
-			{
-				// The current URL is more canonical (shorter and/or less fragments)
-				$arrSet['url'] = $objIndex->url;
-			}
-			else
-			{
-				// The same page has been indexed under a different URL already (see #8460)
-				return false;
-			}
+
+			// The same page has been indexed under a different URL already (see #8460)
+			return false;
 		}
 
 		$objIndex = $objDatabase->prepare("SELECT id FROM tl_search WHERE url=?")
@@ -250,7 +241,7 @@ class Search
 
 			$strWord = trim($strWord);
 
-			if (!\strlen($strWord) || preg_match('/^[\.:,\'_-]+$/', $strWord))
+			if (!\strlen($strWord) || preg_match('/^[.:,\'_-]+$/', $strWord))
 			{
 				continue;
 			}
@@ -326,7 +317,7 @@ class Search
 
 		// Split keywords
 		$arrChunks = array();
-		preg_match_all('/"[^"]+"|[\+\-]?[^ ]+\*?/', $strKeywords, $arrChunks);
+		preg_match_all('/"[^"]+"|[+-]?[^ ]+\*?/', $strKeywords, $arrChunks);
 
 		$arrPhrases = array();
 		$arrKeywords = array();
@@ -404,10 +395,10 @@ class Search
 		$arrValues = array();
 
 		// Remember found words so we can highlight them later
-		$strQuery = "SELECT * FROM (SELECT tl_search_index.pid AS sid, GROUP_CONCAT(word) AS matches";
+		$strQuery = "SELECT * FROM (SELECT tl_search_index.pid AS sid, GROUP_CONCAT(tl_search_index.word) AS matches";
 
-		// Get the number of wildcard matches
-		if (!$blnOrSearch && $intWildcards)
+		// Get the number of wildcard matches if wildcards and keywords are mixed
+		if (!$blnOrSearch && $intWildcards && (\count($arrKeywords) || $intIncluded || $intPhrases))
 		{
 			$strQuery .= ", (SELECT COUNT(*) FROM tl_search_index WHERE (" . implode(' OR ', array_fill(0, $intWildcards, 'word LIKE ?')) . ") AND pid=sid) AS wildcards";
 			$arrValues = array_merge($arrValues, $arrWildcards);
@@ -457,7 +448,7 @@ class Search
 			$arrValues = array_merge($arrValues, $arrWildcards);
 		}
 
-		$strQuery .= " FROM tl_search_index WHERE (" . implode(' OR ', $arrAllKeywords) . ")";
+		$strQuery .= " FROM (SELECT word FROM tl_search_index WHERE (" . implode(' OR ', $arrAllKeywords) . ") GROUP BY word) words JOIN tl_search_index ON tl_search_index.word = words.word WHERE 1";
 
 		// Get phrases
 		if ($intPhrases)
@@ -500,7 +491,14 @@ class Search
 			// Dynamically add the number of wildcard matches
 			if ($intWildcards)
 			{
-				$strQuery .= " + IF(matches.wildcards>" . $intWildcards . ", matches.wildcards, " . $intWildcards . ")";
+				if ($intKeywords)
+				{
+					$strQuery .= " + IF(matches.wildcards>" . $intWildcards . ", matches.wildcards, " . $intWildcards . ")";
+				}
+				else
+				{
+					$strQuery .= " + " . $intWildcards;
+				}
 			}
 		}
 
@@ -543,7 +541,9 @@ class Search
 	 * @deprecated Deprecated since Contao 4.0, to be removed in Contao 5.0.
 	 *             The Search class is now static.
 	 */
-	final public function __clone() {}
+	final public function __clone()
+	{
+	}
 
 	/**
 	 * Return the object instance (Singleton)
@@ -563,5 +563,39 @@ class Search
 		}
 
 		return static::$objInstance;
+	}
+
+	/**
+	 * @param string $strUrlA
+	 * @param string $strUrlB
+	 *
+	 * @return int negative if $strUrlA is more canonical, positive if $strUrlB is more canonical
+	 */
+	private static function compareUrls($strUrlA, $strUrlB)
+	{
+		if (strpos($strUrlA, '?') === false && strpos($strUrlB, '?') !== false)
+		{
+			return -1;
+		}
+
+		if (strpos($strUrlA, '?') !== false && strpos($strUrlB, '?') === false)
+		{
+			return 1;
+		}
+
+		$slashCountA = substr_count(explode('?', $strUrlA)[0], '/');
+		$slashCountB = substr_count(explode('?', $strUrlB)[0], '/');
+
+		if ($slashCountA !== $slashCountB)
+		{
+			return $slashCountA - $slashCountB;
+		}
+
+		if (\strlen($strUrlA) !== \strlen($strUrlB))
+		{
+			return \strlen($strUrlA) - \strlen($strUrlB);
+		}
+
+		return strcmp($strUrlA, $strUrlB);
 	}
 }

@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class Frontend extends \Controller
 {
-
 	/**
 	 * Meta array
 	 * @var array
@@ -210,10 +209,8 @@ abstract class Frontend extends \Controller
 			{
 				return false;
 			}
-			else
-			{
-				$arrFragments = explode('/', $strRequest);
-			}
+
+			$arrFragments = explode('/', $strRequest);
 		}
 
 		// Add the second fragment as auto_item if the number of fragments is even
@@ -314,7 +311,8 @@ abstract class Frontend extends \Controller
 			// No matching root page found
 			if ($objRootPage === null)
 			{
-				\System::log('No root page found (host "' . $host . '", language "'. \Input::get('language') .'")', __METHOD__, TL_ERROR);
+				\System::log('No root page found (host "' . $host . '", language "' . \Input::get('language') . '")', __METHOD__, TL_ERROR);
+
 				throw new NoRootPageFoundException('No root page found');
 			}
 		}
@@ -336,7 +334,8 @@ abstract class Frontend extends \Controller
 			// No matching root page found
 			if ($objRootPage === null)
 			{
-				\System::log('No root page found (host "' . \Environment::get('host') . '", languages "'.implode(', ', \Environment::get('httpAcceptLanguage')).'")', __METHOD__, TL_ERROR);
+				\System::log('No root page found (host "' . \Environment::get('host') . '", languages "' . implode(', ', \Environment::get('httpAcceptLanguage')) . '")', __METHOD__, TL_ERROR);
+
 				throw new NoRootPageFoundException('No root page found');
 			}
 
@@ -350,13 +349,13 @@ abstract class Frontend extends \Controller
 					$strUrl = \System::getContainer()->get('router')->generate('contao_index', $arrParams);
 					$strUrl = substr($strUrl, \strlen(\Environment::get('path')) + 1);
 
-					static::redirect($strUrl, 301);
+					static::redirect($strUrl);
 				}
 
 				// Redirect if the page alias is not "index" or "/" (see #8498, #8560 and #1210)
 				elseif (($objPage = \PageModel::findFirstPublishedByPid($objRootPage->id)) !== null && !\in_array($objPage->alias, array('index', '/')))
 				{
-					static::redirect($objPage->getFrontendUrl(), 302);
+					static::redirect($objPage->getFrontendUrl());
 				}
 			}
 		}
@@ -605,14 +604,13 @@ abstract class Frontend extends \Controller
 		{
 			return 60;
 		}
-		elseif (!empty($GLOBALS['TL_CRON']['hourly']))
+
+		if (!empty($GLOBALS['TL_CRON']['hourly']))
 		{
 			return 3600;
 		}
-		else
-		{
-			return 86400; // daily
-		}
+
+		return 86400; // daily
 	}
 
 	/**

@@ -31,6 +31,13 @@ use Contao\ImageSizeModel;
  */
 class PictureFactory implements PictureFactoryInterface
 {
+    const ASPECT_RATIO_THRESHOLD = 0.05;
+
+    /**
+     * @var array
+     */
+    private $imageSizeItemsCache = [];
+
     /**
      * @var PictureGeneratorInterface
      */
@@ -119,6 +126,8 @@ class PictureFactory implements PictureFactoryInterface
             (new ResizeOptions())->setImagineOptions($this->imagineOptions)->setBypassCache($this->bypassCache)
         );
 
+        $attributes['hasSingleAspectRatio'] = $this->hasSingleAspectRatio($picture);
+
         return $this->addImageAttributes($picture, $attributes);
     }
 
@@ -175,9 +184,13 @@ class PictureFactory implements PictureFactoryInterface
             $attributes['class'] = $imageSizes->cssClass;
         }
 
-        /** @var ImageSizeItemModel $imageSizeItemModel */
-        $imageSizeItemModel = $this->framework->getAdapter(ImageSizeItemModel::class);
-        $imageSizeItems = $imageSizeItemModel->findVisibleByPid($size[2], ['order' => 'sorting ASC']);
+        if (!\array_key_exists($size[2], $this->imageSizeItemsCache)) {
+            /** @var ImageSizeItemModel $adapter */
+            $adapter = $this->framework->getAdapter(ImageSizeItemModel::class);
+            $this->imageSizeItemsCache[$size[2]] = $adapter->findVisibleByPid($size[2], ['order' => 'sorting ASC']);
+        }
+
+        $imageSizeItems = $this->imageSizeItemsCache[$size[2]];
 
         if (null !== $imageSizeItems) {
             $configItems = [];
@@ -247,5 +260,37 @@ class PictureFactory implements PictureFactoryInterface
         }
 
         return new Picture($img, $picture->getSources());
+    }
+
+    /**
+     * Returns true if the aspect ratios of all sources of the picture are
+     * nearly the same and differ less than the ASPECT_RATIO_THRESHOLD.
+     */
+    private function hasSingleAspectRatio(PictureInterface $picture)
+    {
+        if (0 === \count($picture->getSources())) {
+            return true;
+        }
+
+        $img = $picture->getImg();
+
+        if (empty($img['width']) || empty($img['height'])) {
+            return false;
+        }
+
+        foreach ($picture->getSources() as $source) {
+            if (empty($source['width']) || empty($source['height'])) {
+                return false;
+            }
+
+            $diffA = abs(($img['width'] / $img['height']) / ($source['width'] / $source['height']) - 1);
+            $diffB = abs(($img['height'] / $img['width']) / ($source['height'] / $source['width']) - 1);
+
+            if ($diffA > self::ASPECT_RATIO_THRESHOLD && $diffB > self::ASPECT_RATIO_THRESHOLD) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

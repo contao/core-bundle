@@ -35,7 +35,6 @@ namespace Contao;
  */
 class Folder extends \System
 {
-
 	/**
 	 * Folder name
 	 * @var string
@@ -63,8 +62,6 @@ class Folder extends \System
 	 */
 	public function __construct($strFolder)
 	{
-		// No parent::__construct() here
-
 		// Handle open_basedir restrictions
 		if ($strFolder == '.')
 		{
@@ -373,7 +370,8 @@ class Folder extends \System
 			new \RecursiveDirectoryIterator(
 				TL_ROOT . '/' . $this->strFolder,
 				\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
-			), \RecursiveIteratorIterator::SELF_FIRST
+			),
+			\RecursiveIteratorIterator::SELF_FIRST
 		);
 
 		foreach ($it as $i)
@@ -442,7 +440,7 @@ class Folder extends \System
 		$matches = array();
 		$return = array('dirname'=>'', 'basename'=>'', 'extension'=>'', 'filename'=>'');
 
-		preg_match('%^^(.*?)[\\\\/]*([^/\\\\]*?)[\\\\/\.]*$%m', $this->strFolder, $matches);
+		preg_match('%^(.*?)[\\\\/]*([^/\\\\]*?)[\\\\/.]*$%m', $this->strFolder, $matches);
 
 		if (isset($matches[1]))
 		{

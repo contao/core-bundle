@@ -14,8 +14,8 @@
         <target>Indirizzo e-mail dell'amministratore di sistema</target>
       </trans-unit>
       <trans-unit id="tl_settings.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>I messaggi generati automaticamente, come ad esempio conferma iscrizione via e-mail, saranno inviate a questo indirizzo.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
+        <target>uesto indirizzo e-mail sarà utilizzato per inviare e ricevere messaggi di sistema.</target>
       </trans-unit>
       <trans-unit id="tl_settings.dateFormat.0">
         <source>Date format</source>
@@ -351,7 +351,7 @@
       </trans-unit>
       <trans-unit id="tl_settings.date_legend">
         <source>Date and time</source>
-        <target>Data e tempo</target>
+        <target>Data e ora</target>
       </trans-unit>
       <trans-unit id="tl_settings.global_legend">
         <source>Global configuration</source>

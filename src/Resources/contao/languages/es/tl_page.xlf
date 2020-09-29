@@ -78,8 +78,8 @@
         <target>Redirigir a la última página visitada</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>Redirigir al usuario a la última página visitada en vez de la página de redirección.</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>Redirigir al miembro a la última página visitada en lugar de a la página de redireccionamiento.</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +102,8 @@
         <target>Dirección e-mail del administrador de la web</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>Por favor introduce la dirección e-mail del administrador del sistema.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
+        <target>Esta dirección de correo electrónico se utilizará para enviar y recibir mensajes del sistema.</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,12 +274,12 @@
         <target>El/La clase(s) serán usados en el menú de navegación y en la etiqueta &amp;lt;body&amp;gt;.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>Mostrar en sitemap</target>
+        <source>Show in HTML sitemap</source>
+        <target>Mostrar en el mapa del sitio HTML</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>Indica si la página aparece en el sitemap (mapa del sitio).</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
+        <target>Aquí puede definir si la página se muestra en el mapa del sitio HTML.</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -294,8 +294,8 @@
         <target>Mostrar sólo a los invitados</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>Ocultar la página desde el menú de navegación si un miembro está conectado.</target>
+        <source>Hide the page if a member is logged in.</source>
+        <target>Ocultar la página si una miembro está conectado.</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>

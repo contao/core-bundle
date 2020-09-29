@@ -28,7 +28,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 abstract class Backend extends \Controller
 {
-
 	/**
 	 * Load the database object
 	 */
@@ -261,7 +260,9 @@ abstract class Backend extends \Controller
 			{
 				include $file;
 			}
-			catch (\Exception $e) {}
+			catch (\Exception $e)
+			{
+			}
 
 			$strRelpath = \StringUtil::stripRootDir($file);
 
@@ -374,7 +375,7 @@ abstract class Backend extends \Controller
 				{
 					if ($v['exclude'])
 					{
-						if ($this->User->hasAccess($strTable.'::'.$k, 'alexf'))
+						if ($this->User->hasAccess($strTable . '::' . $k, 'alexf'))
 						{
 							if ($strTable == 'tl_user_group')
 							{
@@ -433,7 +434,8 @@ abstract class Backend extends \Controller
 			{
 				throw new ResponseException($response);
 			}
-			elseif ($response instanceof Response)
+
+			if ($response instanceof Response)
 			{
 				$response = $response->getContent();
 			}
@@ -449,11 +451,11 @@ abstract class Backend extends \Controller
 
 				if ($objRow->title != '')
 				{
-					$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
+					$this->Template->headline .= ' › <span>' . $objRow->title . '</span>';
 				}
 				elseif ($objRow->name != '')
 				{
-					$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
+					$this->Template->headline .= ' › <span>' . $objRow->name . '</span>';
 				}
 			}
 
@@ -520,7 +522,7 @@ abstract class Backend extends \Controller
 						// Add table name
 						if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 						{
-							$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
+							$trail[] = ' › <span>' . $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
 						}
 
 						// Add object title or name
@@ -536,7 +538,6 @@ abstract class Backend extends \Controller
 						{
 							$trail[] = ' › <span>' . $objRow->headline . '</span>';
 						}
-
 					}
 
 					$this->loadDataContainer($ptable);
@@ -550,7 +551,7 @@ abstract class Backend extends \Controller
 				// Add the last parent table
 				if (isset($GLOBALS['TL_LANG']['MOD'][$table]))
 				{
-					$trail[] = ' › <span>'. $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
+					$trail[] = ' › <span>' . $GLOBALS['TL_LANG']['MOD'][$table] . '</span>';
 				}
 
 				// Add the breadcrumb trail in reverse order
@@ -627,13 +628,16 @@ abstract class Backend extends \Controller
 	 *
 	 * @param integer $pid
 	 * @param string  $domain
-	 * @param boolean $blnIsSitemap
+	 * @param boolean $blnIsXmlSitemap
 	 *
 	 * @return array
 	 */
-	public static function findSearchablePages($pid=0, $domain='', $blnIsSitemap=false)
+	public static function findSearchablePages($pid=0, $domain='', $blnIsXmlSitemap=false)
 	{
-		$objPages = \PageModel::findPublishedByPid($pid, array('ignoreFePreview'=>true));
+		// Since the publication status of a page is not inherited by its child
+		// pages, we have to use findByPid() instead of findPublishedByPid() and
+		// filter out unpublished pages in the foreach loop (see #2217)
+		$objPages = PageModel::findByPid($pid, array('order'=>'sorting'));
 
 		if ($objPages === null)
 		{
@@ -641,30 +645,30 @@ abstract class Backend extends \Controller
 		}
 
 		$arrPages = array();
+		$time = Date::floorToMinute();
 
 		// Recursively walk through all subpages
 		foreach ($objPages as $objPage)
 		{
-			if ($objPage->type == 'regular')
-			{
-				// Searchable and not protected
-				if ((!$objPage->noSearch || $blnIsSitemap) && (!$objPage->protected || (\Config::get('indexProtected') && (!$blnIsSitemap || $objPage->sitemap == 'map_always'))) && (!$blnIsSitemap || $objPage->sitemap != 'map_never'))
-				{
-					$arrPages[] = $objPage->getAbsoluteUrl();
+			$isPublished = ($objPage->published && ($objPage->start == '' || $objPage->start <= $time) && ($objPage->stop == '' || $objPage->stop > $time));
 
-					// Get articles with teaser
-					if (($objArticles = \ArticleModel::findPublishedWithTeaserByPid($objPage->id, array('ignoreFePreview'=>true))) !== null)
+			// Searchable and not protected
+			if ($isPublished && $objPage->type == 'regular' && (!$objPage->noSearch || $blnIsXmlSitemap) && (!$blnIsXmlSitemap || $objPage->robots != 'noindex,nofollow') && (!$objPage->protected || \Config::get('indexProtected')))
+			{
+				$arrPages[] = $objPage->getAbsoluteUrl();
+
+				// Get articles with teaser
+				if (($objArticles = \ArticleModel::findPublishedWithTeaserByPid($objPage->id, array('ignoreFePreview'=>true))) !== null)
+				{
+					foreach ($objArticles as $objArticle)
 					{
-						foreach ($objArticles as $objArticle)
-						{
-							$arrPages[] = $objPage->getAbsoluteUrl('/articles/' . ($objArticle->alias ?: $objArticle->id));
-						}
+						$arrPages[] = $objPage->getAbsoluteUrl('/articles/' . ($objArticle->alias ?: $objArticle->id));
 					}
 				}
 			}
 
 			// Get subpages
-			if ((!$objPage->protected || \Config::get('indexProtected')) && ($arrSubpages = static::findSearchablePages($objPage->id, $domain, $blnIsSitemap)))
+			if ((!$objPage->protected || \Config::get('indexProtected')) && ($arrSubpages = static::findSearchablePages($objPage->id, $domain, $blnIsXmlSitemap)))
 			{
 				$arrPages = array_merge($arrPages, $arrSubpages);
 			}
@@ -837,7 +841,7 @@ abstract class Backend extends \Controller
 				}
 				else
 				{
-					$arrLinks[] = \Backend::addPageIcon($objPage->row(), '', null, '', true) . ' <a href="' . \Backend::addToUrl('pn='.$objPage->id) . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']).'">' . $objPage->title . '</a>';
+					$arrLinks[] = \Backend::addPageIcon($objPage->row(), '', null, '', true) . ' <a href="' . \Backend::addToUrl('pn=' . $objPage->id) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']) . '">' . $objPage->title . '</a>';
 				}
 
 				// Do not show the mounted pages
@@ -847,14 +851,14 @@ abstract class Backend extends \Controller
 				}
 
 				$intId = $objPage->pid;
-			}
-			while ($intId > 0 && $objPage->type != 'root');
+			} while ($intId > 0 && $objPage->type != 'root');
 		}
 
 		// Check whether the node is mounted
 		if (!$objUser->hasAccess($arrIds, 'pagemounts'))
 		{
 			$objSession->set($strKey, 0);
+
 			throw new AccessDeniedException('Page ID ' . $intNode . ' is not mounted.');
 		}
 
@@ -862,7 +866,7 @@ abstract class Backend extends \Controller
 		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = array($intNode);
 
 		// Add root link
-		$arrLinks[] = \Image::getHtml('pagemounts.svg') . ' <a href="' . \Backend::addToUrl('pn=0') . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']).'">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
+		$arrLinks[] = \Image::getHtml('pagemounts.svg') . ' <a href="' . \Backend::addToUrl('pn=0') . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']) . '">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
 		$arrLinks = array_reverse($arrLinks);
 
 		// Insert breadcrumb menu
@@ -908,10 +912,10 @@ abstract class Backend extends \Controller
 		}
 
 		// Add the breadcrumb link
-		$label = '<a href="' . \Backend::addToUrl('pn='.$row['id']) . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']).'">' . $label . '</a>';
+		$label = '<a href="' . \Backend::addToUrl('pn=' . $row['id']) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']) . '">' . $label . '</a>';
 
 		// Return the image
-		return '<a href="contao/main.php?do=feRedirect&amp;page='.$row['id'].'" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['view']).'"' . (($dc->table != 'tl_page') ? ' class="tl_gray"' : '') . ' target="_blank">'.\Image::getHtml($image, '', $imageAttribute).'</a> '.$label;
+		return '<a href="contao/main.php?do=feRedirect&amp;page=' . $row['id'] . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['view']) . '"' . (($dc->table != 'tl_page') ? ' class="tl_gray"' : '') . ' target="_blank">' . \Image::getHtml($image, '', $imageAttribute) . '</a> ' . $label;
 	}
 
 	/**
@@ -970,7 +974,7 @@ abstract class Backend extends \Controller
 			}
 
 			$objSession->set($strKey, \Input::get('fn', true));
-			\Controller::redirect(preg_replace('/(&|\?)fn=[^&]*/', '', \Environment::get('request')));
+			\Controller::redirect(preg_replace('/[?&]fn=[^&]*/', '', \Environment::get('request')));
 		}
 
 		$strNode = $objSession->get($strKey);
@@ -1000,7 +1004,7 @@ abstract class Backend extends \Controller
 		$arrLinks = array();
 
 		// Add root link
-		$arrLinks[] = \Image::getHtml('filemounts.svg') . ' <a href="' . \Backend::addToUrl('fn=') . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']).'">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
+		$arrLinks[] = \Image::getHtml('filemounts.svg') . ' <a href="' . \Backend::addToUrl('fn=') . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectAllNodes']) . '">' . $GLOBALS['TL_LANG']['MSC']['filterAll'] . '</a>';
 
 		// Generate breadcrumb trail
 		foreach ($arrNodes as $strFolder)
@@ -1020,7 +1024,7 @@ abstract class Backend extends \Controller
 			}
 			else
 			{
-				$arrLinks[] = \Image::getHtml('folderC.svg') . ' <a href="' . \Backend::addToUrl('fn='.$strPath) . '" title="'.\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']).'">' . $strFolder . '</a>';
+				$arrLinks[] = \Image::getHtml('folderC.svg') . ' <a href="' . \Backend::addToUrl('fn=' . $strPath) . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['selectNode']) . '">' . $strFolder . '</a>';
 			}
 		}
 
@@ -1028,6 +1032,7 @@ abstract class Backend extends \Controller
 		if (!$objUser->hasAccess($strNode, 'filemounts'))
 		{
 			$objSession->set($strKey, '');
+
 			throw new AccessDeniedException('Folder ID "' . $strNode . '" is not mounted');
 		}
 
@@ -1099,7 +1104,7 @@ abstract class Backend extends \Controller
       Backend.openModalSelector({
         "id": "tl_listing",
         "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$table]['fields'][$field]['label'][0])) . '",
-        "url": this.href + "&value=" + document.getElementById("ctrl_'.$inputName.'").value,
+        "url": this.href + "&value=" + document.getElementById("ctrl_' . $inputName . '").value,
         "callback": function(picker, value) {
           $("ctrl_' . $inputName . '").value = value.join(",");
         }.bind(this)

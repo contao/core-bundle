@@ -10,7 +10,6 @@
 
 $GLOBALS['TL_DCA']['tl_version'] = array
 (
-
 	// Config
 	'config' => array
 	(
@@ -19,8 +18,8 @@ $GLOBALS['TL_DCA']['tl_version'] = array
 			'keys' => array
 			(
 				'id' => 'primary',
-				'pid' => 'index',
-				'fromTable' => 'index'
+				'pid,fromTable,version' => 'unique',
+				'userid' => 'index'
 			)
 		)
 	),

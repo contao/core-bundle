@@ -20,7 +20,6 @@ use Patchwork\Utf8;
  */
 class ModuleSearch extends \Module
 {
-
 	/**
 	 * Template
 	 * @var string
@@ -259,6 +258,7 @@ class ModuleSearch extends \Module
 				$objTemplate->class = (($i == ($from - 1)) ? 'first ' : '') . (($i == ($to - 1) || $i == ($count - 1)) ? 'last ' : '') . (($i % 2 == 0) ? 'even' : 'odd');
 				$objTemplate->relevance = sprintf($GLOBALS['TL_LANG']['MSC']['relevance'], number_format($arrResult[$i]['relevance'] / $arrResult[0]['relevance'] * 100, 2) . '%');
 				$objTemplate->filesize = $arrResult[$i]['filesize'];
+				$objTemplate->unit = $GLOBALS['TL_LANG']['UNITS'][1];
 				$objTemplate->matches = $arrResult[$i]['matches'];
 
 				$arrContext = array();
@@ -269,11 +269,17 @@ class ModuleSearch extends \Module
 				foreach ($arrMatches as $strWord)
 				{
 					$arrChunks = array();
-					preg_match_all('/(^|\b.{0,'.$this->contextLength.'}\PL)' . str_replace('+', '\\+', $strWord) . '(\PL.{0,'.$this->contextLength.'}\b|$)/ui', $strText, $arrChunks);
+					preg_match_all('/(^|\b.{0,' . $this->contextLength . '}\PL)' . str_replace('+', '\\+', $strWord) . '(\PL.{0,' . $this->contextLength . '}\b|$)/ui', $strText, $arrChunks);
 
 					foreach ($arrChunks[0] as $strContext)
 					{
 						$arrContext[] = ' ' . $strContext . ' ';
+					}
+
+					// Skip other terms if the total length is already reached
+					if (array_sum(array_map('mb_strlen', $arrContext)) >= $this->totalLength)
+					{
+						break;
 					}
 				}
 

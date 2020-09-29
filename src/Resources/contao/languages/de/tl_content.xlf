@@ -387,11 +387,11 @@
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.0">
         <source>Gallery template</source>
-        <target>Galerietemplate</target>
+        <target>Galerie-Template</target>
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.1">
         <source>Here you can select the gallery template.</source>
-        <target>Hier können Sie das Galerietemplate auswählen.</target>
+        <target>Hier können Sie das Galerie-Template auswählen.</target>
       </trans-unit>
       <trans-unit id="tl_content.customTpl.0">
         <source>Custom element template</source>
@@ -527,7 +527,7 @@
       </trans-unit>
       <trans-unit id="tl_content.protected.1">
         <source>Show the content element to certain member groups only.</source>
-        <target>Das Inhaltselement nur bestimmten Gruppen anzeigen.</target>
+        <target>Das Inhaltselement nur bestimmten Mitgliedergruppen anzeigen.</target>
       </trans-unit>
       <trans-unit id="tl_content.groups.0">
         <source>Allowed member groups</source>

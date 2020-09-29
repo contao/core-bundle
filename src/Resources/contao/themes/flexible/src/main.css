@@ -9,6 +9,7 @@
 /* Body */
 body {
 	background:#132330 radial-gradient(#234058, #0f1c26);
+	overflow-y:scroll;
 }
 body.popup {
 	background:#fff;
@@ -443,9 +444,6 @@ h2.sub_headline {
 	width:60%;
 	margin-left:1%;
 }
-input[type=search]::-webkit-search-decoration {
-	-webkit-appearance:none;
-}
 
 /* Boxes */
 .tl_xpl {
@@ -460,7 +458,8 @@ input[type=search]::-webkit-search-decoration {
 }
 .tl_box h3,.tl_tbox h3,.tl_xpl h3 {
 	margin:0;
-	padding:14px 0 1px;
+	padding-top:13px;
+	height:16px;
 	font-size:.875rem;
 }
 .tl_box h4,.tl_tbox h4 {
@@ -710,6 +709,9 @@ table.tl_listing {
 .tl_empty_parent_view {
 	margin:0;
 	padding:18px 0 0;
+}
+.tl_listing_container + .tl_empty {
+	margin-top:-32px;
 }
 .tl_noopt {
 	margin:0 0 -1px;
@@ -1357,10 +1359,12 @@ ul.sgallery li {
 
 /* Ajax box */
 #tl_ajaxBox {
-	width:20%;
+	width:300px;
 	padding:2em;
+	box-sizing:border-box;
 	position:absolute;
-	left:40%;
+	left:50%;
+	margin-left:-150px;
 	background:#fff url("icons/loading.svg") no-repeat right 2em center;
 	border:2px solid #111;
 	border-radius:2px;
@@ -1791,6 +1795,7 @@ fieldset.collapsed > legend {
 	#container {
 		display:block;
 		padding-top:40px;
+		overflow:hidden;
 	}
 	#main,#left {
 		float:none;

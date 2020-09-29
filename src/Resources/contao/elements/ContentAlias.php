@@ -17,7 +17,6 @@ namespace Contao;
  */
 class ContentAlias extends \ContentElement
 {
-
 	/**
 	 * Parse the template
 	 *
@@ -39,7 +38,7 @@ class ContentAlias extends \ContentElement
 			return '';
 		}
 
-		$objElement->origId = $objElement->id;
+		$objElement->origId = $objElement->origId ?: $objElement->id;
 		$objElement->id = $this->id;
 		$objElement->typePrefix = 'ce_';
 
@@ -68,5 +67,7 @@ class ContentAlias extends \ContentElement
 	/**
 	 * Generate the content element
 	 */
-	protected function compile() {}
+	protected function compile()
+	{
+	}
 }

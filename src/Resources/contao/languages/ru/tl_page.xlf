@@ -78,8 +78,8 @@
         <target>Направление на последнюю посещенную страницу</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>Направление пользователя на последнюю посещенную им страницу вместо перехода на страницу перенаправления.</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>Направление участника на последнюю посещенную им страницу вместо перехода на страницу перенаправления.</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +102,8 @@
         <target>E-mail администратора веб-сайта</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>Автоматически-созданные сообщения (напр. e-mail активации или подтверждения) будут отправлены на этот адрес.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
+        <target>Этот адрес электронной почты будет использоваться для отправки и получения системных сообщений.</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,12 +274,12 @@
         <target>Класс(ы) будут использованы в меню навигации и теге &amp;lt;body&amp;gt;.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>Показать в карте веб-сайта</target>
+        <source>Show in HTML sitemap</source>
+        <target>Показать в HTML-карте веб-сайта</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>Вы можете определить будет ли страница отображается в карте веб-сайта.</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
+        <target>Вы можете определить, будет ли страница отображаться в HTML-карте веб-сайта.</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -294,7 +294,7 @@
         <target>Показывать только гостям</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
+        <source>Hide the page if a member is logged in.</source>
         <target>Скрыть страницу, если участник вошел в систему.</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">

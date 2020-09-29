@@ -46,7 +46,7 @@ class ImageFactoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    protected function tearDown()
     {
         if (file_exists($this->getRootDir().'/assets/images')) {
             (new Filesystem())->remove($this->getRootDir().'/assets/images');
@@ -195,15 +195,15 @@ class ImageFactoryTest extends TestCase
 
         $imageSizeModel
             ->method('__get')
-            ->will(
-                $this->returnCallback(function ($key) {
+            ->willReturnCallback(
+                function ($key) {
                     return [
                         'width' => '100',
                         'height' => '200',
                         'resizeMode' => ResizeConfiguration::MODE_BOX,
                         'zoom' => '50',
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -218,15 +218,15 @@ class ImageFactoryTest extends TestCase
 
         $filesModel
             ->method('__get')
-            ->will(
-                $this->returnCallback(function ($key) {
+            ->willReturnCallback(
+                function ($key) {
                     return [
                         'importantPartX' => '50',
                         'importantPartY' => '50',
                         'importantPartWidth' => '25',
                         'importantPartHeight' => '25',
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -239,13 +239,13 @@ class ImageFactoryTest extends TestCase
 
         $framework
             ->method('getAdapter')
-            ->will(
-                $this->returnCallback(function ($key) use ($imageSizeAdapter, $filesAdapter) {
+            ->willReturnCallback(
+                function ($key) use ($imageSizeAdapter, $filesAdapter) {
                     return [
                         ImageSizeModel::class => $imageSizeAdapter,
                         FilesModel::class => $filesAdapter,
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -279,13 +279,13 @@ class ImageFactoryTest extends TestCase
 
         $framework
             ->method('getAdapter')
-            ->will(
-                $this->returnCallback(function ($key) use ($imageSizeAdapter, $filesAdapter) {
+            ->willReturnCallback(
+                function ($key) use ($imageSizeAdapter, $filesAdapter) {
                     return [
                         ImageSizeModel::class => $imageSizeAdapter,
                         FilesModel::class => $filesAdapter,
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -442,15 +442,15 @@ class ImageFactoryTest extends TestCase
 
         $filesModel
             ->method('__get')
-            ->will(
-                $this->returnCallback(function ($key) {
+            ->willReturnCallback(
+                function ($key) {
                     return [
                         'importantPartX' => '50',
                         'importantPartY' => '50',
                         'importantPartWidth' => '25',
                         'importantPartHeight' => '25',
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -570,15 +570,15 @@ class ImageFactoryTest extends TestCase
 
         $filesModel
             ->method('__get')
-            ->will(
-                $this->returnCallback(function ($key) {
+            ->willReturnCallback(
+                function ($key) {
                     return [
                         'importantPartX' => '50',
                         'importantPartY' => '50',
                         'importantPartWidth' => '175',
                         'importantPartHeight' => '175',
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -643,7 +643,7 @@ class ImageFactoryTest extends TestCase
         $imageFactory = $this->getImageFactory($resizer, $imagine, $imagine, null, $framework);
 
         $GLOBALS['TL_HOOKS'] = [
-            'executeResize' => [[\get_class($this), 'executeResizeHookCallback']],
+            'executeResize' => [[static::class, 'executeResizeHookCallback']],
         ];
 
         $image = $imageFactory->create($path, [100, 100, ResizeConfiguration::MODE_CROP]);
@@ -742,14 +742,14 @@ class ImageFactoryTest extends TestCase
         $imageFactory = $this->getImageFactory($resizer, $imagine, $imagine, null, $framework);
 
         $GLOBALS['TL_HOOKS'] = [
-            'executeResize' => [[\get_class($this), 'executeResizeHookCallback']],
+            'executeResize' => [[static::class, 'executeResizeHookCallback']],
         ];
 
         // Build cache before adding the hook
         $imageFactory->create($path, [50, 50, ResizeConfiguration::MODE_CROP]);
 
         $GLOBALS['TL_HOOKS'] = [
-            'getImage' => [[\get_class($this), 'getImageHookCallback']],
+            'getImage' => [[static::class, 'getImageHookCallback']],
         ];
 
         $image = $imageFactory->create($path, [100, 100, ResizeConfiguration::MODE_CROP]);
@@ -855,13 +855,13 @@ class ImageFactoryTest extends TestCase
 
         $framework
             ->method('getAdapter')
-            ->will(
-                $this->returnCallback(function ($key) use ($filesAdapter, $configAdapter) {
+            ->willReturnCallback(
+                function ($key) use ($filesAdapter, $configAdapter) {
                     return [
                         FilesModel::class => $filesAdapter,
                         Config::class => $configAdapter,
                     ][$key];
-                })
+                }
             )
         ;
 
@@ -870,7 +870,7 @@ class ImageFactoryTest extends TestCase
         $imageFactory = $this->getImageFactory($resizer, $imagine, $imagine, null, $framework);
 
         $GLOBALS['TL_HOOKS'] = [
-            'getImage' => [[\get_class($this), 'emptyHookCallback']],
+            'getImage' => [[static::class, 'emptyHookCallback']],
         ];
 
         $image = $imageFactory->create($path, [100, 100, ResizeConfiguration::MODE_CROP]);

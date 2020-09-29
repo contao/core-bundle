@@ -920,16 +920,29 @@ var Backend =
 				return;
 			}
 			var frm = window.frames['simple-modal-iframe'],
-				val = [], ul, inp, field, act, it, i;
+				val = [], ul, inp, field, act, it, i, pickerValue, sIndex;
 			if (frm === undefined) {
 				alert('Could not find the SimpleModal frame');
 				return;
 			}
 			ul = frm.document.getElementById(opt.id);
+			// Load the previous values (#1816)
+			if (pickerValue = ul.get('data-picker-value')) {
+				val = JSON.parse(pickerValue);
+			}
 			inp = ul.getElementsByTagName('input');
 			for (i=0; i<inp.length; i++) {
-				if (inp[i].checked && !inp[i].id.match(/^(check_all_|reset_)/)) {
-					val.push(inp[i].get('value'));
+				if (inp[i].id.match(/^(check_all_|reset_)/)) {
+					continue;
+				}
+				// Add currently selected value, otherwise remove (#1816)
+				sIndex = val.indexOf(inp[i].get('value'));
+				if (inp[i].checked) {
+					if (sIndex == -1) {
+						val.push(inp[i].get('value'));
+					}
+				} else if (sIndex != -1) {
+					val.splice(sIndex, 1);
 				}
 			}
 			if (opt.callback) {
@@ -978,7 +991,7 @@ var Backend =
 		Backend.openModalSelector({
 			'id': 'tl_listing',
 			'title': win.document.getElement('div.mce-title').get('text'),
-			'url': document.location.pathname + '/picker?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;extras[source]=' + source + '&amp;value=' + url + '&amp;popup=1',
+			'url': Contao.routes.backend_picker + '?context=' + (type == 'file' ? 'link' : 'file') + '&amp;extras[fieldType]=radio&amp;extras[filesOnly]=true&amp;extras[source]=' + source + '&amp;value=' + url + '&amp;popup=1',
 			'callback': function(table, value) {
 				win.document.getElementById(field_name).value = value.join(',');
 			}
@@ -1043,6 +1056,7 @@ var Backend =
 			});
 
 			button = new Element('button', {
+				'type': 'button',
 				'html': '<span>...</span>',
 				'class': 'unselectable',
 				'data-state': 0
@@ -2263,7 +2277,7 @@ var Backend =
 	 * @author Kamil Kuzminski
 	 */
 	enableToggleSelect: function() {
-		var container = $('tl_select'),
+		var container = $('tl_listing'),
 			shiftToggle = function(el) {
 				thisIndex = checkboxes.indexOf(el);
 				startIndex = checkboxes.indexOf(start);
@@ -2276,9 +2290,10 @@ var Backend =
 				}
 			},
 			clickEvent = function(e) {
-				var input = this.getElement('input[type="checkbox"],input[type="radio"]');
+				var input = this.getElement('input[type="checkbox"],input[type="radio"]'),
+					limitToggler = $(e.target).getParent('.limit_toggler');
 
-				if (!input || input.get('disabled')) {
+				if (!input || input.get('disabled') || limitToggler !== null) {
 					return;
 				}
 

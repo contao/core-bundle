@@ -350,7 +350,7 @@ EOF;
         $response = $this->getController($request)->importListWizard($dc);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame(303, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
     }
 
     /**

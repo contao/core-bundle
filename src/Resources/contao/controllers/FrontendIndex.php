@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FrontendIndex extends \Frontend
 {
-
 	/**
 	 * Initialize the object
 	 */
@@ -168,6 +167,7 @@ class FrontendIndex extends \Frontend
 		if ($objPage instanceof Model\Collection && $objPage->count() > 1)
 		{
 			$this->log('More than one page matches ' . \Environment::get('base') . \Environment::get('request'), __METHOD__, TL_ERROR);
+
 			throw new \LogicException('More than one page found: ' . \Environment::get('uri'));
 		}
 
@@ -181,9 +181,9 @@ class FrontendIndex extends \Frontend
 		if ($objPage->alias != '')
 		{
 			$language = \Config::get('addLanguageToUrl') ? '[a-z]{2}(-[A-Z]{2})?/' : '';
-			$suffix = \Config::get('urlSuffix') ? preg_quote(\Config::get('urlSuffix'), '#') : '$';
+			$suffix = preg_quote(\Config::get('urlSuffix'), '#');
 
-			if (preg_match('#^' . $language . $objPage->id . '(' . $suffix . '|/)#', \Environment::get('relativeRequest')))
+			if (preg_match('#^' . $language . $objPage->id . '(' . $suffix . '($|\?)|/)#', \Environment::get('relativeRequest')))
 			{
 				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
 			}
@@ -233,6 +233,7 @@ class FrontendIndex extends \Frontend
 			if ($objPage->domain != \Environment::get('host'))
 			{
 				$this->log('Page ID "' . $objPage->id . '" was requested via "' . \Environment::get('host') . '" but can only be accessed via "' . $objPage->domain . '" (' . \Environment::get('base') . \Environment::get('request') . ')', __METHOD__, TL_ERROR);
+
 				throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
 			}
 		}
@@ -251,6 +252,7 @@ class FrontendIndex extends \Frontend
 			if (empty($arrGroups) || !\is_array($arrGroups) || !\count(array_intersect($arrGroups, $this->User->groups)))
 			{
 				$this->log('Page ID "' . $objPage->id . '" can only be accessed by groups "' . implode(', ', (array) $objPage->groups) . '" (current user groups: ' . implode(', ', $this->User->groups) . ')', __METHOD__, TL_ERROR);
+
 				throw new AccessDeniedException('Access denied: ' . \Environment::get('uri'));
 			}
 		}

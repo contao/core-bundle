@@ -78,8 +78,7 @@
         <target>Doorsturen naar de laatst bezochte pagina</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>Stuur de gebruiker door naar de laatst bezochte pagina na login/logout.</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +101,7 @@
         <target>E-mail adres van de websitebeheerder</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>Automatisch aangemaakte berichten zoals aanmeldingen of bevestigingen worden naar dit adres verstuurd.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,12 +272,12 @@
         <target>De class(es) worden toegepast in het navigatie menu en de &amp;lt;body&amp;gt; tag.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>Toon in sitemap</target>
+        <source>Show in HTML sitemap</source>
+        <target>Toon in HTML sitemap</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>Hier kunt u bepalen of de pagina moet worden getoond in de sitemap.</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
+        <target>Hier kunt u bepalen of de pagina moet worden getoond in de HTML sitemap.</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -294,8 +292,8 @@
         <target>Alleen zichtbaar voor gasten</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>Verberg pagina in het navigatiemenu als een lid is ingelogd.</target>
+        <source>Hide the page if a member is logged in.</source>
+        <target>Verberg de pagina als een lid is ingelogd.</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>

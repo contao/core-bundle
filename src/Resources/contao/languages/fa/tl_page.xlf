@@ -78,8 +78,8 @@
         <target>تغییر مسیر به آخرین برگه دیده شده</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>تغییر مسیر به عقب کاربر به آخرین برگه دیده شده به جای برگه تغییر مسیر.</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>عضو را به جای اینجا به برگه‌ی بازگردانی به آخرین برگه‌ی بازدید شده برمی‌گرداند.</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +102,7 @@
         <target>نشانی ایمیل مدیر وب‌سایت</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>پیغام‌های خودکار مانند ایمیل تایید عضویت به این نشانی فرستاده خواهند شد.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -264,19 +263,18 @@
       </trans-unit>
       <trans-unit id="tl_page.cssClass.0">
         <source>CSS class</source>
-        <target>کلاس سی‌اس‌اس</target>
+        <target>کلاس CSS</target>
       </trans-unit>
       <trans-unit id="tl_page.cssClass.1">
         <source>The class(es) will be used in the navigation menu and the &amp;lt;body&amp;gt; tag.</source>
         <target>کلاس(ها) در منوی ناوبری و تگ &amp;lt;body&amp;gt; استفاده خواهند شد.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>نمایش در نقشه سایت</target>
+        <source>Show in HTML sitemap</source>
+        <target>نمایش در نقشه سایت HTML</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>اینجا می‌توانید چگونگی نمایش برگه در نقشه سایت را تعریف نمایید.</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -291,8 +289,7 @@
         <target>نمایش فقط به مهمانان</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>پنهان کردن برگه اگر کاربر تایید شده‌ای وجود شده باشند.</target>
+        <source>Hide the page if a member is logged in.</source>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>

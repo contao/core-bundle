@@ -17,7 +17,6 @@ namespace Contao;
  */
 class ContentYouTube extends \ContentElement
 {
-
 	/**
 	 * Template
 	 * @var string
@@ -38,11 +37,11 @@ class ContentYouTube extends \ContentElement
 
 		if (TL_MODE == 'BE')
 		{
-			$return = '<p><a href="https://youtu.be/' . $this->youtube . '" target="_blank">youtu.be/' . $this->youtube . '</a></p>';
+			$return = '<p><a href="https://youtu.be/' . $this->youtube . '" target="_blank" rel="noreferrer noopener">youtu.be/' . $this->youtube . '</a></p>';
 
 			if ($this->headline != '')
 			{
-				$return = '<'. $this->hl .'>'. $this->headline .'</'. $this->hl .'>'. $return;
+				$return = '<' . $this->hl . '>' . $this->headline . '</' . $this->hl . '>' . $return;
 			}
 
 			return $return;

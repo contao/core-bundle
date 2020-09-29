@@ -11,6 +11,7 @@
 namespace Contao;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Provide methods to handle a logout page.
@@ -19,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class PageLogout extends \Frontend
 {
-
 	/**
 	 * Return a redirect response object
 	 *
@@ -53,6 +53,6 @@ class PageLogout extends \Frontend
 
 		$this->User->logout();
 
-		return new RedirectResponse($strRedirect);
+		return new RedirectResponse($strRedirect, Response::HTTP_TEMPORARY_REDIRECT);
 	}
 }

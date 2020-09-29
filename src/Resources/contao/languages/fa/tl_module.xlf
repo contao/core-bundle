@@ -54,8 +54,8 @@
         <target>نمایش موارد حفاظت شده</target>
       </trans-unit>
       <trans-unit id="tl_module.showProtected.1">
-        <source>Show items that are usually only visible to authenticated users.</source>
-        <target>نمایش مواردی که فقط برای کاربران تایید شده قابل دیدن است.</target>
+        <source>Show items that are usually only visible to authenticated members.</source>
+        <target>نمایش آیتم‌هایی که معمولا برای اعضای تایید شده قابل مشاهده هستند.</target>
       </trans-unit>
       <trans-unit id="tl_module.defineRoot.0">
         <source>Set a reference page</source>
@@ -134,8 +134,8 @@
         <target>تغییر مسیر به آخرین برگه دیده شده</target>
       </trans-unit>
       <trans-unit id="tl_module.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>تغییر مسیر به عقب کاربر به آخرین برگه دیده شده به جای برگه تغییر مسیر.</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>عضو را به جای اینجا به برگه‌ی بازگردانی به آخرین برگه‌ی بازدید شده برمی‌گرداند.</target>
       </trans-unit>
       <trans-unit id="tl_module.cols.0">
         <source>Number of columns</source>
@@ -335,7 +335,7 @@
       </trans-unit>
       <trans-unit id="tl_module.altContent.1">
         <source>The alternate content will be shown if the movie cannot be loaded. HTML tags are allowed.</source>
-        <target>محتوای جایگزین زمانی که فیلم بارگذاری نشود نمایش داده خواهد شد. تگ‌های اچ‌تی‌ام‌ال مجاز هستند.</target>
+        <target>محتوای جایگزین زمانی که فیلم بارگذاری نشود نمایش داده خواهد شد. تگ‌های HTML مجاز هستند.</target>
       </trans-unit>
       <trans-unit id="tl_module.source.0">
         <source>Source</source>
@@ -427,11 +427,11 @@
       </trans-unit>
       <trans-unit id="tl_module.html.0">
         <source>HTML code</source>
-        <target>کد اچ‌تی‌ام‌ال</target>
+        <target>کد HTML</target>
       </trans-unit>
       <trans-unit id="tl_module.html.1">
         <source>You can modify the list of allowed HTML tags in the back end settings.</source>
-        <target>می‌توانید فهرست برچسب‌های اچ‌تی‌ام‌ال مجاز را در تنظیمات بخش مدیریت تغییر دهید.</target>
+        <target>می‌توانید فهرست برچسب‌های HTML مجاز را در تنظیمات بخش مدیریت تغییر دهید.</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_cache.0">
         <source>Cache timeout</source>
@@ -491,7 +491,7 @@
       </trans-unit>
       <trans-unit id="tl_module.cssID.0">
         <source>CSS ID/class</source>
-        <target>شناسه/کلاس سی‌اس‌اس</target>
+        <target>شناسه/کلاس CSS</target>
       </trans-unit>
       <trans-unit id="tl_module.cssID.1">
         <source>Here you can set an ID and one or more classes.</source>
@@ -510,7 +510,7 @@
         <target>گروه‌های اعضاء</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_groups.1">
-        <source>Here you can assign the user to one or more groups.</source>
+        <source>Here you can assign the member to one or more groups.</source>
         <target>اینجا می‌توانید کاربر را به یک یا چند گروه اختصاص دهید.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_allowLogin.0">
@@ -518,8 +518,8 @@
         <target>اجازه ورود</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_allowLogin.1">
-        <source>Allow the new user to log into the front end.</source>
-        <target>اجازه دادن به کاربر جدید برای ورود به بخش کاربری.</target>
+        <source>Allow the new member to log into the front end.</source>
+        <target>اجازه دادن به اعضاء جدید برای ورود به بخش کاربری.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_skipName.0">
         <source>Skip username</source>
@@ -566,8 +566,7 @@
         <target>برگه‌ی تایید</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_jumpTo.1">
-        <source>Please choose the page to which users will be redirected after the request has been completed.</source>
-        <target>لطفا برگه‌ای را که می خواهید بعد از فعال‌سازی حساب کاربری، کاربر به آنجا تغییر مسیر گردد را انتخاب نمایید.</target>
+        <source>Please choose the page to which members will be redirected after the request has been completed.</source>
       </trans-unit>
       <trans-unit id="tl_module.reg_text.0">
         <source>Activation message</source>
@@ -582,8 +581,7 @@
         <target>پیغام گذرواژه</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_password.1">
-        <source>You can use the wildcards &lt;em&gt;##domain##&lt;/em&gt; (domain name), &lt;em&gt;##link##&lt;/em&gt; (activation link) and any user property (e.g. &lt;em&gt;##lastname##&lt;/em&gt;).</source>
-        <target>شما می‌توانید از جستجوی عمومی های &lt;em&gt;##domain##&lt;/em&gt; (نام دامنه), &lt;em&gt;##link##&lt;/em&gt; (پیوند فعال سازی) و هر فیلد ورودی (برای نمونه &lt;em&gt;##lastname##&lt;/em&gt;).</target>
+        <source>You can use the wildcards &lt;em&gt;##domain##&lt;/em&gt; (domain name), &lt;em&gt;##link##&lt;/em&gt; (activation link) and any member property (e.g. &lt;em&gt;##lastname##&lt;/em&gt;).</source>
       </trans-unit>
       <trans-unit id="tl_module.title_legend">
         <source>Title and type</source>
@@ -627,7 +625,7 @@
       </trans-unit>
       <trans-unit id="tl_module.html_legend">
         <source>Text/HTML</source>
-        <target>متن/اچ‌تی‌ام‌ال</target>
+        <target>متن/HTML</target>
       </trans-unit>
       <trans-unit id="tl_module.protected_legend">
         <source>Access protection</source>

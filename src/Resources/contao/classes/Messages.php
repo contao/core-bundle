@@ -17,7 +17,6 @@ namespace Contao;
  */
 class Messages extends \Backend
 {
-
 	/**
 	 * Check for the latest Contao version
 	 *
@@ -42,10 +41,8 @@ class Messages extends \Backend
 			{
 				return '<p class="tl_new"><a href="contao/main.php?do=maintenance">' . sprintf($GLOBALS['TL_LANG']['MSC']['updateVersion'], $strVersion) . '</a></p>';
 			}
-			else
-			{
-				return '<p class="tl_new">' . sprintf($GLOBALS['TL_LANG']['MSC']['updateVersion'], $strVersion) . '</p>';
-			}
+
+			return '<p class="tl_new">' . sprintf($GLOBALS['TL_LANG']['MSC']['updateVersion'], $strVersion) . '</p>';
 		}
 
 		return '';
@@ -89,7 +86,7 @@ class Messages extends \Backend
 	{
 		$arrRoots = array();
 		$time = \Date::floorToMinute();
-		$objRoots = $this->Database->execute("SELECT fallback, dns FROM tl_page WHERE type='root' AND (start='' OR start<='$time') AND (stop='' OR stop>'" . ($time + 60) . "') AND published='1' ORDER BY dns");
+		$objRoots = $this->Database->execute("SELECT fallback, dns FROM tl_page WHERE type='root' AND published='1' AND (start='' OR start<='$time') AND (stop='' OR stop>'$time') ORDER BY dns");
 
 		while ($objRoots->next())
 		{

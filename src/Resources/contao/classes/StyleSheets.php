@@ -17,7 +17,6 @@ namespace Contao;
  */
 class StyleSheets extends \Backend
 {
-
 	/**
 	 * Import the Files library
 	 */
@@ -213,7 +212,7 @@ class StyleSheets extends \Backend
 		{
 			$strGlue = '';
 			$lb = "\n    ";
-			$return = "\n" . '<pre'. ($row['invisible'] ? ' class="disabled"' : '') .'>';
+			$return = "\n" . '<pre' . ($row['invisible'] ? ' class="disabled"' : '') . '>';
 		}
 
 		// Comment
@@ -514,13 +513,13 @@ class StyleSheets extends \Backend
 				// Background position
 				if ($row['bgposition'] != '')
 				{
-					$return .= $lb . 'background-position:' .$row['bgposition']. ';';
+					$return .= $lb . 'background-position:' . $row['bgposition'] . ';';
 				}
 
 				// Background repeat
 				if ($row['bgrepeat'] != '')
 				{
-					$return .= $lb . 'background-repeat:' .$row['bgrepeat']. ';';
+					$return .= $lb . 'background-repeat:' . $row['bgrepeat'] . ';';
 				}
 			}
 
@@ -565,14 +564,14 @@ class StyleSheets extends \Backend
 					{
 						switch ($row['gradientAngle'])
 						{
-							case 'to top':          $angle = 'bottom';       break;
-							case 'to right':        $angle = 'left';         break;
-							case 'to bottom':       $angle = 'top';          break;
-							case 'to left':         $angle = 'right';        break;
-							case 'to top left':     $angle = 'bottom right'; break;
-							case 'to top right':    $angle = 'bottom left';  break;
-							case 'to bottom left':  $angle = 'top right';    break;
-							case 'to bottom right': $angle = 'top left';     break;
+							case 'to top': $angle = 'bottom'; break;
+							case 'to right': $angle = 'left'; break;
+							case 'to bottom': $angle = 'top'; break;
+							case 'to left': $angle = 'right'; break;
+							case 'to top left': $angle = 'bottom right'; break;
+							case 'to top right': $angle = 'bottom left'; break;
+							case 'to bottom left': $angle = 'top right'; break;
+							case 'to bottom right': $angle = 'top left'; break;
 						}
 					}
 
@@ -605,14 +604,17 @@ class StyleSheets extends \Backend
 
 					$shadow = $offsetx . (($offsetx === '0') ? '' : $row['shadowsize']['unit']);
 					$shadow .= ' ' . $offsety . (($offsety === '0') ? '' : $row['shadowsize']['unit']);
+
 					if ($blursize != '')
 					{
 						$shadow .= ' ' . $blursize . (($blursize === '0') ? '' : $row['shadowsize']['unit']);
 					}
+
 					if ($radius != '')
 					{
 						$shadow .= ' ' . $radius . (($radius === '0') ? '' : $row['shadowsize']['unit']);
 					}
+
 					if ($shColor[0] != '')
 					{
 						$shadow .= ' ' . $this->compileColor($shColor, $blnWriteToFile, $vars);
@@ -643,7 +645,7 @@ class StyleSheets extends \Backend
 				// Try to shorten the definition
 				if ($top != '' && $right != '' && $bottom != '' && $left != '' && $top == $right && $top == $bottom && $top == $left)
 				{
-					$return .= $lb . 'border:' . $top . $row['borderwidth']['unit'] . (($row['borderstyle'] != '') ? ' ' .$row['borderstyle'] : '') . (($bdColor[0] != '') ? ' ' . $this->compileColor($bdColor, $blnWriteToFile, $vars) : '') . ';';
+					$return .= $lb . 'border:' . $top . $row['borderwidth']['unit'] . (($row['borderstyle'] != '') ? ' ' . $row['borderstyle'] : '') . (($bdColor[0] != '') ? ' ' . $this->compileColor($bdColor, $blnWriteToFile, $vars) : '') . ';';
 				}
 				elseif ($top != '' && $right != '' && $bottom != '' && $left != '' && $top == $bottom && $left == $right)
 				{
@@ -827,7 +829,7 @@ class StyleSheets extends \Backend
 
 				if (\in_array('overline', $row['fontstyle']))
 				{
-					$return .= $lb. 'text-decoration:overline;';
+					$return .= $lb . 'text-decoration:overline;';
 				}
 
 				if (\in_array('notUnderlined', $row['fontstyle']))
@@ -981,14 +983,13 @@ class StyleSheets extends \Backend
 		{
 			return '#' . $this->shortenHexColor($color);
 		}
-		elseif (!isset($color[1]) || empty($color[1]))
+
+		if (!isset($color[1]) || empty($color[1]))
 		{
 			return '#' . $this->shortenHexColor($color[0]);
 		}
-		else
-		{
-			return 'rgba(' . implode(',', $this->convertHexColor($color[0], $blnWriteToFile, $vars)) . ','. ($color[1] / 100) .')';
-		}
+
+		return 'rgba(' . implode(',', $this->convertHexColor($color[0], $blnWriteToFile, $vars)) . ',' . ($color[1] / 100) . ')';
 	}
 
 	/**
@@ -1028,10 +1029,8 @@ class StyleSheets extends \Backend
 			{
 				return array($color);
 			}
-			else
-			{
-				$color = str_replace(array_keys($vars), array_values($vars), $color);
-			}
+
+			$color = str_replace(array_keys($vars), array_values($vars), $color);
 		}
 
 		$rgb = array();
@@ -1306,18 +1305,18 @@ class StyleSheets extends \Backend
 		// Return form
 		return \Message::generate() . '
 <div id="tl_buttons">
-<a href="' .ampersand(str_replace('&key=import', '', \Environment::get('request'))). '" class="header_back" title="' .\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']). '" accesskey="b">' .$GLOBALS['TL_LANG']['MSC']['backBT']. '</a>
+<a href="' . ampersand(str_replace('&key=import', '', \Environment::get('request'))) . '" class="header_back" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
 </div>
-<form action="' .ampersand(\Environment::get('request'), true). '" id="tl_style_sheet_import" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
+<form action="' . ampersand(\Environment::get('request'), true) . '" id="tl_style_sheet_import" class="tl_form tl_edit_form" method="post" enctype="multipart/form-data">
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_style_sheet_import">
-<input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
-<input type="hidden" name="MAX_FILE_SIZE" value="'.\Config::get('maxFileSize').'">
+<input type="hidden" name="REQUEST_TOKEN" value="' . REQUEST_TOKEN . '">
+<input type="hidden" name="MAX_FILE_SIZE" value="' . \Config::get('maxFileSize') . '">
 
 <div class="tl_tbox">
   <div class="widget">
-    <h3>'.$GLOBALS['TL_LANG']['tl_style_sheet']['source'][0].'</h3>'.$objUploader->generateMarkup().(isset($GLOBALS['TL_LANG']['tl_style_sheet']['source'][1]) ? '
-    <p class="tl_help tl_tip">'.$GLOBALS['TL_LANG']['tl_style_sheet']['source'][1].'</p>' : '').'
+    <h3>' . $GLOBALS['TL_LANG']['tl_style_sheet']['source'][0] . '</h3>' . $objUploader->generateMarkup() . (isset($GLOBALS['TL_LANG']['tl_style_sheet']['source'][1]) ? '
+    <p class="tl_help tl_tip">' . $GLOBALS['TL_LANG']['tl_style_sheet']['source'][1] . '</p>' : '') . '
   </div>
 </div>
 
@@ -1326,7 +1325,7 @@ class StyleSheets extends \Backend
 <div class="tl_formbody_submit">
 
 <div class="tl_submit_container">
-  <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">'.$GLOBALS['TL_LANG']['tl_style_sheet']['import'][0].'</button>
+  <button type="submit" name="save" id="save" class="tl_submit" accesskey="s">' . $GLOBALS['TL_LANG']['tl_style_sheet']['import'][0] . '</button>
 </div>
 
 </div>
@@ -1388,10 +1387,18 @@ class StyleSheets extends \Backend
 		$objFile = new \File('system/tmp/' . md5(uniqid(mt_rand(), true)));
 		$objFile->write('');
 
+		$blnClose = false;
+
 		// Add the media query (see #7560)
 		if ($objStyleSheet->mediaQuery != '')
 		{
 			$objFile->append('@media ' . $objStyleSheet->mediaQuery . ' {');
+			$blnClose = true;
+		}
+		elseif (\is_array(($tmp = \StringUtil::deserialize($objStyleSheet->media))) && (\count($tmp) > 1 || $tmp[0] != 'all'))
+		{
+			$objFile->append('@media ' . implode(', ', $tmp) . ' {');
+			$blnClose = true;
 		}
 
 		$objDefinitions = $this->Database->prepare("SELECT * FROM tl_style WHERE pid=? AND invisible!='1' ORDER BY sorting")
@@ -1404,7 +1411,7 @@ class StyleSheets extends \Backend
 		}
 
 		// Close the media query
-		if ($objStyleSheet->mediaQuery != '')
+		if ($blnClose)
 		{
 			$objFile->append('}');
 		}
@@ -1498,6 +1505,7 @@ class StyleSheets extends \Backend
 				case 'min-width':
 				case 'min-height':
 					$strName = str_replace('-', '', $strKey);
+
 					if ($arrChunks[1] == 'inherit')
 					{
 						$strUnit = '';
@@ -1516,6 +1524,7 @@ class StyleSheets extends \Backend
 				case 'max-width':
 				case 'max-height':
 					$strName = str_replace('-', '', $strKey);
+
 					if ($arrChunks[1] == 'inherit' || $arrChunks[1] == 'none')
 					{
 						$strUnit = '';
@@ -1552,6 +1561,7 @@ class StyleSheets extends \Backend
 					}
 					$arrSet['positioning'] = 1;
 					$arrSet['trbl'][$strKey] = $varValue;
+
 					if ($strUnit != '')
 					{
 						$arrSet['trbl']['unit'] = $strUnit;
@@ -1576,6 +1586,7 @@ class StyleSheets extends \Backend
 					$arrSet['alignment'] = 1;
 					$arrTRBL = preg_split('/\s+/', $arrChunks[1]);
 					$arrUnits = array();
+
 					switch (\count($arrTRBL))
 					{
 						case 1:
@@ -1609,6 +1620,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[0]);
 								$varValue_1 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[0]);
 							}
+
 							if ($arrTRBL[1] == 'auto')
 							{
 								$varValue_2 = 'auto';
@@ -1654,6 +1666,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[0]);
 								$varValue_1 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[0]);
 							}
+
 							if ($arrTRBL[1] == 'auto')
 							{
 								$varValue_2 = 'auto';
@@ -1663,6 +1676,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[1]);
 								$varValue_2 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[1]);
 							}
+
 							if ($arrTRBL[2] == 'auto')
 							{
 								$varValue_3 = 'auto';
@@ -1708,6 +1722,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[0]);
 								$varValue_1 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[0]);
 							}
+
 							if ($arrTRBL[1] == 'auto')
 							{
 								$varValue_2 = 'auto';
@@ -1717,6 +1732,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[1]);
 								$varValue_2 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[1]);
 							}
+
 							if ($arrTRBL[2] == 'auto')
 							{
 								$varValue_3 = 'auto';
@@ -1726,6 +1742,7 @@ class StyleSheets extends \Backend
 								$arrUnits[] = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[2]);
 								$varValue_3 = preg_replace('/[^0-9.-]+/', '', $arrTRBL[2]);
 							}
+
 							if ($arrTRBL[3] == 'auto')
 							{
 								$varValue_4 = 'auto';
@@ -1769,6 +1786,7 @@ class StyleSheets extends \Backend
 				case 'margin-left':
 					$arrSet['alignment'] = 1;
 					$strName = str_replace('margin-', '', $strKey);
+
 					if ($arrChunks[1] == 'auto')
 					{
 						$strUnit = '';
@@ -1780,6 +1798,7 @@ class StyleSheets extends \Backend
 						$varValue = preg_replace('/[^0-9.-]+/', '', $arrChunks[1]);
 					}
 					$arrSet['margin'][$strName] = $varValue;
+
 					if (empty($arrSet['margin']['unit']))
 					{
 						$arrSet['margin']['unit'] = $strUnit;
@@ -1836,7 +1855,7 @@ class StyleSheets extends \Backend
 						// Handle linear gradients (see #4640)
 						if (strncmp($url, 'linear-gradient', 15) === 0)
 						{
-							$colors = \StringUtil::trimsplit(',', preg_replace('/linear-gradient ?\(([^\)]+)\)/', '$1', $url));
+							$colors = \StringUtil::trimsplit(',', preg_replace('/linear-gradient ?\(([^)]+)\)/', '$1', $url));
 							$arrSet['gradientAngle'] = array_shift($colors);
 							$arrSet['gradientColors'] = serialize($colors);
 						}
@@ -1849,6 +1868,7 @@ class StyleSheets extends \Backend
 
 				case 'background-position':
 					$arrSet['background'] = 1;
+
 					if (preg_match('/[0-9]+/', $arrChunks[1]))
 					{
 						$arrSet['own'][] = $strDefinition;
@@ -1871,6 +1891,7 @@ class StyleSheets extends \Backend
 						break;
 					}
 					$arrWSC = preg_split('/\s+/', $arrChunks[1]);
+
 					if ($arrWSC[2] != '' && !preg_match('/^#[a-f0-9]+$/i', $arrWSC[2]))
 					{
 						$arrSet['own'][] = $strDefinition;
@@ -1887,10 +1908,12 @@ class StyleSheets extends \Backend
 						'left' => $varValue,
 						'unit' => $strUnit
 					);
+
 					if ($arrWSC[1] != '')
 					{
 						$arrSet['borderstyle'] = $arrWSC[1];
 					}
+
 					if ($arrWSC[2] != '')
 					{
 						$arrSet['bordercolor'] = str_replace('#', '', $arrWSC[2]);
@@ -1907,6 +1930,7 @@ class StyleSheets extends \Backend
 						break;
 					}
 					$arrWSC = preg_split('/\s+/', $arrChunks[1]);
+
 					if ($arrWSC[2] != '' && !preg_match('/^#[a-f0-9]+$/i', $arrWSC[2]))
 					{
 						$arrSet['own'][] = $strDefinition;
@@ -1916,6 +1940,7 @@ class StyleSheets extends \Backend
 					$strName = str_replace('border-', '', $strKey);
 					$varValue = preg_replace('/[^0-9.-]+/', '', $arrWSC[0]);
 					$strUnit = preg_replace('/[^acehimnprtvwx%]/', '', $arrWSC[0]);
+
 					if ((isset($arrSet['borderwidth']['unit']) && $arrSet['borderwidth']['unit'] != $strUnit) || ($arrWSC[1] != '' && isset($arrSet['borderstyle']) && $arrSet['borderstyle'] != $arrWSC[1]) || ($arrWSC[2] != '' && isset($arrSet['bordercolor']) && $arrSet['bordercolor'] != $arrWSC[2]))
 					{
 						$arrSet['own'][] = $strDefinition;
@@ -1923,10 +1948,12 @@ class StyleSheets extends \Backend
 					}
 					$arrSet['borderwidth'][$strName] = preg_replace('/[^0-9.-]+/', '', $varValue);
 					$arrSet['borderwidth']['unit'] = $strUnit;
+
 					if ($arrWSC[1] != '')
 					{
 						$arrSet['borderstyle'] = $arrWSC[1];
 					}
+
 					if ($arrWSC[2] != '')
 					{
 						$arrSet['bordercolor'] = str_replace('#', '', $arrWSC[2]);
@@ -1937,6 +1964,7 @@ class StyleSheets extends \Backend
 					$arrSet['border'] = 1;
 					$arrTRBL = preg_split('/\s+/', $arrChunks[1]);
 					$strUnit = '';
+
 					foreach ($arrTRBL as $v)
 					{
 						if ($v != 0)
@@ -1944,6 +1972,7 @@ class StyleSheets extends \Backend
 							$strUnit = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[0]);
 						}
 					}
+
 					switch (\count($arrTRBL))
 					{
 						case 1:
@@ -1998,6 +2027,7 @@ class StyleSheets extends \Backend
 					$arrSet['border'] = 1;
 					$arrTRBL = preg_split('/\s+/', $arrChunks[1]);
 					$strUnit = '';
+
 					foreach ($arrTRBL as $v)
 					{
 						if ($v != 0)
@@ -2005,6 +2035,7 @@ class StyleSheets extends \Backend
 							$strUnit = preg_replace('/[^acehimnprtvwx%]/', '', $arrTRBL[0]);
 						}
 					}
+
 					switch (\count($arrTRBL))
 					{
 						case 1:
@@ -2110,6 +2141,7 @@ class StyleSheets extends \Backend
 
 				case 'text-decoration':
 					$arrSet['font'] = 1;
+
 					switch ($arrChunks[1])
 					{
 						case 'underline':
@@ -2129,6 +2161,7 @@ class StyleSheets extends \Backend
 
 				case 'font-variant':
 					$arrSet['font'] = 1;
+
 					if ($arrChunks[1] == 'small-caps')
 					{
 						$arrSet['fontstyle'][] = 'small-caps';

@@ -78,8 +78,8 @@
         <target>Reindirizza all'ultima pagina visitata</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>Reindirizza l'utente all'ultima pagina visitata dopo il login/logout</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>Reindirizzare il membro all'ultima pagina visitata anziché alla pagina di reindirizzamento.</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +102,8 @@
         <target>Indirizzo e-mail dell'amministratore del sito</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>I messaggi generati automaticamente, come ad esempio conferma iscrizione via e-mail, saranno inviate a questo indirizzo.</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
+        <target>uesto indirizzo e-mail sarà utilizzato per inviare e ricevere messaggi di sistema.</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,11 +274,11 @@
         <target>Inserendo una classe css verrà usato come attributo &lt;em&gt;class&lt;/em&gt; nel menu di navigazione e nel &amp;lt;body&amp;gt; tag. In questo modo sarà possibile applicare uno stile personalizzato.</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
+        <source>Show in HTML sitemap</source>
         <target>Mostra nella mappa del sito (sitemap)</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
         <target>Puoi definire se visualizzare la pagina nella mappa del sito (sitemap)</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
@@ -294,8 +294,8 @@
         <target>Mostra solo agli utenti che non hanno effettuato il login (guest/ospiti)</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>Nasconde la pagina dal menu di navigazione se l'utente ha effettuato il login</target>
+        <source>Hide the page if a member is logged in.</source>
+        <target>Nascondi la pagina se un membro ha effettuato l'accesso.</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>

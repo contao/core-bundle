@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class PageForward extends \Frontend
 {
-
 	/**
 	 * Redirect to an internal page
 	 *
@@ -68,6 +67,7 @@ class PageForward extends \Frontend
 		if (!$objNextPage instanceof PageModel)
 		{
 			$this->log('Forward page ID "' . $objPage->jumpTo . '" does not exist', __METHOD__, TL_ERROR);
+
 			throw new ForwardPageNotFoundException('Forward page not found');
 		}
 
@@ -133,6 +133,6 @@ class PageForward extends \Frontend
 	 */
 	protected function getRedirectStatusCode($objPage)
 	{
-		return ($objPage->redirect == 'temporary') ? 302 : 301;
+		return ($objPage->redirect == 'temporary') ? 303 : 301;
 	}
 }

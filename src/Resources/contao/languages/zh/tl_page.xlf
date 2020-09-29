@@ -78,8 +78,7 @@
         <target>跳转到最近访问的页面</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>返回到用户最近访问的页面</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +101,7 @@
         <target>网站管理员电子邮件地址</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>自动生成的电子邮件。例如订阅和确认信，将发送到此地址</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,12 +272,12 @@
         <target>这个类(class)将被用在导航菜单和&amp;lt;body&amp;gt;标签。</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>在站点地图中显示</target>
+        <source>Show in HTML sitemap</source>
+        <target>在 HTML 站点地图显示</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>您可以在这里定义是否在站点地图中显示此页面。</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
+        <target>在这里定义页面是否显示在 HTML 站点地图。</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -294,8 +292,7 @@
         <target>仅向来宾显示</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>对认证用户隐藏此页面。</target>
+        <source>Hide the page if a member is logged in.</source>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>

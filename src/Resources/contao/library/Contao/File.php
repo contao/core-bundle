@@ -68,7 +68,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  */
 class File extends \System
 {
-
 	/**
 	 * File handle
 	 * @var resource
@@ -126,8 +125,6 @@ class File extends \System
 	 */
 	public function __construct($strFile)
 	{
-		// No parent::__construct() here
-
 		// Handle open_basedir restrictions
 		if ($strFile == '.')
 		{
@@ -247,10 +244,8 @@ class File extends \System
 				{
 					return 'data:' . $this->mime . ';base64,' . base64_encode(gzdecode($this->getContent()));
 				}
-				else
-				{
-					return 'data:' . $this->mime . ';base64,' . base64_encode($this->getContent());
-				}
+
+				return 'data:' . $this->mime . ';base64,' . base64_encode($this->getContent());
 				break;
 
 			case 'imageSize':
@@ -290,7 +285,7 @@ class File extends \System
 								$this->arrImageSize = false;
 							}
 						}
-						catch(\Exception $e)
+						catch (\Exception $e)
 						{
 							$this->arrImageSize = false;
 						}
@@ -346,7 +341,7 @@ class File extends \System
 								$this->arrImageViewSize = false;
 							}
 						}
-						catch(\Exception $e)
+						catch (\Exception $e)
 						{
 							$this->arrImageViewSize = false;
 						}
@@ -357,11 +352,11 @@ class File extends \System
 				break;
 
 			case 'viewWidth':
-				return $this->imageViewSize[0];
+				return $this->imageViewSize !== false ? $this->imageViewSize[0] : null;
 				break;
 
 			case 'viewHeight':
-				return $this->imageViewSize[1];
+				return $this->imageViewSize !== false ? $this->imageViewSize[1] : null;
 				break;
 
 			case 'isImage':
@@ -395,7 +390,7 @@ class File extends \System
 			case 'handle':
 				if (!\is_resource($this->resFile))
 				{
-					$this->resFile = fopen(TL_ROOT . '/' . $this->strFile, 'rb');
+					$this->resFile = fopen(TL_ROOT . '/' . $this->strFile, 'r');
 				}
 
 				return $this->resFile;
@@ -738,19 +733,18 @@ class File extends \System
 			return false;
 		}
 
-		$return = \System::getContainer()
+		\System::getContainer()
 			->get('contao.image.image_factory')
 			->create(TL_ROOT . '/' . $this->strFile, array($width, $height, $mode), TL_ROOT . '/' . $this->strFile)
-			->getUrl(TL_ROOT)
 		;
 
-		if ($return)
-		{
-			$this->arrPathinfo = array();
-			$this->arrImageSize = array();
-		}
+		$this->arrPathinfo = array();
+		$this->arrImageSize = array();
 
-		return $return;
+		// Clear the image size cache as mtime could potentially not change
+		unset(static::$arrImageSizeCache[$this->strFile . '|' . $this->mtime]);
+
+		return true;
 	}
 
 	/**
@@ -775,6 +769,7 @@ class File extends \System
 
 		$response->headers->addCacheControlDirective('must-revalidate');
 		$response->headers->set('Connection', 'close');
+		$response->headers->set('Content-Type', $this->getMimeType());
 
 		throw new ResponseException($response);
 	}
@@ -862,10 +857,8 @@ class File extends \System
 		{
 			return '';
 		}
-		else
-		{
-			return md5_file(TL_ROOT . '/' . $this->strFile);
-		}
+
+		return md5_file(TL_ROOT . '/' . $this->strFile);
 	}
 
 	/**
@@ -880,7 +873,7 @@ class File extends \System
 		$matches = array();
 		$return = array('dirname'=>'', 'basename'=>'', 'extension'=>'', 'filename'=>'');
 
-		preg_match('%^(.*?)[\\\\/]*(([^/\\\\]*?)(\.([^\.\\\\/]+?)|))[\\\\/\.]*$%m', $this->strFile, $matches);
+		preg_match('%^(.*?)[\\\\/]*(([^/\\\\]*?)(\.([^.\\\\/]+?)|))[\\\\/.]*$%m', $this->strFile, $matches);
 
 		if (isset($matches[1]))
 		{

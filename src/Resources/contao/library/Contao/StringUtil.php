@@ -26,7 +26,6 @@ use Psr\Log\LogLevel;
  */
 class StringUtil
 {
-
 	/**
 	 * Shorten a string to a given number of characters
 	 *
@@ -316,9 +315,9 @@ class StringUtil
 			$strEncoded = '';
 			$arrCharacters = Utf8::str_split($strEmail);
 
-			foreach ($arrCharacters as $strCharacter)
+			foreach ($arrCharacters as $index => $strCharacter)
 			{
-				$strEncoded .= sprintf((random_int(0, 1) ? '&#x%X;' : '&#%s;'), Utf8::ord($strCharacter));
+				$strEncoded .= sprintf(($index % 2) ? '&#x%X;' : '&#%s;', Utf8::ord($strCharacter));
 			}
 
 			$strString = str_replace($strEmail, $strEncoded, $strString);
@@ -345,7 +344,7 @@ class StringUtil
 		}
 
 		// Find all mailto: addresses
-		preg_match_all('/mailto:(?:[^\x00-\x20\x22\x40\x7F]{1,64}+|\x22[^\x00-\x1F\x7F]{1,64}?\x22)@(?:\[(?:IPv)?[a-f0-9.:]{1,47}\]|[\w.-]{1,252}\.[a-z]{2,63}\b)/u', $strString, $matches);
+		preg_match_all('/mailto:(?:[^\x00-\x20\x22\x40\x7F]{1,64}+|\x22[^\x00-\x1F\x7F]{1,64}?\x22)@(?:\[(?:IPv)?[a-f0-9.:]{1,47}]|[\w.-]{1,252}\.[a-z]{2,63}\b)/u', $strString, $matches);
 
 		foreach ($matches[0] as &$strEmail)
 		{
@@ -371,7 +370,7 @@ class StringUtil
 		}, $strString);
 
 		// Find all addresses in the plain text
-		preg_match_all('/(?:[^\x00-\x20\x22\x40\x7F]{1,64}|\x22[^\x00-\x1F\x7F]{1,64}?\x22)@(?:\[(?:IPv)?[a-f0-9.:]{1,47}\]|[\w.-]{1,252}\.[a-z]{2,63}\b)/u', strip_tags($strString), $matches);
+		preg_match_all('/(?:[^\x00-\x20\x22\x40\x7F]{1,64}|\x22[^\x00-\x1F\x7F]{1,64}?\x22)@(?:\[(?:IPv)?[a-f0-9.:]{1,47}]|[\w.-]{1,252}\.[a-z]{2,63}\b)/u', strip_tags($strString), $matches);
 
 		foreach ($matches[0] as &$strEmail)
 		{
@@ -387,7 +386,7 @@ class StringUtil
 	}
 
 	/**
-	 * Split a friendly-name e-address and return name and e-mail as array
+	 * Split a friendly-name e-mail address and return name and e-mail as array
 	 *
 	 * @param string $strEmail A friendly-name e-mail address
 	 *
@@ -399,14 +398,13 @@ class StringUtil
 		{
 			return array_map('trim', explode(' <', str_replace('>', '', $strEmail)));
 		}
-		elseif (strpos($strEmail, '[') !== false)
+
+		if (strpos($strEmail, '[') !== false)
 		{
 			return array_map('trim', explode(' [', str_replace(']', '', $strEmail)));
 		}
-		else
-		{
-			return array('', $strEmail);
-		}
+
+		return array('', $strEmail);
 	}
 
 	/**
@@ -453,7 +451,7 @@ class StringUtil
 	 */
 	public static function splitCsv($strString, $strDelimiter=',')
 	{
-		$arrValues = preg_split('/'.$strDelimiter.'(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', $strString);
+		$arrValues = preg_split('/' . $strDelimiter . '(?=(?:[^"]*"[^"]*")*(?![^"]*"))/', $strString);
 
 		foreach ($arrValues as $k=>$v)
 		{
@@ -785,7 +783,7 @@ class StringUtil
 	public static function insertTagToSrc($data)
 	{
 		$return = '';
-		$paths = preg_split('/((src|href)="([^"]*)\{\{file::([^"\}]+)\}\}")/i', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$paths = preg_split('/((src|href)="([^"]*){{file::([^"}]+)}}")/i', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 		for ($i=0, $c=\count($paths); $i<$c; $i+=5)
 		{
@@ -958,9 +956,8 @@ class StringUtil
 
 		do
 		{
-			$strString = preg_replace('/\{\{[^\{\}]*\}\}/', '', $strString, -1, $count);
-		}
-		while ($count > 0);
+			$strString = preg_replace('/{{[^{}]*}}/', '', $strString, -1, $count);
+		} while ($count > 0);
 
 		return $strString;
 	}
@@ -1068,7 +1065,7 @@ class StringUtil
 		}
 		else
 		{
-			$arrFragments = array_map('trim', preg_split('/'.$strPattern.'/ui', $strString));
+			$arrFragments = array_map('trim', preg_split('/' . $strPattern . '/ui', $strString));
 		}
 
 		// Empty array

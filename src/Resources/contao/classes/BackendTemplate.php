@@ -22,7 +22,6 @@ namespace Contao;
  */
 class BackendTemplate extends \Template
 {
-
 	/**
 	 * Add a hook to modify the template output
 	 *
@@ -138,6 +137,9 @@ class BackendTemplate extends \Template
 				. '},'
 				. 'script_url:"' . TL_ASSETS_URL . '",'
 				. 'path:"' . \Environment::get('path') . '",'
+				. 'routes:{'
+					. 'backend_picker:"' . \System::getContainer()->get('router')->generate('contao_backend_picker') . '"'
+				. '},'
 				. 'request_token:"' . REQUEST_TOKEN . '",'
 				. 'referer_id:"' . \System::getContainer()->get('request_stack')->getCurrentRequest()->attributes->get('_contao_referer_id') . '"'
 			. '};';

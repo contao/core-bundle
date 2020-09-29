@@ -18,7 +18,6 @@ namespace Contao\Model;
  */
 class QueryBuilder
 {
-
 	/**
 	 * Build a query based on the given options
 	 *
@@ -73,6 +72,7 @@ class QueryBuilder
 		// Group by
 		if ($arrOptions['group'] !== null)
 		{
+			@trigger_error('Using the "group" option has been deprecated and will no longer work in Contao 5.0. See https://github.com/contao/contao/issues/1680', E_USER_DEPRECATED);
 			$strQuery .= " GROUP BY " . $arrOptions['group'];
 		}
 

@@ -406,9 +406,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
 
         // Show the "incomplete installation" message
         if (!$config->isComplete()) {
-            throw new IncompleteInstallationException(
-                'The installation has not been completed. Open the Contao install tool to continue.'
-            );
+            throw new IncompleteInstallationException('The installation has not been completed. Open the Contao install tool to continue.');
         }
     }
 
@@ -429,7 +427,11 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      */
     private function triggerInitializeSystemHook()
     {
-        if (isset($GLOBALS['TL_HOOKS']['initializeSystem']) && \is_array($GLOBALS['TL_HOOKS']['initializeSystem'])) {
+        if (
+            !empty($GLOBALS['TL_HOOKS']['initializeSystem'])
+            && \is_array($GLOBALS['TL_HOOKS']['initializeSystem'])
+            && is_dir($this->rootDir.'/system/tmp')
+        ) {
             foreach ($GLOBALS['TL_HOOKS']['initializeSystem'] as $callback) {
                 System::importStatic($callback[0])->{$callback[1]}();
             }

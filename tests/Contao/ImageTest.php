@@ -99,7 +99,7 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(false))
+            ->willReturn(false)
         ;
 
         $this->expectException('InvalidArgumentException');
@@ -120,12 +120,12 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) {
                     if ('extension' === $key) {
                         return 'foobar';
@@ -133,7 +133,7 @@ class ImageTest extends TestCase
 
                     return null;
                 }
-            ))
+            )
         ;
 
         $this->expectException('InvalidArgumentException');
@@ -158,12 +158,12 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
@@ -182,7 +182,7 @@ class ImageTest extends TestCase
                             return null;
                     }
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -614,12 +614,12 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
@@ -638,7 +638,7 @@ class ImageTest extends TestCase
                             return null;
                     }
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -807,12 +807,12 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) {
                     switch ($key) {
                         case 'extension':
@@ -823,8 +823,6 @@ class ImageTest extends TestCase
 
                         case 'width':
                         case 'viewWidth':
-                            return 100;
-
                         case 'height':
                         case 'viewHeight':
                             return 100;
@@ -833,7 +831,7 @@ class ImageTest extends TestCase
                             return null;
                     }
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -947,20 +945,18 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) use ($arguments) {
                     switch ($key) {
                         case 'extension':
                             return 'jpg';
 
                         case 'path':
-                            return $arguments[2];
-
                         case 'filename':
                             return $arguments[2];
 
@@ -969,8 +965,6 @@ class ImageTest extends TestCase
 
                         case 'width':
                         case 'viewWidth':
-                            return 200;
-
                         case 'height':
                         case 'viewHeight':
                             return 200;
@@ -979,7 +973,7 @@ class ImageTest extends TestCase
                             return null;
                     }
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -1057,12 +1051,12 @@ class ImageTest extends TestCase
 
         $fileMock
             ->method('exists')
-            ->will($this->returnValue(true))
+            ->willReturn(true)
         ;
 
         $fileMock
             ->method('__get')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function ($key) {
                     if ('extension' === $key) {
                         return 'jpg';
@@ -1070,7 +1064,7 @@ class ImageTest extends TestCase
 
                     return null;
                 }
-            ))
+            )
         ;
 
         $imageObj = new Image($fileMock);
@@ -1436,7 +1430,7 @@ class ImageTest extends TestCase
         $doc = new \DOMDocument();
         $doc->loadXML($resultFile->getContent());
 
-        $this->assertSame('0 0 200.1 100.1', $doc->documentElement->firstChild->getAttribute('viewBox'));
+        $this->assertSame('0 0 3202 1602', $doc->documentElement->firstChild->getAttribute('viewBox'));
         $this->assertSame('-50', $doc->documentElement->firstChild->getAttribute('x'));
         $this->assertSame('0', $doc->documentElement->firstChild->getAttribute('y'));
         $this->assertSame('200', $doc->documentElement->firstChild->getAttribute('width'));
@@ -1527,7 +1521,7 @@ class ImageTest extends TestCase
     public function testExecutesTheResizeHook()
     {
         $GLOBALS['TL_HOOKS'] = [
-            'executeResize' => [[\get_class($this), 'executeResizeHookCallback']],
+            'executeResize' => [[static::class, 'executeResizeHookCallback']],
         ];
 
         $file = new File('dummy.jpg');
@@ -1610,7 +1604,7 @@ class ImageTest extends TestCase
         $imageObj->executeResize();
 
         $GLOBALS['TL_HOOKS'] = [
-            'getImage' => [[\get_class($this), 'getImageHookCallback']],
+            'getImage' => [[static::class, 'getImageHookCallback']],
         ];
 
         $imageObj = new Image($file);

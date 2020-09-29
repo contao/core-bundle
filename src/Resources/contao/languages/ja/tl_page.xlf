@@ -78,8 +78,8 @@
         <target>最後に参照していたページに移動</target>
       </trans-unit>
       <trans-unit id="tl_page.redirectBack.1">
-        <source>Redirect the user back to the last page visited instead of the redirect page.</source>
-        <target>リダイレクト先のページの代わりに、ユーザーが最後に参照していたページに移動します。</target>
+        <source>Redirect the member back to the last page visited instead of the redirect page.</source>
+        <target>リダイレクト先のページの代わりに、メンバーが最後に参照していたページに移動します。</target>
       </trans-unit>
       <trans-unit id="tl_page.fallback.0">
         <source>Language fallback</source>
@@ -102,8 +102,8 @@
         <target>ウェブサイトの管理者の電子メールアドレス</target>
       </trans-unit>
       <trans-unit id="tl_page.adminEmail.1">
-        <source>Auto-generated messages like subscription confirmation e-mails will be sent to this address.</source>
-        <target>申し込みの確認の電子メールのような、自動的に生成するメッセージはこのアドレスから送信します。</target>
+        <source>This e-mail address will be used to send and receive system messages.</source>
+        <target>この電子メールアドレスはシステムメッセージの送信と受信に使用します。</target>
       </trans-unit>
       <trans-unit id="tl_page.dateFormat.0">
         <source>Date format</source>
@@ -274,12 +274,12 @@
         <target>このclassはナビゲーションメニューと&amp;lt;body&amp;gt;タグで使用します。</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.0">
-        <source>Show in sitemap</source>
-        <target>サイトマップに表示</target>
+        <source>Show in HTML sitemap</source>
+        <target>HTMLのサイトマップに表示</target>
       </trans-unit>
       <trans-unit id="tl_page.sitemap.1">
-        <source>Here you can define whether the page is shown in the sitemap.</source>
-        <target>サイトマップにページを表示するかどうか指定します。</target>
+        <source>Here you can define whether the page is shown in the HTML sitemap.</source>
+        <target>このページをHTMLのサイトマップに表示するかどうか指定できます。</target>
       </trans-unit>
       <trans-unit id="tl_page.hide.0">
         <source>Hide from navigation</source>
@@ -294,8 +294,8 @@
         <target>ゲストだけに表示</target>
       </trans-unit>
       <trans-unit id="tl_page.guests.1">
-        <source>Hide the page if there is an authenticated user.</source>
-        <target>ログインしているユーザーにページを表示しません。</target>
+        <source>Hide the page if a member is logged in.</source>
+        <target>ログインしているメンバーにページを表示しません。</target>
       </trans-unit>
       <trans-unit id="tl_page.tabindex.0">
         <source>Tab index</source>
@@ -431,7 +431,7 @@
       </trans-unit>
       <trans-unit id="tl_page.new.1">
         <source>Create a new page</source>
-        <target>新しくページを作成</target>
+        <target>新しいページを作成</target>
       </trans-unit>
       <trans-unit id="tl_page.show.0">
         <source>Page details</source>

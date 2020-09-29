@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BackendSwitch extends \Backend
 {
-
 	/**
 	 * Initialize the controller
 	 *
@@ -108,7 +107,7 @@ class BackendSwitch extends \Backend
 				$this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
 							   ->execute(($time - \Config::get('sessionTimeout')), $strHash);
 
-			   // Log in the front end user
+				// Log in the front end user
 				if (\Input::post('user'))
 				{
 					$objUser = \MemberModel::findByUsername(\Input::post('user'));
@@ -186,7 +185,7 @@ class BackendSwitch extends \Backend
 		$time = \Date::floorToMinute();
 
 		// Get the active front end users
-		$objUsers = $this->Database->prepare("SELECT username FROM tl_member WHERE username LIKE ?$strGroups AND login='1' AND disable!='1' AND (start='' OR start<='$time') AND (stop='' OR stop>'" . ($time + 60) . "') ORDER BY username")
+		$objUsers = $this->Database->prepare("SELECT username FROM tl_member WHERE username LIKE ?$strGroups AND login='1' AND disable!='1' AND (start='' OR start<='$time') AND (stop='' OR stop>'$time') ORDER BY username")
 								   ->limit(10)
 								   ->execute(str_replace('%', '', \Input::post('value')) . '%');
 

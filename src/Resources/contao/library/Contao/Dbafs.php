@@ -24,7 +24,6 @@ namespace Contao;
  */
 class Dbafs
 {
-
 	/**
 	 * Synchronize the database
 	 * @var array
@@ -44,6 +43,8 @@ class Dbafs
 	 */
 	public static function addResource($strResource, $blnUpdateFolders=true)
 	{
+		self::validateUtf8Path($strResource);
+
 		$strUploadPath = \Config::get('uploadPath') . '/';
 
 		// Remove trailing slashes (see #5707)
@@ -122,7 +123,8 @@ class Dbafs
 						TL_ROOT . '/' . $strResource,
 						\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
 					)
-				), \RecursiveIteratorIterator::SELF_FIRST
+				),
+				\RecursiveIteratorIterator::SELF_FIRST
 			);
 
 			// Add the relative path
@@ -234,6 +236,9 @@ class Dbafs
 	 */
 	public static function moveResource($strSource, $strDestination)
 	{
+		self::validateUtf8Path($strSource);
+		self::validateUtf8Path($strDestination);
+
 		$objFile = \FilesModel::findByPath($strSource);
 
 		// If there is no entry, directly add the destination
@@ -286,6 +291,7 @@ class Dbafs
 		{
 			static::updateFolderHashes($strPath);
 		}
+
 		if (($strPath = \dirname($strDestination)) != \Config::get('uploadPath'))
 		{
 			static::updateFolderHashes($strPath);
@@ -304,6 +310,9 @@ class Dbafs
 	 */
 	public static function copyResource($strSource, $strDestination)
 	{
+		self::validateUtf8Path($strSource);
+		self::validateUtf8Path($strDestination);
+
 		$objDatabase = \Database::getInstance();
 		$objFile = \FilesModel::findByPath($strSource);
 
@@ -368,6 +377,7 @@ class Dbafs
 		{
 			static::updateFolderHashes($strPath);
 		}
+
 		if (($strPath = \dirname($strDestination)) != \Config::get('uploadPath'))
 		{
 			static::updateFolderHashes($strPath);
@@ -380,11 +390,11 @@ class Dbafs
 	 * Removes a file or folder
 	 *
 	 * @param string $strResource The path to the file or folder
-	 *
-	 * @return null Explicitly return null
 	 */
 	public static function deleteResource($strResource)
 	{
+		self::validateUtf8Path($strResource);
+
 		$objModel = \FilesModel::findByPath($strResource);
 
 		// Remove the resource
@@ -426,6 +436,8 @@ class Dbafs
 
 		foreach ($varResource as $strResource)
 		{
+			self::validateUtf8Path($strResource);
+
 			$arrChunks = explode('/', $strResource);
 			$strPath   = array_shift($arrChunks);
 
@@ -502,7 +514,8 @@ class Dbafs
 					TL_ROOT . '/' . \Config::get('uploadPath'),
 					\FilesystemIterator::UNIX_PATHS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS
 				)
-			), \RecursiveIteratorIterator::SELF_FIRST
+			),
+			\RecursiveIteratorIterator::SELF_FIRST
 		);
 
 		$strLog = 'system/tmp/' . md5(uniqid(mt_rand(), true));
@@ -519,6 +532,12 @@ class Dbafs
 		foreach ($objFiles as $objFile)
 		{
 			$strRelpath = \StringUtil::stripRootDir($objFile->getPathname());
+
+			if (preg_match('//u', $strRelpath) !== 1)
+			{
+				$objLog->append("[Malformed UTF-8 filename] $strRelpath");
+				continue;
+			}
 
 			// Get all subfiles in a single query
 			if ($objFile->isDir())
@@ -764,12 +783,14 @@ class Dbafs
 	 */
 	public static function getFolderHash($strPath)
 	{
+		self::validateUtf8Path($strPath);
+
 		$strPath = str_replace(array('\\', '%', '_'), array('\\\\', '\\%', '\\_'), $strPath);
 		$arrHash = array();
 
 		$objChildren = \Database::getInstance()
 			->prepare("SELECT hash, name FROM tl_files WHERE path LIKE ? AND path NOT LIKE ? ORDER BY name")
-			->execute($strPath.'/%', $strPath.'/%/%')
+			->execute($strPath . '/%', $strPath . '/%/%')
 		;
 
 		if ($objChildren !== null)
@@ -814,6 +835,8 @@ class Dbafs
 			return true;
 		}
 
+		self::validateUtf8Path($strPath);
+
 		if (is_file(TL_ROOT . '/' . $strPath))
 		{
 			$strPath = \dirname($strPath);
@@ -840,5 +863,13 @@ class Dbafs
 		}
 
 		return false;
+	}
+
+	private static function validateUtf8Path($strPath)
+	{
+		if (preg_match('//u', $strPath) !== 1)
+		{
+			throw new \InvalidArgumentException(sprintf('Path "%s" contains malformed UTF-8 characters.', $strPath));
+		}
 	}
 }

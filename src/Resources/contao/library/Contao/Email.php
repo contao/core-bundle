@@ -39,7 +39,6 @@ namespace Contao;
  */
 class Email
 {
-
 	/**
 	 * Mailer object
 	 * @var \Swift_Mailer
@@ -68,7 +67,7 @@ class Email
 	 * E-mail priority
 	 * @var integer
 	 */
-	protected $intPriority = 3;
+	protected $intPriority;
 
 	/**
 	 * E-mail subject
@@ -127,10 +126,7 @@ class Email
 	{
 		$this->objMailer = $objMailer ?: \System::getContainer()->get('swiftmailer.mailer');
 		$this->strCharset = \Config::get('characterSet');
-
-		// Instantiate Swift_Message
 		$this->objMessage = \Swift_Message::newInstance();
-		$this->objMessage->getHeaders()->addTextHeader('X-Mailer', 'Contao Open Source CMS');
 	}
 
 	/**
@@ -368,6 +364,12 @@ class Email
 
 		$this->objMessage->setTo($arrRecipients);
 		$this->objMessage->setCharset($this->strCharset);
+
+		// Add the priority if it has been set (see #608)
+		if ($this->intPriority !== null)
+		{
+			$this->objMessage->setPriority($this->intPriority);
+		}
 
 		// Default subject
 		if ($this->strSubject == '')

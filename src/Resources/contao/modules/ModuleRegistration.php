@@ -10,6 +10,7 @@
 
 namespace Contao;
 
+use Contao\CoreBundle\Exception\ResponseException;
 use Patchwork\Utf8;
 
 /**
@@ -19,7 +20,6 @@ use Patchwork\Utf8;
  */
 class ModuleRegistration extends \Module
 {
-
 	/**
 	 * Template
 	 * @var string
@@ -267,6 +267,10 @@ class ModuleRegistration extends \Module
 								$varValue = $callback($varValue, null);
 							}
 						}
+						catch (ResponseException $e)
+						{
+							throw $e;
+						}
 						catch (\Exception $e)
 						{
 							$objWidget->class = 'error';
@@ -315,7 +319,7 @@ class ModuleRegistration extends \Module
 		// Captcha
 		if (!$this->disableCaptcha)
 		{
-			$objCaptcha->rowClass = 'row_'.$i . (($i == 0) ? ' row_first' : '') . ((($i % 2) == 0) ? ' even' : ' odd');
+			$objCaptcha->rowClass = 'row_' . $i . (($i == 0) ? ' row_first' : '') . ((($i % 2) == 0) ? ' even' : ' odd');
 			$strCaptcha = $objCaptcha->parse();
 
 			$this->Template->fields .= $strCaptcha;

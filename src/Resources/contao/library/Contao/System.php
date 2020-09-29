@@ -55,7 +55,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 abstract class System
 {
-
 	/**
 	 * Container
 	 * @var ContainerInterface
@@ -162,6 +161,10 @@ abstract class System
 			{
 				$this->arrObjects[$strKey] = $container->get($strClass);
 			}
+			elseif (!class_exists($strClass))
+			{
+				throw new \RuntimeException('System::import() failed because class "' . $strClass . '" is not a valid class name or does not exist.');
+			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
 				$this->arrObjects[$strKey] = \call_user_func(array($strClass, 'getInstance'));
@@ -202,6 +205,10 @@ abstract class System
 			elseif ($container->has($strClass) && (strpos($strClass, '\\') !== false || !class_exists($strClass)))
 			{
 				static::$arrStaticObjects[$strKey] = $container->get($strClass);
+			}
+			elseif (!class_exists($strClass))
+			{
+				throw new \RuntimeException('System::importStatic() failed because class "' . $strClass . '" is not a valid class name or does not exist.');
 			}
 			elseif (\in_array('getInstance', get_class_methods($strClass)))
 			{
@@ -357,7 +364,7 @@ abstract class System
 		$strCacheKey = $strLanguage;
 
 		// Make sure the language exists
-        if ($strLanguage != 'en' && !static::isInstalledLanguage($strLanguage))
+		if ($strLanguage != 'en' && !static::isInstalledLanguage($strLanguage))
 		{
 			$strShortLang = substr($strLanguage, 0, 2);
 
@@ -621,19 +628,29 @@ abstract class System
 	/**
 	 * Set a cookie
 	 *
-	 * @param string  $strName     The cookie name
-	 * @param mixed   $varValue    The cookie value
-	 * @param integer $intExpires  The expiration date
-	 * @param string  $strPath     An optional path
-	 * @param string  $strDomain   An optional domain name
-	 * @param boolean $blnSecure   If true, the secure flag will be set
-	 * @param boolean $blnHttpOnly If true, the http-only flag will be set
+	 * @param string       $strName     The cookie name
+	 * @param mixed        $varValue    The cookie value
+	 * @param integer      $intExpires  The expiration date
+	 * @param string|null  $strPath     An optional path
+	 * @param string|null  $strDomain   An optional domain name
+	 * @param boolean|null $blnSecure   If true, the secure flag will be set
+	 * @param boolean      $blnHttpOnly If true, the http-only flag will be set
 	 */
-	public static function setCookie($strName, $varValue, $intExpires, $strPath=null, $strDomain=null, $blnSecure=false, $blnHttpOnly=false)
+	public static function setCookie($strName, $varValue, $intExpires, $strPath=null, $strDomain=null, $blnSecure=null, $blnHttpOnly=false)
 	{
 		if ($strPath == '')
 		{
 			$strPath = \Environment::get('path') ?: '/'; // see #4390
+		}
+
+		if ($blnSecure === null)
+		{
+			$blnSecure = false;
+
+			if ($request = static::getContainer()->get('request_stack')->getCurrentRequest())
+			{
+				$blnSecure = $request->isSecure();
+			}
 		}
 
 		$objCookie = new \stdClass();
@@ -737,11 +754,9 @@ abstract class System
 		{
 			return substr_replace($strIp, ':0000', strrpos($strIp, ':'));
 		}
+
 		// IPv4
-		else
-		{
-			return substr_replace($strIp, '.0', strrpos($strIp, '.'));
-		}
+		return substr_replace($strIp, '.0', strrpos($strIp, '.'));
 	}
 
 	/**
@@ -1082,7 +1097,7 @@ abstract class System
 	}
 
 	/**
-	 * Split a friendly-name e-address and return name and e-mail as array
+	 * Split a friendly-name e-mail address and return name and e-mail as array
 	 *
 	 * @param string $strEmail A friendly-name e-mail address
 	 *

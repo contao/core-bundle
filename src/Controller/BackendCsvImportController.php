@@ -181,7 +181,7 @@ class BackendCsvImportController
             } catch (\RuntimeException $e) {
                 Message::addError($e->getMessage());
 
-                return new RedirectResponse($request->getUri(), 303);
+                return new RedirectResponse($request->getUri());
             }
 
             $this->connection->update(
@@ -247,7 +247,7 @@ class BackendCsvImportController
         $delimiter = $this->getDelimiter($separator);
 
         foreach ($files as $file) {
-            $fp = fopen($file, 'rb');
+            $fp = fopen($file, 'r');
 
             while (false !== ($row = fgetcsv($fp, 0, $delimiter))) {
                 $data = $callback($data, $row);

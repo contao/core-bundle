@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class PageRedirect extends \Frontend
 {
-
 	/**
 	 * Redirect to an external page
 	 *
@@ -52,6 +51,6 @@ class PageRedirect extends \Frontend
 	 */
 	protected function getRedirectStatusCode($objPage)
 	{
-		return ($objPage->redirect == 'temporary') ? 302 : 301;
+		return ($objPage->redirect == 'temporary') ? 303 : 301;
 	}
 }

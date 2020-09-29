@@ -58,8 +58,8 @@
         <target>لطفا یک شماره تلفن معتبر وارد نمایید!</target>
       </trans-unit>
       <trans-unit id="ERR.extnd">
-        <source>For security reasons you can not use the following characters here: =&lt;&gt;&amp;/()#</source>
-        <target>به دلیل مسائل امنیتی شما نمی‌توانید از این نویسه‌ها استفاده نمایید: =&lt;&gt;&amp;/()#</target>
+        <source>For security reasons you can not use the following characters here: #&lt;&gt;()\=</source>
+        <target>به خاطر دلایل امنیتی نمی‌توانید از این کاراکترها استفاده کنید: #&lt;&gt;()\=</target>
       </trans-unit>
       <trans-unit id="ERR.email">
         <source>Please enter a valid e-mail address!</source>
@@ -115,7 +115,7 @@
       </trans-unit>
       <trans-unit id="ERR.filesize">
         <source>The maximum size for file uploads is %s (Contao or php.ini settings)!</source>
-        <target>بیشترین حجم مجاز برای بارگزاری پرونده %s می‌باشد (تنظیمات کانتائو یا php.ini)!</target>
+        <target>بیشترین حجم مجاز برای بارگزاری پرونده %s می‌باشد (تنظیمات کنتائو یا php.ini)!</target>
       </trans-unit>
       <trans-unit id="ERR.filetype">
         <source>File type &quot;%s&quot; is not allowed to be uploaded!</source>
@@ -215,13 +215,19 @@
       </trans-unit>
       <trans-unit id="ERR.pathOnly">
         <source>You can only select files or folders within &quot;%s&quot;!</source>
+        <target>شما فقط می‌توانید فایل‌ها یا فولدرهای داخل «%s» را انتخاب کنید!</target>
       </trans-unit>
       <trans-unit id="ERR.extensionsOnly">
         <source>You can only select &quot;%s&quot; files!</source>
         <target>شما می‌توانید فقط «%s» پرونده انتخاب کنید!</target>
       </trans-unit>
+      <trans-unit id="ERR.forbiddenExtensions">
+        <source>The following file extensions are not allowed: %s</source>
+        <target>پسوندها پرونده ذیل مجاز نیستند:‌%s</target>
+      </trans-unit>
       <trans-unit id="ERR.invalidPages">
         <source>Your selection contains invalid page IDs!</source>
+        <target>انتخاب شما شامل شناسه‌های برگه نادرست می‌باشد!</target>
       </trans-unit>
       <trans-unit id="ERR.circularReference">
         <source>Invalid redirect target (circular reference)!</source>
@@ -281,9 +287,14 @@
       </trans-unit>
       <trans-unit id="ERR.duplicateSectionTitle">
         <source>Duplicate layout section title &quot;%s&quot;!</source>
+        <target>عنوان بخش چیدمان تکراری &quot;%s&quot;!</target>
       </trans-unit>
       <trans-unit id="ERR.duplicateSectionId">
         <source>Duplicate layout section ID &quot;%s&quot;!</source>
+        <target>شناسه بخش چیدمان تکراری &quot;%s&quot;!</target>
+      </trans-unit>
+      <trans-unit id="ERR.moduleWithoutColumn">
+        <source>Please assign all modules to a column!</source>
       </trans-unit>
       <trans-unit id="SEC.question1">
         <source>Please add %d and %d.</source>
@@ -319,11 +330,11 @@
       </trans-unit>
       <trans-unit id="CTE.html.0">
         <source>HTML</source>
-        <target>اچ‌تی‌ام‌ال</target>
+        <target>HTML</target>
       </trans-unit>
       <trans-unit id="CTE.html.1">
         <source>Allows you to add custom HTML code.</source>
-        <target>امکان افزودن کد اچ‌تی‌ام‌ال سفارشی را به شما می‌دهد</target>
+        <target>امکان افزودن کد HTML سفارشی را به شما می‌دهد</target>
       </trans-unit>
       <trans-unit id="CTE.list.0">
         <source>List</source>
@@ -383,7 +394,7 @@
       </trans-unit>
       <trans-unit id="CTE.markdown.1">
         <source>Generates HTML code from a markdown text.</source>
-        <target>کد اچ‌تی‌ام‌ال از یک متن نشانه‌دار تولید می‌کند.</target>
+        <target>کد HTML از یک متن نشانه‌دار تولید می‌کند.</target>
       </trans-unit>
       <trans-unit id="CTE.slider">
         <source>Content slider</source>
@@ -1271,7 +1282,7 @@
       </trans-unit>
       <trans-unit id="MSC.firstLogin">
         <source>This seems to be your first login. Welcome to Contao!</source>
-        <target>این به نظر اولین ورود شما است. به کانتائو خوش آمدید!</target>
+        <target>این به نظر اولین ورود شما است. به کنتائو خوش آمدید!</target>
       </trans-unit>
       <trans-unit id="MSC.loginCount">
         <source>Login attempts</source>
@@ -1321,8 +1332,7 @@
         <target>کلید‌های میانبر بخش مدیریت</target>
       </trans-unit>
       <trans-unit id="MSC.shortcuts.1">
-        <source>Learn more about speeding up your workflow by using &lt;a href=&quot;https://docs.contao.org/books/manual/current/en/02-administration-area/keyboard-shortcuts.html&quot; title=&quot;Keyboard shortcuts overview&quot; target=&quot;_blank&quot;&gt;keyboard shortcuts&lt;/a&gt;.</source>
-        <target>برای سرعت دادن به نحوه کارتان با استفاده از &lt;a href=&quot;https://docs.contao.org/books/manual/current/en/02-administration-area/keyboard-shortcuts.html&quot; title=&quot;Keyboard shortcuts overview&quot; target=&quot;_blank&quot;&gt; میان‌برهای صفحه کلید&lt;/a&gt; بیشتر یاد بگیرید.</target>
+        <source>Learn more about speeding up your workflow by using &lt;a href=&quot;https://docs.contao.org/manual/en/administration-area/back-end-keyboard-shortcuts/&quot; title=&quot;Keyboard shortcuts overview&quot; target=&quot;_blank&quot; rel=&quot;noreferrer noopener&quot;&gt;keyboard shortcuts&lt;/a&gt;.</source>
       </trans-unit>
       <trans-unit id="MSC.toggleAll.0">
         <source>Toggle all</source>
@@ -1334,7 +1344,7 @@
       </trans-unit>
       <trans-unit id="MSC.lockedAccount.0">
         <source>A Contao account has been locked</source>
-        <target>یک حساب کاربری کانتائو قفل شده است</target>
+        <target>یک حساب کاربری کنتائو قفل شده است</target>
       </trans-unit>
       <trans-unit id="MSC.lockedAccount.1">
         <source>The following Contao account has been locked for security reasons.
@@ -1347,7 +1357,7 @@ The account has been locked for %d minutes, because the user has entered an inva
 
 This e-mail has been generated by Contao. You can not reply to it directly.
 </source>
-        <target>حساب کاربری کانتائو ذیل به خاطر دلایل امنیتی قفل شده است.
+        <target>حساب کاربری کنتائو ذیل به خاطر دلایل امنیتی قفل شده است.
 
 نام کاربری: %s
 نام واقعی: %s
@@ -1355,7 +1365,7 @@ This e-mail has been generated by Contao. You can not reply to it directly.
 
 حساب کاربری به مدت %d دقیقه قفل شده است، زیرا کاربر سه بار پشت سر هم  گذرواژه را نامعتبر وارد کرده است. بعد از این دوره زمانی، حساب کاربری به صورت خودکار باز خواهد شد.
 
-این ایمیل توسط کانتائو ایجاد شده است. شما مستقیما نمی‌تواند به آن پاسخ دهید.
+این ایمیل توسط کنتائو ایجاد شده است. شما مستقیما نمی‌تواند به آن پاسخ دهید.
 </target>
       </trans-unit>
       <trans-unit id="MSC.toggleMobile.0">
@@ -1596,11 +1606,11 @@ This e-mail has been generated by Contao. You can not reply to it directly.
       </trans-unit>
       <trans-unit id="MSC.ppHeadline">
         <source>Contao pages</source>
-        <target>برگه‌های کانتائو</target>
+        <target>برگه‌های کنتائو</target>
       </trans-unit>
       <trans-unit id="MSC.fpHeadline">
         <source>Contao files</source>
-        <target>پرونده‌های کانتائو</target>
+        <target>پرونده‌های کنتائو</target>
       </trans-unit>
       <trans-unit id="MSC.yes">
         <source>yes</source>
@@ -1728,7 +1738,7 @@ This e-mail has been generated by Contao. You can not reply to it directly.
       </trans-unit>
       <trans-unit id="MSC.updateVersion">
         <source>Contao version %s is available.</source>
-        <target>کانتائو نسخه‌ی %s موجود می‌باشد</target>
+        <target>کنتائو نسخه‌ی %s موجود می‌باشد</target>
       </trans-unit>
       <trans-unit id="MSC.maintenanceEnabled">
         <source>The maintenance mode is currently enabled.</source>
@@ -2297,6 +2307,9 @@ This e-mail has been generated by Contao. You can not reply to it directly.
       </trans-unit>
       <trans-unit id="MSC.metaNoLanguages">
         <source>You have to add a root page in the site structure to enter file meta data.</source>
+      </trans-unit>
+      <trans-unit id="MSC.unknownOption">
+        <source>Unknown option</source>
       </trans-unit>
       <trans-unit id="UNITS.0">
         <source>Byte</source>

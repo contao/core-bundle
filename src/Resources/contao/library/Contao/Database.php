@@ -12,6 +12,7 @@ namespace Contao;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception\DriverException;
 
 /**
  * Handle the database communication
@@ -32,7 +33,6 @@ use Doctrine\DBAL\DriverManager;
  */
 class Database
 {
-
 	/**
 	 * Object instances (Singleton)
 	 * @var array
@@ -100,13 +100,15 @@ class Database
 	 */
 	public function __destruct()
 	{
-		unset($this->resConnection);
+		$this->resConnection = null;
 	}
 
 	/**
 	 * Prevent cloning of the object (Singleton)
 	 */
-	final public function __clone() {}
+	final public function __clone()
+	{
+	}
 
 	/**
 	 * Return an object property
@@ -301,7 +303,7 @@ class Database
 			while ($objFields->next())
 			{
 				$arrTmp = array();
-				$arrChunks = preg_split('/(\([^\)]+\))/', $objFields->Type, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+				$arrChunks = preg_split('/(\([^)]+\))/', $objFields->Type, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 
 				$arrTmp['name'] = $objFields->Field;
 				$arrTmp['type'] = $arrChunks[0];
@@ -642,6 +644,15 @@ class Database
 	 */
 	public function getSizeOf($strTable)
 	{
+		try
+		{
+			// MySQL 8 compatibility
+			$this->resConnection->executeQuery('SET @@SESSION.information_schema_stats_expiry = 0');
+		}
+		catch (DriverException $e)
+		{
+		}
+
 		$statement = $this->resConnection->executeQuery('SHOW TABLE STATUS LIKE ' . $this->resConnection->quote($strTable));
 		$status = $statement->fetch(\PDO::FETCH_ASSOC);
 
@@ -657,6 +668,15 @@ class Database
 	 */
 	public function getNextId($strTable)
 	{
+		try
+		{
+			// MySQL 8 compatibility
+			$this->resConnection->executeQuery('SET @@SESSION.information_schema_stats_expiry = 0');
+		}
+		catch (DriverException $e)
+		{
+		}
+
 		$statement = $this->resConnection->executeQuery('SHOW TABLE STATUS LIKE ' . $this->resConnection->quote($strTable));
 		$status = $statement->fetch(\PDO::FETCH_ASSOC);
 

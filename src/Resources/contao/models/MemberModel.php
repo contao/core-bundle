@@ -172,7 +172,6 @@ namespace Contao;
  */
 class MemberModel extends \Model
 {
-
 	/**
 	 * Table name
 	 * @var string
@@ -193,7 +192,7 @@ class MemberModel extends \Model
 		$t = static::$strTable;
 		$time = \Date::floorToMinute();
 
-		$arrColumns = array("$t.email=? AND $t.login='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.disable=''");
+		$arrColumns = array("$t.email=? AND $t.login='1' AND $t.disable='' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')");
 
 		if ($strUsername !== null)
 		{
@@ -215,6 +214,6 @@ class MemberModel extends \Model
 	{
 		$t = static::$strTable;
 
-		return static::findOneBy(array("$t.email=? AND $t.activation LIKE 'RG%'"), $strEmail, $arrOptions);
+		return static::findOneBy(array("$t.email=? AND $t.activation LIKE 'RG%' AND disable='1'"), $strEmail, $arrOptions);
 	}
 }

@@ -147,14 +147,12 @@ class UrlGenerator implements UrlGeneratorInterface
         $config = $this->framework->getAdapter(Config::class);
 
         $parameters['alias'] = preg_replace_callback(
-            '/\{([^\}]+)\}/',
+            '/{([^}]+)}/',
             function ($matches) use ($alias, &$parameters, $autoItems, &$hasAutoItem, $config) {
                 $param = $matches[1];
 
                 if (!isset($parameters[$param])) {
-                    throw new MissingMandatoryParametersException(
-                        sprintf('Parameters "%s" is missing to generate a URL for "%s"', $param, $alias)
-                    );
+                    throw new MissingMandatoryParametersException(sprintf('Parameters "%s" is missing to generate a URL for "%s"', $param, $alias));
                 }
 
                 $value = $parameters[$param];

@@ -25,7 +25,6 @@ namespace Contao;
  */
 class FormTextArea extends \Widget
 {
-
 	/**
 	 * Submit user input
 	 *
@@ -127,6 +126,8 @@ class FormTextArea extends \Widget
 	 * @param string $strKey The parameter key
 	 *
 	 * @return mixed The parameter value
+	 *
+	 * @todo Remove specialchars() from the value in Contao 5 and apply it in the template/generate() method instead
 	 */
 	public function __get($strKey)
 	{
@@ -141,7 +142,11 @@ class FormTextArea extends \Widget
 				break;
 
 			case 'value':
-				return \StringUtil::specialchars(str_replace('\n', "\n", $this->varValue), false, true);
+				return \StringUtil::specialchars(str_replace('\n', "\n", $this->varValue));
+				break;
+
+			case 'rawValue':
+				return $this->varValue;
 				break;
 
 			default:
@@ -157,13 +162,15 @@ class FormTextArea extends \Widget
 	 */
 	public function generate()
 	{
-		return sprintf('<textarea name="%s" id="ctrl_%s" class="textarea%s" rows="%s" cols="%s"%s>%s</textarea>',
-						$this->strName,
-						$this->strId,
-						(($this->strClass != '') ? ' ' . $this->strClass : ''),
-						$this->intRows,
-						$this->intCols,
-						$this->getAttributes(),
-						$this->value);
+		return sprintf(
+			'<textarea name="%s" id="ctrl_%s" class="textarea%s" rows="%s" cols="%s"%s>%s</textarea>',
+			$this->strName,
+			$this->strId,
+			(($this->strClass != '') ? ' ' . $this->strClass : ''),
+			$this->intRows,
+			$this->intCols,
+			$this->getAttributes(),
+			$this->value
+		);
 	}
 }
