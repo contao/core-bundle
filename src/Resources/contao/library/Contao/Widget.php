@@ -1356,7 +1356,7 @@ abstract class Widget extends \Controller
 
 			$isKnownOption = false;
 			$varValue = StringUtil::deserialize($varValue, true);
-			
+
 			foreach ($arrData['options'] as $k=>$v)
 			{
 				if (!\is_array($v))
