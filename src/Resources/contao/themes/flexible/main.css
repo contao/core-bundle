@@ -586,7 +586,7 @@ h2.sub_headline {
 /* Crawler */
 @keyframes crawl-progress-bar-stripes {
 	0% {
-		background-position-x:1rem;
+		background-position-x:10px;
 	}
 }
 #tl_crawl .tl_message {
