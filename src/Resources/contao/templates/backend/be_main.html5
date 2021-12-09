@@ -112,6 +112,8 @@
 
   <?= $this->mootools ?>
 
+  <script>Backend.initInputFocus()</script>
+
   <script>Backend.initScrollOffset()</script>
 
 </body>
