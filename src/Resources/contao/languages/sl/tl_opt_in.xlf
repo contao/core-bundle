@@ -1,37 +1,36 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="src/Resources/contao/languages/en/tl_opt_in.php" source-language="en" target-language="zh">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_opt_in.php" source-language="en" target-language="sl">
     <body>
       <trans-unit id="tl_opt_in.token">
         <source>Token</source>
-        <target>令牌</target>
+        <target>Varnostna koda</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.confirmedOn">
         <source>Confirmed on</source>
-        <target>确认</target>
+        <target>Potrjeno ob</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.removeOn">
         <source>Remove on</source>
-        <target>移除</target>
+        <target>Odstrani ob</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.invalidatedThrough">
         <source>Invalidated through</source>
-        <target>通过无效</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.emailSubject">
         <source>E-mail subject</source>
-        <target>E-mail主题</target>
+        <target>Zadeva e-maila</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.emailText">
         <source>E-mail text</source>
-        <target>E-mail内容</target>
+        <target>Besedilo e-maila</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.show">
         <source>Show the details of token ID %s</source>
-        <target>显示令牌 ID %s 详情</target>
+        <target>Prikaži podrobnosti varnostne kode z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_opt_in.resend">
         <source>Resend token ID %s</source>
-        <target>重新发送 令牌ID %s</target>
+        <target>Ponovno pošlji varnostno kodo z ID %s</target>
       </trans-unit>
     </body>
   </file>

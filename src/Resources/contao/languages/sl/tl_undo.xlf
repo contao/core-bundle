@@ -1,49 +1,52 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="src/Resources/contao/languages/en/tl_undo.php" source-language="en" target-language="zh">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_undo.php" source-language="en" target-language="sl">
     <body>
       <trans-unit id="tl_undo.pid.0">
         <source>User</source>
-        <target>用户</target>
+        <target>Uporabnik</target>
       </trans-unit>
       <trans-unit id="tl_undo.pid.1">
         <source>Name of the associated user</source>
-        <target>相关用户的名字</target>
+        <target>Ime povezanega uporabnika</target>
       </trans-unit>
       <trans-unit id="tl_undo.fromTable.0">
-        <source>Source table</source>
-        <target>源表格</target>
+        <source>Source</source>
+        <target>Izvor</target>
       </trans-unit>
       <trans-unit id="tl_undo.fromTable.1">
         <source>Name of the original table</source>
-        <target>原始表格名字</target>
+        <target>Ime originalne tabele</target>
       </trans-unit>
       <trans-unit id="tl_undo.affectedRows.0">
         <source>Affected rows</source>
-        <target>数据记录</target>
+        <target>Obdelanih vrstic</target>
       </trans-unit>
       <trans-unit id="tl_undo.affectedRows.1">
         <source>Number of records included in the undo step</source>
-        <target>影响到的数据记录数</target>
+        <target>Število zapisov vključenih v razveljavitveni korak</target>
       </trans-unit>
       <trans-unit id="tl_undo.query.0">
         <source>Details</source>
-        <target>详情</target>
+        <target>Podrobnosti</target>
       </trans-unit>
       <trans-unit id="tl_undo.query.1">
         <source>Details of the undo step</source>
-        <target>撤销步骤详情</target>
+        <target>Podrobnosti razveljavitvenega koraka</target>
       </trans-unit>
       <trans-unit id="tl_undo.data.0">
         <source>Data</source>
-        <target>数据</target>
+        <target>Podatki</target>
       </trans-unit>
       <trans-unit id="tl_undo.data.1">
         <source>Raw data of the undo step</source>
-        <target>被删除的记录数据</target>
+        <target>Neobdelani podatki razveljavitvenega koraka</target>
       </trans-unit>
       <trans-unit id="tl_undo.undo">
         <source>Restore element ID %s</source>
-        <target>恢复 元素 ID %s</target>
+        <target>Obnovi element z ID %s</target>
+      </trans-unit>
+      <trans-unit id="tl_undo.parent_modal">
+        <source>Show origin of %s ID %s</source>
       </trans-unit>
     </body>
   </file>
