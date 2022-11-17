@@ -508,7 +508,7 @@
       </trans-unit>
       <trans-unit id="tl_page.website_legend">
         <source>Website settings</source>
-        <target>Paramètres su site</target>
+        <target>Paramètres du site</target>
       </trans-unit>
       <trans-unit id="tl_page.global_legend">
         <source>Global settings</source>
