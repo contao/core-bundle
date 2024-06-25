@@ -1,365 +1,365 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_content.php" source-language="en" target-language="tr">
+  <file datatype="php" original="contao/languages/en/tl_content.php" source-language="en" target-language="es">
     <body>
       <trans-unit id="tl_content.type.0">
         <source>Element type</source>
-        <target>Bileşen türü</target>
+        <target>Tipo de elemento</target>
       </trans-unit>
       <trans-unit id="tl_content.type.1">
         <source>Please choose the type of content element.</source>
-        <target>Lütfen içerik bileşeninin türünü seçin.</target>
+        <target>Por favor escoge el tipo de contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.headline.0">
         <source>Headline</source>
-        <target>Başlık</target>
+        <target>Titular</target>
       </trans-unit>
       <trans-unit id="tl_content.headline.1">
         <source>Here you can add a headline to the content element.</source>
-        <target>Buradan bir manşet içerik bileşeni ekleyebilirsiniz.</target>
+        <target>Si introduces un titular, se verá encima del contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.sectionHeadline.0">
         <source>Section headline</source>
-        <target>Bölüm başlığı</target>
+        <target>Titular desplegable (accordion)</target>
       </trans-unit>
       <trans-unit id="tl_content.sectionHeadline.1">
         <source>Here you can add a section headline, e.g. a tab title or accordion header.</source>
-        <target>Buradan bir sekme başlığı ya da akordiyon başlığı gibi bir bölüm başlığı ekleyebilirsiniz.</target>
+        <target>Aquí puede agregar un título de sección, p. un título de pestaña o un encabezado de acordeón.</target>
       </trans-unit>
       <trans-unit id="tl_content.text.0">
         <source>Text</source>
-        <target>Metin</target>
+        <target>Texto</target>
       </trans-unit>
       <trans-unit id="tl_content.text.1">
         <source>You can use HTML tags to format the text.</source>
-        <target>Metni biçimlendirmek için HTML kod imlerini kullanabilirsiniz.</target>
+        <target>Por favor introduce el titular o descripción. Se permite código HTML.</target>
       </trans-unit>
       <trans-unit id="tl_content.addImage.0">
         <source>Add an image</source>
-        <target>Görsel ekle</target>
+        <target>Añadir una imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.addImage.1">
         <source>Add an image to the content element.</source>
-        <target>İçerik bileşenine bir görsel ekleyin.</target>
+        <target>Si escoges esta opción, se añadirá una imagen al contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.showPreview.0">
         <source>Show preview images</source>
-        <target>Ön izleme görselleri görüntülensin</target>
+        <target>Mostrar imágenes de vista previa</target>
       </trans-unit>
       <trans-unit id="tl_content.showPreview.1">
         <source>Show preview images of the selected files.</source>
-        <target>Seçilmiş dosyaların ön izleme görsellerini görüntüler.</target>
+        <target>Muestra imágenes de vista previa de los archivos seleccionados. </target>
       </trans-unit>
       <trans-unit id="tl_content.inline.0">
         <source>Show in browser</source>
-        <target>Tarayıcıda görüntülensin</target>
+        <target>Mostrar en el navegador</target>
       </trans-unit>
       <trans-unit id="tl_content.inline.1">
         <source>Show the file in the browser instead of opening the download dialog.</source>
-        <target>Bu seçenek etkinleştirildiğinde, dosya tarayıcıda görüntülenir, indirme penceresi açılmaz.</target>
+        <target>Muestra el archivo en el navegador en lugar de abrir el cuadro de diálogo de descarga.</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteMeta.0">
         <source>Overwrite metadata</source>
-        <target>Üst veriler değiştirilsin</target>
+        <target>Sobrescribir metadatos</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteMeta.1">
         <source>Overwrite the metadata of the file.</source>
-        <target>Bu seçenek etkinleştirildiğinde, dosyanın üst verileri değiştirilir.</target>
+        <target>Sobrescribe los metadatos del archivo.</target>
       </trans-unit>
       <trans-unit id="tl_content.singleSRC.0">
         <source>Source file</source>
-        <target>Kaynak dosya</target>
+        <target>Archivo fuente</target>
       </trans-unit>
       <trans-unit id="tl_content.singleSRC.1">
         <source>Please select a file or folder from the files directory.</source>
-        <target>Lütfen files klasöründen bir dosya ya da klasör seçin.</target>
+        <target>Por favor selecciona un archivo del directorio de archivos.</target>
       </trans-unit>
       <trans-unit id="tl_content.alt.0">
         <source>Alternate text</source>
-        <target>Alternatif metin</target>
+        <target>Texto alternativo</target>
       </trans-unit>
       <trans-unit id="tl_content.alt.1">
         <source>Here you can enter an alternate text for the image (&lt;em&gt;alt&lt;/em&gt; attribute).</source>
-        <target>Buraya görselin alternatif metnini yazabilirsiniz (&lt;em&gt;alt&lt;/em&gt; özniteliği).</target>
+        <target>Para que las imágenes o películas sean más accesibles, siempre deberías proporcionar un texto alternativo, incluyendo una breve descripción del su contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.imageTitle.0">
         <source>Image title</source>
-        <target>Görsel başlığı</target>
+        <target>Título de la imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.imageTitle.1">
         <source>Here you can enter the image title (&lt;em&gt;title&lt;/em&gt; attribute).</source>
-        <target>Buraya görselin başlık metnini yazabilirsiniz (&lt;em&gt;title&lt;/em&gt; özniteliği).</target>
+        <target>Aquí puedes poner el título de la imagen (&lt;em&gt;título&lt;/em&gt; atributo).</target>
       </trans-unit>
       <trans-unit id="tl_content.imageUrl.0">
         <source>Image link target</source>
-        <target>Görsel bağlantısı hedefi</target>
+        <target>Utilizar imagen como link</target>
       </trans-unit>
       <trans-unit id="tl_content.imageUrl.1">
         <source>A custom image link target will override the lightbox link, so the image cannot be viewed fullsize anymore.</source>
-        <target>Özel bir görsel bağlantısı hedefi, Lightbox bağlantısını değiştirir. Bu nedenle görsel artık tam boyutlu görüntülenemez.</target>
+        <target>Por favor introduce una URL completa (por ejemplo &lt;em&gt;http://www.dominio.com&lt;/em&gt;) para linkar la imagen. Si se utiliza la imagen como enlace a una URL no será posible ver la imagen a tamaño completo.</target>
       </trans-unit>
       <trans-unit id="tl_content.fullsize.0">
         <source>Full-size view/new window</source>
-        <target>Tam boyutlu görünüm/yeni pencere</target>
+        <target>Visualizar tamaño completo/nueva ventana</target>
       </trans-unit>
       <trans-unit id="tl_content.fullsize.1">
         <source>Open the full-size image in a lightbox or the link in a new browser window.</source>
-        <target>Tam boyutlu görüntüyü bir Lightbox içinde ya da bağlantıyı yeni bir tarayıcı penceresinde açar.</target>
+        <target>Abrir la imagen de tamaño completo en una lightbox o el enlace en una ventana de navegador nueva.</target>
       </trans-unit>
       <trans-unit id="tl_content.floating.0">
         <source>Image alignment</source>
-        <target>Görsel hizalaması</target>
+        <target>Alineación imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.floating.1">
         <source>Please specify how to align the image.</source>
-        <target>Lütfen görselin hizalamasını belirtin.</target>
+        <target>Por favor selecciona la alineación de la imagen. Una imagen puede ser alineada encima o debajo de texto, o en la parte superior izquierda o superior derecha del texto.</target>
       </trans-unit>
       <trans-unit id="tl_content.caption.0">
         <source>Image caption</source>
-        <target>Görsel alt yazısı</target>
+        <target>Subtítulo imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.caption.1">
         <source>Here you can enter a short text that will be displayed below the image.</source>
-        <target>Buraya görsel altında görüntülenecek kısa bir metin yazabilirsiniz.</target>
+        <target>Si introduces un texto breve, éste se mostrará debajo de la imagen. Deja este campo en blanco para desactivar esta opción.</target>
       </trans-unit>
       <trans-unit id="tl_content.html.0">
         <source>HTML code</source>
-        <target>HTML kodu</target>
+        <target>Código HTML</target>
       </trans-unit>
       <trans-unit id="tl_content.html.1">
         <source>You can modify the list of allowed HTML tags in the back end settings.</source>
-        <target>İzin verilen HTML kod imleri listesini yönetim bölümü ayarlarından değiştirebilirsiniz.</target>
+        <target>Por favor introduce tu código HTML.</target>
       </trans-unit>
       <trans-unit id="tl_content.unfilteredHtml.0">
         <source>HTML code</source>
-        <target>HTML kodu</target>
+        <target>Código HTML</target>
       </trans-unit>
       <trans-unit id="tl_content.unfilteredHtml.1">
         <source>Take care when pasting things you don't understand. This could allow attackers to steal your identity or take control of the whole system.</source>
-        <target>Anlamadığınız şeyleri yapıştırırken dikkatli olun. Bu tür eylemler, saldırganların kimliğinizi çalmasına veya tüm sistemin denetimini ele geçirmesine neden olabilir.</target>
+        <target>Tenga cuidado al pegar cosas que no entiende. Esto podría permitir a los atacantes robar su identidad o tomar el control de todo el sistema.</target>
       </trans-unit>
       <trans-unit id="tl_content.listtype.0">
         <source>List type</source>
-        <target>Liste türü</target>
+        <target>List type</target>
       </trans-unit>
       <trans-unit id="tl_content.listtype.1">
         <source>Please choose the type of list.</source>
-        <target>Lütfen liste türünü seçin.</target>
+        <target>Por favor escoge un tipo de listado.</target>
       </trans-unit>
       <trans-unit id="tl_content.listitems.0">
         <source>List items</source>
-        <target>Liste ögeleri</target>
+        <target>Listado artículos</target>
       </trans-unit>
       <trans-unit id="tl_content.listitems.1">
         <source>If JavaScript is disabled, make sure to save your changes before modifying the order.</source>
-        <target>JavaScript etkisizleştirilmişse, sıralamayı değiştirmeden önce değişikliklerinizi kaydettiğinizden emin olun.</target>
+        <target>Por favor asigna cada módulo a un elemento de la página. Utiliza los botones para añadir, mover o eliminar un módulo. Si trabajas sin JavaScript, deberías guardar los cambios antes de modificar el orden!</target>
       </trans-unit>
       <trans-unit id="tl_content.tableitems.0">
         <source>Table items</source>
-        <target>Tablo ögeleri</target>
+        <target>Tablas</target>
       </trans-unit>
       <trans-unit id="tl_content.tableitems.1">
         <source>If JavaScript is disabled, make sure to save your changes before modifying the order.</source>
-        <target>JavaScript etkisizleştirilmişse, sıralamayı değiştirmeden önce değişikliklerinizi kaydettiğinizden emin olun.</target>
+        <target>Por favor asigna cada módulo a un elemento de la página. Utiliza los botones para añadir, mover o eliminar un módulo. Si trabajas sin JavaScript, deberías guardar los cambios antes de modificar el orden!</target>
       </trans-unit>
       <trans-unit id="tl_content.summary.0">
         <source>Table summary</source>
-        <target>Tablo özeti</target>
+        <target>Sumario de tablas</target>
       </trans-unit>
       <trans-unit id="tl_content.summary.1">
         <source>Please enter a short summary of the table and describe its purpose or structure.</source>
-        <target>Lütfen tablonun kısa bir özetini yazın ve amacını veya yapısını açıklayın.</target>
+        <target>Para que las tablas sean accesibles, siempre deberías introducir un pequeño sumario de su contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.thead.0">
         <source>Add table header</source>
-        <target>Tablo başlığı ekle</target>
+        <target>Encabezado de tabla</target>
       </trans-unit>
       <trans-unit id="tl_content.thead.1">
         <source>Make the first row the table header.</source>
-        <target>İlk satırı tablo başlığı olarak ayarlayın.</target>
+        <target>Haga que la primera fila sea el encabezado de la tabla.</target>
       </trans-unit>
       <trans-unit id="tl_content.tfoot.0">
         <source>Add table footer</source>
-        <target>Tablo alt bilgisi ekle</target>
+        <target>Pie de tabla</target>
       </trans-unit>
       <trans-unit id="tl_content.tfoot.1">
         <source>Make the last row the table footer.</source>
-        <target>Son satırı tablo alt bilgisi olarak ayarlayın.</target>
+        <target>Haga que la última fila sea el pie de página de la tabla.</target>
       </trans-unit>
       <trans-unit id="tl_content.tleft.0">
         <source>Use row headers</source>
-        <target>Satır başlıkları kullanılsın</target>
+        <target>Utilizar encabezados de renglón</target>
       </trans-unit>
       <trans-unit id="tl_content.tleft.1">
         <source>Define the left column as row header.</source>
-        <target>Sol sütunu satır başlığı olarak ayarlayın.</target>
+        <target>Definir la columna de la izquierda como encabezado de renglón.</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable.0">
         <source>Sortable table</source>
-        <target>Sıralanabilir tablo</target>
+        <target>Ordenar</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable.1">
         <source>Make the table sortable (requires JavaScript and a table header).</source>
-        <target>Tabloyu sıralanabilir olarak ayarlayın (JavaScript ve bir tablo başlığı gereklidir).</target>
+        <target>Esta opción te permite ordenar la tabla haciendo clic sobre los encabezados de las columnas (requiere la opción &lt;em&gt;Encabezado de tabla&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.sortIndex.0">
         <source>Sort index</source>
-        <target>Sıralama dizini</target>
+        <target>Indice orden</target>
       </trans-unit>
       <trans-unit id="tl_content.sortIndex.1">
         <source>The number of the default sort column.</source>
-        <target>Varsayılan sıralama sütununun numarası.</target>
+        <target>Por favor, introduce el número de la columna sobre la que quieres que se ordene por defecto (primera columna=0!).</target>
       </trans-unit>
       <trans-unit id="tl_content.sortOrder.0">
         <source>Sort order</source>
-        <target>Sıralama</target>
+        <target>Ordenamiento</target>
       </trans-unit>
       <trans-unit id="tl_content.sortOrder.1">
         <source>Please choose the sort order.</source>
-        <target>Lütfen sıralamayı seçin.</target>
+        <target>Por favor selecciona el tipo de orden.</target>
       </trans-unit>
       <trans-unit id="tl_content.closeSections.0">
         <source>Close all sections</source>
-        <target>Tüm bölümleri kapat</target>
+        <target>Cerrar todas las secciones</target>
       </trans-unit>
       <trans-unit id="tl_content.closeSections.1">
         <source>Do not open the first section by default.</source>
-        <target>Varsayılan olarak ilk bölüm açılmasın.</target>
+        <target>No abra la primera sección de forma predeterminada.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooType.0">
         <source>Operation mode</source>
-        <target>İşlem kipi</target>
+        <target>Modalidad de operación</target>
       </trans-unit>
       <trans-unit id="tl_content.mooType.1">
         <source>Please select the operation mode of the accordion element.</source>
-        <target>Lütfen akordiyon bileşeninin işlem kipini seçin.</target>
+        <target>Por favor selecciona el modo de operación del elemento.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStart.0">
         <source>Wrapper start</source>
-        <target>Kapsayıcı başlangıcı</target>
+        <target>Inicio de contenedor</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStart.1">
         <source>Marks the beginning of an accordion pane that spans several content elements.</source>
-        <target>Birkaç içerik bileşenini kapsayan bir akordiyon bölümünün açılışını belirtir.</target>
+        <target>Marca el inicio de un panel de acordeón que se extiende por varios elementos de contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStop.0">
         <source>Wrapper stop</source>
-        <target>Kapsayıcı bitişi</target>
+        <target>Final de contenedor</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStop.1">
         <source>Marks the end of an accordion pane that spans several content elements.</source>
-        <target>Birkaç içerik bileşenini kapsayan bir akordiyon bölümünün kapanışını belirtir.</target>
+        <target>Marca el final de un panel de acordeón que se extiende por varios elementos de contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooSingle.0">
         <source>Single element</source>
-        <target>Tek bileşen</target>
+        <target>Elemento simple</target>
       </trans-unit>
       <trans-unit id="tl_content.mooSingle.1">
         <source>Behaves like a single text element that is inside an accordion pane.</source>
-        <target>Bir akordiyon bölmesinin içindeki tek bir metin bileşeni gibi davranır.</target>
+        <target>Se comporta como un elemento de texto único dentro de un acordeón</target>
       </trans-unit>
       <trans-unit id="tl_content.mooHeadline.0">
         <source>Section headline</source>
-        <target>Bölüm başlığı</target>
+        <target>Titular desplegable (accordion)</target>
       </trans-unit>
       <trans-unit id="tl_content.mooHeadline.1">
         <source>Please enter the headline of the content pane. HTML tags are allowed.</source>
-        <target>Lütfen içerik bölmesinin başlığını yazın. HTML kod imleri kullanılabilir.</target>
+        <target>Por favor introduce el título del panel desplegable (permite HTML).</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStyle.0">
         <source>CSS format</source>
-        <target>CSS biçimi</target>
+        <target>Formato CSS del titular</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStyle.1">
         <source>Here you can format the section headline using CSS code.</source>
-        <target>Buradan bölüm başlığını CSS kodu kullanarak biçimlendirebilirsiniz.</target>
+        <target>Opcionalmente puedes introducir una definición CSS para dar formato al titular.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooClasses.0">
         <source>Element classes</source>
-        <target>Bileşen sınıfları</target>
+        <target>Atributos clase del desplegable (accordion)</target>
       </trans-unit>
       <trans-unit id="tl_content.mooClasses.1">
         <source>Leave blank to use the default classes or enter a custom toggler and accordion class.</source>
-        <target>Varsayılan sınıfların kullanılması için boş bırakın ya da özel bir değiştirici ve akordiyon sınıfı yazın.</target>
+        <target>Si quieres tener más de un desplegable activo por página, deberás cambiar los nombres de las clases de los elementos del desplegable. Por defecto, utilizan la clase &lt;em&gt;toggler&lt;/em&gt; y &lt;em&gt;accordion&lt;/em&gt; (dejar en blanco para utilizar las clases por defecto).</target>
       </trans-unit>
       <trans-unit id="tl_content.shClass.0">
         <source>Configuration</source>
-        <target>Yapılandırma</target>
+        <target>Configuración</target>
       </trans-unit>
       <trans-unit id="tl_content.shClass.1">
         <source>Here you can configure the syntax highlighter (e.g. &lt;em&gt;gutter: false;&lt;/em&gt;).</source>
-        <target>Buradan sözdizimi vurgulayıcıyı yapılandırabilirsiniz &lt;em&gt;gutter: false;&lt;/em&gt; gibi).</target>
+        <target>Aquí puedes configurar el resaltado de sintaxis (por ejemplo &lt;em&gt;gutter: false;&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.highlight.0">
         <source>Syntax highlighting</source>
-        <target>Sözdizimi vurgulama</target>
+        <target>Resaltado scripts</target>
       </trans-unit>
       <trans-unit id="tl_content.highlight.1">
         <source>Please choose a scripting language.</source>
-        <target>Lütfen bir betik dili seçin.</target>
+        <target>Por favor selecciona un lenguaje de scripts.</target>
       </trans-unit>
       <trans-unit id="tl_content.code.0">
         <source>Code</source>
-        <target>Kod</target>
+        <target>Código</target>
       </trans-unit>
       <trans-unit id="tl_content.code.1">
         <source>Note that the code will not be executed. Use F11 to toggle the fullscreen mode if you are using the code editor.</source>
-        <target>Kodun yürütülmeyeceğini unutmayın. Kod düzenleyici kullanıyorsanız, tam ekran kipine geçmek için F11 tuşuna basın.</target>
+        <target>El código no será ejecutado. Usa F12 para cambiar a pantalla completa si estas usando el editor de código.</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.0">
         <source>Markdown source</source>
-        <target>Markdown kaynağı</target>
+        <target>Fuente markdown</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.1">
         <source>Please choose the Markdown source.</source>
-        <target>Lütfen markdown kaynağını seçin.</target>
+        <target>Por favor eliga la fuente markdown.</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.sourceText">
         <source>Text</source>
-        <target>Metin</target>
+        <target>Texto</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.sourceFile">
         <source>File</source>
-        <target>Dosya</target>
+        <target>Archivo</target>
       </trans-unit>
       <trans-unit id="tl_content.data.0">
         <source>Template data</source>
-        <target>Kalıp verileri</target>
+        <target>Datos de la plantilla </target>
       </trans-unit>
       <trans-unit id="tl_content.data.1">
         <source>These values are available as &lt;code&gt;$this-&gt;keys&lt;/code&gt; in the template.</source>
-        <target>Bu veriler kalıpta &lt;code&gt;$this-&gt;keys&lt;/code&gt; şeklinde kullanılabilir.</target>
+        <target>Estos valores están disponibles como &lt;code&gt;$this-&gt;keys&lt;/code&gt; ien la plantilla.</target>
       </trans-unit>
       <trans-unit id="tl_content.linkTitle.0">
         <source>Link text</source>
-        <target>Bağlantı metni</target>
+        <target>Título del link</target>
       </trans-unit>
       <trans-unit id="tl_content.linkTitle.1">
         <source>The link text will be displayed instead of the target URL.</source>
-        <target>Hedef adres yerine bağlantı metnini görüntüler.</target>
+        <target>En vez de ver la URL del código fuente, se mostrará el título a los visitantes de tu web. Si generas una imagen como link, se verá la imagen en vez del título del link.</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteLink.0">
         <source>Overwrite link</source>
-        <target>Değiştirilecek bağlantı</target>
+        <target>Sobrescribir enlace</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteLink.1">
         <source>Set a custom link text and link title.</source>
-        <target>Özel bir bağlantı metni ve başlığı ayarlayın.</target>
+        <target>Establezca un texto de enlace personalizado y un título de enlace.</target>
       </trans-unit>
       <trans-unit id="tl_content.titleText.0">
         <source>Link title</source>
-        <target>Bağlantı başlığı</target>
+        <target>Enlace titulo</target>
       </trans-unit>
       <trans-unit id="tl_content.titleText.1">
         <source>The link title is added as &lt;em&gt;title&lt;/em&gt; attribute in the HTML markup.</source>
-        <target>Bağlantı başlığı HTML kodundaki &lt;em&gt;title&lt;/em&gt; özniteliğine eklenir.</target>
+        <target>El título del enlace se agrega como atributo de  &lt;em&gt;título&lt;/em&gt; en el HTML.</target>
       </trans-unit>
       <trans-unit id="tl_content.embed.0">
         <source>Embed the link</source>
-        <target>Bağlantı gömülsün</target>
+        <target>Link dentro de frase</target>
       </trans-unit>
       <trans-unit id="tl_content.embed.1">
         <source>Use the wildcard &quot;%s&quot; to embed the link in a phrase (e.g. &lt;em&gt;For more information please visit %s&lt;/em&gt;).</source>
-        <target>Bağlantıyı bir ifadeye gömmek için &quot;%s&quot; kodunu kullanın (&lt;em&gt;Ayrıntılı bilgi almak için %s adresine bakabilirsiniz&lt;/em&gt; gibi).</target>
+        <target>Si introduces una frase con el comodín &lt;em&gt;%s&lt;/em&gt;, el link será añadido a la frase. Por ejemplo &lt;em&gt;Visita nuestra %s!&lt;/em&gt; será publicado como &lt;em&gt;Visita nuestra &lt;u&gt;nueva web&lt;/u&gt;!&lt;/em&gt; (siempre y cuando se haya introducido &lt;em&gt;nueva web&lt;/em&gt; en el título del link).</target>
       </trans-unit>
       <trans-unit id="tl_content.rel.0">
         <source>Lightbox</source>
@@ -367,627 +367,627 @@
       </trans-unit>
       <trans-unit id="tl_content.rel.1">
         <source>To trigger the lightbox, enter a &lt;em&gt;data-lightbox&lt;/em&gt; attribute here.</source>
-        <target>Buraya Lightbox ögesini tetiklemek için bir &lt;em&gt;data-lightbox&lt;/em&gt; özniteliği yazın.</target>
+        <target>Para activar el lightbox, ingrese un atributo &lt;em&gt;data-lightbox&lt;/em&gt; aquí.</target>
       </trans-unit>
       <trans-unit id="tl_content.useImage.0">
         <source>Create an image link</source>
-        <target>Bir görsel bağlantısı ekle</target>
+        <target>Link de imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.useImage.1">
         <source>Use an image instead of the link title.</source>
-        <target>Bağlantı başlığı yerine bir görsel kullanılsın.</target>
+        <target>Utiliza una imagen en vez del título del link.</target>
       </trans-unit>
       <trans-unit id="tl_content.multiSRC.0">
         <source>Source files</source>
-        <target>Kaynak dosyalar</target>
+        <target>Archivos de fuentes</target>
       </trans-unit>
       <trans-unit id="tl_content.multiSRC.1">
         <source>Please select one or more files or folders from the files directory. If you select a folder, its files will be included automatically.</source>
-        <target>Lütfen files klasöründeki bir ya da birkaç dosya veya klasörü seçin. Bir klasör seçerseniz, içindeki dosyalar otomatik olarak katılır.</target>
+        <target>Por favor selecciona uno o más archivos o carpetas (todos los archivos de una carpeta serán incluidos automáticamente).</target>
       </trans-unit>
       <trans-unit id="tl_content.useHomeDir.0">
         <source>Use home directory</source>
-        <target>Giriş klasörü kullanılsın</target>
+        <target>Utilizar directorio usuario</target>
       </trans-unit>
       <trans-unit id="tl_content.useHomeDir.1">
         <source>Use the home directory as file source if there is an authenticated member.</source>
-        <target>Üye oturum açmışsa dosya kaynağı olarak giriş klasörü kullanılır.</target>
+        <target>Utilice el directorio principal como origen de archivo si hay un socio autenticado.</target>
       </trans-unit>
       <trans-unit id="tl_content.perRow.0">
         <source>Thumbnails per row</source>
-        <target>Bir satırdaki küçük görsel sayısı</target>
+        <target>Miniaturas por fila</target>
       </trans-unit>
       <trans-unit id="tl_content.perRow.1">
         <source>The number of image thumbnails per row.</source>
-        <target>Bir satırda görüntülenecek küçük görsel sayısı.</target>
+        <target>Por favor introduce el número de miniaturas por fila.</target>
       </trans-unit>
       <trans-unit id="tl_content.perPage.0">
         <source>Items per page</source>
-        <target>Bir sayfadaki öge sayısı</target>
+        <target>Elementos por página</target>
       </trans-unit>
       <trans-unit id="tl_content.perPage.1">
         <source>The number of items per page. Set to 0 to disable pagination.</source>
-        <target>Bir sayfada görüntülenecek öge sayısını yazın. Sayfalandırmayı etkisizleştirmek için 0 yazın.</target>
+        <target>Por favor introduce el número de resultados por página (0 = deshabilitar paginación).</target>
       </trans-unit>
       <trans-unit id="tl_content.sortBy.0">
         <source>Order by</source>
-        <target>Sıralama</target>
+        <target>Ordenar por</target>
       </trans-unit>
       <trans-unit id="tl_content.sortBy.1">
         <source>Please choose the sort order.</source>
-        <target>Lütfen sıralamayı seçin.</target>
+        <target>Por favor selecciona el tipo de orden.</target>
       </trans-unit>
       <trans-unit id="tl_content.metaIgnore.0">
         <source>Ignore files without metadata</source>
-        <target>Üst verileri olmayan kalıplar yok sayılsın</target>
+        <target>Ignorar archivos sin metadata</target>
       </trans-unit>
       <trans-unit id="tl_content.metaIgnore.1">
         <source>Do not show files without metadata matching the page language.</source>
-        <target>Üst verileri sayfa diliyle eşleşmeyen dosyaları görüntülemez.</target>
+        <target>No muestre archivos sin metadatos que coincidan con el idioma de la página.</target>
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.0">
         <source>Gallery template</source>
-        <target>Galeri kalıbı</target>
+        <target>Plantilla de galería</target>
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.1">
         <source>Here you can select a gallery template.</source>
-        <target>Buradan bir galeri kalıbı seçebilirsiniz.</target>
+        <target>Aquí puede seleccionar una plantilla de galería.</target>
       </trans-unit>
       <trans-unit id="tl_content.customTpl.0">
         <source>Content element template</source>
-        <target>İçerik bileşeni kalıbı</target>
+        <target>Plantilla de elemento de contenido</target>
       </trans-unit>
       <trans-unit id="tl_content.customTpl.1">
         <source>Here you can select the content element template.</source>
-        <target>Buradan içerik bileşeni kalıbını seçebilirsiniz.</target>
+        <target>Aquí puede seleccionar la plantilla del elemento de contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSRC.0">
         <source>Video/audio files</source>
-        <target>Görüntü/ses dosyaları</target>
+        <target>Archivos video/audio</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSRC.1">
         <source>Here you can add the video/audio file or multiple files if you are using different codecs.</source>
-        <target>Farklı kodlayıcı/çözücü bileşenleri kullanıyorsanız, görüntü/ses dosyasını ya da birkaç dosyayı buraya ekleyebilirsiniz.</target>
+        <target>Aquí puede agregar el archivo de vídeo/audio o varios archivos si está utilizando diferentes codecs.</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube.0">
         <source>YouTube ID</source>
-        <target>YouTube kimliği</target>
+        <target>ID Youtube</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube.1">
         <source>Please enter the YouTube video ID (e.g. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</source>
-        <target>YouTube görüntüsünün kimliğini yazın (&lt;em&gt;j0sYj4wxyk0&lt;/em&gt; gibi).</target>
+        <target>Por favor, introduzca el ID de vídeo de YouTube (p.e. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo.0">
         <source>Vimeo ID</source>
-        <target>Vimeo kimliği</target>
+        <target>ID Vimeo</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo.1">
         <source>Please enter the Vimeo video ID (e.g. &lt;em&gt;275028611&lt;/em&gt;).</source>
-        <target>Vimeo görüntüsünün kimliği (&lt;em&gt;275028611&lt;/em&gt; gibi).</target>
+        <target>Ingrese la identificación de video de Vimeo (por ejemplo, &lt;em&gt;275028611&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.posterSRC.0">
         <source>Preview image</source>
-        <target>Ön izleme görseli</target>
+        <target>Previsualización de la imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.posterSRC.1">
         <source>Show this image instead of the first frame of the video before playback.</source>
-        <target>Oynatma öncesinde ön izleme olarak görüntünün ilk karesi değil bu görsel kullanılır.</target>
+        <target>Mostrar esta imagen en lugar del primer fotograma del vídeo antes de la reproducción</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSize.0">
         <source>Player size</source>
-        <target>Oynatıcı boyutu</target>
+        <target>Talla del reproductor</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSize.1">
         <source>Width and height of the media player in pixels (e.g. 640x480).</source>
-        <target>Ortam oynatıcının piksel olarak genişlik ve yüksekliği (640x480 gibi).</target>
+        <target>Ancho y alto del reproductor de medios en pixeles (ejemplo 640x480)</target>
       </trans-unit>
       <trans-unit id="tl_content.playerOptions.0">
         <source>Player options</source>
-        <target>Oynatıcı seçenekleri</target>
+        <target>Opciones del reproductor</target>
       </trans-unit>
       <trans-unit id="tl_content.playerOptions.1">
         <source>Here you can select the player options.</source>
-        <target>Buradan oynatıcı seçeneklerini ayarlayabilirsiniz.</target>
+        <target>Aquí puede seleccionar las opciones del reproductor.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerPreload.0">
         <source>Preloading</source>
-        <target>Ön yükleme</target>
+        <target>Precarga</target>
       </trans-unit>
       <trans-unit id="tl_content.playerPreload.1">
         <source>Here you can suggest how the browser shall preload the video.</source>
-        <target>Buradan tarayıcının görüntüyü önceden nasıl yükleyeceğini önerebilirsiniz.</target>
+        <target>Aquí puede sugerir cómo el navegador precargará el video.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStart.0">
         <source>Start at</source>
-        <target>Başlangıç zamanı</target>
+        <target>Empieza en</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStart.1">
         <source>Start playing the video at the given number of seconds. Set to 0 to disable.</source>
-        <target>Görüntüyü belirtilen saniyeden başlayarak oynatır. En baştan başlamak için 0 olarak ayarlayın.</target>
+        <target>Comience a reproducir el video en el número de segundos especificado. Establecer en 0 para deshabilitar.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStop.0">
         <source>Stop at</source>
-        <target>Bitiş zamanı</target>
+        <target>Detener en</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStop.1">
         <source>Stop playing the video at the given number of seconds. Set to 0 to disable.</source>
-        <target>Görüntünün oynatılmasını belirtilen saniyede bitirir. Sonuna kadar oynatmak için 0 olarak ayarlayın.</target>
+        <target>Deja de reproducir el video en el número de segundos especificado. Establecer en 0 para deshabilitar.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerCaption.0">
         <source>Caption</source>
-        <target>Alt yazı</target>
+        <target>Leyenda</target>
       </trans-unit>
       <trans-unit id="tl_content.playerCaption.1">
         <source>Here you can enter a caption.</source>
-        <target>Buraya bir alt yazı yazabilirsiniz.</target>
+        <target>Aquí puede ingresar un subtítulo.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerAspect.0">
         <source>Aspect ratio</source>
-        <target>En boy oranı</target>
+        <target>Relación de aspecto</target>
       </trans-unit>
       <trans-unit id="tl_content.playerAspect.1">
         <source>Here you can select the aspect ratio of the video to make it responsive.</source>
-        <target>Buradan, uyumlu yapmak için görüntünün en boy oranını seçebilirsiniz.</target>
+        <target>Aquí puede seleccionar la relación de aspecto del video para que responda.</target>
       </trans-unit>
       <trans-unit id="tl_content.splashImage.0">
         <source>Use a splash image</source>
-        <target>Bir açılış görseli kullanılsın</target>
+        <target>Usa una imagen de bienvenida</target>
       </trans-unit>
       <trans-unit id="tl_content.splashImage.1">
         <source>Only load the video after the user has clicked on the splash image.</source>
-        <target>Görüntü yalnızca kullanıcı açılış görseline tıkladıktan sonra yüklenir.</target>
+        <target>Solo cargue el video después de que el usuario haya hecho clic en la imagen de bienvenida.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerColor.0">
         <source>Controls color</source>
-        <target>Denetimlerin rengi</target>
+        <target>Controles de color</target>
       </trans-unit>
       <trans-unit id="tl_content.playerColor.1">
         <source>Here you can enter a hexadecimal color (e.g. ff0000) for the video controls.</source>
-        <target>Buraya görüntü denetimlerinde kullanılacak onaltılık renk kodunu (ff0000 gibi) yazabilirsiniz.</target>
+        <target>Aquí puede introducir un color hexadecimal (por ejemplo, ff0000) para los controles de video.</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderDelay.0">
         <source>Sliding interval</source>
-        <target>Kaydırma aralığı</target>
+        <target>Intervalos entre los deslizamientos</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderDelay.1">
         <source>The time in milliseconds between slides (1000 = 1s). Set to 0 to disable auto sliding.</source>
-        <target>Milisaniye (1000 = 1s) cinsinden slaytlar arasındaki süre. Otomatik kaydırmayı etkisizleştirmek için 0 olarak ayarlayın.</target>
+        <target>El tiempo en milisegundos entre los deslizamientos (1000 = 1s). Establecer 0 para desactivar deslizamiento automático.</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderSpeed.0">
         <source>Transition speed</source>
-        <target>Geçiş hızı</target>
+        <target>Velocidad de transición</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderSpeed.1">
         <source>The transition speed in milliseconds (1000 = 1s). Defaults to 300.</source>
-        <target>Milisaniye (1000 = 1s) cinsinden geçiş hızını yazın. Varsayılan değer: 300.</target>
+        <target>La velocidad de transición en milisegundos (1000 = 1s). Por defecto 300.</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderStartSlide.0">
         <source>Slide offset</source>
-        <target>Başlangıç slaytı</target>
+        <target>Offset del Slide</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderStartSlide.1">
         <source>Here you can make the slider start with a particular slide (counting starts at 0).</source>
-        <target>Buradan kaydırıcının belirli bir slaytla başlamasını sağlayabilirsiniz (saymaya 0 ile başlanır).</target>
+        <target>aquí puedes definir un Slide de inicio en particular (empieza a contar desde 0),</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderContinuous.0">
         <source>Continuous</source>
-        <target>Sonsuz</target>
+        <target>Continuo</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderContinuous.1">
         <source>Make the slider continuous (start all over when reaching the end).</source>
-        <target>Kaydırıcının durmadan ilerlemesini sağlar (sondan başa döner).</target>
+        <target>Hace el Slider continuo (empieza desde el principio cuando llega al final).</target>
       </trans-unit>
       <trans-unit id="tl_content.cteAlias.0">
         <source>Referenced element</source>
-        <target>Başvurulan bileşen</target>
+        <target>ID del elemento</target>
       </trans-unit>
       <trans-unit id="tl_content.cteAlias.1">
         <source>Please choose the content element you want to insert.</source>
-        <target>Lütfen eklemek istediğiniz içerik bileşenini seçin.</target>
+        <target>Por favor selecciona la ID del elemento de contenido que quieras añadir. Puedes ver la ID de un registro si lo editas.</target>
       </trans-unit>
       <trans-unit id="tl_content.articleAlias.0">
         <source>Referenced article</source>
-        <target>Başvurulan makale</target>
+        <target>Artículo referenciado</target>
       </trans-unit>
       <trans-unit id="tl_content.articleAlias.1">
         <source>Please choose the article you want to insert.</source>
-        <target>Lütfen eklemek istediğiniz makaleyi seçin.</target>
+        <target>Por favor selecciona el artículo que quieres insertar.</target>
       </trans-unit>
       <trans-unit id="tl_content.article.0">
         <source>Article</source>
-        <target>Makale</target>
+        <target>Artículo</target>
       </trans-unit>
       <trans-unit id="tl_content.article.1">
         <source>Please select an article.</source>
-        <target>Lütfen bir makale seçin.</target>
+        <target>Por favor selecciona el ID del artículo que quieres mostrar.</target>
       </trans-unit>
       <trans-unit id="tl_content.form.0">
         <source>Form</source>
-        <target>Form</target>
+        <target>Formulario</target>
       </trans-unit>
       <trans-unit id="tl_content.form.1">
         <source>Please select a form.</source>
-        <target>Lütfen bir form seçin.</target>
+        <target>Por favor selecciona un formulario.</target>
       </trans-unit>
       <trans-unit id="tl_content.module.0">
         <source>Module</source>
-        <target>Modül</target>
+        <target>Módulo</target>
       </trans-unit>
       <trans-unit id="tl_content.module.1">
         <source>Please select a module.</source>
-        <target>Lütfen bir modül seçin.</target>
+        <target>Por favor selecciona el módulo que quieres incluir en el artículo.</target>
       </trans-unit>
       <trans-unit id="tl_content.protected.0">
         <source>Protect element</source>
-        <target>Bileşen korunsun</target>
+        <target>Proteger elemento</target>
       </trans-unit>
       <trans-unit id="tl_content.protected.1">
         <source>Show the content element to certain member groups only.</source>
-        <target>İçerik bileşeninin yalnızca belirli grup üyelerine görüntülenmesini sağlar.</target>
+        <target>Mostrar el contenido solo a ciertos miembros del grupo.</target>
       </trans-unit>
       <trans-unit id="tl_content.groups.0">
         <source>Allowed member groups</source>
-        <target>İzin verilen üye grupları</target>
+        <target>Miembros de grupos permitidos</target>
       </trans-unit>
       <trans-unit id="tl_content.groups.1">
         <source>These groups will be able to see the content element.</source>
-        <target>Bu gruplar içerik bileşenini görebilir.</target>
+        <target>Aqui puedes seleccionar que grupos tiene acceso al contenido.</target>
       </trans-unit>
       <trans-unit id="tl_content.cssID.0">
         <source>CSS ID/class</source>
-        <target>CSS kimliği/sınıfı</target>
+        <target>ID de la hoja de estilo y clase</target>
       </trans-unit>
       <trans-unit id="tl_content.cssID.1">
         <source>Here you can set an ID and one or more classes.</source>
-        <target>Buradan bir kimlik ve bir ya da birkaç sınıf ayarlayabilirsiniz.</target>
+        <target>Aquí puedes introducir una ID para la hoja de estilo (atributo id) y una o más clases de hoja de estilos (atributos clase) para poder dar formato al elemento del modulo utilizando CSS.</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible.0">
         <source>Invisible</source>
-        <target>Görünmez</target>
+        <target>Invisible</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible.1">
         <source>Hide the element on the website.</source>
-        <target>Bileşeni sitede gizler.</target>
+        <target>El elemento actual no es visible en tu web.</target>
       </trans-unit>
       <trans-unit id="tl_content.start.0">
         <source>Show from</source>
-        <target>Görüntülenme başlangıcı</target>
+        <target>Mostrar desde</target>
       </trans-unit>
       <trans-unit id="tl_content.start.1">
         <source>If you want to prevent the element from showing on the website before a certain date/time, you can enter it here. Otherwise, leave the field blank.</source>
-        <target>Bileşenin belirli bir tarih/saatten önce sitede görüntülenmesini engellemek isterseniz buraya yazabilirsiniz. Bunun dışında bu alanı boş bırakın.</target>
+        <target>Si desea evitar que el elemento se muestre en el sitio web antes de una fecha/hora determinada, puede ingresarlo aquí. De lo contrario, deje el campo en blanco.</target>
       </trans-unit>
       <trans-unit id="tl_content.stop.0">
         <source>Show until</source>
-        <target>Görüntülenme bitişi</target>
+        <target>Mostrar hasta</target>
       </trans-unit>
       <trans-unit id="tl_content.stop.1">
         <source>If you want to prevent the element from showing on the website after a certain date/time, you can enter it here. Otherwise, leave the field blank.</source>
-        <target>Bileşenin belirli bir tarih/saatten sonra sitede görüntülenmesini engellemek isterseniz buraya yazabilirsiniz. Bunun dışında bu alanı boş bırakın.</target>
+        <target>Si desea evitar que el elemento se muestre en el sitio web después de una fecha/hora determinada, puede ingresarlo aquí. De lo contrario, deje el campo en blanco.</target>
       </trans-unit>
       <trans-unit id="tl_content.tstamp.0">
         <source>Revision date</source>
-        <target>Düzenlenme tarihi</target>
+        <target>Fecha revisión</target>
       </trans-unit>
       <trans-unit id="tl_content.tstamp.1">
         <source>Date and time of the latest revision</source>
-        <target>Son düzenlenme tarihi ve saati</target>
+        <target>Fecha y hora de la última modificación</target>
       </trans-unit>
       <trans-unit id="tl_content.type_legend">
         <source>Element type</source>
-        <target>Bileşen türü</target>
+        <target>Tipo de elemento</target>
       </trans-unit>
       <trans-unit id="tl_content.section_legend">
         <source>Section settings</source>
-        <target>Bölüm ayarları</target>
+        <target>Configuración de sección</target>
       </trans-unit>
       <trans-unit id="tl_content.text_legend">
         <source>Text/HTML/Code</source>
-        <target>Metin/HTML/Kod</target>
+        <target>Texto/HTML/Código</target>
       </trans-unit>
       <trans-unit id="tl_content.image_legend">
         <source>Image settings</source>
-        <target>Görsel ayarları</target>
+        <target>Opciones de la imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.download_legend">
         <source>Download settings</source>
-        <target>İndirme ayarları</target>
+        <target>Ajustes de descarga</target>
       </trans-unit>
       <trans-unit id="tl_content.preview_legend">
         <source>Preview settings</source>
-        <target>Ön izleme ayarları</target>
+        <target>Configuración de vista previa</target>
       </trans-unit>
       <trans-unit id="tl_content.slider_legend">
         <source>Slider settings</source>
-        <target>Kaydırıcı ayarları</target>
+        <target>Configuración Slider</target>
       </trans-unit>
       <trans-unit id="tl_content.list_legend">
         <source>List items</source>
-        <target>Liste ögeleri</target>
+        <target>Listado artículos</target>
       </trans-unit>
       <trans-unit id="tl_content.table_legend">
         <source>Table items</source>
-        <target>Tablo ögeleri</target>
+        <target>Tablas</target>
       </trans-unit>
       <trans-unit id="tl_content.tconfig_legend">
         <source>Table configuration</source>
-        <target>Tablo yapılandırması</target>
+        <target>Ajustes de tabla</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable_legend">
         <source>Sorting options</source>
-        <target>Sıralama seçenekleri</target>
+        <target>Opciones de clasificación</target>
       </trans-unit>
       <trans-unit id="tl_content.moo_legend">
         <source>Accordion settings</source>
-        <target>Akordiyon ayarları</target>
+        <target>Ajustes de accordion</target>
       </trans-unit>
       <trans-unit id="tl_content.accordion_legend">
         <source>Accordion settings</source>
-        <target>Akordiyon ayarları</target>
+        <target>Ajustes de accordion</target>
       </trans-unit>
       <trans-unit id="tl_content.link_legend">
         <source>Hyperlink settings</source>
-        <target>Bağlantı ayarları</target>
+        <target>Ajustes de hipervínculo</target>
       </trans-unit>
       <trans-unit id="tl_content.imglink_legend">
         <source>Image link settings</source>
-        <target>Görsel bağlantısı ayarları</target>
+        <target>Ajustes de link de imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.source_legend">
         <source>Source</source>
-        <target>Kaynak</target>
+        <target>Fuente</target>
       </trans-unit>
       <trans-unit id="tl_content.include_legend">
         <source>Include settings</source>
-        <target>Katma ayarları</target>
+        <target>Ajustes de include</target>
       </trans-unit>
       <trans-unit id="tl_content.protected_legend">
         <source>Access protection</source>
-        <target>Erişim koruması</target>
+        <target>Acceso protegido</target>
       </trans-unit>
       <trans-unit id="tl_content.splash_legend">
         <source>Splash image</source>
-        <target>Açılış görseli</target>
+        <target>Imagen de bienvenida</target>
       </trans-unit>
       <trans-unit id="tl_content.expert_legend">
         <source>Expert settings</source>
-        <target>Uzman ayarları</target>
+        <target>Configuración avanzada</target>
       </trans-unit>
       <trans-unit id="tl_content.template_legend">
         <source>Template settings</source>
-        <target>Kalıp ayarları</target>
+        <target>Ajustes de plantilla</target>
       </trans-unit>
       <trans-unit id="tl_content.player_legend">
         <source>Player settings</source>
-        <target>Oynatıcı ayarları</target>
+        <target>Configuración del reproductor</target>
       </trans-unit>
       <trans-unit id="tl_content.poster_legend">
         <source>Preview image</source>
-        <target>Ön izleme görseli</target>
+        <target>Previsualización de la imagen</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible_legend">
         <source>Visibility</source>
-        <target>Görünürlük</target>
+        <target>Visibilidad</target>
       </trans-unit>
       <trans-unit id="tl_content.ordered">
         <source>ordered list</source>
-        <target>numaralı liste</target>
+        <target>lista ordenada</target>
       </trans-unit>
       <trans-unit id="tl_content.unordered">
         <source>unordered list</source>
-        <target>madde imli liste</target>
+        <target>lista desordenada</target>
       </trans-unit>
       <trans-unit id="tl_content.name_asc">
         <source>File name (ascending)</source>
-        <target>Dosya adına göre (artan)</target>
+        <target>Nombre de archivo (ascendente)</target>
       </trans-unit>
       <trans-unit id="tl_content.name_desc">
         <source>File name (descending)</source>
-        <target>Dosya adına göre (azalan)</target>
+        <target>Nombre de archivo (descendente)</target>
       </trans-unit>
       <trans-unit id="tl_content.date_asc">
         <source>Date (ascending)</source>
-        <target>Tarihe göre (artan)</target>
+        <target>Fecha (ascendente)</target>
       </trans-unit>
       <trans-unit id="tl_content.date_desc">
         <source>Date (descending)</source>
-        <target>Tarihe göre (azalan)</target>
+        <target>Fecha (descendente)</target>
       </trans-unit>
       <trans-unit id="tl_content.custom">
         <source>Custom order</source>
-        <target>Özel sıralama</target>
+        <target>Orden personalizado</target>
       </trans-unit>
       <trans-unit id="tl_content.random">
         <source>Random order</source>
-        <target>Rastgele sıralama</target>
+        <target>Orden aleatorio</target>
       </trans-unit>
       <trans-unit id="tl_content.includeTemplate">
         <source>The &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
-        <target>&lt;em&gt;%s&lt;/em&gt; kalıbının sayfa yerleşimine katılması gereklidir.</target>
+        <target>La plantilla &lt;em&gt;%s&lt;/em&gt; tiene que estar incluido en el diseño de página.</target>
       </trans-unit>
       <trans-unit id="tl_content.includeTemplates">
         <source>The &lt;em&gt;%s&lt;/em&gt; or &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
-        <target>&lt;em&gt;%s&lt;/em&gt; ya da &lt;em&gt;%s&lt;/em&gt; kalıbının sayfa yerleşimine katılması gereklidir.</target>
+        <target>La plantilla &lt;em&gt;%s&lt;/em&gt; o &lt;em&gt;%s&lt;/em&gt;   tiene que estar incluido en el diseño de página.</target>
       </trans-unit>
       <trans-unit id="tl_content.player_autoplay">
         <source>Autoplay</source>
-        <target>Otomatik oynatılsın</target>
+        <target>Lectura automática</target>
       </trans-unit>
       <trans-unit id="tl_content.player_nocontrols">
         <source>Hide the controls</source>
-        <target>Denetimler gizlensin</target>
+        <target>Ocultar los controles</target>
       </trans-unit>
       <trans-unit id="tl_content.player_loop">
         <source>Play in a loop</source>
-        <target>Sondan başa dönülsün</target>
+        <target>Reproducir en un bucle</target>
       </trans-unit>
       <trans-unit id="tl_content.player_muted">
         <source>Mute the audio output</source>
-        <target>Ses kapatılsın</target>
+        <target>Silenciar la salida de audio</target>
       </trans-unit>
       <trans-unit id="tl_content.player_playsinline">
         <source>Play inline (no fullscreen mode)</source>
-        <target>Satır arasında oynatılsın (tam ekran kipi yok)</target>
+        <target>Reproducir inline (sin modo de pantalla completa)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.auto">
         <source>Auto (preload the entire video)</source>
-        <target>Otomatik (tüm görüntü önceden yüklensin)</target>
+        <target>Automático (precarga todo el video)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.metadata">
         <source>Metadata (preload the metadata only)</source>
-        <target>Üst veriler (yalnızca üst veriler önceden yüklensin)</target>
+        <target>Metadatos (precargue solo los metadatos)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.none">
         <source>None (do not preload anything)</source>
-        <target>Yok (hiç bir şey önceden yüklenmesin)</target>
+        <target>Ninguno (no precargue nada)</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_autoplay">
         <source>Autoplay</source>
-        <target>Otomatik oynatılsın</target>
+        <target>Lectura automática</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_controls">
         <source>Hide the controls</source>
-        <target>Denetimler gizlensin</target>
+        <target>Ocultar los controles</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_cc_load_policy">
         <source>Show captions by default</source>
-        <target>Seçenekler varsayılan olarak görüntülensin</target>
+        <target>Mostrar subtítulos por defecto</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_fs">
         <source>Hide the fullscreen button</source>
-        <target>Tam ekran düğmesi gizlensin</target>
+        <target>Ocultar el botón de pantalla completa</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_hl">
         <source>Use the Contao page language</source>
-        <target>Contao sayfa dili kullanılsın</target>
+        <target>Use el idioma de la página de Contao</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_iv_load_policy">
         <source>Hide annotations</source>
-        <target>Açıklamalar gizlensin</target>
+        <target>Ocultar anotaciones</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_modestbranding">
         <source>Hide the YouTube logo</source>
-        <target>YouTube logosu gizlensin</target>
+        <target>Ocultar el logo de YouTube</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_rel">
         <source>Limit related videos to the same channel</source>
-        <target>Aynı kanaldaki ilgili görüntüler sınırlansın </target>
+        <target>Limita los videos relacionados al mismo canal</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_nocookie">
         <source>Use the youtube-nocookie.com domain</source>
-        <target>youtube-nocookie.com etki alanı kullanılsın</target>
+        <target>Usa el dominio youtube-nocookie.com</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_loop">
         <source>Loop video</source>
-        <target>Görüntü sondan başa dönsün</target>
+        <target>Loop video</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_autoplay">
         <source>Autoplay</source>
-        <target>Otomatik oynatılsın</target>
+        <target>Lectura automática</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_loop">
         <source>Play in a loop</source>
-        <target>Sondan başa dönülsün</target>
+        <target>Reproducir en un bucle</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_portrait">
         <source>Hide the profile image</source>
-        <target>Profil görseli gizlensin</target>
+        <target>Ocultar la imagen de perfil</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_title">
         <source>Hide the title</source>
-        <target>Başlık gizlensin</target>
+        <target>Ocultar el título</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_byline">
         <source>Hide the author</source>
-        <target>Yazar gizlensin</target>
+        <target>Ocultar el autor</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_dnt">
         <source>Prevent session data tracking</source>
-        <target>Oturum verilerinin izlenmesi engellensin</target>
+        <target>Impedir el seguimiento de datos de sesión</target>
       </trans-unit>
       <trans-unit id="tl_content.new.0">
         <source>New</source>
-        <target>Yeni</target>
+        <target>Nuevo</target>
       </trans-unit>
       <trans-unit id="tl_content.new.1">
         <source>Add a new content element</source>
-        <target>Yeni bir içerik bileşeni ekle</target>
+        <target>Crea un elemento nuevo</target>
       </trans-unit>
       <trans-unit id="tl_content.show">
         <source>Show the details of content element ID %s</source>
-        <target>%s kimlikli içerik bileşeninin bilgilerini görüntüle</target>
+        <target>Muestra detalles del elemento de contenido con %s</target>
       </trans-unit>
       <trans-unit id="tl_content.cut">
         <source>Move content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini taşı</target>
+        <target>Mover elemento de contenido con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.copy">
         <source>Duplicate content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini kopyala</target>
+        <target>Copiar elemento de contenido con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.delete">
         <source>Delete content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini sil</target>
+        <target>Borrar elemento de contenido con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.edit">
         <source>Edit content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini düzenle</target>
+        <target>Editar elemento de contenido con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.0">
         <source>Hide/unhide content element</source>
-        <target>İçerik bileşenini gizle/görüntüle</target>
+        <target>Ocultar/mostrar elemento de contenido</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.1">
         <source>Hide content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini gizle</target>
+        <target>Ocultar ID %s de elemento</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.2">
         <source>Unhide content element ID %s</source>
-        <target>%s kimlikli içerik bileşenini görüntüle</target>
+        <target>Mostrar elemento de contenido ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.pasteafter.0">
         <source>Paste at the top</source>
-        <target>Üste yapıştır</target>
+        <target>Pegar al inicio</target>
       </trans-unit>
       <trans-unit id="tl_content.pasteafter.1">
         <source>Paste after content element ID %s</source>
-        <target>%s kimlikli içerik bileşeninden sonra yapıştır</target>
+        <target>Pegar después del elemento de contenido con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.pastenew.0">
         <source>Create a new content element at the top</source>
-        <target>En üste yeni bir içerik bileşeni ekle</target>
+        <target>Crea un nuevo elemento de contenido en la parte superior</target>
       </trans-unit>
       <trans-unit id="tl_content.pastenew.1">
         <source>Create a new content element after content element ID %s</source>
-        <target>%s kimlikli içerik bileşeninden sonra yeni bir içerik bileşeni ekle</target>
+        <target>Crear un nuevo elemento de contenido después del ID del elemento de contenido %s</target>
       </trans-unit>
       <trans-unit id="tl_content.editalias">
         <source>Edit the source element ID %s</source>
-        <target>%s kimlikli kaynak bileşenini düzenle</target>
+        <target>Editar la fuente del elemento con ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.list.1">
         <source>Import list items from a CSV file</source>
-        <target>Liste ögelerini CSV dosyasından içe aktar</target>
+        <target>Importar una lista de elementos desde un archivo CSV</target>
       </trans-unit>
       <trans-unit id="tl_content.table.1">
         <source>Import table items from a CSV file</source>
-        <target>Tablo ögelerini CSV dosyasından içe aktar</target>
+        <target>Importar elementos de la tabla desde un archivo CSV</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_label.0">
         <source>Description list items</source>
-        <target>Açıklama listesi ögeleri</target>
+        <target>Elementos de la lista de descripción</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_label.1">
         <source>Please enter a list of terms and details for the description list. You can leave the term field empty to create multiple details for one term.</source>
-        <target>Lütfen açıklama listesi için bir terim ve ayrıntılar listesi yazın. Bir terim için birden fazla ayrıntı oluşturulması için terim alanını boş bırakabilirsiniz.</target>
+        <target>Ingrese una lista de términos y detalles para la lista de descripción. Puede dejar el campo del término vacío para crear varios detalles para un término.</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_key">
         <source>Term</source>
-        <target>Terim</target>
+        <target>Término</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_value">
         <source>Details</source>
-        <target>Ayrıntılar</target>
+        <target>Detalles</target>
       </trans-unit>
     </body>
   </file>
