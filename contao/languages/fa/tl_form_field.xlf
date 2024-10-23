@@ -1,37 +1,37 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_form_field.php" source-language="en" target-language="nl">
+  <file datatype="php" original="contao/languages/en/tl_form_field.php" source-language="en" target-language="fa">
     <body>
       <trans-unit id="tl_form_field.type.0">
         <source>Field type</source>
-        <target>Veldtype</target>
+        <target>نوع فیلد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.type.1">
         <source>Please choose the type of field.</source>
-        <target>Kies het veldtype.</target>
+        <target>لطفا نوع فیلد را انتخاب نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.name.0">
         <source>Field name</source>
-        <target>Veldnaam</target>
+        <target>نام فیلد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.name.1">
         <source>The field name is a unique name to identify the field.</source>
-        <target>De veldnaam is een unieke naam om het veld te identificeren.</target>
+        <target>نام فیلد یک نام یکتا برای مشخص کردن فیلد می‌باشد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.label.0">
         <source>Field label</source>
-        <target>Veldlabel</target>
+        <target>برچسب فیلد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.label.1">
         <source>The field label will be visible on the website, typically in front of or above the field.</source>
-        <target>Het veld label zal zichtbaar zijn op de website, gewoonlijk voor of boven het veld.</target>
+        <target>برچسب فیلد در وب‌سایت عموماً در جلو یا بالای فیلد قابل مشاهده خواهد بود.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.text.0">
         <source>Text</source>
-        <target>Tekst</target>
+        <target>متن</target>
       </trans-unit>
       <trans-unit id="tl_form_field.text.1">
         <source>You can use HTML tags to format the text.</source>
-        <target>U kunt HTML tags gebruiken om de tekst op te maken.</target>
+        <target>می‌توانید از تگ‌های HTML برای شکل دادن به متن استفاده کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.html.0">
         <source>HTML</source>
@@ -39,471 +39,471 @@
       </trans-unit>
       <trans-unit id="tl_form_field.html.1">
         <source>You can modify the list of allowed HTML tags in the back end settings.</source>
-        <target>U kunt de lijst met toegestane HTML tags aanpassen in de back-end instellingen.</target>
+        <target>می‌توانید فهرست برچسب‌های HTML مجاز را در تنظیمات بخش مدیریت تغییر دهید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.options.0">
         <source>Options</source>
-        <target>Opties</target>
+        <target>گزینه‌ها</target>
       </trans-unit>
       <trans-unit id="tl_form_field.options.1">
         <source>If JavaScript is disabled, make sure to save your changes before modifying the order.</source>
-        <target>Indien Javascript is uitgeschakeld moet u uw wijzigingen opslaan vooraleer de volgorde te veranderen!</target>
+        <target>اگر جاوا اسکریپت غیرفعال است، از ذخیره شدن تغییرات قبل از تغییر ترتیب مطمئن شوید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.mandatory.0">
         <source>Mandatory field</source>
-        <target>Verplicht veld</target>
+        <target>فیلد اجباری</target>
       </trans-unit>
       <trans-unit id="tl_form_field.mandatory.1">
         <source>The form will not submit if the field is empty.</source>
-        <target>Als u deze optie kiest, is het veld verplicht in te vullen.</target>
+        <target>فرم ارسال نخواهد شد اگر این فیلد خالی باشد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.rgxp.0">
         <source>Input validation</source>
-        <target>Ingavecontrole</target>
+        <target>اعتبارسنجی ورودی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.rgxp.1">
         <source>Validate the input against a regular expression.</source>
-        <target>Als u hier een reguliere expressie kiest, zal de input van het veld hierop gecontroleerd worden.</target>
+        <target>اعتبارسنجی ورودی توسط عبارت‌های عمومی.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.digit.0">
         <source>Numeric characters</source>
-        <target>Numerieke karakters</target>
+        <target>نویسه‌های عددی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.digit.1">
         <source>Allows numeric characters, minus (-) and full stop (.).</source>
-        <target>Staat numerieke karakters, min (-), en punt (.) toe.</target>
+        <target>نویسه‌های عددی، منها (-) و نقطه (.) را اجازه می‌دهد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.alpha.0">
         <source>Alphabetic characters</source>
-        <target>Alfabetische karakters</target>
+        <target>نویسه‌های الفبائی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.alpha.1">
         <source>Allows alphabetic characters, minus (-), full stop (.) and space ( ).</source>
-        <target>Staat alfabetische karakters, min (-), punt (.) en spatie ( ) toe.</target>
+        <target>شامل نویسه‌های الفبائی، خط تیره (-)، نقطه (.) و فاصله ( ).</target>
       </trans-unit>
       <trans-unit id="tl_form_field.alnum.0">
         <source>Alphanumeric characters</source>
-        <target>Alfanumerieke karakters</target>
+        <target>نویسه‌های عددی و الفبائی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.alnum.1">
         <source>Allows alphabetic and numeric characters, minus (-), full stop (.), underscore (_) and space ( ).</source>
-        <target>Staat alfabetische en numerieke karakters, min (-), punt (.), underscore (_) en spatie ( ) toe.</target>
+        <target>شامل نویسه‌های عددی و الفبائی، خط تیره (-)، نقطه (.)، خط زیر (_) و فاصله ( ).</target>
       </trans-unit>
       <trans-unit id="tl_form_field.extnd.0">
         <source>Extended alphanumeric characters</source>
-        <target>Uitgebreide alfanumerieke karakters</target>
+        <target>نویسه‌های عددی و الفبائی تعمیم‌یافته</target>
       </trans-unit>
       <trans-unit id="tl_form_field.extnd.1">
         <source>Allows everything except special characters which are usually encoded for security reasons: #&lt;&gt;()\=</source>
-        <target>Staat alle karakters toe behalve speciale tekens die meestal worden gecodeerd om veiligheidsredenen: #&lt;&gt;()\=</target>
+        <target>هر چیزی مجاز است به جز نویسه‌هایی که به دلایل امنیتی رمزگذاری شده‌اند: #&lt;&gt;()\=</target>
       </trans-unit>
       <trans-unit id="tl_form_field.date.0">
         <source>Date</source>
-        <target>Datum</target>
+        <target>تاریخ</target>
       </trans-unit>
       <trans-unit id="tl_form_field.date.1">
         <source>Checks whether the input matches the global date format.</source>
-        <target>Controleert of de huidige waarde aan het algemene datumformaat voldoet.</target>
+        <target>چگونگی انطباق ورودی با ساختار تاریخ جهانی را بررسی می‌کند</target>
       </trans-unit>
       <trans-unit id="tl_form_field.time.0">
         <source>Time</source>
-        <target>Tijd</target>
+        <target>ساعت</target>
       </trans-unit>
       <trans-unit id="tl_form_field.time.1">
         <source>Checks whether the input matches the global time format.</source>
-        <target>Controleert of de huidige waarde aan het algemene tijdformaat voldoet.</target>
+        <target>چگونگی انطباق ورودی با ساختار ساعت جهانی را بررسی می‌کند</target>
       </trans-unit>
       <trans-unit id="tl_form_field.datim.0">
         <source>Date and time</source>
-        <target>Datum en tijd</target>
+        <target>تاریخ و ساعت</target>
       </trans-unit>
       <trans-unit id="tl_form_field.datim.1">
         <source>Checks whether the input matches the global date and time format.</source>
-        <target>Controleert of de huidige waarde aan het algemene datum- en tijdformaat voldoet.</target>
+        <target>چگونگی انطباق ورودی با ساختار تاریخ و ساعت جهانی را بررسی می‌کند</target>
       </trans-unit>
       <trans-unit id="tl_form_field.phone.0">
         <source>Phone number</source>
-        <target>Telefoonnummer</target>
+        <target>شماره تلفن</target>
       </trans-unit>
       <trans-unit id="tl_form_field.phone.1">
         <source>Allows numeric characters, plus (+), minus (-), slash (/), parentheses () and space ( ).</source>
-        <target>Staat numerieke karakters, plus (+), min (-), slash (/), haakjes () en spatie toe ( ).</target>
+        <target>شامل نویسه‌های عددی، بعلاوه (+)، خط تیره (-)، اسلش (/)، پرانتز () و فاصله ( ).</target>
       </trans-unit>
       <trans-unit id="tl_form_field.email.0">
         <source>E-mail address</source>
-        <target>E-mailadres</target>
+        <target>نشانی ایمیل</target>
       </trans-unit>
       <trans-unit id="tl_form_field.email.1">
         <source>Checks whether the input is a valid e-mail address.</source>
-        <target>Controleert of de huidige waarde een geldig e-mail adres is.</target>
+        <target>بررسی می‌کند که آیا ورودی یک نشانی ایمیل معتبر است.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.url.0">
         <source>URL format</source>
-        <target>URL format</target>
+        <target>ساختار نشانی وب</target>
       </trans-unit>
       <trans-unit id="tl_form_field.url.1">
         <source>Checks whether the input is a valid URL.</source>
-        <target>Controleert of de ingevoerde waarde een geldige URL is.</target>
+        <target>بررسی می‌کند که آیا ورودی یک نشانی وب معتبر است.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.httpurl.0">
         <source>Absolute URL</source>
-        <target>Absolute URL</target>
+        <target>URL مطلق</target>
       </trans-unit>
       <trans-unit id="tl_form_field.httpurl.1">
         <source>Checks whether the input is a valid absolute URL.</source>
-        <target>Controleert of de invoer een geldige absolute URL is.</target>
+        <target>بررسی می‌کند که ورودی یک آدرس URL مطلق معتبر است.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.custom.0">
         <source>Custom</source>
-        <target>Aangepast</target>
+        <target>سفارشی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.custom.1">
         <source>Checks against a custom regular expression.</source>
-        <target>Controleert op een aangepaste reguliere expressie.</target>
+        <target>بررسی می‌کند با عبارت باقاعده سفارسی.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.placeholder.0">
         <source>Placeholder</source>
-        <target>Plaatshouder</target>
+        <target>حفره</target>
       </trans-unit>
       <trans-unit id="tl_form_field.placeholder.1">
         <source>Show this text as long as the field is empty (requires HTML5).</source>
-        <target>Toon deze tekst zolang het veld leeg is (vereist HTML5)</target>
+        <target>نمایش این متن تا زمانی که این فیلد خالی است (نیاز به HTML5)</target>
       </trans-unit>
       <trans-unit id="tl_form_field.customRgxp.0">
         <source>Custom regular expression</source>
-        <target>Aangepaste reguliere expressie.</target>
+        <target>عبارت باقاعده اختصاصی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.customRgxp.1">
         <source>The custom regular expression including delimiters and modifiers.</source>
-        <target>De aangepaste reguliere expressie inclusief scheidingstekens en modifiers.</target>
+        <target>عبارت باقاعده سفارشی شامل محدودکننده و اصلاح‌کننده‌ها.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.errorMsg.0">
         <source>Error message</source>
-        <target>Foutmelding</target>
+        <target>پیغم خطاء</target>
       </trans-unit>
       <trans-unit id="tl_form_field.errorMsg.1">
         <source>Show this error message in the front end if the user input is invalid.</source>
-        <target>Toon deze foutmelding in de front-end als de gebruikersinvoer ongeldig is.</target>
+        <target>این پیغام خطا را در رابط کاربری نمایش می‌دهد اگر ورودی کاربر نامعتبر باشد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.minlength.0">
         <source>Minimum length</source>
-        <target>Minimale lengte</target>
+        <target>طول کمینه</target>
       </trans-unit>
       <trans-unit id="tl_form_field.minlength.1">
         <source>Require the field value to be a certain number of characters long.</source>
-        <target>Vereist dat de veldwaarde een bepaald aantal tekens lang is.</target>
+        <target>مقدار فیلد باید مقدار مشخصی از طول نویسه‌ها باشد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxlength.0">
         <source>Maximum length</source>
-        <target>Maximale lengte</target>
+        <target>حداکثر طول مجاز</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxlength.1">
         <source>Limit the field length to a certain number of characters (text) or bytes (file uploads).</source>
-        <target>Beperk veld lengte tot een bepaald aantal tekens (tekst) of bytes (uploaden van bestanden).</target>
+        <target>اندازه فیلد را به یک تعداد کارکتر (متنی) یا بایت (پرونده بارگذاری شده) محدود می‌کند.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxImageWidth.0">
         <source>Maximum image width</source>
-        <target>Maximum afbeeldingsbreedte</target>
+        <target>عرض تصویر بیشینه</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxImageWidth.1">
         <source>Here you can enter the maximum width for image uploads in pixels. Enter 0 to use the system default.</source>
-        <target>Hier kunt u de maximale breedte voor het uploaden van afbeeldingen in pixels invoeren. Voer 0 in om de systeemstandaard te gebruiken.</target>
+        <target>اینجا می‌توانید بیشترین عرض در واحد پیکسل برای آپلود تصویر را وارد کنید. برا استفاده از پیش‌فرض سیستم 0 وارد کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxImageHeight.0">
         <source>Maximum image height</source>
-        <target>Maximum afbeeldingshoogte</target>
+        <target>ارتفاع تصویر بیشینه</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxImageHeight.1">
         <source>Here you can enter the maximum height for image uploads in pixels. Enter 0 to use the system default.</source>
-        <target>Hier kunt u de maximale hoogte voor het uploaden van afbeeldingen in pixels invoeren. Voer 0 in om de systeemstandaard te gebruiken.</target>
+        <target>اینجا می‌توانید بیشترین ارتفاع در واحد پیکسل برای آپلود تصویر را وارد کنید. برا استفاده از پیش‌فرض سیستم 0 وارد کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.minval.0">
         <source>Minimum value</source>
-        <target>Minimum waarde</target>
+        <target>مقدار کمینه</target>
       </trans-unit>
       <trans-unit id="tl_form_field.minval.1">
         <source>Here you can set the minimum value for numeric fields.</source>
-        <target>Minimumwaarde voor numerieke velden instellen.</target>
+        <target>اینجا می‌توانید مقدار کمینه برای فیلدهای عددی را وارد کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxval.0">
         <source>Maximum value</source>
-        <target>Maximale waarde</target>
+        <target>مقدار بیشینه</target>
       </trans-unit>
       <trans-unit id="tl_form_field.maxval.1">
         <source>Here you can set the maximum value for numeric fields.</source>
-        <target>Maximumwaarde voor numerieke velden instellen.</target>
+        <target>اینجا می‌توانید بیشترین مقدار برای فیلدهای عددی را تنظیم کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.step.0">
         <source>Step</source>
-        <target>Stap</target>
+        <target>مرحله</target>
       </trans-unit>
       <trans-unit id="tl_form_field.step.1">
         <source>Here you can set the discrete step size of the field.</source>
-        <target>Hier kunt u de discrete stapgrootte van het veld instellen.</target>
+        <target>اینجا می‌توانید اندازه گام‌های گسسته فیلد را تنظیم کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.size.0">
         <source>Rows and columns</source>
-        <target>Rijen en kolommen</target>
+        <target>سطرها و ستون‌ها</target>
       </trans-unit>
       <trans-unit id="tl_form_field.size.1">
         <source>The number of rows and columns of the textarea.</source>
-        <target>Geef het aantal rijen en kolommen op van het tekstgebied.</target>
+        <target>تعداد سطرها و ستون‌های جعبه متن.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.multiple.0">
         <source>Multiple selection</source>
-        <target>Meervoudige selectie</target>
+        <target>انتخاب چندتائی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.multiple.1">
         <source>Allow visitors to select more than one option.</source>
-        <target>Maakt het mogelijk om meer dan één optie te selecteren.</target>
+        <target>اجازه دادن به کاربران برای انتخاب بیش از یک گزینه.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.mSize.0">
         <source>List size</source>
-        <target>Lijstgrootte</target>
+        <target>اندازه فهرست</target>
       </trans-unit>
       <trans-unit id="tl_form_field.mSize.1">
         <source>Here you can enter the size of the select box.</source>
-        <target>Geef de grootte op van de select box.</target>
+        <target>اینجا می‌توانید اندازه جعبه انتخاب را وارد نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.extensions.0">
         <source>Allowed file types</source>
-        <target>Toegestane bestandstypes</target>
+        <target>انواع پرونده مجاز</target>
       </trans-unit>
       <trans-unit id="tl_form_field.extensions.1">
         <source>A comma separated list of valid file extensions.</source>
-        <target>Een komma gescheiden lijst van geldige bestand extensies.</target>
+        <target>فهرست جدا شده با کاما از پسوند پرونده‌های مجاز.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.storeFile.0">
         <source>Store uploaded files</source>
-        <target>Geladen bestand opslaan</target>
+        <target>ذخیره پرونده‌های بارگذاری شده</target>
       </trans-unit>
       <trans-unit id="tl_form_field.storeFile.1">
         <source>Move the uploaded files to a folder on the server.</source>
-        <target>Als u deze optie kiest worden opgeladen bestanden verplaatst naar een map op uw server.</target>
+        <target>جابجایی پرونده‌های بارگذاری شده به پوشه‌ای در سرور.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.uploadFolder.0">
         <source>Target folder</source>
-        <target>Doelmap</target>
+        <target>پوشه مقصد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.uploadFolder.1">
         <source>Please select the target folder from the files directory.</source>
-        <target>Kies een map om opgeladen bestanden in te bewaren.</target>
+        <target>لطفا پوشه مقصد از دایرکتوری پرونده‌ها را نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.useHomeDir.0">
         <source>Use home directory</source>
-        <target>Gebruik home directory</target>
+        <target>استفاده از دایرکتوری شخصی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.useHomeDir.1">
         <source>Store the file in the home directory if there is an authenticated member.</source>
-        <target>Als een lid is ingelogd, sla het bestand dan op in zijn home directory.</target>
+        <target>اگر یک عضو احراز هویت‌شده باشد، فایل را در پوشه‌ی خانه ذخیره می‌کند.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.doNotOverwrite.0">
         <source>Preserve existing files</source>
-        <target>Bestaande bestanden niet overschrijven</target>
+        <target>عدم جایگزینی در صورت وجود پرونده</target>
       </trans-unit>
       <trans-unit id="tl_form_field.doNotOverwrite.1">
         <source>Add a numeric suffix to the new file if the file name already exists.</source>
-        <target>Voeg een nummer toe aan de bestandsnaam als het bestand reeds bestaat.</target>
+        <target>در صورت وجود پرونده، به انتهای نام آن یک عدد اضافه می‌گردد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.value.0">
         <source>Default value</source>
-        <target>Standaard waarde</target>
+        <target>مقدار پیش‌فرض</target>
       </trans-unit>
       <trans-unit id="tl_form_field.value.1">
         <source>Here you can enter a default value for the field.</source>
-        <target>Als u hier iets opgeeft zal dit als standaardwaarde in het tekstveld worden weergegeven.</target>
+        <target>اینجا می‌توانید مقدار پیش‌فرض را برای فیلد وارد نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.class.0">
         <source>CSS class</source>
-        <target>CSS class</target>
+        <target>کلاس CSS</target>
       </trans-unit>
       <trans-unit id="tl_form_field.class.1">
         <source>Here you can enter one or more classes.</source>
-        <target>Hier kunt u een of meerdere CSS classes opgeven.</target>
+        <target>اینجا می‌توانید یک یا چند کلاس را وارد نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.accesskey.0">
         <source>Access key</source>
-        <target>Toegangscombinatie</target>
+        <target>کلید دسترسی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.accesskey.1">
         <source>A form field can be focused by pressing the [ALT] or [CTRL] key and the access key simultaneously.</source>
-        <target>Een sneltoets is een enkel teken dat aan een formulierveld kan worden toegewezen. Als een bezoeker gelijktijdig [ALT] of [CTRL] en de sneltoets drukt, krijgt het betreffende formulierveld de focus.</target>
+        <target>فیلد فرم می‌تواند با فشردن همزمان کلید [ALT] یا [CTRL] با کلید دسترسی مورد توجه قرار گیرد.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.fSize.0">
         <source>Field size</source>
-        <target>Veldgrootte</target>
+        <target>اندازه ورودی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.fSize.1">
         <source>Here you can enter the size of the upload field (&lt;em&gt;size&lt;/em&gt; attribute).</source>
-        <target>Geef hier de afmeting van het upload veld in (&lt;em&gt;afmeting&lt;/em&gt; attribuut).</target>
+        <target>اینجا می‌توانید اندازه ورودی بارگذاری را وارد نمایید (ویژگی &lt;em&gt;اندازه&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_form_field.customTpl.0">
         <source>Form field template</source>
-        <target>Formulierveldsjabloon</target>
+        <target>قالب فیلد فرم</target>
       </trans-unit>
       <trans-unit id="tl_form_field.customTpl.1">
         <source>Here you can select the form field template.</source>
-        <target>Hier kunt u de formulierveldsjabloon selecteren.</target>
+        <target>اینجا می‌توانید قالب فیلد فرم را انتخاب کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.slabel.0">
         <source>Submit button label</source>
-        <target>Verzendknop label</target>
+        <target>برچسب دکمه ارسال</target>
       </trans-unit>
       <trans-unit id="tl_form_field.slabel.1">
         <source>Please enter the label of the submit button.</source>
-        <target>Geef het label op van de verzendknop.</target>
+        <target>لطفا برچسب دکمه ارسال فرم را وارد نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.imageSubmit.0">
         <source>Create an image button</source>
-        <target>Afbeeldingsknop verzenden</target>
+        <target>استفاده از تصویر</target>
       </trans-unit>
       <trans-unit id="tl_form_field.imageSubmit.1">
         <source>Use an image submit button instead of the default one.</source>
-        <target>Gebruik een afbeeldingsverzendknop in plaats van een standaard verzendknop.</target>
+        <target>استفاده از یک تصویر به جای دکمه پیش‌فرض</target>
       </trans-unit>
       <trans-unit id="tl_form_field.singleSRC.0">
         <source>Source file</source>
-        <target>Bronbestand</target>
+        <target>منبع پرونده</target>
       </trans-unit>
       <trans-unit id="tl_form_field.singleSRC.1">
         <source>Please select an image from the files directory.</source>
-        <target>Selecteer een afbeelding in de bestandsdirectory.</target>
+        <target>لطفا یک تصویر از دایرکتوری پرونده انتخاب نمایید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaAuto.0">
         <source>Auto verification</source>
-        <target>Automatische verificatie</target>
+        <target>تایید خودکار</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaAuto.1">
         <source>Automatically verify without user interaction.</source>
-        <target>Automatisch verifiëren zonder tussenkomst van de gebruiker.</target>
+        <target>تأیید خودکار بدون تعامل کاربر.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaHideLogo.0">
         <source>Hide logo</source>
-        <target>Verberg logo</target>
+        <target>پنهان کردن لوگو</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaHideLogo.1">
         <source>Hide the ALTCHA logo.</source>
-        <target>Verberg het ALTCHA logo.</target>
+        <target>لوگو ALTCHA را پنهان کنید.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaHideFooter.0">
         <source>Hide footer</source>
-        <target>Verberg footer</target>
+        <target>پنهان کردن پاورقی</target>
       </trans-unit>
       <trans-unit id="tl_form_field.altchaHideFooter.1">
         <source>Hide the footer (ALTCHA link).</source>
-        <target>Verberg de footer (ALTCHA-link).</target>
+        <target>پاورقی را مخفی کنید (لینک ALTCHA).</target>
       </trans-unit>
       <trans-unit id="tl_form_field.invisible.0">
         <source>Invisible</source>
-        <target>Niet zichtbaar</target>
+        <target>پنهان</target>
       </trans-unit>
       <trans-unit id="tl_form_field.invisible.1">
         <source>Hide the form field on the website.</source>
-        <target>Verberg  formulierveld op de website.</target>
+        <target>فیلد فرم را در وب‌سایت مخفی کن.</target>
       </trans-unit>
       <trans-unit id="tl_form_field.type_legend">
         <source>Field type and name</source>
-        <target>Veldtype en naam</target>
+        <target>نوع و نام فیلد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.text_legend">
         <source>Text/HTML</source>
-        <target>Tekst/HTML</target>
+        <target>متن/HTML</target>
       </trans-unit>
       <trans-unit id="tl_form_field.fconfig_legend">
         <source>Field configuration</source>
-        <target>Veld configuratie</target>
+        <target>پیکربندی فیلد</target>
       </trans-unit>
       <trans-unit id="tl_form_field.options_legend">
         <source>Options</source>
-        <target>Opties</target>
+        <target>گزینه‌ها</target>
       </trans-unit>
       <trans-unit id="tl_form_field.store_legend">
         <source>Store file</source>
-        <target>Bestand opslaan</target>
+        <target>ذخیره پرونده</target>
       </trans-unit>
       <trans-unit id="tl_form_field.expert_legend">
         <source>Expert settings</source>
-        <target>Expert-instellingen</target>
+        <target>تنطیمات پیشرفته</target>
       </trans-unit>
       <trans-unit id="tl_form_field.size_legend">
         <source>Rows and columns</source>
-        <target>Rijen en kolommen</target>
+        <target>سطرها و ستون‌ها</target>
       </trans-unit>
       <trans-unit id="tl_form_field.template_legend">
         <source>Template settings</source>
-        <target>Template-instellingen</target>
+        <target>تنظیمات قالب</target>
       </trans-unit>
       <trans-unit id="tl_form_field.submit_legend">
         <source>Submit button</source>
-        <target>Verzendknop</target>
+        <target>دکمه ارسال</target>
       </trans-unit>
       <trans-unit id="tl_form_field.image_legend">
         <source>Image button</source>
-        <target>Afbeeldingsknop</target>
+        <target>دکمه تصویری</target>
       </trans-unit>
       <trans-unit id="tl_form_field.invisible_legend">
         <source>Visibility</source>
-        <target>Zichtbaarheid</target>
+        <target>پدیداری</target>
       </trans-unit>
       <trans-unit id="tl_form_field.new.0">
         <source>New</source>
-        <target>Nieuw</target>
+        <target>جدید</target>
       </trans-unit>
       <trans-unit id="tl_form_field.new.1">
         <source>Create a new form field</source>
-        <target>Maak een nieuw formulierveld</target>
+        <target>ایجاد یک فیلد فرم جدید</target>
       </trans-unit>
       <trans-unit id="tl_form_field.show">
         <source>Show the details of form field ID %s</source>
-        <target>Toon details van formulierveld ID %s</target>
+        <target>مشاهده‌ی جزئیات فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.edit">
         <source>Edit form field ID %s</source>
-        <target>Wijzig formulierveld ID %s</target>
+        <target>ویرایش فلید فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.cut">
         <source>Move form field ID %s</source>
-        <target>Verplaats formulierveld ID %s</target>
+        <target>جابجایی فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.copy">
         <source>Duplicate form field ID %s</source>
-        <target>Dupliceer formulierveld ID %s</target>
+        <target>دو نسخه کردن فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.delete">
         <source>Delete form field ID %s</source>
-        <target>Verwijder formulierveld ID %s</target>
+        <target>حذف فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.toggle.0">
         <source>Hide/unhide form field</source>
-        <target>Verberg/toon formulierveld</target>
+        <target>پنهان/نمایان کردن فیلد فرم</target>
       </trans-unit>
       <trans-unit id="tl_form_field.toggle.1">
         <source>Hide form field ID %s</source>
-        <target>Verberg formulierveld ID %s</target>
+        <target>پنهان کردن فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.toggle.2">
         <source>Unhide form field ID %s</source>
-        <target>Toon formulierveld ID %s</target>
+        <target>نمایان کردن فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.pasteafter.0">
         <source>Paste at the top</source>
-        <target>Bovenaan plakken</target>
+        <target>جاگذاری در بالا</target>
       </trans-unit>
       <trans-unit id="tl_form_field.pasteafter.1">
         <source>Paste after form field ID %s</source>
-        <target>Plakken na formulierveld ID %s</target>
+        <target>جاگذاری بعد از فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.pastenew.0">
         <source>Create a new form field at the top</source>
-        <target>Maak een nieuw formulierveld bovenaan</target>
+        <target>ایجاد یک فلد فرم جدید در بالا</target>
       </trans-unit>
       <trans-unit id="tl_form_field.pastenew.1">
         <source>Create a new form field after form field ID %s</source>
-        <target>Maak een nieuw formulierveld na formulierveld ID%s</target>
+        <target>ایجاد یک فیلد فرم جدید بعد از فیلد فرم شناسه %s</target>
       </trans-unit>
       <trans-unit id="tl_form_field.option.1">
         <source>Import options from a CSV file</source>
-        <target>Importeer van een CSV bestand</target>
+        <target>وارد کردن گزینه‌ها از پرونده‌ی CSV</target>
       </trans-unit>
     </body>
   </file>
