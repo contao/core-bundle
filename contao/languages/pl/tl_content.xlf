@@ -1,37 +1,37 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_content.php" source-language="en" target-language="nl">
+  <file datatype="php" original="contao/languages/en/tl_content.php" source-language="en" target-language="pl">
     <body>
       <trans-unit id="tl_content.type.0">
         <source>Element type</source>
-        <target>Element type</target>
+        <target>Typ elementu</target>
       </trans-unit>
       <trans-unit id="tl_content.type.1">
         <source>Please choose the type of content element.</source>
-        <target>Kies een inhoudselement type.</target>
+        <target>Wybierz typ elementu zawartości.</target>
       </trans-unit>
       <trans-unit id="tl_content.title.0">
         <source>Title</source>
-        <target>Titel</target>
+        <target>Tytuł</target>
       </trans-unit>
       <trans-unit id="tl_content.title.1">
         <source>Here you can enter an optional title for the content element.</source>
-        <target>Hier kunt u optioneel een titel voor het inhoudselement invoeren.</target>
+        <target>Tutaj możesz wprowadzić opcjonalny tytuł elementu treści.</target>
       </trans-unit>
       <trans-unit id="tl_content.headline.0">
         <source>Headline</source>
-        <target>Hoofdtitel</target>
+        <target>Nagłówek</target>
       </trans-unit>
       <trans-unit id="tl_content.headline.1">
         <source>Here you can add a headline to the content element.</source>
-        <target>Als u een hoofdtitel opgeeft zal die weergegeven worden bovenaan het inhoudselement.</target>
+        <target>Jeśli wprowadzisz nagłówek, będzie on widoczny na górze zawartości elementu.</target>
       </trans-unit>
       <trans-unit id="tl_content.sectionHeadline.0">
         <source>Section headline</source>
-        <target>Accordeon titel</target>
+        <target>Nagłówek rozwinięcia</target>
       </trans-unit>
       <trans-unit id="tl_content.sectionHeadline.1">
         <source>Here you can add a section headline, e.g. a tab title or accordion header.</source>
-        <target>Hier kunt u een sectiekop toevoegen, b.v. een tabbladtitel of accordeonkop.</target>
+        <target>Tutaj możesz dodać nagłówek sekcji, np. tytuł zakładki lub nagłówek akordeonu.</target>
       </trans-unit>
       <trans-unit id="tl_content.text.0">
         <source>Text</source>
@@ -39,287 +39,287 @@
       </trans-unit>
       <trans-unit id="tl_content.text.1">
         <source>You can use HTML tags to format the text.</source>
-        <target>U kunt HTML tags gebruiken om de tekst op te maken.</target>
+        <target>Wpisz nagłówek lub opis. Tagi HTML dozwolone.</target>
       </trans-unit>
       <trans-unit id="tl_content.addImage.0">
         <source>Add an image</source>
-        <target>Afbeelding toevoegen</target>
+        <target>Dodaj obrazek</target>
       </trans-unit>
       <trans-unit id="tl_content.addImage.1">
         <source>Add an image to the content element.</source>
-        <target>Voeg een afbeelding toe aan het inhoudselement.</target>
+        <target>Jeśli zaznaczysz te opcję, obrazek zostanie dodany do elementu.</target>
       </trans-unit>
       <trans-unit id="tl_content.showPreview.0">
         <source>Show preview images</source>
-        <target>Voorbeeldafbeeldingen weergeven</target>
+        <target>Pokaż obrazki poglądowe</target>
       </trans-unit>
       <trans-unit id="tl_content.showPreview.1">
         <source>Show preview images of the selected files.</source>
-        <target>Toon voorbeeldafbeeldingen van de geselecteerde bestanden.</target>
+        <target>Pokaż obrazki poglądowe wybranych plików.</target>
       </trans-unit>
       <trans-unit id="tl_content.inline.0">
         <source>Show in browser</source>
-        <target>Toon in de browser</target>
+        <target>Pokaż w przeglądarce</target>
       </trans-unit>
       <trans-unit id="tl_content.inline.1">
         <source>Show the file in the browser instead of opening the download dialog.</source>
-        <target>Toon het bestand in de browser in plaats van het download dialoogvenster te openen.</target>
+        <target>Pokaż plik w przeglądarce zamiast otwierać okno dialogowe pobierania.</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteMeta.0">
         <source>Overwrite metadata</source>
-        <target>Metadata overschrijven</target>
+        <target>Nadpisz meta dane</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteMeta.1">
         <source>Overwrite the metadata of the file.</source>
-        <target>Overschrijf de metadata van het bestand.</target>
+        <target>Nadpisz meta dane pliku.</target>
       </trans-unit>
       <trans-unit id="tl_content.singleSRC.0">
         <source>Source file</source>
-        <target>Bronbestand</target>
+        <target>Plik źródłowy</target>
       </trans-unit>
       <trans-unit id="tl_content.singleSRC.1">
         <source>Please select a file or folder from the files directory.</source>
-        <target>Selecteer een bestand van de server via bestandsbeheer.</target>
+        <target>Zaznacz z katalogu.</target>
       </trans-unit>
       <trans-unit id="tl_content.alt.0">
         <source>Alternate text</source>
-        <target>ALT tekst</target>
+        <target>Tekst alternatywny</target>
       </trans-unit>
       <trans-unit id="tl_content.alt.1">
         <source>Here you can enter an alternate text for the image (&lt;em&gt;alt&lt;/em&gt; attribute).</source>
-        <target>Hier kunt u een alternatieve tekst voor de afbeelding invoeren (&lt;em&gt;alt&lt;/em&gt; attribuut).</target>
+        <target>Tutaj możesz wprowadzić alternatywny tekst dla obrazka (atrybut &lt;em&gt;alt&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.imageTitle.0">
         <source>Image title</source>
-        <target>Titel afbeelding</target>
+        <target>Tytuł obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.imageTitle.1">
         <source>Here you can enter the image title (&lt;em&gt;title&lt;/em&gt; attribute).</source>
-        <target>Hier kunt u de afbeeldingstitel invoeren (&lt;em&gt;title&lt;/em&gt; attribuut).</target>
+        <target>Tutaj możesz wprowadzić tytuł obrazka (atrybut &lt;em&gt;title&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.imageUrl.0">
         <source>Image link target</source>
-        <target>Doel van link</target>
+        <target>Cel odnośnika obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.imageUrl.1">
         <source>A custom image link target will override the lightbox link, so the image cannot be viewed fullsize anymore.</source>
-        <target>Als een aangepaste link gebruikt wordt, zal de lightbox uitgezet worden zodat het niet mogelijk zal zijn om de afbeelding op ware grootte te bekijken.</target>
+        <target>Inny cel odnośnika obrazka nadpisze odnośnik lightbox i tym samym obrazek nie będzie mógł być wyświetlany w powiększeniu.</target>
       </trans-unit>
       <trans-unit id="tl_content.fullsize.0">
         <source>Full-size view/new window</source>
-        <target>Ware grootte/nieuw venster</target>
+        <target>Pełen podgląd/nowe okno</target>
       </trans-unit>
       <trans-unit id="tl_content.fullsize.1">
         <source>Open the full-size image in a lightbox or the link in a new browser window.</source>
-        <target>Open de afbeelding op ware grootte in een lightbox of de link in een nieuw browser venster.</target>
+        <target>Otwórz pełen podgląd jako lightbox lub link do otwarcia w nowym oknie przeglądarki.</target>
       </trans-unit>
       <trans-unit id="tl_content.floating.0">
         <source>Image alignment</source>
-        <target>Uitlijning afbeelding</target>
+        <target>Wyrównanie obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.floating.1">
         <source>Please specify how to align the image.</source>
-        <target>Kies de uitlijning van de afbeelding.</target>
+        <target>Wybierz wyrównanie obrazka. Obrazek może być wyświetlany nad lub pod tekstem lub po lewej lub prawej stronie tekstu.</target>
       </trans-unit>
       <trans-unit id="tl_content.caption.0">
         <source>Image caption</source>
-        <target>Afbeeldingstekst</target>
+        <target>Opis obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.caption.1">
         <source>Here you can enter a short text that will be displayed below the image.</source>
-        <target>Als u hier een korte tekst opgeeft zal deze als bijschrift weergegeven worden onder de afbeelding.</target>
+        <target>Jeśli wprowadzisz tutaj tekst, zostanie on wyświetlony pod obrazkiem. Aby wyłączyć tę opcję, zostaw to pole puste.</target>
       </trans-unit>
       <trans-unit id="tl_content.html.0">
         <source>HTML code</source>
-        <target>HTML code</target>
+        <target>Kod HTML</target>
       </trans-unit>
       <trans-unit id="tl_content.html.1">
         <source>You can modify the list of allowed HTML tags in the back end settings.</source>
-        <target>U kunt de lijst met toegestane HTML tags aanpassen in de back-end instellingen.</target>
+        <target>Wprowadź twój kod HTML.</target>
       </trans-unit>
       <trans-unit id="tl_content.unfilteredHtml.0">
         <source>HTML code</source>
-        <target>HTML code</target>
+        <target>Kod HTML</target>
       </trans-unit>
       <trans-unit id="tl_content.unfilteredHtml.1">
         <source>Take care when pasting things you don't understand. This could allow attackers to steal your identity or take control of the whole system.</source>
-        <target>Wees voorzichtig bij het plakken van dingen die u niet begrijpt. Hierdoor kunnen aanvallers uw identiteit stelen of controle over het hele systeem overnemen.</target>
+        <target>Zachowaj ostrożność podczas wklejania informacji, których nie rozumiesz. Może to umożliwić napastnikom kradzież tożsamości użytkownika lub przejęcie kontroli nad całym systemem.</target>
       </trans-unit>
       <trans-unit id="tl_content.listtype.0">
         <source>List type</source>
-        <target>Lijst type</target>
+        <target>Typ listy</target>
       </trans-unit>
       <trans-unit id="tl_content.listtype.1">
         <source>Please choose the type of list.</source>
-        <target>Kies een lijst type.</target>
+        <target>Wybierz typ listy.</target>
       </trans-unit>
       <trans-unit id="tl_content.listitems.0">
         <source>List items</source>
-        <target>Lijst items</target>
+        <target>Elementy listy</target>
       </trans-unit>
       <trans-unit id="tl_content.listitems.1">
         <source>If JavaScript is disabled, make sure to save your changes before modifying the order.</source>
-        <target>Indien Javascript is uitgeschakeld moet u uw wijzigingen opslaan vooraleer de volgorde te veranderen!</target>
+        <target>Przyporządkuj moduł do elementu strony. Używaj przycisków po prawej stronie by dodać, przesunąć (w górę albo w dół) lub skasować moduł. Jeśli pracujesz z przeglądarką, która ma wyłączoną obsługę Javascript, powinieneś zapisać swoje zmiany przed zmianą kolejności modułów!</target>
       </trans-unit>
       <trans-unit id="tl_content.tableitems.0">
         <source>Table items</source>
-        <target>Tabel items</target>
+        <target>Elementy tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.tableitems.1">
         <source>If JavaScript is disabled, make sure to save your changes before modifying the order.</source>
-        <target>Indien Javascript is uitgeschakeld moet u uw wijzigingen opslaan vooraleer de volgorde te veranderen!</target>
+        <target>Przyporządkuj moduł do elementu strony. Używaj przycisków po prawej stronie by dodać, przesunąć (w górę albo w dół) lub skasować moduł. Jeśli pracujesz z przeglądarką, która ma wyłączoną obsługę Javascript, powinieneś zapisać swoje zmiany przed zmianą kolejności modułów!</target>
       </trans-unit>
       <trans-unit id="tl_content.summary.0">
         <source>Table summary</source>
-        <target>Tabel samenvatting</target>
+        <target>Opis tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.summary.1">
         <source>Please enter a short summary of the table and describe its purpose or structure.</source>
-        <target>Geef een korte samenvatting van de tabel en beschrijf haar doel of structuur.</target>
+        <target>By uczynić tabelę bardziej dostępną, powinieneś zawsze wprowadzić krótkie podsumowanie jej zawartości.</target>
       </trans-unit>
       <trans-unit id="tl_content.thead.0">
         <source>Add table header</source>
-        <target>Titel aan tabel toevoegen</target>
+        <target>Nagłówek tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.thead.1">
         <source>Make the first row the table header.</source>
-        <target>Maak de eerste rij de tabel header.</target>
+        <target>Ustaw pierwszy wiersz jako nagłówek tabeli.</target>
       </trans-unit>
       <trans-unit id="tl_content.tfoot.0">
         <source>Add table footer</source>
-        <target>Tabel footer toevoegen</target>
+        <target>Stopka tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.tfoot.1">
         <source>Make the last row the table footer.</source>
-        <target>Maak de eerste rij de tabel footer.</target>
+        <target>Ustaw ostatni wiersz jako stopkę tabeli.</target>
       </trans-unit>
       <trans-unit id="tl_content.tleft.0">
         <source>Use row headers</source>
-        <target>Rij titels toevoegen</target>
+        <target>Zastosuj nagłówki wierszy</target>
       </trans-unit>
       <trans-unit id="tl_content.tleft.1">
         <source>Define the left column as row header.</source>
-        <target>De linker kolom van de tabel wordt gebruikt voor titels van de rijen.</target>
+        <target>Zdefiniuj lewą kolumnę jako nagłówek wierszy.</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable.0">
         <source>Sortable table</source>
-        <target>Sorteerbare tabel</target>
+        <target>Sortowanie</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable.1">
         <source>Make the table sortable (requires JavaScript and a table header).</source>
-        <target>De tabel is te sorteren door te klikken op de kolom titels (vereist Javascript en kolom titels).</target>
+        <target>Ta opcja pozwala na sortowanie tabeli, poprzez kliknięcie w nagłówek kolumny (wymagana jest opcja &lt;em&gt;Nagłówek tabeli&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.sortIndex.0">
         <source>Sort index</source>
-        <target>Sorteerindex</target>
+        <target>Indeks sortowania</target>
       </trans-unit>
       <trans-unit id="tl_content.sortIndex.1">
         <source>The number of the default sort column.</source>
-        <target>Geef het nummer van de standaard kolom op die u als eerste wilt sorteren.</target>
+        <target>Wpisz numer kolumny, która będzie domyślną kolumną sortowania (pierwsza kolumna = 0!).</target>
       </trans-unit>
       <trans-unit id="tl_content.sortOrder.0">
         <source>Sort order</source>
-        <target>Sorteer-volgorde</target>
+        <target>Kolejność sortowania</target>
       </trans-unit>
       <trans-unit id="tl_content.sortOrder.1">
         <source>Please choose the sort order.</source>
-        <target>Kies de sorteervolgorde.</target>
+        <target>Wybierz rodzaj sortowania.</target>
       </trans-unit>
       <trans-unit id="tl_content.closeSections.0">
         <source>Close all sections</source>
-        <target>Sluit alle secties</target>
+        <target>Zamknij wszystkie sekcje</target>
       </trans-unit>
       <trans-unit id="tl_content.closeSections.1">
         <source>Do not open the first section by default.</source>
-        <target>Open standaard niet de eerste sectie.</target>
+        <target>Nie otwieraj domyślnie pierwszej sekcji.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooType.0">
         <source>Operation mode</source>
-        <target>Bedrijfsmodus</target>
+        <target>Tryb pracy</target>
       </trans-unit>
       <trans-unit id="tl_content.mooType.1">
         <source>Please select the operation mode of the accordion element.</source>
-        <target>Selecteer de variant van het accordeon element.</target>
+        <target>Wybierz tryb działania elementu.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStart.0">
         <source>Wrapper start</source>
-        <target>Wrapper start</target>
+        <target>Początek</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStart.1">
         <source>Marks the beginning of an accordion pane that spans several content elements.</source>
-        <target>Markeert het begin van een accordeon venster dat een aantal inhoudselementen omvat.</target>
+        <target>Oznacza początek akordeonu, który zawiera kilka elementów treści.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStop.0">
         <source>Wrapper stop</source>
-        <target>Wrapper stop</target>
+        <target>Stop</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStop.1">
         <source>Marks the end of an accordion pane that spans several content elements.</source>
-        <target>Markeert het einde van een accordeon venster dat een aantal inhoudselementen omvat.</target>
+        <target>Oznacza koniec akordeonu, który zawiera kilka elementów treści.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooSingle.0">
         <source>Single element</source>
-        <target>Enkel element</target>
+        <target>Pojedynczy element</target>
       </trans-unit>
       <trans-unit id="tl_content.mooSingle.1">
         <source>Behaves like a single text element that is inside an accordion pane.</source>
-        <target>Gedraagt ​​zich als een enkel tekst element binnenin een accordeon paneel.</target>
+        <target>Zachowuje się jak pojedynczy element tekstu w środku akordeonu.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooHeadline.0">
         <source>Section headline</source>
-        <target>Accordeon titel</target>
+        <target>Nagłówek rozwinięcia</target>
       </trans-unit>
       <trans-unit id="tl_content.mooHeadline.1">
         <source>Please enter the headline of the content pane. HTML tags are allowed.</source>
-        <target>Geef de titel van het accordeon inhoudselement. HTML tags zijn toegestaan.</target>
+        <target>Wpisz nagłówek dla zawartości, która będzie rozwinięta (tagi HTML dozwolone).</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStyle.0">
         <source>CSS format</source>
-        <target>CSS formaat</target>
+        <target>Formatowanie CSS nagłówka</target>
       </trans-unit>
       <trans-unit id="tl_content.mooStyle.1">
         <source>Here you can format the section headline using CSS code.</source>
-        <target>Hier kunt u de kop d.m.v. van CSS formatteren.</target>
+        <target>Możesz tu wprowadzić opcjonalną składnie CSS do formatowanie nagłówka.</target>
       </trans-unit>
       <trans-unit id="tl_content.mooClasses.0">
         <source>Element classes</source>
-        <target>Element class attributen</target>
+        <target>Atrybuty klas rozwinięcia</target>
       </trans-unit>
       <trans-unit id="tl_content.mooClasses.1">
         <source>Leave blank to use the default classes or enter a custom toggler and accordion class.</source>
-        <target>Laat leeg om de standaard klassen te gebruiken of voer een een aangepaste toggler en accordeon klasse in.</target>
+        <target>Jeśli chcesz wstawić na stronę więcej niż jeden zbiór rozwinięć, będziesz musiał zmienić nazwy klas CSS zwijanych i rozwijanych elementów. Domyślnie, używają one klas &lt;em&gt;toggler&lt;/em&gt; i &lt;em&gt;accordion&lt;/em&gt; (nie wypełniaj jeśli chcesz użyć domyślnych klas).</target>
       </trans-unit>
       <trans-unit id="tl_content.shClass.0">
         <source>Configuration</source>
-        <target>Configuratie</target>
+        <target>Konfiguracja</target>
       </trans-unit>
       <trans-unit id="tl_content.shClass.1">
         <source>Here you can configure the syntax highlighter (e.g. &lt;em&gt;gutter: false;&lt;/em&gt;).</source>
-        <target>Hier kunt u de syntax markering configureren (b.v. &lt;em&gt;gutter: false;&lt;/em&gt;).</target>
+        <target>Tutaj możesz skonfigurować podświetlanie składni (np. &lt;em&gt;gutter: false;&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.highlight.0">
         <source>Syntax highlighting</source>
-        <target>Syntax markering</target>
+        <target>Podświetlanie składni</target>
       </trans-unit>
       <trans-unit id="tl_content.highlight.1">
         <source>Please choose a scripting language.</source>
-        <target>Kies een scripting taal.</target>
+        <target>Wybierz język skryptowy.</target>
       </trans-unit>
       <trans-unit id="tl_content.code.0">
         <source>Code</source>
-        <target>Code</target>
+        <target>Kod</target>
       </trans-unit>
       <trans-unit id="tl_content.code.1">
         <source>Note that the code will not be executed. Use F11 to toggle the fullscreen mode if you are using the code editor.</source>
-        <target>NB. Deze code wordt niet uitgevoerd.Gebruik F11 om over te schakelen op fullscreen mode als u de code editor gebruikt.</target>
+        <target>Zauważ, że kod nie zostanie wykonany. Użyj F11 by włączyć tryb pełnoekranowy, jeśli używasz edytora kodu.</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.0">
         <source>Markdown source</source>
-        <target>Markdown-bron</target>
+        <target>Źródło Markdown</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.1">
         <source>Please choose the Markdown source.</source>
-        <target>Kies de Markdown-bron.</target>
+        <target>Wybierz źródło Markdown.</target>
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.sourceText">
         <source>Text</source>
@@ -327,47 +327,47 @@
       </trans-unit>
       <trans-unit id="tl_content.markdownSource.sourceFile">
         <source>File</source>
-        <target>Bestand</target>
+        <target>Plik</target>
       </trans-unit>
       <trans-unit id="tl_content.data.0">
         <source>Template data</source>
-        <target>Templategegevens</target>
+        <target>Dane szablonu</target>
       </trans-unit>
       <trans-unit id="tl_content.data.1">
         <source>These values are available as &lt;code&gt;$this-&gt;keys&lt;/code&gt; in the template.</source>
-        <target>Deze waarden zijn beschikbaar als &lt;code&gt;$this-&gt;keys&lt;/code&gt; in de template.</target>
+        <target>Te wartości są dostępne jako &lt;code&gt;$this-&gt;keys&lt;/code&gt; w szablonie.</target>
       </trans-unit>
       <trans-unit id="tl_content.linkTitle.0">
         <source>Link text</source>
-        <target>Link titel</target>
+        <target>Tytuł odnośnika</target>
       </trans-unit>
       <trans-unit id="tl_content.linkTitle.1">
         <source>The link text will be displayed instead of the target URL.</source>
-        <target>De titel van een link wordt getoond aan de bezoekers van uw website in plaats van de URL.</target>
+        <target>Tytuł odnośnika będzie wyświetlony zamiast adresu URL lub linku do pliku. Jeśli generujesz obrazek jako odnośnik, obrazek zastąpi tytuł odnośnika.</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteLink.0">
         <source>Overwrite link</source>
-        <target>Link overschrijven</target>
+        <target>Nadpisz link</target>
       </trans-unit>
       <trans-unit id="tl_content.overwriteLink.1">
         <source>Set a custom link text and link title.</source>
-        <target>Stel een aangepaste linktekst en linktitel in.</target>
+        <target>Ustaw niestandardowy tekst linku i tytuł linku.</target>
       </trans-unit>
       <trans-unit id="tl_content.titleText.0">
         <source>Link title</source>
-        <target>Link titel</target>
+        <target>Tytuł linku</target>
       </trans-unit>
       <trans-unit id="tl_content.titleText.1">
         <source>The link title is added as &lt;em&gt;title&lt;/em&gt; attribute in the HTML markup.</source>
-        <target>De link titel is toegevoegd als &lt;em&gt;title&lt;/em&gt; attribuut in de HTML markup.</target>
+        <target>Tytuł linku jest dodawany jako atrybut &lt;em&gt;title&lt;/em&gt; w HTML.</target>
       </trans-unit>
       <trans-unit id="tl_content.embed.0">
         <source>Embed the link</source>
-        <target>De link inbedden</target>
+        <target>Osadzanie odnośnika</target>
       </trans-unit>
       <trans-unit id="tl_content.embed.1">
         <source>Use the wildcard &quot;%s&quot; to embed the link in a phrase (e.g. &lt;em&gt;For more information please visit %s&lt;/em&gt;).</source>
-        <target>Gebruik de wildcard &quot;%s&quot; om de link te inbedden in een zin (b.v. &lt;em&gt;Voor meer informatie kunt u terecht op %s&lt;/em&gt;).</target>
+        <target>Jeśli wpiszesz frazę zawierającą wildcard &lt;em&gt;%s&lt;/em&gt; (wildcard - znak zastępujący dowolny ciąg znaków), odnośnik zostanie wprowadzony do tej frazy. Np. &lt;em&gt;oto nasza %s!&lt;/em&gt; będzie przetworzone na &lt;em&gt;oto nasza &lt;u&gt;Strona internetowa&lt;/u&gt;!&lt;/em&gt; (pod warunkiem, że &lt;em&gt;Strona internetowa&lt;/em&gt; jest tytułem odnośnika).</target>
       </trans-unit>
       <trans-unit id="tl_content.rel.0">
         <source>Lightbox</source>
@@ -375,103 +375,103 @@
       </trans-unit>
       <trans-unit id="tl_content.rel.1">
         <source>To trigger the lightbox, enter a &lt;em&gt;data-lightbox&lt;/em&gt; attribute here.</source>
-        <target>Om de lightbox te activeren, geef hier een &lt;em&gt;data-lightbox&lt;/em&gt; attribuut op.</target>
+        <target>Aby uruchomić lightbox, wprowadź tutaj atrybut &lt;em&gt;data-lightbox&lt;/em&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_content.useImage.0">
         <source>Create an image link</source>
-        <target>Afbeeldingslink</target>
+        <target>Obrazek jako odnośnik</target>
       </trans-unit>
       <trans-unit id="tl_content.useImage.1">
         <source>Use an image instead of the link title.</source>
-        <target>Gebruik een afbeelding i.p.v. de link titel.</target>
+        <target>Użyj obrazka jako odnośnika zamiast tytułu odnośnika.</target>
       </trans-unit>
       <trans-unit id="tl_content.multiSRC.0">
         <source>Source files</source>
-        <target>Bronbestanden</target>
+        <target>Pliki źródłowe</target>
       </trans-unit>
       <trans-unit id="tl_content.multiSRC.1">
         <source>Please select one or more files or folders from the files directory. If you select a folder, its files will be included automatically.</source>
-        <target>Selecteer een of meer bestanden of mappen uit de bestandendirectory. Als u een map selecteert, worden de bestanden automatisch opgenomen.</target>
+        <target>Zaznacz jeden lub więcej plików lub folderów (pliki z zaznaczonego folderu będą załączone automatycznie).</target>
       </trans-unit>
       <trans-unit id="tl_content.useHomeDir.0">
         <source>Use home directory</source>
-        <target>Gebruik home directory</target>
+        <target>Użyj katalogu użytkownika</target>
       </trans-unit>
       <trans-unit id="tl_content.useHomeDir.1">
         <source>Use the home directory as file source if there is an authenticated member.</source>
-        <target>Als een lid is aangemeld, gebruik dan zijn home directory als bestandsbron.</target>
+        <target>Użyj katalogu domowego jako źródło pliku, jeśli użytkownik jest zalogowany.</target>
       </trans-unit>
       <trans-unit id="tl_content.perRow.0">
         <source>Thumbnails per row</source>
-        <target>Thumbnails per rij</target>
+        <target>Ilość miniaturek w wierszu</target>
       </trans-unit>
       <trans-unit id="tl_content.perRow.1">
         <source>The number of image thumbnails per row.</source>
-        <target>Geef het aantal thumbnails per rij op.</target>
+        <target>Wpisz ile miniaturek ma być w jednym wierszu.</target>
       </trans-unit>
       <trans-unit id="tl_content.perPage.0">
         <source>Items per page</source>
-        <target>Resultaten per pagina</target>
+        <target>Ilość wyników</target>
       </trans-unit>
       <trans-unit id="tl_content.perPage.1">
         <source>The number of items per page. Set to 0 to disable pagination.</source>
-        <target>Het aantal items per pagina. Stel in op 0 om paginering uit te schakelen.</target>
+        <target>Wpisz ile wyników wyszukiwania ma się pojawiać jednorazowo na stronie (0 = wyłącza paginacje).</target>
       </trans-unit>
       <trans-unit id="tl_content.serverPagination.0">
         <source>Server-side pagination</source>
-        <target>Server-side paginering</target>
+        <target>Stronicowanie po stronie serwera</target>
       </trans-unit>
       <trans-unit id="tl_content.serverPagination.1">
         <source>Split the images across multiple pages and render only a subset at a time.</source>
-        <target>Verdeel de afbeeldingen over meerdere pagina's en toon slechts een deel ervan tegelijk.</target>
+        <target>Podziel obrazy na wiele stron i renderuj tylko część naraz.</target>
       </trans-unit>
       <trans-unit id="tl_content.sortBy.0">
         <source>Order by</source>
-        <target>Sorteer op</target>
+        <target>Kolejność</target>
       </trans-unit>
       <trans-unit id="tl_content.sortBy.1">
         <source>Please choose the sort order.</source>
-        <target>Kies de sorteervolgorde.</target>
+        <target>Wybierz rodzaj sortowania.</target>
       </trans-unit>
       <trans-unit id="tl_content.metaIgnore.0">
         <source>Ignore files without metadata</source>
-        <target>Negeer bestanden zonder metadata</target>
+        <target>Ignoruj pliki bez meta danych</target>
       </trans-unit>
       <trans-unit id="tl_content.metaIgnore.1">
         <source>Do not show files without metadata matching the page language.</source>
-        <target>Toon geen bestanden zonder metadata die overeenkomen met de paginataal.</target>
+        <target>Nie pokazuj plików bez meta danych pasujących do języka strony.</target>
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.0">
         <source>Gallery template</source>
-        <target>Galerij template</target>
+        <target>Szablon galerii</target>
       </trans-unit>
       <trans-unit id="tl_content.galleryTpl.1">
         <source>Here you can select a gallery template.</source>
-        <target>Hier kunt u een galerijsjabloon selecteren.</target>
+        <target>Tutaj możesz wybrać szablon galerii.</target>
       </trans-unit>
       <trans-unit id="tl_content.customTpl.0">
         <source>Content element template</source>
-        <target>Sjabloon voor inhoudselement</target>
+        <target>Szablon elementu</target>
       </trans-unit>
       <trans-unit id="tl_content.customTpl.1">
         <source>Here you can select the content element template.</source>
-        <target>Hier kunt u de sjabloon voor het inhoudselement selecteren.</target>
+        <target>Tutaj możesz wybrać szablon elementu.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSRC.0">
         <source>Video/audio files</source>
-        <target>Video/audio bestanden</target>
+        <target>Pliki video/audio</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSRC.1">
         <source>Here you can add the video/audio file or multiple files if you are using different codecs.</source>
-        <target>Hier kunt u het video/audio-bestand of meerdere bestanden toevoegen als u gebruik maakt van verschillende codecs.</target>
+        <target>Tutaj możesz dodać plik video/audio lub kilka plików, jeśli używasz różnych kodeków.</target>
       </trans-unit>
       <trans-unit id="tl_content.textTrackSRC.0">
         <source>Text track files</source>
-        <target>Teksttrack bestanden</target>
+        <target>Pliki ścieżek tekstowych</target>
       </trans-unit>
       <trans-unit id="tl_content.textTrackSRC.1">
         <source>The topmost .vtt file is loaded as the default track. Additional settings can be made within the .vtt file.</source>
-        <target>Het bovenste .vtt-bestand wordt geladen als de standaardtrack. Extra instellingen kunnen worden gemaakt binnen het .vtt-bestand.</target>
+        <target>Najwyższy plik .vtt jest ładowany jako domyślna ścieżka. Dodatkowe ustawienia można zdefiniować w pliku .vtt.</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube.0">
         <source>YouTube ID</source>
@@ -479,7 +479,7 @@
       </trans-unit>
       <trans-unit id="tl_content.youtube.1">
         <source>Please enter the YouTube video ID (e.g. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</source>
-        <target>Vul YouTube-video ID in (b.v. &lt;em&gt;j0sYj4wxyk0&lt;/em&gt;).</target>
+        <target>Wprowadź ID video YouTube (np. &lt;em&gt;1j0sYj4wxyk01&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo.0">
         <source>Vimeo ID</source>
@@ -487,615 +487,615 @@
       </trans-unit>
       <trans-unit id="tl_content.vimeo.1">
         <source>Please enter the Vimeo video ID (e.g. &lt;em&gt;275028611&lt;/em&gt;).</source>
-        <target>Vul Vimeo ID in (b.v. &lt;em&gt;275028611&lt;/em&gt;).</target>
+        <target>Wprowadź ID video Vimeo (np. &lt;em&gt;275028611&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_content.posterSRC.0">
         <source>Preview image</source>
-        <target>Voorbeeld afbeelding</target>
+        <target>Obrazek poglądowy</target>
       </trans-unit>
       <trans-unit id="tl_content.posterSRC.1">
         <source>Show this image instead of the first frame of the video before playback.</source>
-        <target>Toon deze afbeelding in plaats van het eerste frame van de video voor het afspelen.</target>
+        <target>Pokaż ten obrazek zamiast pierwszej klatki filmu przed jego ponownym odtworzeniem.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSize.0">
         <source>Player size</source>
-        <target>Afmetingen Speler</target>
+        <target>Rozmiar odtwarzacza</target>
       </trans-unit>
       <trans-unit id="tl_content.playerSize.1">
         <source>Width and height of the media player in pixels (e.g. 640x360).</source>
-        <target>Breedte en hoogte van de mediaspeler in pixels (bijv. 640x360).</target>
+        <target>Szerokość i wysokość odtwarzacza multimediów w pikselach (np. 640×360).</target>
       </trans-unit>
       <trans-unit id="tl_content.playerOptions.0">
         <source>Player options</source>
-        <target>Opties speler</target>
+        <target>Opcje odtwarzacza</target>
       </trans-unit>
       <trans-unit id="tl_content.playerOptions.1">
         <source>Here you can select the player options.</source>
-        <target>Selecteer hier de opties voor de speler.</target>
+        <target>Tutaj możesz wybrać opcje odtwarzacza.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerPreload.0">
         <source>Preloading</source>
-        <target>Vooraf laden</target>
+        <target>Wstępne ładowanie</target>
       </trans-unit>
       <trans-unit id="tl_content.playerPreload.1">
         <source>Here you can suggest how the browser shall preload the video.</source>
-        <target>Geef hier aan hoe de browser de video vooraf dient te laden.</target>
+        <target>Tutaj możesz zasugerować, w jaki sposób przeglądarka ma wstępnie załadować wideo.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStart.0">
         <source>Start at</source>
-        <target>Begin bij</target>
+        <target>Zacznij od</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStart.1">
         <source>Start playing the video at the given number of seconds. Set to 0 to disable.</source>
-        <target>Start het afspelen van de video met het opgegeven aantal seconden. Stel in op 0 om dit uit te schakelen.</target>
+        <target>Rozpocznij odtwarzanie wideo o określonej liczbie sekund. Ustaw na 0, aby wyłączyć.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStop.0">
         <source>Stop at</source>
-        <target>Stop bij</target>
+        <target>Zatrzymaj się przy</target>
       </trans-unit>
       <trans-unit id="tl_content.playerStop.1">
         <source>Stop playing the video at the given number of seconds. Set to 0 to disable.</source>
-        <target>Stopt het afspelen van de video met het opgegeven aantal seconden. Stel in op 0 om dit uit te schakelen.</target>
+        <target>Zatrzymaj odtwarzanie wideo przy określonej liczbie sekund. Ustaw na 0, aby wyłączyć.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerTitle.0">
         <source>Title</source>
-        <target>Titel</target>
+        <target>Tytuł</target>
       </trans-unit>
       <trans-unit id="tl_content.playerTitle.1">
         <source>Here you can enter a title.</source>
-        <target>Hier kunt u een titel invoeren.</target>
+        <target>Tutaj możesz wprowadzić tytuł.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerCaption.0">
         <source>Caption</source>
-        <target>Bijschrift</target>
+        <target>Opis</target>
       </trans-unit>
       <trans-unit id="tl_content.playerCaption.1">
         <source>Here you can enter a caption.</source>
-        <target>Bijschrift invoeren.</target>
+        <target>Tutaj możesz wprowadzić podpis.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerAspect.0">
         <source>Aspect ratio</source>
-        <target>Beeldverhouding</target>
+        <target>Współczynnik proporcji</target>
       </trans-unit>
       <trans-unit id="tl_content.playerAspect.1">
         <source>Here you can select the aspect ratio of the video to make it responsive.</source>
-        <target>Beeldverhouding van de video selecteren om deze responsive te maken.</target>
+        <target>Tutaj możesz wybrać współczynnik kształtu filmu, aby był responsywny.</target>
       </trans-unit>
       <trans-unit id="tl_content.splashImage.0">
         <source>Use a splash image</source>
-        <target>Gebruik een splash afbeelding</target>
+        <target>Użyj obrazu splash</target>
       </trans-unit>
       <trans-unit id="tl_content.splashImage.1">
         <source>Only load the video after the user has clicked on the splash image.</source>
-        <target>Upload de video pas nadat de gebruiker op de splash afbeelding heeft geklikt.</target>
+        <target> Ładuj wideo tylko wtedy, gdy użytkownik kliknie obraz splash.</target>
       </trans-unit>
       <trans-unit id="tl_content.playerColor.0">
         <source>Controls color</source>
-        <target>Bediening van kleuren</target>
+        <target>Kolor przycisków sterujących</target>
       </trans-unit>
       <trans-unit id="tl_content.playerColor.1">
         <source>Here you can enter a hexadecimal color (e.g. ff0000) for the video controls.</source>
-        <target>Geef een hexadecimale kleur op (b.v. ff0000) voor de videobediening.</target>
+        <target>Wprowadź heksadecymalną wartość koloru dla przycisków sterujących (np. ff0000).</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderDelay.0">
         <source>Sliding interval</source>
-        <target>Sliding interval</target>
+        <target>Interwał przewijania</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderDelay.1">
         <source>The time in milliseconds between slides (1000 = 1s). Set to 0 to disable auto sliding.</source>
-        <target>Tijd in milliseconden tussen slides (1000 = 1s). Stel in op 0 om auto-sliding uit te schakelen.</target>
+        <target>Czas w milisekundach między slajdami (1000 = 1s). Ustaw 0, by wyłączyć automatyczne przewijanie.</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderSpeed.0">
         <source>Transition speed</source>
-        <target>Overgangs-snelheid</target>
+        <target>Szybkość przejścia</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderSpeed.1">
         <source>The transition speed in milliseconds (1000 = 1s). Defaults to 300.</source>
-        <target>Overgangs-snelheid in milliseconden (1000 = 1s). Standaard is 300.</target>
+        <target>Szybkość przejścia w milisekundach (1000 = 1s). Domyślnie to 300.</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderStartSlide.0">
         <source>Slide offset</source>
-        <target>Slide offset</target>
+        <target>Offset slajdu</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderStartSlide.1">
         <source>Here you can make the slider start with a particular slide (counting starts at 0).</source>
-        <target>Hier kunt u de slider starten met een bepaalde dia (telling begint bij 0).</target>
+        <target>Tutaj możesz wybrać, aby slider startował z wybranym slajdem (licząc od 0).</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderContinuous.0">
         <source>Continuous</source>
-        <target>Doorlopend</target>
+        <target>Ciągły</target>
       </trans-unit>
       <trans-unit id="tl_content.sliderContinuous.1">
         <source>Make the slider continuous (start all over when reaching the end).</source>
-        <target>Start de slider doorlopend (start opnieuw als het einde bereikt is).</target>
+        <target>Zaznacz, jeśli slider ma być ciągły (zaczyna od początku, jeśli dojdzie do końca).</target>
       </trans-unit>
       <trans-unit id="tl_content.cteAlias.0">
         <source>Referenced element</source>
-        <target>Element waarnaar wordt verwezen</target>
+        <target>ID elementu</target>
       </trans-unit>
       <trans-unit id="tl_content.cteAlias.1">
         <source>Please choose the content element you want to insert.</source>
-        <target>Kies het ID van het inhoud element dat u wil invoegen.</target>
+        <target>Wybierz ID elementu, który chcesz załączyć.</target>
       </trans-unit>
       <trans-unit id="tl_content.articleAlias.0">
         <source>Referenced article</source>
-        <target>Artikel waarnaar wordt verwezen</target>
+        <target>ID artykułu</target>
       </trans-unit>
       <trans-unit id="tl_content.articleAlias.1">
         <source>Please choose the article you want to insert.</source>
-        <target>Kies ID van het artikel dat u wilt invoegen.</target>
+        <target>Wybierz ID artykułu, który chcesz załączyć.</target>
       </trans-unit>
       <trans-unit id="tl_content.article.0">
         <source>Article</source>
-        <target>Artikel</target>
+        <target>ID artykułu</target>
       </trans-unit>
       <trans-unit id="tl_content.article.1">
         <source>Please select an article.</source>
-        <target>Selecteer een artikel.</target>
+        <target>Wybierz ID artykułu, który chcesz wyświetlić.</target>
       </trans-unit>
       <trans-unit id="tl_content.form.0">
         <source>Form</source>
-        <target>Formulier</target>
+        <target>Formularz</target>
       </trans-unit>
       <trans-unit id="tl_content.form.1">
         <source>Please select a form.</source>
-        <target>Selecteer een formulier.</target>
+        <target>Wybierz formularz.</target>
       </trans-unit>
       <trans-unit id="tl_content.module.0">
         <source>Module</source>
-        <target>Module</target>
+        <target>Moduł</target>
       </trans-unit>
       <trans-unit id="tl_content.module.1">
         <source>Please select a module.</source>
-        <target>Selecteer de module die u in het artikel wil invoegen.</target>
+        <target>Wybierz moduł, który chcesz załączyć do artykułu.</target>
       </trans-unit>
       <trans-unit id="tl_content.protected.0">
         <source>Protect element</source>
-        <target>Bescherm element</target>
+        <target>Element chroniony</target>
       </trans-unit>
       <trans-unit id="tl_content.protected.1">
         <source>Show the content element to certain member groups only.</source>
-        <target>Toon dit inhoudselement alleen aan bepaalde gebruikersgroepen.</target>
+        <target>Pokaż element zawartości tylko konkretnej grupie użytkowników</target>
       </trans-unit>
       <trans-unit id="tl_content.groups.0">
         <source>Allowed member groups</source>
-        <target>Ledengroepen die zijn toegestaan</target>
+        <target>Dozwolone grupy użytkowników</target>
       </trans-unit>
       <trans-unit id="tl_content.groups.1">
         <source>These groups will be able to see the content element.</source>
-        <target>Geef aan welke groepen toestemming hebben om dit inhoudselement te zien.</target>
+        <target>Tutaj możesz wybrać, które grupy użytkowników będą mogły zobaczyć ten element zawartości</target>
       </trans-unit>
       <trans-unit id="tl_content.cssID.0">
         <source>CSS ID/class</source>
-        <target>CSS ID/class</target>
+        <target>ID w pliku CSS</target>
       </trans-unit>
       <trans-unit id="tl_content.cssID.1">
         <source>Here you can set an ID and one or more classes.</source>
-        <target>Hier kunt u een ID en een of meerdere classes opgeven.</target>
+        <target>Jeśli potrzebujesz osobnej definicji do formatowania tego modułu w stylach CSS, możesz tu wprowadzić ID. To ID będzie przypisane do tego modułu i można je modyfikować w arkuszu CSS.</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible.0">
         <source>Invisible</source>
-        <target>Niet zichtbaar</target>
+        <target>Niewidoczne</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible.1">
         <source>Hide the element on the website.</source>
-        <target>Verberg element op de website.</target>
+        <target>Aktualny element nie jest widoczny na Twojej witrynie.</target>
       </trans-unit>
       <trans-unit id="tl_content.start.0">
         <source>Show from</source>
-        <target>Weergeven vanaf</target>
+        <target>Pokaż od</target>
       </trans-unit>
       <trans-unit id="tl_content.start.1">
         <source>If you want to prevent the element from showing on the website before a certain date/time, you can enter it here. Otherwise, leave the field blank.</source>
-        <target>Als u wilt voorkomen dat het element voor een bepaalde datum/tijd op de website wordt weergegeven, kunt u dit hier invullen. Laat anders het veld leeg.</target>
+        <target>Jeśli chcesz zapobiec wyświetlaniu elementu na stronie internetowej przed określoną datą/czasem, możesz to wpisać tutaj. W przeciwnym razie pozostaw pole puste.</target>
       </trans-unit>
       <trans-unit id="tl_content.stop.0">
         <source>Show until</source>
-        <target>Weergeven tot</target>
+        <target>Pokaż do</target>
       </trans-unit>
       <trans-unit id="tl_content.stop.1">
         <source>If you want to prevent the element from showing on the website after a certain date/time, you can enter it here. Otherwise, leave the field blank.</source>
-        <target>If you want to prevent the element from showing on the website after a certain date/time, you can enter it here. Otherwise, leave the field blank.</target>
+        <target>Jeśli chcesz zapobiec wyświetlaniu elementu na stronie po określonej dacie/czasie, możesz wpisać to tutaj. W przeciwnym razie pozostaw pole puste.</target>
       </trans-unit>
       <trans-unit id="tl_content.tstamp.0">
         <source>Revision date</source>
-        <target>Datum van aanpassing</target>
+        <target>Data rewizji</target>
       </trans-unit>
       <trans-unit id="tl_content.tstamp.1">
         <source>Date and time of the latest revision</source>
-        <target>Datum en tijdstip van de laatste aanpassing.</target>
+        <target>Data i czas ostatniej rewizji</target>
       </trans-unit>
       <trans-unit id="tl_content.type_legend">
         <source>Element type</source>
-        <target>Element type</target>
+        <target>Typ elementu</target>
       </trans-unit>
       <trans-unit id="tl_content.section_legend">
         <source>Section settings</source>
-        <target>Sectie instellingen</target>
+        <target>Ustawienia sekcji</target>
       </trans-unit>
       <trans-unit id="tl_content.text_legend">
         <source>Text/HTML/Code</source>
-        <target>Tekst/HTML/Code</target>
+        <target>Tekst/HTML/Kod</target>
       </trans-unit>
       <trans-unit id="tl_content.image_legend">
         <source>Image settings</source>
-        <target>Afbeeldingseigenschappen</target>
+        <target>Ustawienia obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.download_legend">
         <source>Download settings</source>
-        <target>Download instellingen</target>
+        <target>Ustawienia pobierania</target>
       </trans-unit>
       <trans-unit id="tl_content.preview_legend">
         <source>Preview settings</source>
-        <target>Voorbeeld instellingen</target>
+        <target>Ustawienia podglądu</target>
       </trans-unit>
       <trans-unit id="tl_content.slider_legend">
         <source>Slider settings</source>
-        <target>Slider instellingen</target>
+        <target>Ustawienia slidera</target>
       </trans-unit>
       <trans-unit id="tl_content.list_legend">
         <source>List items</source>
-        <target>Lijst items</target>
+        <target>Elementy listy</target>
       </trans-unit>
       <trans-unit id="tl_content.table_legend">
         <source>Table items</source>
-        <target>Tabel items</target>
+        <target>Elementy tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.tconfig_legend">
         <source>Table configuration</source>
-        <target>Tabel configuratie</target>
+        <target>Konfiguracja tabeli</target>
       </trans-unit>
       <trans-unit id="tl_content.sortable_legend">
         <source>Sorting options</source>
-        <target>Sorteer opties</target>
+        <target>Opcje sortowania</target>
       </trans-unit>
       <trans-unit id="tl_content.moo_legend">
         <source>Accordion settings</source>
-        <target>Accordeon instellingen</target>
+        <target>Ustawienia rozwijania</target>
       </trans-unit>
       <trans-unit id="tl_content.accordion_legend">
         <source>Accordion settings</source>
-        <target>Accordeon instellingen</target>
+        <target>Ustawienia rozwijania</target>
       </trans-unit>
       <trans-unit id="tl_content.link_legend">
         <source>Hyperlink settings</source>
-        <target>Hyperlink instellingen</target>
+        <target>Ustawienia odnośników</target>
       </trans-unit>
       <trans-unit id="tl_content.imglink_legend">
         <source>Image link settings</source>
-        <target>Afbeelding link instellingen</target>
+        <target>Ustawienia odnośnika obrazka</target>
       </trans-unit>
       <trans-unit id="tl_content.source_legend">
         <source>Source</source>
-        <target>Bron</target>
+        <target>Źródło</target>
       </trans-unit>
       <trans-unit id="tl_content.include_legend">
         <source>Include settings</source>
-        <target>Instellingen toevoegen</target>
+        <target>Ustawienia załączania</target>
       </trans-unit>
       <trans-unit id="tl_content.protected_legend">
         <source>Access protection</source>
-        <target>Toegangsbescherming</target>
+        <target>Ochrona dostępu</target>
       </trans-unit>
       <trans-unit id="tl_content.splash_legend">
         <source>Splash image</source>
-        <target>Splash afbeelding</target>
+        <target>Obraz splash</target>
       </trans-unit>
       <trans-unit id="tl_content.expert_legend">
         <source>Expert settings</source>
-        <target>Expert-instellingen</target>
+        <target>Zaawansowane ustawienia</target>
       </trans-unit>
       <trans-unit id="tl_content.template_legend">
         <source>Template settings</source>
-        <target>Template-instellingen</target>
+        <target>Ustawienia szablonów</target>
       </trans-unit>
       <trans-unit id="tl_content.player_legend">
         <source>Player settings</source>
-        <target>Instellingen Speler</target>
+        <target>Ustawienia odtwarzacza</target>
       </trans-unit>
       <trans-unit id="tl_content.poster_legend">
         <source>Preview image</source>
-        <target>Voorbeeld afbeelding</target>
+        <target>Obrazek poglądowy</target>
       </trans-unit>
       <trans-unit id="tl_content.texttrack_legend">
         <source>Text tracks</source>
-        <target>Teksttracks</target>
+        <target>Ścieżki tekstowe</target>
       </trans-unit>
       <trans-unit id="tl_content.invisible_legend">
         <source>Visibility</source>
-        <target>Zichtbaarheid</target>
+        <target>Widoczność</target>
       </trans-unit>
       <trans-unit id="tl_content.ordered">
         <source>ordered list</source>
-        <target>geordende lijst</target>
+        <target>uporządkowana lista</target>
       </trans-unit>
       <trans-unit id="tl_content.unordered">
         <source>unordered list</source>
-        <target>ongeordende lijst</target>
+        <target>nieuporządkowana lista</target>
       </trans-unit>
       <trans-unit id="tl_content.name_asc">
         <source>File name (ascending)</source>
-        <target>Bestandsnaam (oplopend)</target>
+        <target>Nazwa pliku (rosnąco)</target>
       </trans-unit>
       <trans-unit id="tl_content.name_desc">
         <source>File name (descending)</source>
-        <target>Bestandsnaam (aflopend)</target>
+        <target>Nazwa pliku (malejąco)</target>
       </trans-unit>
       <trans-unit id="tl_content.date_asc">
         <source>Date (ascending)</source>
-        <target>Datum (oplopend)</target>
+        <target>Data (rosnąco)</target>
       </trans-unit>
       <trans-unit id="tl_content.date_desc">
         <source>Date (descending)</source>
-        <target>Datum (aflopend)</target>
+        <target>Data (malejąco)</target>
       </trans-unit>
       <trans-unit id="tl_content.custom">
         <source>Custom order</source>
-        <target>Aangepaste volgorde</target>
+        <target>Własne sortowanie</target>
       </trans-unit>
       <trans-unit id="tl_content.random">
         <source>Random order</source>
-        <target>Willekeurige volgorde</target>
+        <target>Porządek losowy</target>
       </trans-unit>
       <trans-unit id="tl_content.includeTemplate">
         <source>The &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
-        <target>De &lt;em&gt;%s&lt;/em&gt; template dient te worden opgenomen in de  pagina-lay-out.</target>
+        <target>Szablon &lt;em&gt;%s&lt;/em&gt; musi zostać załączony w układzie strony.</target>
       </trans-unit>
       <trans-unit id="tl_content.includeTemplates">
         <source>The &lt;em&gt;%s&lt;/em&gt; or &lt;em&gt;%s&lt;/em&gt; template needs to be included in the page layout.</source>
-        <target>De &lt;em&gt;%s&lt;/em&gt; of &lt;em&gt;%s&lt;/em&gt; template dient te worden opgenomen in de  pagina-lay-out.</target>
+        <target>Szablon &lt;em&gt;%s&lt;/em&gt; lub &lt;em&gt;%s&lt;/em&gt; musi zostać załączony w układzie strony.</target>
       </trans-unit>
       <trans-unit id="tl_content.player_autoplay">
         <source>Autoplay</source>
-        <target>Autostart</target>
+        <target>Autoodtwarzanie</target>
       </trans-unit>
       <trans-unit id="tl_content.player_nocontrols">
         <source>Hide the controls</source>
-        <target>Verberg de bedieningselementen</target>
+        <target>Ukryj przyciski sterujące</target>
       </trans-unit>
       <trans-unit id="tl_content.player_loop">
         <source>Play in a loop</source>
-        <target>Afspelen in een lus</target>
+        <target>Odtwarzaj w pętli</target>
       </trans-unit>
       <trans-unit id="tl_content.player_muted">
         <source>Mute the audio output</source>
-        <target>Audio onderdrukken</target>
+        <target>Wycisz audio</target>
       </trans-unit>
       <trans-unit id="tl_content.player_playsinline">
         <source>Play inline (no fullscreen mode)</source>
-        <target>Inline afspelen (geen volledig scherm)</target>
+        <target>Odtwarzaj inline (bez trybu pełnoekranowego)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.auto">
         <source>Auto (preload the entire video)</source>
-        <target>Automatisch (preload de hele video vooraf)</target>
+        <target>Auto (wstępnie załaduj całe wideo)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.metadata">
         <source>Metadata (preload the metadata only)</source>
-        <target>Metadata (vooraf laden van alleen metadata)</target>
+        <target>Metadane (wstępnie ładuj tylko metadane)</target>
       </trans-unit>
       <trans-unit id="tl_content.player_preload.none">
         <source>None (do not preload anything)</source>
-        <target>Geen (niet vooraf laden)</target>
+        <target>Brak (niczego nie ładuj)</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_autoplay">
         <source>Autoplay</source>
-        <target>Autostart</target>
+        <target>Autoodtwarzanie</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_controls">
         <source>Hide the controls</source>
-        <target>Verberg de bedieningselementen</target>
+        <target>Ukryj przyciski sterujące</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_cc_load_policy">
         <source>Show captions by default</source>
-        <target>Ondertitels standaard tonen</target>
+        <target>Pokaż podpisy domyślnie</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_fs">
         <source>Hide the fullscreen button</source>
-        <target>Verberg de knop voor volledig scherm</target>
+        <target>Ukryj przycisk pełny ekran</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_hl">
         <source>Use the Contao page language</source>
-        <target>Gebruik de Contao-pagina taal</target>
+        <target>Użyj języka strony Contao</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_iv_load_policy">
         <source>Hide annotations</source>
-        <target>Verberg opmerkingen</target>
+        <target>Ukryj adnotacje</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_modestbranding">
         <source>Hide the YouTube logo</source>
-        <target>Verberg het YouTube logo</target>
+        <target>Ukryj logo YouTube</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_rel">
         <source>Limit related videos to the same channel</source>
-        <target>Beperk gerelateerde video's tot hetzelfde kanaal</target>
+        <target>Pokaż powiązane wideo z tego samego kanału</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_nocookie">
         <source>Use the youtube-nocookie.com domain</source>
-        <target>Gebruik het domein youtube-nocookie.com</target>
+        <target>Użyj domeny youtube-nocookie.com</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_loop">
         <source>Loop video</source>
-        <target>Loop video</target>
+        <target>Film w pętli</target>
       </trans-unit>
       <trans-unit id="tl_content.youtube_mute">
         <source>Mute the audio output</source>
-        <target>Audio onderdrukken</target>
+        <target>Wycisz dźwięk</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_autoplay">
         <source>Autoplay</source>
-        <target>Autostart</target>
+        <target>Autoodtwarzanie</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_loop">
         <source>Play in a loop</source>
-        <target>Afspelen in een lus</target>
+        <target>Odtwarzaj w pętli</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_portrait">
         <source>Hide the profile image</source>
-        <target>Verberg profielafbeelding</target>
+        <target>Ukryj obrazek profilu</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_title">
         <source>Hide the title</source>
-        <target>Verberg titel</target>
+        <target>Ukryj tytuł</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_byline">
         <source>Hide the author</source>
-        <target>Verberg auteur</target>
+        <target>Ukryj autora</target>
       </trans-unit>
       <trans-unit id="tl_content.vimeo_dnt">
         <source>Prevent session data tracking</source>
-        <target>Voorkomen dat sessiegegevens worden bijgehouden</target>
+        <target>Zapobiegaj śledzeniu danych sesji</target>
       </trans-unit>
       <trans-unit id="tl_content.new.1">
         <source>Add a new content element</source>
-        <target>Voeg een nieuw inhoudselement toe</target>
+        <target>Utwórz nowy element</target>
       </trans-unit>
       <trans-unit id="tl_content.show.1">
         <source>Show the details of content element ID %s</source>
-        <target>Toon details van inhoudselement ID %s</target>
+        <target>Pokaż szczegóły elementu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.cut.1">
         <source>Move content element ID %s</source>
-        <target>Verplaats inhoudselement ID %s</target>
+        <target>Przenieś zawartość elementu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.copy.1">
         <source>Copy content element ID %s</source>
-        <target>Kopieer inhoudselement ID %s</target>
+        <target>Kopiuj zawartość elementu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.delete.1">
         <source>Delete content element ID %s</source>
-        <target>Verwijder inhoudselement ID %s</target>
+        <target>Skasuj zawartość elementu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.edit.1">
         <source>Edit content element ID %s</source>
-        <target>Bewerk inhoudselement ID %s</target>
+        <target>Edytuj zawartość elementu ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.0">
         <source>Hide/unhide content element</source>
-        <target>Verberg/toon content element</target>
+        <target>Ukryj/pokaż element treści</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.1">
         <source>Hide content element ID %s</source>
-        <target>Verberg content element ID %s</target>
+        <target>Ukryj element treści ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.2">
         <source>Unhide content element ID %s</source>
-        <target>Toon content element ID %s</target>
+        <target>Pokaż element treści ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.3">
         <source>Hide</source>
-        <target>Verberg</target>
+        <target>Ukryj</target>
       </trans-unit>
       <trans-unit id="tl_content.toggle.4">
         <source>Unhide</source>
-        <target>Weergeven</target>
+        <target>Pokaż</target>
       </trans-unit>
       <trans-unit id="tl_content.pasteafter.1">
         <source>Paste after content element ID %s</source>
-        <target>Plak achter inhoudselement ID %s</target>
+        <target>Wklej po elemencie zawartości ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.pastenewtop.1">
         <source>Create a new content element at the top</source>
-        <target>Maak een nieuw element voor inhoud bovenaan</target>
+        <target>Utwórz nowy element treści na górze</target>
       </trans-unit>
       <trans-unit id="tl_content.pastenewafter.1">
         <source>Create a new content element after content element ID %s</source>
-        <target>Maak een nieuw element voor inhoud na element ID %s</target>
+        <target>Utwórz nowy element treści po elemencie treści ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.editalias">
         <source>Edit the source element ID %s</source>
-        <target>Bewerk het bronelement ID %s</target>
+        <target>Edytuj źródłowy element ID %s</target>
       </trans-unit>
       <trans-unit id="tl_content.list.1">
         <source>Import list items from a CSV file</source>
-        <target>Importeer lijst items vanuit een CSV bestand</target>
+        <target>Import elementów listy z pliku CSV</target>
       </trans-unit>
       <trans-unit id="tl_content.table.1">
         <source>Import table items from a CSV file</source>
-        <target>Importeer tabel items van een CSV bestand</target>
+        <target>Import elementów tabeli z pliku CSV</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_label.0">
         <source>Description list items</source>
-        <target>Beschrijving lijstitems</target>
+        <target>Elementy listy opisowej</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_label.1">
         <source>Please enter a list of terms and details for the description list. You can leave the term field empty to create multiple details for one term.</source>
-        <target>Voer een lijst met termen en details in voor de beschrijvingslijst. U kunt het termveld leeg laten om meerdere details voor één term aan te maken.</target>
+        <target>Proszę wprowadzić listę terminów i szczegółów dla listy opisowej. Możesz pozostawić pole terminu puste, aby utworzyć wiele szczegółów dla jednego terminu.</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_key">
         <source>Term</source>
-        <target>Term</target>
+        <target>Termin</target>
       </trans-unit>
       <trans-unit id="tl_content.dl_value">
         <source>Details</source>
-        <target>Details</target>
+        <target>Szczegóły</target>
       </trans-unit>
       <trans-unit id="tl_content.redirect_legend">
         <source>Redirect settings</source>
-        <target>Instellingen omsturen</target>
+        <target>Ustawienia przekierowania</target>
       </trans-unit>
       <trans-unit id="tl_content.jumpTo.0">
         <source>Redirect page</source>
-        <target>Ga naar pagina</target>
+        <target>Strona przekierowania</target>
       </trans-unit>
       <trans-unit id="tl_content.jumpTo.1">
         <source>Please choose the page to which visitors will be redirected when clicking a link or submitting a form.</source>
-        <target>Selecteer de pagina waarnaar een gebruiker wordt verder geleid na het klikken op een link of het versturen van een formulier.</target>
+        <target>Wybierz stronę, na którą odwiedzający zostaną przekierowani po kliknięciu linku lub wysłaniu formularza.</target>
       </trans-unit>
       <trans-unit id="tl_content.redirectBack.0">
         <source>Redirect to last page visited</source>
-        <target>Doorsturen naar de laatst bezochte pagina</target>
+        <target>Przekieruj na ostatnią odwiedzoną stronę</target>
       </trans-unit>
       <trans-unit id="tl_content.redirectBack.1">
         <source>Redirect the member back to the last page visited instead of the redirect page.</source>
-        <target>Leid het lid terug naar de laatst bezochte pagina in plaats van de omleidingspagina.</target>
+        <target>Przekieruj członka z powrotem na ostatnio odwiedzoną stronę zamiast na stronę przekierowania.</target>
       </trans-unit>
       <trans-unit id="tl_content.config_legend">
         <source>Element configuration</source>
-        <target>Elementconfiguratie</target>
+        <target>Konfiguracja elementu</target>
       </trans-unit>
       <trans-unit id="tl_content.autologin.0">
         <source>Allow auto login</source>
-        <target>Automatisch inloggen toestaan</target>
+        <target>Zezwól na automatyczne logowanie</target>
       </trans-unit>
       <trans-unit id="tl_content.autologin.1">
         <source>Allow members to log into the front end automatically.</source>
-        <target>Sta automatisch inloggen voor leden toe in het front-end.</target>
+        <target>Pozwól członkom automatycznie logować się w front endzie.</target>
       </trans-unit>
       <trans-unit id="tl_content.pwResetPage.0">
         <source>Reset password page</source>
-        <target>Wachtwoord resetten pagina</target>
+        <target>Strona resetu hasła</target>
       </trans-unit>
       <trans-unit id="tl_content.pwResetPage.1">
         <source>Here you can choose a page to which visitors will be redirected when clicking the &lt;em&gt;Forgot your password?&lt;/em&gt; link.</source>
-        <target>Hier kunt u een pagina kiezen waarnaar bezoekers worden doorverwezen als ze op &lt;em&gt;Wachtwoord vergeten?&lt;/em&gt; klikken.</target>
+        <target>Tutaj możesz wybrać stronę, na którą odwiedzający zostaną przekierowani po kliknięciu linku &lt;em&gt;Zapomniałeś hasła?&lt;/em&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_content.reg_close.0">
         <source>Mode</source>
-        <target>Modus</target>
+        <target>Tryb</target>
       </trans-unit>
       <trans-unit id="tl_content.reg_close.1">
         <source>Here you can define how to handle the deletion.</source>
-        <target>Hier kunt u bepalen hoe het account te verwijderen.</target>
+        <target>Tutaj możesz zdefiniować sposób usuwania.</target>
       </trans-unit>
       <trans-unit id="tl_content.reg_deleteDir.0">
         <source>Delete home directory</source>
-        <target>Verwijder home directory</target>
+        <target>Usuń katalog domowy</target>
       </trans-unit>
       <trans-unit id="tl_content.reg_deleteDir.1">
         <source>Delete the home directory when the account is deleted.</source>
-        <target>Verwijder de home directory wanneer het account wordt verwijderd.</target>
+        <target>Usuń katalog domowy, gdy konto zostanie usunięte.</target>
       </trans-unit>
       <trans-unit id="tl_content.close_deactivate">
         <source>Deactivate account</source>
-        <target>Account uitschakelen</target>
+        <target>Dezaktywuj konto</target>
       </trans-unit>
       <trans-unit id="tl_content.close_delete">
         <source>Irrevocably delete account</source>
-        <target>Account onherroepelijk verwijderen</target>
+        <target>Nieodwracalnie usuń konto</target>
       </trans-unit>
       <trans-unit id="tl_content.tableLabel">
         <source>Content element</source>
-        <target>Inhoudselement</target>
+        <target>Element treści</target>
       </trans-unit>
     </body>
   </file>
