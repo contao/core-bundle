@@ -1,601 +1,594 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_module.php" source-language="en" target-language="ru">
+  <file datatype="php" original="contao/languages/en/tl_module.php" source-language="en" target-language="sl">
     <body>
       <trans-unit id="tl_module.name.0">
         <source>Internal title</source>
-        <target>Внутреннее название</target>
+        <target>Interni naziv</target>
       </trans-unit>
       <trans-unit id="tl_module.name.1">
         <source>Please enter the module title.</source>
-        <target>Введите название модуля.</target>
+        <target>Prosim, vnesite naziv modula.</target>
       </trans-unit>
       <trans-unit id="tl_module.headline.0">
         <source>Headline</source>
-        <target>Заголовок</target>
+        <target>Naslov</target>
       </trans-unit>
       <trans-unit id="tl_module.headline.1">
         <source>Here you can add a headline to the module.</source>
-        <target>Вы можете добавить заголовок модуля.</target>
+        <target>Tukaj lahko dodate naslov modula.</target>
       </trans-unit>
       <trans-unit id="tl_module.type.0">
         <source>Module type</source>
-        <target>Тип модуля</target>
+        <target>Vrsta modula</target>
       </trans-unit>
       <trans-unit id="tl_module.type.1">
         <source>Please choose the type of module.</source>
-        <target>Выберите тип модуля.</target>
+        <target>Prosim, izberite vrsto modula.</target>
       </trans-unit>
       <trans-unit id="tl_module.ariaLabel.0">
         <source>ARIA label</source>
-        <target>Метка ARIA</target>
+        <target>Oznaka ARIA</target>
       </trans-unit>
       <trans-unit id="tl_module.ariaLabel.1">
         <source>If there is more than one navigation element on the page, each should have a unique label.</source>
-        <target>Если на странице более одного элемента навигации, каждый из них должен иметь уникальную метку.</target>
+        <target>Če je na stani več kot en element z navigacijo, mora imeti vsak od njih enoznačno oznako.</target>
       </trans-unit>
       <trans-unit id="tl_module.levelOffset.0">
         <source>Start level</source>
-        <target>Уровень запуска</target>
+        <target>Začetni nivo</target>
       </trans-unit>
       <trans-unit id="tl_module.levelOffset.1">
         <source>Enter a value greater than 0 to show only submenu items.</source>
-        <target>Введите значение больше 0, чтобы показать только элементы подменю.</target>
+        <target>Vnesite vrednost, večjo od 0, v kolikor želite prikazati le podmenije.</target>
       </trans-unit>
       <trans-unit id="tl_module.showLevel.0">
         <source>Stop level</source>
-        <target>Уровень остановки</target>
+        <target>Končni nivo</target>
       </trans-unit>
       <trans-unit id="tl_module.showLevel.1">
         <source>Enter a value greater than 0 to limit the nesting level of the menu.</source>
-        <target>Введите значение больше 0, чтобы ограничить уровень вложений элементов подменю.</target>
+        <target>Vnesite vrednost, večjo od 0, v kolikor želite omejiti gnezdenje menija.</target>
       </trans-unit>
       <trans-unit id="tl_module.hardLimit.0">
         <source>Hard limit</source>
-        <target>Жесткое ограничение</target>
+        <target>Vsiljena meja</target>
       </trans-unit>
       <trans-unit id="tl_module.hardLimit.1">
         <source>Never show any menu items beyond the stop level.</source>
-        <target>Не показывать ни одного элемента кроме ограничения уровня остановки.</target>
+        <target>Nikoli ne prikaži elementov za tem nivojem.</target>
       </trans-unit>
       <trans-unit id="tl_module.showProtected.0">
         <source>Show protected items</source>
-        <target>Показывать защищенные элементы</target>
+        <target>Prikaži zaščitene elemente</target>
       </trans-unit>
       <trans-unit id="tl_module.showProtected.1">
         <source>Show items that are usually only visible to authenticated members.</source>
-        <target>Показать элементы, которые видны только авторизованным участникам.</target>
+        <target>Prikaži elemente, ki so običajno vidni samo prijavljenim uporabnikom.</target>
       </trans-unit>
       <trans-unit id="tl_module.defineRoot.0">
         <source>Set a reference page</source>
-        <target>Страница ссылки</target>
+        <target>Določi referenčno stran</target>
       </trans-unit>
       <trans-unit id="tl_module.defineRoot.1">
         <source>Define a custom source or target page for the module.</source>
-        <target>Укажите страницу ссылки для использования в качестве целевой страницы модуля.</target>
+        <target>Določi prilagojeno izvorno ali ciljno stran modula.</target>
       </trans-unit>
       <trans-unit id="tl_module.rootPage.0">
         <source>Reference page</source>
-        <target>Справочная страница</target>
+        <target>Referenčna stran</target>
       </trans-unit>
       <trans-unit id="tl_module.rootPage.1">
         <source>Please choose the reference page.</source>
-        <target>Выберите справочную страницу.</target>
+        <target>Prosimo, izberite referenčno stran.</target>
       </trans-unit>
       <trans-unit id="tl_module.navigationTpl.0">
         <source>Navigation template</source>
-        <target>Шаблон навигации</target>
+        <target>Predloga navigacije</target>
       </trans-unit>
       <trans-unit id="tl_module.navigationTpl.1">
         <source>Here you can select the navigation template.</source>
-        <target>Выберите шаблон навигации.</target>
+        <target>Tu lahko določite predlogo navigacije.</target>
       </trans-unit>
       <trans-unit id="tl_module.customTpl.0">
         <source>Module template</source>
-        <target>Шаблон модуля</target>
+        <target>Predloga modula</target>
       </trans-unit>
       <trans-unit id="tl_module.customTpl.1">
         <source>Here you can select the module template.</source>
-        <target>Вы можете выбрать шаблон модуля.</target>
+        <target>Tu lahko določite predlogo modula</target>
       </trans-unit>
       <trans-unit id="tl_module.pages.0">
         <source>Pages</source>
-        <target>Страницы</target>
+        <target>Strani</target>
       </trans-unit>
       <trans-unit id="tl_module.pages.1">
         <source>Please choose one or more pages.</source>
-        <target>Выберите одну или несколько страниц.</target>
+        <target>Prosimo izberite eno ali več strani.</target>
       </trans-unit>
       <trans-unit id="tl_module.showHidden.0">
         <source>Show hidden items</source>
-        <target>Показывать скрытые элементы</target>
+        <target>Prikaži skrite elemente</target>
       </trans-unit>
       <trans-unit id="tl_module.showHidden.1">
         <source>Show items that are usually hidden in the navigation menu.</source>
-        <target>Показать элементы, которые обычно скрыты в меню навигации.</target>
+        <target>Prikaži skrite elemente navigacijskega menija.</target>
       </trans-unit>
       <trans-unit id="tl_module.customLabel.0">
         <source>Custom label</source>
-        <target>Пользовательская метка</target>
+        <target>Prilagojena oznaka</target>
       </trans-unit>
       <trans-unit id="tl_module.customLabel.1">
         <source>Here you can enter a custom label for the drop-down menu or the overview link.</source>
-        <target>Вы можете ввести пользовательскую метку для выпадающего меню или обзорной ссылки.</target>
       </trans-unit>
       <trans-unit id="tl_module.autologin.0">
         <source>Allow auto login</source>
-        <target>Разрешить автоматический вход</target>
+        <target>Dovoli samodejni vpis</target>
       </trans-unit>
       <trans-unit id="tl_module.autologin.1">
         <source>Allow members to log into the front end automatically.</source>
-        <target>Разрешить пользователям автоматическую авторизацию во внешнем интерфейсе веб-сайта.</target>
+        <target>Dovoli članom, da se v predstavitvenem delu (front end) strani samodejno vpišejo.</target>
       </trans-unit>
       <trans-unit id="tl_module.jumpTo.0">
         <source>Redirect page</source>
-        <target>Перейти на страницу</target>
+        <target>Pojdi na stran</target>
       </trans-unit>
       <trans-unit id="tl_module.jumpTo.1">
         <source>Please choose the page to which visitors will be redirected when clicking a link or submitting a form.</source>
-        <target>Выберите страницу, к которой будут перенаправлены посетители при нажатии на ссылку или после отправки формы.</target>
+        <target>Prosimo, izberite stran kamor bodo ob kliku na povezavo ali oddaji obrazca preusmerjeni obiskovalci.</target>
       </trans-unit>
       <trans-unit id="tl_module.pwResetPage.0">
         <source>Reset password page</source>
-        <target>Страница сброса пароля</target>
+        <target>Stran za ponastavitev gesla</target>
       </trans-unit>
       <trans-unit id="tl_module.pwResetPage.1">
         <source>Here you can choose a page to which visitors will be redirected when clicking the &lt;em&gt;Forgot your password?&lt;/em&gt; link.</source>
-        <target>Вы можете выбрать страницу, к которой будут перенаправлены посетители при нажатии ссылки &lt;em&gt;Забыли пароль?&lt;/em&gt;.</target>
+        <target>Tu lahko določite stran, na katero bodo preusmerjeni obiskovalci ob kliku na povezavo &lt;em&gt;Pozabljeno geslo?&lt;/em&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_module.overviewPage.0">
         <source>Overview page</source>
-        <target>Обзорная страница</target>
+        <target>Pregledna stran</target>
       </trans-unit>
       <trans-unit id="tl_module.overviewPage.1">
         <source>Select an overview page to include a link to it in the template.</source>
-        <target>Выберите обзорную страницу, чтобы включить ссылку на нее в шаблон.</target>
       </trans-unit>
       <trans-unit id="tl_module.redirectBack.0">
         <source>Redirect to last page visited</source>
-        <target>Направление на последнюю посещенную страницу</target>
+        <target>Preusmeri na zadnjo obiskano stran.</target>
       </trans-unit>
       <trans-unit id="tl_module.redirectBack.1">
         <source>Redirect the member back to the last page visited instead of the redirect page.</source>
-        <target>Направление участника на последнюю посещенную им страницу вместо перехода на страницу перенаправления.</target>
+        <target>Preusmeri uporabnika nazaj na zadnjo obiskano stran namesto na preusmeritveno stran.</target>
       </trans-unit>
       <trans-unit id="tl_module.1cl.0">
         <source>One column</source>
-        <target>Одна колонка</target>
+        <target>En stolpec</target>
       </trans-unit>
       <trans-unit id="tl_module.1cl.1">
         <source>Show the label above the input field.</source>
-        <target>Метка поля будет показана над полем ввода.</target>
+        <target>Prikaži oznako nad vnosnim poljem.</target>
       </trans-unit>
       <trans-unit id="tl_module.2cl.0">
         <source>Two columns</source>
-        <target>Две колонки</target>
+        <target>Dva stolpca</target>
       </trans-unit>
       <trans-unit id="tl_module.2cl.1">
         <source>Show the label on the left side of the input field.</source>
-        <target>Метка поля будет показана слева от поля ввода.</target>
+        <target>Prikaži oznako na levi strani vnosnega polja.</target>
       </trans-unit>
       <trans-unit id="tl_module.editable.0">
         <source>Editable fields</source>
-        <target>Редактируемые поля</target>
+        <target>Polja z možnostjo urejanja.</target>
       </trans-unit>
       <trans-unit id="tl_module.editable.1">
         <source>Show these fields in the front end form.</source>
-        <target>Показать эти поля в форме персональной информации во внешнем интерфейсе.</target>
+        <target>Pokaži ta polja v predstavitvi (front end) obrazca.</target>
       </trans-unit>
       <trans-unit id="tl_module.reqFullAuth.0">
         <source>Require full authentication</source>
-        <target>Требовать полную авторизацию</target>
+        <target>Zahtevaj celotno avtentikacijo</target>
       </trans-unit>
       <trans-unit id="tl_module.reqFullAuth.1">
         <source>Users with only a &quot;remember me&quot; cookie must verify their identity in order to access the module.</source>
-        <target>Пользователи, имеющие только &quot;remember me&quot; cookie, должны подтвердить свою личность, чтобы получить доступ к модулю.</target>
       </trans-unit>
       <trans-unit id="tl_module.memberTpl.0">
         <source>Form template</source>
-        <target>Шаблон формы</target>
+        <target>Predloga za obrazec</target>
       </trans-unit>
       <trans-unit id="tl_module.memberTpl.1">
         <source>Here you can select the form template.</source>
-        <target>Вы можете выбрать шаблон формы.</target>
+        <target>Tu lahko izberete predlogo obrazca.</target>
       </trans-unit>
       <trans-unit id="tl_module.form.0">
         <source>Form</source>
-        <target>Форма</target>
+        <target>Obrazec</target>
       </trans-unit>
       <trans-unit id="tl_module.form.1">
         <source>Please select a form.</source>
-        <target>Выберите форму.</target>
+        <target>Prosimo, izberite obrazec.</target>
       </trans-unit>
       <trans-unit id="tl_module.queryType.0">
         <source>Default query type</source>
-        <target>Тип запроса по умолчанию</target>
+        <target>Privzeti tip poizvedbe</target>
       </trans-unit>
       <trans-unit id="tl_module.queryType.1">
         <source>Please select the default query type.</source>
-        <target>Выберите тип запроса по умолчанию.</target>
+        <target>Prosimo, izberite privzeti tip poizvedbe.</target>
       </trans-unit>
       <trans-unit id="tl_module.and.0">
         <source>Find all words</source>
-        <target>Найти все слова</target>
+        <target>Najdi vse besede</target>
       </trans-unit>
       <trans-unit id="tl_module.and.1">
         <source>Returns only pages that contain all keywords.</source>
-        <target>Возвращает только те страницы, которые содержат все ключевые слова.</target>
+        <target>Vrne le strani, ki vsebujejo vse ključne besede.</target>
       </trans-unit>
       <trans-unit id="tl_module.or.0">
         <source>Find any word</source>
-        <target>Найти любое слово</target>
+        <target>Najdi katerokoli besedo.</target>
       </trans-unit>
       <trans-unit id="tl_module.or.1">
         <source>Returns all pages that contain any of the keywords.</source>
-        <target>Возвращает все страницы, которые содержат любое из ключевых слов.</target>
+        <target>Vrne vse strani, ki vsebujejo katerokoli od iskanih gesel.</target>
       </trans-unit>
       <trans-unit id="tl_module.fuzzy.0">
         <source>Fuzzy search</source>
-        <target>Нечёткий поиск</target>
+        <target>Iskanje po vzorcu (fuzzy search)</target>
       </trans-unit>
       <trans-unit id="tl_module.fuzzy.1">
         <source>Will find &quot;Contao&quot; if you search for &quot;con&quot; (equal to a wildcard search).</source>
-        <target>Будет найдено 'Contao', если вы ищете, например 'con' (равносильно поиску по маске).</target>
+        <target>Našel bo &quot;Contao&quot;, če sprožite iskanje po vzorcu &quot;con&quot; (enako kot &quot;wildcard&quot; iskanje).</target>
       </trans-unit>
       <trans-unit id="tl_module.simple.0">
         <source>Simple form</source>
-        <target>Простая форма</target>
+        <target>Enostaven obrazec</target>
       </trans-unit>
       <trans-unit id="tl_module.simple.1">
         <source>Contains a single input field only.</source>
-        <target>Содержит только одно поле для ввода запроса.</target>
+        <target>Vsebuje le eno vnosno polje.</target>
       </trans-unit>
       <trans-unit id="tl_module.advanced.0">
         <source>Advanced form</source>
-        <target>Расширенная форма</target>
+        <target>Napredni obrazec</target>
       </trans-unit>
       <trans-unit id="tl_module.advanced.1">
         <source>Contains an input field and a radio button menu to choose the query type.</source>
-        <target>Содержит поле для ввода запроса и радио-кнопку для выбора типа запроса.</target>
+        <target>Vsebuje vnosno polje in izbirni meni za določitev tipa poizvedbe.</target>
       </trans-unit>
       <trans-unit id="tl_module.contextLength.0">
         <source>Context length</source>
-        <target>Длина контекста</target>
+        <target>Velikost konteksta</target>
       </trans-unit>
       <trans-unit id="tl_module.contextLength.1">
         <source>The first field defines the number of characters on the left and right side of each keyword and the second one the overall context length per result.</source>
-        <target>Первое поле определяет количество символов слева и справа от каждого ключевого слова, а второе - общую длину контекста для каждого результата.</target>
+        <target>Prvo polje definira število znakov pred in po vsaki ključni besedi, drugo pa celotno dolžino konteksta za vsak zadetek.</target>
       </trans-unit>
       <trans-unit id="tl_module.minKeywordLength.0">
         <source>Minimum keyword length</source>
-        <target>Минимальная длина ключевого слова</target>
+        <target>Najkrajša dolžina ključne besede</target>
       </trans-unit>
       <trans-unit id="tl_module.minKeywordLength.1">
         <source>Keywords deceeding the minimum length will be ignored in the search results. Set to 0 to disable.</source>
-        <target>Ключевые слова, короче минимальной длины, будут проигнорированы в результатах поиска. Установите 0, чтобы отключить.</target>
       </trans-unit>
       <trans-unit id="tl_module.perPage.0">
         <source>Items per page</source>
-        <target>Элементов на странице</target>
+        <target>Elementov na stran</target>
       </trans-unit>
       <trans-unit id="tl_module.perPage.1">
         <source>The number of items per page. Set to 0 to disable pagination.</source>
-        <target>Количество элементов на странице. Установите 0 для отключения нумерации.</target>
+        <target>Število elementov na stran. Nastavite 0 za onemogočanje številčenja.</target>
       </trans-unit>
       <trans-unit id="tl_module.searchType.0">
         <source>Search form layout</source>
-        <target>Макет формы поиска</target>
+        <target>Postavitev iskalnega obrazca.</target>
       </trans-unit>
       <trans-unit id="tl_module.searchType.1">
         <source>Here you can select the search form layout.</source>
-        <target>Вы можете выбрать макет формы поиска.</target>
+        <target>Tu lahko izberite postavitev iskalnega obrazca.</target>
       </trans-unit>
       <trans-unit id="tl_module.searchTpl.0">
         <source>Search results template</source>
-        <target>Шаблон результатов поиска</target>
+        <target>Predloga izpisa rezultatov iskanja</target>
       </trans-unit>
       <trans-unit id="tl_module.searchTpl.1">
         <source>Here you can select the search results template.</source>
-        <target>Вы можете выбрать шаблон результатов поиска.</target>
+        <target>Tu lahko izberete predlogo izpisa rezultatov iskanja.</target>
       </trans-unit>
       <trans-unit id="tl_module.inColumn.0">
         <source>Layout section</source>
-        <target>Секция макета</target>
+        <target>Sklop postavitve</target>
       </trans-unit>
       <trans-unit id="tl_module.inColumn.1">
         <source>Please choose the layout section whose articles you want to list.</source>
-        <target>Выберите секцию макета, статьи которого вы хотите перечислить.</target>
       </trans-unit>
       <trans-unit id="tl_module.skipFirst.0">
         <source>Skip items</source>
-        <target>Пропустить элемент</target>
+        <target>Preskoči prvi element</target>
       </trans-unit>
       <trans-unit id="tl_module.skipFirst.1">
         <source>Here you can define how many items will be skipped.</source>
-        <target>Вы можете определить сколько элементов будет пропущено.</target>
+        <target>Tu lahko določite, koliko elementov se preskoči.</target>
       </trans-unit>
       <trans-unit id="tl_module.loadFirst.0">
         <source>Load the first item</source>
-        <target>Загрузить первый элемент</target>
+        <target>Naloži prvi element</target>
       </trans-unit>
       <trans-unit id="tl_module.loadFirst.1">
         <source>Automatically redirect to the first item if none is selected.</source>
-        <target>Автоматически перенаправлять на первый элемент, если ничего не выбрано.</target>
+        <target>Samodejno preusmeri na prvi element, v kolikor noben ni izbran.</target>
       </trans-unit>
       <trans-unit id="tl_module.singleSRC.0">
         <source>Source file</source>
-        <target>Исходный файл</target>
+        <target>Izvorna datoteka</target>
       </trans-unit>
       <trans-unit id="tl_module.singleSRC.1">
         <source>Please select a file from the files directory.</source>
-        <target>Выберите файл из каталога.</target>
+        <target>Prosimo, izberite datoteko iz datotečnega imenika.</target>
       </trans-unit>
       <trans-unit id="tl_module.fullsize.0">
         <source>Full-size view/new window</source>
-        <target>Просмотр в полный размер/в новом окне</target>
+        <target>Celotni zaslon/novo okno</target>
       </trans-unit>
       <trans-unit id="tl_module.fullsize.1">
         <source>Open the full-size image in a lightbox or the link in a new browser window.</source>
-        <target>Позволяет показать изображение в полный размер, в лайтбокс или в новом окне браузера.</target>
+        <target>Odpri sliko prek lightbox-a v polni velikosti ali pa kot povezavo v novem oknu.</target>
       </trans-unit>
       <trans-unit id="tl_module.useCaption.0">
         <source>Show caption</source>
-        <target>Показать подпись</target>
+        <target>Prikaži napis k sliki</target>
       </trans-unit>
       <trans-unit id="tl_module.useCaption.1">
         <source>Display the image name or caption below the image.</source>
-        <target>Показать имя изображения или подпись под изображением.</target>
+        <target>Pod sliko pokaži naziv ali napis k sliki.</target>
       </trans-unit>
       <trans-unit id="tl_module.multiSRC.0">
         <source>Source files</source>
-        <target>Исходные файлы</target>
+        <target>Izvorne datoteke</target>
       </trans-unit>
       <trans-unit id="tl_module.multiSRC.1">
         <source>Please select one or more files from the files directory.</source>
-        <target>Выберите один или несколько файлов из каталога.</target>
+        <target>Prosimo, izberite eno ali več datotek iz imenika.</target>
       </trans-unit>
       <trans-unit id="tl_module.html.0">
         <source>HTML code</source>
-        <target>HTML-код</target>
+        <target>HTML koda</target>
       </trans-unit>
       <trans-unit id="tl_module.html.1">
         <source>You can modify the list of allowed HTML tags in the back end settings.</source>
-        <target>Вы можете изменить список разрешенных HTML-тегов в настройках панели управления.</target>
+        <target>Lahko prilagodite seznam dovoljenih HTML značk v nastavitvah skrbništva.</target>
       </trans-unit>
       <trans-unit id="tl_module.unfilteredHtml.0">
         <source>HTML code</source>
-        <target>HTML-код</target>
+        <target>HTML koda</target>
       </trans-unit>
       <trans-unit id="tl_module.unfilteredHtml.1">
         <source>Take care when pasting things you don't understand. This could allow attackers to steal your identity or take control of the whole system.</source>
-        <target>Будьте осторожны при вставке чего-либо, что вы не понимаете. Это может позволить злоумышленникам украсть ваши личные данные или получить контроль над всей системой.</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_cache.0">
         <source>Cache timeout</source>
-        <target>Время кеширования</target>
+        <target>Življenjska doba medpomnilnika</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_cache.1">
         <source>Here you can define how long the feed is being cached.</source>
-        <target>Вы можете указать, как долго канал будет кешироваться.</target>
+        <target>Tu lahko nastavite kako dolgo bo vir (feed) ostal v predpomnilniku.</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_feed.0">
         <source>Feed URLs</source>
-        <target>URL RSS-канала</target>
+        <target>Spletni naslov RSS vira</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_feed.1">
         <source>Please enter the URL of one or more feeds.</source>
-        <target>Введите URL одного или нескольких каналов.</target>
+        <target>Prosimo, vnesite spletni naslov (URL) enega ali več virov RSS (feeds).</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_template.0">
         <source>Feed template</source>
-        <target>Шаблон канала</target>
+        <target>Predloga postavitve</target>
       </trans-unit>
       <trans-unit id="tl_module.rss_template.1">
         <source>Here you can select the feed template.</source>
-        <target>Вы можете выбрать шаблон канала.</target>
+        <target>Tukaj lahko izberete predlogo izvlečka.</target>
       </trans-unit>
       <trans-unit id="tl_module.protected.0">
         <source>Protect module</source>
-        <target>Защитить модуль</target>
+        <target>Zaščiti modul</target>
       </trans-unit>
       <trans-unit id="tl_module.protected.1">
         <source>Show the module to certain member groups only.</source>
-        <target>Показывать модуль только для определённой группы участников.</target>
+        <target>Prikaži modul le določenim skupinam članov.</target>
       </trans-unit>
       <trans-unit id="tl_module.groups.0">
         <source>Allowed member groups</source>
-        <target>Разрешенные группы участников</target>
+        <target>Dovoljene skupine uporabnikov</target>
       </trans-unit>
       <trans-unit id="tl_module.groups.1">
         <source>These groups will be able to see the module.</source>
-        <target>Выбранные группы будут иметь возможность видеть этот модуль.</target>
+        <target>Skupine, ki bodo lahko videle ta modul.</target>
       </trans-unit>
       <trans-unit id="tl_module.cssID.0">
         <source>CSS ID/class</source>
-        <target>CSS ID и класс</target>
+        <target>CSS ID/razred</target>
       </trans-unit>
       <trans-unit id="tl_module.cssID.1">
         <source>Here you can set an ID and one or more classes.</source>
-        <target>Вы можете ввести ID одного или нескольких классов.</target>
+        <target>Tu lahko določite ID in enega ali več razredov.</target>
       </trans-unit>
       <trans-unit id="tl_module.disableCaptcha.0">
         <source>Disable spam protection</source>
-        <target>Отключить защиту от спама</target>
+        <target>Onemogoči zaščito pred neželeno pošto</target>
       </trans-unit>
       <trans-unit id="tl_module.disableCaptcha.1">
         <source>Here you can disable the spam protection (not recommended).</source>
-        <target>Вы можете отключить защиту от спама (не рекомендуется).</target>
+        <target>Tu lahko onemogočite zaščito pred neželeno pošto (ni priporočljivo).</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_groups.0">
         <source>Member groups</source>
-        <target>Группы участников</target>
+        <target>Skupine članov</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_groups.1">
         <source>Here you can assign the member to one or more groups.</source>
-        <target>Определите участника в одну или несколько групп.</target>
+        <target>Tu lahko uporabnika vključite v eno ali več skupin.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_allowLogin.0">
         <source>Allow login</source>
-        <target>Разрешить вход</target>
+        <target>Dovoli prijavo</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_allowLogin.1">
         <source>Allow the new member to log into the front end.</source>
-        <target>Разрешить новому участнику авторизоваться во внешнем интерфейсе веб-сайта.</target>
+        <target>Dovoli uporabniku, da se prijavi v ospredje - front end.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_skipName.0">
         <source>Skip username</source>
-        <target>Пропустить имя пользователя</target>
+        <target>Ne upoštevaj uporabniškega imena</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_skipName.1">
         <source>Do not require the username to request a new password.</source>
-        <target>Не требовать имя пользователя при запросе нового пароля.</target>
+        <target>Ne zahtevaj uporabniškega imena za zahtevek novega gesla.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_close.0">
         <source>Mode</source>
-        <target>Метод удаления</target>
+        <target>Način</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_close.1">
         <source>Here you can define how to handle the deletion.</source>
-        <target>Вы можете определить метод удаления учетной записи.</target>
+        <target>Tukaj lahko nastavite kako ravnati z izbrisom.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_deleteDir.0">
         <source>Delete home directory</source>
-        <target>Удалить домашний каталог</target>
+        <target>Izbriši domačo mapo</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_deleteDir.1">
         <source>Delete the home directory when the account is deleted.</source>
-        <target>Удалить домашний каталог при удалении учетной записи.</target>
+        <target>Izbriši domačo mapo, ko je izbrisan uporabniški račun</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_assignDir.0">
         <source>Create a home directory</source>
-        <target>Создать домашний каталог</target>
+        <target>Ustvari domačo mapo</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_assignDir.1">
         <source>Create a home directory from the registered username.</source>
-        <target>Создать домашний каталог из имени зарегистрированного пользователя.</target>
+        <target>Ustvari domačo mapo iz registriranega uporabniškega imena.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_homeDir.0">
         <source>Home directory path</source>
-        <target>Родительский каталог</target>
+        <target>Pot domače mape</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_homeDir.1">
         <source>Please select the parent folder from the files directory.</source>
-        <target>Выберите родительский каталог.</target>
+        <target>Prosimo izberite mapo iz nivoja višje v datotečni strukturi.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_activate.0">
         <source>Send activation e-mail</source>
-        <target>Отправить активацию по e-mail</target>
+        <target>Pošlji aktivacijski e-poštno sporočilo</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_activate.1">
         <source>Send an activation e-mail to the registered e-mail address.</source>
-        <target>Отправить активацию на зарегистрированный e-mail адрес.</target>
+        <target>Pošlji aktivacijski e-mail na registriran e-mail naslov.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_jumpTo.0">
         <source>Confirmation page</source>
-        <target>Страница подтверждения</target>
+        <target>Potrditvena stran</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_jumpTo.1">
         <source>Please choose the page to which members will be redirected after the request has been completed.</source>
-        <target>Выберите страницу, к которой будет направлен участник после активации его учетной записи.</target>
+        <target>Prosimo, izberite stran, kamor bodo preusmerjeni uporabniki po zaključeni poizvedbi.</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_text.0">
         <source>Activation message</source>
-        <target>Сообщение активации</target>
+        <target>Aktivacijsko e-poštno sporočilo</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_text.1">
         <source>You can use the wildcards &lt;em&gt;##domain##&lt;/em&gt; (domain name), &lt;em&gt;##link##&lt;/em&gt; (activation link) and any input field (e.g. &lt;em&gt;##lastname##&lt;/em&gt;).</source>
-        <target>Вы можете использовать подстановочные знаки &lt;em&gt;##domain##&lt;/em&gt; (имя домена), &lt;em&gt;##link##&lt;/em&gt; (ссылка для активации), а так же любое поле ввода (напр. &lt;em&gt;##lastname##&lt;/em&gt;).</target>
+        <target>Lahko uporabite oznake &lt;em&gt;##domain##&lt;/em&gt; (ime domene), &lt;em&gt;##link##&lt;/em&gt; (link za aktivacijo) in katerokoli vnosno polje (npr. &lt;em&gt;##lastname##&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_password.0">
         <source>Password message</source>
-        <target>Сообщение пароля</target>
+        <target>Sporočilo za pošiljanje gesla</target>
       </trans-unit>
       <trans-unit id="tl_module.reg_password.1">
         <source>You can use the wildcards &lt;em&gt;##domain##&lt;/em&gt; (domain name), &lt;em&gt;##link##&lt;/em&gt; (activation link) and any member property (e.g. &lt;em&gt;##lastname##&lt;/em&gt;).</source>
-        <target>Вы можете использовать подстановочные знаки &lt;em&gt;##domain##&lt;/em&gt; (имя домена), &lt;em&gt;##link##&lt;/em&gt; (ссылка для активации), а так же любое поле свойств участника (напр. &lt;em&gt;##lastname##&lt;/em&gt;).</target>
       </trans-unit>
       <trans-unit id="tl_module.data.0">
         <source>Template data</source>
-        <target>Данные шаблона</target>
+        <target>Podatki predloge</target>
       </trans-unit>
       <trans-unit id="tl_module.data.1">
         <source>These values are available as &lt;code&gt;$this-&gt;data&lt;/code&gt; in the template.</source>
-        <target>Эти значения доступны в шаблоне как &lt;code&gt;$this-&gt;data&lt;/code&gt;.</target>
+        <target>V predlogi so na voljo te vrednosti v &lt;code&gt;$this-&gt;data&lt;/code&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_module.rootPageDependentModules.0">
         <source>Modules</source>
-        <target>Модули</target>
+        <target>Moduli</target>
       </trans-unit>
       <trans-unit id="tl_module.rootPageDependentModules.1">
         <source>Please select a module for every website root page.</source>
-        <target>Выберите модуль для каждой корневой страницы веб-сайта.</target>
+        <target>Prosimo, izberite modul za vsako vrhnjo stran (root).</target>
       </trans-unit>
       <trans-unit id="tl_module.rootPageDependentModulesBlankOptionLabel">
         <source>Choose module for &quot;%s&quot; [%s]</source>
-        <target>Выберите модуль для &quot;%s&quot; [%s]</target>
+        <target>Izberite modul za &quot;%s&quot; [%s]</target>
       </trans-unit>
       <trans-unit id="tl_module.title_legend">
         <source>Title and type</source>
-        <target>Название и тип</target>
+        <target>Naslov in tip</target>
       </trans-unit>
       <trans-unit id="tl_module.label_legend">
         <source>Label</source>
-        <target>Метка</target>
+        <target>Nalepka</target>
       </trans-unit>
       <trans-unit id="tl_module.nav_legend">
         <source>Navigation settings</source>
-        <target>Настройки навигации</target>
+        <target>Nastavitve navigacije</target>
       </trans-unit>
       <trans-unit id="tl_module.reference_legend">
         <source>Reference page</source>
-        <target>Справочная страница</target>
+        <target>Referenčna stran</target>
       </trans-unit>
       <trans-unit id="tl_module.redirect_legend">
         <source>Redirect settings</source>
-        <target>Настройки перенаправления</target>
+        <target>Nastavitve preusmeritve</target>
       </trans-unit>
       <trans-unit id="tl_module.template_legend">
         <source>Template settings</source>
-        <target>Настройки шаблона</target>
+        <target>Nastavitve predloge</target>
       </trans-unit>
       <trans-unit id="tl_module.image_legend">
         <source>Image settings</source>
-        <target>Настройки изображения</target>
+        <target>Nastavitve slike</target>
       </trans-unit>
       <trans-unit id="tl_module.config_legend">
         <source>Module configuration</source>
-        <target>Конфигурация модуля</target>
+        <target>Nastavitev modula</target>
       </trans-unit>
       <trans-unit id="tl_module.include_legend">
         <source>Include settings</source>
-        <target>Настройки вложения</target>
+        <target>Vključi nastavitve</target>
       </trans-unit>
       <trans-unit id="tl_module.source_legend">
         <source>Source</source>
-        <target>Исходник</target>
+        <target>Izvor</target>
       </trans-unit>
       <trans-unit id="tl_module.html_legend">
         <source>Text/HTML</source>
-        <target>Текст/HTML</target>
+        <target>Tekst/HTML</target>
       </trans-unit>
       <trans-unit id="tl_module.protected_legend">
         <source>Access protection</source>
-        <target>Защита доступа</target>
+        <target>Zaščita pred dostopom</target>
       </trans-unit>
       <trans-unit id="tl_module.expert_legend">
         <source>Expert settings</source>
-        <target>Экспертные настройки</target>
+        <target>Napredne nastavitve</target>
       </trans-unit>
       <trans-unit id="tl_module.email_legend">
         <source>E-mail settings</source>
-        <target>Настройки E-mail</target>
+        <target>E-poštne nastavitve</target>
       </trans-unit>
       <trans-unit id="tl_module.account_legend">
         <source>Account settings</source>
-        <target>Настройки учетной записи</target>
+        <target>Nastavitve računa</target>
       </trans-unit>
       <trans-unit id="tl_module.emailText.0">
         <source>Your registration on %s</source>
-        <target>Ваша регистрация на %s</target>
+        <target>Vaša registracija na %s</target>
       </trans-unit>
       <trans-unit id="tl_module.emailText.1">
         <source>Thank you for your registration on ##domain##.
@@ -608,20 +601,19 @@ The confirmation link is valid for 24 hours.
 
 If you did not request an account, please ignore this e-mail.
 </source>
-        <target>Спасибо за регистрацию на ##domain##.
+        <target>Zahvaljujemo se vam za vašo registracijo na domeni ##domain##.
 
-Нажмите здесь, чтобы завершить регистрацию и активировать свою учетную запись:
+Prosimo le še to, da zaključite registracijo in aktivirate vaš uporabniški račun.
 
 ##link##
 
-Ссылка на подтверждение действительна в течение 24 часов.
+Povezava je veljavna 24 ur.
 
-Если вы не запрашивали регистрацию учетной записи, проигнорируйте это сообщение.
-</target>
+V kolikor niste zahtevali omenjenega računa, prosimo ignorirajte to e-sporočilo.</target>
       </trans-unit>
       <trans-unit id="tl_module.passwordText.0">
         <source>Your password request on %s</source>
-        <target>Запрос пароля на %s</target>
+        <target>Vaša zahteva za novo geslo na %s</target>
       </trans-unit>
       <trans-unit id="tl_module.passwordText.1">
         <source>You have requested a new password for ##domain##.
@@ -632,62 +624,62 @@ Click here to set the new password:
 
 If you did not request this e-mail, please contact the website administrator.
 </source>
-        <target>Вы запросили новый пароль для ##domain##.
+        <target>Zahtevali ste novo geslo na spletnem mestu ##domain##.
 
-Нажмите здесь, чтобы установить новый пароль:
+Kliknite tu, da si nastavite novo geslo:
 
 ##link##
 
-Если вы не запрашивали это электронное сообщение, свяжитесь с администратором веб-сайта.
+Če niste zahtevali tega sporočila, prosimo kontaktirajte skrbnika spletnega mesta.
 </target>
       </trans-unit>
       <trans-unit id="tl_module.internal">
         <source>Internal file</source>
-        <target>Внутренний файл</target>
+        <target>Interna datoteka</target>
       </trans-unit>
       <trans-unit id="tl_module.external">
         <source>External URL</source>
-        <target>Внешний URL</target>
+        <target>Zunanja URL povezava</target>
       </trans-unit>
       <trans-unit id="tl_module.close_deactivate">
         <source>Deactivate account</source>
-        <target>Деактивировать учетную запись</target>
+        <target>Onemogoči račun</target>
       </trans-unit>
       <trans-unit id="tl_module.close_delete">
         <source>Irrevocably delete account</source>
-        <target>Полностью удалить учетную запись</target>
+        <target>Nepreklicno izbriši račun</target>
       </trans-unit>
       <trans-unit id="tl_module.new.1">
         <source>Create a new module</source>
-        <target>Создать новый модуль</target>
+        <target>Ustvari nov modul</target>
       </trans-unit>
       <trans-unit id="tl_module.show.1">
         <source>Show the details of module ID %s</source>
-        <target>Показать детали модуля ID %s</target>
+        <target>Pokaži podrobnosti modula ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.versions.1">
         <source>Show the versions of module ID %s</source>
-        <target>Показать версии модуля ID %s</target>
+        <target>Prikaži različice modula z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.edit.1">
         <source>Edit module ID %s</source>
-        <target>Редактировать модуль ID %s</target>
+        <target>Uredi modul ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.copy.1">
         <source>Copy module ID %s</source>
-        <target>Копировать модуль ID %s</target>
+        <target>Kopiraj modul z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.cut.1">
         <source>Move module ID %s</source>
-        <target>Переместить модуль ID %s</target>
+        <target>Premakni modul ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.delete.1">
         <source>Delete module ID %s</source>
-        <target>Удалить модуль ID %s</target>
+        <target>Izbriši modul ID %s</target>
       </trans-unit>
       <trans-unit id="tl_module.tableLabel">
         <source>Module</source>
-        <target>Модуль</target>
+        <target>Modul</target>
       </trans-unit>
     </body>
   </file>

@@ -1,217 +1,216 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_theme.php" source-language="en" target-language="ru">
+  <file datatype="php" original="contao/languages/en/tl_theme.php" source-language="en" target-language="sl">
     <body>
       <trans-unit id="tl_theme.name.0">
         <source>Title</source>
-        <target>Название</target>
+        <target>Naziv</target>
       </trans-unit>
       <trans-unit id="tl_theme.name.1">
         <source>Please enter a unique theme title.</source>
-        <target>Введите уникальное название темы.</target>
+        <target>Prosimo, vnseite edinstveno ime teme.</target>
       </trans-unit>
       <trans-unit id="tl_theme.author.0">
         <source>Author</source>
-        <target>Автор</target>
+        <target>Avtor</target>
       </trans-unit>
       <trans-unit id="tl_theme.author.1">
         <source>Please enter the name of the theme designer.</source>
-        <target>Введите имя дизайнера темы.</target>
+        <target>Prosimo, vnesite ime ustvarjalca teme.</target>
       </trans-unit>
       <trans-unit id="tl_theme.folders.0">
         <source>Folders</source>
-        <target>Каталоги</target>
+        <target>Imeniki</target>
       </trans-unit>
       <trans-unit id="tl_theme.folders.1">
         <source>Please select the folders that belong to the theme from the files directory.</source>
-        <target>Выберите каталоги, которые относятся к теме.</target>
+        <target>Prosimo, izberite mape iz datotečnega imenika, ki pripadajo tej temi.</target>
       </trans-unit>
       <trans-unit id="tl_theme.templates.0">
         <source>Templates folder</source>
-        <target>Каталог шаблонов</target>
+        <target>Imenik predlog</target>
       </trans-unit>
       <trans-unit id="tl_theme.templates.1">
         <source>Here you can select a templates folder that will be exported with the theme.</source>
-        <target>Вы можете выбрать каталог шаблонов, который будет экспортирован с темой.</target>
+        <target>Tu lahko izberete imenik predlog, ki bo izvožen skupaj s temo.</target>
       </trans-unit>
       <trans-unit id="tl_theme.screenshot.0">
         <source>Screenshot</source>
-        <target>Скриншот</target>
+        <target>Predogled teme</target>
       </trans-unit>
       <trans-unit id="tl_theme.screenshot.1">
         <source>Here you can choose a screenshot of the theme.</source>
-        <target>Вы можете выбрать скриншот темы.</target>
+        <target>Tu lahko izberete predogledno sliko teme.</target>
       </trans-unit>
       <trans-unit id="tl_theme.source.0">
         <source>Source files</source>
-        <target>Исходные файлы</target>
+        <target>Izvorne datoteke</target>
       </trans-unit>
       <trans-unit id="tl_theme.source.1">
         <source>Here you can upload one or more .cto, .zip or .sql files to be imported.</source>
-        <target>Вы можете загрузить один или несколько файлов .cto, .zip или .sql для импорта.</target>
+        <target>Tu lahko naložite eno ali več datotek .cto, .zip ali .sql, ki bodo uvožene.</target>
       </trans-unit>
       <trans-unit id="tl_theme.tstamp.0">
         <source>Revision date</source>
-        <target>Дата изменения</target>
+        <target>Datum revizije</target>
       </trans-unit>
       <trans-unit id="tl_theme.tstamp.1">
         <source>Date and time of the latest revision</source>
-        <target>Дата и время последнего изменения</target>
+        <target>Datum in ura zadnje revizije</target>
       </trans-unit>
       <trans-unit id="tl_theme.title_legend">
         <source>Title and author</source>
-        <target>Название и автор</target>
+        <target>Naslov in avtor</target>
       </trans-unit>
       <trans-unit id="tl_theme.config_legend">
         <source>Configuration</source>
-        <target>Конфигурация</target>
+        <target>Nastavitev</target>
       </trans-unit>
       <trans-unit id="tl_theme.theme_imported">
         <source>Theme &quot;%s&quot; has been imported.</source>
-        <target>Тема &quot;%s&quot; успешно импортирована.</target>
+        <target>Tema &quot;%s&quot; je bila uvožena.</target>
       </trans-unit>
       <trans-unit id="tl_theme.checking_theme">
         <source>The theme data is being checked</source>
-        <target>Проверка данных темы</target>
+        <target>Podatki teme se pregledujejo</target>
       </trans-unit>
       <trans-unit id="tl_theme.tables_fields">
         <source>Tables and fields</source>
-        <target>Таблицы и поля</target>
+        <target>Tabele in polja</target>
       </trans-unit>
       <trans-unit id="tl_theme.missing_field">
         <source>The field &lt;strong&gt;%s&lt;/strong&gt; is missing in the database and will not be imported.</source>
-        <target>Поле &lt;strong&gt;%s&lt;/strong&gt; отсутствует в базе данных и не будет импортировано.</target>
+        <target>Polje &lt;strong&gt;%s&lt;/strong&gt; manjka v podatkovni bazi in ga zato ne bom mogel uvoziti.</target>
       </trans-unit>
       <trans-unit id="tl_theme.tables_ok">
         <source>The tables have been successfully checked.</source>
-        <target>Таблицы успешно проверены.</target>
+        <target>Tabele so bile uspešno pregledane.</target>
       </trans-unit>
       <trans-unit id="tl_theme.missing_xml">
         <source>Theme &quot;%s&quot; is corrupt and cannot be imported.</source>
-        <target>Тема &quot;%s&quot; повреждена и не может быть импортирована.</target>
+        <target>Tema &quot;%s&quot; je okvarjena in ne more biti uvožena.</target>
       </trans-unit>
       <trans-unit id="tl_theme.custom_templates">
         <source>Custom templates</source>
-        <target>Пользовательские шаблоны</target>
+        <target>Predloge po meeri</target>
       </trans-unit>
       <trans-unit id="tl_theme.template_exists">
         <source>The template &lt;strong&gt;&quot;%s&quot;&lt;/strong&gt; exists and will be overwritten.</source>
-        <target>Шаблон &lt;strong&gt;&quot;%s&quot;&lt;/strong&gt; уже существует и будет перезаписан.</target>
+        <target>Predloga &lt;strong&gt;&quot;%s&quot;&lt;/strong&gt; že obstaja in bo prepisana.</target>
       </trans-unit>
       <trans-unit id="tl_theme.templates_ok">
         <source>No conflicts detected.</source>
-        <target>Конфликты не обнаружены.</target>
+        <target>Težav ni bilo zaznanih.</target>
       </trans-unit>
       <trans-unit id="tl_theme.store.0">
         <source>Theme store</source>
-        <target>Магазин шаблонов</target>
+        <target>Trgovina tem</target>
       </trans-unit>
       <trans-unit id="tl_theme.store.1">
         <source>Find more themes in the Contao theme store</source>
-        <target>Найти темы в магазине шаблонов Contao</target>
+        <target>Naj več tem v Contao trgovini tem.</target>
       </trans-unit>
       <trans-unit id="tl_theme.importTheme.0">
         <source>Import</source>
-        <target>Импорт</target>
+        <target>Uvoz</target>
       </trans-unit>
       <trans-unit id="tl_theme.importTheme.1">
         <source>Import a theme</source>
-        <target>Импорт темы</target>
+        <target>Uvozi temo</target>
       </trans-unit>
       <trans-unit id="tl_theme.selectExampleWebsite.0">
         <source>Import an example website</source>
-        <target>Импорт примера веб-сайта</target>
+        <target>Uvozite primer spletne strani</target>
       </trans-unit>
       <trans-unit id="tl_theme.selectExampleWebsite.1">
         <source>Here you can import an &lt;code&gt;.sql&lt;/code&gt; file. Any existing data will be deleted! If you only want to import a theme, do not select a file here.</source>
-        <target>Вы можете импортировать файл &lt;code&gt;.sql&lt;/code&gt;. Любые существующие данные будут удалены! Если хотите импортировать только тему, не выбирайте файл здесь.</target>
+        <target>Tu lahko uvozite datoteko &lt;code&gt;.sql&lt;/code&gt;. Obstoječi podatki bodo izbrisani! Če želite uvoziti samo predlogo, tu ne izberite datoteke.</target>
       </trans-unit>
       <trans-unit id="tl_theme.exampleWebsiteImportType.0">
         <source>Import type</source>
-        <target>Тип импорта</target>
+        <target>Vrsta uvoza</target>
       </trans-unit>
       <trans-unit id="tl_theme.exampleWebsiteImportType.1">
         <source>Here you can select the import type.</source>
-        <target>Вы можете выбрать тип импорта.</target>
+        <target>Tu lahko izberete vrsto uvoza.</target>
       </trans-unit>
       <trans-unit id="tl_theme.exampleWebsiteImport.full">
         <source>Full SQL import</source>
-        <target>Полный импорт SQL</target>
+        <target>Poln uvoz SQL</target>
       </trans-unit>
       <trans-unit id="tl_theme.exampleWebsiteImport.data">
         <source>Data only</source>
-        <target>Только данные</target>
+        <target>Samo podatki</target>
       </trans-unit>
       <trans-unit id="tl_theme.exampleWebsiteImport.data_no_truncate">
         <source>Data only without truncating tables</source>
-        <target>Только данные без усечения таблиц</target>
       </trans-unit>
       <trans-unit id="tl_theme.editmeta">
         <source>Edit the theme settings</source>
-        <target>Редактировать настройки темы</target>
+        <target>Uredi nastavitve teme</target>
       </trans-unit>
       <trans-unit id="tl_theme.new.1">
         <source>Create a new theme</source>
-        <target>Создать новую тему</target>
+        <target>Ustvari novo temo</target>
       </trans-unit>
       <trans-unit id="tl_theme.show.1">
         <source>Show the details of theme ID %s</source>
-        <target>Показать детали темы ID %s</target>
+        <target>Prikaži podrobnosti teme ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.versions.1">
         <source>Show the versions of theme ID %s</source>
-        <target>Показать версии темы ID %s</target>
+        <target>Prikaži različice teme z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.edit.1">
         <source>Edit theme ID %s</source>
-        <target>Редактировать тему ID %s</target>
+        <target>Uredi temo z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.delete.1">
         <source>Delete theme ID %s</source>
-        <target>Удалить тему ID %s</target>
+        <target>Izbriši temo z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.modules.0">
         <source>Front end modules</source>
-        <target>Модули внешнего интерфейса</target>
+        <target>Moduli na spletnem mestu</target>
       </trans-unit>
       <trans-unit id="tl_theme.modules.1">
         <source>Edit the front end modules of theme ID %s</source>
-        <target>Редактировать модули внешнего интерфейса ID %s</target>
+        <target>Uredi predstavitvene module (front end) teme z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.elements.0">
         <source>Content elements</source>
-        <target>Элементы контента</target>
+        <target>Elementi vsebine</target>
       </trans-unit>
       <trans-unit id="tl_theme.elements.1">
         <source>Edit the content elements of theme ID %s</source>
-        <target>Редактировать элементы контента темы ID %s</target>
+        <target>Uredi elemente vsebine v temi z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.layout.0">
         <source>Page layouts</source>
-        <target>Макеты страниц</target>
+        <target>Postavitve strani</target>
       </trans-unit>
       <trans-unit id="tl_theme.layout.1">
         <source>Edit the page layouts of theme ID %s</source>
-        <target>Изменить макет страницы темы ID %s</target>
+        <target>Uredi postavitve strani teme z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.imageSizes.0">
         <source>Image sizes</source>
-        <target>Размеры изображения</target>
+        <target>Velikosti slik</target>
       </trans-unit>
       <trans-unit id="tl_theme.imageSizes.1">
         <source>Edit the image sizes of theme ID %s</source>
-        <target>Редактировать размеры изображения темы ID %s</target>
+        <target>Uredi velikosti slik teme ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.exportTheme.0">
         <source>Export theme</source>
-        <target>Экспорт темы</target>
+        <target>Izvozi temo</target>
       </trans-unit>
       <trans-unit id="tl_theme.exportTheme.1">
         <source>Export theme ID %s</source>
-        <target>Экспорт темы ID %s</target>
+        <target>Izvoz teme ID %s</target>
       </trans-unit>
       <trans-unit id="tl_theme.tableLabel">
         <source>Theme</source>
-        <target>Тема</target>
+        <target>Tema</target>
       </trans-unit>
     </body>
   </file>

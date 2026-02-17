@@ -1,253 +1,245 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="contao/languages/en/tl_layout.php" source-language="en" target-language="ru">
+  <file datatype="php" original="contao/languages/en/tl_layout.php" source-language="en" target-language="sl">
     <body>
       <trans-unit id="tl_layout.name.0">
         <source>Title</source>
-        <target>Название</target>
+        <target>Naziv</target>
       </trans-unit>
       <trans-unit id="tl_layout.name.1">
         <source>Please enter the layout title.</source>
-        <target>Введите название макета.</target>
+        <target>Prosimo, vnesite naziv postavitve.</target>
       </trans-unit>
       <trans-unit id="tl_layout.type.0">
         <source>Layout type</source>
-        <target>Тип макета</target>
+        <target>Vrsta postavitve</target>
       </trans-unit>
       <trans-unit id="tl_layout.type.1">
         <source>Here you can select the layout type.</source>
-        <target>Вы можете выбрать тип макета.</target>
+        <target>Tu lahko izberete vrsto postavitve.</target>
       </trans-unit>
       <trans-unit id="tl_layout.rows.0">
         <source>Rows</source>
-        <target>Строки</target>
+        <target>Glava in noga</target>
       </trans-unit>
       <trans-unit id="tl_layout.rows.1">
         <source>Please choose the number of rows.</source>
-        <target>Выберите количество строк.</target>
+        <target>Prosim, izberite število vrstic.</target>
       </trans-unit>
       <trans-unit id="tl_layout.1rw.0">
         <source>Main row only</source>
-        <target>Только основная строка</target>
+        <target>Samo osnovna vrstica</target>
       </trans-unit>
       <trans-unit id="tl_layout.1rw.1">
         <source>Show only one row.</source>
-        <target>Показывать только одну строку.</target>
+        <target>Prikaži eno samo vrstico.</target>
       </trans-unit>
       <trans-unit id="tl_layout.2rwh.0">
         <source>Header and main row</source>
-        <target>Верхний колонтитул и основная строка</target>
+        <target>Glava in osnovna vrstica</target>
       </trans-unit>
       <trans-unit id="tl_layout.2rwh.1">
         <source>Show a header above the main row.</source>
-        <target>Показывать верхний колонтитул над основной строкой.</target>
+        <target>Prikaži glavo nad osnovno vrstico.</target>
       </trans-unit>
       <trans-unit id="tl_layout.2rwf.0">
         <source>Main row and footer</source>
-        <target>Основная строка и нижний колонтитул</target>
+        <target>Osnovna vrstica in noga</target>
       </trans-unit>
       <trans-unit id="tl_layout.2rwf.1">
         <source>Show a footer below the main row.</source>
-        <target>Показывать нижний колонтитул под основной строкой.</target>
+        <target>Prikaži nogo pod osnovno vrstico.</target>
       </trans-unit>
       <trans-unit id="tl_layout.3rw.0">
         <source>Header, main row and footer</source>
-        <target>Верхний колонтитул, основная строка и нижний колонтитул</target>
+        <target>Glava, osnovna vrstica in noga</target>
       </trans-unit>
       <trans-unit id="tl_layout.3rw.1">
         <source>Show a header above and a footer below the main row.</source>
-        <target>Показывать верхний колонтитул выше и нижний колонтитул ниже основной строки.</target>
+        <target>Prikaži glavo nad in nogo pod osnovno vrstico.</target>
       </trans-unit>
       <trans-unit id="tl_layout.headerHeight.0">
         <source>Header height</source>
-        <target>Высота верхнего колонтитула</target>
+        <target>Višina glave</target>
       </trans-unit>
       <trans-unit id="tl_layout.headerHeight.1">
         <source>Please enter the height of the page header.</source>
-        <target>Введите высоту верхнего колонтитула.</target>
+        <target>Prosimo, določite višino glave strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.footerHeight.0">
         <source>Footer height</source>
-        <target>Высота нижнего колонтитула</target>
+        <target>Višina noge</target>
       </trans-unit>
       <trans-unit id="tl_layout.footerHeight.1">
         <source>Please enter the height of the page footer.</source>
-        <target>Введите высоту нижнего колонтитула.</target>
+        <target>Prosimo, določite višino noge strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.cols.0">
         <source>Columns</source>
-        <target>Колонки</target>
+        <target>Nastavitve stolpcev</target>
       </trans-unit>
       <trans-unit id="tl_layout.cols.1">
         <source>Please choose the number of columns.</source>
-        <target>Выберите количество и расположение колонок.</target>
+        <target>Prosimo, izberite število stolpcev.</target>
       </trans-unit>
       <trans-unit id="tl_layout.1cl.0">
         <source>Main column only</source>
-        <target>Основная колонка</target>
+        <target>Samo glavni stolpec</target>
       </trans-unit>
       <trans-unit id="tl_layout.1cl.1">
         <source>Show only one column.</source>
-        <target>Показать только основную колонку.</target>
+        <target>prikaži samo en stolpec.</target>
       </trans-unit>
       <trans-unit id="tl_layout.2cll.0">
         <source>Left and main column</source>
-        <target>Левая и основная колонка</target>
+        <target>Levi in glavni stolpec</target>
       </trans-unit>
       <trans-unit id="tl_layout.2cll.1">
         <source>Show two columns with the main column on the right side.</source>
-        <target>Показать две колонки, где основная колонка с правой стороны.</target>
+        <target>prikaži dva stoplca, z glavnim na desni strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.2clr.0">
         <source>Main and right column</source>
-        <target>Основная и правая колонка</target>
+        <target>Desni in glavni stolpec</target>
       </trans-unit>
       <trans-unit id="tl_layout.2clr.1">
         <source>Show two columns with the main column on the left side.</source>
-        <target>Показать две колонки, где основная колонка с левой стороны.</target>
+        <target>prikaži dva stoplca, z glavnim na levi strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.3cl.0">
         <source>Main, left and right column</source>
-        <target>Левая, основная и правая колонка</target>
+        <target>Glavni, levi in desni stolpec</target>
       </trans-unit>
       <trans-unit id="tl_layout.3cl.1">
         <source>Show three columns with the main column in the middle.</source>
-        <target>Показать три колонки, где основная колонка посередине, между левой и правой.</target>
+        <target>prikaži tri stoplce, z glavnim na sredini.</target>
       </trans-unit>
       <trans-unit id="tl_layout.widthLeft.0">
         <source>Left column width</source>
-        <target>Ширина левой колонки</target>
+        <target>Širina levega stolpca</target>
       </trans-unit>
       <trans-unit id="tl_layout.widthLeft.1">
         <source>Please enter the width of the left column.</source>
-        <target>Введите ширину левой колонки</target>
+        <target>Prosimo, vnesite širino levega stolpca.</target>
       </trans-unit>
       <trans-unit id="tl_layout.widthRight.0">
         <source>Right column width</source>
-        <target>Ширина правой колонки</target>
+        <target>Širina desnega stolpca</target>
       </trans-unit>
       <trans-unit id="tl_layout.widthRight.1">
         <source>Please enter the width of the right column.</source>
-        <target>Введите ширину правой колонки</target>
+        <target>Prosimo, vnesite širino desnega stolpca.</target>
       </trans-unit>
       <trans-unit id="tl_layout.sections.0">
         <source>Custom layout sections</source>
-        <target>Пользовательские секции макета</target>
+        <target>Prilagojeni razdelki postavitve</target>
       </trans-unit>
       <trans-unit id="tl_layout.sections.1">
         <source>Here you can define custom layout sections.</source>
-        <target>Вы можете определить пользовательские секции макета.</target>
+        <target>Tukaj lahko definirate prilagojene razdelke postavitve.</target>
       </trans-unit>
       <trans-unit id="tl_layout.framework.0">
         <source>CSS framework</source>
-        <target>CSS фреймворк</target>
+        <target>CSS ogrodje</target>
       </trans-unit>
       <trans-unit id="tl_layout.framework.1">
         <source>Here you can activate the components of the Contao CSS framework.</source>
-        <target>Вы можете активировать компоненты CSS фреймворка Contao.</target>
       </trans-unit>
       <trans-unit id="tl_layout.layout.css.0">
         <source>Layout builder</source>
-        <target>Конструктор макетов</target>
       </trans-unit>
       <trans-unit id="tl_layout.layout.css.1">
         <source>Generates a CSS layout based on the page layout settings. This component is required for the page layout generator to work!</source>
-        <target>Создает CSS макет с учетом настроек макета страницы. Компонент необходим для работы генератора макетов страницы!</target>
       </trans-unit>
       <trans-unit id="tl_layout.responsive.css.0">
         <source>Responsive layout</source>
-        <target>Адаптивный макет</target>
+        <target>Odzivni dizajn (RWD)</target>
       </trans-unit>
       <trans-unit id="tl_layout.responsive.css.1">
         <source>Adds a meta viewport tag to the page header and scales the CSS layout based on the device width.</source>
-        <target>Добавляет мета-тег viewport в верхний колонтитул страницы и масштабирует CSS макет в зависимости от ширины устройства.</target>
       </trans-unit>
       <trans-unit id="tl_layout.grid.css.0">
         <source>12-column grid</source>
-        <target>12 колоночная сетка</target>
+        <target>mreža z 12 stolpci</target>
       </trans-unit>
       <trans-unit id="tl_layout.grid.css.1">
         <source>Adds a responsive 12-column grid that is triggered by the CSS classes &quot;grid1&quot; to &quot;grid12&quot; and &quot;offset1&quot; to &quot;offset12&quot;.</source>
-        <target>Добавляет адаптивную сетку из 12 колонок, которая создается CSS классами от &quot;grid1&quot; до &quot;grid12&quot; и от &quot;offset1&quot; до &quot;offset12&quot;.</target>
       </trans-unit>
       <trans-unit id="tl_layout.reset.css.0">
         <source>CSS reset</source>
-        <target>Сброс CSS</target>
+        <target>CSS reset</target>
       </trans-unit>
       <trans-unit id="tl_layout.reset.css.1">
         <source>Removes the inconsistent default styling of HTML elements in different browsers.</source>
-        <target>Удаляет несовместимые стили по умолчанию для HTML элементов в разных браузерах.</target>
       </trans-unit>
       <trans-unit id="tl_layout.form.css.0">
         <source>Basic forms</source>
-        <target>Основные формы </target>
+        <target>Osnovni obrazci</target>
       </trans-unit>
       <trans-unit id="tl_layout.form.css.1">
         <source>Adds basic form elements and buttons formatting.</source>
-        <target>Добавляет форматирование элементов и кнопок основной формы.</target>
+        <target>Doda osnovno oblikovanje elementov obrazca in gumbov.</target>
       </trans-unit>
       <trans-unit id="tl_layout.icons.css.0">
         <source>Basic icons</source>
-        <target>Основные значки</target>
+        <target>Osnovne ikone</target>
       </trans-unit>
       <trans-unit id="tl_layout.icons.css.1">
         <source>Adds basic mime icons for downloads and enclosures.</source>
-        <target>Добавляет основные mime-значки для загрузок и вложений.</target>
       </trans-unit>
       <trans-unit id="tl_layout.external.0">
         <source>External style sheets</source>
-        <target>Внешние таблицы стилей</target>
+        <target>Zunanje slogovne predloge</target>
       </trans-unit>
       <trans-unit id="tl_layout.external.1">
         <source>Here you can add external CSS, SCSS or LESS files from the file system.</source>
-        <target>Вы можете добавить внешние CSS, SCSS или LESS файлы из файловой системы.</target>
+        <target>Tu lahko dodate zunanje datoteke CSS, SCSS ali LESS iz datotčnega sistema.</target>
       </trans-unit>
       <trans-unit id="tl_layout.combineScripts.0">
         <source>Combine scripts</source>
-        <target>Объединять скрипты</target>
+        <target>Združi skripte</target>
       </trans-unit>
       <trans-unit id="tl_layout.combineScripts.1">
         <source>Combine the .css and .js files (recommended).</source>
-        <target>Объединять .css- и .js-файлы (рекомендуется).</target>
+        <target>Združi datoteke .css in .js (priporočeno).</target>
       </trans-unit>
       <trans-unit id="tl_layout.lightboxSize.0">
         <source>Lightbox image size</source>
-        <target>Размер изображения лайтбокса</target>
+        <target>Velikost slik v lightbox</target>
       </trans-unit>
       <trans-unit id="tl_layout.lightboxSize.1">
         <source>Here you can select an image size for the images shown in the lightbox.</source>
-        <target>Вы можете выбрать размеры изображений, отображаемых в лайтбоксе.</target>
+        <target>Tu lahko izberete velikost slik, ki se prikažejo v lightbox.</target>
       </trans-unit>
       <trans-unit id="tl_layout.defaultImageDensities.0">
         <source>Default image pixel densities</source>
-        <target>Плотность пикселей изображения по умолчанию</target>
+        <target>Privzete gostote pikslov slike</target>
       </trans-unit>
       <trans-unit id="tl_layout.defaultImageDensities.1">
         <source>Here you can define the default pixel densities, e.g. &lt;em&gt;1x, 1.5x, 2x&lt;/em&gt;.</source>
-        <target>Вы можете определить плотность пикселей по умолчанию, напр.,&lt;em&gt;1x, 1.5x, 2x&lt;/em&gt;.</target>
+        <target>Tu lahko določite privzeto gostoto pikslov, npr. &lt;em&gt;1x, 1.5x, 2x&lt;/ em&gt;.</target>
       </trans-unit>
       <trans-unit id="tl_layout.modules.0">
         <source>Included elements</source>
-        <target>Включенные элементы</target>
+        <target>Vključeni elementi</target>
       </trans-unit>
       <trans-unit id="tl_layout.modules.1">
         <source>Here you can assign front end modules and content elements to the layout.</source>
-        <target>Вы можете назначить макету модули интерфейса и элементы контента.</target>
       </trans-unit>
       <trans-unit id="tl_layout.template.0">
         <source>Page template</source>
-        <target>Шаблон макета</target>
+        <target>Predloga strani</target>
       </trans-unit>
       <trans-unit id="tl_layout.template.1">
         <source>Here you can select the page template.</source>
-        <target>Вы можете выбрать шаблон макета.</target>
+        <target>Tu lahko izberete predlogo strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.minifyMarkup.0">
         <source>Minify the markup</source>
-        <target>Минимизировать разметку</target>
+        <target>Skrči HTML označevanje</target>
       </trans-unit>
       <trans-unit id="tl_layout.minifyMarkup.1">
         <source>Minify the HTML markup before it is sent to the browser.</source>
-        <target>Минимизировать HTML разметку перед отправкой в браузер.</target>
+        <target>Skrči HTML označevanje preden je poslano brskalniku.</target>
       </trans-unit>
       <trans-unit id="tl_layout.cssClass.0">
         <source>Body class</source>
@@ -255,23 +247,23 @@
       </trans-unit>
       <trans-unit id="tl_layout.cssClass.1">
         <source>Here you can add custom classes to the &amp;lt;body&amp;gt; tag.</source>
-        <target>Вы можете добавить атрибуты класса для тега &amp;lt;body&amp;gt;.</target>
+        <target>Tu lahko vnesete prilagojene razrede CSS za HTML element &amp;lt;body&amp;gt;.</target>
       </trans-unit>
       <trans-unit id="tl_layout.viewport.0">
         <source>Viewport tag</source>
-        <target>Тег viewport</target>
+        <target>Element viewport</target>
       </trans-unit>
       <trans-unit id="tl_layout.viewport.1">
         <source>Here you can set a custom viewport tag.</source>
-        <target>Вы можете установить пользовательский тег viewport.</target>
+        <target>Tu lahko nastavite poljubno vsebino elementa viewport.</target>
       </trans-unit>
       <trans-unit id="tl_layout.titleTag.0">
         <source>Title tag</source>
-        <target>Тег title (название)</target>
+        <target>Oznaka naslova</target>
       </trans-unit>
       <trans-unit id="tl_layout.titleTag.1">
         <source>Here you can overwrite the title tag.</source>
-        <target>Вы можете переписать тег title.</target>
+        <target>Tu lahko prepišete oznako title.</target>
       </trans-unit>
       <trans-unit id="tl_layout.onload.0">
         <source>Body onload</source>
@@ -279,139 +271,139 @@
       </trans-unit>
       <trans-unit id="tl_layout.onload.1">
         <source>Here you can add a body &lt;em&gt;onload&lt;/em&gt; attribute.</source>
-        <target>Вы можете добавить событие &lt;em&gt;onload&lt;/em&gt; для тега body.</target>
+        <target>Tu lahko elementu body nastavite atribut &lt;em&gt;onload&lt;/em&gt;. </target>
       </trans-unit>
       <trans-unit id="tl_layout.head.0">
         <source>Additional &amp;lt;head&amp;gt; tags</source>
-        <target>Дополнительные теги &amp;lt;head&amp;gt;</target>
+        <target>Dodatne oznake</target>
       </trans-unit>
       <trans-unit id="tl_layout.head.1">
         <source>Here you can add individual tags to the &amp;lt;head&amp;gt; section of the page.</source>
-        <target>Вы можете добавить дополнительные теги в раздел &amp;lt;head&amp;gt; страницы.</target>
+        <target>Tu lahko vnesete posamezne elemente HTML v glavo, t.j. lt;head&amp;gt;, strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.addJQuery.0">
         <source>Include jQuery</source>
-        <target>Включать jQuery</target>
+        <target>Vključi jQuery</target>
       </trans-unit>
       <trans-unit id="tl_layout.addJQuery.1">
         <source>Include the jQuery library in the layout.</source>
-        <target>Включать библиотеку jQuery в макет.</target>
+        <target>Dodaj knjižnico jQuery v postavitev strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.jquery.0">
         <source>jQuery templates</source>
-        <target>Шаблоны jQuery</target>
+        <target>Predloge jQuery</target>
       </trans-unit>
       <trans-unit id="tl_layout.jquery.1">
         <source>Here you can select one or more jQuery templates.</source>
-        <target>Вы можете выбрать один или несколько jQuery шаблонов.</target>
+        <target>Tu lahko izberete eno ali več predlog jQuery.</target>
       </trans-unit>
       <trans-unit id="tl_layout.addMooTools.0">
         <source>Include MooTools</source>
-        <target>Включать MooTools</target>
+        <target>Vključi knjižnico MooTools</target>
       </trans-unit>
       <trans-unit id="tl_layout.addMooTools.1">
         <source>Include the MooTools library in the layout.</source>
-        <target>Включать библиотеку MooTools в макет.</target>
+        <target>Dodaj knjižnico MooTools v postavitev strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.mootools.0">
         <source>MooTools templates</source>
-        <target>Шаблоны MooTools</target>
+        <target>MooTools predloge</target>
       </trans-unit>
       <trans-unit id="tl_layout.mootools.1">
         <source>Here you can select one or more MooTools templates.</source>
-        <target>Вы можете выбрать один или несколько MooTools шаблонов.</target>
+        <target>Tu lahko izberete eno ali več MooTools predlog.</target>
       </trans-unit>
       <trans-unit id="tl_layout.scripts.0">
         <source>JavaScript templates</source>
-        <target>Шаблон JavaScript</target>
+        <target>JavaScript predloge</target>
       </trans-unit>
       <trans-unit id="tl_layout.scripts.1">
         <source>Here you can select one or more JavaScript templates.</source>
-        <target>Вы можете выбрать один или несколько JavaScript шаблонов.</target>
+        <target>Tu lahko izberete eno ali več predlog JavaScript.</target>
       </trans-unit>
       <trans-unit id="tl_layout.analytics.0">
         <source>Analytics templates</source>
-        <target>Шаблоны аналитики</target>
+        <target>Predloga za merjenje obiskanosti - Analytics</target>
       </trans-unit>
       <trans-unit id="tl_layout.analytics.1">
         <source>Here you can select one or more analytics templates.</source>
-        <target>Вы можете выбрать один или несколько шаблонов статистики.</target>
+        <target>Tu lahko izberete eno ali več &quot;analytics&quot; predlog.</target>
       </trans-unit>
       <trans-unit id="tl_layout.externalJs.0">
         <source>External JavaScripts</source>
-        <target>Внешние JavaScripts</target>
+        <target>Zunanje datoteke JavaScript</target>
       </trans-unit>
       <trans-unit id="tl_layout.externalJs.1">
         <source>Here you can add external JS files from the file system.</source>
-        <target>Вы можете добавить внешние файлы JS из файловой системы.</target>
+        <target>Tu lahko vnesete zunanje datoteke JS iz datotečnega sistema.</target>
       </trans-unit>
       <trans-unit id="tl_layout.script.0">
         <source>Custom JavaScript code</source>
-        <target>Пользовательский JavaScript-код</target>
+        <target>Prilagojena JavaScript koda.</target>
       </trans-unit>
       <trans-unit id="tl_layout.script.1">
         <source>The JavaScript code which will be inserted at the bottom of the page.</source>
-        <target>Пользовательский JavaScript-код будет вставлен в нижней части страницы.</target>
+        <target>JavaScript koda, ki bo vstavljena na dno strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.static.0">
         <source>Static layout</source>
-        <target>Статический макет</target>
+        <target>Statična postavitev</target>
       </trans-unit>
       <trans-unit id="tl_layout.static.1">
         <source>Create a static layout with a fixed width and alignment.</source>
-        <target>Создайте статической макет с фиксированной шириной и выравниванием.</target>
+        <target>Ustvari statično postavitev s točno določeno širino in poravnavo.</target>
       </trans-unit>
       <trans-unit id="tl_layout.width.0">
         <source>Overall width</source>
-        <target>Общая ширина макета</target>
+        <target>Celotna širina</target>
       </trans-unit>
       <trans-unit id="tl_layout.width.1">
         <source>The overall width will be applied to the wrapper element.</source>
-        <target>Введите общую ширину, которая будет задана элементу wrapper.</target>
+        <target>Celotna širina bo uveljavljana na ovoju.</target>
       </trans-unit>
       <trans-unit id="tl_layout.align.0">
         <source>Alignment</source>
-        <target>Выравнивание</target>
+        <target>Poravnava</target>
       </trans-unit>
       <trans-unit id="tl_layout.align.1">
         <source>Please select the alignment of the page.</source>
-        <target>Выберите выравнивание страницы.</target>
+        <target>Prosimo, izberite poravnavo na strani.</target>
       </trans-unit>
       <trans-unit id="tl_layout.title_legend">
         <source>Title and type</source>
-        <target>Название и тип</target>
+        <target>Naslov in tip</target>
       </trans-unit>
       <trans-unit id="tl_layout.header_legend">
         <source>Rows</source>
-        <target>Строки</target>
+        <target>Glava in noga</target>
       </trans-unit>
       <trans-unit id="tl_layout.column_legend">
         <source>Columns</source>
-        <target>Колонки</target>
+        <target>Nastavitve stolpcev</target>
       </trans-unit>
       <trans-unit id="tl_layout.sections_legend">
         <source>Custom sections</source>
-        <target>Пользовательские секции</target>
+        <target>Prilagojeni razdelki</target>
       </trans-unit>
       <trans-unit id="tl_layout.image_legend">
         <source>Image sizes</source>
-        <target>Размеры изображения</target>
+        <target>Velikosti slik</target>
       </trans-unit>
       <trans-unit id="tl_layout.style_legend">
         <source>Style sheets</source>
-        <target>Таблицы стилей</target>
+        <target>Slogovne predloge</target>
       </trans-unit>
       <trans-unit id="tl_layout.feed_legend">
         <source>Feeds</source>
-        <target>Каналы</target>
+        <target>Viri (feeds)</target>
       </trans-unit>
       <trans-unit id="tl_layout.modules_legend">
         <source>Include settings</source>
-        <target>Настройки вложения</target>
+        <target>Vključi nastavitve</target>
       </trans-unit>
       <trans-unit id="tl_layout.expert_legend">
         <source>Expert settings</source>
-        <target>Экспертные настройки</target>
+        <target>Napredne nastavitve</target>
       </trans-unit>
       <trans-unit id="tl_layout.script_legend">
         <source>JavaScript</source>
@@ -419,7 +411,7 @@
       </trans-unit>
       <trans-unit id="tl_layout.static_legend">
         <source>Static layout</source>
-        <target>Статический макет</target>
+        <target>Statična postavitev</target>
       </trans-unit>
       <trans-unit id="tl_layout.jquery_legend">
         <source>jQuery</source>
@@ -431,11 +423,10 @@
       </trans-unit>
       <trans-unit id="tl_layout.modern">
         <source>Twig layout with slots</source>
-        <target>Макет Twig со слотами</target>
       </trans-unit>
       <trans-unit id="tl_layout.default">
         <source>Default layout</source>
-        <target>Макет по умолчанию</target>
+        <target>Privzeta postavitev</target>
       </trans-unit>
       <trans-unit id="tl_layout.html5">
         <source>HTML</source>
@@ -443,7 +434,7 @@
       </trans-unit>
       <trans-unit id="tl_layout.edit_module">
         <source>Edit the module</source>
-        <target>Редактировать модуль</target>
+        <target>Uredite module</target>
       </trans-unit>
       <trans-unit id="tl_layout.analytics_google">
         <source>Google Analytics</source>
@@ -455,35 +446,35 @@
       </trans-unit>
       <trans-unit id="tl_layout.new.1">
         <source>Create a new page layout</source>
-        <target>Создать новый макет страницы</target>
+        <target>Ustvari novo postavitev strani</target>
       </trans-unit>
       <trans-unit id="tl_layout.show.1">
         <source>Show the details of page layout ID %s</source>
-        <target>Показать детали макета страницы ID %s</target>
+        <target>Prikaži podrobnosti postavitve strani %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.versions.1">
         <source>Show the versions of page layout ID %s</source>
-        <target>Показать версии макета страницы ID %s</target>
+        <target>Prikaži različice postavitve strani z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.edit.1">
         <source>Edit page layout ID %s</source>
-        <target>Редактировать макет страницы ID %s</target>
+        <target>Uredi postavitev strani z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.copy.1">
         <source>Copy page layout ID %s</source>
-        <target>Копировать макет страницы ID %s</target>
+        <target>Kopiraj postavitev strani z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.cut.1">
         <source>Move page layout ID %s</source>
-        <target>Переместить макет страницы ID %s</target>
+        <target>Premakni postavitev strani z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.delete.1">
         <source>Delete page layout ID %s</source>
-        <target>Удалить макет страницы ID %s</target>
+        <target>Izbriši postavitev strani z ID %s</target>
       </trans-unit>
       <trans-unit id="tl_layout.tableLabel">
         <source>Layout</source>
-        <target>Макет</target>
+        <target>Postavitev</target>
       </trans-unit>
     </body>
   </file>
